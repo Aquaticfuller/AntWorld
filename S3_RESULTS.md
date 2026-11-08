@@ -39,9 +39,11 @@ Local environment: Windows 10.0.26200 x64, Intel Core i7-13620H; pinned LLVM-Min
 | Semantic corruption | PASS: re-signed malformed physiological fields rejected without changing live state |
 | Allocation failures | PASS: ten S3 sweeps, 6/10/3/7/11/9/11/77/7/7 allocation points in Release |
 | Performance | PASS measured fixtures; dense nursing scaling limitation retained below |
-| Clean source reproduction | NOT RUN on the final implementation commit yet; required before delivery |
+| Clean source reproduction | PASS: clean export of 81a1b1531e2205d59710ff65f7e29b66d57e6c26, 71/71 tests (5.99 s), all three raw artifacts identical across 1,536 reruns |
 
 S3 tests: INITIALIZATION, INTEGRATION, EXCHANGE, CONSTRAINTS, INGESTION, THRESHOLDS, LIFECYCLE, BEHAVIOR, REPLAY, ROLLBACK, LOCALITY, CORRUPTION, ALLOCATION_LIMIT, ALLOCATION_FAILURE, EXPERIMENT_SMOKE. They cover SCH-05/07/23, document-21 N1/N2, death-before-action ordering, whole-advance rollback and allocation failure. ALLOCATION_LIMIT retains the observed negative nutrition result; it does not assert biological adequacy. Existing S0-S2.2 tests retain their original names and mechanism assertions.
+
+The first Linux CI evidence audit failed because the generated hash manifest used platform-native path separators. Windows audits and Clang sanitizer tests passed. Added bounded public audit diagnostics, identified the exact stale file, and changed only manifest keys to portable POSIX paths. Original CSV bytes and C++ model outcomes were unchanged; the failure is retained here rather than reported as an uninterrupted CI pass.
 
 ## Complete experimental evidence
 

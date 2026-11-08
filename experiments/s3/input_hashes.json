@@ -1,5 +1,5 @@
 {
-  "experiments\\s3\\raw\\summary.csv": "fb6825d8899ae10cb0f631026b21c7b60bb65969e5026938fe34fe4f867b427e",
-  "experiments\\s3\\raw\\individuals.csv": "545a3fc26442fb5a399f1c719d5d83953bd81b5a54e3a598985b6b4a926cd2ae",
-  "experiments\\s3\\raw\\configuration.json": "3b8ad291a24b76a312d7b2e559a93276ada636d72152a8cac0c095fcc53902a5"
+  "experiments/s3/raw/summary.csv": "fb6825d8899ae10cb0f631026b21c7b60bb65969e5026938fe34fe4f867b427e",
+  "experiments/s3/raw/individuals.csv": "545a3fc26442fb5a399f1c719d5d83953bd81b5a54e3a598985b6b4a926cd2ae",
+  "experiments/s3/raw/configuration.json": "3b8ad291a24b76a312d7b2e559a93276ada636d72152a8cac0c095fcc53902a5"
 }

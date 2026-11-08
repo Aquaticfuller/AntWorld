@@ -133,7 +133,7 @@ def analyze():
                     mean,low,high = interval(differences)
                     sensitivity.append({'scenario':scenario,'supplied':supplied,'pulse_ms':pulse,'reference_pulse_ms':1000,'metric':metric,
                                         'seeds':64,'mean':mean,'ci95_low':low,'ci95_high':high})
-    hashes = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_text(encoding='utf-8').encode()).hexdigest()
+    hashes = {path.relative_to(ROOT).as_posix(): hashlib.sha256(path.read_text(encoding='utf-8').encode()).hexdigest()
               for path in (DATA/'raw/summary.csv', DATA/'raw/individuals.csv', DATA/'raw/configuration.json')}
     return {ROOT/'S3_EXPERIMENTS.csv':render(rows), DATA/'summary.csv':render(summary), DATA/'paired.csv':render(pairs),
             DATA/'sensitivity.csv':render(sensitivity), DATA/'input_hashes.json':json.dumps(hashes,indent=2)+'\n'}

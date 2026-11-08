@@ -1,0 +1,22 @@
+{
+  "source_commit": "81a1b1531e2205d59710ff65f7e29b66d57e6c26",
+  "seeds": 64,
+  "runs": 1536,
+  "files": [
+    {
+      "file": "summary.csv",
+      "sha256_normalized_utf8": "fb6825d8899ae10cb0f631026b21c7b60bb65969e5026938fe34fe4f867b427e",
+      "identical": true
+    },
+    {
+      "file": "individuals.csv",
+      "sha256_normalized_utf8": "545a3fc26442fb5a399f1c719d5d83953bd81b5a54e3a598985b6b4a926cd2ae",
+      "identical": true
+    },
+    {
+      "file": "configuration.json",
+      "sha256_normalized_utf8": "3b8ad291a24b76a312d7b2e559a93276ada636d72152a8cac0c095fcc53902a5",
+      "identical": true
+    }
+  ]
+}
