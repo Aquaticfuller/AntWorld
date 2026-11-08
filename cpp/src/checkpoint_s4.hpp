@@ -150,7 +150,7 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
         s.geometry_edits.emplace(e.id, e);
         for (auto key : overlapping_bricks(e.box, c.brick_q, limits.geometry_index_entries)) {
             ensure(s.edit_index.size() < limits.geometry_index_entries, "geometry index host budget");
-            s.edit_index.emplace(std::pair{key, e.id}, 0);
+            s.edit_index.emplace(std::pair{key, e.id}, std::uint8_t{0});
         }
     }
     ensure(s.m.geometry_revision == s.geometry_edits.size(), "geometry revision mismatch");
@@ -216,11 +216,11 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
     for (const auto &row : s.ants.identities) {
         const auto ant = s.ants.get(s.ants.index.at(row.id));
         ensure(quantized(ant.position, c).has_value(), "nonquantized geometry actor");
-        s.spatial_index.emplace(std::pair{spatial_key(ant.position), row.id.value}, 1);
+        s.spatial_index.emplace(std::pair{spatial_key(ant.position), row.id.value}, std::uint8_t{1});
     }
     for (const auto &food : s.foods.rows) {
         ensure(quantized(food.position, c).has_value(), "nonquantized geometry food");
-        s.spatial_index.emplace(std::pair{spatial_key(food.position), food.id.value}, 2);
+        s.spatial_index.emplace(std::pair{spatial_key(food.position), food.id.value}, std::uint8_t{2});
     }
 }
 template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimits &limits) {
@@ -384,7 +384,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 }
                 edits.emplace(edit.id, edit);
                 for (auto key : overlapping_bricks(edit.box, c.brick_q, limits.geometry_index_entries))
-                    index.emplace(std::pair{key, edit.id}, 0);
+                    index.emplace(std::pair{key, edit.id}, std::uint8_t{0});
             } else {
                 ensure(parcels.contains(request.parcel) && !request.edit.value, "invalid parcel transfer history");
                 auto &parcel = parcels.at(request.parcel);

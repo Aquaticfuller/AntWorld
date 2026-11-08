@@ -13,7 +13,7 @@ if result.returncode:
     lines = result.stdout.splitlines()
     selected = set()
     for index, line in enumerate(lines):
-        if 'error:' in line or 'warning:' in line or 'fatal error' in line:
+        if 'error:' in line or 'warning:' in line or 'fatal error' in line or 'error C' in line or 'warning C' in line:
             selected.update(range(max(0, index-1), min(len(lines), index+5)))
     details = '\n'.join(lines[index] for index in sorted(selected))[-20000:] or '\n'.join(lines[-30:])
     escaped = details.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
