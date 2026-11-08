@@ -15,11 +15,15 @@ def main():
     parser.add_argument('reproduced', type=Path)
     parser.add_argument('--source-commit', required=True)
     parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--checkpoint-byte-delta', type=int, default=0, help='Explicit schema-only change; legacy S6 adds one absent-social flag')
     args = parser.parse_args()
     expected = read(ROOT/'experiments/s5/raw/summary.csv')
+    for row in expected:
+        row['checkpoint_bytes'] = str(int(row['checkpoint_bytes']) + args.checkpoint_byte_delta)
     actual = read(args.reproduced/'summary.csv')
     assert expected == actual, 'S5 exact continuation/metric reproduction mismatch'
     report = dict(source_commit=args.source_commit, rows=len(actual), equal_except_filesystem_storage_bytes=True,
+                  declared_checkpoint_byte_delta=args.checkpoint_byte_delta,
                   excluded_field='database_bytes', reason='WAL/database allocation is a measured storage result, not simulation state')
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')

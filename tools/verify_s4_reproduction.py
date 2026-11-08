@@ -16,22 +16,31 @@ def main():
     parser.add_argument('--s3-regression', type=Path)
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--checkpoint-byte-delta', type=int, default=0,
-                        help='Explicit schema-only byte change; S5 adds an empty 8-byte command ledger count')
+                        help='Explicit schema-only byte change: S5 +8; legacy S6 +9 relative to S4')
+    parser.add_argument('--physics-version', type=int, help='Explicit current version label; all semantic fields still compare exactly')
     args = parser.parse_args()
     report = dict(source_commit=args.source_commit, s4={}, s3_semantic_regression={})
     for name in ('summary.csv','edits.csv','trajectories.csv','configuration.json'):
         expected = (ROOT/'experiments/s4/raw'/name).read_text(encoding='utf-8')
         actual = (args.reproduced/name).read_text(encoding='utf-8')
-        if name == 'summary.csv' and args.checkpoint_byte_delta:
+        if name == 'summary.csv' and (args.checkpoint_byte_delta or args.physics_version is not None):
             import io
             old_rows = list(csv.DictReader(io.StringIO(expected)))
             new_rows = list(csv.DictReader(io.StringIO(actual)))
             for row in old_rows:
                 row['checkpoint_bytes'] = str(int(row['checkpoint_bytes']) + args.checkpoint_byte_delta)
+                if args.physics_version is not None:
+                    row['physics_version'] = str(args.physics_version)
             assert old_rows == new_rows, 'S4 semantic regression or unexpected schema size change'
             report['s4'][name] = dict(equal_except_declared_checkpoint_bytes=True,
                                       checkpoint_byte_delta=args.checkpoint_byte_delta,
+                                      declared_physics_version=args.physics_version,
                                       rows=len(new_rows), sha256=hashlib.sha256(actual.encode()).hexdigest())
+        elif name == 'configuration.json' and args.physics_version is not None:
+            old_config, new_config = json.loads(expected), json.loads(actual)
+            old_config['physics_version'] = args.physics_version
+            assert old_config == new_config, 'S4 fixture configuration changed beyond declared version'
+            report['s4'][name] = dict(equal_except_declared_physics_version=True, declared_physics_version=args.physics_version)
         else:
             assert expected == actual, f'clean-source mismatch: {name}'
             report['s4'][name] = dict(equal=True, sha256=hashlib.sha256(actual.encode()).hexdigest())
