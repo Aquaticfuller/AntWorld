@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S2.1 Foraging Model Validation & Fixes only**, explicitly requested after S2 Code Review. Start from codex/s2-foraging and deliver on codex/s2.1-foraging-validation. Preserve all S0-S2 mechanisms and regressions. Diagnose ResourceId food-choice bias and pheromone recruitment before minimal fixes; run matched naive-worker recruitment controls and retain the broad feature ablations. No global food oracle, forced paths/outcomes, seed filtering or coefficient inflation to chase positive results. Do not implement S3 physiology, S4 underground navigation/geometry, Unity or Game Master.
+**Current authorized batch: S2.2 Trail-following Mechanism Validation only**, requested after S2.1 engineering review. Start from codex/s2.1-foraging-validation and use codex/s2.2-trail-validation. Freeze the protocol before model changes, preserve all S0-S2.1 tests and historical evidence, study mirrored Y junctions and continuous local trails, audit competing movement rules, and use primary Lasius niger research for minimal explainable changes. Retain negative results and repeat social recruitment controls. No global food oracle, forced outcomes, directional chemical oracle, seed filtering or coefficient inflation. S3, 3D underground work, Unity and Game Master remain unauthorized.
 
 ## Implementation rules
 
@@ -38,5 +38,5 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
 - Preserve S0/S1 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer and relevant performance checks for S2.
-- Preserve S2_RESULTS.md as historical evidence. Produce S2_1_RESULTS.md, S2_1_EXPERIMENTS.csv, figures and reproduction commands, including explicit PASS / CONDITIONAL PASS / FAIL and honest negative results.
-- Finish **only S2.1**, push its independent branch and stop for review. S3–S9 are not authorized in this run.
+- Preserve S0-S2.1 reports and raw evidence. Produce S2_2_RESULTS.md, raw CSVs, figures, literature rationale, confidence intervals, sensitivity results and reproduction commands.
+- Finish **only S2.2**, commit the reviewable evidence and stop for review. S3–S9 are not authorized in this run.

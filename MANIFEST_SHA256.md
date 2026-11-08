@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 41 (excluding the manifest itself).
+Files: 43 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `6f706f1bac90f81f55b288b90e17335d0dbbc06edffeafab2cf3fdd2c3c83250` | 4231 |
-| `CODEX_START_HERE.md` | `163beaf7b84dcab7322b54e82b0aea5e5f9f8718802a9653ee49cd4a2b7e51e2` | 3414 |
+| `AGENTS.md` | `a8e12dfc2ec5e0297d356d2d6316df72b693340e5e06697613eaf3e6ab113afa` | 4282 |
+| `CODEX_START_HERE.md` | `7478d9ac73001c79ea450c1097e219994fff67223621fd997e8915b6394a3fce` | 3538 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -42,6 +42,8 @@ Files: 41 (excluding the manifest itself).
 | `docs/26_S1_Implementation_Decisions.md` | `6f850eb5d771ae049489efc2c16a45745e368fc030ef6b9e1900f4f1cae7e043` | 13244 |
 | `docs/27_S2_Implementation_Decisions.md` | `891775b659e5d0b29a04203528438134de6e2b3f4f24da971f4825f2022ac524` | 14030 |
 | `docs/28_S2_1_Validation_Protocol.md` | `e36aa7d22f2834af214087a1a1d54614a72d1b273b80fdfa366da91b787c5dd1` | 9586 |
+| `docs/29_S2_2_Validation_Protocol.md` | `082739d4de02191fa56f662d668364f5b08320965d2d6a0366f5495ea21753dd` | 7832 |
+| `docs/30_S2_2_Literature_and_Model_Rationale.md` | `5952289034d13ebfca18920beb6868bfbc26d064bdf26466bb4f9510cc390bfb` | 4613 |
 | `docs/CHANGELOG.md` | `0db572b4b1dee98aea1cdc8a73a996e3be9746dae9b4064951c75149243cc54d` | 5885 |
 | `README_HANDOFF.md` | `0d32fb6823c5bff345d14432d39a4565125999ca9e21d52b928f22ba37e34072` | 2015 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
