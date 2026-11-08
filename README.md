@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S2.2 trail-following mechanism validation**. Controlled local assays demonstrate marked-arm preference and sustained trail influence; a minimal correction admits an experienced predecessor when it is the only adjacent signal. Coefficients are unchanged. The original social recruitment experiment still does not establish a reliable discovery benefit. See [S2.2 results](S2_2_RESULTS.md), [protocol](docs/29_S2_2_Validation_Protocol.md) and [evidence/reproduction](experiments/s2_2/README.md). S0-S2.1 transactions, conservation and regression tests remain. S3 and later integrations are not authorized.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S3 physiology, nutrition, trophallaxis and brood**. Crop, carried material, body energy, hydration and retained protein have separate conserved accounts. Local transfers and automatic life stages preserve identity and deterministic continuation. See [S3 results](S3_RESULTS.md), [protocol](docs/31_S3_Implementation_and_Validation.md) and [reproduction](experiments/s3/README.md). All S0-S2.2 regressions and historical evidence remain. The S2.2 long-distance following and social recruitment debts remain open in [document 08](docs/08_Open_Questions.md). S4 is not authorized.
 
 ## Build and test on Windows x64
 
@@ -17,9 +17,12 @@ The portable toolchain lives under ignored `.tools/`; no global installation or 
 ./build/release/antworld_s2_experiment.exe out/s2-experiments 16 1800000
 python tools/analyze_s2.py out/s2-experiments
 ./tools/benchmark_s2_windows.ps1
-./build/release/antworld_s2_1_experiment.exe out/s2_2-social 64 s2.2
+./build/release/antworld_s2_1_experiment.exe out/s3-social-regression 64 s3
 ./build/release/antworld_s2_2_experiment.exe out/s2_2-local 512
 python tools/analyze_s2_1.py --check
+./build/release/antworld_s3_experiment.exe out/s3-reproduction 64
+python tools/analyze_s3.py --check
+./tools/benchmark_s3_windows.ps1
 ```
 
 Normal LLVM-MinGW builds link their C++ runtime statically, so the executable can run without the compiler directory on PATH. `--help` lists options. `--diagnostic-events 8` optionally schedules eight explicitly synthetic infrastructure events that draw RNG values at milliseconds 1 through 8. This does not simulate ants.
@@ -36,7 +39,26 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S2_2_RESULTS.md](S2_2_RESULTS.md); earlier reports preserve their historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S3_RESULTS.md](S3_RESULTS.md); earlier reports preserve their historical baselines.
+
+## Minimal S3 nutrition use
+
+```cpp
+WorldRuntime world({1, 2}, 43); // ENGINEERING_FIXTURE, no calibrated species rates.
+auto colony = world.seed_colony();
+auto nurse = world.seed_ant(colony, {});
+auto egg = world.seed_ant(colony, {{}, LifeStage::Egg, Caste::Worker, 4000});
+world.enable_physiology(nurse, {{100, 400, 400, 100}, 1000000000, 1000, 0});
+world.enable_physiology(egg);
+world.set_behavior(nurse, IndividualBehavior::Nurse);
+world.advance_to({60000});
+world.set_behavior(nurse, IndividualBehavior::Paused); // Metabolism continues.
+auto energy_j = world.query_physiology(nurse)->body_energy_j();
+auto balance = world.nutrition_snapshot();
+auto checkpoint = world.checkpoint();
+```
+
+Initialize physiology at unexecuted time zero; choose runtime Paused/Rest/Nurse/Forage programs on individual adults. These are engineering experiment controls, not a colony commander or player labor-allocation UI. Pausing/switching cancels owned pending actions and preserves acquired routes and crop. First Forage activation needs an unloaded worker at its physical nest; resumption preserves its experienced path. Queries project continuous expenditure to the committed time without changing stored state, RNG or queue. In physiology-enabled worlds, the legacy `food_ledger` reports source/cargo/nest inventories; use `nutrition_snapshot()` for complete ingredient and energy balances.
 
 ## Minimal autonomous S2 use
 
@@ -87,7 +109,7 @@ Every numeric fixture is engineering-only. A proposal is pending until advance c
 - `scenarios/`, `schemas/`: original engineering fixtures and the broader P0 schema.
 - `contracts/`: future C ABI draft, not an implemented native plugin.
 
-All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 3 / physics 5 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails and evidence counters. Earlier physics versions, including S2.1 physics 4, are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
+All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 4 / physics 6 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails, physiology/configuration, crop, continuous remainders, budgets and owned wakeups. Earlier schema/physics versions are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
 
 ## Verification and repository policy
 
@@ -101,11 +123,12 @@ python tools/analyze_s2.py experiments/s2 --check
 python tools/analyze_s2.py experiments/s2_1/ablations --check
 python tools/analyze_s2_1.py --check
 python tools/analyze_s2_2.py --check
+python tools/analyze_s3.py --check
 ```
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.
 
-Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s2_windows.ps1 -OutputDirectory out/s2_2-performance` records sampled process memory. These fixtures do not establish full-colony or whole-map performance. See [the roadmap](docs/22_Development_Roadmap_and_Execution_Gates.md). Stop after S2.2 and obtain the next review before starting S3.
+Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s3_windows.ps1` records these plus active physiology/nursing and sampled process memory. These fixtures do not establish full-colony or whole-map performance. Stop after S3 and obtain the next review before starting S4.
 
 ## License
 

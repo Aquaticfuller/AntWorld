@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
             const std::string_view arg(argv[2]); const auto [end, error] = std::from_chars(arg.data(), arg.data()+arg.size(), seeds);
             if (error != std::errc{} || end != arg.data()+arg.size() || !seeds || seeds > 64) throw std::invalid_argument("invalid seed count");
         }
-        const std::string_view compiled = WorldRuntime::physics_version == 3 ? "s2-baseline" : (WorldRuntime::physics_version == 4 ? "s2.1" : "s2.2");
+        const std::string_view compiled = WorldRuntime::physics_version == 3 ? "s2-baseline" : (WorldRuntime::physics_version == 4 ? "s2.1" : (WorldRuntime::physics_version == 5 ? "s2.2" : "s3"));
         const std::string_view model = argc > 3 ? argv[3] : compiled;
         if (model != compiled)
             throw std::invalid_argument("model label does not match the compiled physics version");

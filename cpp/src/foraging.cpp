@@ -54,6 +54,7 @@ void WorldRuntime::configure_surface(const SurfaceConfig& config, std::span<cons
     tx.commit();
 }
 void WorldRuntime::start_foraging(AntRef ref) {
+    if (state_->physiology.contains(ref.id) && ref.world == state_->world) { set_behavior(ref, IndividualBehavior::Forage); return; }
     auto& s = *state_; const auto ant = query_ant(ref);
     if (!s.surface || !ant || s.foragers.contains(ref.id) ||
         ant->stage != LifeStage::Adult || ant->caste != Caste::Worker || ant->carried_food.total_ug() || !ant->carrying_capacity_ug)

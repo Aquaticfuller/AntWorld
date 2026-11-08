@@ -81,6 +81,30 @@ void s2_1_sweeps() {
     sweep("late_first_decision", world, [&] { world.advance_to({6001}); });
     std::cout << "PASS S2_1_ALLOCATION_FAILURE\n";
 }
+void s3_sweeps() {
+    WorldRuntime world({1,2},9); world.configure_surface({{},3,1,.01},{});
+    const auto c = world.seed_colony(); const auto a = world.seed_ant(c,{}), b = world.seed_ant(c,{});
+    world.seed_food({.02,0,0},{1000,0,0,0});
+    PhysiologySeed seed{{200,200,200,0},1000000000,1000,0};
+    sweep("physiology_enable", world, [&] { world.enable_physiology(a,seed); });
+    world.enable_physiology(a,seed); world.enable_physiology(b);
+    sweep("physiology_program", world, [&] { world.set_behavior(a,IndividualBehavior::Nurse); });
+    sweep("nutrition_proposal", world, [&] { world.submit_nutrition({a,{500},NutritionAction::Trophallaxis,b,200}); });
+    world.submit_nutrition({a,{500},NutritionAction::Trophallaxis,b,200});
+    sweep("nutrition_atomic_transfer", world, [&] { world.advance_to({500}); }); world.advance_to({500});
+    sweep("physiology_absorption", world, [&] { world.advance_to({1000}); }); world.advance_to({1000});
+    world.set_behavior(a,IndividualBehavior::Forage); world.advance_to({2000});
+    sweep("physiology_pause_pending_action", world, [&] { world.set_behavior(a,IndividualBehavior::Paused); });
+    sweep("physiology_switch_pending_action", world, [&] { world.set_behavior(a,IndividualBehavior::Nurse); });
+    const auto bytes = world.checkpoint(); sweep("physiology_restore", world, [&] { world.restore(bytes); });
+    world.schedule_lifecycle(a,{2001},LifeStage::Dead);
+    sweep("physiology_cancel_at_death", world, [&] { world.advance_to({2001}); });
+    WorldRuntime brood({1,2},8); const auto colony = brood.seed_colony();
+    const auto egg = brood.seed_ant(colony,{{},LifeStage::Egg,Caste::Worker,4000});
+    PhysiologyConfig config; config.egg_duration = {2}; brood.enable_physiology(egg,{},config);
+    sweep("physiology_stage_transition", brood, [&] { brood.advance_to({2}); });
+    std::cout << "PASS S3_ALLOCATION_FAILURE\n";
+}
 } // namespace
 int main(int argc, char** argv) {
     // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
@@ -90,6 +114,7 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S3") { s3_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2.1") { s2_1_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2") { s2_sweeps(); return 0; }
         if (argc != 1) throw std::invalid_argument("usage: antworld_allocation_tests [S2]");

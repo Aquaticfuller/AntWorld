@@ -1,0 +1,14 @@
+{
+  "scope": "S0_DIAGNOSTICS_ONLY",
+  "trials": 64,
+  "events_per_trial": 128,
+  "simulated_ms_per_trial": 60000,
+  "advance_p50_ms": 0.0317,
+  "advance_p95_ms": 0.0436,
+  "checkpoint_p50_ms": 0.0655,
+  "restore_p50_ms": 0.0465,
+  "checkpoint_bytes": 20718,
+  "simulated_seconds_per_advance_wall_second": 1.78871e+06,
+  "setup_included_in_timing": false,
+  "memory_measured_by_core": false
+}

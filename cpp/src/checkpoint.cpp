@@ -1,6 +1,7 @@
 #include "state.hpp"
 #include "checkpoint_codec.hpp"
 #include "checkpoint_s2.hpp"
+#include "checkpoint_s3.hpp"
 #include <bit>
 #include <set>
 
@@ -39,7 +40,7 @@ std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
 
 std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
     Writer w(byte_limit); const auto& m = s.m;
-    w.put(UINT64_C(0x3354504b435741)); // AWCKPT3, then zero.
+    w.put(UINT64_C(0x3454504b435741)); // AWCKPT4, then zero.
     w.put(schema_version, 4); w.put(physics_version, 4); w.put(1, 4); // SplitMix64 v1.
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
     w.put(m.next_entity); w.put(m.next_scheduled); w.put(m.next_event); w.put(m.next_sequence); w.put(m.rng.state());
@@ -67,6 +68,7 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     w.put(s.foods.rows.size());
     for (const auto& f : s.foods.rows) { w.put(f.id.value); w.position(f.position); w.mass(f.initial); w.mass(f.remaining); }
     write_surface(w, s);
+    write_physiology(w, s);
     w.put(hash_bytes(w.bytes)); return w.bytes;
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
@@ -74,7 +76,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    ensure(r.get() == UINT64_C(0x3354504b435741), "unsupported checkpoint magic; S0/S1 save migration is not implemented");
+    ensure(r.get() == UINT64_C(0x3454504b435741), "unsupported checkpoint magic; previous-stage migration is not implemented");
     ensure(r.get(4) == schema_version && r.get(4) == physics_version && r.get(4) == 1, "unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -90,7 +92,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         e.stage = static_cast<LifeStage>(r.get(1));
         ensure(e.id.value && e.id.value < m.next_scheduled && e.key.sequence && e.key.sequence < m.next_sequence &&
             e.key.time >= m.now && valid(e.key.phase) && valid(e.action) && valid(e.stage) &&
-            e.kind <= ScheduledEvent::Kind::TrailMaintenance && finite(e.destination) && e.issued_at <= m.now &&
+            e.kind <= ScheduledEvent::Kind::Trophallaxis && finite(e.destination) && e.issued_at <= m.now &&
             scheduled_ids.insert(e.id.value).second && sequences.insert(e.key.sequence).second &&
             (s->queue.empty() || s->queue.rbegin()->first < e.key), "invalid future event");
         s->queue.emplace(e.key, e); s->queue_index.emplace(e.id, e.key);
@@ -100,13 +102,14 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     for (std::size_t i = 0; i < facts; ++i) {
         const auto e = read_fact(r);
         const auto seeded = e.kind == FactKind::ColonySeeded || e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded ||
-            e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted;
+            e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
+            e.kind == FactKind::PhysiologyEnabled || e.kind == FactKind::BehaviorChanged;
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= FactKind::TrailMaintenance && valid(e.stage) && e.outcome <= Outcome::EmptyInventory &&
+            valid(e.action) && e.kind <= FactKind::NutritionTransferred && valid(e.stage) && e.outcome <= Outcome::EmptyInventory &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.random_value == 0) &&
-            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted) : e.source.value && e.source.value < m.next_scheduled &&
+            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 scheduled_ids.insert(e.source.value).second), "invalid committed event");
         previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
     }
@@ -141,8 +144,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         introduced = sum(introduced, f.initial); available = sum(available, f.remaining);
     }
     read_surface(r, *s, limits);
-    ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored} &&
-        sum(sum(available, carried), stored) == introduced, "food ledger or living count mismatch");
+    read_physiology(r, *s, limits);
+    ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
     (void)introduced.total_ug();
     for (const auto& [key, e] : s->queue) {
         ensure(!m.watermark || key > *m.watermark, "future queue precedes execution watermark");
@@ -153,6 +156,24 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(s->surface && s->surface->behavior.trails_enabled && e.id == m.maintenance && key.phase == Phase::Environment &&
                 key.priority == 1 && !key.tie && !e.actor.value && !e.resource.value && !e.requested_ug && !e.observed_position_revision &&
                 e.destination == PositionM{} && e.action == DiagnosticAction::Record && !e.payload && e.stage == LifeStage::Egg, "invalid field event");
+        } else if (e.kind >= ScheduledEvent::Kind::Physiology) {
+            ensure(s->physiology.contains(e.actor) && e.action == DiagnosticAction::Record && !e.resource.value &&
+                e.key.priority == 0 && e.key.tie == 0 && e.destination == PositionM{} && e.stage == LifeStage::Egg,
+                "invalid physiological event actor/fields");
+            const auto& p = s->physiology.at(e.actor);
+            if (e.kind == ScheduledEvent::Kind::Physiology || e.kind == ScheduledEvent::Kind::NutritionWake) {
+                const bool physiological = e.kind == ScheduledEvent::Kind::Physiology;
+                ensure(e.id == (physiological ? p.physiology_event : p.behavior_event) &&
+                    e.key.phase == (physiological ? Phase::Environment : Phase::Perception) &&
+                    !e.payload && !e.requested_ug && !e.observed_position_revision, "invalid physiology wake ownership");
+            } else {
+                ensure(e.key.phase == Phase::Resolution && e.requested_ug &&
+                    e.observed_position_revision <= s->ants.get(s->ants.index.at(e.actor)).position_revision,
+                    "invalid nutrition action phase");
+                ensure(e.kind == ScheduledEvent::Kind::Trophallaxis ?
+                    (e.payload != e.actor.value && s->physiology.contains(EntityId{e.payload})) : e.payload == 0,
+                    "invalid nutrition recipient");
+            }
         } else {
             ensure(s->ants.index.contains(e.actor) && e.action == DiagnosticAction::Record && !e.payload &&
                 e.key.priority == 0 && e.key.tie == 0, "invalid scheduled actor");
@@ -223,14 +244,27 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred); break;
         case FactKind::Rested:
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult, "invalid rest fact"); break;
+        case FactKind::CargoIngested:
+            cargo[e.actor] = subtract(cargo[e.actor], e.transferred); break;
+        case FactKind::NestIngested:
+            ensure(distance(e.position, s->colonies.rows[s->colonies.index.at(e.colony)].nest_position) <= s->config.contact_distance_m,
+                "nest ingestion has no physical contact");
+            delivered[e.colony] = subtract(delivered[e.colony], e.transferred); break;
+        case FactKind::PhysiologyEnabled:
+        case FactKind::PhysiologyUpdated:
+        case FactKind::BehaviorChanged:
+        case FactKind::NutritionDecision:
+        case FactKind::NutritionTransferred: break;
         case FactKind::SurfaceConfigured:
         case FactKind::ForagingStarted:
         case FactKind::ForagingDecision:
         case FactKind::TrailMaintenance: ensure(s->surface != nullptr, "surface fact without surface"); break;
         }
-        if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodDelivered)
+        if (nutrition_fact(e.kind)) ensure(e.transferred.total_ug() && e.outcome <= Outcome::Partial, "invalid nutrition transfer fact");
+        if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodDelivered &&
+            !nutrition_fact(e.kind) && e.kind != FactKind::PhysiologyEnabled && e.kind != FactKind::PhysiologyUpdated)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
-        if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected)
+        if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind))
             ensure(e.outcome == Outcome::Success, "unexpected fact outcome");
     }
     ensure(seeded_colonies.size() == colonies && seeded_ants.size() == ants && seeded_food.size() == foods &&
@@ -243,6 +277,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     for (const auto& f : s->foods.rows) ensure(sum(f.remaining, transferred[f.id]) == f.initial, "source disagrees with transfer facts");
     for (const auto& c : s->colonies.rows) ensure(delivered[c.id] == c.nest_food, "nest inventory disagrees with delivery facts");
     validate_surface_evidence(*s);
+    validate_physiology_evidence(*s);
     ensure(m.next_event == facts+1 && r.cursor == r.bytes.size(), "invalid event allocator or trailing checkpoint bytes");
     return s;
 }

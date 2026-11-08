@@ -28,3 +28,9 @@ Raw CSV includes seed, treatment, pulse size, initial inputs, outputs, event cou
 ## Execution and exit gate
 
 Run Debug, Release, ASan/UBSan and five GitHub CI jobs; retain relevant S2 performance checks and add dormant/active physiology and save/restore measurements. Reproduce experiments from a clean source export. Record actual commands and failures. S3_RESULTS.md must state PASS / CONDITIONAL PASS / FAIL, limitations and SD-01/02/03. Mechanism validity is not biological calibration. Stop after S3; a successful result does not authorize S4.
+
+## Implementation clarifications after protocol freeze
+
+The original matrix and defaults above remain unchanged. Energy is charged at the basal rate for Paused/Rest and brood, and basal plus the declared activity rate while an adult Nurse/Forage program is enabled; this is a coarse program-rate fixture rather than measured action biomechanics. Nutrition decisions are frozen in perception, committed 1 ms later, then reconsidered after the configured behavior interval. Receiver capacity bounds actual transfer; the initial model does not reserve a fraction of a recipient's inferred protein deficit across concurrent donors. The resulting seed-43 oversupply/stall is retained as SD-04 and an additional negative regression, without changing the frozen nutrition rules.
+
+Before fixture additions commit, the runtime verifies combined ingredient capacity and a conservative upper bound on all future carbohydrate-derived nanojoules. Configuration limits are host arithmetic policies, not ecological constants. S3's contact query is a reference scan of registered physiology followed by physical-contact filtering; TD-01 records its dense-population cost. These clarifications do not add global biological cues or authorize S4.

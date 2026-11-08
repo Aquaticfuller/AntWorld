@@ -26,6 +26,7 @@ jobs:
           python tools/analyze_s2_1.py --check
           python tools/analyze_s2.py experiments/s2_2/ablations --check
           python tools/analyze_s2_2.py --check
+          python tools/analyze_s3.py --check
       - name: Configure
         run: cmake -S cpp -B build/ci -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
       - name: Build
@@ -39,6 +40,7 @@ jobs:
           ./build/ci/antworld_s1_benchmark
           ./build/ci/antworld_benchmark
           ./build/ci/antworld_s2_benchmark
+          ./build/ci/antworld_s3_benchmark
 
   sanitizers:
     runs-on: ubuntu-24.04

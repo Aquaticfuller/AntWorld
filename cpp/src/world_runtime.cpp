@@ -19,7 +19,9 @@ std::pair<std::uint64_t, std::uint64_t> muldiv(std::uint64_t a, std::uint64_t b,
     }
     return {q, r};
 }
-FoodMass portion(FoodMass mass, std::uint64_t amount) {
+} // namespace
+FoodMass detail::portion(FoodMass mass, std::uint64_t amount) {
+    if (!amount) return {};
     const auto total = mass.total_ug(); const auto values = mass.components();
     std::array<std::uint64_t, 4> parts{}, remainders{};
     std::array<std::size_t, 4> order{0, 1, 2, 3}; std::uint64_t assigned = 0;
@@ -33,6 +35,7 @@ FoodMass portion(FoodMass mass, std::uint64_t amount) {
     for (std::uint64_t i = 0; i < amount-assigned; ++i) ++parts[order[static_cast<std::size_t>(i)]];
     return {parts[0], parts[1], parts[2], parts[3]};
 }
+namespace {
 std::uint64_t rank(std::uint64_t seed, SimTime time, ResourceId resource, EntityId actor) {
     // Stateless arbitration stream v1; it never consumes the world's diagnostic RNG.
     Rng a(seed ^ static_cast<std::uint64_t>(time.milliseconds));
@@ -62,6 +65,8 @@ bool WorldRuntime::cancel(ScheduledId id) {
     if (found == s.queue_index.end()) return false;
     const auto& event = s.queue.at(found->second);
     if (event.kind == ScheduledEvent::Kind::Wake || event.kind == ScheduledEvent::Kind::TrailMaintenance ||
+        event.kind == ScheduledEvent::Kind::Physiology || event.kind == ScheduledEvent::Kind::NutritionWake ||
+        (s.physiology.contains(event.actor) && s.physiology.at(event.actor).behavior_event == id) ||
         (s.foragers.contains(event.actor) && s.foragers.at(event.actor).action == id))
         throw std::invalid_argument("autonomous events are owned by their individual/field scheduler");
     Transaction tx(s, limits_); tx.remove(found->second); bump(s.m.revision); tx.commit(); return true;
@@ -100,11 +105,12 @@ FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
     s.m.ledger.introduced = sum(s.m.ledger.introduced, mass); (void)s.m.ledger.introduced.total_ug();
     s.m.ledger.available = sum(s.m.ledger.available, mass);
     WorldEvent e; e.kind = FactKind::FoodSeeded; e.resource = id; e.position = position; e.transferred = mass;
-    tx.fact(e); tx.commit(); return {s.world, id};
+    tx.fact(e); validate_nutrition_capacity(); tx.commit(); return {s.world, id};
 }
 ScheduledId WorldRuntime::submit(const ActionProposal& p) {
     auto& s = *state_; const auto ant = query_ant(p.actor);
     if (!ant || p.kind > ActionKind::Rest || s.foragers.contains(p.actor.id) ||
+        (s.physiology.contains(p.actor.id) && s.physiology.at(p.actor.id).behavior != IndividualBehavior::Paused) ||
         (p.kind == ActionKind::CollectFood && (!query_food(p.food) || p.requested_ug == 0)) ||
         (p.kind == ActionKind::Move && !finite(p.destination)))
         throw std::invalid_argument("invalid action proposal or world reference");
@@ -123,12 +129,15 @@ ScheduledId WorldRuntime::submit(const ActionProposal& p) {
 }
 ScheduledId WorldRuntime::schedule_lifecycle(AntRef actor, SimTime at, LifeStage stage) {
     if (!query_ant(actor) || !valid(stage)) throw std::invalid_argument("invalid lifecycle fixture");
+    if (state_->physiology.contains(actor.id) && stage != LifeStage::Dead)
+        throw std::invalid_argument("physiological development cannot be forced by a fixture event");
     ScheduledEvent e; e.key = {at, Phase::Environment, 0, 0, 0};
     e.kind = ScheduledEvent::Kind::Lifecycle; e.actor = actor.id; e.stage = stage; e.issued_at = state_->m.now;
     Transaction tx(*state_, limits_); const auto id = tx.insert(e); tx.commit(); return id;
 }
 void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
     auto& s = *state_; WorldEvent fact; fact.source = e.id; fact.actor = e.actor;
+    if (e.kind == ScheduledEvent::Kind::Physiology) { execute_physiology(tx, e); return; }
     if (e.kind == ScheduledEvent::Kind::TrailMaintenance) { maintain_trails(tx, e); return; }
     if (e.kind == ScheduledEvent::Kind::Diagnostic) {
         fact.action = e.action; fact.payload = e.payload;
@@ -143,9 +152,10 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
     else if (e.stage != LifeStage::Dead && static_cast<unsigned>(e.stage) != static_cast<unsigned>(ant.stage)+1)
         fact.outcome = Outcome::InvalidTransition;
     else {
+        synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
         fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
-        if (e.stage == LifeStage::Dead) { --s.m.living; stop_dead_forager(tx, e.actor); }
+        if (e.stage == LifeStage::Dead) { --s.m.living; stop_dead_forager(tx, e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); }
     }
     tx.fact(fact);
 }
@@ -170,7 +180,9 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         else if (!ant.alive()) f.outcome = Outcome::DeadActor;
         else if (ant.stage != LifeStage::Adult || ant.caste != Caste::Worker) f.outcome = Outcome::InvalidStage;
         else if (e.observed_position_revision != ant.position_revision) f.outcome = Outcome::StalePosition;
-        else if (e.kind == ScheduledEvent::Kind::Move) {
+        else if (e.kind >= ScheduledEvent::Kind::IngestCargo) {
+            resolve_nutrition_action(tx, e, f);
+        } else if (e.kind == ScheduledEvent::Kind::Move) {
             const auto seconds = static_cast<double>(e.key.time.milliseconds - e.issued_at.milliseconds) / 1000.0;
             const auto length = distance(ant.position, e.destination);
             if (!inside(e.destination, s.config)) f.outcome = Outcome::OutOfBounds;
@@ -216,6 +228,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             throw std::logic_error("invalid action event kind");
         }
         after_action(tx, e, f, before);
+        continue_nutrition_behavior(tx, e);
         tx.fact(f);
     }
 }
@@ -229,9 +242,12 @@ void WorldRuntime::advance_to(SimTime target) {
             std::vector<ScheduledEvent> wakes(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Perception) {
                 const auto e = tx.remove(s.queue.begin()->first); tx.executing(e);
-                if (e.kind == ScheduledEvent::Kind::Wake) wakes.push_back(e); else execute(tx, e);
+                if (e.kind == ScheduledEvent::Kind::Wake || e.kind == ScheduledEvent::Kind::NutritionWake) wakes.push_back(e); else execute(tx, e);
             }
-            if (!wakes.empty()) resolve_wakes(tx, wakes);
+            std::vector<ScheduledEvent> foragers(0), nurses(0);
+            for (const auto& e : wakes) (e.kind == ScheduledEvent::Kind::Wake ? foragers : nurses).push_back(e);
+            if (!foragers.empty()) resolve_wakes(tx, foragers);
+            if (!nurses.empty()) resolve_nutrition_wakes(tx, nurses);
         } else if (key.phase == Phase::Resolution) {
             std::vector<ScheduledEvent> actions(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Resolution) {

@@ -13,7 +13,7 @@ This repository begins with a complete design baseline and engineering specifica
 
 ## Workflow
 
-Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. Only S2.2 local trail validation is now authorized after S2.1 engineering review. Read S2_2_RESULTS.md and its literature/mechanism evidence before any S3 authorization. Preserve every earlier report and raw dataset as historical context; later confirmed decisions take precedence.
+Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user formally approved S2.2 and authorized only S3 physiology, nutrition and brood. Read S3_RESULTS.md and document 31 for current evidence and decisions; preserve S2.2 scientific validation debts in document 08. Preserve every earlier report and raw dataset as historical context. Stop before S4 pending independent review.
 
 ## Unfinished research and implementation
 

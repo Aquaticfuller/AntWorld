@@ -12,6 +12,14 @@ Independent S2.2 Code Review passed and explicitly authorized S3. The historical
 
 Evidence: S2_2_RESULTS.md, documents 29/30 and the unchanged experiments/s2_2 archive. S3 introduces no pheromone or route-choice coefficient changes. These debts remain visible for the next independent review and are not S3 blockers under the user's explicit decision.
 
+## S3 implementation and scientific debt
+
+| ID | Status | Evidence / next review question |
+|---|---|---|
+| SD-04 | OPEN | S3 development seed 43 at 1000 ms pulses yields three adults and one larva at 180 s despite 800 ug initial protein for four 100 ug requirements. Three recipients each retain 140 ug unused crop protein; the fourth receives only 80 ug. Concurrent local gifts can oversupply individuals; minimal programs do not redistribute surplus from emerged workers. Preserve this negative outcome. Study demand-aware portions and adult redistribution under a separately specified protocol without selecting seeds or tuning to force emergence. |
+| TD-01 | OPEN | The S3 reference contact query filters actual distance/colony/stage but scans registered physiology rows. Per-individual integration is inexpensive; dense active nursing has quadratic query cost. Add a validated contact index before larger active populations, preserving local inputs and proposal-order independence. No full-world throughput claim. |
+| SD-05 | OPEN | Absorption is pulsed; development uses fixed fixture durations gated by reserves and retained protein. Temperature, measured assimilation efficiency, body growth chemistry, liquid/solid food distinctions, laying, tissue maintenance and species mortality hazards remain uncalibrated or unimplemented. Integer exactness validates this declared model, not biological accuracy. |
+
 ## Biological research
 
 1. Unified task thresholds or separate brood/cleaning/digging schedulers? How to prevent excessive switching?

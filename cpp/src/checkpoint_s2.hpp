@@ -112,7 +112,7 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         const auto ant = s.ants.get(s.ants.index.at(id));
         const auto home = surface->locate(s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position);
         ensure(ant.caste == Caste::Worker && (ant.stage == LifeStage::Adult || ant.stage == LifeStage::Dead) &&
-            f.enabled == ant.alive() && f.path[0] == *home && f.path[f.path_size-1] == *surface->locate(ant.position), "invalid individual route endpoints");
+            (!f.enabled || ant.alive()) && f.path[0] == *home && f.path[f.path_size-1] == *surface->locate(ant.position), "invalid individual route endpoints");
         auto check_route = [&](const auto& route, std::uint32_t size) {
             for (std::size_t i = 0; i < route.size(); ++i) {
                 if (i >= size) { ensure(route[i] == Cell{}, "noncanonical unused memory slot"); continue; }
@@ -162,6 +162,9 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 !e.resource.value, "invalid surface configuration evidence"); configured = true;
         }
         if (e.kind == FactKind::AntSeeded) positions[e.actor] = e.position;
+        if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor))
+            audit_agents.at(e.actor).enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
+        if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::FoodSeeded) remaining[e.resource] = e.transferred;
         if (e.kind == FactKind::ForagingStarted) {
             ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
@@ -235,7 +238,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
             if (audit_agents.contains(e.actor)) { auto& f = audit_agents.at(e.actor); ++counts.deliveries; f.mode = BehaviorMode::Explore; f.trip_moves = 0; }
         }
-        if (e.kind == FactKind::ActionRejected && audit_agents.contains(e.actor)) {
+        if (e.kind == FactKind::ActionRejected && audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled) {
             // Lifecycle rejections are not autonomous action attempts.
             if (e.outcome != Outcome::InvalidTransition && e.outcome != Outcome::AlreadyDead && e.outcome != Outcome::DeadActor) ++counts.failed_actions;
         }

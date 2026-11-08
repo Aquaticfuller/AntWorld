@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-08: S3 physiology, nutrition and continuous life identity
+
+- Recorded the explicit S2.2 approval and retained its three open scientific validation debts.
+- Froze document 31 before implementation; introduced optional individual physiology with exact integer energy/mass accounting and explicit sinks.
+- Added contact-qualified nutrition, local nursing, automatic egg/larva/pupa/adult transitions and runtime behavior pause/switch/resume.
+- Extended the undo journal and versioned checkpoints (schema 4, physics 6); preserved all 56 older registrations and historical datasets.
+- Added S3 invariant, threshold, corruption, allocation-failure and experiment tests; retained the seed-43 nutrition distribution failure and contact-query scaling debt.
+- S3_RESULTS.md and experiments/s3 contain verification, complete multi-seed evidence and reproduction. Stop before S4 for independent review.
+
 ## 2026-11-08: S2.2 local trail mechanism validation
 
 - Froze a literature-informed protocol before model changes and recorded all 55,296 S2.1 local-assay baseline trials.

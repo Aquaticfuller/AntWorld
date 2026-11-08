@@ -24,8 +24,8 @@ struct WorldSnapshot {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    static constexpr std::uint32_t schema_version = 3;
-    static constexpr std::uint32_t physics_version = 5;
+    static constexpr std::uint32_t schema_version = 4;
+    static constexpr std::uint32_t physics_version = 6;
     static constexpr std::size_t max_records = 65536;
     static constexpr std::size_t max_same_time_events = 1024;
 
@@ -47,6 +47,11 @@ public:
     ScheduledId schedule_lifecycle(AntRef actor, SimTime at, LifeStage stage);
     void configure_surface(const SurfaceConfig&, std::span<const Cell> blocked, const BehaviorConfig& = {});
     void start_foraging(AntRef actor);
+    void enable_physiology(AntRef, const PhysiologySeed& = {}, const PhysiologyConfig& = {});
+    void set_behavior(AntRef, IndividualBehavior);
+    ScheduledId submit_nutrition(const NutritionProposal&);
+    [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
+    [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
 
     [[nodiscard]] WorldSnapshot snapshot() const;
     // Cheap metadata query; hash fields are zero. snapshot() additionally computes audit hashes.
@@ -77,6 +82,14 @@ private:
     void after_action(Transaction&, const ScheduledEvent&, WorldEvent&, const AntState& before);
     void stop_dead_forager(Transaction&, EntityId);
     void maintain_trails(Transaction&, const ScheduledEvent&);
+    void execute_physiology(Transaction&, const ScheduledEvent&);
+    void resolve_nutrition_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    void resolve_nutrition_action(Transaction&, const ScheduledEvent&, WorldEvent&);
+    void continue_nutrition_behavior(Transaction&, const ScheduledEvent&);
+    void schedule_physiology(Transaction&, EntityId);
+    void stop_physiology(Transaction&, EntityId, DeathCause);
+    void synchronize_physiology(Transaction&, EntityId);
+    void validate_nutrition_capacity() const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
 };

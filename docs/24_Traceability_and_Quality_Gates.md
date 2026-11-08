@@ -1,5 +1,7 @@
 # Traceability, quality gates and delivery audit (v0.8)
 
+Current S3 addition: document 31 and S3_RESULTS.md map physiology tests to SCH-05/07/23 and document-21 N1/N2. Raw matrices retain censored non-emergers, capacity controls, reversed submissions and pulse sensitivity. Complete nutrition/energy accounting includes seeded reserves, crop, tissue and explicit sinks. S2.2 has since passed independent review with explicit S3 authorization; scientific debts SD-01/02/03 remain open. S3 does not authorize S4.
+
 ## Requirement -> design -> verification
 
 | Requirement | Design documents | Gate |

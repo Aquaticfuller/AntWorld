@@ -30,6 +30,7 @@ inline FoodMass subtract(FoodMass a, FoodMass b) {
     return {a.carbs_ug-b.carbs_ug, a.protein_ug-b.protein_ug,
         a.water_ug-b.water_ug, a.other_ug-b.other_ug};
 }
+FoodMass portion(FoodMass mass, std::uint64_t amount);
 inline bool finite(PositionM p) { return std::isfinite(p.x) && std::isfinite(p.y) && std::isfinite(p.z); }
 inline bool inside(PositionM p, const WorldConfig& c) {
     return finite(p) && p.x >= c.min_m.x && p.x <= c.max_m.x &&
@@ -172,6 +173,8 @@ struct WorldRuntime::State {
     Edges edges;
     Discoveries discoveries;
     FoodCells food_cells; // Derived local index; never exposed to the individual model.
+    using Physiology = std::map<EntityId, PhysiologyState>;
+    Physiology physiology;
     State(WorldId id, std::uint64_t value, WorldConfig c = {}) : world(id), seed(value), config(c) { m.rng = Rng(value); }
     State(const State&) = delete;
     State& operator=(const State&) = delete;
@@ -202,10 +205,11 @@ public:
     detail::MapJournal<State::Edges> edges;
     detail::MapJournal<State::Discoveries> discoveries;
     detail::MapJournal<State::FoodCells> food_cells;
+    detail::MapJournal<State::Physiology> physiology;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
-        visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells) {}
+        visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology) {}
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
@@ -223,7 +227,7 @@ public:
         s.surface = surface_before;
     }
     void commit() noexcept {
-        committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit();
+        committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }
