@@ -188,7 +188,7 @@ void WorldRuntime::advance_to(SimTime target) {
     while (!s.queue.empty() && s.queue.begin()->first.time <= target) {
         const auto key = s.queue.begin()->first;
         if (key.phase == Phase::Resolution) {
-            std::vector<ScheduledEvent> actions;
+            std::vector<ScheduledEvent> actions(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Resolution) {
                 const auto e = tx.remove(s.queue.begin()->first); tx.executing(e);
                 if (e.kind == ScheduledEvent::Kind::Diagnostic) execute(tx, e); else actions.push_back(e);
@@ -231,13 +231,13 @@ WorldSnapshot WorldRuntime::snapshot() const {
 std::vector<WorldEvent> WorldRuntime::committed_events() const { return state_->journal; }
 std::vector<WorldEvent> WorldRuntime::events_after(EventId cursor, std::size_t limit) const {
     const auto& journal = state_->journal;
-    if (cursor.value >= journal.size()) return {};
+    if (cursor.value >= journal.size()) return std::vector<WorldEvent>(0);
     const auto first = static_cast<std::size_t>(cursor.value);
     const auto count = std::min(limit, journal.size()-first);
     return {journal.begin()+static_cast<std::ptrdiff_t>(first), journal.begin()+static_cast<std::ptrdiff_t>(first+count)};
 }
 std::vector<ScheduledEvent> WorldRuntime::pending_events() const {
-    std::vector<ScheduledEvent> result; result.reserve(state_->queue.size());
+    std::vector<ScheduledEvent> result(0); result.reserve(state_->queue.size());
     for (const auto& [key, e] : state_->queue) { (void)key; result.push_back(e); }
     return result;
 }

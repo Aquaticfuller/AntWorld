@@ -7,7 +7,8 @@ namespace {
 using namespace detail;
 struct Writer {
     std::vector<std::uint8_t> bytes;
-    std::size_t limit{std::numeric_limits<std::size_t>::max()};
+    std::size_t limit;
+    explicit Writer(std::size_t byte_limit = std::numeric_limits<std::size_t>::max()) : bytes(0), limit(byte_limit) {}
     void put(std::uint64_t v, unsigned width = 8) {
         if (width > limit - bytes.size()) throw std::length_error("checkpoint byte host budget exceeded");
         for (unsigned i = 0; i < width; ++i) { bytes.push_back(static_cast<std::uint8_t>(v & 255)); v >>= 8; }
@@ -73,7 +74,7 @@ std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
 } // namespace detail
 
 std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
-    Writer w{{}, byte_limit}; const auto& m = s.m;
+    Writer w(byte_limit); const auto& m = s.m;
     w.put(UINT64_C(0x3254504b435741)); // AWCKPT2, then zero.
     w.put(schema_version, 4); w.put(physics_version, 4); w.put(1, 4); // SplitMix64 v1.
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);

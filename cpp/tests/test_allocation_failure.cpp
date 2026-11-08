@@ -1,5 +1,7 @@
 #include "antworld/core/world_runtime.hpp"
 #include <cstdlib>
+#include <cstdio>
+#include <exception>
 #include <iostream>
 #include <new>
 #include <stdexcept>
@@ -8,6 +10,8 @@
 // enabled. Verification and rollback comparisons run after it is disabled.
 namespace {
 long remaining = -1;
+const char* current_scenario = "setup";
+long current_fault = -1;
 void* allocate(std::size_t bytes) {
     if (remaining == 0) throw std::bad_alloc{};
     if (remaining > 0) --remaining;
@@ -25,9 +29,10 @@ void operator delete[](void* p, std::size_t) noexcept { std::free(p); }
 using namespace antworld;
 namespace {
 template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn action) {
+    current_scenario = name;
     const auto before = world.checkpoint();
     for (long fault = 0; fault < 2000; ++fault) {
-        world.restore(before); remaining = fault;
+        world.restore(before); current_fault = fault; remaining = fault;
         bool failed = false;
         try { action(); } catch (const std::bad_alloc&) { failed = true; }
         catch (...) { remaining = -1; throw; }
@@ -43,6 +48,12 @@ template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn acti
 }
 } // namespace
 int main() {
+    // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
+    std::set_terminate([] {
+        remaining = -1;
+        std::fprintf(stderr, "Unexpected terminate: scenario=%s allocation=%ld\n", current_scenario, current_fault);
+        std::_Exit(86);
+    });
     try {
         // ENGINEERING_FIXTURE: no biological parameter is inferred here.
         WorldRuntime world({1, 2}, 12345); const auto colony = world.seed_colony();

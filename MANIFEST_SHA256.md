@@ -39,7 +39,7 @@ Files: 39 (excluding the manifest itself).
 | `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
 | `docs/24_Traceability_and_Quality_Gates.md` | `efcb72e6c36c6a6b5655ebe32d996dd3360fba1a099ffd3175ff2ef2285d21e4` | 3856 |
 | `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
-| `docs/26_S1_Implementation_Decisions.md` | `d5586cf0ba1a95c713cebd50b5e7e22360ec70f17ee75724165a1348d3ab7942` | 12337 |
+| `docs/26_S1_Implementation_Decisions.md` | `886c2644eff9e5307a37ac8ad2510c041e0940a0f1c75da0c531964349c91782` | 12976 |
 | `docs/CHANGELOG.md` | `577276eb164f7766278a599ec861a69a2225cec63ff239df7c4022b920642381` | 4046 |
 | `README_HANDOFF.md` | `546f177b8f6c27f2b4d0a2568f1a7914fbc10da4ca398d09e90c81fb143a3144` | 1934 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

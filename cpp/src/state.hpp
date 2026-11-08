@@ -51,10 +51,12 @@ struct AntStore {
     struct Identity { EntityId id; ColonyId colony; SimTime born; Caste caste; };
     struct Spatial { PositionM position; std::uint64_t revision; };
     struct Inventory { std::uint64_t capacity; FoodMass mass; };
-    std::vector<Identity> identities;
-    std::vector<LifeStage> stages;
-    std::vector<Spatial> spatial;
-    std::vector<Inventory> inventories;
+    // Use the throwing count constructor: MSVC Debug allocates iterator proxies
+    // even for empty vectors, but its default constructor is noexcept.
+    std::vector<Identity> identities = std::vector<Identity>(0);
+    std::vector<LifeStage> stages = std::vector<LifeStage>(0);
+    std::vector<Spatial> spatial = std::vector<Spatial>(0);
+    std::vector<Inventory> inventories = std::vector<Inventory>(0);
     std::map<EntityId, std::size_t> index;
     std::size_t size() const { return identities.size(); }
     AntState get(std::size_t i) const {
@@ -82,7 +84,7 @@ struct AntStore {
     }
 };
 template <typename IdType, typename Row> struct Store {
-    std::vector<Row> rows;
+    std::vector<Row> rows = std::vector<Row>(0);
     std::map<IdType, std::size_t> index;
     void append(Row row) {
         if (rows.size() == rows.capacity()) rows.reserve(std::max<std::size_t>(8, rows.size()*2+1));
@@ -114,7 +116,7 @@ struct WorldRuntime::State {
     using QueueIndex = std::map<ScheduledId, EventKey>;
     Queue queue;
     QueueIndex queue_index;
-    std::vector<WorldEvent> journal;
+    std::vector<WorldEvent> journal = std::vector<WorldEvent>(0);
     detail::AntStore ants;
     detail::Store<ColonyId, Colony> colonies;
     detail::Store<ResourceId, FoodSource> foods;
@@ -135,9 +137,9 @@ class WorldRuntime::Transaction {
     const RuntimeLimits& limits;
     State::Metadata before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
-    std::vector<QueueUndo> queue_undo;
-    std::vector<std::pair<std::size_t, AntState>> ant_undo;
-    std::vector<std::pair<std::size_t, FoodSource>> food_undo;
+    std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
+    std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
+    std::vector<std::pair<std::size_t, FoodSource>> food_undo = std::vector<std::pair<std::size_t, FoodSource>>(0);
     bool committed{};
 public:
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m),
