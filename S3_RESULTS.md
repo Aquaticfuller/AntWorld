@@ -2,7 +2,7 @@
 
 Acceptance: **CONDITIONAL PASS**, subject to independent Code Review. Implemented mechanism invariants pass local verification; biological calibration, surplus nutrition redistribution and dense contact-query scaling remain open. S4 has not been started and is not authorized.
 
-Branch: codex/s3-physiology. Approved parent: 18b0c9f5d5b5d60504a48ac193dce53c59f001d0. The implementation protocol was frozen in abe846e before changing the core. All previous reports, raw data and 56 CTest registrations are retained. Every biological parameter remains **ENGINEERING_FIXTURE**.
+Branch: codex/s3-physiology. Approved parent: 18b0c9f5d5b5d60504a48ac193dce53c59f001d0. The implementation protocol was frozen in abe846e before changing the core. Final tested C++ source: 2acf069f50a5f019ed364634d2eef75429b10a3b. All previous reports, raw data and 56 CTest registrations are retained. Every biological parameter remains **ENGINEERING_FIXTURE**.
 
 ## Implemented behavior and accounting
 
@@ -30,22 +30,24 @@ Local environment: Windows 10.0.26200 x64, Intel Core i7-13620H; pinned LLVM-Min
 
 | Check | Status / evidence |
 |---|---|
-| Debug | PASS: 71/71, 27.17 s |
-| Release | PASS: 71/71, 6.55 s |
-| ASan/UBSan | PASS: 71/71, 54.49 s, no findings |
-| GitHub Actions | NOT RUN on the final S3 commit yet; required before delivery |
+| Debug | PASS: 71/71, 20.61 s |
+| Release | PASS: 71/71, 4.52 s |
+| ASan/UBSan | PASS: 71/71, 105.20 s, no findings |
+| GitHub Actions | PASS: all five jobs on tested source 2acf069; Windows MSVC Debug/Release, Ubuntu GCC Debug/Release, Ubuntu Clang ASan/UBSan with leak detection. [Verified run](https://github.com/Aquaticfuller/AntWorld/actions/runs/42507846473) |
 | Multi-seed experiment | PASS: 1,536 runs, 5,376 individual records, all 64 prescribed seeds |
 | Mass, energy, partition equivalence | PASS in every run; exact integer balances and matching checkpoints |
 | Semantic corruption | PASS: re-signed malformed physiological fields rejected without changing live state |
 | Allocation failures | PASS: ten S3 sweeps, 6/10/3/7/11/9/11/77/7/7 allocation points in Release |
 | Performance | PASS measured fixtures; dense nursing scaling limitation retained below |
-| Clean source reproduction | PASS: clean export of 81a1b1531e2205d59710ff65f7e29b66d57e6c26, 71/71 tests (5.99 s), all three raw artifacts identical across 1,536 reruns |
+| Clean source reproduction | PASS: clean export of 2acf069f50a5f019ed364634d2eef75429b10a3b, 71/71 tests (6.13 s), all three raw artifacts identical across 1,536 reruns |
 
 S3 tests: INITIALIZATION, INTEGRATION, EXCHANGE, CONSTRAINTS, INGESTION, THRESHOLDS, LIFECYCLE, BEHAVIOR, REPLAY, ROLLBACK, LOCALITY, CORRUPTION, ALLOCATION_LIMIT, ALLOCATION_FAILURE, EXPERIMENT_SMOKE. They cover SCH-05/07/23, document-21 N1/N2, death-before-action ordering, whole-advance rollback and allocation failure. ALLOCATION_LIMIT retains the observed negative nutrition result; it does not assert biological adequacy. Existing S0-S2.2 tests retain their original names and mechanism assertions.
 
 The first Linux CI evidence audit failed because the generated hash manifest used platform-native path separators. Windows audits and Clang sanitizer tests passed. Added bounded public audit diagnostics, identified the exact stale file, and changed only manifest keys to portable POSIX paths. Original CSV bytes and C++ model outcomes were unchanged; the failure is retained here rather than reported as an uninterrupted CI pass.
 
 After that audit fix, GCC rejected two compact loop/follow-up lines in the new experiment/test code under `-Werror=misleading-indentation`. Added explicit braces and separate follow-up statements; execution semantics and model parameters are unchanged. Compiler warnings remain errors.
+
+Both issues are resolved in the successful run linked above. Local tests were rerun after the final source formatting change; sanitizer wall time includes contention from concurrent clean builds and is not a performance benchmark. The final raw reproduction hashes match the initial implementation exactly. Repository language/manifest checks passed; the new PNG and metadata were visually checked in English.
 
 ## Complete experimental evidence
 
@@ -103,3 +105,5 @@ python tools/check_repository.py
 ```
 
 See experiments/s3/README.md for pinned plot dependencies, file definitions and portable CMake commands. Independent review must decide the next gate. Development stops at S3.
+
+The clean-source check exported only committed cpp/ and scenarios/ using `git archive`, configured a new Release build directory with the pinned toolchain, executed all 71 CTest registrations, then ran `antworld_s3_experiment out/s3-clean-final-reproduction 64`. `python tools/verify_s3_reproduction.py out/s3-clean-final-reproduction --source-commit 2acf069f50a5f019ed364634d2eef75429b10a3b` produced the committed reproduction.json. No prior build cache or untracked source was included.
