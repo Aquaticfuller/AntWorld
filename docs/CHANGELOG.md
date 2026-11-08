@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-08: S5 durable saves, history and analytics
+
+- Recorded conditional S4 approval, TD-03/04/05 and SD-06 before implementation; retained SD-04 and TD-01 deadlines.
+- Froze document 33, added a pinned application-layer SQLite store with atomic generations, evidence reconciliation, crash/I/O recovery and exact world-qualified identities.
+- Added schema-6 command receipts, a minimal typed durable placement transaction and archive CLI; physics remains 7 and no biological coefficient changed.
+- Defined 60 gauges/flows with explicit units, coverage and evidence; added sampled series, exact minute aggregates and indexed history queries.
+- Preserved all authoritative geometry history while reducing only superseded identical boxes in a derived index. Retained the slow pre-fix history-query data.
+- Preserved 89 tests and all older evidence; added 19 tests, 128 multi-seed persistence runs, 1,000/5,000/10,000-edit measurements and a 365-day diagnostic storage workload. S5_RESULTS.md documents actual outcomes and limits. Stop before S6 for independent review.
+
 ## 2026-11-08: S3 physiology, nutrition and continuous life identity
 
 - Recorded the explicit S2.2 approval and retained its three open scientific validation debts.

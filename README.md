@@ -1,10 +1,10 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S4 3D excavation and connectivity**: ordered parametric box edits, exact soil inventories, conservative 3D clearance, versioned local portals, barrier-aware contact and disposable SDF caches. See [S4 results](S4_RESULTS.md), [frozen protocol](docs/32_S4_Implementation_and_Validation.md) and [reproduction](experiments/s4/README.md). All S0-S3 mechanisms, 71 inherited tests and original evidence remain. Long-distance trail following, social recruitment, nutrition redistribution and dense-contact scaling remain open in [document 08](docs/08_Open_Questions.md). S5 is not authorized.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S5 durable saves, history and analytics**: atomic SQLite generations, validated recovery, factual event and individual histories, exact metric definitions and indexed time-window queries. See [S5 results](S5_RESULTS.md), [frozen protocol](docs/33_S5_Persistence_History_and_Validation.md), [metric definitions](docs/34_S5_Metric_Definitions.md) and [reproduction](experiments/s5/README.md). All 89 S0-S4 tests and historical evidence remain, with 19 added tests. Biological validation and scaling debts remain open in [document 08](docs/08_Open_Questions.md). S6 is not authorized.
 
 ## Build and test on Windows x64
 
-The portable toolchain lives under ignored `.tools/`; no global installation or persistent PATH changes are required. Bootstrap downloads fixed official releases and verifies SHA-256. Subsequent builds work offline.
+The portable toolchain lives under ignored `.tools/`; no global installation or persistent PATH changes are required. Bootstrap downloads fixed official releases and verifies SHA-256. The default S5 application build also fetches a pinned SQLite amalgamation on first configuration; see the offline option below.
 
 ```powershell
 ./tools/bootstrap_windows.ps1
@@ -26,6 +26,10 @@ python tools/analyze_s3.py --check
 ./build/release/antworld_s4_experiment.exe out/s4-reproduction 32
 python tools/analyze_s4.py --check
 ./build/release/antworld_s4_benchmark.exe out/s4-performance.csv
+./build/release/antworld_s5_experiment.exe out/s5-experiments 32
+python tools/analyze_s5.py --check
+./build/release/antworld_archive.exe create out/world.sqlite scenarios/p0_smoke.json
+./build/release/antworld_archive.exe inspect out/world.sqlite 381b1f47-91b8-4b2d-9d51-967a3e2b2a01
 ```
 
 Normal LLVM-MinGW builds link their C++ runtime statically, so the executable can run without the compiler directory on PATH. `--help` lists options. `--diagnostic-events 8` optionally schedules eight explicitly synthetic infrastructure events that draw RNG values at milliseconds 1 through 8. This does not simulate ants.
@@ -34,7 +38,7 @@ The diagnostic CLI keeps the S0 empty-scenario profile; `--advance-ms` overrides
 
 ## Other C++20 environments
 
-The core and CLI depend only on the standard library. No dependency download occurs during CMake configure/build.
+The core and diagnostic CLI depend only on the standard library. The independent `antworld_storage` application library uses SQLite 3.54.1, pinned by archive SHA-256. A normal first configure downloads that archive from sqlite.org. `-DANTWORLD_SQLITE_ARCHIVE=/path/to/sqlite-amalgamation-3540100.zip` uses a verified local copy; `-DANTWORLD_STORAGE=OFF` builds the core without SQLite or a dependency download.
 
 ```sh
 cmake -S cpp -B build -DCMAKE_BUILD_TYPE=Debug
@@ -42,7 +46,31 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S4_RESULTS.md](S4_RESULTS.md); earlier reports preserve their historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S5_RESULTS.md](S5_RESULTS.md); earlier reports preserve their historical baselines.
+
+## Minimal S5 persistence use
+
+```cpp
+#include "antworld/storage/store.hpp"
+using namespace antworld;
+WorldRuntime world({1, 2}, 1); // ENGINEERING_FIXTURE world and seed.
+auto colony = world.seed_colony();
+auto worker = world.seed_ant(colony, {});
+storage::Store archive("world.sqlite");
+auto token = archive.save(world); // Returns only after the atomic commit.
+world.advance_to({1000});
+token = archive.save(world, token); // Rejects stale writers or a divergent timeline.
+auto recovered = archive.load(world.summary().world);
+auto coverage = archive.coverage(recovered.token.world);
+auto facts = archive.history({recovered.token.world});
+auto individual = archive.individual(worker);
+auto observations = archive.series(recovered.token.world, colony.id,
+    storage::Metric::WorkerAlive, {0}, {1001});
+```
+
+Link `antworld_storage`; the core itself never opens a database. The application owns one writer and calls save only at committed boundaries. Default retention keeps two complete checkpoint generations and all factual history, observations and receipts. A COMMIT I/O error raises `RecoveryRequired`: reopen and recover before further writes because the outcome may be a complete old or complete new generation. Queries expose durable coverage; gauges are sampled states and flows use half-open windows. Units and evidence semantics are defined in document 34.
+
+`antworld_archive create`, `advance` and `inspect` provide a durable command-line workflow. Creation uses the existing empty-world JSON scenario profile; populated experiments use the C++ API. SQLite WAL files belong to an active database; use a closed/checkpointed database or a SQLite-aware backup, not a live main-file-only copy. Storage is local to one host. Physical power-loss testing, asynchronous save orchestration and long-term evidence pruning remain future work.
 
 ## Minimal S4 geometry use
 
@@ -125,15 +153,17 @@ Every numeric fixture is engineering-only. A proposal is pending until advance c
 
 - `cpp/include/antworld/core/`: typed IDs/time, entities, proposals/facts, RNG and the world owner.
 - `cpp/src/`: deterministic scheduling, validated mutation and versioned checkpoint codec.
+- `cpp/storage/`: separate SQLite persistence, historical evidence and defined analytics.
 - `cpp/apps/`: diagnostic CLI/parser, S2 experiments and scheduler/entity/active-forager benchmarks.
 - `cpp/tests/`: retained T00-T13 and S1 invariants, plus S2 local behavior, corruption and allocation-failure regression tests.
 - `experiments/s2/`: complete seed/treatment CSVs and reproducible analysis.
 - `experiments/s2_1/`: frozen baseline, matched recruitment/decay controls, retained ablations, uncertainty tables and figures.
+- `experiments/s5/`: all 128 durable comparisons, complete storage/performance matrices, provenance, plots and reproduction records.
 - `docs/`: English product design, contracts, historical context and implementation decisions.
 - `scenarios/`, `schemas/`: original engineering fixtures and the broader P0 schema.
 - `contracts/`: future C ABI draft, not an implemented native plugin.
 
-All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 5 / physics 7 checkpoints retain entities, nutrition, lifecycle, clock/RNG, phase watermark, surface behavior and trails, plus initial geometry, ordered edits, material provenance/parcels, ledgers, soil requests and excavation memory/schedules. Derived indices rebuild on load; SDF warmness is not authoritative. Earlier schema/physics versions are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets, including geometry partition, index, cache and navigation limits. Record/event/save defaults are configurable, not permanent game/format constraints. Long-world history retention and geometry compaction remain later work.
+Core runtime mutations use an undo-journal single-writer transaction. Failed mutations/loads leave prior authority unchanged. Schema 6 / physics 7 checkpoints retain entities, nutrition, lifecycle, clock/RNG, phase watermark, surface behavior and trails, plus initial geometry, ordered edits, material provenance/parcels, ledgers, soil requests, excavation memory/schedules and the typed command receipt ledger. The explicit durable-command helper uses a separate application-owned checkpoint candidate and publishes it only after successful persistence. Derived indices rebuild on load; SDF warmness is not authoritative. Earlier schemas are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets, including geometry partition, index, cache and navigation limits. Record/event/save defaults are configurable, not permanent game/format constraints. Every authoritative geometry edit remains; only superseded identical boxes are omitted from a disposable query index. General history compaction and bounded long-world evidence retention remain open.
 
 ## Verification and repository policy
 
@@ -149,11 +179,12 @@ python tools/analyze_s2_1.py --check
 python tools/analyze_s2_2.py --check
 python tools/analyze_s3.py --check
 python tools/analyze_s4.py --check
+python tools/analyze_s5.py --check
 ```
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.
 
-Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `antworld_s3_benchmark` measures active physiology/nursing; `antworld_s4_benchmark` measures geometry commits, exact queries, SDF, navigation, saves and local/dense neighborhoods. These fixtures do not establish full-colony or whole-map performance. Stop after S4 and obtain the next review before starting S5.
+Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `antworld_s3_benchmark` measures active physiology/nursing; `antworld_s4_benchmark` measures geometry commits, exact queries, SDF, navigation, saves and local/dense neighborhoods. S5 benchmarks measure durable geometry histories and a diagnostic storage clock. These fixtures do not establish full-colony or whole-map performance. Stop after S5 and obtain independent review before starting S6.
 
 ## License
 

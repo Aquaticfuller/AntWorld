@@ -1,0 +1,18 @@
+{
+  "os": "Windows 11 Home, build 10.0.26200, x64",
+  "cpu": "Intel Core i7-13620H",
+  "physical_cores": 10,
+  "logical_processors": 16,
+  "physical_memory_bytes": 16890519552,
+  "compiler": "LLVM-MinGW 20261104, Clang 23.1.5, UCRT x86_64",
+  "cmake": "3.31.10",
+  "ninja": "1.13.2",
+  "python": "3.12.14",
+  "sqlite": "3.54.1",
+  "sqlite_sha256": "0a9c8e34352dad46006aa82836d5383bff9dc6bc9ce5a60553c05aa30e6ad1f9",
+  "cache_condition": "Warm operating-system cache; no manual cache flush; serial performance runs without concurrent builds",
+  "timing": "steady_clock wall time; 10 repetitions per geometry case, none excluded",
+  "memory": "Windows current WorkingSetSize and whole-process PeakWorkingSetSize; separate process per condition/count; sqlite3_memory_used is current global allocator usage",
+  "storage": "Local Windows filesystem; main + WAL + SHM bytes; no physical power-loss experiment",
+  "biological_parameters": "ENGINEERING_FIXTURE; no calibration changes"
+}

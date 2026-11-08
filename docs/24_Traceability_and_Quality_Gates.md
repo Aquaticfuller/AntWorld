@@ -1,6 +1,6 @@
 # Traceability, quality gates and delivery audit (v0.8)
 
-Current S3 addition: document 31 and S3_RESULTS.md map physiology tests to SCH-05/07/23 and document-21 N1/N2. Raw matrices retain censored non-emergers, capacity controls, reversed submissions and pulse sensitivity. Complete nutrition/energy accounting includes seeded reserves, crop, tissue and explicit sinks. S2.2 has since passed independent review with explicit S3 authorization; scientific debts SD-01/02/03 remain open. S3 does not authorize S4.
+Current gate: S4 received CONDITIONAL PASS with explicit S5 authorization. Documents 33/34 and S5_RESULTS.md map durable generation recovery, identity/evidence, command idempotency and analytics to SCH-10/17/19/20/21/25/27. All 89 inherited tests and historical archives remain; 19 added registrations bring the suite to 108. Physics remains 7; schema 6 adds receipts. S5 does not authorize S6.
 
 ## Requirement -> design -> verification
 
@@ -53,3 +53,7 @@ S2 evidence belongs in S2_RESULTS.md and experiments/s2/. Document 27 maps local
 S2.1 adds document 28, S2_1_RESULTS.md and S2_1_EXPERIMENTS.csv. Distinguish tested choice/field correctness from a demonstrated social recruitment benefit. Matched naive-worker trials retain non-discoverers, control training state and decay age, and estimate paired uncertainty with seed clusters. Numerical fixes or visible trails alone do not establish biological recruitment or authorize S3.
 
 S2.2 adds documents 29/30 and S2_2_RESULTS.md. Five new registrations cover local recovery eligibility, priority/visibility, mirrored junction geometry, deterministic continuous policy trajectories, blind controls, integrated resource/checkpoint continuation, and the new experiment runner. Its local assays use controlled detached substrates, not fabricated world deposits. Retain and compare the original real-deposit social experiment and broad ablations. Local following, initial departure, correction, movement costs and colony recruitment are separate endpoints; no positive local result authorizes S3.
+
+S3 and S4 evidence remains in their original reports and archives. S5 reruns the entire 1,536-run S3 and 160-run S4 matrices; every semantic result agrees, including seed 43. Only the declared schema-size delta (+8 empty receipt-count bytes) and the already recorded S3 physics-version label differ. All geometry edits and trajectories remain identical.
+
+S5's test-to-contract mapping is in S5_RESULTS.md. SCH-25 tests actual process crashes and SQLite write/sync failures with an application-owned synchronous store; asynchronous worker orchestration and physical power loss are not claimed. SCH-19 applies to implemented future work, not unimplemented laying/weather. SCH-10 exercises a typed durable command without a Game Master. The 365-day diagnostic storage clock is not SCH-30 ecological validation. Metric definitions distinguish seeded identities, life events, sampled gauges, covered event flows and undefined trip success.

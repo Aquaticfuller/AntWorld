@@ -41,6 +41,11 @@ jobs:
         run: |
           ./build/ci/antworld_s4_experiment build/ci/s4-experiments 32
           python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --checkpoint-byte-delta 8 --report build/ci/s4-reproduction.json
+      - name: Reproduce all S5 seeds (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s5_experiment build/ci/s5-experiments 32
+          python tools/verify_s5_reproduction.py build/ci/s5-experiments --source-commit "$GITHUB_SHA" --report build/ci/s5-reproduction.json
 
   sanitizers:
     runs-on: ubuntu-24.04

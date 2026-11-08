@@ -13,7 +13,7 @@ This repository begins with a complete design baseline and engineering specifica
 
 ## Workflow
 
-Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user conditionally accepted S3 and authorized S4 excavation and connectivity. Read S4_RESULTS.md and document 32 for current evidence and decisions; preserve the S2/S3 scientific and technical debts in document 08. Preserve every earlier report and raw dataset as historical context. S4 is implemented for independent review. Stop before S5 until explicitly authorized.
+Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user conditionally accepted S4 and authorized S5 durable saves, history and analytics. Read S5_RESULTS.md and documents 33/34 for evidence, decisions and metric definitions. Preserve every earlier report, raw dataset and the scientific/technical debts in document 08. S5 is implemented for independent review. Stop before S6 until explicitly authorized.
 
 ## Unfinished research and implementation
 

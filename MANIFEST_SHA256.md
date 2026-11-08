@@ -21,7 +21,7 @@ Files: 47 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `458835378c58700f382f15e23cf7a18481936513ec624070dd620ec6ffa4b156` | 13097 |
+| `docs/08_Open_Questions.md` | `81ed8859a41eef49e51120da5ef69dfdceb687ed0e3d0f561b729a13d4d606f6` | 15433 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -37,7 +37,7 @@ Files: 47 (excluding the manifest itself).
 | `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `c9255d057e3e31e8423d0424b71a6f27c4b52fc836e7d4672cac3a7f8dbf200b` | 5069 |
 | `docs/22_Development_Roadmap_and_Execution_Gates.md` | `0d576fa07323ebf1b08379954fa04f3adb132cf2580a490c9ebbb5e7981fc727` | 4624 |
 | `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
-| `docs/24_Traceability_and_Quality_Gates.md` | `112b615e0ddc6b7543cf01858008157199a2d065d2762ad461f4e566a9c3b455` | 5778 |
+| `docs/24_Traceability_and_Quality_Gates.md` | `c736fc7ba6374203c6a0b53bb2b531838cdd5eabe570714a0d0602b58081bd8b` | 6655 |
 | `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
 | `docs/26_S1_Implementation_Decisions.md` | `6f850eb5d771ae049489efc2c16a45745e368fc030ef6b9e1900f4f1cae7e043` | 13244 |
 | `docs/27_S2_Implementation_Decisions.md` | `891775b659e5d0b29a04203528438134de6e2b3f4f24da971f4825f2022ac524` | 14030 |
@@ -48,8 +48,8 @@ Files: 47 (excluding the manifest itself).
 | `docs/32_S4_Implementation_and_Validation.md` | `2ce58875b9d6edca61d85f4898abf67d9365808909a7cc39930220c9bf2074c2` | 8082 |
 | `docs/33_S5_Persistence_History_and_Validation.md` | `21e99d1b239c384eb96957667245de9e9837b3a19b254b15221d89f3aaaacc9f` | 9610 |
 | `docs/34_S5_Metric_Definitions.md` | `73419ce0e2d95f11f46c01de2017853f288de535db22ee730f08612afd45ea4d` | 7405 |
-| `docs/CHANGELOG.md` | `103aaa654629b8f6fedfb7e608d4221a5e9f34d6c77a469a9cb9c028ace425fb` | 7581 |
-| `README_HANDOFF.md` | `81db5802a32a7506d6861c90c139bc2247b7349c7bf8c35e06b7aca24e7f0e70` | 2083 |
+| `docs/CHANGELOG.md` | `bb244da3d51cf87ba46b899e6fbe0dd425d38b77a18a4373c3124ca162d96016` | 8654 |
+| `README_HANDOFF.md` | `e47f888acff47956ceb89b9876de18db27bab6e8c5130f3dcbdbc1a505387727` | 2067 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |

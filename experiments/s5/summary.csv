@@ -1,0 +1,17 @@
+scenario,metric,independent_seeds,mean,ci95_low,ci95_high
+physiology,adult_workers,32,6,6.0,6.0
+physiology,larvae,32,0,0.0,0.0
+physiology,deaths,32,0,0.0,0.0
+physiology,emergences,32,4,4.0,4.0
+physiology,internal_transfer_ug,32,993.75,981.25,1000.0
+physiology,geometry_edits,32,0,0.0,0.0
+physiology,excavated_q3,32,0,0.0,0.0
+physiology,deposited_q3,32,0,0.0,0.0
+excavation,adult_workers,32,1,1.0,1.0
+excavation,larvae,32,0,0.0,0.0
+excavation,deaths,32,0,0.0,0.0
+excavation,emergences,32,0,0.0,0.0
+excavation,internal_transfer_ug,32,0,0.0,0.0
+excavation,geometry_edits,32,5.25,4.875,5.65625
+excavation,excavated_q3,32,76.34375,73.28125,79.375
+excavation,deposited_q3,32,68.96875,65.46875,72.59375

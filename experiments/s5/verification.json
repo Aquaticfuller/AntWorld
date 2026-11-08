@@ -1,0 +1,72 @@
+{
+  "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da",
+  "local_builds": [
+    {
+      "configuration": "Debug",
+      "tests": 108,
+      "passed": 108,
+      "failed": 0,
+      "total_ctest_seconds": 32.89,
+      "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da"
+    },
+    {
+      "configuration": "Release",
+      "tests": 108,
+      "passed": 108,
+      "failed": 0,
+      "total_ctest_seconds": 9.71,
+      "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da"
+    },
+    {
+      "configuration": "ASan_UBSan",
+      "tests": 108,
+      "passed": 108,
+      "failed": 0,
+      "total_ctest_seconds": 117.5,
+      "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da"
+    },
+    {
+      "configuration": "Clean_Release",
+      "tests": 108,
+      "passed": 108,
+      "failed": 0,
+      "total_ctest_seconds": 14.19,
+      "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da"
+    },
+    {
+      "configuration": "Core_only_Release",
+      "tests": 90,
+      "passed": 90,
+      "failed": 0,
+      "total_ctest_seconds": 7.03,
+      "source_commit": "fe4466cb09e913f4c4fe7863a0c5fd84eecf21da"
+    }
+  ],
+  "io_failure_positions": {
+    "write": 75,
+    "sync": 2
+  },
+  "crash_boundaries": [
+    "before transaction",
+    "after checkpoint insertion",
+    "after history insertion",
+    "before COMMIT",
+    "after COMMIT",
+    "during WAL xWrite"
+  ],
+  "github_source_ci": {
+    "run_id": 42521726576,
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42521726576",
+    "jobs": {
+      "Ubuntu Debug": "success",
+      "Ubuntu Release": "success",
+      "Windows Debug": "success",
+      "Windows Release": "success",
+      "Clang ASan/UBSan": "success"
+    }
+  },
+  "physical_power_loss": "NOT RUN",
+  "ecological_year": "NOT RUN; diagnostic storage clock only",
+  "earlier_artifacts": "Preserved unchanged; full S3/S4 reproduction recorded separately",
+  "test_rows_sha256": "fc1516ad6fa4e460545dca56eca48106716f931693b8ee3bd64c1fcbcc9ba6ef"
+}

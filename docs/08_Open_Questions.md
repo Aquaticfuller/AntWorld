@@ -16,7 +16,7 @@ Evidence: S2_2_RESULTS.md, documents 29/30 and the unchanged experiments/s2_2 ar
 
 S3 independent review: CONDITIONAL PASS, with explicit permission to start S4. **SD-04 must be experimentally validated no later than S6**, using local demand sensitivity and surplus recirculation, never global nutrition averaging. **TD-01 must be resolved before S6 scale testing**; S4 must provide a general neighborhood-query boundary suitable for an index rather than bake a full-population scan into each behavior.
 
-**TD-02: 3D contact through solid barriers — mandatory S4 gate.** Implemented and covered by S4_CONTACT, S4_SURFACE_BARRIER, S4_CONNECTIVITY and S4_FILL_NAVIGATION, pending independent review. Geometry-enabled contacts, food/nest access, sensing and motion use authoritative solid barriers; historical validation uses the geometry at the fact's time. Tests cover nearby individuals separated by a wall, actual excavation of an opening, refilling, and pending interactions invalidated before commit. The conservative contact envelope has a minimum half extent of one coordinate quantum; it may reject a physically possible narrow/diagonal contact. No point ray may silently bypass this constraint.
+**TD-02: 3D contact through solid barriers — mandatory S4 gate.** Implemented and covered by S4_CONTACT, S4_SURFACE_BARRIER, S4_CONNECTIVITY and S4_FILL_NAVIGATION, accepted in the conditional S4 review. Geometry-enabled contacts, food/nest access, sensing and motion use authoritative solid barriers; historical validation uses the geometry at the fact's time. Tests cover nearby individuals separated by a wall, actual excavation of an opening, refilling, and pending interactions invalidated before commit. The conservative contact envelope has a minimum half extent of one coordinate quantum; it may reject a physically possible narrow/diagonal contact. No point ray may silently bypass this constraint.
 
 | ID | Status | Evidence / next review question |
 |---|---|---|
@@ -30,7 +30,7 @@ S4 independent Code Review: CONDITIONAL PASS, with explicit S5 authorization. TD
 
 | ID | Status | Evidence / next review question |
 |---|---|---|
-| TD-03 | OPEN; mandatory S5 measurement | S4 alternating-patch restoration is 4.23 ms at 200 edits and 131.26 ms at 1,000. S5 must measure 1,000/5,000/10,000 edits: checkpoint/database size, serialization, durable write, restoration and memory. Any acceleration/checkpoint/compaction must retain ordered parametric authority, historical evidence and deterministic continuation. |
+| TD-03 | PARTIALLY ADDRESSED in S5; general history remains OPEN | Required 1,000/5,000/10,000-edit size/write/restore/memory matrix completed (10 repetitions, repeated and interleaved patches). A derived identical-box index reduces the matched 1,000-edit S4 restore median from 131.057 to 2.899 ms; every authoritative edit and fact remains. The new 10,000-edit fixture restores core state in 31.969/34.843 ms and validated durable state in 160.148/161.730 ms. First saves still cost 930.002/906.757 ms; exact checkpoints are 3,456,572 bytes. This is not general compaction: distinct-shape histories, full journal retention and synchronous save latency still grow. See S5_RESULTS.md and complete raw timing/size/memory evidence. |
 | TD-04 | OPEN | S4 uses axis-aligned boxes on a 0.5 mm fixture quantum, cubic body/load/reach envelopes and bounded six-neighbor 3D navigation. Local portals carry source revisions, but persistent chamber/portal semantic identity and lineage are not implemented. Curved tools, orientation-dependent clearance, heterogeneous soil, compaction ratios, granular piles, collapse, climate and meshes remain future work under their respective gates. |
 | SD-06 | OPEN | The excavation loop chooses local frontiers/steps and returns along experienced traces to a known depot. It establishes actual removal and transport under a declared fixture, not a calibrated Lasius niger nest-building model. No global blueprint, food coordinates, climate mechanism or pheromone retuning was introduced. S2 long-distance following/recruitment and S3 nutrition redistribution remain open. |
 | TD-05 | OPEN; S7 Geometry Dirty API | Resident SDF-cache invalidation is not a complete geometry-change stream. S7 requires a separate versioned geometry notification interface with changed bounds, source versions and cursor/gap semantics, including edits where no cache brick exists. |
@@ -38,6 +38,17 @@ S4 independent Code Review: CONDITIONAL PASS, with explicit S5 authorization. TD
 SD-06 closure requires separately reviewed biological validation of colony demand, brood, temperature/moisture and spatial chamber organization. TD-04's boxes and six-axis paths do not establish realistic nest morphology; complex tunnels, chambers, pile collisions and semantic region identity remain later work. TD-01's dense co-location cost remains due before S6 scale tests.
 
 S4 evidence: S4_RESULTS.md and experiments/s4. All S0-S3 reports and raw archives remain unchanged. The S3 1,536-run matrix was rerun under physics 7 and matches every original biological metric (including seed 43), excluding the intentional version label.
+
+## S5 storage and analytics debt
+
+S5 implementation and engineering evidence are submitted for independent review; no S6 approval is inferred. Document 33 was frozen before changes. The core remains storage-independent and physics stays 7. All 89 inherited tests and earlier raw archives remain. The complete S3 matrix still retains seed 43's failed fourth emergence; the S5 seed-1..32 persistence subset does not close SD-04.
+
+| ID | Status | Evidence / next review question |
+|---|---|---|
+| TD-06 | OPEN; long-term storage budgets | Two complete checkpoint generations are retained by default, but factual events, raw observations and exact flow/bucket evidence are retained without pruning and the core still holds its full journal. At 36,502 diagnostic facts the database + WAL + SHM is 69,700,800 bytes. Define evidence-preserving archival/rollup, application save cadence and measured month-scale ecological memory budgets before claiming indefinite low-memory operation. Do not delete history or silently substitute aggregates for facts. |
+| TD-07 | OPEN; broader durability/platform validation | Process termination, partial WAL writes and injected write/sync failures pass. Physical power cuts, faulty device caches, network filesystems, background save orchestration and authenticated archives are not tested/implemented. SQLite FULL relies on synchronization being honored; use local same-host WAL storage. FNV hashes are accidental-corruption checks only. Older checkpoint-schema migration remains explicit future work. |
+
+S5 indexed time queries fix the measured current-day history scan (day 365: 15.699 to 0.378 ms); both raw runs remain. This does not resolve TD-01 dense contacts, TD-04 shape/semantic-region limits or TD-05's S7 versioned geometry notification API. SD-04 remains due by S6, TD-01 before S6 scale tests, and SD-06 requires separately reviewed nesting biology. No coefficients, global information or directional chemical cues were added.
 
 ## Biological research
 
