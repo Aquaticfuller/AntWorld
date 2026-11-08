@@ -1,0 +1,8 @@
+{
+  "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9",
+  "rows": 128,
+  "equal_except_filesystem_storage_bytes": true,
+  "declared_checkpoint_byte_delta": 1,
+  "excluded_field": "database_bytes",
+  "reason": "WAL/database allocation is a measured storage result, not simulation state"
+}

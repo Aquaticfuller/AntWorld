@@ -1,0 +1,132 @@
+{
+  "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9",
+  "local_builds": [
+    {
+      "configuration": "Debug",
+      "tests": 124,
+      "passed": 124,
+      "failed": 0,
+      "total_ctest_seconds": 82.8,
+      "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9"
+    },
+    {
+      "configuration": "Release",
+      "tests": 124,
+      "passed": 124,
+      "failed": 0,
+      "total_ctest_seconds": 21.9,
+      "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9"
+    },
+    {
+      "configuration": "ASan_UBSan",
+      "tests": 124,
+      "passed": 124,
+      "failed": 0,
+      "total_ctest_seconds": 383.8,
+      "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9"
+    },
+    {
+      "configuration": "Clean_Release",
+      "tests": 124,
+      "passed": 124,
+      "failed": 0,
+      "total_ctest_seconds": 19.91,
+      "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9"
+    },
+    {
+      "configuration": "Core_only_Release",
+      "tests": 105,
+      "passed": 105,
+      "failed": 0,
+      "total_ctest_seconds": 15.68,
+      "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9"
+    }
+  ],
+  "test_rows": 601,
+  "test_rows_sha256": "ae710d3da4f800655918b11fd7ca3b1fee75d60d24f227c56c95cb148040866b",
+  "inherited_test_registrations": 108,
+  "new_test_registrations": 16,
+  "github_source_ci": {
+    "id": 42531543766,
+    "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42531543766",
+    "created_at": "2026-11-08T22:42:13Z",
+    "updated_at": "2026-11-08T22:46:19Z",
+    "jobs": [
+      {
+        "name": "sanitizers",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-08T22:42:17Z",
+        "completed_at": "2026-11-08T22:46:18Z"
+      },
+      {
+        "name": "build (windows-2022, Debug)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-08T22:42:16Z",
+        "completed_at": "2026-11-08T22:46:17Z"
+      },
+      {
+        "name": "build (windows-2022, Release)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-08T22:42:16Z",
+        "completed_at": "2026-11-08T22:45:37Z"
+      },
+      {
+        "name": "build (ubuntu-24.04, Debug)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-08T22:42:16Z",
+        "completed_at": "2026-11-08T22:43:39Z"
+      },
+      {
+        "name": "build (ubuntu-24.04, Release)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-08T22:42:16Z",
+        "completed_at": "2026-11-08T22:44:47Z"
+      }
+    ]
+  },
+  "hardware": {
+    "cpu": {
+      "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+      "NumberOfCores": 10,
+      "NumberOfLogicalProcessors": 16
+    },
+    "memory": {
+      "TotalPhysicalMemory": 16890519552
+    },
+    "os": {
+      "Caption": "Microsoft Windows 11 Home",
+      "Version": "10.0.26200",
+      "BuildNumber": "26200"
+    },
+    "power_plan": "Balanced (85d583c5-cf2e-4197-80fd-3789a227a72c)"
+  },
+  "toolchain": {
+    "clang": "23.1.5",
+    "llvm_mingw": "20261104-ucrt-x86_64",
+    "cmake": "3.31.10",
+    "ninja": "1.13.2",
+    "sqlite": "3.54.1"
+  },
+  "timing_note": "Correctness builds overlapped ecological experiments; CTest elapsed times are not isolated performance benchmarks.",
+  "initial_ci_failure": {
+    "run_id": 42529948612,
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42529948612",
+    "source_commit": "e7c36ef858ea92960381213b280f1e5723eca35e",
+    "results": {
+      "Ubuntu Debug": "failure: misleading indentation warning treated as error",
+      "Ubuntu Release": "failure: misleading indentation warning treated as error",
+      "Windows Debug": "failure: public annotation truncated; exact test diagnostic unavailable",
+      "Windows Release": "success",
+      "Linux ASan/UBSan": "success"
+    },
+    "correction": "Reformat new code; freeze scalar contact-work records instead of moving nested debug-STL vectors during injected allocation failure. Improve public failure annotations. All five subsequent jobs passed; the original truncated Windows diagnostic cannot independently establish its exact cause."
+  }
+}
