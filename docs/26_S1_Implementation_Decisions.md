@@ -2,6 +2,8 @@
 
 Status: implemented for S1 review. The user explicitly authorized S1 after conditional S0 acceptance. Design baseline remains v0.8; this document refines the implemented subset of documents 17, 18, 19 and 22. S2 is not authorized.
 
+S2 note: this document preserves the reviewed S1 baseline. Document 27 extends local motion, physical nest storage, autonomous scheduling and map journals, and supersedes checkpoint v2 with v3. S1's rollback, ordering, arbitration and conservation mechanisms remain.
+
 ## ADR-S1-01: bounded undo journal instead of copying State
 
 The single calling thread owns WorldRuntime. Each public mutation creates one private RAII transaction. AdvanceTo holds one transaction for the whole call, including all intermediate timestamps. State is noncopyable at compile time.

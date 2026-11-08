@@ -5,6 +5,7 @@
 #include <iostream>
 #include <new>
 #include <stdexcept>
+#include <string_view>
 
 // Single-threaded fault injection. Only the operation under test has injection
 // enabled. Verification and rollback comparisons run after it is disabled.
@@ -46,8 +47,31 @@ template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn acti
     }
     throw std::runtime_error("fault sweep never completed");
 }
+void s2_sweeps() {
+    // ENGINEERING_FIXTURE: a three-cell corridor isolates each commit boundary.
+    WorldRuntime world({1, 2}, 12345); SurfaceConfig grid{{0, 0, 0}, 3, 1, 0.01};
+    BehaviorConfig params; params.trail_half_life_s = 1; params.trail_cutoff_units = 0.5;
+    sweep("surface_configure", world, [&] { world.configure_surface(grid, {}, params); });
+    world.configure_surface(grid, {}, params); const auto colony = world.seed_colony();
+    const auto ant = world.seed_ant(colony, {{}, LifeStage::Adult, Caste::Worker, 1000});
+    sweep("local_food_index", world, [&] { world.seed_food({0.02, 0, 0}, {1000, 0, 0, 0}); });
+    world.seed_food({0.02, 0, 0}, {1000, 0, 0, 0});
+    sweep("activate_forager", world, [&] { world.start_foraging(ant); }); world.start_foraging(ant);
+    sweep("local_decision_discovery", world, [&] { world.advance_to({0}); });
+    world.advance_to({1099}); sweep("local_move", world, [&] { world.advance_to({1100}); });
+    world.advance_to({3301}); sweep("collect_learned_route", world, [&] { world.advance_to({3302}); });
+    world.advance_to({4402}); sweep("return_deposit", world, [&] { world.advance_to({4403}); });
+    world.advance_to({4999}); sweep("field_decay_prune", world, [&] { world.advance_to({5000}); });
+    world.advance_to({6604}); sweep("physical_delivery", world, [&] { world.advance_to({6605}); });
+    world.advance_to({6605}); const auto bytes = world.checkpoint();
+    sweep("restore_surface_history", world, [&] { world.restore(bytes); });
+    world.schedule_lifecycle(ant, {6606}, LifeStage::Dead);
+    sweep("cancel_dead_forager", world, [&] { world.advance_to({6606}); });
+    world.advance_to({9999}); sweep("erase_decayed_trails", world, [&] { world.advance_to({10000}); });
+    std::cout << "PASS S2_ALLOCATION_FAILURE\n";
+}
 } // namespace
-int main() {
+int main(int argc, char** argv) {
     // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
     std::set_terminate([] {
         remaining = -1;
@@ -55,6 +79,8 @@ int main() {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S2") { s2_sweeps(); return 0; }
+        if (argc != 1) throw std::invalid_argument("usage: antworld_allocation_tests [S2]");
         // ENGINEERING_FIXTURE: no biological parameter is inferred here.
         WorldRuntime world({1, 2}, 12345); const auto colony = world.seed_colony();
         const auto a = world.seed_ant(colony, {}); const auto b = world.seed_ant(colony, {});

@@ -31,6 +31,8 @@ New same-time earlier-phase work cannot arbitrarily reenter a completed phase. D
 
 The implemented S1 cursor persists the full executed key and cumulative timestamp budget across calls/reloads. An action batch closes phases 0-4 at its timestamp. See document 26 for exact transaction, late-event and arbitration semantics.
 
+S2 retains that cursor and freezes all local wake observations/choices before committing their proposals. Each autonomous worker owns one pending wake or action. Death cancels it in the lifecycle phase; completion schedules the next wake at a strictly later time. Analytical sparse field decay uses fixed maintenance boundaries, with pure reads between them. See document 27 for fixture delays, bounded local motion and undo-map extensions.
+
 ## Continuous boundaries
 
 Energy integrates input/output power until intake, task, climate or depletion boundaries. Water tracks actual sources/losses until drinking/dehydration/climate changes. Brood progress depends on local stage/nutrition/temperature and stops at stage/starvation/death thresholds. Pheromone decay may be analytical; diffusion uses validated stable steps. Climate fields update at low rates interrupted by rain/geometry. Near motion uses bounded substeps for contact/obstacles; far motion uses route/ETA events invalidated by hazards/topology/contact.

@@ -1,11 +1,13 @@
 #pragma once
 #include "antworld/core/world_runtime.hpp"
 #include "antworld/core/rng.hpp"
+#include "surface_internal.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <map>
 #include <stdexcept>
+#include <type_traits>
 
 namespace antworld::detail {
 inline void bump(std::uint64_t& n) {
@@ -97,6 +99,41 @@ template <typename IdType, typename Row> struct Store {
 };
 std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes);
 std::uint64_t trace_hash(const std::vector<WorldEvent>& events);
+
+// Undo only touched map entries. Reinsert retained nodes without allocating.
+template <typename Map> class MapJournal {
+    using Key = typename Map::key_type;
+    using Value = typename Map::mapped_type;
+    struct Change { Key key; Value before; bool inserted; typename Map::node_type removed; };
+    Map& data;
+    std::vector<Change> changes = std::vector<Change>(0);
+    bool done{};
+public:
+    explicit MapJournal(Map& map) : data(map) { static_assert(std::is_nothrow_copy_assignable_v<Value>); }
+    ~MapJournal() noexcept {
+        if (done) return;
+        for (auto i = changes.rbegin(); i != changes.rend(); ++i) {
+            if (i->inserted) data.erase(i->key);
+            else if (i->removed) data.insert(std::move(i->removed));
+            else data.find(i->key)->second = i->before;
+        }
+    }
+    MapJournal(const MapJournal&) = delete;
+    MapJournal& operator=(const MapJournal&) = delete;
+    void set(const Key& key, const Value& value) {
+        const auto it = data.find(key);
+        if (it != data.end()) { changes.push_back({key, it->second, false, {}}); it->second = value; }
+        else {
+            Map prepared; prepared.emplace(key, value);
+            changes.push_back({key, {}, true, {}}); data.insert(prepared.extract(key));
+        }
+    }
+    void erase(const Key& key) {
+        if (!data.contains(key)) return;
+        changes.push_back({key, {}, false, {}}); changes.back().removed = data.extract(key);
+    }
+    void commit() noexcept { done = true; }
+};
 } // namespace antworld::detail
 
 namespace antworld {
@@ -108,6 +145,8 @@ struct WorldRuntime::State {
         std::optional<EventKey> watermark;
         std::uint64_t executed{}, living{};
         FoodLedger ledger;
+        ForagingCounters foraging;
+        ScheduledId maintenance;
     } m;
     WorldId world;
     std::uint64_t seed;
@@ -120,6 +159,19 @@ struct WorldRuntime::State {
     detail::AntStore ants;
     detail::Store<ColonyId, Colony> colonies;
     detail::Store<ResourceId, FoodSource> foods;
+    std::shared_ptr<const detail::SurfaceDefinition> surface;
+    using Foragers = std::map<EntityId, ForagerState>;
+    using Trails = std::map<detail::TrailKey, detail::Trail>;
+    using Visits = std::map<Cell, std::uint64_t>;
+    using Edges = std::map<detail::EdgeKey, std::uint64_t>;
+    using Discoveries = std::map<ResourceId, detail::Discovery>;
+    using FoodCells = std::map<Cell, ResourceId>;
+    Foragers foragers;
+    Trails trails;
+    Visits visits;
+    Edges edges;
+    Discoveries discoveries;
+    FoodCells food_cells; // Derived local index; never exposed to the individual model.
     State(WorldId id, std::uint64_t value, WorldConfig c = {}) : world(id), seed(value), config(c) { m.rng = Rng(value); }
     State(const State&) = delete;
     State& operator=(const State&) = delete;
@@ -136,21 +188,31 @@ class WorldRuntime::Transaction {
     State& s;
     const RuntimeLimits& limits;
     State::Metadata before;
+    std::shared_ptr<const detail::SurfaceDefinition> surface_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
     std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
     std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
     std::vector<std::pair<std::size_t, FoodSource>> food_undo = std::vector<std::pair<std::size_t, FoodSource>>(0);
+    std::vector<std::pair<std::size_t, Colony>> colony_undo = std::vector<std::pair<std::size_t, Colony>>(0);
     bool committed{};
 public:
-    Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m),
+    detail::MapJournal<State::Foragers> foragers;
+    detail::MapJournal<State::Trails> trails;
+    detail::MapJournal<State::Visits> visits;
+    detail::MapJournal<State::Edges> edges;
+    detail::MapJournal<State::Discoveries> discoveries;
+    detail::MapJournal<State::FoodCells> food_cells;
+    Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
-        foods_before(s.foods.rows.size()), journal_before(s.journal.size()) {}
+        foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
+        visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells) {}
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
         if (committed) return;
         for (auto i = ant_undo.rbegin(); i != ant_undo.rend(); ++i) s.ants.set(i->first, i->second);
         for (auto i = food_undo.rbegin(); i != food_undo.rend(); ++i) s.foods.rows[i->first] = i->second;
+        for (auto i = colony_undo.rbegin(); i != colony_undo.rend(); ++i) s.colonies.rows[i->first] = i->second;
         s.ants.truncate(ants_before); s.colonies.truncate(colonies_before); s.foods.truncate(foods_before);
         s.journal.resize(journal_before);
         for (auto i = queue_undo.rbegin(); i != queue_undo.rend(); ++i) {
@@ -158,10 +220,14 @@ public:
             else { s.queue.insert(std::move(i->event)); s.queue_index.insert(std::move(i->index)); }
         }
         s.m = before;
+        s.surface = surface_before;
     }
-    void commit() noexcept { committed = true; }
+    void commit() noexcept {
+        committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit();
+    }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }
+    void touch_colony(std::size_t i) { colony_undo.emplace_back(i, s.colonies.rows[i]); }
     void entity_budget() const {
         if (s.ants.size() + s.colonies.rows.size() + s.foods.rows.size() >= limits.entities)
             throw std::length_error("entity host budget exceeded");

@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-08: S2 sensing, exploration and trails
+
+- User accepted S1 and authorized S2 only, preserving undo journals, ordering, conservation, persistence and tests.
+- Added bounded reachable surface sensing, cardinal movement, pure individual decisions, autonomous collection/return/delivery, sparse colony trails and finite learned routes.
+- Kept initial food positions outside individual knowledge; added domain-separated per-ant random streams and activation-order regressions.
+- Extended allocation-safe undo maps, evidence queries and checkpoint schema/physics v3, with explicit rejection of prior save versions.
+- Added 15 S2 test cases, active-worker performance fixtures and the full 128-run paired feature matrix with raw time samples and analysis tools.
+- Document 27 records engineering decisions; S2_RESULTS.md records actual verification and limitations. S3 remains gated on the next review.
+
 ## 2026-11-08: S1 entities and action transactions
 
 - User conditionally accepted S0 and explicitly authorized S1 only, with performance, phase-order and CI follow-up.

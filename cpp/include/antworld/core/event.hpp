@@ -1,6 +1,7 @@
 #pragma once
 
 #include "antworld/core/entities.hpp"
+#include "antworld/core/behavior.hpp"
 
 namespace antworld {
 enum class Phase : std::uint32_t {
@@ -29,7 +30,7 @@ struct ScheduledEvent {
     EventKey key;
     DiagnosticAction action{};
     std::uint64_t payload{};
-    enum class Kind : std::uint8_t { Diagnostic, Move, CollectFood, Lifecycle } kind{};
+    enum class Kind : std::uint8_t { Diagnostic, Move, CollectFood, Lifecycle, Wake, DeliverFood, Rest, TrailMaintenance } kind{};
     EntityId actor;
     ResourceId resource;
     PositionM destination;
@@ -41,7 +42,8 @@ struct ScheduledEvent {
 };
 enum class FactKind : std::uint8_t {
     Diagnostic, ColonySeeded, AntSeeded, FoodSeeded, Moved, FoodCollected,
-    ActionRejected, StageChanged, AntDied
+    ActionRejected, StageChanged, AntDied, SurfaceConfigured, ForagingStarted,
+    ForagingDecision, FoodDelivered, Rested, TrailMaintenance
 };
 struct WorldEvent {
     EventId id;
@@ -58,6 +60,10 @@ struct WorldEvent {
     FoodMass transferred;
     LifeStage stage{};
     Outcome outcome{Outcome::Success};
+    BehaviorMode mode{BehaviorMode::Explore};
+    DecisionReason reason{DecisionReason::None};
+    double deposited_units{};
+    bool forgot_memory{};
     bool operator==(const WorldEvent&) const = default;
 };
 } // namespace antworld

@@ -23,6 +23,8 @@ struct Colony {
     ColonyId id;
     Species species{Species::LasiusNigerEngineeringFixture};
     SimTime founded_at;
+    PositionM nest_position;
+    FoodMass nest_food;
     bool operator==(const Colony&) const = default;
 };
 // ENGINEERING_FIXTURE defaults; no species calibration is claimed.
@@ -60,8 +62,9 @@ struct WorldConfig {
 struct RuntimeLimits {
     std::size_t entities{65536}, pending_events{65536}, committed_events{65536};
     std::size_t events_per_timestamp{1024}, checkpoint_bytes{16 * 1024 * 1024};
+    std::size_t surface_cells{65536}, trail_cells{65536};
 };
-enum class ActionKind : std::uint8_t { Move, CollectFood };
+enum class ActionKind : std::uint8_t { Move, CollectFood, DeliverFood, Rest };
 struct ActionProposal {
     AntRef actor;
     SimTime execute_at;
@@ -73,10 +76,10 @@ struct ActionProposal {
 enum class Outcome : std::uint8_t {
     Success, Partial, MissingEntity, DeadActor, InvalidStage, OutOfBounds,
     TooFast, StalePosition, OutOfReach, Depleted, Capacity, DuplicateAction,
-    InvalidTransition, AlreadyDead
+    InvalidTransition, AlreadyDead, Blocked, NonLocalMove, NotAtNest, EmptyInventory
 };
 struct FoodLedger {
-    FoodMass introduced, available, carried;
+    FoodMass introduced, available, carried, stored;
     bool operator==(const FoodLedger&) const = default;
 };
 } // namespace antworld

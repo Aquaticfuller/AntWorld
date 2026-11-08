@@ -1,6 +1,6 @@
 # AntWorld design baseline and handoff v0.8
 
-Archive date: 2026-11-08. The imported baseline was specification-only; implementation evidence is recorded separately in S0_RESULTS.md and S1_RESULTS.md.
+Archive date: 2026-11-08. The imported baseline was specification-only; implementation evidence is recorded separately in S0_RESULTS.md, S1_RESULTS.md and S2_RESULTS.md.
 
 Product requirements, reversible engineering defaults and scientific assumptions are distinct. v0.8 preserves the earlier design and adds executable contracts, a first-batch task, test definitions and traceability.
 
@@ -20,6 +20,7 @@ Product requirements, reversible engineering defaults and scientific assumptions
 | 24 | Requirement traceability and quality gates |
 | 25 | Historical S0 implementation decisions |
 | 26 | S1 transactions, entities, ordering, budgets and checkpoint decisions |
+| 27 | S2 local perception, autonomous foraging, sparse trails, bounded memory and ablations |
 
 Read ../AGENTS.md and ../CODEX_START_HERE.md first.
 

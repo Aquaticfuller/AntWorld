@@ -21,6 +21,7 @@ jobs:
         run: |
           python tools/verify_handoff.py
           python tools/check_repository.py
+          python tools/analyze_s2.py experiments/s2 --check
       - name: Configure
         run: cmake -S cpp -B build/ci -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
       - name: Build
@@ -33,6 +34,7 @@ jobs:
           ./build/ci/antworld_scheduler_benchmark
           ./build/ci/antworld_s1_benchmark
           ./build/ci/antworld_benchmark
+          ./build/ci/antworld_s2_benchmark
 
   sanitizers:
     runs-on: ubuntu-24.04
