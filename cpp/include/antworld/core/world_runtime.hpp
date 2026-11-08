@@ -62,6 +62,8 @@ public:
     // Pure, reproducible local encounters for the supplied individual decision counter.
     [[nodiscard]] ContactSample sample_contacts(AntRef, std::uint64_t decision) const;
     [[nodiscard]] ContactWork contact_work() const;
+    void set_autonomy(AntRef, bool enabled = true);
+    [[nodiscard]] std::optional<AutonomyState> query_autonomy(AntRef) const;
     ScheduledId submit_nutrition(const NutritionProposal&);
     [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
     [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
@@ -130,6 +132,11 @@ private:
     void activate_excavator(Transaction&, EntityId);
     void index_position(Transaction&, EntityId, PositionM from, PositionM to);
     void index_contact(Transaction&, EntityId, std::optional<PositionM>);
+    void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {});
+    void change_autonomy(Transaction&, AntRef, bool);
+    void schedule_autonomy(Transaction&, EntityId);
+    void stop_autonomy(Transaction&, EntityId);
+    void resolve_autonomy_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);

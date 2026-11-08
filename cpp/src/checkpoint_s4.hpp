@@ -226,7 +226,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ensure(e.kind < FactKind::GeometryConfigured || e.kind > FactKind::ExcavationDecision, "geometry fact without authority");
         for (const auto &[key, e] : s.queue) {
             (void)key;
-            ensure(e.kind < ScheduledEvent::Kind::SoilAction, "geometry event without authority");
+            ensure(e.kind != ScheduledEvent::Kind::SoilAction && e.kind != ScheduledEvent::Kind::ExcavationWake, "geometry event without authority");
         }
         return;
     }

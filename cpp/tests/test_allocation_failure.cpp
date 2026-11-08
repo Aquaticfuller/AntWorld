@@ -32,6 +32,13 @@ namespace {
 template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn action) {
     current_scenario = name;
     const auto before = world.checkpoint();
+    auto encounters=[&] {
+        std::vector<ContactSample> result(0);
+        if (world.social_config()) for (const auto& a:world.ant_states()) if (a.alive())
+            result.push_back(world.sample_contacts({world.summary().world,a.id},17));
+        return result;
+    };
+    const auto prior_encounters=encounters();
     for (long fault = 0; fault < 10000; ++fault) {
         world.restore(before); current_fault = fault; remaining = fault;
         bool failed = false;
@@ -44,6 +51,7 @@ template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn acti
             world.restore(before); return;
         }
         if (world.checkpoint() != before) throw std::runtime_error("allocation failure left partial world state");
+        if (encounters()!=prior_encounters) throw std::runtime_error("allocation failure left a partial derived contact tree");
     }
     throw std::runtime_error("fault sweep never completed");
 }
@@ -140,6 +148,7 @@ void s6_sweeps() {
     sweep("social_configuration_contact_tree",w,[&]{w.configure_social();}); w.configure_social();
     sweep("contact_tree_seed",w,[&]{w.seed_ant(c,{});});
     w.enable_physiology(a,{{0,400,0,0},1000000000,1000,0}); w.enable_physiology(b);
+    sweep("autonomy_enrollment",w,[&]{w.set_autonomy(a);});
     w.submit_nutrition({a,{1},NutritionAction::Trophallaxis,b,100});
     sweep("demand_limited_exchange",w,[&]{w.advance_to({1});}); w.advance_to({1});
     w.submit({a,{1000},ActionKind::Move,{}, {.01,0,0},0});
@@ -147,6 +156,13 @@ void s6_sweeps() {
     w.schedule_lifecycle(a,{1001},LifeStage::Dead);
     sweep("contact_tree_death",w,[&]{w.advance_to({1001});});
     const auto bytes=w.checkpoint(); sweep("contact_tree_restore",w,[&]{w.restore(bytes);});
+    WorldRuntime active({6,10},1); active.configure_social(); const auto colony=active.seed_colony();
+    const auto worker=active.seed_ant(colony,{}),larva=active.seed_ant(colony,{{},LifeStage::Larva});
+    active.enable_physiology(worker,{{0,400,0,0},1000000000,1000,0}); active.enable_physiology(larva); active.set_autonomy(worker);
+    active.advance_to({4999}); sweep("automatic_program_choice",active,[&]{active.advance_to({5000});}); active.advance_to({5000});
+    sweep("automatic_program_pause",active,[&]{active.set_behavior(worker,IndividualBehavior::Paused);});
+    active.schedule_lifecycle(worker,{5001},LifeStage::Dead);
+    sweep("automatic_death_cancellation",active,[&]{active.advance_to({5001});});
     std::cout<<"PASS S6_ALLOCATION_FAILURE\n";
 }
 } // namespace

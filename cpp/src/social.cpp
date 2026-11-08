@@ -12,7 +12,7 @@ void WorldRuntime::configure_social(const SocialConfig& config) {
     for (std::size_t i=0;i<s.ants.size();++i) {
         const auto a=s.ants.get(i); if (a.alive()) index_contact(tx,a.id,a.position);
     }
-    WorldEvent fact; fact.kind = FactKind::SocialConfigured; tx.fact(fact); tx.commit();
+    WorldEvent fact; fact.kind = FactKind::SocialConfigured; fact.payload=detail::social_fingerprint(config); tx.fact(fact); tx.commit();
 }
 std::optional<SocialConfig> WorldRuntime::social_config() const {
     return state_->social ? std::optional<SocialConfig>{*state_->social} : std::nullopt;

@@ -105,7 +105,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         e.stage = static_cast<LifeStage>(r.get(1));
         ensure(e.id.value && e.id.value < m.next_scheduled && e.key.sequence && e.key.sequence < m.next_sequence &&
             e.key.time >= m.now && valid(e.key.phase) && valid(e.action) && valid(e.stage) &&
-            e.kind <= ScheduledEvent::Kind::ExcavationWake && finite(e.destination) && e.issued_at <= m.now &&
+            e.kind <= ScheduledEvent::Kind::AutonomyWake && finite(e.destination) && e.issued_at <= m.now &&
             scheduled_ids.insert(e.id.value).second && sequences.insert(e.key.sequence).second &&
             (s->queue.empty() || s->queue.rbegin()->first < e.key), "invalid future event");
         s->queue.emplace(e.key, e); s->queue_index.emplace(e.id, e.key);
@@ -116,15 +116,16 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         const auto e = read_fact(r);
         const auto seeded = e.kind == FactKind::ColonySeeded || e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded ||
             e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
-            e.kind == FactKind::PhysiologyEnabled || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::GeometryConfigured ||
-            e.kind == FactKind::SocialConfigured;
+            e.kind == FactKind::PhysiologyEnabled || (e.kind == FactKind::BehaviorChanged && !e.source.value) || e.kind==FactKind::GeometryConfigured ||
+            e.kind == FactKind::SocialConfigured || e.kind==FactKind::AutonomyChanged;
+        const bool auxiliary=e.kind==FactKind::BehaviorChanged && e.source.value;
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= FactKind::SocialConfigured && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= FactKind::AutonomyDecision && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
-            (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.random_value == 0) &&
-            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged) : e.source.value && e.source.value < m.next_scheduled &&
-                scheduled_ids.insert(e.source.value).second), "invalid committed event");
+            (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.random_value == 0) &&
+            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged) : e.source.value && e.source.value < m.next_scheduled &&
+                (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
     }
     s->config = {r.position(), r.position(), r.real(), r.real()}; validate_config(s->config);
@@ -173,6 +174,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(s->surface && s->surface->behavior.trails_enabled && e.id == m.maintenance && key.phase == Phase::Environment &&
                 key.priority == 1 && !key.tie && !e.actor.value && !e.resource.value && !e.requested_ug && !e.observed_position_revision &&
                 e.destination == PositionM{} && e.action == DiagnosticAction::Record && !e.payload && e.stage == LifeStage::Egg, "invalid field event");
+        } else if (e.kind==ScheduledEvent::Kind::AutonomyWake) {
+            ensure(s->social && s->autonomy.contains(e.actor) && s->autonomy.at(e.actor).wake==e.id &&
+                key.phase==Phase::Reschedule && !key.priority && !key.tie && !e.payload && !e.resource.value && !e.requested_ug &&
+                !e.observed_position_revision && e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,
+                "invalid automatic program wake");
         } else if (e.kind >= ScheduledEvent::Kind::SoilAction) {
             ensure(s->geometry && s->ants.index.contains(e.actor) && e.action==DiagnosticAction::Record && !e.payload && !e.resource.value &&
                 !e.requested_ug && !key.priority && !key.tie && e.destination==PositionM{} && e.stage==LifeStage::Egg,"invalid geometry event fields");
@@ -226,7 +232,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     std::map<ColonyId, FoodMass> delivered;
     std::uint64_t executed_now = 0;
     for (const auto& e : s->journal) {
-        if (e.source.value && e.time == m.now) ++executed_now;
+        if (e.source.value && e.time == m.now && e.kind!=FactKind::BehaviorChanged) ++executed_now;
         ensure((!e.actor.value || s->ants.index.contains(e.actor)) && (!e.colony.value || s->colonies.index.contains(e.colony)) &&
             (!e.resource.value || s->foods.index.contains(e.resource)), "fact has missing entity");
         if (e.actor.value) ensure(e.colony == s->ants.get(s->ants.index.at(e.actor)).colony, "fact colony mismatch");
@@ -282,6 +288,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::NutritionDecision:
         case FactKind::NutritionTransferred: break;
         case FactKind::SocialConfigured: ensure(s->social != nullptr,"social fact without policy"); break;
+        case FactKind::AutonomyChanged:
+        case FactKind::AutonomyDecision: ensure(s->social && s->autonomy.contains(e.actor),"autonomy fact without enrollment"); break;
         case FactKind::GeometryConfigured:
         case FactKind::SoilExcavated:
         case FactKind::SoilDropped:
@@ -312,6 +320,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     validate_surface_evidence(*s);
     validate_geometry_evidence(*s,limits);
     validate_physiology_evidence(*s);
+    validate_autonomy_evidence(*s);
     ensure(m.next_event == facts+1 && r.cursor == r.bytes.size(), "invalid event allocator or trailing checkpoint bytes");
     return s;
 }

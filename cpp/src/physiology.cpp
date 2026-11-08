@@ -61,32 +61,39 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         f.kind = FactKind::AntDied; f.stage = LifeStage::Dead; f.payload = static_cast<std::uint64_t>(p.death_cause);
         tx.touch_ant(i); ant.stage = LifeStage::Dead; s.ants.set(i, ant); --s.m.living;
         index_contact(tx,e.actor,{});
-        tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause);
+        tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause); stop_autonomy(tx,e.actor);
     } else {
         if (developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage)) {
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
+            if (ant.stage==LifeStage::Adult) schedule_autonomy(tx,e.actor);
         } else if (s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
     }
     tx.fact(f);
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
+    Transaction tx(*state_,limits_);
+    change_behavior(tx,ref,behavior);
+    if (state_->autonomy.contains(ref.id) && state_->autonomy.at(ref.id).enabled) change_autonomy(tx,ref,false);
+    tx.commit();
+}
+void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source) {
     auto& s = *state_; const auto ant = query_ant(ref);
     if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Excavate ||
         (behavior != IndividualBehavior::Paused && (ant->stage != LifeStage::Adult || ant->caste != Caste::Worker)))
         throw std::invalid_argument("invalid individual behavior activation");
-    if (behavior == IndividualBehavior::Forage && !s.surface) throw std::invalid_argument("foraging requires a surface");
+    if (behavior == IndividualBehavior::Forage && (!s.surface || !s.surface->locate(ant->position))) throw std::invalid_argument("foraging requires a surface position");
     if (behavior == IndividualBehavior::Excavate && !s.geometry) throw std::invalid_argument("excavation requires geometry");
     // External pending actions must be explicitly resolved/cancelled, never silently commandeered.
-    for (const auto& [key, e] : s.queue) {
+    if (!source.value) for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.key.phase == Phase::Resolution && e.id != s.physiology.at(ref.id).behavior_event &&
             (!s.foragers.contains(ref.id) || e.id != s.foragers.at(ref.id).action) &&
             (!s.excavators.contains(ref.id) || e.id != s.excavators.at(ref.id).action))
             throw std::invalid_argument("individual has an external pending action");
     }
-    Transaction tx(s, limits_); synchronize_physiology(tx, ref.id); auto p = s.physiology.at(ref.id);
+    synchronize_physiology(tx, ref.id); auto p = s.physiology.at(ref.id);
     if (p.behavior_event.value && s.queue_index.contains(p.behavior_event)) tx.remove(s.queue_index.at(p.behavior_event));
     p.behavior_event = {};
     stop_dead_forager(tx, ref.id); // This helper cancels behavior work and preserves acquired memory.
@@ -104,6 +111,8 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
             WorldEvent initial; initial.kind = FactKind::ForagingStarted; initial.actor = ref.id; initial.colony = ant->colony;
             initial.position = ant->position; initial.stage = ant->stage; tx.fact(initial);
         }
+        if (f.path[f.path_size-1]!=*s.surface->locate(ant->position))
+            throw std::invalid_argument("foraging memory no longer ends at worker position");
         f.enabled = true; ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::Wake; e.issued_at = s.m.now;
         e.key = {after(s.m.now, s.surface->behavior.decision_delay.milliseconds), Phase::Perception, 0, 0, 0};
         f.wake = tx.insert(e); tx.foragers.set(ref.id, f);
@@ -116,11 +125,12 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     }
     schedule_physiology(tx, ref.id);
     WorldEvent f; f.kind = FactKind::BehaviorChanged; f.actor = ref.id; f.colony = ant->colony; f.stage = ant->stage;
-    f.position = ant->position; f.payload = static_cast<std::uint64_t>(behavior); tx.fact(f); tx.commit();
+    f.source=source; f.position = ant->position; f.payload = static_cast<std::uint64_t>(behavior); tx.fact(f);
+    if (s.autonomy.contains(ref.id)) { auto a=s.autonomy.at(ref.id); a.last_program_change=s.m.now; tx.autonomy.set(ref.id,a); }
 }
 ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
     auto& s = *state_; const auto ant = query_ant(proposal.actor);
-    if (!ant || !s.physiology.contains(ant->id) || proposal.kind > NutritionAction::Trophallaxis || !proposal.requested_ug ||
+    if (!ant || !s.physiology.contains(ant->id) || (s.autonomy.contains(ant->id) && s.autonomy.at(ant->id).enabled) || proposal.kind > NutritionAction::Trophallaxis || !proposal.requested_ug ||
         s.physiology.at(ant->id).behavior != IndividualBehavior::Paused ||
         (s.foragers.contains(ant->id) && s.foragers.at(ant->id).enabled)) throw std::invalid_argument("invalid nutrition proposal");
     if (proposal.kind == NutritionAction::Trophallaxis && (!query_ant(proposal.recipient) ||
@@ -141,7 +151,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        if (!contact(ant, recipient, s.config, s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
+        if (!contact(ant, recipient, s.config, s.social && s.geometry ? nullptr : s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug(); supply = p.crop;
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
@@ -151,7 +161,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
         if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
-            (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) { f.outcome = Outcome::NotAtNest; return; }
+            (s.surface && !(s.social && s.geometry) && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) { f.outcome = Outcome::NotAtNest; return; }
         supply = colony.nest_food;
     }
     if (!room) { f.outcome = Outcome::Capacity; return; }
@@ -186,7 +196,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
         else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
             distance(ant.position, colony.nest_position) <= s.config.contact_distance_m &&
-            (!s.surface || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
+            (!s.surface || (s.social && s.geometry) || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
         else if (p.behavior == IndividualBehavior::Nurse && p.crop.total_ug()) {
             auto rng = individual_rng(s.seed ^ UINT64_C(0x53334e55525345), ant.id, p.decisions);
             std::uint64_t seen = 0;
@@ -204,13 +214,15 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             }
             for (const auto id : candidates) {
                 const auto other = s.ants.get(s.ants.index.at(id));
-                if (id == ant.id || !other.alive() || !contact(ant, other, s.config, s.surface.get())) continue;
+                if (id == ant.id || !other.alive() || !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get())) continue;
                 const auto q = *query_physiology({s.world, id});
                 const bool hungry_larva = other.stage == LifeStage::Larva && p.crop.protein_ug &&
                     add(q.tissue_protein_ug, q.crop.protein_ug) < q.config.larval_protein_requirement_ug;
                 const bool hungry_adult = other.stage == LifeStage::Adult &&
                     (q.body_energy_nj < q.config.energy_capacity_nj/4 || q.hydration_ug < q.config.hydration_capacity_ug/4);
-                if ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2) continue;
+                const bool demand=s.social && s.social->demand_sensitive;
+                if (demand ? (!ingredient_min(p.crop,signaled_need(q,other.stage)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
+                    ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2)) continue;
                 ++seen; if (bounded_draw(rng, seen) == 0) { action.kind = ScheduledEvent::Kind::Trophallaxis; action.payload = id.value; }
             }
         }

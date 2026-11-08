@@ -13,7 +13,7 @@ std::optional<WorldCoverage> Store::coverage(WorldId world) const {
 }
 std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
     range(filter.begin, filter.end, filter.limit);
-    if (filter.kind && *filter.kind > FactKind::SocialConfigured)
+    if (filter.kind && *filter.kind > FactKind::AutonomyDecision)
         throw std::invalid_argument("invalid fact kind");
     std::string sql = "SELECT ";
     sql += history_columns;

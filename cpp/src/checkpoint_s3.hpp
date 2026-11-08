@@ -106,7 +106,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 auto a = s.ants.get(s.ants.index.at(e.actor)), b = s.ants.get(s.ants.index.at(target));
                 a.position = positions.at(e.actor); b.position = positions.at(target);
                 ensure(prior_stage == LifeStage::Adult && a.caste == Caste::Worker &&
-                    (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.surface.get()),
+                    (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.social && s.geometry ? nullptr : s.surface.get()),
                     "transfer has no living local contact evidence");
                 if (s.social) {
                     ensure(s.social->exchange_enabled,"transfer in a no-response control");

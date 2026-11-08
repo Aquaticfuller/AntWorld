@@ -31,6 +31,7 @@ ScheduledId WorldRuntime::submit_soil(const SoilProposal &p) {
     auto &s = *state_;
     const auto ant = query_ant(p.actor);
     if (!s.geometry || !ant || p.kind > SoilAction::Fill ||
+        (s.autonomy.contains(p.actor.id) && s.autonomy.at(p.actor.id).enabled) ||
         (s.foragers.contains(p.actor.id) && s.foragers.at(p.actor.id).enabled) ||
         (s.physiology.contains(p.actor.id) && s.physiology.at(p.actor.id).behavior != IndividualBehavior::Paused) ||
         ((p.kind == SoilAction::Pickup || p.kind == SoilAction::Fill || p.kind == SoilAction::Drop) &&

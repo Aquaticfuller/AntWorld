@@ -33,7 +33,7 @@ void validate_surface(const SurfaceConfig& c, const BehaviorConfig& p, const Wor
 }
 void WorldRuntime::configure_surface(const SurfaceConfig& config, std::span<const Cell> blocked, const BehaviorConfig& behavior) {
     auto& s = *state_;
-    if (s.surface || s.geometry || s.m.now != SimTime{} || s.m.watermark || !s.queue.empty() || !s.colonies.rows.empty() ||
+    if (s.surface || s.geometry || s.social || s.m.now != SimTime{} || s.m.watermark || !s.queue.empty() || !s.colonies.rows.empty() ||
         s.ants.size() || !s.foods.rows.empty()) throw std::invalid_argument("configure the surface before seeding entities or events");
     validate_surface(config, behavior, s.config, limits_);
     auto surface = std::make_shared<SurfaceDefinition>(); surface->config = config; surface->behavior = behavior;

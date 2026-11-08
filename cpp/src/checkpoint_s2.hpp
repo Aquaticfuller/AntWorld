@@ -98,7 +98,6 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
             s.discoveries.emplace(resource, d).second, "invalid discovery record");
     }
     for (const auto& colony : s.colonies.rows) ensure(surface->locate(colony.nest_position).has_value(), "nest outside walkable surface");
-    for (std::size_t i = 0; i < s.ants.size(); ++i) ensure(surface->locate(s.ants.get(i).position).has_value(), "ant outside walkable surface");
     for (const auto& food : s.foods.rows) {
         const auto cell = surface->locate(food.position);
         ensure(cell && s.food_cells.emplace(*cell, food.id).second, "invalid surface food placement");
@@ -112,7 +111,7 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         const auto ant = s.ants.get(s.ants.index.at(id));
         const auto home = surface->locate(s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position);
         ensure(ant.caste == Caste::Worker && (ant.stage == LifeStage::Adult || ant.stage == LifeStage::Dead) &&
-            (!f.enabled || ant.alive()) && f.path[0] == *home && f.path[f.path_size-1] == *surface->locate(ant.position), "invalid individual route endpoints");
+            (!f.enabled || ant.alive()) && f.path[0] == *home, "invalid individual route origin");
         auto check_route = [&](const auto& route, std::uint32_t size) {
             for (std::size_t i = 0; i < route.size(); ++i) {
                 if (i >= size) { ensure(route[i] == Cell{}, "noncanonical unused memory slot"); continue; }
@@ -151,6 +150,18 @@ template <typename S> void validate_surface_evidence(const S& s) {
         return;
     }
     const auto& surface = *s.surface; const auto& p = surface.behavior;
+    // Social/geometry sections follow the surface section in the codec. Validate
+    // mixed-space endpoints only after all authoritative configuration is read.
+    const bool mixed=s.social && s.geometry;
+    for (std::size_t i=0;i<s.ants.size();++i) {
+        const auto ant=s.ants.get(i);
+        const bool active=s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled;
+        if (!mixed || active) ensure(surface.locate(ant.position).has_value(),"ant outside walkable surface");
+    }
+    for (const auto& [id,f]:s.foragers) if (!mixed || f.enabled) {
+        const auto cell=surface.locate(s.ants.get(s.ants.index.at(id)).position);
+        ensure(cell && f.path[f.path_size-1]==*cell,"invalid individual route endpoint");
+    }
     typename S::Foragers audit_agents; typename S::Trails audit_trails; typename S::Visits audit_visits;
     typename S::Edges audit_edges; typename S::Discoveries audit_discoveries;
     std::map<EntityId, PositionM> positions; std::map<EntityId, FoodMass> cargo;
@@ -187,8 +198,9 @@ template <typename S> void validate_surface_evidence(const S& s) {
         }
         if (e.kind == FactKind::Moved) {
             const auto old = surface.locate(positions[e.actor]), to = surface.locate(e.position);
-            ensure(old && to && adjacent(*old, *to), "movement history crosses blocked/nonlocal surface");
-            if (audit_agents.contains(e.actor)) {
+            const bool active=audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled;
+            if (!mixed || active) ensure(old && to && adjacent(*old, *to), "movement history crosses blocked/nonlocal surface");
+            if (active) {
                 auto& f = audit_agents.at(e.actor); ensure(f.enabled && e.mode == f.mode, "movement behavior evidence mismatch");
                 f.heading = direction(*old, *to); ++f.trip_moves; ++counts.moves;
                 if (e.mode == BehaviorMode::Return) ++counts.return_moves;

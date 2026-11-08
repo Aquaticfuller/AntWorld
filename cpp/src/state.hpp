@@ -183,6 +183,8 @@ struct WorldRuntime::State {
     std::shared_ptr<const SocialConfig> social;
     detail::ContactNodes contact_nodes;
     detail::ContactRoots contact_roots;
+    using Autonomy = std::map<EntityId,AutonomyState>;
+    Autonomy autonomy;
     std::shared_ptr<const detail::GeometryDefinition> geometry;
     detail::GeometryEdits geometry_edits;
     detail::EditIndex edit_index;
@@ -236,6 +238,7 @@ public:
     detail::MapJournal<State::Physiology> physiology;
     detail::MapJournal<detail::ContactNodes> contact_nodes;
     detail::MapJournal<detail::ContactRoots> contact_roots;
+    detail::MapJournal<State::Autonomy> autonomy;
     detail::MapJournal<detail::GeometryEdits> geometry_edits;
     detail::MapJournal<detail::EditIndex> edit_index;
     detail::MapJournal<detail::SpatialIndex> spatial_index;
@@ -251,7 +254,7 @@ public:
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
         visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
-        contact_nodes(s.contact_nodes), contact_roots(s.contact_roots),
+        contact_nodes(s.contact_nodes), contact_roots(s.contact_roots), autonomy(s.autonomy),
         geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
         soil_requests(s.soil_requests), excavators(s.excavators), sdf_cache(s.sdf_cache), dirty_bricks(s.dirty_bricks), commands(s.commands) {}
     Transaction(const Transaction&) = delete;
@@ -274,7 +277,7 @@ public:
     }
     void commit() noexcept {
         committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
-        contact_nodes.commit(); contact_roots.commit();
+        contact_nodes.commit(); contact_roots.commit(); autonomy.commit();
         geometry_edits.commit(); edit_index.commit(); spatial_index.commit(); parcels.commit(); carriers.commit();
         soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();
         commands.commit();
