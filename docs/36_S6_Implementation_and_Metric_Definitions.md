@@ -1,0 +1,64 @@
+# S6 implementation, evidence and metric definitions
+
+Scope: the frozen document-35 integration protocol and the pre-measurement fixture details in `experiments/s6/INTEGRATION_DETAILS.md`. S6 remains an ENGINEERING_FIXTURE mechanism implementation, pending independent review. S7-S9, Unity, Game Master, laying, weather and LOD are excluded.
+
+## Individual policy and transactions
+
+`configure_social()` opts a world into the new local policy. Historical fixtures without that policy retain their reference behavior. `sample_contacts(actor, decision)` returns a detached local sample; it never changes time, RNG, counters or state. The bounded default samples ranks without replacement from the 27 neighboring spatial buckets, then checks actual distance, living colony membership and authoritative solid barriers. Candidates include the actor and geometrically ineligible points until filtering, so accepted contacts can be fewer than the budget. There is no guarantee that every nearby hungry individual is encountered at every decision.
+
+Each bucket has a disposable order-statistic treap keyed by stable identity, with identity-hashed priorities. Rank selection avoids enumerating a dense bucket. Updates journal only touched nodes/roots; movement and death update the index atomically. Restore rebuilds the same tree shape. Sampling is uniform over the local bucket population, not over the whole world and not preferential to low IDs. The structural bound concerns candidate inspection; map lookups, tree depth, scheduler work and geometry qualification still have costs. Observer `query_neighborhood()` remains exhaustive. Exhaustive social sampling is an explicit performance ablation.
+
+Nutrient gifts recheck recipient ingredient deficits at commit, after earlier simultaneous gifts. Transfer is bounded by actual donor crop, recipient need, crop room and requested work. Carbohydrate, protein, water and inert mass remain separate; adult tissue is never treated as transferable crop surplus. The ingredient-specific sensor and selective gift composition are uncalibrated abstractions. They do not establish that Lasius niger directly measures these exact physiological quantities or separates a mixed liquid in this manner. S3's urgent-adult threshold is retained; the larval request cue is an unmet protein requirement. No colony-wide deficit, average nutrition or source location is supplied to the policy.
+
+`set_autonomy(actor, enabled)` enrolls a worker identity; enrolled brood has no adult wake until real emergence. Each decision uses only own state, sampled nestmates, a physically contacted depot's stock and local soil. Choices for one timestamp freeze before any program changes. The Reschedule phase applies program changes after physical actions at that timestamp; all new wakes are strictly later. Separate private seed/identity/decision streams determine choices and sampling. Program choice does not depend on submission order. The current program and experienced travel complete actual returns before routine travel-program switching.
+
+`set_behavior()` is a manual engineering control and disables automatic reconsideration. Disabling autonomy alone leaves the current program running. Death cancels program, physiological and automatic ownership while retaining the same identity and its remaining material. Physiological depletion, habitat blockage and exhausted resources may strand workers or kill the colony. No rescue, forced survival or hidden replenishment is performed.
+
+Mixed-space worlds permit off-plane brood and inactive foragers in geometry-valid locations. Active foraging still uses its existing surface route. Excavation uses real 3D motion; contact can cross surface-cell boundaries only when physical distance and solid clearance permit it. Historical validation distinguishes these programs and checks the actual geometry at each event. This is not arbitrary 3D food search, brood transport or calibrated chamber architecture.
+
+## Persistence and evidence
+
+Schema 7 / physics 8 add the social configuration/fingerprint, diagnostic work counters and per-identity automatic state. The fixed 115-byte future-event and 159-byte fact codecs remain. An absent social policy adds exactly one byte relative to S5; the legacy S4 delta is nine bytes (S5 receipt count plus this flag). Old-format saves are explicitly rejected; no migration is claimed. Original datasets remain unchanged.
+
+`SocialConfigured` commits the policy fingerprint. `AutonomyChanged` records enrollment/control. `AutonomyDecision` records an actually executed reconsideration, with its private decision counter and inspected-candidate count. It does not claim a future action succeeded. An automatic `BehaviorChanged` fact references the same scheduled source as its corresponding decision; the two facts have distinct EventIds and one executed scheduler event. Decode validates that link, identity, time and ownership. The original source-uniqueness requirement remains for primary execution facts. Failed allocation/host-budget transactions restore facts, counters, programs, queues and derived contact trees.
+
+All S5 history records, 60 metric definitions and evidence links remain authoritative. Each integrated case compares normal 1 s advances, accelerated 60 s advances and actual SQLite save/reload every 60 s at every common boundary. Exact checkpoint equality proves identical time, queues, RNG, physiology, resources, geometry and recorded history within the tested binary/configuration. The final database is then checked against **every** committed fact, every identity, every current gauge and every cumulative flow. The data exporter does not create ecological events.
+
+## Conservation definitions
+
+For each food ingredient, introduced source material plus declared initial crop/body material equals source remainder + carried food + depot stock + crops + retained tissue/hydration + explicit oxidation/water-loss sinks. Dead inventories remain included. Initial body energy plus actually oxidized carbohydrate times the unchanged conversion yield equals retained body energy plus dissipated basal/activity/dig energy. There is no energy contribution from a proposed action or uneaten carbohydrate.
+
+Soil authority retains InitialSolid and every ordered edit. Initial soil volume equals remaining + carried + deposited volume; initial + filled equals remaining + excavated. Dry mass and soil water follow their declared ug/q3 densities. Soil water is not silently converted into body water. The S4 authority audit checks actual material volumes and every edit/parcel provenance. All reported residuals must be zero in integer units.
+
+## Raw data dictionary
+
+All fixtures use stable IDs within a case. Case keys are `(suite, seed, condition, mirror, encounter_budget)`. Matching replicas deliberately reuse fixture WorldId `(6,8)` in **separate databases** to support canonical continuation comparisons; never merge their references as one real world. The surplus assay uses `(6,9)`. Source commits and configuration JSON qualify each archive.
+
+| File | Meaning and units |
+|---|---|
+| `nutrition/` | First SD-04 implementation matrix, retained unchanged; 768 cases and 3,072 brood endpoints. |
+| `nutrition_final/` | Full final-policy SD-04 rerun, same seeds and supplies. Adult count is final stage, not guaranteed survival. Oversupply means retained crop plus tissue protein exceeds the declared 100 ug brood requirement. |
+| `surplus/summary.csv` | 640 cases: 64 seeds x five controls x initial adult/pupa donor. Actual transferred protein/total mass, original donor identity, recipient emergence and all residuals. |
+| `surplus/events.csv` | Actual transfers, stage/death and program facts with EventId and scheduled source; numeric kinds refer to `FactKind`. |
+| `surplus_sensitivity/` | 96 contact cases: 16 seeds x three budgets x two donor stages. |
+| `integrated/summary.csv` | 768 mode rows for 256 primary cases. One case has three verified-equal endpoints and three measured advancement times. Hashes and 60 metric values are emitted only after equality/reconciliation succeeds. |
+| `sensitivity/summary.csv` | 144 mode rows for 48 cases: 16 seeds x budgets 8/16/32, supplied original layout. |
+| `long/summary.csv` | 48 mode rows for 16 cases: seeds 1..8 x supplied/no-food, 1,800 s with actual recovery. |
+| `time_series.csv` | Initial and 10 s observations from the normal replica. Gauges are actual values at that time; flows are cumulative committed contributions through its event cursor. The same 60 S5 names/units apply. No interpolation is presented as observation. |
+| `individuals.csv` | Every seeded identity, including dead and non-emerged individuals: caste/stage, actual transition/death times, crop/body inventories, protein received/given, real movement path length in meters, program residence in milliseconds and final position. A transition time of -1 means not observed; seeded adults are not recorded as emergences. Residence includes the initial Paused state of immature individuals and ends at death, not at the observation window for dead individuals. |
+| `events.csv` | Selected real material transfers, development/death, program changes and soil operations with source/actor/resource references. This CSV is an evidence projection, not the complete recovery history. Complete facts remain in each SQLite database. |
+| `geometry.csv` | Every committed cut/fill box, exact q3 volume, actor, edit, parcel and source fact. Bounds are half-open geometry quanta. Seed void/rock boxes are in `configuration.json`. |
+| `foods.csv` | Each actual source's initial and remaining four-ingredient mass and position; absent-food cases have no fabricated zero-stock sources. |
+| `event_counts.csv` | Counts of all committed fact kinds, including kinds omitted from the selected-event projection. Their sum equals the endpoint event cursor. |
+| `contact_initial/contacts.csv` | All 120 first measurements, retained with the missed scaling target. |
+| `performance/contacts.csv` | Final-source matched contact measurements, with every repetition retained. Timing quantiles describe host latency, not ecological uncertainty. |
+
+`setup_ms` is shared case setup including initial durable generation/load. `advance_ms` measures only that mode's actual AdvanceTo calls. `save_ms`, `load_ms` and `database_bytes` describe the shared recovered replica's complete save/load sequence and final database; these case-level quantities are repeated in the three mode rows and must not be added three times. Canonical checkpoint size is separate from SQLite filesystem size. The full experiment databases are retained in the reproduction output directory, outside Git; committed CSVs, configuration, hashes and commands permit independent reconstruction.
+
+Contact-work counters count committed policy reconsiderations (including decisions with no sampling), pre-filter candidate inspections, 27 bucket probes per sample, rank-tree node visits and the maximum inspected candidates in one decision. They are algorithm diagnostics, not a count of successful biological encounters. The rank-tree visit count excludes internal `std::map` comparisons. Observer reads do not add work counters. Current/peak RSS in contact CSVs describe the whole process; peak is cumulative across its case order, not incremental memory per ant.
+
+## Statistical interpretation
+
+Use every frozen seed. Primary mirrored layouts are averaged within seed, and the three execution modes are paired verification replicas, not extra independent observations. Report 95% percentile bootstrap intervals with 4,096 resamples and seed 6006. Keep deaths, failed discovery/non-emergence and supply-limited outcomes in denominators. Degenerate all-success bootstrap intervals do not establish probability one outside these fixtures; the surplus success analysis also reports Wilson binomial intervals. Performance p50/p95/p99/max describe every measured sample without trimming. No model constant is fitted to improve food return, development or survival.
+
+The final results report maps applicable document-14 contracts and explicitly marks LOD, rendering, actual model-API failure, asynchronous saves, physical power loss, rain and months-long ecological validation as outside demonstrated scope. S5's diagnostic storage clock does not establish a months-long living ecology. Scientific debts SD-01/02/05/06 remain open.
