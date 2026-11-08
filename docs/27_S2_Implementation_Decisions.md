@@ -69,9 +69,9 @@ The surface is 31 x 21 cells of 0.01 m. The nest is cell (3,10); two sources are
 | Coverage | Distinct physically visited cells (including start nest) / all walkable cells; not remotely perceived area |
 | First discovery | First committed local cue and discovering stable ID; -1 means right-censored at run end |
 | Delivery per started trip | Completed physical deliveries / departures from nest without cargo; includes unfinished and unsuccessful trips in denominator |
-| Collection success | Successful collection events / collection decisions, including pending attempts in denominator |
+| Collection success | Successful collection events / collection decisions, including pending attempts in denominator; -1 when no attempt exists |
 | Revisit | Collection at the same source as that individual's previous successful collection |
-| Mean outbound moves | Sum of actual trip movement counts at successful collections / collections; no optimal-path baseline is inferred |
+| Mean outbound moves | Sum of actual trip movement counts at successful collections / collections; -1 without collections, excluded from conditional averages; no optimal-path baseline is inferred |
 | Edge reuse | (All traversals - distinct undirected edges) / all traversals; includes homeward movement and exploration loops |
 | Trail/memory moves | Actual successful steps selected in FollowTrail/FollowMemory mode; these are mechanism-use counts, not proofs of causal optimality |
 | Memory failure | An actual decision forgetting an expired, exhausted or locally invalid learned route |

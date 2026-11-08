@@ -64,7 +64,7 @@ def analyze(root):
         for treatment in TREATMENTS:
             for metric in METRICS:
                 values = [float(indexed[layout, seed, treatment][metric]) for seed in seeds]
-                # Discovery is right-censored if no source was encountered by the end.
+                # -1 means a censored discovery or an undefined conditional metric.
                 measured = [v for v in values if v >= 0]
                 aggregate.append((layout, treatment, metric, len(values), len(measured),
                                   statistics.mean(measured) if measured else '',

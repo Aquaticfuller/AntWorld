@@ -14,7 +14,7 @@ On Linux omit `.exe` and select the actual build directory. The executable takes
 
 - `summary.csv`: one final row per run, with units in column names.
 - `timeseries.csv`: all 7,808 rows, including zeros and unsuccessful runs.
-- `aggregate.csv`: per-layout/treatment means, sample standard deviations, ranges and observed counts. Unseen first discoveries are censored, never treated as negative discovery durations.
+- `aggregate.csv`: per-layout/treatment means, sample standard deviations, ranges and observed counts. Unseen first discoveries are censored, never treated as negative discovery durations. Collection success without any attempts and mean outbound moves without any collections use -1 (undefined), excluded from conditional means and paired comparisons rather than counted as zero-cost trips.
 - `paired_differences.csv`: same-seed differences against the no-trails/no-learned-memory baseline. Positive/negative are numerical signs, not automatic better/worse judgments.
 
 The memory toggle controls learned inter-trip routes. A bounded current-trip homing trace remains enabled in all treatments. Coverage counts physical cell visits; route reuse includes both directions, return steps and exploration loops; delivery success divides completed deliveries by all started trips, including unfinished ones. Sparse trail quantities are abstract signal units. Full definitions and configuration are in [document 27](../../docs/27_S2_Implementation_Decisions.md).

@@ -40,7 +40,7 @@ Files: 40 (excluding the manifest itself).
 | `docs/24_Traceability_and_Quality_Gates.md` | `7c884fbec8ef4d535d4f2c2cee09f02dd9d1e41cc335b9366fd7e1f54c3e37d8` | 4316 |
 | `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
 | `docs/26_S1_Implementation_Decisions.md` | `6f850eb5d771ae049489efc2c16a45745e368fc030ef6b9e1900f4f1cae7e043` | 13244 |
-| `docs/27_S2_Implementation_Decisions.md` | `91ebe62b5971a9dab1f8fa88dc946c79ff66b61e51e06f1266c20e9d8b340475` | 13688 |
+| `docs/27_S2_Implementation_Decisions.md` | `a1fe2f45eb08be96722ddf45491a78ecc6fe7c0984ae75c47fde33b6870ba861` | 13775 |
 | `docs/CHANGELOG.md` | `0dd9e2042350c81513a0ee37f4025e2b81806e8caf5949023119ee686c6b355a` | 4954 |
 | `README_HANDOFF.md` | `e7823d854ae86f12f23934675275059fd482fcf0fb07498e68392f7668c6689c` | 1931 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

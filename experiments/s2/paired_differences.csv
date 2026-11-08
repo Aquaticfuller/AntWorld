@@ -54,9 +54,9 @@ barrier,trails,none,coverage,16,0.003955696202531639,0.030512412510377483,4,7,5
 barrier,trails,none,first_discovery_ms,16,0.0,0.0,0,16,0
 barrier,trails,none,deliveries,16,-0.25,1.1832159566199232,2,8,6
 barrier,trails,none,delivery_per_started_trip,16,-0.001368190786646393,0.0067339389014973924,3,5,8
-barrier,trails,none,collection_success,16,0.0,0.0,0,16,0
+barrier,trails,none,collection_success,13,0.0,0.0,0,13,0
 barrier,trails,none,revisits,16,0.0625,0.25,1,15,0
-barrier,trails,none,mean_outbound_moves_per_collection,16,-5.635416666666668,16.158499512067372,3,7,6
+barrier,trails,none,mean_outbound_moves_per_collection,13,-6.935897435897437,17.79324914397916,3,4,6
 barrier,trails,none,edge_reuse_fraction,16,-0.0003847433973887329,0.0013702106729804131,3,5,8
 barrier,trails,none,trail_moves,16,411.8125,423.7348571532282,12,4,0
 barrier,trails,none,memory_moves,16,0.0,0.0,0,16,0
@@ -71,9 +71,9 @@ barrier,memory,none,coverage,16,-0.009592563291139243,0.014621814239817477,0,8,8
 barrier,memory,none,first_discovery_ms,16,0.0,0.0,0,16,0
 barrier,memory,none,deliveries,16,13.5625,15.828113174559585,12,4,0
 barrier,memory,none,delivery_per_started_trip,16,0.07390643624291696,0.08377800628662266,12,4,0
-barrier,memory,none,collection_success,16,0.0,0.0,0,16,0
+barrier,memory,none,collection_success,13,0.0,0.0,0,13,0
 barrier,memory,none,revisits,16,14.375,16.020299622666236,12,4,0
-barrier,memory,none,mean_outbound_moves_per_collection,16,-18.568383419509672,25.662430495506502,0,5,11
+barrier,memory,none,mean_outbound_moves_per_collection,13,-22.85339497785806,26.778961398349384,0,2,11
 barrier,memory,none,edge_reuse_fraction,16,0.0004362708649224764,0.000659054511308951,8,4,4
 barrier,memory,none,trail_moves,16,0.0,0.0,0,16,0
 barrier,memory,none,memory_moves,16,559.375,601.0032584492922,12,4,0
@@ -88,9 +88,9 @@ barrier,both,none,coverage,16,0.009691455696202535,0.033979714353646544,6,6,4
 barrier,both,none,first_discovery_ms,16,0.0,0.0,0,16,0
 barrier,both,none,deliveries,16,18.0,20.768565991260285,12,4,0
 barrier,both,none,delivery_per_started_trip,16,0.08730139533731457,0.09824871255054872,12,4,0
-barrier,both,none,collection_success,16,0.0,0.0,0,16,0
+barrier,both,none,collection_success,13,0.0,0.0,0,13,0
 barrier,both,none,revisits,16,18.4375,20.60410557793438,12,4,0
-barrier,both,none,mean_outbound_moves_per_collection,16,-18.45688505321559,26.15283564748462,0,5,11
+barrier,both,none,mean_outbound_moves_per_collection,13,-22.716166219342263,27.388795123469613,0,2,11
 barrier,both,none,edge_reuse_fraction,16,-0.0007241638037042628,0.0016918133423106032,3,4,9
 barrier,both,none,trail_moves,16,960.0625,1022.5501760304968,12,4,0
 barrier,both,none,memory_moves,16,724.375,789.4289813952023,12,4,0
