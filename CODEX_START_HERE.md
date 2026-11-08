@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S0-S2.1 are implemented; the current authorized batch is S2.2 trail-following mechanism validation, not S3 or a complete game.
+This is the v0.8 design and engineering handoff. S0-S2.2 have passed review; the current authorized batch is S3 physiology, nutrition, trophallaxis and brood. S4 is not authorized.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ This is the v0.8 design and engineering handoff. S0-S2.1 are implemented; the cu
 
 ## Current implementation gate
 
-The user accepted S2.1 engineering corrections and authorized only S2.2. Validate local marked-branch choice, sustained following and deviation with controls, mirrors and fixed seeds. Freeze the protocol before model changes; use primary Lasius niger research and preserve all S0-S2.1 tests and evidence. Deliver S2_2_RESULTS.md, raw CSVs, plots, sensitivity/uncertainty and reproduction commands, then stop. S3 requires a separate user decision.
+The user formally accepted S2.2 and authorized S3. Read document 31 for the frozen S3 implementation decisions and validation protocol. Preserve the open scientific debts in document 08 and all historical evidence. Deliver S3_RESULTS.md, raw experiments, plots and reproduction commands, then stop for independent review before S4.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 

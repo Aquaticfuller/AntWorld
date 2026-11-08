@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S2.2 Trail-following Mechanism Validation only**, requested after S2.1 engineering review. Start from codex/s2.1-foraging-validation and use codex/s2.2-trail-validation. Freeze the protocol before model changes, preserve all S0-S2.1 tests and historical evidence, study mirrored Y junctions and continuous local trails, audit competing movement rules, and use primary Lasius niger research for minimal explainable changes. Retain negative results and repeat social recruitment controls. No global food oracle, forced outcomes, directional chemical oracle, seed filtering or coefficient inflation. S3, 3D underground work, Unity and Game Master remain unauthorized.
+**Current authorized batch: S3 Physiology, Nutrition, Trophallaxis and Brood only**, explicitly authorized after independent S2.2 review. Work on codex/s3-physiology from the approved S2.2 baseline. Preserve S0-S2.2 tests and historical evidence, single-writer rollback, deterministic scheduling, local knowledge and resource conservation. Implement separate crop/body stores, energy and water budgets, contact-qualified nutrition, continuous life identity and runtime individual behavior activation, pause and switching. Scientific debts SD-01 through SD-03 in document 08 remain open. Do not change trail coefficients or add global information to conceal them. S4, underground geometry, Unity and Game Master remain unauthorized.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve S0/S1 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer and relevant performance checks for S2.
-- Preserve S0-S2.1 reports and raw evidence. Produce S2_2_RESULTS.md, raw CSVs, figures, literature rationale, confidence intervals, sensitivity results and reproduction commands.
-- Finish **only S2.2**, commit the reviewable evidence and stop for review. S3–S9 are not authorized in this run.
+- Preserve S0-S2.2 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI and relevant performance checks for S3.
+- Produce S3_RESULTS.md, raw multi-seed nutrition/lifecycle data, figures, uncertainty and reproduction commands following document 31.
+- Finish **only S3**, commit the reviewable evidence and stop for review. S4-S9 are not authorized in this run.

@@ -1,5 +1,17 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## Active scientific validation debt after S2.2 approval
+
+Independent S2.2 Code Review passed and explicitly authorized S3. The historical stage restrictions below describe earlier gates, not the current authorization. Passing the engineering gate does not close these debts.
+
+| ID | Status | Evidence and limitation | Closure requirement |
+|---|---|---|---|
+| SD-01 | OPEN | Mean initial continuous following is only 2.1035 straight / 2.0459 bend steps; every worker departs at least once within 24 moves. Local choice, occupancy and recovery effects do not establish reliable long-distance tracking. | A separately reviewed continuous-following protocol with appropriate controls, lengths, uncertainty and held-out conditions. |
+| SD-02 | OPEN | Real-deposit single-scout recruitment remains unproven: fresh naive discovery difference +2.34375 percentage points, 95% paired interval [-8.59375, 12.5]. Local mechanism validity is not evidence of a significant colony recruitment benefit. | Dedicated social recruitment experiments separating route direction, geometry, trail age and encounter conditions; retain negative results. |
+| SD-03 | OPEN / permanent constraint | No global food knowledge, directed chemical arrows, selected seeds or uncalibrated coefficient tuning may conceal SD-01/02. Every uncalibrated biological number remains ENGINEERING_FIXTURE. | Enforce in each future model review; evidence-based changes require a recorded hypothesis and frozen protocol. |
+
+Evidence: S2_2_RESULTS.md, documents 29/30 and the unchanged experiments/s2_2 archive. S3 introduces no pheromone or route-choice coefficient changes. These debts remain visible for the next independent review and are not S3 blockers under the user's explicit decision.
+
 ## Biological research
 
 1. Unified task thresholds or separate brood/cleaning/digging schedulers? How to prevent excessive switching?
