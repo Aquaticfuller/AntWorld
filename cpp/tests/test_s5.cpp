@@ -395,6 +395,21 @@ void history(const std::filesystem::path &path) {
     filter.kind = FactKind::Diagnostic;
     filter.limit = 10000;
     require(store.history(filter).size() == 499, "kind filter differs from facts");
+    filter.begin = {200};
+    filter.end = {300};
+    filter.limit = 17;
+    filter.after = {};
+    std::size_t timed_count = 0;
+    for (;;) {
+        const auto page = store.history(filter);
+        if (page.empty())
+            break;
+        for (const auto &r : page)
+            require(r.fact.time >= filter.begin && r.fact.time < filter.end, "time page escaped range");
+        timed_count += page.size();
+        filter.after = page.back().fact.id;
+    }
+    require(timed_count == 100, "time-indexed cursor pages missed or duplicated facts");
     filter.limit = 0;
     rejects([&] { store.history(filter); });
     sql(path, "DELETE FROM participants WHERE event=(SELECT max(event) FROM participants)");

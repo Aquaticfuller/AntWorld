@@ -17,12 +17,16 @@ std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
         throw std::invalid_argument("invalid fact kind");
     std::string sql = "SELECT ";
     sql += history_columns;
-    sql += " FROM events WHERE world=? AND id>? AND time_ms>=? AND time_ms<?";
+    const bool timed =
+        !filter.individual && (filter.begin.milliseconds != 0 || filter.end.milliseconds != INT64_MAX);
+    sql += timed ? " FROM events INDEXED BY events_time" : " FROM events";
+    sql += " WHERE world=? AND id>? AND time_ms>=? AND time_ms<?";
     if (filter.individual)
         sql += " AND id IN (SELECT event FROM participants WHERE world=? AND individual=? AND event>?)";
     if (filter.kind)
         sql += " AND kind=?";
-    sql += " ORDER BY id LIMIT ?";
+    // Validated fact times are nondecreasing with EventId. Both orders yield the same cursor stream.
+    sql += timed ? " ORDER BY time_ms,id LIMIT ?" : " ORDER BY id LIMIT ?";
     Statement q(impl_->db, sql.c_str());
     q.text(1, filter.world.str());
     q.u64(2, filter.after.value);
