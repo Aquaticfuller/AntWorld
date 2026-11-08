@@ -13,7 +13,7 @@ This repository begins with a complete design baseline and engineering specifica
 
 ## Workflow
 
-Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user formally approved S2.2 and authorized only S3 physiology, nutrition and brood. Read S3_RESULTS.md and document 31 for current evidence and decisions; preserve S2.2 scientific validation debts in document 08. Preserve every earlier report and raw dataset as historical context. Stop before S4 pending independent review.
+Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user conditionally accepted S3 and authorized S4 excavation and connectivity. Read S4_RESULTS.md and document 32 for current evidence and decisions; preserve the S2/S3 scientific and technical debts in document 08. Preserve every earlier report and raw dataset as historical context. S4 is implemented for independent review. Stop before S5 until explicitly authorized.
 
 ## Unfinished research and implementation
 

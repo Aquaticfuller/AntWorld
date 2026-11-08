@@ -26,3 +26,11 @@ Performance: commit/query/SDF rebuild/navigation/save/restore time, p50/p95 wher
 ## Delivery
 
 Execute Debug, Release, ASan/UBSan, five GitHub CI jobs and clean-source restore/reproduction. Deliver S4_RESULTS.md, raw geometry/experiment/performance evidence, required figures and exact commands. Record failures honestly and keep the S3 nutrient redistribution and S2 trail debts visible. Stop at S4 for independent Code Review.
+
+## Implemented interpretation (after protocol freeze)
+
+The reach test bounds the entire edit box inside the individual's cubic reach envelope, then proves access to a local soil-air face. Body and load envelopes are also conservative cubes. Local portals are derived, versioned, one-quantum axis transitions with a proved empty swept envelope; bounded A* composes them into observer routes. The individual excavation model uses only local transitions and its experienced trace, not the observer route search. Global semantic chamber/portal lineage is deferred explicitly (TD-04).
+
+Only resident cached bricks need dirty entries; uncached bricks always rebuild from current authority. Edits invalidate resident bricks across the complete SDF/clearance halo. Cache warmness and dirty bookkeeping are excluded from canonical checkpoints. A failed explicit rebuild rolls back all touched cached entries.
+
+The frozen seeds are run in five conditions: one autonomous worker, four autonomous workers, reversed activation of the same four workers, and two overlapping manual dig requests in both submission orders. Autonomous windows are 60 seconds with 5-second samples and a 30-second restore split; overlap windows are 100 ms. These are ENGINEERING_FIXTURE observation windows. See raw/configuration.json for parameters and S4_RESULTS.md for actual outcomes and limits.

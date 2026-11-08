@@ -1,0 +1,31 @@
+{
+  "source_commit": "8b64d1affe318c310f3be7ca9142003bcf6794aa",
+  "s4": {
+    "summary.csv": {
+      "equal": true,
+      "sha256": "ca8f90266c708cd46d9830586d7d66bddc28c945172692909c46b98aaa615d2a"
+    },
+    "edits.csv": {
+      "equal": true,
+      "sha256": "b2220b37a15a1f3281db243ea3201704cc9599bb86280b955a902c41f81a7f68"
+    },
+    "trajectories.csv": {
+      "equal": true,
+      "sha256": "1a8d8f6f3fedd81091047038e859ff8bea4bdec4c0b09f80bb827fb512a2644c"
+    },
+    "configuration.json": {
+      "equal": true,
+      "sha256": "e61c257146764ad400c9cd2f8a7d57e7ff931b5a9676eb6328c8d4d0e7d614ac"
+    }
+  },
+  "s3_semantic_regression": {
+    "summary.csv": {
+      "rows": 1536,
+      "equal_except_physics_version": true
+    },
+    "individuals.csv": {
+      "rows": 5376,
+      "equal_except_physics_version": true
+    }
+  }
+}

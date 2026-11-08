@@ -1,0 +1,4 @@
+scope,ants,active_per_round,rounds,simulated_ms,advance_p50_us,advance_p95_us,submit_advance_p50_us,sim_seconds_per_advance_wall_second,checkpoint_bytes,save_ms,restore_ms
+ENGINEERING_FIXTURE,32,32,256,256000,22.8,29.3,28.5,40319.4,1311638,3.8935,3.7932
+ENGINEERING_FIXTURE,2000,32,256,256000,17.1,20.4,22.8,49353.2,1817414,5.1673,6.3022
+ENGINEERING_FIXTURE,20000,32,256,256000,17.1,19.9,22.9,57135.2,6443414,17.8566,34.1353

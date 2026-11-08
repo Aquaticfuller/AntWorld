@@ -33,6 +33,12 @@ jobs:
           ./build/ci/antworld_benchmark
           ./build/ci/antworld_s2_benchmark
           ./build/ci/antworld_s3_benchmark
+          ./build/ci/antworld_s4_benchmark build/ci/s4-performance.csv
+      - name: Reproduce all S4 seeds (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s4_experiment build/ci/s4-experiments 32
+          python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --report build/ci/s4-reproduction.json
 
   sanitizers:
     runs-on: ubuntu-24.04

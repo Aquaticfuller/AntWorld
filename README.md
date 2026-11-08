@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S3 physiology, nutrition, trophallaxis and brood**. Crop, carried material, body energy, hydration and retained protein have separate conserved accounts. Local transfers and automatic life stages preserve identity and deterministic continuation. See [S3 results](S3_RESULTS.md), [protocol](docs/31_S3_Implementation_and_Validation.md) and [reproduction](experiments/s3/README.md). All S0-S2.2 regressions and historical evidence remain. The S2.2 long-distance following and social recruitment debts remain open in [document 08](docs/08_Open_Questions.md). S4 is not authorized.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S4 3D excavation and connectivity**: ordered parametric box edits, exact soil inventories, conservative 3D clearance, versioned local portals, barrier-aware contact and disposable SDF caches. See [S4 results](S4_RESULTS.md), [frozen protocol](docs/32_S4_Implementation_and_Validation.md) and [reproduction](experiments/s4/README.md). All S0-S3 mechanisms, 71 inherited tests and original evidence remain. Long-distance trail following, social recruitment, nutrition redistribution and dense-contact scaling remain open in [document 08](docs/08_Open_Questions.md). S5 is not authorized.
 
 ## Build and test on Windows x64
 
@@ -17,12 +17,15 @@ The portable toolchain lives under ignored `.tools/`; no global installation or 
 ./build/release/antworld_s2_experiment.exe out/s2-experiments 16 1800000
 python tools/analyze_s2.py out/s2-experiments
 ./tools/benchmark_s2_windows.ps1
-./build/release/antworld_s2_1_experiment.exe out/s3-social-regression 64 s3
+./build/release/antworld_s2_1_experiment.exe out/s4-social-regression 64 s4
 ./build/release/antworld_s2_2_experiment.exe out/s2_2-local 512
 python tools/analyze_s2_1.py --check
 ./build/release/antworld_s3_experiment.exe out/s3-reproduction 64
 python tools/analyze_s3.py --check
 ./tools/benchmark_s3_windows.ps1
+./build/release/antworld_s4_experiment.exe out/s4-reproduction 32
+python tools/analyze_s4.py --check
+./build/release/antworld_s4_benchmark.exe out/s4-performance.csv
 ```
 
 Normal LLVM-MinGW builds link their C++ runtime statically, so the executable can run without the compiler directory on PATH. `--help` lists options. `--diagnostic-events 8` optionally schedules eight explicitly synthetic infrastructure events that draw RNG values at milliseconds 1 through 8. This does not simulate ants.
@@ -39,7 +42,28 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S3_RESULTS.md](S3_RESULTS.md); earlier reports preserve their historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S4_RESULTS.md](S4_RESULTS.md); earlier reports preserve their historical baselines.
+
+## Minimal S4 geometry use
+
+```cpp
+WorldRuntime world({1, 2}, 1); // ENGINEERING_FIXTURE, no calibrated excavation law.
+GeometryConfig geometry;
+const BoxQ room{{2, 2, 2}, {14, 22, 22}};
+world.configure_geometry(geometry, std::span{&room, 1});
+const PositionM depot{0.003, -0.010, 0.006};
+auto colony = world.seed_colony(depot);
+auto worker = world.seed_ant(colony, {depot, LifeStage::Adult, Caste::Worker, 20000});
+world.enable_physiology(worker, {{500, 0, 500, 0}, 1000000000, 1000, 0});
+world.set_behavior(worker, IndividualBehavior::Excavate);
+world.advance_to({60000});
+auto material = world.geometry_snapshot();
+auto parcels = world.soil_parcels();
+auto local_openings = world.query_portals(worker);
+world.set_behavior(worker, IndividualBehavior::Paused); // Soil is retained.
+```
+
+Geometry must be configured before seeding entities. If a surface fixture is also present, configure it first. Geometry-world positions lie on `origin_m + PointQ * quantum_m`; boxes are half-open. Contact/movement uses exact authoritative material, never an SDF sample as an unchecked collision result. `query_route()` is a bounded observer query; the individual model uses local openings/frontiers and its experienced return trace. `submit_soil()` supports explicit Excavate/Drop/Pickup/Fill fixture proposals for paused workers, with real parcel ownership. Deposited parcels are physical inventories, not granular pile geometry. Cache rebuilding is explicit and cannot change ecological facts or canonical checkpoint bytes.
 
 ## Minimal S3 nutrition use
 
@@ -109,7 +133,7 @@ Every numeric fixture is engineering-only. A proposal is pending until advance c
 - `scenarios/`, `schemas/`: original engineering fixtures and the broader P0 schema.
 - `contracts/`: future C ABI draft, not an implemented native plugin.
 
-All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 4 / physics 6 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails, physiology/configuration, crop, continuous remainders, budgets and owned wakeups. Earlier schema/physics versions are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
+All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 5 / physics 7 checkpoints retain entities, nutrition, lifecycle, clock/RNG, phase watermark, surface behavior and trails, plus initial geometry, ordered edits, material provenance/parcels, ledgers, soil requests and excavation memory/schedules. Derived indices rebuild on load; SDF warmness is not authoritative. Earlier schema/physics versions are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets, including geometry partition, index, cache and navigation limits. Record/event/save defaults are configurable, not permanent game/format constraints. Long-world history retention and geometry compaction remain later work.
 
 ## Verification and repository policy
 
@@ -124,11 +148,12 @@ python tools/analyze_s2.py experiments/s2_1/ablations --check
 python tools/analyze_s2_1.py --check
 python tools/analyze_s2_2.py --check
 python tools/analyze_s3.py --check
+python tools/analyze_s4.py --check
 ```
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.
 
-Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s3_windows.ps1` records these plus active physiology/nursing and sampled process memory. These fixtures do not establish full-colony or whole-map performance. Stop after S3 and obtain the next review before starting S4.
+Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `antworld_s3_benchmark` measures active physiology/nursing; `antworld_s4_benchmark` measures geometry commits, exact queries, SDF, navigation, saves and local/dense neighborhoods. These fixtures do not establish full-colony or whole-map performance. Stop after S4 and obtain the next review before starting S5.
 
 ## License
 

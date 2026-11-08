@@ -29,7 +29,7 @@ This is the v0.8 design and engineering handoff. S3 has received CONDITIONAL PAS
 
 ## Current implementation gate
 
-The user conditionally accepted S3 and authorized S4. Read documents 09-12 for geometry, document 31 for retained physiology, and document 32 for S4 implementation decisions and verification. SD-04 is due by S6; TD-01 must be resolved before S6 scale testing; underground contact must respect actual solid barriers in S4. Preserve all historical evidence and 71 tests. Deliver S4_RESULTS.md and stop for independent review before S5.
+The user conditionally accepted S3 and authorized S4. S4 is implemented for independent review; read S4_RESULTS.md, documents 09-12 for geometry, document 31 for retained physiology, and document 32 for frozen S4 decisions and verification. SD-04 is due by S6; TD-01 remains partly open before S6 scale testing; underground contact now respects actual solid barriers under the documented conservative fixture. Preserve all historical evidence and all 89 tests (71 inherited and 18 S4). Stop before S5 until explicitly authorized.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 

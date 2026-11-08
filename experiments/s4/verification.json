@@ -1,0 +1,31 @@
+{
+  "source_commit": "8b64d1affe318c310f3be7ca9142003bcf6794aa",
+  "compiler": "LLVM-MinGW 20261104 Clang 23.1.5",
+  "sanitizers": "AddressSanitizer and UndefinedBehaviorSanitizer, halt_on_error=1",
+  "checks": {
+    "debug": {
+      "status": "PASS",
+      "tests": 89,
+      "elapsed_seconds": 28.43,
+      "command": "./tools/build_windows.ps1 -Configuration Debug"
+    },
+    "release": {
+      "status": "PASS",
+      "tests": 89,
+      "elapsed_seconds": 7.69,
+      "command": "./tools/build_windows.ps1 -Configuration Release"
+    },
+    "sanitized": {
+      "status": "PASS",
+      "tests": 89,
+      "elapsed_seconds": 79.03,
+      "command": "./tools/build_windows.ps1 -Configuration Debug -BuildDirectory build/sanitized -Sanitizers"
+    },
+    "clean-source": {
+      "status": "PASS",
+      "tests": 89,
+      "elapsed_seconds": 7.93,
+      "command": "git archive SOURCE_COMMIT cpp scenarios; configure and build Release; ctest --output-on-failure"
+    }
+  }
+}

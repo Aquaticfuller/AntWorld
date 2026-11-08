@@ -1,0 +1,14 @@
+geometry_configuration rollback_points=21
+geometry_actor_index rollback_points=17
+geometry_proposal rollback_points=5
+geometry_excavate_ledger_energy rollback_points=58
+geometry_soil_drop rollback_points=7
+geometry_soil_pickup rollback_points=28
+geometry_loaded_move_index rollback_points=19
+geometry_fill_authority rollback_points=53
+geometry_restore_audit rollback_points=196
+geometry_cache_rebuild rollback_points=1864
+geometry_program_activate rollback_points=13
+geometry_local_decision rollback_points=227
+geometry_program_pause rollback_points=9
+PASS S4_ALLOCATION_FAILURE

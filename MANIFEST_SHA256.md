@@ -8,7 +8,7 @@ Files: 45 (excluding the manifest itself).
 | Path | SHA-256 | Bytes |
 |---|---|---:|
 | `AGENTS.md` | `aa34ca6e14d90bd675db98ea0ca44c3db67a2ee405f7c09d358ec6fb7e2ffd42` | 4381 |
-| `CODEX_START_HERE.md` | `d4d0094995c0c5e4ec04f5748048721a97c923f41a4681ebb4101073f8561b7b` | 3541 |
+| `CODEX_START_HERE.md` | `ee6b8ed9e096162019476d15dba169674afd98d9d867014e5022769020f381e1` | 3637 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 45 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `724dcd1b2009665ab17410c5aa1c7f65d4a079e11932142783808357deee695c` | 10203 |
+| `docs/08_Open_Questions.md` | `09e6f509bf65a5bb89a5a3453e1c89e505e736874846b853454880ffe3a10fb3` | 12248 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -45,9 +45,9 @@ Files: 45 (excluding the manifest itself).
 | `docs/29_S2_2_Validation_Protocol.md` | `2c42319df94cc40e37c7be2156bcf2f556976f023d692592414b5d2c01ddb4d5` | 9569 |
 | `docs/30_S2_2_Literature_and_Model_Rationale.md` | `5952289034d13ebfca18920beb6868bfbc26d064bdf26466bb4f9510cc390bfb` | 4613 |
 | `docs/31_S3_Implementation_and_Validation.md` | `6ecc2c75102cdc031150a08737bce23d295105b49da3ccc6056713c19fe46911` | 7515 |
-| `docs/32_S4_Implementation_and_Validation.md` | `5fb338b1a6c453965971a568e411f9e416bb2da417d4211382d70cceea5a471b` | 6716 |
+| `docs/32_S4_Implementation_and_Validation.md` | `2ce58875b9d6edca61d85f4898abf67d9365808909a7cc39930220c9bf2074c2` | 8082 |
 | `docs/CHANGELOG.md` | `103aaa654629b8f6fedfb7e608d4221a5e9f34d6c77a469a9cb9c028ace425fb` | 7581 |
-| `README_HANDOFF.md` | `7a1a40e4fe649e31a1e4de16bbe8e13c1a2add2b4c194afd8a8a432411182033` | 2038 |
+| `README_HANDOFF.md` | `81db5802a32a7506d6861c90c139bc2247b7349c7bf8c35e06b7aca24e7f0e70` | 2083 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
