@@ -28,7 +28,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Record units on data; default world coordinates in meters, X east/Y up/Z north, mass micrograms, energy joules, time strong int64 milliseconds.
 - Stable IDs are never reused; cross-world references include WorldId.
 - A proposed action is not a committed fact event. No fabricated event history.
-- C++ ABI boundaries must be stable and not expose STL/exception/owned native pointer; `contracts/antworld_c_api_v1.h` is a **draft for later**, not a task for S0.
+- C++ ABI boundaries must be stable and not expose STL/exception/owned native pointer; `contracts/antworld_c_api_v1.h` is a **draft for later**, not a task for S2.
 - Build from a clean repo with reproducible commands; pin any external build dependencies. Never require machine-specific paths or secrets.
 - Do not wire external model APIs, persistent shell/network tools or API keys into the C++ core.
 
