@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S4 has received CONDITIONAL PASS with explicit S5 authorization. The current batch is S5 durable saves, history and analytics; S6 is not authorized.
+This is the v0.8 design and engineering handoff. S5 has received CONDITIONAL PASS with explicit S6 authorization. The current batch is S6 integrated ecology; S7 is not authorized.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ This is the v0.8 design and engineering handoff. S4 has received CONDITIONAL PAS
 
 ## Current implementation gate
 
-The user conditionally accepted S4 and authorized S5. Read S4_RESULTS.md, documents 19/22 for persistence contracts, document 32 for retained geometry, and document 33 for the S5 protocol. SD-04 is due by S6; TD-01 remains partly open before S6 scale testing; TD-03 requires 1,000/5,000/10,000-edit storage measurements in S5. Preserve all historical evidence and all 89 inherited tests. Stop after S5 for independent review.
+The user conditionally accepted S5 and authorized S6. Read S5_RESULTS.md and documents 19/22/33/34 for retained persistence, document 31 for physiology and the seed-43 defect, document 32 for geometry, and document 35 for the frozen S6 protocol. Begin with SD-04 local nutrition redistribution and TD-01 contact baselines/optimization. Preserve TD-03/06 history and storage limits, SD-01/02/06 scientific limits, all historical data and all 108 inherited tests. Stop after S6 for independent review.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 

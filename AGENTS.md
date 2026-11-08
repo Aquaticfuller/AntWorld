@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S5 Durable Saves, History and Analytics only**, explicitly authorized after conditional S4 approval. Work on codex/s5-durable-history from S4 commit 214fce3. Preserve all 89 S0-S4 tests and historical evidence, single-writer rollback, identity, deterministic scheduling and resource conservation. Follow documents 19, 22 and 33 for application-layer atomic SQLite saves, recovery, factual history and defined analytics. Measure 1,000/5,000/10,000 geometry edits without losing authority or evidence. Preserve document-08 debts and deadlines. No global nutrition averaging or food oracle. S6-S9, Unity and Game Master remain unauthorized.
+**Current authorized batch: S6 Integrated Ecological Loop only**, explicitly authorized after conditional S5 approval. Work on codex/s6-integrated-ecology from S5 commit 54fc129. Preserve all 108 S0-S5 tests and historical evidence, single-writer rollback, identity, deterministic scheduling and resource conservation. Freeze and follow document 35. Resolve the SD-04 engineering defect with local demand-sensitive exchange and surplus redistribution; establish TD-01 baseline and bounded encounter performance before integrated scale experiments. Keep all TD-03/06 history intact and retain SD-01/02/06 scientific limitations. No global nutrition averaging, food oracle or forced survival. S7-S9, Unity and Game Master remain unauthorized.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve all 89 S0-S4 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, crash recovery, history reconciliation and long-history performance checks for S5.
-- Follow document 33 and produce S5_RESULTS.md, metric definitions, raw experimental/performance evidence and reproducible commands.
-- Finish **only S5**, commit the reviewable evidence and stop for review. S6-S9 are not authorized in this run.
+- Preserve all 108 S0-S5 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, multi-seed integration, local nutrition, dense contact, geometry, durable recovery, history reconciliation and relevant performance checks for S6.
+- Follow document 35 and produce S6_RESULTS.md, frozen protocol, raw experimental/performance evidence, figures and reproducible commands.
+- Finish **only S6**, commit the reviewable evidence and stop for review. S7-S9 are not authorized in this run.

@@ -41,7 +41,7 @@ S4 evidence: S4_RESULTS.md and experiments/s4. All S0-S3 reports and raw archive
 
 ## S5 storage and analytics debt
 
-S5 implementation and engineering evidence are submitted for independent review; no S6 approval is inferred. Document 33 was frozen before changes. The core remains storage-independent and physics stays 7. All 89 inherited tests and earlier raw archives remain. The complete S3 matrix still retains seed 43's failed fourth emergence; the S5 seed-1..32 persistence subset does not close SD-04.
+S5 independent Code Review returned CONDITIONAL PASS with explicit S6 authorization. This does not close the scientific or scale debts. Document 33 was frozen before changes. The core remains storage-independent and physics stays 7. All 89 inherited tests and earlier raw archives remain. The complete S3 matrix still retains seed 43's failed fourth emergence; the S5 seed-1..32 persistence subset does not close SD-04.
 
 | ID | Status | Evidence / next review question |
 |---|---|---|
@@ -49,6 +49,10 @@ S5 implementation and engineering evidence are submitted for independent review;
 | TD-07 | OPEN; broader durability/platform validation | Process termination, partial WAL writes and injected write/sync failures pass. Physical power cuts, faulty device caches, network filesystems, background save orchestration and authenticated archives are not tested/implemented. SQLite FULL relies on synchronization being honored; use local same-host WAL storage. FNV hashes are accidental-corruption checks only. Older checkpoint-schema migration remains explicit future work. |
 
 S5 indexed time queries fix the measured current-day history scan (day 365: 15.699 to 0.378 ms); both raw runs remain. This does not resolve TD-01 dense contacts, TD-04 shape/semantic-region limits or TD-05's S7 versioned geometry notification API. SD-04 remains due by S6, TD-01 before S6 scale tests, and SD-06 requires separately reviewed nesting biology. No coefficients, global information or directional chemical cues were added.
+
+## S6 entry gate and retained debts
+
+Document 35 is frozen before implementation. SD-04 local demand-sensitive exchange and surplus redistribution must be researched and validated first, without global averaging. TD-01 requires measured candidate/scheduling optimization before S6 scale experiments; a spatial index alone is insufficient at dense co-location. Preserve TD-03/06 synchronous ~0.9 s saves at 10,000 edits and growing full history: later non-blocking persistence, archival and memory budgets may not delete facts to manufacture speed. SD-01/02/06 remain open scientific limits on long-distance trails, social recruitment and realistic nesting. The integrated loop is an ENGINEERING_FIXTURE and may decline or die; it must not guarantee growth by changing rates or adding unsourced nutrients. All 108 tests and S5 raw data remain immutable evidence. S7-S9 remain unauthorized.
 
 ## Biological research
 
