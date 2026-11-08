@@ -1,0 +1,51 @@
+{
+  "scenario_schema_version": 1,
+  "scenario_name": "p0_biology_fixture",
+  "status": "ENGINEERING_FIXTURE",
+  "world": {
+    "world_id": "da3cb131-cdfa-4662-9fa7-95b35da441a1",
+    "seed": 256824,
+    "model_version": "p0-reference-0",
+    "time_unit": "ms",
+    "position_unit": "m",
+    "mass_unit": "ug",
+    "bounds_m": { "x_min": -1, "x_max": 1, "y_min": -0.3, "y_max": 0.2, "z_min": -1, "z_max": 1 }
+  },
+  "colonies": [
+    {
+      "colony_id": 1,
+      "species_id": "lasius_niger_TEST_UNCALIBRATED",
+      "initial_queen_adults": 1,
+      "initial_worker_adults": 32,
+      "initial_eggs": 4,
+      "initial_larvae": 6,
+      "initial_pupae": 2,
+      "nest_center_m": { "x": 0, "y": -0.08, "z": 0 },
+      "nest_entrance_m": { "x": 0, "y": 0, "z": 0 },
+      "has_diggable_frontier": true
+    }
+  ],
+  "food_sources": [
+    {
+      "resource_id": 1,
+      "kind": "carbohydrate_liquid_TEST",
+      "position_m": { "x": 0.45, "y": 0, "z": 0.10 },
+      "total_mass_ug": 4000,
+      "carbs_ug": 1000,
+      "protein_ug": 0,
+      "water_ug": 3000,
+      "other_mass_ug": 0
+    },
+    {
+      "resource_id": 2,
+      "kind": "prey_food_TEST",
+      "position_m": { "x": -0.45, "y": 0, "z": -0.1 },
+      "total_mass_ug": 5000,
+      "carbs_ug": 0,
+      "protein_ug": 2000,
+      "water_ug": 2500,
+      "other_mass_ug": 500
+    }
+  ],
+  "requested_observation_ms": 86400000
+}

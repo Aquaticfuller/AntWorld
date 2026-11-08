@@ -1,0 +1,23 @@
+# Local CMake builds and generated diagnostics
+/build/
+/build-*/
+/out/
+CMakeUserPresets.json
+
+# Local editor state
+.vs/
+*.user
+*.suo
+
+# Python cache used by handoff tooling
+__pycache__/
+*.py[cod]
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+
+# OS metadata
+.DS_Store
+Thumbs.db

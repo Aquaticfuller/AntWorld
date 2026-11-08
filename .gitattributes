@@ -1,0 +1,3 @@
+# Preserve reproducible text bytes across Windows and other platforms.
+* text=auto eol=lf
+*.zip binary

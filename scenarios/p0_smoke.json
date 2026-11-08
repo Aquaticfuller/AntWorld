@@ -1,0 +1,17 @@
+{
+  "scenario_schema_version": 1,
+  "scenario_name": "p0_smoke",
+  "status": "ENGINEERING_FIXTURE",
+  "world": {
+    "world_id": "381b1f47-91b8-4b2d-9d51-967a3e2b2a01",
+    "seed": 12345,
+    "model_version": "p0-reference-0",
+    "time_unit": "ms",
+    "position_unit": "m",
+    "mass_unit": "ug",
+    "bounds_m": { "x_min": -1, "x_max": 1, "y_min": -0.3, "y_max": 0.2, "z_min": -1, "z_max": 1 }
+  },
+  "colonies": [],
+  "food_sources": [],
+  "requested_observation_ms": 60000
+}

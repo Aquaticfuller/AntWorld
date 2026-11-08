@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AntWorld P0 scenario (engineering fixture schema)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenario_schema_version", "scenario_name", "status", "world", "colonies", "food_sources", "requested_observation_ms"],
+  "properties": {
+    "scenario_schema_version": { "const": 1 },
+    "scenario_name": { "type": "string", "minLength": 1 },
+    "status": { "const": "ENGINEERING_FIXTURE" },
+    "world": {
+      "type": "object", "additionalProperties": false,
+      "required": ["world_id", "seed", "model_version", "time_unit", "position_unit", "mass_unit", "bounds_m"],
+      "properties": {
+        "world_id": { "type": "string", "format": "uuid" },
+        "seed": { "type": "integer", "minimum": 0 },
+        "model_version": { "type": "string" },
+        "time_unit": { "const": "ms" },
+        "position_unit": { "const": "m" },
+        "mass_unit": { "const": "ug" },
+        "bounds_m": {
+          "type": "object", "additionalProperties": false,
+          "required": ["x_min", "x_max", "y_min", "y_max", "z_min", "z_max"],
+          "properties": {
+            "x_min": { "type": "number" }, "x_max": { "type": "number" },
+            "y_min": { "type": "number" }, "y_max": { "type": "number" },
+            "z_min": { "type": "number" }, "z_max": { "type": "number" }
+          }
+        }
+      }
+    },
+    "colonies": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["colony_id", "species_id", "initial_queen_adults", "initial_worker_adults", "initial_eggs", "initial_larvae", "initial_pupae", "nest_center_m", "nest_entrance_m", "has_diggable_frontier"],
+        "properties": {
+          "colony_id": { "type": "integer", "minimum": 1 },
+          "species_id": { "type": "string" },
+          "initial_queen_adults": { "type": "integer", "minimum": 0 },
+          "initial_worker_adults": { "type": "integer", "minimum": 0 },
+          "initial_eggs": { "type": "integer", "minimum": 0 },
+          "initial_larvae": { "type": "integer", "minimum": 0 },
+          "initial_pupae": { "type": "integer", "minimum": 0 },
+          "nest_center_m": { "$ref": "#/$defs/vec3" },
+          "nest_entrance_m": { "$ref": "#/$defs/vec3" },
+          "has_diggable_frontier": { "type": "boolean" }
+        }
+      }
+    },
+    "food_sources": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["resource_id", "kind", "position_m", "total_mass_ug", "carbs_ug", "protein_ug", "water_ug", "other_mass_ug"],
+        "properties": {
+          "resource_id": { "type": "integer", "minimum": 1 },
+          "kind": { "type": "string" },
+          "position_m": { "$ref": "#/$defs/vec3" },
+          "total_mass_ug": { "type": "integer", "minimum": 0 },
+          "carbs_ug": { "type": "integer", "minimum": 0 },
+          "protein_ug": { "type": "integer", "minimum": 0 },
+          "water_ug": { "type": "integer", "minimum": 0 },
+          "other_mass_ug": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "requested_observation_ms": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "object", "additionalProperties": false,
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": { "type": "number" }, "y": { "type": "number" }, "z": { "type": "number" }
+      }
+    }
+  }
+}
