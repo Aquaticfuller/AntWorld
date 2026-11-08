@@ -122,11 +122,84 @@ def analyze(baseline_only):
                target/'departure_survival.csv': render(survival), target/'input_hashes.json': json.dumps(hashes, indent=2, sort_keys=True)+'\n'}
     if not baseline_only:
         outputs[ROOT/'S2_2_EXPERIMENTS.csv'] = render(combined)
+        old = {(r['context'], r['age_ms'], r['persistence_weight'], r['seed'], r['mirror'], r['treatment']): r for r in combined if r['model'] == 's2.1'}
+        model_groups = defaultdict(list)
+        for r in combined:
+            if r['model'] != 's2.2':
+                continue
+            prior = old[r['context'], r['age_ms'], r['persistence_weight'], r['seed'], r['mirror'], r['treatment']]
+            if r['treatment'] in ('absent', 'blind') or r['context'] in ('y_symmetric', 'y_conflict', 'visited'):
+                assert r['trajectory'] == prior['trajectory']
+            if r['context'] in ('straight', 'bend'):
+                assert all(r[k] == prior[k] for k in ('initial_streak', 'first_deviation_step'))
+            if r['primary'] == '1' and r['treatment'] == 'present':
+                model_groups[r['context']].append(r)
+        changes = []
+        for context, group in sorted(model_groups.items()):
+            for metric in METRICS:
+                def delta(r):
+                    prior = old[context, r['age_ms'], r['persistence_weight'], r['seed'], r['mirror'], 'present']
+                    return float(r[metric])-float(prior[metric])
+                mean, low, high = interval(cluster(group, delta), (context, metric) in PRIMARY_BOOT)
+                changes.append(dict(context=context, metric=metric, difference=mean, ci_low=low, ci_high=high,
+                                    contrast='s2.2-minus-s2.1-present', seed_clusters=512))
+        outputs[DATA/'model_effects.csv'] = render(changes)
+        outputs.update(social_analysis())
     for model in (v[1] for v in versions):
         for r in pairs:
             if r['model'] == model and r['age_ms'] == 0 and r['persistence_weight'] == 20 and (r['context'], r['metric']) in PRIMARY_BOOT:
                 print(f"{model} {r['context']} {r['metric']}: delta={r['difference']:.6f}, 95%=[{r['ci_low']:.6f},{r['ci_high']:.6f}]")
     return outputs
+
+
+def social_analysis():
+    grouped, indexed = defaultdict(list), {}
+    for path, model, physics in ((ROOT/'experiments/s2_1/fixed/social.csv', 's2.1', '4'), (DATA/'social/social.csv', 's2.2', '5')):
+        rows = read(path); assert len(rows) == 1152
+        for r in rows:
+            assert r['model'] == model and r['physics_version'] == physics and r['trained'] == '1'
+            assert r['memory_enabled'] == r['initial_memory_cells'] == '0'
+            assert int(r['followup_ms']) == (int(r['first_discovery_ms']) if r['discovery_observed'] == '1' else 180000)
+            assert 0 <= int(r['delivered_ug']) <= int(r['collected_ug']) <= 3999000
+            key = model, r['seed'], r['orientation'], r['release_delay_ms'], r['treatment']; assert key not in indexed; indexed[key] = r
+            grouped[model, int(r['release_delay_ms']), r['treatment']].append(r)
+    for key, r in indexed.items():
+        model, seed, side, delay, treatment = key
+        if treatment == 'blind':
+            absent = indexed[model, seed, side, delay, 'absent']
+            assert all(r[k] == absent[k] for k in ('first_discovery_ms', 'path_window_m', 'delivered_ug', 'route_overlap_fraction'))
+        if model == 's2.2':
+            old = indexed['s2.1', seed, side, delay, treatment]
+            assert all(r[k] == old[k] for k in ('training_delivery_ms', 'release_time_ms', 'trace_edges', 'release_trail_units'))
+            if treatment in ('absent', 'blind'):
+                assert all(r[k] == old[k] for k in ('first_discovery_ms', 'path_window_m', 'delivered_ug', 'route_overlap_fraction'))
+        if delay == '600000' and treatment == 'present':
+            absent = indexed[model, seed, side, delay, 'absent']
+            assert r['release_trail_units'] == '0' and r['first_discovery_ms'] == absent['first_discovery_ms']
+    summary, effects = [], []
+    for (model, delay, treatment), group in sorted(grouped.items()):
+        assert len(group) == 128
+        for source, metric, scale in (('discovery_observed', 'discovery_rate', 1), ('followup_ms', 'restricted_discovery_s', 1000),
+                                      ('route_overlap_fraction', 'route_overlap', 1), ('path_before_discovery_m', 'path_m', 1), ('delivered_ug', 'delivered_ug', 1)):
+            mean, low, high = interval(cluster(group, lambda r: float(r[source])/scale))
+            summary.append(dict(model=model, age_ms=delay, treatment=treatment, metric=metric, mean=mean, ci_low=low, ci_high=high, seed_clusters=64))
+            if treatment == 'present':
+                def delta(r):
+                    a = indexed[model, r['seed'], r['orientation'], str(delay), 'absent']
+                    return (float(r[source])-float(a[source]))/scale
+                mean, low, high = interval(cluster(group, delta), True)
+                effects.append(dict(model=model, age_ms=delay, metric=metric, difference=mean, ci_low=low, ci_high=high, seed_clusters=64, method='cluster-bootstrap-4096-seed2202'))
+    # Choice diagnostics and no-signal ablation outcomes must survive the narrow correction unchanged.
+    old_choices, new_choices = read(ROOT/'experiments/s2_1/fixed/choices.csv'), read(DATA/'social/choices.csv')
+    assert len(old_choices) == len(new_choices) == 24576
+    for a, b in zip(old_choices, new_choices):
+        assert all(a[k] == b[k] for k in a if k not in ('model', 'physics_version'))
+    old_runs, new_runs = read(ROOT/'experiments/s2_1/ablations/summary.csv'), read(DATA/'ablations/summary.csv')
+    assert len(old_runs) == len(new_runs) == 128
+    for a, b in zip(old_runs, new_runs):
+        if a['treatment'] in ('none', 'memory'):
+            assert a == b
+    return {DATA/'social_summary.csv': render(summary), DATA/'social_effects.csv': render(effects)}
 
 
 def main():

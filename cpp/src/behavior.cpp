@@ -92,17 +92,30 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
         } else choice.forget_memory = true;
     }
     if (!local.step_count) return choice;
+    // A bounded local correction: do not veto the only visible signal merely
+    // because it is on the experienced predecessor. No direction-to-food cue.
+    std::uint32_t visible_signals = 0; bool predecessor_signal = false;
+    if (config.trails_enabled && config.trail_weight && state.path_size > 1) {
+        for (std::uint32_t i = 0; i < local.step_count; ++i) if (local.steps[i].trail_units >= config.trail_cutoff_units) {
+            ++visible_signals;
+            if (local.steps[i].cell == state.path[state.path_size-2]) predecessor_signal = true;
+        }
+    }
+    const bool allow_correction = predecessor_signal && visible_signals == 1;
+    const auto excluded = [&](Cell cell) {
+        return !allow_correction && local.step_count > 1 && state.path_size > 1 && cell == state.path[state.path_size-2];
+    };
     // Numerical precision, not a stronger biological coefficient. Keep the old
     // integer draw when no eligible signal contributes, including the blind control.
     std::uint64_t scale = 1;
     if (config.trails_enabled && config.trail_weight) for (std::uint32_t i = 0; i < local.step_count; ++i) {
-        if (local.step_count > 1 && state.path_size > 1 && local.steps[i].cell == state.path[state.path_size-2]) continue;
+        if (excluded(local.steps[i].cell)) continue;
         if (local.steps[i].trail_units >= config.trail_cutoff_units) scale = UINT64_C(1) << 20;
     }
     std::array<std::uint64_t, 4> weights{}; std::uint64_t total = 0;
     for (std::uint32_t i = 0; i < local.step_count; ++i) {
         const auto& step = local.steps[i];
-        if (local.step_count > 1 && state.path_size > 1 && step.cell == state.path[state.path_size-2]) continue;
+        if (excluded(step.cell)) continue;
         bool visited = false;
         for (std::uint32_t j = 0; j < state.path_size; ++j) if (state.path[j] == step.cell) visited = true;
         auto weight = (visited ? std::uint64_t{1} : config.explore_weight)*scale;

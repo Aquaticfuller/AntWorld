@@ -33,6 +33,8 @@ Older milestone numbers and reused experiment labels must be interpreted with th
 
 ## Confirmed direction
 
+Current S2.2 validation: [29: frozen protocol](29_S2_2_Validation_Protocol.md), [30: primary literature and rationale](30_S2_2_Literature_and_Model_Rationale.md), and S2_2_RESULTS.md. Earlier reports and data remain historical evidence. S3 is not authorized.
+
 Unity/C# client, independent authoritative C++ core, an expandable 24 x 24 meter first complete world, multiple colonies, Lasius niger as the first focus species, local individual behavior, an observing GM rather than an ant brain, true 3D excavation, detailed statistics and continuous individual histories, and one persistent GM identity across worlds.
 
 The GM harness, species calibration, SDF brick dimensions, LOD update rates and full ecological performance are unresolved. All demonstration constants remain engineering fixtures unless specifically calibrated.

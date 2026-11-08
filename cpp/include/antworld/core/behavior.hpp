@@ -15,7 +15,7 @@ inline constexpr std::size_t route_storage_capacity = 64;
 inline constexpr std::size_t perception_storage_capacity = 25; // Manhattan radius <= 3.
 
 // All numeric behavior parameters are ENGINEERING_FIXTURE, unchanged from s2-local-v1.
-// S2.1 changes choice semantics (physics v4), not these coefficients.
+// S2.1/S2.2 change choice semantics (physics v4/v5), not these coefficients.
 struct SurfaceConfig {
     PositionM origin_m{-0.1, 0, -0.1}; // Center of cell (0,0).
     std::uint32_t width{21}, height{21};

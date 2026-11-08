@@ -1,5 +1,13 @@
 # Design and implementation changelog
 
+## 2026-11-08: S2.2 local trail mechanism validation
+
+- Froze a literature-informed protocol before model changes and recorded all 55,296 S2.1 local-assay baseline trials.
+- Validated mirrored junction choice and multi-step open-arena following separately from colony recruitment.
+- Allowed a weighted correction towards the experienced predecessor only when it is the sole adjacent visible signal; retained the visited penalty, every coefficient and all higher-priority rules.
+- Physics is 5, binary schema remains 3. Previous physics versions are rejected atomically.
+- Retained all 51 earlier tests, added five registrations, and reran the unchanged social and broad ablation matrices. Reports preserve negative findings, planned sensitivity and literature limits. S3 remains unauthorized.
+
 ## 2026-11-08: S2.1 foraging validation and fixes
 
 - User authorized an independent S2.1 validation branch and explicitly withheld S3.

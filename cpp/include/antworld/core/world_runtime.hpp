@@ -25,7 +25,7 @@ struct WorldSnapshot {
 class WorldRuntime {
 public:
     static constexpr std::uint32_t schema_version = 3;
-    static constexpr std::uint32_t physics_version = 4;
+    static constexpr std::uint32_t physics_version = 5;
     static constexpr std::size_t max_records = 65536;
     static constexpr std::size_t max_same_time_events = 1024;
 

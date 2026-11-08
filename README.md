@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S2.1 foraging model validation and fixes**, retaining S2 local sensing, exploration, physical food collection/return, sparse colony trails and bounded route memory. Equal food ties no longer prefer ResourceId, and fractional trail responses retain numerical precision. Controlled naive-worker experiments do not establish a reliable positive recruitment benefit. See [S2.1 results](S2_1_RESULTS.md) and [raw evidence and reproduction](experiments/s2_1/README.md). S0/S1 transactions, conservation and checkpoints remain. Physiology, 3D excavation, Unity, database and Agent integrations are later stages.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S2.2 trail-following mechanism validation**. Controlled local assays demonstrate marked-arm preference and sustained trail influence; a minimal correction admits an experienced predecessor when it is the only adjacent signal. Coefficients are unchanged. The original social recruitment experiment still does not establish a reliable discovery benefit. See [S2.2 results](S2_2_RESULTS.md), [protocol](docs/29_S2_2_Validation_Protocol.md) and [evidence/reproduction](experiments/s2_2/README.md). S0-S2.1 transactions, conservation and regression tests remain. S3 and later integrations are not authorized.
 
 ## Build and test on Windows x64
 
@@ -17,7 +17,8 @@ The portable toolchain lives under ignored `.tools/`; no global installation or 
 ./build/release/antworld_s2_experiment.exe out/s2-experiments 16 1800000
 python tools/analyze_s2.py out/s2-experiments
 ./tools/benchmark_s2_windows.ps1
-./build/release/antworld_s2_1_experiment.exe out/s2_1-experiments 64 s2.1
+./build/release/antworld_s2_1_experiment.exe out/s2_2-social 64 s2.2
+./build/release/antworld_s2_2_experiment.exe out/s2_2-local 512
 python tools/analyze_s2_1.py --check
 ```
 
@@ -86,7 +87,7 @@ Every numeric fixture is engineering-only. A proposal is pending until advance c
 - `scenarios/`, `schemas/`: original engineering fixtures and the broader P0 schema.
 - `contracts/`: future C ABI draft, not an implemented native plugin.
 
-All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 3 / physics 4 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails and evidence counters. Earlier physics versions, including S2 physics 3, are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
+All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 3 / physics 5 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails and evidence counters. Earlier physics versions, including S2.1 physics 4, are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
 
 ## Verification and repository policy
 
@@ -99,6 +100,7 @@ python tools/check_repository.py
 python tools/analyze_s2.py experiments/s2 --check
 python tools/analyze_s2.py experiments/s2_1/ablations --check
 python tools/analyze_s2_1.py --check
+python tools/analyze_s2_2.py --check
 ```
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.

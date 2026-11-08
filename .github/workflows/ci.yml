@@ -24,6 +24,8 @@ jobs:
           python tools/analyze_s2.py experiments/s2 --check
           python tools/analyze_s2.py experiments/s2_1/ablations --check
           python tools/analyze_s2_1.py --check
+          python tools/analyze_s2.py experiments/s2_2/ablations --check
+          python tools/analyze_s2_2.py --check
       - name: Configure
         run: cmake -S cpp -B build/ci -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
       - name: Build

@@ -1,0 +1,22 @@
+[
+  {
+    "Benchmark": "antworld_s2_benchmark",
+    "SampledPeakWorkingSetBytes": 160677888,
+    "ProcessWallMs": 1311.9913
+  },
+  {
+    "Benchmark": "antworld_s1_benchmark",
+    "SampledPeakWorkingSetBytes": 43085824,
+    "ProcessWallMs": 425.9477
+  },
+  {
+    "Benchmark": "antworld_scheduler_benchmark",
+    "SampledPeakWorkingSetBytes": 2756608,
+    "ProcessWallMs": 312.3842
+  },
+  {
+    "Benchmark": "antworld_benchmark",
+    "SampledPeakWorkingSetBytes": 4517888,
+    "ProcessWallMs": 312.4784
+  }
+]

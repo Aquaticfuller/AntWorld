@@ -161,9 +161,9 @@ int main(int argc, char** argv) {
             const std::string_view arg(argv[2]); const auto [end, error] = std::from_chars(arg.data(), arg.data()+arg.size(), seeds);
             if (error != std::errc{} || end != arg.data()+arg.size() || !seeds || seeds > 64) throw std::invalid_argument("invalid seed count");
         }
-        const std::string_view model = argc > 3 ? argv[3] : (WorldRuntime::physics_version == 3 ? "s2-baseline" : "s2.1");
-        if (model != "s2-baseline" && model != "s2.1") throw std::invalid_argument("invalid model label");
-        if ((model == "s2-baseline" && WorldRuntime::physics_version != 3) || (model == "s2.1" && WorldRuntime::physics_version != 4))
+        const std::string_view compiled = WorldRuntime::physics_version == 3 ? "s2-baseline" : (WorldRuntime::physics_version == 4 ? "s2.1" : "s2.2");
+        const std::string_view model = argc > 3 ? argv[3] : compiled;
+        if (model != compiled)
             throw std::invalid_argument("model label does not match the compiled physics version");
         const std::filesystem::path root(argv[1]); std::filesystem::create_directories(root);
         std::ofstream rows(root/"social.csv"), fields(root/"fields.csv"), choices(root/"choices.csv");
