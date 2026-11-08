@@ -26,11 +26,16 @@ S3 independent review: CONDITIONAL PASS, with explicit permission to start S4. *
 
 ## S4 geometry implementation debt
 
+S4 independent Code Review: CONDITIONAL PASS, with explicit S5 authorization. TD-02's implemented barrier checks passed this review; its conservative-envelope limitation remains. The following debts are not closed by this approval.
+
 | ID | Status | Evidence / next review question |
 |---|---|---|
-| TD-03 | OPEN | Ordered box edits are indexed locally, but repeated overlapping histories still increase local classification and strict replay cost. The 1,000-edit alternating-patch fixture restores in about 131 ms median, versus 4.23 ms at 200 edits on the recorded host. Add verified history acceleration/compaction before long-world operation without changing parametric authority. No 10,000-edit or months-long storage claim. |
+| TD-03 | OPEN; mandatory S5 measurement | S4 alternating-patch restoration is 4.23 ms at 200 edits and 131.26 ms at 1,000. S5 must measure 1,000/5,000/10,000 edits: checkpoint/database size, serialization, durable write, restoration and memory. Any acceleration/checkpoint/compaction must retain ordered parametric authority, historical evidence and deterministic continuation. |
 | TD-04 | OPEN | S4 uses axis-aligned boxes on a 0.5 mm fixture quantum, cubic body/load/reach envelopes and bounded six-neighbor 3D navigation. Local portals carry source revisions, but persistent chamber/portal semantic identity and lineage are not implemented. Curved tools, orientation-dependent clearance, heterogeneous soil, compaction ratios, granular piles, collapse, climate and meshes remain future work under their respective gates. |
 | SD-06 | OPEN | The excavation loop chooses local frontiers/steps and returns along experienced traces to a known depot. It establishes actual removal and transport under a declared fixture, not a calibrated Lasius niger nest-building model. No global blueprint, food coordinates, climate mechanism or pheromone retuning was introduced. S2 long-distance following/recruitment and S3 nutrition redistribution remain open. |
+| TD-05 | OPEN; S7 Geometry Dirty API | Resident SDF-cache invalidation is not a complete geometry-change stream. S7 requires a separate versioned geometry notification interface with changed bounds, source versions and cursor/gap semantics, including edits where no cache brick exists. |
+
+SD-06 closure requires separately reviewed biological validation of colony demand, brood, temperature/moisture and spatial chamber organization. TD-04's boxes and six-axis paths do not establish realistic nest morphology; complex tunnels, chambers, pile collisions and semantic region identity remain later work. TD-01's dense co-location cost remains due before S6 scale tests.
 
 S4 evidence: S4_RESULTS.md and experiments/s4. All S0-S3 reports and raw archives remain unchanged. The S3 1,536-run matrix was rerun under physics 7 and matches every original biological metric (including seed 43), excluding the intentional version label.
 

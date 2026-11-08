@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S4 3D Excavation and Connectivity only**, explicitly authorized after conditional S3 approval. Work on codex/s4-excavation-connectivity from S3 commit 288b013. Preserve all 71 S0-S3 tests and historical evidence, single-writer rollback, identity, deterministic scheduling and resource conservation. Implement authoritative InitialSolid plus ordered parametric edits, derived local SDF, actual soil carrying/deposition/fill, 3D clearance/connectivity and immediate route validation after blockage. Contact-qualified behavior must respect solid barriers. Preserve document-08 debts: SD-04 nutrition redistribution must be validated by S6, TD-01 contact scaling resolved before S6 scale tests. No global nutrition averaging or food oracle. S5-S6, Unity and Game Master remain unauthorized.
+**Current authorized batch: S5 Durable Saves, History and Analytics only**, explicitly authorized after conditional S4 approval. Work on codex/s5-durable-history from S4 commit 214fce3. Preserve all 89 S0-S4 tests and historical evidence, single-writer rollback, identity, deterministic scheduling and resource conservation. Follow documents 19, 22 and 33 for application-layer atomic SQLite saves, recovery, factual history and defined analytics. Measure 1,000/5,000/10,000 geometry edits without losing authority or evidence. Preserve document-08 debts and deadlines. No global nutrition averaging or food oracle. S6-S9, Unity and Game Master remain unauthorized.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve all 71 S0-S3 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, geometry boundaries, restore and relevant performance checks for S4.
-- Follow document 32 and produce S4_RESULTS.md, geometry/material evidence, performance data and reproducible commands.
-- Finish **only S4**, commit the reviewable evidence and stop for review. S5-S9 are not authorized in this run.
+- Preserve all 89 S0-S4 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, crash recovery, history reconciliation and long-history performance checks for S5.
+- Follow document 33 and produce S5_RESULTS.md, metric definitions, raw experimental/performance evidence and reproducible commands.
+- Finish **only S5**, commit the reviewable evidence and stop for review. S6-S9 are not authorized in this run.
