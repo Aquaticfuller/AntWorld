@@ -14,6 +14,10 @@ Evidence: S2_2_RESULTS.md, documents 29/30 and the unchanged experiments/s2_2 ar
 
 ## S3 implementation and scientific debt
 
+S3 independent review: CONDITIONAL PASS, with explicit permission to start S4. **SD-04 must be experimentally validated no later than S6**, using local demand sensitivity and surplus recirculation, never global nutrition averaging. **TD-01 must be resolved before S6 scale testing**; S4 must provide a general neighborhood-query boundary suitable for an index rather than bake a full-population scan into each behavior.
+
+**TD-02: 3D contact through solid barriers — mandatory S4 gate.** Euclidean distance alone cannot qualify underground trophallaxis, local sensing or material collection. Once true cavities are enabled, production actions and historical validation must use the authoritative geometry at the applicable revision/time. Test nearby individuals separated by a solid wall, real openings, refilled barriers and pending interactions invalidated before commit. A top-view crossing is not an opening. Status: OPEN pending S4 evidence.
+
 | ID | Status | Evidence / next review question |
 |---|---|---|
 | SD-04 | OPEN | S3 development seed 43 at 1000 ms pulses yields three adults and one larva at 180 s despite 800 ug initial protein for four 100 ug requirements. Three recipients each retain 140 ug unused crop protein; the fourth receives only 80 ug. Concurrent local gifts can oversupply individuals; minimal programs do not redistribute surplus from emerged workers. Preserve this negative outcome. Study demand-aware portions and adult redistribution under a separately specified protocol without selecting seeds or tuning to force emergence. |

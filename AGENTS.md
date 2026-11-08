@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S3 Physiology, Nutrition, Trophallaxis and Brood only**, explicitly authorized after independent S2.2 review. Work on codex/s3-physiology from the approved S2.2 baseline. Preserve S0-S2.2 tests and historical evidence, single-writer rollback, deterministic scheduling, local knowledge and resource conservation. Implement separate crop/body stores, energy and water budgets, contact-qualified nutrition, continuous life identity and runtime individual behavior activation, pause and switching. Scientific debts SD-01 through SD-03 in document 08 remain open. Do not change trail coefficients or add global information to conceal them. S4, underground geometry, Unity and Game Master remain unauthorized.
+**Current authorized batch: S4 3D Excavation and Connectivity only**, explicitly authorized after conditional S3 approval. Work on codex/s4-excavation-connectivity from S3 commit 288b013. Preserve all 71 S0-S3 tests and historical evidence, single-writer rollback, identity, deterministic scheduling and resource conservation. Implement authoritative InitialSolid plus ordered parametric edits, derived local SDF, actual soil carrying/deposition/fill, 3D clearance/connectivity and immediate route validation after blockage. Contact-qualified behavior must respect solid barriers. Preserve document-08 debts: SD-04 nutrition redistribution must be validated by S6, TD-01 contact scaling resolved before S6 scale tests. No global nutrition averaging or food oracle. S5-S6, Unity and Game Master remain unauthorized.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve S0-S2.2 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI and relevant performance checks for S3.
-- Produce S3_RESULTS.md, raw multi-seed nutrition/lifecycle data, figures, uncertainty and reproduction commands following document 31.
-- Finish **only S3**, commit the reviewable evidence and stop for review. S4-S9 are not authorized in this run.
+- Preserve all 71 S0-S3 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, geometry boundaries, restore and relevant performance checks for S4.
+- Follow document 32 and produce S4_RESULTS.md, geometry/material evidence, performance data and reproducible commands.
+- Finish **only S4**, commit the reviewable evidence and stop for review. S5-S9 are not authorized in this run.
