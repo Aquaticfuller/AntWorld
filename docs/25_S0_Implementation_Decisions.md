@@ -1,5 +1,7 @@
 # S0 implementation decisions (2026-11-08)
 
+Historical S0 behavior below is preserved for review traceability. S1 supersedes the whole-State copying, same-time cursor, checkpoint v1 and fixed host-budget defaults as described in document 26. The S0 limits were temporary engineering safeguards, not permanent world or format constraints.
+
 These reversible engineering decisions refine the v0.8 baseline without adding biology, geometry, persistence services or clients.
 
 ## ADR-013: repository language and provenance

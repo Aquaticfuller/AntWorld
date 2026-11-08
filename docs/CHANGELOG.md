@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-08: S1 entities and action transactions
+
+- User conditionally accepted S0 and explicitly authorized S1 only, with performance, phase-order and CI follow-up.
+- Replaced whole-State copies with allocation-safe undo journals; persisted execution watermarks and timestamp budgets across calls/checkpoints.
+- Added stable colony/ant/food stores, engineering lifecycle identity fixtures, movement/collection proposals, deterministic resource arbitration and ingredient ledgers.
+- Extended detached queries, event pages and canonical checkpoints to schema/physics v2; explicitly reject S0 saves.
+- Made temporary resource budgets configurable; added conservation, fairness, corruption, allocation-failure and large-budget regressions, CI and comparative benchmarks.
+- Document 26 records implementation choices and S1_RESULTS.md records executed evidence. S2 remains gated on the next review.
+
 ## 2026-11-08: English repository policy and S0
 
 - User approved the S0 plan and required English in all tracked files, code/comments, documentation and commit messages; conversation stays Chinese.

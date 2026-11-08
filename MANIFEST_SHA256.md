@@ -3,17 +3,17 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 38 (excluding the manifest itself).
+Files: 39 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `f4c05556924e746e058d4609b8e282adc81110f7c906ef6dd1043a8e0a0ad3d4` | 3605 |
-| `CODEX_START_HERE.md` | `cd7cfe08bfc19ce411c0f26642be390e63a5d1ccabd6c7cd12f9c6fb7e7889e2` | 2650 |
+| `AGENTS.md` | `c3577f30b9689b053a4c6b90b4ff9dee34fd0753fd671b5cc0fa0da08f21dc3d` | 3963 |
+| `CODEX_START_HERE.md` | `15806b90fe562ed973b98212d8f3c86a62f7735c181ff6d6ada62b609410bdaa` | 2978 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
 | `contracts/antworld_c_api_v1.h` | `df131489eab2739e1357a959ca28a8f47344f543f3a4f0920dc25286bcdef697` | 2924 |
-| `docs/00_README.md` | `b71306d8dfa8bc654e8c8cfd60bf0b04067f6f069411c577a4e37d9e65ff3a20` | 3036 |
+| `docs/00_README.md` | `13f0d489f45130eb1ca493f1c857426158cb2525c5847d715db64ef3f75d327f` | 3181 |
 | `docs/01_Decision_Register.md` | `a95d17dd285ea3bfea3d7517ce6b0f132d70778d747fdcf6a089ad16b8580126` | 9884 |
 | `docs/02_Game_Design.md` | `1d46fdcb28b2356e41b7eb29ff045b1e358bc9fd9c7a85a8b3a62c43ffb47635` | 4603 |
 | `docs/03_Technical_Architecture.md` | `038a42c013768474b9827d5da7b5a37239c9ce2ad9da7f7ac047b5030a96ccef` | 6711 |
@@ -31,16 +31,17 @@ Files: 38 (excluding the manifest itself).
 | `docs/15_Minimal_Integrated_Vertical_Slice.md` | `ffaaa2d23ea3deba0f5b5329746cf8182b147806f9ae84d87df627a98b8b3b02` | 3319 |
 | `docs/16_Implementation_Freeze_and_ADRs.md` | `b25ecefaa511a546fcb2ef13ce16d0fe8c4ed7fed784d63c7795e716b506fef4` | 4302 |
 | `docs/17_Core_Data_Contracts.md` | `429eec3b5917b3eecb54518050c021bcc0573a6bccf12dc4a5a8f7c6115fe342` | 6934 |
-| `docs/18_Scheduler_Transactions_and_Determinism.md` | `8c65a1d1ae52fb0a5585ced24bd9928c1c50f25318f20266986723eb912cef0b` | 5012 |
+| `docs/18_Scheduler_Transactions_and_Determinism.md` | `ef4edbdf96853edb81267f8a452146a282b1067c58ee5b966117c2dd00a0b0b0` | 5253 |
 | `docs/19_Persistence_Analytics_and_Recovery.md` | `7dd97468ad868c0ba39bae2eea64746f4953da4e8c69eb177f4f13fd5fda14eb` | 5831 |
 | `docs/20_World_API_C_ABI_and_GameMaster_Tools.md` | `375e1f5e5fc7844f40f41f821d0c1056be7de95ff6edd2803953fbfb0ca06c51` | 4017 |
 | `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `c9255d057e3e31e8423d0424b71a6f27c4b52fc836e7d4672cac3a7f8dbf200b` | 5069 |
 | `docs/22_Development_Roadmap_and_Execution_Gates.md` | `0d576fa07323ebf1b08379954fa04f3adb132cf2580a490c9ebbb5e7981fc727` | 4624 |
 | `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
-| `docs/24_Traceability_and_Quality_Gates.md` | `34bc9814c0ea8b8146f16cf8fb8ef57c236d52e63acde994e65c9cd1fb493141` | 3627 |
-| `docs/25_S0_Implementation_Decisions.md` | `c6eab40078abe2844c0eac36804bf8d1c1b7661cdda34724d28f41e56d5fc3ce` | 7261 |
-| `docs/CHANGELOG.md` | `b655e6fb58539f7a2d8b8723ee154e100427b215ba6a71c385ca4375a06dd133` | 3148 |
-| `README_HANDOFF.md` | `d8b2142f5845f54f5cf3f8b5053f6ca6941b420a9bda7bdd5228fd6dd87b198f` | 1859 |
+| `docs/24_Traceability_and_Quality_Gates.md` | `efcb72e6c36c6a6b5655ebe32d996dd3360fba1a099ffd3175ff2ef2285d21e4` | 3856 |
+| `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
+| `docs/26_S1_Implementation_Decisions.md` | `d5586cf0ba1a95c713cebd50b5e7e22360ec70f17ee75724165a1348d3ab7942` | 12337 |
+| `docs/CHANGELOG.md` | `577276eb164f7766278a599ec861a69a2225cec63ff239df7c4022b920642381` | 4046 |
+| `README_HANDOFF.md` | `546f177b8f6c27f2b4d0a2568f1a7914fbc10da4ca398d09e90c81fb143a3144` | 1934 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |

@@ -173,7 +173,9 @@ void test(std::string_view name, const std::string& fixture) {
         auto a = request(10, 1); a.priority = 9; auto b = request(10, 2); b.priority = 2;
         world.schedule(a); world.schedule(b); world.advance_to({10});
         require(world.committed_events().front().payload == 2, "priority order");
-        world.schedule(request(10, 3)); world.advance_to({10});
+        // S1 persists the complete key: a same-phase event cannot jump back to priority zero.
+        rejects([&] { world.schedule(request(10, 3)); }, "earlier same-time priority accepted");
+        auto later = request(10, 3); later.priority = 9; world.schedule(later); world.advance_to({10});
         require(world.committed_events().back().payload == 3, "new due work at same target not drained");
         const auto before = world.checkpoint();
         auto invalid = request(20); invalid.action = static_cast<DiagnosticAction>(255);

@@ -29,6 +29,8 @@ Require target >= now. While time remains or current-boundary work is due, choos
 
 New same-time earlier-phase work cannot arbitrarily reenter a completed phase. Defer to a legal boundary or use an explicitly bounded same-phase rule. Repeated excess must produce a diagnostic rather than hang. With no newly scheduled due work, repeated AdvanceTo(now) is a no-op.
 
+The implemented S1 cursor persists the full executed key and cumulative timestamp budget across calls/reloads. An action batch closes phases 0-4 at its timestamp. See document 26 for exact transaction, late-event and arbitration semantics.
+
 ## Continuous boundaries
 
 Energy integrates input/output power until intake, task, climate or depletion boundaries. Water tracks actual sources/losses until drinking/dehydration/climate changes. Brood progress depends on local stage/nutrition/temperature and stops at stage/starvation/death thresholds. Pheromone decay may be analytical; diffusion uses validated stable steps. Climate fields update at low rates interrupted by rain/geometry. Near motion uses bounded substeps for contact/obstacles; far motion uses route/ETA events invalidated by hazards/topology/contact.

@@ -43,3 +43,5 @@ Measure simulated/wall seconds, AdvanceTo p50/p95, resident/peak memory when ava
 ## Audit record
 
 Report batch, branch/commit, changed files, environment, commands, test ID/results, evidence, schema/physics changes, remaining issues and next-stage prerequisites. Distinguish local verification from configured or actually executed CI; do not claim untested platforms. See S0_RESULTS.md for actual S0 evidence.
+
+S1 evidence belongs in S1_RESULTS.md; document 26 maps its mechanism tests to SCH-03/06/07/08 and records the S0 review corrections. S0_RESULTS.md is retained as historical evidence, not rewritten to imply v2 was present in S0.

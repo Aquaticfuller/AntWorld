@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the complete v0.8 design and engineering handoff, not an implemented game.
+This is the v0.8 design and engineering handoff. S0 is reviewed; S1 entities and action transactions are the current authorized implementation batch, not a complete game.
 
 ## Architecture
 
@@ -22,10 +22,11 @@ This is the complete v0.8 design and engineering handoff, not an implemented gam
 7. docs/22_Development_Roadmap_and_Execution_Gates.md: current stage boundaries.
 8. docs/24_Traceability_and_Quality_Gates.md: acceptance and audit.
 9. Biology, geometry and Game Master topics as required by the active stage.
+10. docs/26_S1_Implementation_Decisions.md and S1_RESULTS.md for the current implementation and evidence.
 
-## First implementation
+## Current implementation gate
 
-Follow codex_tasks/S0_KICKOFF_PROMPT.md. Implement S0 only, build and test, produce S0_RESULTS.md, and stop for review. A later stage requires a separate user decision.
+S0 received conditional approval and the user explicitly authorized S1. Follow codex_tasks/S1_NEXT_STAGE_PROMPT.md, address the S0 review findings, implement only S1, produce S1_RESULTS.md and stop for review. S0_RESULTS.md remains the historical S0 report. S2 requires a separate user decision.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 

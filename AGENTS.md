@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S0 only**. Implement C++20 + CMake/CTest empty headless runtime with deterministic time, RNG, event queue, stable IDs and checkpoint round-trip. **Do not** create the full game, Unity scene, AI service, biological simulation or SDF in S0.
+**Current authorized batch: S1 only**, explicitly approved after conditional S0 review. Address S0 transaction-copy costs, cross-call same-time phase ordering, temporary resource limits and GitHub Actions CI. Implement minimal Ant/Colony/FoodSource stores, stable identity, validated movement/collection, deterministic resource arbitration, checkpoint/query/event extensions and regression tests. Do not implement S2 perception/foraging/pheromones, physiology, geometry, Unity or Game Master.
 
 ## Implementation rules
 
@@ -37,5 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Produce `S0_RESULTS.md` with files changed, build steps, test matrix, limitations and next-gate readiness.
-- Finish **only S0** and stop for review. Subsequent S1–S9 steps are not authorized in the same run.
+- Preserve S0 tests and results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer and relevant performance checks for S1.
+- Produce `S1_RESULTS.md` with files changed, build steps, test matrix, limitations and next-gate readiness.
+- Finish **only S1** and stop for review. S2–S9 are not authorized in this run.

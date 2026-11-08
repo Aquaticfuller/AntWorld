@@ -1,236 +1,244 @@
-#include "antworld/core/world_runtime.hpp"
-#include "antworld/core/rng.hpp"
-
-#include <algorithm>
-#include <limits>
-#include <map>
-#include <set>
-#include <stdexcept>
+#include "state.hpp"
+#include <tuple>
 
 namespace antworld {
+using namespace detail;
+std::array<std::uint64_t, 4> FoodMass::components() const { return {carbs_ug, protein_ug, water_ug, other_ug}; }
+std::uint64_t FoodMass::total_ug() const { return add(add(carbs_ug, protein_ug), add(water_ug, other_ug)); }
 namespace {
-constexpr std::uint64_t max_u64 = std::numeric_limits<std::uint64_t>::max();
-std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes) {
-    std::uint64_t result = UINT64_C(14695981039346656037);
-    for (auto b : bytes) result = (result ^ b) * UINT64_C(1099511628211);
-    return result;
+void require_seed_time(SimTime now, bool executed) {
+    if (now != SimTime{} || executed) throw std::invalid_argument("fixture seeding requires an unexecuted time-zero world");
 }
-struct Writer {
-    std::vector<std::uint8_t> bytes;
-    void put(std::uint64_t v, unsigned width = 8) {
-        for (unsigned i = 0; i < width; ++i) {
-            bytes.push_back(static_cast<std::uint8_t>(v & 255));
-            v >>= 8;
-        }
+// Exact a*b/d without nonportable 128-bit integers. a,b <= d guarantees a uint64 quotient.
+std::pair<std::uint64_t, std::uint64_t> muldiv(std::uint64_t a, std::uint64_t b, std::uint64_t d) {
+    std::uint64_t q = 0, r = 0;
+    for (unsigned i = 64; i-- > 0;) {
+        q *= 2;
+        if (r >= d-r) { r -= d-r; ++q; } else r += r;
+        if ((b >> i) & 1) { if (r >= d-a) { r -= d-a; ++q; } else r += a; }
     }
-};
-struct Reader {
-    std::span<const std::uint8_t> bytes;
-    std::size_t cursor{};
-    std::uint64_t get(unsigned width = 8) {
-        if (width > bytes.size() - cursor) throw std::invalid_argument("truncated checkpoint");
-        std::uint64_t result = 0;
-        for (unsigned i = 0; i < width; ++i) result |= std::uint64_t{bytes[cursor++]} << (8 * i);
-        return result;
-    }
-    SimTime time() {
-        const auto value = get();
-        if (value > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()))
-            throw std::invalid_argument("checkpoint time outside int64 range");
-        return {static_cast<std::int64_t>(value)};
-    }
-    std::size_t count() {
-        const auto value = get();
-        if (value > WorldRuntime::max_records) throw std::invalid_argument("checkpoint record limit exceeded");
-        return static_cast<std::size_t>(value);
-    }
-};
-void bump(std::uint64_t& value) {
-    if (value == max_u64) throw std::overflow_error("monotonic counter exhausted");
-    ++value;
+    return {q, r};
 }
-std::uint64_t take(std::uint64_t& value) {
-    const auto result = value;
-    bump(value);
-    return result;
+FoodMass portion(FoodMass mass, std::uint64_t amount) {
+    const auto total = mass.total_ug(); const auto values = mass.components();
+    std::array<std::uint64_t, 4> parts{}, remainders{};
+    std::array<std::size_t, 4> order{0, 1, 2, 3}; std::uint64_t assigned = 0;
+    for (std::size_t i = 0; i < 4; ++i) {
+        const auto [q, r] = muldiv(values[i], amount, total);
+        parts[i] = q; remainders[i] = r; assigned += q;
+    }
+    std::sort(order.begin(), order.end(), [&](auto a, auto b) {
+        return remainders[a] != remainders[b] ? remainders[a] > remainders[b] : a < b;
+    });
+    for (std::uint64_t i = 0; i < amount-assigned; ++i) ++parts[order[static_cast<std::size_t>(i)]];
+    return {parts[0], parts[1], parts[2], parts[3]};
 }
-bool valid(Phase p) { return p <= Phase::Reschedule; }
-bool valid(DiagnosticAction a) { return a <= DiagnosticAction::RepeatSameTime; }
-void write_fact(Writer& w, const WorldEvent& e) {
-    w.put(e.id.value); w.put(e.world.high); w.put(e.world.low);
-    w.put(static_cast<std::uint64_t>(e.time.milliseconds)); w.put(e.source.value);
-    w.put(static_cast<std::uint8_t>(e.action), 1);
-    w.put(e.revision); w.put(e.payload); w.put(e.random_value);
-}
-std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
-    Writer writer;
-    for (const auto& e : events) write_fact(writer, e);
-    return hash_bytes(writer.bytes);
+std::uint64_t rank(std::uint64_t seed, SimTime time, ResourceId resource, EntityId actor) {
+    // Stateless arbitration stream v1; it never consumes the world's diagnostic RNG.
+    Rng a(seed ^ static_cast<std::uint64_t>(time.milliseconds));
+    Rng b(a.next() ^ resource.value); Rng c(b.next() ^ actor.value); return c.next();
 }
 } // namespace
-
-struct WorldRuntime::State {
-    WorldId world;
-    std::uint64_t seed;
-    SimTime now{};
-    std::uint64_t revision{}, next_entity{1}, next_scheduled{1}, next_event{1}, next_sequence{1};
-    Rng rng;
-    std::map<EventKey, ScheduledEvent> queue;
-    std::vector<WorldEvent> journal;
-    State(WorldId id, std::uint64_t seed_value) : world(id), seed(seed_value), rng(seed_value) {}
-};
-
-WorldRuntime::WorldRuntime(WorldId world, std::uint64_t seed) : state_(std::make_unique<State>(world, seed)) {
+WorldRuntime::WorldRuntime(WorldId world, std::uint64_t seed, WorldConfig config, RuntimeLimits limits)
+    : state_(std::make_unique<State>(world, seed, config)), limits_(limits) {
     if (world == WorldId{}) throw std::invalid_argument("world_id must not be nil");
+    validate_config(config);
 }
 WorldRuntime::~WorldRuntime() = default;
 WorldRuntime::WorldRuntime(WorldRuntime&&) noexcept = default;
 WorldRuntime& WorldRuntime::operator=(WorldRuntime&&) noexcept = default;
-
 EntityId WorldRuntime::allocate_entity_id() {
-    auto next = std::make_unique<State>(*state_);
-    const EntityId id{take(next->next_entity)};
-    bump(next->revision);
-    state_.swap(next);
-    return id;
-}
-ScheduledId WorldRuntime::schedule_in(State& state, const EventRequest& r) {
-    if (r.time < state.now) throw std::invalid_argument("cannot schedule an event in the past");
-    if (!valid(r.phase) || !valid(r.action)) throw std::invalid_argument("invalid phase or diagnostic action");
-    if (state.queue.size() >= max_records) throw std::length_error("future event limit exceeded");
-    ScheduledEvent event{{take(state.next_scheduled)},
-        {r.time, r.phase, r.priority, r.tie, take(state.next_sequence)}, r.action, r.payload};
-    state.queue.emplace(event.key, event);
-    bump(state.revision);
-    return event.id;
+    Transaction tx(*state_, limits_); const EntityId id{take(state_->m.next_entity)};
+    bump(state_->m.revision); tx.commit(); return id;
 }
 ScheduledId WorldRuntime::schedule(const EventRequest& request) {
-    auto next = std::make_unique<State>(*state_);
-    const auto id = schedule_in(*next, request);
-    state_.swap(next);
-    return id;
+    if (!valid(request.phase) || !valid(request.action)) throw std::invalid_argument("invalid phase or diagnostic action");
+    ScheduledEvent e; e.key = {request.time, request.phase, request.priority, request.tie, 0};
+    e.action = request.action; e.payload = request.payload;
+    Transaction tx(*state_, limits_); const auto id = tx.insert(e); tx.commit(); return id;
 }
 bool WorldRuntime::cancel(ScheduledId id) {
-    const auto found = std::find_if(state_->queue.begin(), state_->queue.end(),
-        [id](const auto& entry) { return entry.second.id == id; });
-    if (found == state_->queue.end()) return false;
-    auto next = std::make_unique<State>(*state_);
-    next->queue.erase(found->first);
-    bump(next->revision);
-    state_.swap(next);
-    return true;
+    auto& s = *state_; const auto found = s.queue_index.find(id);
+    if (found == s.queue_index.end()) return false;
+    Transaction tx(s, limits_); tx.remove(found->second); bump(s.m.revision); tx.commit(); return true;
+}
+ColonyRef WorldRuntime::seed_colony() {
+    auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
+    Transaction tx(s, limits_); tx.entity_budget(); const ColonyId id{take(s.m.next_entity)};
+    s.colonies.append({id, Species::LasiusNigerEngineeringFixture, s.m.now});
+    WorldEvent e; e.kind = FactKind::ColonySeeded; e.colony = id; tx.fact(e);
+    tx.commit(); return {s.world, id};
+}
+AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
+    auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
+    if (colony.world != s.world || !s.colonies.index.contains(colony.id) ||
+        !valid(seed.stage) || seed.stage == LifeStage::Dead || seed.caste > Caste::Male ||
+        !inside(seed.position, s.config)) throw std::invalid_argument("invalid ant seed or colony reference");
+    Transaction tx(s, limits_); tx.entity_budget(); const EntityId id{take(s.m.next_entity)};
+    s.ants.append({id, colony.id, s.m.now, seed.stage, seed.caste, seed.position, 0, seed.carrying_capacity_ug, {}});
+    bump(s.m.living);
+    WorldEvent e; e.kind = FactKind::AntSeeded; e.actor = id; e.colony = colony.id;
+    e.position = seed.position; e.stage = seed.stage; tx.fact(e); tx.commit(); return {s.world, id};
+}
+FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
+    auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
+    if (!inside(position, s.config) || mass.total_ug() == 0) throw std::invalid_argument("invalid food seed");
+    Transaction tx(s, limits_); tx.entity_budget(); const ResourceId id{take(s.m.next_entity)};
+    s.foods.append({id, position, mass, mass});
+    s.m.ledger.introduced = sum(s.m.ledger.introduced, mass); (void)s.m.ledger.introduced.total_ug();
+    s.m.ledger.available = sum(s.m.ledger.available, mass);
+    WorldEvent e; e.kind = FactKind::FoodSeeded; e.resource = id; e.position = position; e.transferred = mass;
+    tx.fact(e); tx.commit(); return {s.world, id};
+}
+ScheduledId WorldRuntime::submit(const ActionProposal& p) {
+    auto& s = *state_; const auto ant = query_ant(p.actor);
+    if (!ant || p.kind > ActionKind::CollectFood ||
+        (p.kind == ActionKind::CollectFood && (!query_food(p.food) || p.requested_ug == 0)) ||
+        (p.kind == ActionKind::Move && !finite(p.destination)))
+        throw std::invalid_argument("invalid action proposal or world reference");
+    ScheduledEvent e; e.key = {p.execute_at, Phase::Resolution, 0, 0, 0};
+    e.kind = p.kind == ActionKind::Move ? ScheduledEvent::Kind::Move : ScheduledEvent::Kind::CollectFood;
+    e.actor = p.actor.id; e.resource = p.kind == ActionKind::CollectFood ? p.food.id : ResourceId{};
+    e.destination = p.kind == ActionKind::Move ? p.destination : PositionM{};
+    e.requested_ug = p.kind == ActionKind::CollectFood ? p.requested_ug : 0;
+    e.issued_at = s.m.now; e.observed_position_revision = ant->position_revision;
+    Transaction tx(s, limits_); const auto id = tx.insert(e); tx.commit(); return id;
+}
+ScheduledId WorldRuntime::schedule_lifecycle(AntRef actor, SimTime at, LifeStage stage) {
+    if (!query_ant(actor) || !valid(stage)) throw std::invalid_argument("invalid lifecycle fixture");
+    ScheduledEvent e; e.key = {at, Phase::Environment, 0, 0, 0};
+    e.kind = ScheduledEvent::Kind::Lifecycle; e.actor = actor.id; e.stage = stage; e.issued_at = state_->m.now;
+    Transaction tx(*state_, limits_); const auto id = tx.insert(e); tx.commit(); return id;
+}
+void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
+    auto& s = *state_; WorldEvent fact; fact.source = e.id; fact.actor = e.actor;
+    if (e.kind == ScheduledEvent::Kind::Diagnostic) {
+        fact.action = e.action; fact.payload = e.payload;
+        fact.random_value = e.action == DiagnosticAction::DrawRandom ? s.m.rng.next() : 0;
+        tx.fact(fact);
+        if (e.action == DiagnosticAction::RepeatSameTime) tx.insert(e);
+        return;
+    }
+    const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i);
+    fact.colony = ant.colony; fact.stage = e.stage; fact.kind = FactKind::ActionRejected;
+    if (!ant.alive()) fact.outcome = e.stage == LifeStage::Dead ? Outcome::AlreadyDead : Outcome::DeadActor;
+    else if (e.stage != LifeStage::Dead && static_cast<unsigned>(e.stage) != static_cast<unsigned>(ant.stage)+1)
+        fact.outcome = Outcome::InvalidTransition;
+    else {
+        tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
+        fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
+        if (e.stage == LifeStage::Dead) --s.m.living;
+    }
+    tx.fact(fact);
+}
+void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledEvent>& actions) {
+    auto& s = *state_; std::vector<ScheduledEvent> ordered = actions;
+    // One actor gets one proposal per boundary. Earliest submission wins for that actor.
+    std::map<EntityId, std::uint64_t> first;
+    for (const auto& e : ordered) {
+        auto [it, inserted] = first.emplace(e.actor, e.key.sequence);
+        if (!inserted) it->second = std::min(it->second, e.key.sequence);
+    }
+    std::sort(ordered.begin(), ordered.end(), [&](const auto& a, const auto& b) {
+        return std::tuple{a.resource.value, rank(s.seed, s.m.now, a.resource, a.actor), a.actor.value, a.key.sequence} <
+            std::tuple{b.resource.value, rank(s.seed, s.m.now, b.resource, b.actor), b.actor.value, b.key.sequence};
+    });
+    for (const auto& e : ordered) {
+        const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i);
+        WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.resource = e.resource;
+        f.kind = FactKind::ActionRejected; f.position = ant.position; f.stage = ant.stage;
+        if (e.key.sequence != first.at(e.actor)) f.outcome = Outcome::DuplicateAction;
+        else if (!ant.alive()) f.outcome = Outcome::DeadActor;
+        else if (ant.stage != LifeStage::Adult || ant.caste != Caste::Worker) f.outcome = Outcome::InvalidStage;
+        else if (e.observed_position_revision != ant.position_revision) f.outcome = Outcome::StalePosition;
+        else if (e.kind == ScheduledEvent::Kind::Move) {
+            const auto seconds = static_cast<double>(e.key.time.milliseconds - e.issued_at.milliseconds) / 1000.0;
+            const auto length = distance(ant.position, e.destination);
+            if (!inside(e.destination, s.config)) f.outcome = Outcome::OutOfBounds;
+            else if (!std::isfinite(length) || (length > 0 && (seconds <= 0 || length / seconds > s.config.max_speed_m_per_s)))
+                f.outcome = Outcome::TooFast;
+            else {
+                tx.touch_ant(i); ant.position = e.destination; bump(ant.position_revision); s.ants.set(i, ant);
+                f.kind = FactKind::Moved; f.position = ant.position;
+            }
+        } else {
+            const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];
+            const auto available = food.remaining.total_ug();
+            const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug();
+            if (distance(ant.position, food.position) > s.config.contact_distance_m) f.outcome = Outcome::OutOfReach;
+            else if (available == 0) f.outcome = Outcome::Depleted;
+            else if (room == 0) f.outcome = Outcome::Capacity;
+            else {
+                const auto amount = std::min({e.requested_ug, available, room}); f.transferred = portion(food.remaining, amount);
+                tx.touch_ant(i); tx.touch_food(j);
+                ant.carried_food = sum(ant.carried_food, f.transferred); s.ants.set(i, ant);
+                food.remaining = subtract(food.remaining, f.transferred);
+                s.m.ledger.available = subtract(s.m.ledger.available, f.transferred);
+                s.m.ledger.carried = sum(s.m.ledger.carried, f.transferred);
+                f.kind = FactKind::FoodCollected; f.outcome = amount == e.requested_ug ? Outcome::Success : Outcome::Partial;
+            }
+        }
+        tx.fact(f);
+    }
 }
 void WorldRuntime::advance_to(SimTime target) {
-    if (target < state_->now) throw std::invalid_argument("simulation time cannot move backwards");
-    auto next = std::make_unique<State>(*state_);
-    SimTime last_time{-1};
-    std::size_t same_time = 0;
-    while (!next->queue.empty() && next->queue.begin()->first.time <= target) {
-        const auto event = next->queue.begin()->second;
-        if (event.key.time != last_time) { last_time = event.key.time; same_time = 0; }
-        if (++same_time > max_same_time_events)
-            throw std::runtime_error("same-time event budget exceeded; advance rolled back");
-        if (next->journal.size() >= max_records) throw std::length_error("committed event limit exceeded");
-        next->queue.erase(next->queue.begin());
-        next->now = event.key.time;
-        const auto random = event.action == DiagnosticAction::DrawRandom ? next->rng.next() : 0;
-        bump(next->revision);
-        next->journal.push_back({{take(next->next_event)}, next->world, next->now, event.id,
-            event.action, next->revision, event.payload, random});
-        if (event.action == DiagnosticAction::RepeatSameTime) {
-            schedule_in(*next, {event.key.time, event.key.phase, event.key.priority,
-                event.key.tie, event.payload, event.action});
-        }
+    auto& s = *state_;
+    if (target < s.m.now) throw std::invalid_argument("simulation time cannot move backwards");
+    Transaction tx(s, limits_);
+    while (!s.queue.empty() && s.queue.begin()->first.time <= target) {
+        const auto key = s.queue.begin()->first;
+        if (key.phase == Phase::Resolution) {
+            std::vector<ScheduledEvent> actions;
+            while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Resolution) {
+                const auto e = tx.remove(s.queue.begin()->first); tx.executing(e);
+                if (e.kind == ScheduledEvent::Kind::Diagnostic) execute(tx, e); else actions.push_back(e);
+            }
+            if (!actions.empty()) {
+                resolve_actions(tx, actions);
+                s.m.watermark = EventKey{key.time, Phase::Commit, 0, 0, 0};
+            }
+        } else { const auto e = tx.remove(key); tx.executing(e); execute(tx, e); }
     }
-    next->now = target;
-    state_.swap(next);
+    tx.time(target); tx.commit();
 }
-std::vector<std::uint8_t> WorldRuntime::encode(const State& s) {
-    Writer w;
-    w.put(UINT64_C(0x3154504b435741), 8); // "AWCKPT1" followed by a zero byte.
-    w.put(schema_version, 4); w.put(physics_version, 4); w.put(1, 4); // RNG version.
-    w.put(s.world.high); w.put(s.world.low); w.put(s.seed);
-    w.put(static_cast<std::uint64_t>(s.now.milliseconds)); w.put(s.revision);
-    w.put(s.next_entity); w.put(s.next_scheduled); w.put(s.next_event); w.put(s.next_sequence);
-    w.put(s.rng.state()); w.put(s.queue.size());
-    for (const auto& [key, e] : s.queue) {
-        w.put(e.id.value); w.put(static_cast<std::uint64_t>(key.time.milliseconds));
-        w.put(static_cast<std::uint32_t>(key.phase), 4); w.put(key.priority, 4);
-        w.put(key.tie); w.put(key.sequence); w.put(static_cast<std::uint8_t>(e.action), 1); w.put(e.payload);
-    }
-    w.put(s.journal.size());
-    for (const auto& e : s.journal) write_fact(w, e);
-    w.put(hash_bytes(w.bytes));
-    return w.bytes;
+std::optional<AntState> WorldRuntime::query_ant(AntRef ref) const {
+    if (ref.world != state_->world) return {};
+    const auto it = state_->ants.index.find(ref.id);
+    return it == state_->ants.index.end() ? std::optional<AntState>{} : state_->ants.get(it->second);
 }
-std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes) {
-    if (bytes.size() < 124 || bytes.size() > 16 * 1024 * 1024)
-        throw std::invalid_argument("checkpoint size is invalid");
-    Reader checksum{bytes.last(8)};
-    if (hash_bytes(bytes.first(bytes.size() - 8)) != checksum.get())
-        throw std::invalid_argument("checkpoint checksum mismatch");
-    Reader r{bytes.first(bytes.size() - 8)};
-    if (r.get() != UINT64_C(0x3154504b435741)) throw std::invalid_argument("invalid checkpoint magic");
-    if (r.get(4) != schema_version || r.get(4) != physics_version || r.get(4) != 1)
-        throw std::invalid_argument("unsupported checkpoint schema, physics or RNG version");
-    const WorldId world{r.get(), r.get()};
-    if (world == WorldId{}) throw std::invalid_argument("nil checkpoint world");
-    auto s = std::make_unique<State>(world, r.get());
-    s->now = r.time(); s->revision = r.get();
-    s->next_entity = r.get(); s->next_scheduled = r.get(); s->next_event = r.get(); s->next_sequence = r.get();
-    s->rng = Rng(r.get());
-    if (!s->next_entity || !s->next_scheduled || !s->next_event || !s->next_sequence)
-        throw std::invalid_argument("checkpoint has a zero ID allocator");
-    std::set<std::uint64_t> ids, sequences;
-    const auto count = r.count();
-    for (std::size_t i = 0; i < count; ++i) {
-        ScheduledEvent e;
-        e.id = {r.get()}; e.key.time = r.time(); e.key.phase = static_cast<Phase>(r.get(4));
-        e.key.priority = static_cast<std::uint32_t>(r.get(4)); e.key.tie = r.get(); e.key.sequence = r.get();
-        e.action = static_cast<DiagnosticAction>(r.get(1)); e.payload = r.get();
-        if (!e.id.value || e.id.value >= s->next_scheduled || !e.key.sequence ||
-            e.key.sequence >= s->next_sequence || e.key.time < s->now || !valid(e.key.phase) ||
-            !valid(e.action) || !ids.insert(e.id.value).second || !sequences.insert(e.key.sequence).second ||
-            (!s->queue.empty() && e.key <= s->queue.rbegin()->first))
-            throw std::invalid_argument("invalid future event in checkpoint");
-        s->queue.emplace(e.key, e);
-    }
-    const auto facts = r.count();
-    std::uint64_t previous_revision = 0;
-    SimTime previous_time{};
-    for (std::size_t i = 0; i < facts; ++i) {
-        WorldEvent e;
-        e.id = {r.get()}; e.world = {r.get(), r.get()}; e.time = r.time(); e.source = {r.get()};
-        e.action = static_cast<DiagnosticAction>(r.get(1)); e.revision = r.get();
-        e.payload = r.get(); e.random_value = r.get();
-        if (e.id.value != i + 1 || e.world != world || e.time < previous_time || e.time > s->now ||
-            !e.source.value || e.source.value >= s->next_scheduled || !ids.insert(e.source.value).second ||
-            !valid(e.action) || e.revision <= previous_revision || e.revision > s->revision ||
-            (e.action != DiagnosticAction::DrawRandom && e.random_value != 0))
-            throw std::invalid_argument("invalid committed event in checkpoint");
-        previous_time = e.time; previous_revision = e.revision;
-        s->journal.push_back(e);
-    }
-    if (s->next_event != facts + 1 || r.cursor != r.bytes.size())
-        throw std::invalid_argument("invalid event allocator or trailing checkpoint data");
-    return s;
+std::optional<Colony> WorldRuntime::query_colony(ColonyRef ref) const {
+    if (ref.world != state_->world) return {};
+    const auto it = state_->colonies.index.find(ref.id);
+    return it == state_->colonies.index.end() ? std::optional<Colony>{} : state_->colonies.rows[it->second];
 }
-void WorldRuntime::restore(std::span<const std::uint8_t> bytes) {
-    auto restored = decode(bytes);
-    state_.swap(restored);
+std::optional<FoodSource> WorldRuntime::query_food(FoodRef ref) const {
+    if (ref.world != state_->world) return {};
+    const auto it = state_->foods.index.find(ref.id);
+    return it == state_->foods.index.end() ? std::optional<FoodSource>{} : state_->foods.rows[it->second];
 }
-std::vector<std::uint8_t> WorldRuntime::checkpoint() const { return encode(*state_); }
-std::vector<WorldEvent> WorldRuntime::committed_events() const { return state_->journal; }
-std::vector<ScheduledEvent> WorldRuntime::pending_events() const {
-    std::vector<ScheduledEvent> result;
-    for (const auto& [key, event] : state_->queue) { (void)key; result.push_back(event); }
-    return result;
+WorldConfig WorldRuntime::config() const { return state_->config; }
+WorldSnapshot WorldRuntime::summary() const {
+    const auto& s = *state_; const auto& m = s.m;
+    return {s.world, m.now, s.seed, m.revision, s.queue.size(), s.journal.size(), m.next_entity,
+        m.next_scheduled, m.next_event, m.next_sequence, m.rng.state(), 0, 0,
+        s.ants.size(), s.colonies.rows.size(), s.foods.rows.size(), m.living, m.ledger, m.watermark, m.executed};
 }
 WorldSnapshot WorldRuntime::snapshot() const {
-    const auto& s = *state_;
-    const auto bytes = encode(s);
-    return {s.world, s.now, s.seed, s.revision, s.queue.size(), s.journal.size(), s.next_entity,
-        s.next_scheduled, s.next_event, s.next_sequence, s.rng.state(),
-        hash_bytes(std::span{bytes}.first(bytes.size() - 8)), trace_hash(s.journal)};
+    auto result = summary(); const auto bytes = checkpoint();
+    result.state_hash = hash_bytes(std::span{bytes}.first(bytes.size()-8)); result.trace_hash = trace_hash(state_->journal);
+    return result;
+}
+std::vector<WorldEvent> WorldRuntime::committed_events() const { return state_->journal; }
+std::vector<WorldEvent> WorldRuntime::events_after(EventId cursor, std::size_t limit) const {
+    const auto& journal = state_->journal;
+    if (cursor.value >= journal.size()) return {};
+    const auto first = static_cast<std::size_t>(cursor.value);
+    const auto count = std::min(limit, journal.size()-first);
+    return {journal.begin()+static_cast<std::ptrdiff_t>(first), journal.begin()+static_cast<std::ptrdiff_t>(first+count)};
+}
+std::vector<ScheduledEvent> WorldRuntime::pending_events() const {
+    std::vector<ScheduledEvent> result; result.reserve(state_->queue.size());
+    for (const auto& [key, e] : state_->queue) { (void)key; result.push_back(e); }
+    return result;
 }
 } // namespace antworld
