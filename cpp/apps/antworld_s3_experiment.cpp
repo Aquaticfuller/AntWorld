@@ -86,7 +86,8 @@ int main(int argc, char** argv) {
             for (bool eggs : {false,true}) for (bool protein : {false,true}) for (auto pulse : {250,1000,2000}) {
                 Brood b(seed,protein,eggs,pulse); const auto initial = b.world.nutrition_snapshot();
                 WorldRuntime copy({9,9},0); copy.restore(b.world.checkpoint()); b.world.advance_to({180000});
-                for (std::int64_t at = 137; at < 180000; at += 1237) copy.advance_to({at}); copy.advance_to({180000});
+                for (std::int64_t at = 137; at < 180000; at += 1237) { copy.advance_to({at}); }
+                copy.advance_to({180000});
                 const auto equal = b.world.checkpoint() == copy.checkpoint(); require(equal,"partition divergence in experiment"); roundtrip(b.world);
                 record(out,b.world,seed,eggs ? "development" : "N1",protein,pulse,1000,false,b.brood,initial,equal,individuals);
             }

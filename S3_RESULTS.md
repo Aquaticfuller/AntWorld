@@ -45,6 +45,8 @@ S3 tests: INITIALIZATION, INTEGRATION, EXCHANGE, CONSTRAINTS, INGESTION, THRESHO
 
 The first Linux CI evidence audit failed because the generated hash manifest used platform-native path separators. Windows audits and Clang sanitizer tests passed. Added bounded public audit diagnostics, identified the exact stale file, and changed only manifest keys to portable POSIX paths. Original CSV bytes and C++ model outcomes were unchanged; the failure is retained here rather than reported as an uninterrupted CI pass.
 
+After that audit fix, GCC rejected two compact loop/follow-up lines in the new experiment/test code under `-Werror=misleading-indentation`. Added explicit braces and separate follow-up statements; execution semantics and model parameters are unchanged. Compiler warnings remain errors.
+
 ## Complete experimental evidence
 
 Raw data: S3_EXPERIMENTS.csv, experiments/s3/raw/individuals.csv and raw/configuration.json. Two initial stages x two protein conditions x three pulse periods x 64 seeds give 768 nutrition/development runs. Three recipient capacities x supplied/empty donors x forward/reverse submissions x 64 seeds give 768 exchange runs. Every run also checks irregular host stepping and restored continuation.

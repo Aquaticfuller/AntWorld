@@ -128,7 +128,8 @@ void behavior() {
 void replay() {
     Brood b(8,true,true); b.world.advance_to({34567}); roundtrip(b.world);
     WorldRuntime copy({1,2},0); copy.restore(b.world.checkpoint()); b.world.advance_to({180000});
-    for (std::int64_t at = 35001; at < 180000; at += 1237) copy.advance_to({at}); copy.advance_to({180000});
+    for (std::int64_t at = 35001; at < 180000; at += 1237) { copy.advance_to({at}); }
+    copy.advance_to({180000});
     require(copy.checkpoint() == b.world.checkpoint(), "saved continuation differs");
     auto bytes = copy.checkpoint(); const auto before = bytes;
     // Corrupt a physiological enum with a valid checksum: not merely a torn save.
