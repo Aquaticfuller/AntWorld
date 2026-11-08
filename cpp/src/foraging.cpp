@@ -237,7 +237,8 @@ std::vector<TrailSample> WorldRuntime::trails() const {
 }
 std::vector<CellVisit> WorldRuntime::visits() const {
     std::vector<CellVisit> result(0); result.reserve(state_->visits.size());
-    for (const auto& [cell, n] : state_->visits) result.push_back({cell, n}); return result;
+    for (const auto& [cell, n] : state_->visits) result.push_back({cell, n});
+    return result;
 }
 SurfaceSnapshot WorldRuntime::surface_snapshot() const {
     const auto& s = *state_; SurfaceSnapshot result; if (!s.surface) return result;

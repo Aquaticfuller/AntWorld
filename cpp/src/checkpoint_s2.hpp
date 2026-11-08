@@ -30,7 +30,8 @@ template <typename S> void write_surface(Writer& w, const S& s) {
     for (const auto& [id, f] : s.foragers) {
         w.put(id.value); w.put(f.enabled, 1); w.put(static_cast<std::uint8_t>(f.mode), 1); w.put(static_cast<std::uint8_t>(f.heading), 1);
         w.put(f.decisions); w.put(f.trip_moves); w.put(f.collections); w.put(f.path_size, 4); w.put(f.memory_size, 4);
-        for (const auto cell : f.path) w.cell(cell); for (const auto cell : f.memory) w.cell(cell);
+        for (const auto cell : f.path) w.cell(cell);
+        for (const auto cell : f.memory) w.cell(cell);
         w.time(f.learned_at); w.put(f.last_collected.value); w.put(f.wake.value); w.put(f.action.value);
     }
     w.put(s.trails.size());
@@ -64,7 +65,8 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         f.enabled = r.flag(); f.mode = static_cast<BehaviorMode>(r.get(1)); f.heading = static_cast<Direction>(r.get(1));
         f.decisions = r.get(); f.trip_moves = r.get(); f.collections = r.get();
         f.path_size = static_cast<std::uint32_t>(r.get(4)); f.memory_size = static_cast<std::uint32_t>(r.get(4));
-        for (auto& cell : f.path) cell = r.cell(); for (auto& cell : f.memory) cell = r.cell();
+        for (auto& cell : f.path) cell = r.cell();
+        for (auto& cell : f.memory) cell = r.cell();
         f.learned_at = r.time(); f.last_collected = {r.get()}; f.wake = {r.get()}; f.action = {r.get()};
         ensure(s.ants.index.contains(id) && f.mode <= BehaviorMode::Rest && f.heading <= Direction::West && f.path_size &&
             f.path_size <= p.route_capacity && f.memory_size <= p.route_capacity && f.learned_at <= s.m.now &&

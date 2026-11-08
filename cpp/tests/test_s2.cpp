@@ -246,7 +246,9 @@ void colonies() {
     roundtrip(c.w); conserved(c.w);
 }
 std::uint64_t read_u64(const std::vector<std::uint8_t>& bytes, std::size_t offset) {
-    std::uint64_t n = 0; for (unsigned i = 0; i < 8; ++i) n |= std::uint64_t{bytes.at(offset+i)} << (i*8); return n;
+    std::uint64_t n = 0;
+    for (unsigned i = 0; i < 8; ++i) n |= std::uint64_t{bytes.at(offset+i)} << (i*8);
+    return n;
 }
 void put(std::vector<std::uint8_t>& bytes, std::size_t offset, std::uint64_t n, unsigned width = 8) {
     for (unsigned i = 0; i < width; ++i) { bytes.at(offset+i) = static_cast<std::uint8_t>(n & 255); n >>= 8; }
@@ -295,7 +297,8 @@ void corruption() {
 } // namespace
 int main(int argc, char** argv) {
     try {
-        if (argc != 2) throw std::invalid_argument("usage: antworld_s2_tests CASE"); const std::string_view name = argv[1];
+        if (argc != 2) throw std::invalid_argument("usage: antworld_s2_tests CASE");
+        const std::string_view name = argv[1];
         if (name == "SURFACE") surface(); else if (name == "LOCALITY") locality(); else if (name == "LOOP") loop();
         else if (name == "ORDER") order(); else if (name == "MEMORY") memory(); else if (name == "TRAILS") trails();
         else if (name == "REPLAY") replay(); else if (name == "ROLLBACK") rollback(); else if (name == "SCHEDULING") scheduling();
