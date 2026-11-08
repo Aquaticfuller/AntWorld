@@ -8,12 +8,12 @@ Files: 41 (excluding the manifest itself).
 | Path | SHA-256 | Bytes |
 |---|---|---:|
 | `AGENTS.md` | `6f706f1bac90f81f55b288b90e17335d0dbbc06edffeafab2cf3fdd2c3c83250` | 4231 |
-| `CODEX_START_HERE.md` | `68da496b3878099c1013f9323343b0725240522521a423840b56079d90769faf` | 3235 |
+| `CODEX_START_HERE.md` | `163beaf7b84dcab7322b54e82b0aea5e5f9f8718802a9653ee49cd4a2b7e51e2` | 3414 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
 | `contracts/antworld_c_api_v1.h` | `df131489eab2739e1357a959ca28a8f47344f543f3a4f0920dc25286bcdef697` | 2924 |
-| `docs/00_README.md` | `7b236af3b70b57c4243e2ea018eea83a9003fd55f15ce7c5044bbc4c22bf7262` | 3291 |
+| `docs/00_README.md` | `6f1a2475fc2445457ca0673640f6837fa5777aa356e79b6320c3cd1ecc071fa5` | 3390 |
 | `docs/01_Decision_Register.md` | `a95d17dd285ea3bfea3d7517ce6b0f132d70778d747fdcf6a089ad16b8580126` | 9884 |
 | `docs/02_Game_Design.md` | `1d46fdcb28b2356e41b7eb29ff045b1e358bc9fd9c7a85a8b3a62c43ffb47635` | 4603 |
 | `docs/03_Technical_Architecture.md` | `038a42c013768474b9827d5da7b5a37239c9ce2ad9da7f7ac047b5030a96ccef` | 6711 |
@@ -21,7 +21,7 @@ Files: 41 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `285f139da9f0a60d5e5e12460a7e68ffab88c2e164734cc1fc8465be13b76bb9` | 5266 |
+| `docs/08_Open_Questions.md` | `a2a79e23daf8e9abd26eeb73743c54b2590d0975c2be2994ddd570b1e265f386` | 6088 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -37,13 +37,13 @@ Files: 41 (excluding the manifest itself).
 | `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `c9255d057e3e31e8423d0424b71a6f27c4b52fc836e7d4672cac3a7f8dbf200b` | 5069 |
 | `docs/22_Development_Roadmap_and_Execution_Gates.md` | `0d576fa07323ebf1b08379954fa04f3adb132cf2580a490c9ebbb5e7981fc727` | 4624 |
 | `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
-| `docs/24_Traceability_and_Quality_Gates.md` | `7c884fbec8ef4d535d4f2c2cee09f02dd9d1e41cc335b9366fd7e1f54c3e37d8` | 4316 |
+| `docs/24_Traceability_and_Quality_Gates.md` | `0f7c97e09047445ac83c28d19bbc4958fe862ff9689b48d309be4509238d7c8f` | 4713 |
 | `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
 | `docs/26_S1_Implementation_Decisions.md` | `6f850eb5d771ae049489efc2c16a45745e368fc030ef6b9e1900f4f1cae7e043` | 13244 |
-| `docs/27_S2_Implementation_Decisions.md` | `a1fe2f45eb08be96722ddf45491a78ecc6fe7c0984ae75c47fde33b6870ba861` | 13775 |
-| `docs/28_S2_1_Validation_Protocol.md` | `1c863454c137438360b624627b95f2f74d2851fda4ae7fc245015a5dd37f1030` | 6321 |
-| `docs/CHANGELOG.md` | `0dd9e2042350c81513a0ee37f4025e2b81806e8caf5949023119ee686c6b355a` | 4954 |
-| `README_HANDOFF.md` | `e7823d854ae86f12f23934675275059fd482fcf0fb07498e68392f7668c6689c` | 1931 |
+| `docs/27_S2_Implementation_Decisions.md` | `891775b659e5d0b29a04203528438134de6e2b3f4f24da971f4825f2022ac524` | 14030 |
+| `docs/28_S2_1_Validation_Protocol.md` | `e36aa7d22f2834af214087a1a1d54614a72d1b273b80fdfa366da91b787c5dd1` | 9586 |
+| `docs/CHANGELOG.md` | `0db572b4b1dee98aea1cdc8a73a996e3be9746dae9b4064951c75149243cc54d` | 5885 |
+| `README_HANDOFF.md` | `0d32fb6823c5bff345d14432d39a4565125999ca9e21d52b928f22ba37e34072` | 2015 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |

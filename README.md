@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S2 sensing, exploration and trails**: locally informed individual exploration, food discovery/collection, physical return/delivery, sparse colony trails and bounded route memory on a static surface. S0/S1 identity, transactions, arbitration, conservation and checkpoints remain. Calibrated biology, physiology, 3D excavation, Unity, database and Agent integrations are later stages.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S2.1 foraging model validation and fixes**, retaining S2 local sensing, exploration, physical food collection/return, sparse colony trails and bounded route memory. Equal food ties no longer prefer ResourceId, and fractional trail responses retain numerical precision. Controlled naive-worker experiments do not establish a reliable positive recruitment benefit. See [S2.1 results](S2_1_RESULTS.md) and [raw evidence and reproduction](experiments/s2_1/README.md). S0/S1 transactions, conservation and checkpoints remain. Physiology, 3D excavation, Unity, database and Agent integrations are later stages.
 
 ## Build and test on Windows x64
 
@@ -17,6 +17,8 @@ The portable toolchain lives under ignored `.tools/`; no global installation or 
 ./build/release/antworld_s2_experiment.exe out/s2-experiments 16 1800000
 python tools/analyze_s2.py out/s2-experiments
 ./tools/benchmark_s2_windows.ps1
+./build/release/antworld_s2_1_experiment.exe out/s2_1-experiments 64 s2.1
+python tools/analyze_s2_1.py --check
 ```
 
 Normal LLVM-MinGW builds link their C++ runtime statically, so the executable can run without the compiler directory on PATH. `--help` lists options. `--diagnostic-events 8` optionally schedules eight explicitly synthetic infrastructure events that draw RNG values at milliseconds 1 through 8. This does not simulate ants.
@@ -33,7 +35,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Actual tested platforms/compilers and CI status are recorded in [S2_RESULTS.md](S2_RESULTS.md); S0_RESULTS.md and S1_RESULTS.md preserve the historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S2_1_RESULTS.md](S2_1_RESULTS.md); S0_RESULTS.md, S1_RESULTS.md and S2_RESULTS.md preserve the historical baselines.
 
 ## Minimal autonomous S2 use
 
@@ -50,7 +52,7 @@ auto measurements = world.surface_snapshot(); // Observer metrics, not policy in
 auto inventory = world.query_colony(colony)->nest_food;
 ```
 
-Include `antworld/core/world_runtime.hpp` and use namespace `antworld`. Activation occurs during setup at the worker's nest; the individual model then owns its wake/action schedule. The memory ablation removes learned inter-trip routes while retaining a bounded current-trip homing trace. No controller assigns food destinations.
+Include `antworld/core/world_runtime.hpp` and use namespace `antworld`. First activation is allowed at the worker's nest during setup or later for a previously dormant worker; it cannot reset an existing forager. The individual model then owns its wake/action schedule. The memory ablation removes learned inter-trip routes while retaining a bounded current-trip homing trace. No controller assigns food destinations.
 
 ## Minimal S1 use
 
@@ -79,11 +81,12 @@ Every numeric fixture is engineering-only. A proposal is pending until advance c
 - `cpp/apps/`: diagnostic CLI/parser, S2 experiments and scheduler/entity/active-forager benchmarks.
 - `cpp/tests/`: retained T00-T13 and S1 invariants, plus S2 local behavior, corruption and allocation-failure regression tests.
 - `experiments/s2/`: complete seed/treatment CSVs and reproducible analysis.
+- `experiments/s2_1/`: frozen baseline, matched recruitment/decay controls, retained ablations, uncertainty tables and figures.
 - `docs/`: English product design, contracts, historical context and implementation decisions.
 - `scenarios/`, `schemas/`: original engineering fixtures and the broader P0 schema.
 - `contracts/`: future C ABI draft, not an implemented native plugin.
 
-All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema/physics v3 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails and evidence counters. S0 v1 and S1 v2 saves are explicitly rejected. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
+All runtime writes use an undo-journal single-writer transaction, with no whole-State copies. Failed writes/loads leave the prior authoritative world unchanged. Schema 3 / physics 4 checkpoints retain entities, nest material, pending proposals, facts, IDs, clock/RNG, the phase watermark, surface, bounded memories, sparse trails and evidence counters. Earlier physics versions, including S2 physics 3, are explicitly rejected; there is no silent migration. FNV hashes detect accidental corruption, not forgery. RuntimeLimits exposes temporary host budgets; the defaults of 65,536 records, 1,024 events per timestamp and 16 MiB saves are configurable, not permanent game/format constraints. Long-world history retention is later work.
 
 ## Verification and repository policy
 
@@ -94,11 +97,13 @@ python tools/update_handoff_manifest.py
 python tools/verify_handoff.py
 python tools/check_repository.py
 python tools/analyze_s2.py experiments/s2 --check
+python tools/analyze_s2.py experiments/s2_1/ablations --check
+python tools/analyze_s2_1.py --check
 ```
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.
 
-Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s2_windows.ps1` records sampled process memory. These fixtures do not establish full-colony or whole-map performance. See [the roadmap](docs/22_Development_Roadmap_and_Execution_Gates.md). Stop after S2 and obtain the next review before starting S3.
+Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s2_windows.ps1 -OutputDirectory out/s2_1-performance` records sampled process memory. These fixtures do not establish full-colony or whole-map performance. See [the roadmap](docs/22_Development_Roadmap_and_Execution_Gates.md). Stop after S2.1 and obtain the next review before starting S3.
 
 ## License
 

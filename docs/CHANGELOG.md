@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-08: S2.1 foraging validation and fixes
+
+- User authorized an independent S2.1 validation branch and explicitly withheld S3.
+- Froze the recruitment/bias protocol and instrumented baseline before model fixes; retained every declared seed, field sample and negative outcome.
+- Replaced lower-ResourceId food ties with reproducible uniform physical-candidate selection, and preserved fractional trail response without increasing any behavioral coefficient.
+- Permitted atomic first activation of a dormant seeded worker at its nest for matched social controls; retained existing forager identity and memory.
+- Kept checkpoint layout/schema 3 and incremented physics to 4; reject incompatible behavior versions.
+- Added eight regression registrations, combined raw trial CSV, uncertainty analysis, original ablation reruns and figures. S2_1_RESULTS.md records the actual acceptance status and remaining recruitment limits.
+
 ## 2026-11-08: S2 sensing, exploration and trails
 
 - User accepted S1 and authorized S2 only, preserving undo journals, ordering, conservation, persistence and tests.

@@ -1,0 +1,11 @@
+{
+  "normalization": "UTF-8 with LF newlines",
+  "sha256": {
+    "experiments/s2_1/baseline/choices.csv": "de7782ec27630fe691ce0217c4a6cd36e49bd227f56692eaf66274804cf75ffd",
+    "experiments/s2_1/baseline/fields.csv": "1e21ff3dc966a03a4995eb6512b53233ae1e6e9653790ac6c6f9dac9db53f8fb",
+    "experiments/s2_1/baseline/social.csv": "bfc16debd2c67caf114d847e03a685c0d93fd07cf35ca54000bad2e626f4c9f3",
+    "experiments/s2_1/fixed/choices.csv": "f013b761e11defca385765261f18763b5a4daab53f1c2ea226dc10ae65263e70",
+    "experiments/s2_1/fixed/fields.csv": "1a302341ec4082c325dc0b0a22665c8c0dee868855fe52e3d6a2eaf4cd277f38",
+    "experiments/s2_1/fixed/social.csv": "bd71d7f37feebbfc44d073d23f0d8e79f909b727d8d063a1b124784bcc00026b"
+  }
+}

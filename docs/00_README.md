@@ -21,6 +21,7 @@ Product requirements, reversible engineering defaults and scientific assumptions
 | 25 | Historical S0 implementation decisions |
 | 26 | S1 transactions, entities, ordering, budgets and checkpoint decisions |
 | 27 | S2 local perception, autonomous foraging, sparse trails, bounded memory and ablations |
+| 28 | S2.1 preregistered validation, recruitment controls, ID bias and numerical response fixes |
 
 Read ../AGENTS.md and ../CODEX_START_HERE.md first.
 

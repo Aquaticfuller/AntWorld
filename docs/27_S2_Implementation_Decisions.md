@@ -2,6 +2,8 @@
 
 Status: implemented for the user's S2 authorization after S1 Code Review. Design baseline remains v0.8. This document resolves bounded engineering choices under documents 04, 16-19, 21, 22 and 24. Every numeric behavioral parameter is `ENGINEERING_FIXTURE`, version `s2-local-v1`, without Lasius niger calibration. S3 is not authorized.
 
+S2.1 note: document 28 supersedes the S2 equal-food tie rule, whole-unit trail rounding and setup-only first activation. Schema stays 3; physics is 4. Numeric coefficients are unchanged. This document and S2_RESULTS.md remain the historical S2 baseline.
+
 ## ADR-S2-01: a static surface for local motion
 
 S2 adds an optional immutable rectangular surface with a walkability mask. Coordinates remain meters, X east/Y up/Z north; the grid lies at a fixed Y. The origin is the center of cell (0,0). A successful surface Move traverses exactly one cardinal edge between walkable cell centers, subject to the retained speed and position-revision checks. Contact with food and the nest requires the same cell. Floating center recognition uses a numerical tolerance of 1e-9 meters, not a biological contact radius.

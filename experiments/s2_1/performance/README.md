@@ -1,0 +1,5 @@
+# S2.1 Release performance fixtures
+
+These are local Windows x64 engineering measurements, not biological results or a production performance promise. Run `tools/benchmark_s2_windows.ps1 -OutputDirectory out/s2_1-performance` after a Release build. Each benchmark runs sequentially with process peak working set sampled every 5 ms. Sampling can miss short peaks; process wall time includes startup/polling and differs from the benchmark's inner timings.
+
+Files retain the original benchmark output without rounding: `active_workers.csv`, `fixed_active.csv`, `scheduler.csv`, `diagnostics.json` and `process_metrics.json`. The active-worker fixture runs 180 simulated seconds with 16, 128 or 512 foragers; fixed-active checks 32 transactions per round against populations of 32, 2,000 and 20,000 identities. Scheduler rows vary pending queue size; diagnostics preserve S0 coverage. Checkpoints intentionally grow with retained facts. No whole-State transaction copy was introduced, and no full-world/20,000-active-worker claim follows from these fixtures. Hardware/toolchain and measured results are reported in the root S2.1 report.

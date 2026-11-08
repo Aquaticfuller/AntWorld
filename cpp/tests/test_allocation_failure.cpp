@@ -70,6 +70,17 @@ void s2_sweeps() {
     world.advance_to({9999}); sweep("erase_decayed_trails", world, [&] { world.advance_to({10000}); });
     std::cout << "PASS S2_ALLOCATION_FAILURE\n";
 }
+void s2_1_sweeps() {
+    WorldRuntime world({1, 2}, 12345);
+    world.configure_surface({{}, 3, 1, 0.01}, {}); const auto colony = world.seed_colony();
+    const auto ant = world.seed_ant(colony, {}); world.seed_food({0.02, 0, 0}, {1000, 0, 0, 0});
+    world.advance_to({6000});
+    sweep("late_first_activation", world, [&] { world.start_foraging(ant); });
+    world.start_foraging(ant); const auto bytes = world.checkpoint();
+    sweep("restore_late_activation", world, [&] { world.restore(bytes); });
+    sweep("late_first_decision", world, [&] { world.advance_to({6001}); });
+    std::cout << "PASS S2_1_ALLOCATION_FAILURE\n";
+}
 } // namespace
 int main(int argc, char** argv) {
     // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
@@ -79,6 +90,7 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S2.1") { s2_1_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2") { s2_sweeps(); return 0; }
         if (argc != 1) throw std::invalid_argument("usage: antworld_allocation_tests [S2]");
         // ENGINEERING_FIXTURE: no biological parameter is inferred here.

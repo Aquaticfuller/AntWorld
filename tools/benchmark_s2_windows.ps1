@@ -1,7 +1,7 @@
-param()
+param([string]$OutputDirectory = 'out/s2-performance')
 $ErrorActionPreference = 'Stop'
 $project = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$output = Join-Path $project 'out/s2-performance'
+$output = Join-Path $project $OutputDirectory
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 $memory = @()
 foreach ($name in @('antworld_s2_benchmark', 'antworld_s1_benchmark', 'antworld_scheduler_benchmark', 'antworld_benchmark')) {

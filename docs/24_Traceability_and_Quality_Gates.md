@@ -47,3 +47,5 @@ Report batch, branch/commit, changed files, environment, commands, test ID/resul
 S1 evidence belongs in S1_RESULTS.md; document 26 maps its mechanism tests to SCH-03/06/07/08 and records the S0 review corrections. S0_RESULTS.md is retained as historical evidence, not rewritten to imply v2 was present in S0.
 
 S2 evidence belongs in S2_RESULTS.md and experiments/s2/. Document 27 maps local behavior and the complete feature-ablation matrix to F1/F2/F3. Its mechanism tests preserve the S0/S1 suite and add locality/no-oracle, input-order independence, bounded memory, sparse field decay, conservation, semantic corruption and allocation-failure rollback. Interpret negative trail-only results as measured limitations, not grounds to filter seeds or claim calibration.
+
+S2.1 adds document 28, S2_1_RESULTS.md and S2_1_EXPERIMENTS.csv. Distinguish tested choice/field correctness from a demonstrated social recruitment benefit. Matched naive-worker trials retain non-discoverers, control training state and decay age, and estimate paired uncertainty with seed clusters. Numerical fixes or visible trails alone do not establish biological recruitment or authorize S3.

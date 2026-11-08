@@ -41,6 +41,8 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
         bool reachable = cue.distance_cells == 0;
         for (std::uint32_t j = 0; j < local.step_count; ++j) if (cue.first_step == local.steps[j].direction) reachable = true;
         if (!reachable) throw std::invalid_argument("food cue lacks a reachable first step");
+        for (std::uint32_t j = 0; j < i; ++j) if (local.food[j].resource == cue.resource || local.food[j].cell == cue.cell)
+            throw std::invalid_argument("duplicate local food cue");
     }
     BehaviorDecision choice;
     auto walk = [&](Cell cell, BehaviorMode mode, DecisionReason reason) {
@@ -60,12 +62,17 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
     }
     // Local food always takes precedence over speculative trails or learned routes.
     if (local.food_count) {
-        const FoodCue* best = &local.food[0];
-        for (std::uint32_t i = 1; i < local.food_count; ++i) {
-            const auto& food = local.food[i];
-            if (food.distance_cells < best->distance_cells ||
-                (food.distance_cells == best->distance_cells && food.resource < best->resource)) best = &food;
-        }
+        auto nearest = local.food[0].distance_cells;
+        for (std::uint32_t i = 1; i < local.food_count; ++i) nearest = std::min(nearest, local.food[i].distance_cells);
+        std::array<const FoodCue*, perception_storage_capacity> candidates{}; std::size_t count = 0;
+        for (std::uint32_t i = 0; i < local.food_count; ++i) if (local.food[i].distance_cells == nearest) candidates[count++] = &local.food[i];
+        // Canonical physical ordering removes ID and observation-order dependence.
+        // Uniform rejection sampling gives each equal-quality nearest cue one vote.
+        std::sort(candidates.begin(), candidates.begin()+static_cast<std::ptrdiff_t>(count),
+            [](const auto* a, const auto* b) { return a->cell < b->cell; });
+        auto food_rng = detail::individual_rng(seed ^ UINT64_C(0x464f4f445f544945), actor, state.decisions);
+        const auto* best = candidates[count == 1 ? 0 : static_cast<std::size_t>(bounded(food_rng, count))];
+        choice.resource = best->resource; // Record the selected cue even when approaching it.
         if (best->cell == local.current) {
             choice.action = ActionKind::CollectFood; choice.resource = best->resource;
             choice.mode = BehaviorMode::Collect; choice.reason = DecisionReason::LocalFood; return choice;
@@ -85,16 +92,23 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
         } else choice.forget_memory = true;
     }
     if (!local.step_count) return choice;
+    // Numerical precision, not a stronger biological coefficient. Keep the old
+    // integer draw when no eligible signal contributes, including the blind control.
+    std::uint64_t scale = 1;
+    if (config.trails_enabled && config.trail_weight) for (std::uint32_t i = 0; i < local.step_count; ++i) {
+        if (local.step_count > 1 && state.path_size > 1 && local.steps[i].cell == state.path[state.path_size-2]) continue;
+        if (local.steps[i].trail_units >= config.trail_cutoff_units) scale = UINT64_C(1) << 20;
+    }
     std::array<std::uint64_t, 4> weights{}; std::uint64_t total = 0;
     for (std::uint32_t i = 0; i < local.step_count; ++i) {
         const auto& step = local.steps[i];
         if (local.step_count > 1 && state.path_size > 1 && step.cell == state.path[state.path_size-2]) continue;
         bool visited = false;
         for (std::uint32_t j = 0; j < state.path_size; ++j) if (state.path[j] == step.cell) visited = true;
-        auto weight = visited ? std::uint64_t{1} : config.explore_weight;
-        if (step.direction == state.heading) weight += config.persistence_weight;
-        if (config.trails_enabled) weight += static_cast<std::uint64_t>(
-            std::clamp(step.trail_units/config.trail_cap_units, 0.0, 1.0)*config.trail_weight);
+        auto weight = (visited ? std::uint64_t{1} : config.explore_weight)*scale;
+        if (step.direction == state.heading) weight += std::uint64_t{config.persistence_weight}*scale;
+        if (config.trails_enabled && step.trail_units >= config.trail_cutoff_units) weight += static_cast<std::uint64_t>(
+            std::clamp(step.trail_units/config.trail_cap_units, 0.0, 1.0)*config.trail_weight*static_cast<double>(scale));
         weights[i] = weight; total += weight;
     }
     auto rng = detail::individual_rng(seed, actor, state.decisions);

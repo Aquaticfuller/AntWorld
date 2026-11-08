@@ -13,7 +13,7 @@ This repository begins with a complete design baseline and engineering specifica
 
 ## Workflow
 
-Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. S1 passed Code Review; S2 is explicitly authorized. Review S2_RESULTS.md before any S3 authorization. Keep S0_RESULTS.md, S1_RESULTS.md and earlier designs as historical context; later confirmed decisions take precedence.
+Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. S2.1 validation and minimal fixes are explicitly authorized after S2 Code Review. Review S2_1_RESULTS.md and its matched recruitment evidence before any S3 authorization. Keep S0_RESULTS.md, S1_RESULTS.md, S2_RESULTS.md and earlier designs as historical context; later confirmed decisions take precedence.
 
 ## Unfinished research and implementation
 

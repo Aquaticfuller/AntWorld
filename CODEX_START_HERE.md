@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S0/S1 are reviewed; S2 sensing, exploration and trails is the current authorized implementation batch, not a complete game.
+This is the v0.8 design and engineering handoff. S0-S2 are implemented; the current authorized batch is S2.1 foraging model validation and fixes, not S3 or a complete game.
 
 ## Architecture
 
@@ -24,10 +24,11 @@ This is the v0.8 design and engineering handoff. S0/S1 are reviewed; S2 sensing,
 9. Biology, geometry and Game Master topics as required by the active stage.
 10. docs/26_S1_Implementation_Decisions.md and S1_RESULTS.md for retained transaction foundations.
 11. docs/27_S2_Implementation_Decisions.md and S2_RESULTS.md for local behavior, fixtures and current evidence.
+12. docs/28_S2_1_Validation_Protocol.md for the frozen validation plan, baseline evidence and minimal fixes; S2_1_RESULTS.md for the current review gate.
 
 ## Current implementation gate
 
-S1 passed Code Review and the user explicitly authorized S2. Preserve the S0/S1 mechanisms and regression tests; implement only local sensing, exploration, sparse surface trails, bounded memory and autonomous collection/return. Produce S2_RESULTS.md with multi-seed ablations, Debug/Release/sanitizer and performance evidence, then stop for review. S0_RESULTS.md and S1_RESULTS.md remain historical reports. S3 requires a separate user decision.
+The user explicitly authorized S2.1 after S2 Code Review: remove ResourceId selection bias, audit recruitment, run matched scout/naive-worker trials, retain original ablations and apply only evidence-supported fixes. Preserve all S0-S2 mechanisms and tests. Deliver S2_1_RESULTS.md, S2_1_EXPERIMENTS.csv, charts and explicit acceptance status on codex/s2.1-foraging-validation, then stop. Earlier results remain historical evidence. S3 requires a separate user decision.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 

@@ -22,6 +22,8 @@ jobs:
           python tools/verify_handoff.py
           python tools/check_repository.py
           python tools/analyze_s2.py experiments/s2 --check
+          python tools/analyze_s2.py experiments/s2_1/ablations --check
+          python tools/analyze_s2_1.py --check
       - name: Configure
         run: cmake -S cpp -B build/ci -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
       - name: Build
