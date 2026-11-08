@@ -40,7 +40,7 @@ inline bool developing(const PhysiologyState& p, LifeStage stage) {
     return stage < LifeStage::Adult && (stage != LifeStage::Larva || p.tissue_protein_ug >= p.config.larval_protein_requirement_ug);
 }
 inline std::uint64_t expenditure(const PhysiologyState& p, LifeStage stage) {
-    const auto active = stage == LifeStage::Adult && (p.behavior == IndividualBehavior::Forage || p.behavior == IndividualBehavior::Nurse);
+    const auto active = stage == LifeStage::Adult && (p.behavior == IndividualBehavior::Forage || p.behavior == IndividualBehavior::Nurse || p.behavior == IndividualBehavior::Excavate);
     return add(p.config.basal_nj_per_ms, active ? p.config.active_nj_per_ms : 0);
 }
 // Exact integration of the declared piecewise-constant model, independent of host calls.

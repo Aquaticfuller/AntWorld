@@ -2,6 +2,7 @@
 #include "antworld/core/world_runtime.hpp"
 #include "antworld/core/rng.hpp"
 #include "surface_internal.hpp"
+#include "geometry_internal.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -148,6 +149,8 @@ struct WorldRuntime::State {
         FoodLedger ledger;
         ForagingCounters foraging;
         ScheduledId maintenance;
+        SoilLedger soil;
+        std::uint64_t geometry_revision{};
     } m;
     WorldId world;
     std::uint64_t seed;
@@ -175,6 +178,22 @@ struct WorldRuntime::State {
     FoodCells food_cells; // Derived local index; never exposed to the individual model.
     using Physiology = std::map<EntityId, PhysiologyState>;
     Physiology physiology;
+    std::shared_ptr<const detail::GeometryDefinition> geometry;
+    detail::GeometryEdits geometry_edits;
+    detail::EditIndex edit_index;
+    detail::SpatialIndex spatial_index;
+    using Parcels = std::map<SoilParcelId,SoilParcel>;
+    using Carriers = std::map<EntityId,SoilParcelId>;
+    using SoilRequests = std::map<ScheduledId,SoilRequest>;
+    using Excavators = std::map<EntityId,ExcavatorState>;
+    using SdfCache = std::map<PointQ,SdfBrick>;
+    using DirtyBricks = std::map<PointQ,std::uint64_t>;
+    Parcels parcels;
+    Carriers carriers;
+    SoilRequests soil_requests;
+    Excavators excavators;
+    SdfCache sdf_cache;
+    DirtyBricks dirty_bricks;
     State(WorldId id, std::uint64_t value, WorldConfig c = {}) : world(id), seed(value), config(c) { m.rng = Rng(value); }
     State(const State&) = delete;
     State& operator=(const State&) = delete;
@@ -192,6 +211,7 @@ class WorldRuntime::Transaction {
     const RuntimeLimits& limits;
     State::Metadata before;
     std::shared_ptr<const detail::SurfaceDefinition> surface_before;
+    std::shared_ptr<const detail::GeometryDefinition> geometry_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
     std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
     std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
@@ -206,10 +226,22 @@ public:
     detail::MapJournal<State::Discoveries> discoveries;
     detail::MapJournal<State::FoodCells> food_cells;
     detail::MapJournal<State::Physiology> physiology;
+    detail::MapJournal<detail::GeometryEdits> geometry_edits;
+    detail::MapJournal<detail::EditIndex> edit_index;
+    detail::MapJournal<detail::SpatialIndex> spatial_index;
+    detail::MapJournal<State::Parcels> parcels;
+    detail::MapJournal<State::Carriers> carriers;
+    detail::MapJournal<State::SoilRequests> soil_requests;
+    detail::MapJournal<State::Excavators> excavators;
+    detail::MapJournal<State::SdfCache> sdf_cache;
+    detail::MapJournal<State::DirtyBricks> dirty_bricks;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
+        geometry_before(state.geometry),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
-        visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology) {}
+        visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
+        geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
+        soil_requests(s.soil_requests), excavators(s.excavators), sdf_cache(s.sdf_cache), dirty_bricks(s.dirty_bricks) {}
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
@@ -225,15 +257,18 @@ public:
         }
         s.m = before;
         s.surface = surface_before;
+        s.geometry = geometry_before;
     }
     void commit() noexcept {
         committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
+        geometry_edits.commit(); edit_index.commit(); spatial_index.commit(); parcels.commit(); carriers.commit();
+        soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }
     void touch_colony(std::size_t i) { colony_undo.emplace_back(i, s.colonies.rows[i]); }
     void entity_budget() const {
-        if (s.ants.size() + s.colonies.rows.size() + s.foods.rows.size() >= limits.entities)
+        if (s.ants.size() + s.colonies.rows.size() + s.foods.rows.size() + s.parcels.size() >= limits.entities)
             throw std::length_error("entity host budget exceeded");
     }
     ScheduledId insert(ScheduledEvent e) {

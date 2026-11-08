@@ -1,0 +1,17 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "runs": 160,
+  "edits": 1612,
+  "trajectory_rows": 3872,
+  "seed_range": [
+    1,
+    32
+  ],
+  "interval": "4096 seed bootstrap draws; RNG 4004; paired reversals are controls",
+  "hashes": {
+    "experiments/s4/raw/configuration.json": "e61c257146764ad400c9cd2f8a7d57e7ff931b5a9676eb6328c8d4d0e7d614ac",
+    "experiments/s4/raw/edits.csv": "b2220b37a15a1f3281db243ea3201704cc9599bb86280b955a902c41f81a7f68",
+    "experiments/s4/raw/summary.csv": "ca8f90266c708cd46d9830586d7d66bddc28c945172692909c46b98aaa615d2a",
+    "experiments/s4/raw/trajectories.csv": "1a8d8f6f3fedd81091047038e859ff8bea4bdec4c0b09f80bb827fb512a2644c"
+  }
+}

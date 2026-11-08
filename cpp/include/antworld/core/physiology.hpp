@@ -3,7 +3,7 @@
 
 namespace antworld {
 // Every numeric default in this file is ENGINEERING_FIXTURE, not species calibration.
-enum class IndividualBehavior : std::uint8_t { Paused, Rest, Nurse, Forage };
+enum class IndividualBehavior : std::uint8_t { Paused, Rest, Nurse, Forage, Excavate };
 enum class DeathCause : std::uint8_t { None, EnergyDepleted, Dehydrated, Fixture };
 struct PhysiologyConfig {
     SimTime absorption_period{1000};

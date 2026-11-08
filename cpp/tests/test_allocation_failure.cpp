@@ -32,7 +32,7 @@ namespace {
 template <typename Fn> void sweep(const char* name, WorldRuntime& world, Fn action) {
     current_scenario = name;
     const auto before = world.checkpoint();
-    for (long fault = 0; fault < 2000; ++fault) {
+    for (long fault = 0; fault < 10000; ++fault) {
         world.restore(before); current_fault = fault; remaining = fault;
         bool failed = false;
         try { action(); } catch (const std::bad_alloc&) { failed = true; }
@@ -105,6 +105,34 @@ void s3_sweeps() {
     sweep("physiology_stage_transition", brood, [&] { brood.advance_to({2}); });
     std::cout << "PASS S3_ALLOCATION_FAILURE\n";
 }
+void s4_sweeps() {
+    WorldRuntime world({4,1},9); GeometryConfig config; const BoxQ room{{2,2,2},{14,22,22}},patch{{14,10,10},{15,14,14}};
+    sweep("geometry_configuration",world,[&] { world.configure_geometry(config,std::span{&room,1}); });
+    world.configure_geometry(config,std::span{&room,1}); const PositionM point{.006,-.010,.006}; const auto colony=world.seed_colony(point);
+    sweep("geometry_actor_index",world,[&] { world.seed_ant(colony,{point,LifeStage::Adult,Caste::Worker,20000}); });
+    const auto ant=world.seed_ant(colony,{point,LifeStage::Adult,Caste::Worker,20000}); world.enable_physiology(ant);
+    sweep("geometry_proposal",world,[&] { world.submit_soil({ant,{100},SoilAction::Excavate,patch,{},0}); });
+    world.submit_soil({ant,{100},SoilAction::Excavate,patch,{},0});
+    sweep("geometry_excavate_ledger_energy",world,[&] { world.advance_to({100}); }); world.advance_to({100});
+    const SoilParcelRef parcel{world.summary().world,world.soil_parcels().front().id};
+    world.submit_soil({ant,{200},SoilAction::Drop,{},parcel,1});
+    sweep("geometry_soil_drop",world,[&] { world.advance_to({200}); }); world.advance_to({200});
+    world.submit_soil({ant,{300},SoilAction::Pickup,{},parcel,1});
+    sweep("geometry_soil_pickup",world,[&] { world.advance_to({300}); }); world.advance_to({300});
+    world.submit({ant,{500},ActionKind::Move,{}, {.0055,-.010,.006},0});
+    sweep("geometry_loaded_move_index",world,[&] { world.advance_to({500}); }); world.advance_to({500});
+    world.submit_soil({ant,{600},SoilAction::Fill,patch,parcel,1});
+    sweep("geometry_fill_authority",world,[&] { world.advance_to({600}); }); world.advance_to({600});
+    const auto bytes=world.checkpoint(); sweep("geometry_restore_audit",world,[&] { world.restore(bytes); });
+    const std::array<PointQ,1> keys{{{1,1,1}}};
+    sweep("geometry_cache_rebuild",world,[&] { world.rebuild_geometry_cache(keys); });
+    WorldRuntime active({4,2},2); active.configure_geometry(config,std::span{&room,1}); const auto c=active.seed_colony(point);
+    const auto a=active.seed_ant(c,{point,LifeStage::Adult,Caste::Worker,20000}); active.enable_physiology(a);
+    sweep("geometry_program_activate",active,[&] { active.set_behavior(a,IndividualBehavior::Excavate); }); active.set_behavior(a,IndividualBehavior::Excavate);
+    sweep("geometry_local_decision",active,[&] { active.advance_to({1}); }); active.advance_to({1});
+    sweep("geometry_program_pause",active,[&] { active.set_behavior(a,IndividualBehavior::Paused); });
+    std::cout << "PASS S4_ALLOCATION_FAILURE\n";
+}
 } // namespace
 int main(int argc, char** argv) {
     // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
@@ -114,6 +142,7 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S4") { s4_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S3") { s3_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2.1") { s2_1_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2") { s2_sweeps(); return 0; }

@@ -1,0 +1,20 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "physics_version": 7,
+  "seeds": 32,
+  "coordinate_quantum_m": 0.0005,
+  "origin_m": [0,-0.012,0],
+  "initial_solid_q": [0,0,0,32,24,24],
+  "seed_void_q": [2,2,2,14,22,22],
+  "dry_water_ug_per_q3": [100,25],
+  "body_loaded_half_q": [1,2],
+  "reach_q": 4,
+  "max_patch_extent_q": 4,
+  "sdf_brick_step_band_q": [8,2,4],
+  "work_move_decision_ms": [100,500,1],
+  "dig_energy_nj_per_q3": 1000,
+  "capacity_ug": 20000,
+  "autonomous": {"workers": [1,4], "depot_q": [6,12,12], "window_ms": 60000, "sample_ms": 5000, "restore_ms": 30000, "reversed_activation_for_four": true, "crop_carbs_water_ug": [500,500], "energy_nj": 1000000000, "hydration_ug": 1000},
+  "overlap": {"workers": 2, "position_q": [12,12,12], "patches_q": [[14,10,10,15,14,14],[14,12,10,15,16,14]], "window_ms": 100, "reverse_submission": [false,true], "physiology_enabled": false},
+  "world_and_physiology_defaults": "Versioned C++ WorldConfig and PhysiologyConfig ENGINEERING_FIXTURE defaults; source commit recorded in S4_RESULTS.md"
+}

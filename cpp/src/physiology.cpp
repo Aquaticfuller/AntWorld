@@ -59,7 +59,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         p.death_cause = !p.body_energy_nj ? DeathCause::EnergyDepleted : DeathCause::Dehydrated;
         f.kind = FactKind::AntDied; f.stage = LifeStage::Dead; f.payload = static_cast<std::uint64_t>(p.death_cause);
         tx.touch_ant(i); ant.stage = LifeStage::Dead; s.ants.set(i, ant); --s.m.living;
-        tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_physiology(tx, e.actor, p.death_cause);
+        tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause);
     } else {
         if (developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage)) {
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
@@ -71,21 +71,24 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     auto& s = *state_; const auto ant = query_ant(ref);
-    if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Forage ||
+    if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Excavate ||
         (behavior != IndividualBehavior::Paused && (ant->stage != LifeStage::Adult || ant->caste != Caste::Worker)))
         throw std::invalid_argument("invalid individual behavior activation");
     if (behavior == IndividualBehavior::Forage && !s.surface) throw std::invalid_argument("foraging requires a surface");
+    if (behavior == IndividualBehavior::Excavate && !s.geometry) throw std::invalid_argument("excavation requires geometry");
     // External pending actions must be explicitly resolved/cancelled, never silently commandeered.
     for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.key.phase == Phase::Resolution && e.id != s.physiology.at(ref.id).behavior_event &&
-            (!s.foragers.contains(ref.id) || e.id != s.foragers.at(ref.id).action))
+            (!s.foragers.contains(ref.id) || e.id != s.foragers.at(ref.id).action) &&
+            (!s.excavators.contains(ref.id) || e.id != s.excavators.at(ref.id).action))
             throw std::invalid_argument("individual has an external pending action");
     }
     Transaction tx(s, limits_); synchronize_physiology(tx, ref.id); auto p = s.physiology.at(ref.id);
     if (p.behavior_event.value && s.queue_index.contains(p.behavior_event)) tx.remove(s.queue_index.at(p.behavior_event));
     p.behavior_event = {};
     stop_dead_forager(tx, ref.id); // This helper cancels behavior work and preserves acquired memory.
+    stop_excavator(tx,ref.id);
     p.behavior = behavior; tx.physiology.set(ref.id, p);
     if (behavior == IndividualBehavior::Forage) {
         ForagerState f;
@@ -102,6 +105,8 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
         f.enabled = true; ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::Wake; e.issued_at = s.m.now;
         e.key = {after(s.m.now, s.surface->behavior.decision_delay.milliseconds), Phase::Perception, 0, 0, 0};
         f.wake = tx.insert(e); tx.foragers.set(ref.id, f);
+    } else if (behavior == IndividualBehavior::Excavate) {
+        activate_excavator(tx,ref.id);
     } else if (behavior != IndividualBehavior::Paused) {
         ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
         e.key = {after(s.m.now, p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
@@ -134,14 +139,14 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        if (!contact(ant, recipient, s.config, s.surface.get())) { f.outcome = Outcome::OutOfReach; return; }
+        if (!contact(ant, recipient, s.config, s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug(); supply = p.crop;
     } else if (e.kind == ScheduledEvent::Kind::IngestCargo) supply = ant.carried_food;
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
         if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
-            (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position))) { f.outcome = Outcome::NotAtNest; return; }
+            (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) { f.outcome = Outcome::NotAtNest; return; }
         supply = colony.nest_food;
     }
     if (!room) { f.outcome = Outcome::Capacity; return; }
@@ -175,14 +180,20 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
         else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
             distance(ant.position, colony.nest_position) <= s.config.contact_distance_m &&
-            (!s.surface || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position))) action.kind = ScheduledEvent::Kind::WithdrawNest;
+            (!s.surface || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
         else if (p.behavior == IndividualBehavior::Nurse && p.crop.total_ug()) {
             auto rng = individual_rng(s.seed ^ UINT64_C(0x53334e55525345), ant.id, p.decisions);
             std::uint64_t seen = 0;
-            // Only contact-qualified cues reach the individual choice. This initial
-            // reference query scans registered physiology rows; no distant need is exposed.
-            for (const auto& [id, unused] : s.physiology) {
-                (void)unused; const auto other = s.ants.get(s.ants.index.at(id));
+            // Geometry worlds use a spatial index; legacy worlds retain their canonical candidate order.
+            std::vector<EntityId> candidates(0);
+            if (s.geometry) {
+                for (const auto& neighbor:query_neighborhood({s.world,ant.id},s.config.contact_distance_m).ants)
+                    if (s.physiology.contains(neighbor.id)) candidates.push_back(neighbor.id);
+            } else {
+                for (const auto& [id,unused]:s.physiology) { (void)unused; candidates.push_back(id); }
+            }
+            for (const auto id : candidates) {
+                const auto other = s.ants.get(s.ants.index.at(id));
                 if (id == ant.id || !other.alive() || !contact(ant, other, s.config, s.surface.get())) continue;
                 const auto q = *query_physiology({s.world, id});
                 const bool hungry_larva = other.stage == LifeStage::Larva && p.crop.protein_ug &&

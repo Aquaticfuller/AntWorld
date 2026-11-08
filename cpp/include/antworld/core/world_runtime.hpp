@@ -24,8 +24,8 @@ struct WorldSnapshot {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    static constexpr std::uint32_t schema_version = 4;
-    static constexpr std::uint32_t physics_version = 6;
+    static constexpr std::uint32_t schema_version = 5;
+    static constexpr std::uint32_t physics_version = 7;
     static constexpr std::size_t max_records = 65536;
     static constexpr std::size_t max_same_time_events = 1024;
 
@@ -52,6 +52,26 @@ public:
     ScheduledId submit_nutrition(const NutritionProposal&);
     [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
     [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
+    void configure_geometry(const GeometryConfig&, std::span<const BoxQ> seed_voids, std::span<const BoxQ> rocks = {});
+    ScheduledId submit_soil(const SoilProposal&);
+    [[nodiscard]] GeometrySnapshot geometry_snapshot() const;
+    [[nodiscard]] Material query_material(PositionM) const;
+    [[nodiscard]] std::uint64_t query_material_volume(BoxQ, Material) const;
+    [[nodiscard]] double query_signed_distance(PositionM) const;
+    [[nodiscard]] bool spatially_clear(PositionM, PositionM, std::int32_t half_extent_q = 0) const;
+    [[nodiscard]] Neighborhood query_neighborhood(AntRef, double radius_m) const;
+    [[nodiscard]] Route3D query_route(AntRef, PositionM destination) const;
+    [[nodiscard]] std::vector<Portal3D> query_portals(AntRef) const;
+    [[nodiscard]] bool validate_route(AntRef, const Route3D&) const;
+    [[nodiscard]] std::vector<GeometryEdit> geometry_edits() const;
+    [[nodiscard]] std::vector<SoilParcel> soil_parcels() const;
+    [[nodiscard]] std::optional<SoilParcel> query_parcel(SoilParcelRef) const;
+    [[nodiscard]] std::vector<PointQ> dirty_geometry_bricks() const;
+    void rebuild_geometry_cache(std::span<const PointQ>);
+    void discard_geometry_cache();
+    [[nodiscard]] std::optional<SdfBrick> query_sdf_brick(PointQ) const;
+    [[nodiscard]] std::vector<BoxQ> local_frontiers(AntRef) const;
+    [[nodiscard]] std::optional<ExcavatorState> query_excavator(AntRef) const;
 
     [[nodiscard]] WorldSnapshot snapshot() const;
     // Cheap metadata query; hash fields are zero. snapshot() additionally computes audit hashes.
@@ -90,6 +110,14 @@ private:
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
     void validate_nutrition_capacity() const;
+    void resolve_soil_action(Transaction&, const ScheduledEvent&, WorldEvent&);
+    void resolve_excavation_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    void after_excavation_action(Transaction&, const ScheduledEvent&, const WorldEvent&, const AntState&);
+    void stop_excavator(Transaction&, EntityId);
+    void activate_excavator(Transaction&, EntityId);
+    void index_position(Transaction&, EntityId, PositionM from, PositionM to);
+    [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
+    [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
 };

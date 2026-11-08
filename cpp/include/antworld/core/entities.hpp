@@ -63,6 +63,8 @@ struct RuntimeLimits {
     std::size_t entities{65536}, pending_events{65536}, committed_events{65536};
     std::size_t events_per_timestamp{1024}, checkpoint_bytes{16 * 1024 * 1024};
     std::size_t surface_cells{65536}, trail_cells{65536};
+    std::size_t geometry_edits{65536}, geometry_index_entries{1000000}, geometry_partition_cells{200000};
+    std::size_t sdf_bricks{4096}, navigation_nodes{65536}, neighborhood_buckets{4096};
 };
 enum class ActionKind : std::uint8_t { Move, CollectFood, DeliverFood, Rest };
 struct ActionProposal {
@@ -76,7 +78,8 @@ struct ActionProposal {
 enum class Outcome : std::uint8_t {
     Success, Partial, MissingEntity, DeadActor, InvalidStage, OutOfBounds,
     TooFast, StalePosition, OutOfReach, Depleted, Capacity, DuplicateAction,
-    InvalidTransition, AlreadyDead, Blocked, NonLocalMove, NotAtNest, EmptyInventory
+    InvalidTransition, AlreadyDead, Blocked, NonLocalMove, NotAtNest, EmptyInventory,
+    StaleGeometry, NonDiggable, InvalidGeometry, InsufficientEnergy
 };
 struct FoodLedger {
     FoodMass introduced, available, carried, stored;

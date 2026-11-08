@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
             const std::string_view a(argv[2]); const auto [end, error] = std::from_chars(a.data(), a.data()+a.size(), seeds);
             if (error != std::errc{} || end != a.data()+a.size() || !seeds || seeds > 512) throw std::invalid_argument("invalid assay seed count");
         }
-        const std::string_view model = WorldRuntime::physics_version == 4 ? "s2.1" : (WorldRuntime::physics_version == 5 ? "s2.2" : "s3");
+        const std::string_view model = WorldRuntime::physics_version == 4 ? "s2.1" : (WorldRuntime::physics_version == 5 ? "s2.2" : (WorldRuntime::physics_version == 6 ? "s3" : "s4"));
         const std::filesystem::path root(argv[1]); std::filesystem::create_directories(root);
         std::ofstream out(root/"local.csv"); out.exceptions(std::ios::badbit | std::ios::failbit); out.imbue(std::locale::classic()); out << std::setprecision(17);
         out << "scope,model,physics_version,seed,context,mirror,treatment,age_ms,persistence_weight,primary,moves,selected_marked,occupancy,near_occupancy,initial_streak,max_streak,streak3,first_deviation_step,deviation_observed,restricted_first_deviation_step,deviations,reacquisitions,uturns,path_m,net_displacement_m,mean_distance_m,release_units,end_units,explore_weight,trail_weight,trail_cap_units,cutoff_units,half_life_s,cell_size_m,step_ms,decision_delay_ms,route_capacity,memory_enabled,trajectory\n";

@@ -3,6 +3,7 @@
 #include "antworld/core/entities.hpp"
 #include "antworld/core/behavior.hpp"
 #include "antworld/core/physiology.hpp"
+#include "antworld/core/geometry.hpp"
 
 namespace antworld {
 enum class Phase : std::uint32_t {
@@ -32,7 +33,7 @@ struct ScheduledEvent {
     DiagnosticAction action{};
     std::uint64_t payload{};
     enum class Kind : std::uint8_t { Diagnostic, Move, CollectFood, Lifecycle, Wake, DeliverFood, Rest, TrailMaintenance,
-        Physiology, NutritionWake, IngestCargo, WithdrawNest, Trophallaxis } kind{};
+        Physiology, NutritionWake, IngestCargo, WithdrawNest, Trophallaxis, SoilAction, ExcavationWake } kind{};
     EntityId actor;
     ResourceId resource;
     PositionM destination;
@@ -46,7 +47,8 @@ enum class FactKind : std::uint8_t {
     Diagnostic, ColonySeeded, AntSeeded, FoodSeeded, Moved, FoodCollected,
     ActionRejected, StageChanged, AntDied, SurfaceConfigured, ForagingStarted,
     ForagingDecision, FoodDelivered, Rested, TrailMaintenance,
-    PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred
+    PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred,
+    GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision
 };
 struct WorldEvent {
     EventId id;

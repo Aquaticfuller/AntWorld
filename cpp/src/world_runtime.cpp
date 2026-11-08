@@ -65,7 +65,8 @@ bool WorldRuntime::cancel(ScheduledId id) {
     if (found == s.queue_index.end()) return false;
     const auto& event = s.queue.at(found->second);
     if (event.kind == ScheduledEvent::Kind::Wake || event.kind == ScheduledEvent::Kind::TrailMaintenance ||
-        event.kind == ScheduledEvent::Kind::Physiology || event.kind == ScheduledEvent::Kind::NutritionWake ||
+        event.kind == ScheduledEvent::Kind::Physiology || event.kind == ScheduledEvent::Kind::NutritionWake || event.kind == ScheduledEvent::Kind::ExcavationWake ||
+        (s.excavators.contains(event.actor) && s.excavators.at(event.actor).action == id) ||
         (s.physiology.contains(event.actor) && s.physiology.at(event.actor).behavior_event == id) ||
         (s.foragers.contains(event.actor) && s.foragers.at(event.actor).action == id))
         throw std::invalid_argument("autonomous events are owned by their individual/field scheduler");
@@ -73,7 +74,7 @@ bool WorldRuntime::cancel(ScheduledId id) {
 }
 ColonyRef WorldRuntime::seed_colony(PositionM nest) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
-    if (!inside(nest, s.config) || (s.surface && !s.surface->locate(nest))) throw std::invalid_argument("invalid physical nest position");
+    if (!inside(nest, s.config) || (s.surface && !s.surface->locate(nest)) || !spatially_clear(nest,nest)) throw std::invalid_argument("invalid physical nest position");
     Transaction tx(s, limits_); tx.entity_budget(); const ColonyId id{take(s.m.next_entity)};
     s.colonies.append({id, Species::LasiusNigerEngineeringFixture, s.m.now, nest, {}});
     WorldEvent e; e.kind = FactKind::ColonySeeded; e.colony = id; e.position = nest; tx.fact(e);
@@ -83,17 +84,19 @@ AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
     if (colony.world != s.world || !s.colonies.index.contains(colony.id) ||
         !valid(seed.stage) || seed.stage == LifeStage::Dead || seed.caste > Caste::Male ||
-        !inside(seed.position, s.config) || (s.surface && !s.surface->locate(seed.position)))
+        !inside(seed.position, s.config) || (s.surface && !s.surface->locate(seed.position)) ||
+        !spatially_clear(seed.position,seed.position,s.geometry ? s.geometry->config.body_half_q : 0))
         throw std::invalid_argument("invalid ant seed or colony reference");
     Transaction tx(s, limits_); tx.entity_budget(); const EntityId id{take(s.m.next_entity)};
     s.ants.append({id, colony.id, s.m.now, seed.stage, seed.caste, seed.position, 0, seed.carrying_capacity_ug, {}});
+    if (s.geometry) tx.spatial_index.set({spatial_key(seed.position),id.value},1);
     bump(s.m.living);
     WorldEvent e; e.kind = FactKind::AntSeeded; e.actor = id; e.colony = colony.id;
     e.position = seed.position; e.stage = seed.stage; tx.fact(e); tx.commit(); return {s.world, id};
 }
 FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
-    if (!inside(position, s.config) || mass.total_ug() == 0) throw std::invalid_argument("invalid food seed");
+    if (!inside(position, s.config) || mass.total_ug() == 0 || !spatially_clear(position,position)) throw std::invalid_argument("invalid food seed");
     std::optional<Cell> cell;
     if (s.surface) {
         cell = s.surface->locate(position);
@@ -101,6 +104,7 @@ FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
     }
     Transaction tx(s, limits_); tx.entity_budget(); const ResourceId id{take(s.m.next_entity)};
     s.foods.append({id, position, mass, mass});
+    if (s.geometry) tx.spatial_index.set({spatial_key(position),id.value},2);
     if (cell) tx.food_cells.set(*cell, id);
     s.m.ledger.introduced = sum(s.m.ledger.introduced, mass); (void)s.m.ledger.introduced.total_ug();
     s.m.ledger.available = sum(s.m.ledger.available, mass);
@@ -155,7 +159,7 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
         synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
         fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
-        if (e.stage == LifeStage::Dead) { --s.m.living; stop_dead_forager(tx, e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); }
+        if (e.stage == LifeStage::Dead) { --s.m.living; stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); }
     }
     tx.fact(fact);
 }
@@ -180,28 +184,33 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         else if (!ant.alive()) f.outcome = Outcome::DeadActor;
         else if (ant.stage != LifeStage::Adult || ant.caste != Caste::Worker) f.outcome = Outcome::InvalidStage;
         else if (e.observed_position_revision != ant.position_revision) f.outcome = Outcome::StalePosition;
-        else if (e.kind >= ScheduledEvent::Kind::IngestCargo) {
+        else if (e.kind == ScheduledEvent::Kind::SoilAction) {
+            resolve_soil_action(tx,e,f);
+        } else if (e.kind >= ScheduledEvent::Kind::IngestCargo && e.kind <= ScheduledEvent::Kind::Trophallaxis) {
             resolve_nutrition_action(tx, e, f);
         } else if (e.kind == ScheduledEvent::Kind::Move) {
             const auto seconds = static_cast<double>(e.key.time.milliseconds - e.issued_at.milliseconds) / 1000.0;
             const auto length = distance(ant.position, e.destination);
             if (!inside(e.destination, s.config)) f.outcome = Outcome::OutOfBounds;
+            else if (!spatially_clear(ant.position,e.destination,body_half(e.actor))) f.outcome = Outcome::Blocked;
             else if (s.surface && (!s.surface->locate(ant.position) || !s.surface->locate(e.destination))) f.outcome = Outcome::Blocked;
             else if (s.surface && !adjacent(*s.surface->locate(ant.position), *s.surface->locate(e.destination))) f.outcome = Outcome::NonLocalMove;
             else if (!std::isfinite(length) || (length > 0 && (seconds <= 0 || length / seconds > s.config.max_speed_m_per_s)))
                 f.outcome = Outcome::TooFast;
             else {
+                index_position(tx,ant.id,ant.position,e.destination);
                 tx.touch_ant(i); ant.position = e.destination; bump(ant.position_revision); s.ants.set(i, ant);
                 f.kind = FactKind::Moved; f.position = ant.position;
             }
         } else if (e.kind == ScheduledEvent::Kind::CollectFood) {
             const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];
             const auto available = food.remaining.total_ug();
-            const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug();
+            const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug() - carried_soil_ug(ant.id);
             if (distance(ant.position, food.position) > s.config.contact_distance_m ||
-                (s.surface && s.surface->locate(ant.position) != s.surface->locate(food.position))) f.outcome = Outcome::OutOfReach;
+                (s.surface && s.surface->locate(ant.position) != s.surface->locate(food.position)) || !spatially_clear(ant.position,food.position)) f.outcome = Outcome::OutOfReach;
             else if (available == 0) f.outcome = Outcome::Depleted;
             else if (room == 0) f.outcome = Outcome::Capacity;
+            else if (s.geometry && !spatially_clear(ant.position,ant.position,s.geometry->config.loaded_half_q)) f.outcome = Outcome::Blocked;
             else {
                 const auto amount = std::min({e.requested_ug, available, room}); f.transferred = portion(food.remaining, amount);
                 tx.touch_ant(i); tx.touch_food(j);
@@ -214,7 +223,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         } else if (e.kind == ScheduledEvent::Kind::DeliverFood) {
             const auto j = s.colonies.index.at(ant.colony); auto& colony = s.colonies.rows[j];
             if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
-                (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position))) f.outcome = Outcome::NotAtNest;
+                (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) f.outcome = Outcome::NotAtNest;
             else if (ant.carried_food.total_ug() == 0) f.outcome = Outcome::EmptyInventory;
             else {
                 tx.touch_ant(i); tx.touch_colony(j); f.transferred = ant.carried_food;
@@ -229,6 +238,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         }
         after_action(tx, e, f, before);
         continue_nutrition_behavior(tx, e);
+        after_excavation_action(tx,e,f,before);
         tx.fact(f);
     }
 }
@@ -242,12 +252,13 @@ void WorldRuntime::advance_to(SimTime target) {
             std::vector<ScheduledEvent> wakes(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Perception) {
                 const auto e = tx.remove(s.queue.begin()->first); tx.executing(e);
-                if (e.kind == ScheduledEvent::Kind::Wake || e.kind == ScheduledEvent::Kind::NutritionWake) wakes.push_back(e); else execute(tx, e);
+                if (e.kind == ScheduledEvent::Kind::Wake || e.kind == ScheduledEvent::Kind::NutritionWake || e.kind == ScheduledEvent::Kind::ExcavationWake) wakes.push_back(e); else execute(tx, e);
             }
-            std::vector<ScheduledEvent> foragers(0), nurses(0);
-            for (const auto& e : wakes) (e.kind == ScheduledEvent::Kind::Wake ? foragers : nurses).push_back(e);
+            std::vector<ScheduledEvent> foragers(0), nurses(0), excavators(0);
+            for (const auto& e : wakes) (e.kind == ScheduledEvent::Kind::Wake ? foragers : e.kind == ScheduledEvent::Kind::NutritionWake ? nurses : excavators).push_back(e);
             if (!foragers.empty()) resolve_wakes(tx, foragers);
             if (!nurses.empty()) resolve_nutrition_wakes(tx, nurses);
+            if (!excavators.empty()) resolve_excavation_wakes(tx,excavators);
         } else if (key.phase == Phase::Resolution) {
             std::vector<ScheduledEvent> actions(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Resolution) {

@@ -33,7 +33,7 @@ void validate_surface(const SurfaceConfig& c, const BehaviorConfig& p, const Wor
 }
 void WorldRuntime::configure_surface(const SurfaceConfig& config, std::span<const Cell> blocked, const BehaviorConfig& behavior) {
     auto& s = *state_;
-    if (s.surface || s.m.now != SimTime{} || s.m.watermark || !s.queue.empty() || !s.colonies.rows.empty() ||
+    if (s.surface || s.geometry || s.m.now != SimTime{} || s.m.watermark || !s.queue.empty() || !s.colonies.rows.empty() ||
         s.ants.size() || !s.foods.rows.empty()) throw std::invalid_argument("configure the surface before seeding entities or events");
     validate_surface(config, behavior, s.config, limits_);
     auto surface = std::make_shared<SurfaceDefinition>(); surface->config = config; surface->behavior = behavior;
@@ -89,7 +89,7 @@ LocalObservation WorldRuntime::sense(AntRef ref) const {
     LocalObservation result; result.time = s.m.now; result.current = *at;
     for (unsigned d = 0; d < 4; ++d) {
         const auto dir = static_cast<Direction>(d); const auto c = neighbor(*at, dir);
-        if (!s.surface->open(c)) continue;
+        if (!s.surface->open(c) || !spatially_clear(ant->position,s.surface->center(c),body_half(ant->id))) continue;
         double trail = 0;
         if (p.trails_enabled) {
             const auto found = s.trails.find({ant->colony, c});
@@ -109,7 +109,7 @@ LocalObservation WorldRuntime::sense(AntRef ref) const {
         if (sample.distance == p.sensing_radius_cells) continue;
         for (unsigned d = 0; d < 4; ++d) {
             const auto dir = static_cast<Direction>(d); const auto cell = neighbor(sample.cell, dir);
-            if (!s.surface->open(cell)) continue;
+            if (!s.surface->open(cell) || !spatially_clear(s.surface->center(sample.cell),s.surface->center(cell))) continue;
             bool seen = false; for (std::uint32_t j = 0; j < size; ++j) if (sampled[j].cell == cell) seen = true;
             if (seen) continue;
             if (size == sampled.size()) throw std::logic_error("local perception capacity exceeded");

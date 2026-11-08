@@ -45,7 +45,7 @@ template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits&
             p.body_energy_nj <= p.config.energy_capacity_nj && p.hydration_ug <= p.config.hydration_capacity_ug &&
             p.tissue_protein_ug <= p.config.larval_protein_requirement_ug &&
             p.water_loss_remainder < 1000 && p.carb_remainder < 1000 && p.water_remainder < 1000 && p.protein_remainder < 1000 &&
-            p.updated_at <= s.m.now && p.behavior <= IndividualBehavior::Forage && p.death_cause <= DeathCause::Fixture &&
+            p.updated_at <= s.m.now && p.behavior <= IndividualBehavior::Excavate && p.death_cause <= DeathCause::Fixture &&
             s.physiology.emplace(id, p).second, "invalid physiology state");
     }
 }
@@ -74,7 +74,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
         } else if (audit.contains(e.actor)) {
             auto& p = audit.at(e.actor); const auto prior_stage = stages.at(e.actor);
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || nutrition_fact(e.kind) || (e.kind == FactKind::ActionRejected && e.payload))
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || (e.kind == FactKind::ActionRejected && e.payload))
                 settle(p, prior_stage, e.time);
             if (e.kind == FactKind::PhysiologyUpdated) {
                 ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
@@ -89,8 +89,13 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                     (p.death_cause == DeathCause::Dehydrated && p.body_energy_nj && !p.hydration_ug), "invalid physiological death evidence");
                 p.behavior = IndividualBehavior::Paused;
             } else if (e.kind == FactKind::BehaviorChanged) {
-                ensure(e.payload <= static_cast<std::uint64_t>(IndividualBehavior::Forage) && prior_stage != LifeStage::Dead,
+                ensure(e.payload <= static_cast<std::uint64_t>(IndividualBehavior::Excavate) && prior_stage != LifeStage::Dead,
                     "invalid behavior switch evidence"); p.behavior = static_cast<IndividualBehavior>(e.payload);
+            } else if (e.kind == FactKind::SoilExcavated) {
+                ensure(s.geometry && s.soil_requests.contains(e.source), "dig energy without geometry provenance");
+                const auto cost=multiply(s.soil_requests.at(e.source).actual_q3,s.geometry->config.dig_energy_nj_per_q3);
+                ensure(cost<p.body_energy_nj,"unfunded excavation energy");
+                p.body_energy_nj-=cost; p.dissipated_energy_nj=add(p.dissipated_energy_nj,cost);
             } else if (e.kind == FactKind::NutritionDecision) {
                 ensure(prior_stage == LifeStage::Adult && (p.behavior == IndividualBehavior::Nurse || p.behavior == IndividualBehavior::Rest),
                     "invalid local nutrition decision"); bump(p.decisions); ensure(e.payload == p.decisions, "nutrition decision counter mismatch");
@@ -108,7 +113,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
             if (e.kind == FactKind::ActionRejected && e.payload && audit.contains(EntityId{e.payload}))
                 settle(audit.at(EntityId{e.payload}), stages.at(EntityId{e.payload}), e.time);
             ensure(p.crop.total_ug() <= p.config.crop_capacity_ug, "crop capacity exceeded in history");
-        } else ensure(e.kind < FactKind::PhysiologyEnabled, "physiology fact without initialization");
+        } else ensure(e.kind < FactKind::PhysiologyEnabled || e.kind >= FactKind::GeometryConfigured, "physiology fact without initialization");
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied) stages[e.actor] = e.stage;
     }
     ensure(audit.size() == s.physiology.size(), "missing physiology evidence");
@@ -135,6 +140,8 @@ template <typename S> void validate_physiology_evidence(const S& s) {
         }
         const auto f = s.foragers.find(id);
         ensure((saved.behavior == IndividualBehavior::Forage) == (f != s.foragers.end() && f->second.enabled), "foraging program mismatch");
+        const auto excavator=s.excavators.find(id);
+        ensure((saved.behavior==IndividualBehavior::Excavate)==(excavator!=s.excavators.end() && excavator->second.enabled),"excavation program mismatch");
         introduced = sum(introduced, sum(saved.initial.crop, {0, saved.initial.tissue_protein_ug, saved.initial.hydration_ug, 0}));
         initial_energy = add(initial_energy, saved.initial.body_energy_nj);
         max_yield = std::max(max_yield, saved.config.carbohydrate_yield_nj_per_ug);

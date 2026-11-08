@@ -1,0 +1,10 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "platform": "Microsoft Windows NT 10.0.26200.0",
+  "processor_identifier": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+  "build": "Release",
+  "compiler": "LLVM-MinGW 20261104 Clang 23.1.5",
+  "sampled_process_peak_working_set_bytes": 9195520,
+  "sampling_interval_ms": 200,
+  "exit_code": 0
+}
