@@ -3,6 +3,7 @@
 #include "antworld/core/rng.hpp"
 #include "surface_internal.hpp"
 #include "geometry_internal.hpp"
+#include "contact_index.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -151,6 +152,7 @@ struct WorldRuntime::State {
         ScheduledId maintenance;
         SoilLedger soil;
         std::uint64_t geometry_revision{};
+        ContactWork contact_work;
     } m;
     WorldId world;
     std::uint64_t seed;
@@ -178,6 +180,9 @@ struct WorldRuntime::State {
     FoodCells food_cells; // Derived local index; never exposed to the individual model.
     using Physiology = std::map<EntityId, PhysiologyState>;
     Physiology physiology;
+    std::shared_ptr<const SocialConfig> social;
+    detail::ContactNodes contact_nodes;
+    detail::ContactRoots contact_roots;
     std::shared_ptr<const detail::GeometryDefinition> geometry;
     detail::GeometryEdits geometry_edits;
     detail::EditIndex edit_index;
@@ -214,6 +219,7 @@ class WorldRuntime::Transaction {
     State::Metadata before;
     std::shared_ptr<const detail::SurfaceDefinition> surface_before;
     std::shared_ptr<const detail::GeometryDefinition> geometry_before;
+    std::shared_ptr<const SocialConfig> social_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
     std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
     std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
@@ -228,6 +234,8 @@ public:
     detail::MapJournal<State::Discoveries> discoveries;
     detail::MapJournal<State::FoodCells> food_cells;
     detail::MapJournal<State::Physiology> physiology;
+    detail::MapJournal<detail::ContactNodes> contact_nodes;
+    detail::MapJournal<detail::ContactRoots> contact_roots;
     detail::MapJournal<detail::GeometryEdits> geometry_edits;
     detail::MapJournal<detail::EditIndex> edit_index;
     detail::MapJournal<detail::SpatialIndex> spatial_index;
@@ -239,10 +247,11 @@ public:
     detail::MapJournal<State::DirtyBricks> dirty_bricks;
     detail::MapJournal<State::Commands> commands;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
-        geometry_before(state.geometry),
+        geometry_before(state.geometry), social_before(state.social),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
         visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
+        contact_nodes(s.contact_nodes), contact_roots(s.contact_roots),
         geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
         soil_requests(s.soil_requests), excavators(s.excavators), sdf_cache(s.sdf_cache), dirty_bricks(s.dirty_bricks), commands(s.commands) {}
     Transaction(const Transaction&) = delete;
@@ -261,9 +270,11 @@ public:
         s.m = before;
         s.surface = surface_before;
         s.geometry = geometry_before;
+        s.social = social_before;
     }
     void commit() noexcept {
         committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
+        contact_nodes.commit(); contact_roots.commit();
         geometry_edits.commit(); edit_index.commit(); spatial_index.commit(); parcels.commit(); carriers.commit();
         soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();
         commands.commit();

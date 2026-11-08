@@ -1,6 +1,7 @@
 #pragma once
 #include "checkpoint_codec.hpp"
 #include "physiology_internal.hpp"
+#include "social_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array physiology_config_times{
@@ -107,6 +108,12 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 ensure(prior_stage == LifeStage::Adult && a.caste == Caste::Worker &&
                     (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.surface.get()),
                     "transfer has no living local contact evidence");
+                if (s.social) {
+                    ensure(s.social->exchange_enabled,"transfer in a no-response control");
+                    if (s.social->demand_sensitive)
+                        ensure(ingredient_min(e.transferred,nutrient_demand(recipient,target_stage))==e.transferred,
+                            "transfer exceeds contacted recipient demand");
+                }
                 p.crop = subtract(p.crop, e.transferred); recipient.crop = sum(recipient.crop, e.transferred);
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");
             } else if (e.kind == FactKind::CargoIngested || e.kind == FactKind::NestIngested) p.crop = sum(p.crop, e.transferred);

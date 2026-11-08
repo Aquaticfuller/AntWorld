@@ -1,0 +1,9 @@
+# Dense-contact fixture supplement (frozen before matched measurements)
+
+Document 35 controls the targets. This file resolves fixture details before running the matched benchmark. No physiological coefficients are changed. Use seed 42, populations 128/512/2048, ten repetitions and ten simulated seconds observed every second. Every worker starts with crop (100,400,400,100) ug, 1 J body energy and 1,000 ug hydration, and the existing Nurse program. All candidates are well nourished at initialization; this isolates contact work without inventing transfers. Both policies enable S6 demand limits. Exhaustive scans every identity; bounded samples at most 16 using local bucket ranks and then applies identical physical contact tests.
+
+Dense workers share (0,0,0) m. Dispersed worker i is at (0.01*(i%32),0,0.01*(i/32)) m. The 0.002 m contact distance and all physiology defaults are unchanged. Neither fixture uses terrain, so the experiment measures contact indexing rather than geometry cost. Separate wall tests retain contact reachability. Host limits: 10,000 events/timestamp, 200,000 facts, 64 MiB checkpoint; no history truncation. Setup includes all seeding, physiology and scheduler work and is timed separately.
+
+Report every repetition's advancement/encode/restore, process current/peak RSS, facts, pending work and actual committed-policy candidate/bucket/tree counters. Peak RSS is process lifetime, not per-case incremental memory. Pure observer samples do not change counters. The counters describe algorithm work; they are not invented biological encounters or successful transfers. Run in isolation from builds/other heavy experiments. Quantiles and the document-35 speed/growth criteria are calculated from all ten measurements.
+
+Reproduce: `antworld_s6_contact_benchmark out/s6-contacts 10`. `1 128` is a smoke check, not performance evidence.

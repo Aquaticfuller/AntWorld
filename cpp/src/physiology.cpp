@@ -1,4 +1,5 @@
 #include "physiology_internal.hpp"
+#include "social_internal.hpp"
 #include "behavior_rng.hpp"
 
 namespace antworld {
@@ -59,6 +60,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         p.death_cause = !p.body_energy_nj ? DeathCause::EnergyDepleted : DeathCause::Dehydrated;
         f.kind = FactKind::AntDied; f.stage = LifeStage::Dead; f.payload = static_cast<std::uint64_t>(p.death_cause);
         tx.touch_ant(i); ant.stage = LifeStage::Dead; s.ants.set(i, ant); --s.m.living;
+        index_contact(tx,e.actor,{});
         tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause);
     } else {
         if (developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage)) {
@@ -142,6 +144,9 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         if (!contact(ant, recipient, s.config, s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug(); supply = p.crop;
+        if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
+        if (s.social && s.social->demand_sensitive)
+            supply = ingredient_min(supply,nutrient_demand(*receiver,recipient.stage));
     } else if (e.kind == ScheduledEvent::Kind::IngestCargo) supply = ant.carried_food;
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
@@ -171,6 +176,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
 }
 void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<ScheduledEvent>& wakes) {
     auto& s = *state_; std::vector<ScheduledEvent> actions(0); actions.reserve(wakes.size());
+    std::vector<ContactSample> encounters(wakes.size());
     for (const auto& wake : wakes) {
         const auto ant = s.ants.get(s.ants.index.at(wake.actor)); const auto p = *query_physiology({s.world, ant.id});
         if (p.behavior_event != wake.id || !ant.alive()) throw std::logic_error("invalid nutrition wake ownership");
@@ -186,7 +192,11 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             std::uint64_t seen = 0;
             // Geometry worlds use a spatial index; legacy worlds retain their canonical candidate order.
             std::vector<EntityId> candidates(0);
-            if (s.geometry) {
+            if (s.social) {
+                encounters[actions.size()]=sample_contacts({s.world,ant.id},p.decisions);
+                for (const auto neighbor:encounters[actions.size()].ants)
+                    if (s.physiology.contains(neighbor.id)) candidates.push_back(neighbor.id);
+            } else if (s.geometry) {
                 for (const auto& neighbor:query_neighborhood({s.world,ant.id},s.config.contact_distance_m).ants)
                     if (s.physiology.contains(neighbor.id)) candidates.push_back(neighbor.id);
             } else {
@@ -213,6 +223,13 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         tx.physiology.set(actions[i].actor, p);
         const auto ant = s.ants.get(s.ants.index.at(actions[i].actor));
         WorldEvent f; f.source = wakes[i].id; f.actor = ant.id; f.colony = ant.colony; f.position = ant.position; f.stage = ant.stage;
+        if (s.social) {
+            const auto& sample=encounters[i]; auto& work=s.m.contact_work;
+            bump(work.decisions); work.candidates_examined=add(work.candidates_examined,sample.candidates_examined);
+            work.bucket_queries=add(work.bucket_queries,sample.bucket_queries); work.tree_visits=add(work.tree_visits,sample.tree_visits);
+            work.maximum_candidates=std::max(work.maximum_candidates,sample.candidates_examined);
+            f.random_value=sample.candidates_examined;
+        }
         f.kind = FactKind::NutritionDecision; f.payload = p.decisions; tx.fact(f);
     }
 }

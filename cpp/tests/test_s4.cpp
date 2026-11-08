@@ -351,9 +351,9 @@ void corruption() {
     f.dig();
     f.world.advance_to({100});
     const auto bytes = f.world.checkpoint();
-    // Schema 6 retains edit/parcel/request records and appends an empty command count.
+    // Schema 7 retains records and appends the empty command count and social flag.
     // has one of each and no excavation program; alter semantic fields, then rehash.
-    const auto requests = bytes.size() - 24 - 81, parcels = requests - 73, edits = parcels - 89, ledger = edits - 56;
+    const auto requests = bytes.size() - 25 - 81, parcels = requests - 73, edits = parcels - 89, ledger = edits - 56;
     require(bytes[requests] == 1 && bytes[parcels] == 1 && bytes[edits] == 1, "corruption test layout drifted");
     const std::array offsets{edits + 8 + 73, parcels + 32, ledger + 16, requests + 8 + 57, edits + 8 + 16};
     for (auto offset : offsets) {
@@ -369,7 +369,7 @@ void corruption() {
     const auto saved = active.world.checkpoint();
     auto bad = saved;
     // Owned wake precedes the action, empty command count and checksum.
-    bad[bad.size() - 32] ^= 64;
+    bad[bad.size() - 33] ^= 64;
     repair_checksum(bad);
     rejects([&] { active.world.restore(bad); });
     require(active.world.checkpoint() == saved, "bad excavation ownership replaced valid world");

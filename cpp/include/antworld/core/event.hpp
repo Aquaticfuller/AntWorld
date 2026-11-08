@@ -49,7 +49,8 @@ enum class FactKind : std::uint8_t {
     ActionRejected, StageChanged, AntDied, SurfaceConfigured, ForagingStarted,
     ForagingDecision, FoodDelivered, Rested, TrailMaintenance,
     PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred,
-    GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced
+    GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced,
+    SocialConfigured
 };
 struct WorldEvent {
     EventId id;

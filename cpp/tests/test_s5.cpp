@@ -116,7 +116,7 @@ void commands(const std::filesystem::path &path) {
     copy.restore(w.checkpoint());
     require(copy.checkpoint() == w.checkpoint(), "new command codec fails");
     auto bad = w.checkpoint();
-    bad[bad.size() - 16] ^= 1;
+    bad[bad.size() - 17] ^= 1;
     s4_fixture::repair_checksum(bad);
     rejects([&] { copy.restore(bad); });
     WorldRuntime surface({5, 3}, 3);

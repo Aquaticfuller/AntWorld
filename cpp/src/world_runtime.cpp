@@ -90,6 +90,7 @@ AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
     Transaction tx(s, limits_); tx.entity_budget(); const EntityId id{take(s.m.next_entity)};
     s.ants.append({id, colony.id, s.m.now, seed.stage, seed.caste, seed.position, 0, seed.carrying_capacity_ug, {}});
     if (s.geometry) tx.spatial_index.set({spatial_key(seed.position),id.value},1);
+    index_contact(tx,id,seed.position);
     bump(s.m.living);
     WorldEvent e; e.kind = FactKind::AntSeeded; e.actor = id; e.colony = colony.id;
     e.position = seed.position; e.stage = seed.stage; tx.fact(e); tx.commit(); return {s.world, id};
@@ -159,7 +160,7 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
         synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
         fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
-        if (e.stage == LifeStage::Dead) { --s.m.living; stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); }
+        if (e.stage == LifeStage::Dead) { --s.m.living; index_contact(tx,e.actor,{}); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); }
     }
     tx.fact(fact);
 }

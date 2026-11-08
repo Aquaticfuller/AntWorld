@@ -133,6 +133,22 @@ void s4_sweeps() {
     sweep("geometry_program_pause",active,[&] { active.set_behavior(a,IndividualBehavior::Paused); });
     std::cout << "PASS S4_ALLOCATION_FAILURE\n";
 }
+void s6_sweeps() {
+    WorldRuntime w({6,7},42); const auto c=w.seed_colony();
+    const auto a=w.seed_ant(c,{}),b=w.seed_ant(c,{{},LifeStage::Larva});
+    for (unsigned i=0;i<24;++i) w.seed_ant(c,{});
+    sweep("social_configuration_contact_tree",w,[&]{w.configure_social();}); w.configure_social();
+    sweep("contact_tree_seed",w,[&]{w.seed_ant(c,{});});
+    w.enable_physiology(a,{{0,400,0,0},1000000000,1000,0}); w.enable_physiology(b);
+    w.submit_nutrition({a,{1},NutritionAction::Trophallaxis,b,100});
+    sweep("demand_limited_exchange",w,[&]{w.advance_to({1});}); w.advance_to({1});
+    w.submit({a,{1000},ActionKind::Move,{}, {.01,0,0},0});
+    sweep("contact_tree_move",w,[&]{w.advance_to({1000});}); w.advance_to({1000});
+    w.schedule_lifecycle(a,{1001},LifeStage::Dead);
+    sweep("contact_tree_death",w,[&]{w.advance_to({1001});});
+    const auto bytes=w.checkpoint(); sweep("contact_tree_restore",w,[&]{w.restore(bytes);});
+    std::cout<<"PASS S6_ALLOCATION_FAILURE\n";
+}
 } // namespace
 int main(int argc, char** argv) {
     // Turn an unexpected noexcept failure into a useful CI failure, not a CRT dialog.
@@ -142,6 +158,7 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S6") { s6_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S5") {
             WorldRuntime world({5,1},5);world.seed_colony();
             const PlaceFoodCommand command{{5,1},{1,2},{},{100,50,25,0}};

@@ -86,6 +86,7 @@ std::int32_t WorldRuntime::body_half(EntityId id) const {
 }
 void WorldRuntime::index_position(Transaction &tx, EntityId id, PositionM from, PositionM to) {
     auto &s = *state_;
+    index_contact(tx,id,to);
     if (!s.geometry)
         return;
     tx.spatial_index.erase({spatial_key(from), id.value});

@@ -2,6 +2,7 @@
 
 #include "antworld/core/event.hpp"
 #include "antworld/core/command.hpp"
+#include "antworld/core/social.hpp"
 
 #include <memory>
 #include <optional>
@@ -25,8 +26,8 @@ struct WorldSnapshot {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    static constexpr std::uint32_t schema_version = 6;
-    static constexpr std::uint32_t physics_version = 7;
+    static constexpr std::uint32_t schema_version = 7;
+    static constexpr std::uint32_t physics_version = 8;
     static constexpr std::size_t max_records = 65536;
     static constexpr std::size_t max_same_time_events = 1024;
 
@@ -56,6 +57,11 @@ public:
     void start_foraging(AntRef actor);
     void enable_physiology(AntRef, const PhysiologySeed& = {}, const PhysiologyConfig& = {});
     void set_behavior(AntRef, IndividualBehavior);
+    void configure_social(const SocialConfig& = {});
+    [[nodiscard]] std::optional<SocialConfig> social_config() const;
+    // Pure, reproducible local encounters for the supplied individual decision counter.
+    [[nodiscard]] ContactSample sample_contacts(AntRef, std::uint64_t decision) const;
+    [[nodiscard]] ContactWork contact_work() const;
     ScheduledId submit_nutrition(const NutritionProposal&);
     [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
     [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
@@ -123,6 +129,7 @@ private:
     void stop_excavator(Transaction&, EntityId);
     void activate_excavator(Transaction&, EntityId);
     void index_position(Transaction&, EntityId, PositionM from, PositionM to);
+    void index_contact(Transaction&, EntityId, std::optional<PositionM>);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
