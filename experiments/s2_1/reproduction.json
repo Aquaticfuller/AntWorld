@@ -1,0 +1,46 @@
+{
+  "result": "PASS",
+  "comparison": "Exact UTF-8 text after CRLF/LF normalization only",
+  "files": [
+    {
+      "file": "baseline/choices.csv",
+      "data_rows": 24576,
+      "sha256": "de7782ec27630fe691ce0217c4a6cd36e49bd227f56692eaf66274804cf75ffd"
+    },
+    {
+      "file": "baseline/social.csv",
+      "data_rows": 1152,
+      "sha256": "bfc16debd2c67caf114d847e03a685c0d93fd07cf35ca54000bad2e626f4c9f3"
+    },
+    {
+      "file": "baseline/fields.csv",
+      "data_rows": 129510,
+      "sha256": "1e21ff3dc966a03a4995eb6512b53233ae1e6e9653790ac6c6f9dac9db53f8fb"
+    },
+    {
+      "file": "fixed/choices.csv",
+      "data_rows": 24576,
+      "sha256": "f013b761e11defca385765261f18763b5a4daab53f1c2ea226dc10ae65263e70"
+    },
+    {
+      "file": "fixed/social.csv",
+      "data_rows": 1152,
+      "sha256": "bd71d7f37feebbfc44d073d23f0d8e79f909b727d8d063a1b124784bcc00026b"
+    },
+    {
+      "file": "fixed/fields.csv",
+      "data_rows": 131138,
+      "sha256": "1a302341ec4082c325dc0b0a22665c8c0dee868855fe52e3d6a2eaf4cd277f38"
+    },
+    {
+      "file": "ablations/summary.csv",
+      "data_rows": 128,
+      "sha256": "bffec2ec60cefd14aa70d4db957bed1b182799b42457c22c187b62edf4a6112f"
+    },
+    {
+      "file": "ablations/timeseries.csv",
+      "data_rows": 7808,
+      "sha256": "45d790a75d2b30d6d8c31e97c6b6370e30457a5f17248e60cd6ed01291da814d"
+    }
+  ]
+}

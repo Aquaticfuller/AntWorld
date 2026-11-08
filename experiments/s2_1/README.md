@@ -17,6 +17,7 @@ All parameters and scenarios are `ENGINEERING_FIXTURE`. This is a numerical and 
 | `ablations/` | Rerun of the unchanged S2 16-seed x 2-layout x 4-treatment matrix, with all 7,808 time samples |
 | `ablation_summary.csv` | Old/new ablation means, sample standard deviations and ranges |
 | `input_hashes.json` | SHA-256 of all six social/choice/field input files, normalizing text to UTF-8 with LF |
+| `reproduction.json` | Eight-file exact comparison against independent clean-build reruns of both versions and the fixed ablations |
 | `figures/` | Three figures, each as standalone SVG and PNG |
 | `performance/` | Release scaling fixtures and sampled process memory |
 
@@ -66,6 +67,14 @@ git archive --output=out/s2_1-baseline.zip 8bf22a96ee504ddd3b27b2881ed62553e1c53
 
 Extract into an empty directory, build its `cpp/` tree using the same compiler, then run `antworld_s2_1_experiment OUTPUT_DIR 64 s2-baseline` and `antworld_s2_1_audit`. Compare against `baseline/` and `source_audit_before.csv`. The baseline adds only validated late first activation and restore validation to S2; its food selection, weights, deposit, decay and state priorities are unchanged. Historical broad-ablation evidence is retained under `../s2/` from the S2 implementation, whose autonomous behavior is identical to that instrumentation baseline.
 
+For a complete automatic comparison after both versions have run, use:
+
+```sh
+python tools/verify_s2_1_reproduction.py --baseline out/s2_1-reproduced-baseline --fixed out/s2_1-reproduced-fixed --ablations out/s2_1-reproduced-ablations --report out/s2_1-reproduction.json
+```
+
+The directory names must point to the actual baseline, fixed social and fixed ablation outputs. The helper compares all eight raw files exactly after newline normalization and records their row counts and hashes. It does not accept a tolerance for repeated same-build runs.
+
 ## Render figures
 
 Optional plotting dependencies are separate from the core and pinned with all transitive versions:
@@ -75,4 +84,4 @@ python -m pip install --only-binary=:all: --target .tools/s2_1-python -r tools/s
 python tools/plot_s2_1.py --packages .tools/s2_1-python
 ```
 
-`recruitment` shows rates, censored discovery times and paired uncertainty; `ablations` retains broad coverage/delivery comparisons. `trail_fields` uses the predeclared illustrative seed 1, east placement, showing actual scout deposits at release on the same intensity scale. This figure is not a selected successful recruitment example; all spatial samples remain available. English labels and PNG metadata were visually/manually reviewed.
+`recruitment` shows rates, censored discovery times and paired uncertainty; `ablations` retains broad coverage/delivery comparisons. `trail_fields` uses seed 1 from the fixed seed set, east placement, showing actual scout deposits at release on the same intensity scale. This figure is not a selected successful recruitment example; all spatial samples remain available. English labels and PNG metadata were visually/manually reviewed.
