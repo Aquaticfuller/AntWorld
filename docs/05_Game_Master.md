@@ -1,74 +1,42 @@
-# AntWorld｜Game Master Agent 详细设计（v0.3）
+# AntWorld Game Master (historical v0.3 with v0.7 update)
 
-## 1. 定位
+## Persistent identity
 
-GM 是属于玩家而非某个世界的**统一持续身份**。所有世界共享同一位伙伴，它有稳定性格核心、长期记忆、对玩家的关系记忆、自己的研究兴趣和一定主动性。LLM 用于理解生态、分析统计、主动旁白和自然语言操作，不控制蚂蚁个体日常决策。
+The GM belongs to the player across worlds: one stable personality, shared relationship memories, research interests and bounded initiative. The LLM interprets ecology, analyzes, narrates and operates game tools; it does not decide worker behavior.
 
-## 2. 统一身份与成长
+The stable core is curious, rational, respectful, evidence-oriented and able to correct itself. Interests, expression, goals and relationship memories change slowly; current topic and narrative tone change quickly. Expression does not establish subjective consciousness and cannot raise permissions or change facts. Name, voice and appearance remain undecided.
 
-- 核心稳定：理性、好奇、尊重生命、善于解释、能够纠正错误，不为了取悦而编造。
-- 缓慢变化：观察兴趣、讲述风格、长期研究方向、与你的关系。
-- 快速变化：当前分析话题、叙事情绪（作为模拟表达，不预设模型拥有主观情感）。
-- 不因情绪提高工具权限、修改事实或改变生态规律。
-- GM 名字、具体声音、形象尚未确定。
+## Memory spaces
 
-## 3. 跨世界记忆
+| Space | Content and constraints |
+|---|---|
+| Identity | Stable name/style/principles; user changes are recorded |
+| Player/relationship | Preferences, watched ants and shared experiences; inferred preferences carry uncertainty |
+| Episodes | Conversations, observations and interventions with world/time references |
+| Research | Hypotheses, evidence and refutations with revision history |
+| Goals | Observation plans, budgets, deadlines and stop rules |
+| World facts | Population, death, state/history queried from authoritative data, not recalled by an LLM |
 
-| 模块 | 保存内容 | 事实约束 |
-|---|---|---|
-| Identity | 稳定人格、名字、风格和原则 | 用户主动修改需留痕 |
-| Player/Relationship | 关注的蚂蚁、偏好、共同经历 | 推断偏好要标明不确定性 |
-| Episodic | 对话、观察、执行过的干预 | 保留时间与世界 ID |
-| Research | 当前假设、证据、被推翻的结论 | 能修正，保留更新历史 |
-| Goals | 自主观察计划、目标、唤醒条件 | 有预算、截止与停止规则 |
-| World Data | 精确人口、死亡、个体状态、历史 | 从世界数据库查询，不靠 LLM 背诵 |
+Separate real time, each world's simulation time and the shared experience timeline.
 
-真实时间、每个世界的模拟时间、GM 与玩家的共同经历时间线分开。
+## Observation and interaction
 
-## 4. 自主观察和低打扰交互
+Cheap observers detect population, mortality, food, migration, brood, individual milestones and spatial trends. Rank candidates by importance, anomaly, historical meaning, player interest and novelty. Wake the LLM for meaningful events, due research, return summaries and questions; do not call a model every second.
 
-- 低成本观察器监测人口、死亡率、食物、迁巢、育幼、个体关键事件、空间统计，生成候选观察。
-- 按生态重要性、异常程度、历史意义、玩家兴趣及新颖性排序。
-- GM 在有意义事件、研究到期、离线汇总、玩家提问时唤醒；不是每秒发 API 请求。
-- 轻量旁白/文字弹出/完整侧栏/语音可切换；安静、标准、纪录片档位。
-- 不强制移动玩家镜头；可推荐“是否去看”，低影响非交互视角操作也避免抢焦点。
-- GM 可以形成研究计划：“观察 B 蚁群幼体发育下降”，持续查询并在新证据出现后修正结论。
+Offer quiet, standard and documentary initiative, lightweight captions/voice and a full panel. Avoid camera takeover; propose relevant views. Research tasks keep querying and revise hypotheses when evidence changes.
 
-## 5. 玩家等价工具，但自主权限不等价
+## Tools and permissions
 
-所有 UI 支持的游戏能力，都应该在 World Tool API 中具备对应工具。查询、镜头、档案、统计、时间、食物、水源、天气、局部地形、物种引入、观察任务、存档等均可由 GM 在适当授权后调用。
+Every player-facing capability should have an equivalent World Tool API operation: queries, views, history, charts, time, food, water, weather, permitted terrain/species operations, observation tasks and saves. Capability equality does not imply equal autonomous authorization.
 
-权限建议：
+Read-only queries are normally autonomous. Charts/panels/observation tasks are bounded and non-disruptive. Small ecological interventions require a defined preauthorization quota or explicit request. Significant weather/species/terrain changes require explicit scope. Destructive deletion or record clearing needs explicit confirmation. Commands have identity, idempotency, validation, audit and receipts; no direct process memory or arbitrary system tools.
 
-- **只读**：查询全部玩家可见数据；默认自主。
-- **非破坏交互**：打开面板、生成图表、创建观察任务；默认可自主但不打断玩家。
-- **小型环境修改**：可在明确的事先授权配额内自主；用户指令可直接执行经验证的合法修改。
-- **显著改动**：天气操控、引入其他物种、重大地形变化需要明确同意或指定范围的授权。
-- **不可逆操作**：删除世界、清空记录等必须二次明确确认。
+Example flow: compare two colonies over three months; retrieve metrics and distinguish correlation from causation. Find a recent death and focus its recorded location/history. Place food in an authorized location and create an observation task for the following three days. Report only effects supported by data. Offline/disabled model APIs do not stop the core, statistics or event detectors.
 
-Agent 不直接编辑引擎内存，不继承通用 Agent 的任意系统命令权限。执行工具应具有命令 ID、幂等性、参数与生态规则校验、审计与结果回执。
+## Harness remains open
 
-## 6. 典型连续流程
+Compare Python/Hermes integration and runtime costs with typed C#/Microsoft Agent Framework integration and custom memory/scheduling needs. A small custom harness can borrow heartbeat/gateway concepts without importing a complete general-purpose agent. Game-owned identity, memories, goals and tools must survive a harness change.
 
-玩家：“比较 A/B 两窝蚂蚁最近三个月的变化。”
-GM → 调用 `query_colony_metrics` / 对比图表 / 解释趋势（区分相关与因果）。
-玩家：“带我看 B 巢穴最近死亡的工蚁。”
-GM → `find_entities` / `focus_camera` / `get_ant_history`。
-玩家：“在东北放苹果，并观察三天。”
-GM → 校验位置和权限，`place_food` → `create_observation_task` → 事件/数据追踪 → 未来主动汇报。
+## Asynchronous boundary
 
-当没有模型 API、没有网络或暂时禁用 GM 时，生态核心、统计和事件侦测仍运行。
-
-## 7. Harness 选型仍开放
-
-- **Python/Hermes**：人格/记忆/Skills/主动任务已有生态，独立 Python 运行时集成成本需验证。
-- **C#/Microsoft Agent Framework**：Unity 上层语言统一、类型协议便利，专用记忆/自主调度可能需自建。
-- 也可只借鉴 OpenClaw 的 Heartbeat、Gateway 等架构思想，不必整套引入。
-- 真实 GM Identity、Memory、Goals、World Tools 由 AntWorld 自己持久化，不能绑定某个 Agent Harness。
-
-## v0.7：Game Master 与调度器的异步边界
-
-- GM 只能阅读已提交的快照、事件和聚合统计；主动监测器按事件/指标筛选唤醒，不能每只蚂蚁每秒调用 LLM。
-- 玩家/GM 环境工具变更经 World Application 鉴权后排入 C++ `CommandInbox`，在下一合法 barrier 执行；请求受理 != 世界提交完成。结果需以 `CommandId` + 执行状态确认。
-- 任何来自语言模型的外部改动，必须有明确的世界 ID、操作来源、参数、授权与实际生效 `SimTime`，供可复现研究与玩家历史查询。
-- 大模型关闭、重启或超时不停止生态时间推进；跨世界统一人格记忆由独立持久层保存，不能直接作为生物学事实来源。
+GM reads committed snapshots/events/aggregates. World Application authenticates commands, queues them into the core and reports accepted, committed or rejected with CommandId. Acceptance is not completion. Every committed change includes world, source, arguments, authorization and effective SimTime. LLM delay/restart/failure does not stop ecology; persistent GM memories do not override biological truth.

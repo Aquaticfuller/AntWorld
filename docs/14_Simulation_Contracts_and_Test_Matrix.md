@@ -1,70 +1,54 @@
-# AntWorld｜核心契约、不变量与自动验收测试 v0.1
+# Core invariants and acceptance matrix (v0.7)
 
-**v0.7（2026-11-08） · 状态：待实现验收规范。**
+These are staged acceptance contracts, not completed tests. Document 22 determines which items apply to each implementation batch.
 
-## 1. 应从第一天具备的验证工具
+## Verification tools
 
-- `HeadlessScenarioRunner`：指定 world seed、初始个体/食物/巢室、模拟时间范围、外部命令计划和输出指标。
-- `WorldInvariantChecker`：定期/每事务检查人口、物质、空间与唯一 ID。
-- `EventTraceInspector`：打印按 `SimTime` 排序的事件、前置条件与 commit 版本。
-- `CheckpointRoundTrip`：任意安全边界保存、恢复、继续推进并比较。
-- `MetricsExporter`：CSV/JSON 汇总，不依赖 Unity 或 Game Master。
+HeadlessScenarioRunner specifies seed, initial entities/materials, time, commands and outputs. WorldInvariantChecker checks population, materials, space and identity. EventTraceInspector exposes chronology, prerequisites and commits. CheckpointRoundTrip compares continuation after a safe-boundary save/load. MetricsExporter emits JSON/CSV without Unity or GM.
 
-## 2. 核心强制测试
+## Required checks
 
-| ID | 场景 | 验收条件 | 优先级 |
+| ID | Scenario | Requirement | Priority |
 |---|---|---|---|
-| SCH-01 | 两次读取同一个时刻 | 查询不推进/修改世界、无额外随机消耗 | P0 |
-| SCH-02 | 事件调度到过去 | 拒绝并保持 world revision | P0 |
-| SCH-03 | 同时到达食物源 | 总取走质量 <= 存量，剩余量 >= 0，无复制 | P0 |
-| SCH-04 | 同时两工蚁挖同一区域 | 实际移土不重复，geometry revision/物料账一致 | P0 |
-| SCH-05 | 交哺供受者变更 | 食物从供者转给受者，体内/嗉囊账一致 | P0 |
-| SCH-06 | 死亡和行为发生于同一时刻 | 已死亡个体无法随后成功取食/交哺/挖掘 | P0 |
-| SCH-07 | 卵发育成工蚁 | 全生命周期 `AntId` 不变，仅生命阶段转换 | P0 |
-| SCH-08 | 同一实体重复死亡通知 | 死亡和人口减少只发生一次 | P0 |
-| SCH-09 | 通道回填/封堵 | 相关导航立即失效，个体不穿墙 | P0 |
-| SCH-10 | GM 放苹果命令重复投递 | `CommandId` 幂等，只生成一个食物源 | P0 |
-| SCH-11 | API 失败/LLM 超时 | Core 继续推进，GM 消息不能改写过去 | P0 |
-| SCH-12 | 暂停时镜头剖面切换 | 世界 `SimTime`、状态哈希、随机状态不变 | P0 |
-| SCH-13 | 正常速度 vs 120x（同调度配置） | 相同外部命令时间表、相同初始种子，逻辑轨迹应一致 | P0 |
-| SCH-14 | L0→L2→L0 | AntId、生理、状态、已提交历史连续，无克隆 | P0 |
-| SCH-15 | L2 个体与 L0 个体发生交互 | 接触前进入兼容精度，无瞬移或重复交哺 | P0 |
-| SCH-16 | 两条深度不同的隧道相交 | 无真实通行开口时不发生跨层移动 | P0 |
-| SCH-17 | 两个世界都有 AntId 17 | WorldId 显式隔离，GM 不能混淆个体 | P0 |
-| SCH-18 | 无模型 API 的长时运行 | 世界可自行运转，统计/事件正常 | P0 |
-| SCH-19 | 保存/加载未来事件 | 不丢失预约到达、产卵、阶段转换或定时天气 | P0 |
-| SCH-20 | 保存/加载随机状态与命令 ledger | 重复外部操作不重做，后续统计可复现 | P0 |
-| SCH-21 | 只保存高层历史事件后试图恢复 | 必须拒绝这种不完整恢复，不假装事件足够重建世界 | P0 |
-| SCH-22 | 很多同刻自触发事件 | 有零时间递归/无限调度保护与可诊断日志 | P0 |
-| SCH-23 | 资源与生理大积分跨阈值 | 不能出现能量为负还持续完成行为，须定位/截断 | P0 |
-| SCH-24 | 批量物理积分不同步长 | 守恒与结果差异在显式容差内 | P1 |
-| SCH-25 | 快照异步写盘中崩溃 | 恢复到最后完整 checkpoint，不混合两个世界版本 | P0 |
-| SCH-26 | 跨 chunk 同时挖掘 | 几何事务要么全成要么全失败，dirty/portal 一致 | P0 |
-| SCH-27 | 查询图表与事件历史 | 统计时间窗与已提交事件/实体值一致 | P0 |
-| SCH-28 | 多线程与单线程同参数 | 不违反守恒/空间规则，统计分布在容差内 | P1 |
-| SCH-29 | 低频区域遭遇暴雨/入口封堵 | 按真实环境/几何版本重评估，不能沿失效路径瞬移 | P0 |
-| SCH-30 | 长时运行数个游戏月 | 无负资源、无限队列膨胀、无 ID 溢出或过量储存 | P0 |
+| SCH-01 | Repeated read at one time | No time/state/RNG mutation | P0 |
+| SCH-02 | Schedule into past | Reject without changing revision | P0 |
+| SCH-03 | Simultaneous collection | Combined transfer <= stock; no negative/duplicated material | P0 |
+| SCH-04 | Overlapping digs | No duplicate removal; geometry/material versions agree | P0 |
+| SCH-05 | Trophallaxis | Donor loss equals receiver gain; crop/body accounting is distinct | P0 |
+| SCH-06 | Death and behavior at same time | Dead individual cannot subsequently act successfully | P0 |
+| SCH-07 | Egg develops into worker | Continuous AntId, only stage changes | P0 |
+| SCH-08 | Duplicate death | Death and population decrement happen once | P0 |
+| SCH-09 | Backfilled/blocked tunnel | Immediately invalidate affected routes; no wall passage | P0 |
+| SCH-10 | Retried GM food command | CommandId produces food once | P0 |
+| SCH-11 | LLM/API timeout | Core continues; messages cannot change the past | P0 |
+| SCH-12 | Paused view/section changes | Time, state hash and RNG unchanged | P0 |
+| SCH-13 | Normal versus 120x, same configuration | Same seed/command timeline yields same logical trace | P0 |
+| SCH-14 | L0 -> L2 -> L0 | Identity, physiology and confirmed history continue without cloning | P0 |
+| SCH-15 | L2/L0 contact | Compatible precision before interaction; no teleport/duplicate transfer | P0 |
+| SCH-16 | Different-depth crossing | No connection without real clearance | P0 |
+| SCH-17 | Same local ID in two worlds | WorldId isolates references and facts | P0 |
+| SCH-18 | Long run without model API | Ecology, events and statistics continue | P0 |
+| SCH-19 | Save/load future events | Planned arrival, laying, stages and weather preserved | P0 |
+| SCH-20 | Save/load RNG/command ledger | Continuation reproduces and operations are not repeated | P0 |
+| SCH-21 | Recover from high-level journal only | Reject incomplete recovery | P0 |
+| SCH-22 | Many self-triggered same-time events | Finite protection and diagnostics | P0 |
+| SCH-23 | Large integration crosses threshold | Locate/truncate threshold; no actions after invalid physiology | P0 |
+| SCH-24 | Different integration steps | Conservation and error within stated tolerance | P1 |
+| SCH-25 | Crash during async save | Recover last complete checkpoint, no mixed generations | P0 |
+| SCH-26 | Cross-chunk digs | All-or-nothing geometry/material/dirty/portal update | P0 |
+| SCH-27 | Charts and event history | Windows/definitions match facts and entity values | P0 |
+| SCH-28 | Parallel versus serial | Invariants and statistical distributions within tolerance | P1 |
+| SCH-29 | Rain/blockage in low-frequency area | Reevaluate from real current versions, no stale-path teleportation | P0 |
+| SCH-30 | Months of simulation | No negative stock, unbounded queue, ID wrap or uncontrolled storage | P0 |
 
-## 3. 属性测试及误差框架
+## Properties and tolerances
 
-1. `0 <= resource.mass <= initial + inputs - documented_sinks`，账本写明摄入、物料转移和外排。
-2. `alive_population == count(unique alive AntIds)`；分品级、阶段和巢群人口汇总不能重复计入。
-3. `geometry_revision` 单调递增，所有当期 `Portal` 连通来自当前权威几何净空判定。
-4. `command_id` 重试相同参数回原 receipt；重复但载荷不同则拒绝冲突。
-5. 同样时间的观察查询不改变随机流，防止“玩家盯着蚂蚁就改变命运”。
-6. 多随机种子重复实验，报告均值/分位数而不是只挑一次成功演示。
+Resource stock is nonnegative and bounded by initial stock plus explicit inputs minus sinks. Living population equals unique living AntIds by colony/stage/caste. Geometry revisions increase and current portals satisfy clearance. Same command/payload returns the prior receipt; conflicting payload under an existing ID is rejected. Queries never consume RNG. Multi-seed reports include distributions/quantiles, not a selected success story.
 
-各数学不变量的误差限应在实现测试前由单位、空间采样精度和数值方法确定。不能把“无明显问题”作为可验证的验收标准。
+Choose error budgets from units, spatial sampling and numerical method before tests. A visually plausible result is not a quantitative criterion.
 
-## 4. 需要分别记录的 benchmark 指标
+## Measurements and stage claims
 
-- `simulated_seconds_per_wall_second`（加速吞吐量），分同类场景/LOD/蚂蚁数量。
-- 每次 `AdvanceTo` 的 p50/p95/p99（CPU 时间）；运行队列长度、唤醒次数。
-- proposal 冲突数、事务提交/拒绝数、每类动作频次。
-- 生理/感知/信息素/几何/nav 各模块 CPU 时间与内存/峰值分配。
-- 日志吞吐和 checkpoint 耗时/大小、恢复时间；Unity/PInvoke/网格更新另测。
-- 大模型延迟与频率**单独测量**，不得混入模拟核心吞吐 KPI。
+Report simulated/wall seconds, AdvanceTo p50/p95/p99, queue length and wakeups, proposal conflicts and outcomes, subsystem CPU/memory, checkpoint/log size and cost. Render/ABI and LLM latency/cost are separate.
 
-## 5. 通过/失败规则
-
-首批 `SCH-01`–`SCH-23` 中 P0 项必须通过后，才能把原型标为“具备基本正确性”。SCH-24/28 和复杂几何/生态标定在后续专门实验完成。所有数值与生物学参数在 baseline 中保留为**建议或待验证**。
+The historical broad P0 gate included SCH-01-SCH-23, with more advanced checks later. v0.8 narrows S0 to its applicable foundation subset and defers unimplemented features explicitly. Never mark unavailable biology, LOD or client tests passed. Biological values remain proposed or uncalibrated until evidence supports them.

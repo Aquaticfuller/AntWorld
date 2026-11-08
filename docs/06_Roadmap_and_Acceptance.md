@@ -1,87 +1,41 @@
-# AntWorld｜开发路线与验收（v0.5）
+# Historical roadmap and acceptance (v0.5 with v0.7 updates)
 
-**状态：尚未开始开发。** 当前在继续细化生物行为与 C++ 模型，准备未来转交 Codex。Unity+C#、C++ Simulation Core 已确定；Agent Runtime 未选定。
+This document preserves earlier planning. Use document 22 for current S0-S9 stage numbers and scope. The imported baseline had no implemented game or selected GM runtime.
 
-## A. 科研与行为建模先行
+## Behavior research first
 
-- P0-A：50 只左右的 *Lasius niger* 工蚁，双食物源，无中央命令；局部感知、信息素、有限路线经验，运行固定种子多次重复。
-- P0-B：个体能量、碳水/蛋白/水分资源、真实交哺、卵→幼虫→蛹→成虫生命周期、蚁后繁殖与风险。
-- P0-C：巢内育幼/转移、空间分工、清洁、土粒搬运、简单动态挖掘与几何连通。
-- P0-D：真实生态数据→统计曲线→关键事件检测→GM 可读报告，构成端到端观察闭环。
+P0-A: about 50 L. niger workers, two food sources, local senses, pheromones and limited memory, no central orders, repeated seeds. P0-B: energy, carbohydrate/protein/water, real trophallaxis, stable egg-to-adult identity, queen reproduction and hazards. P0-C: brood relocation, spatial work, cleaning, soil transport, dynamic digging and connectivity. P0-D: real data, curves, event detectors and evidence-based GM reports.
 
-## B. 工程里程碑
+## Earlier milestones
 
-| 阶段 | 完成内容 | 验收重点 |
+| Stage | Scope | Gate |
 |---|---|---|
-| M0 | C++ Core、稳定 ID、Tick、可复现随机流、基础命令/事件、headless runner | 无 Unity 可模拟并运行单测 |
-| M1 | 工蚁行为、信息素、经验学习、资源、基础生命循环 | 双食物源与营养/繁殖实验通过 |
-| M2 | 24m×24m 分块局部世界、3D 巢室/通道、Unity 批量快照/跟随 | 真正三维，镜头切换不改变事实 |
-| M3 | 自主挖掘、土粒搬运、育幼转移、微气候和空间功能涌现 | 几何/连通一致；挖掘有负反馈 |
-| M4 | SQLite 快照/事件/指标、历史 UI/图表、Agent 工具/文本 GM | 可查询、报告、授权放食物并记录后果 |
-| M5 | 多蚁群生态、近远频率/时间加速/离线、长期回归 | 无身份重复、无资源凭空产生、跨精度统计合理 |
-| M6 | 自适应语音旁白、人格/跨世界记忆、半写实优化 | GM 同一身份跨世界；语音文字同上下文 |
+| M0 | Core, identity, time, RNG, command/event basis, headless runner | Independent simulation and tests |
+| M1 | Behavior, pheromones, learning, resources, basic life loop | Two-food and nutrition/reproduction experiments |
+| M2 | Chunked world, true 3D spaces, Unity batches/following | Camera does not change facts |
+| M3 | Digging/transport, brood movement, microclimate and spatial use | Geometry/connectivity agree; digging has negative feedback |
+| M4 | SQLite, history/charts, Agent tools and text GM | Queries and authorized interventions have evidence |
+| M5 | Colonies, LOD, acceleration/offline and long regression | Identity, materials and cross-precision statistics remain valid |
+| M6 | Adaptive voice, cross-world personality/memory and visual refinement | One GM identity and shared voice/text context |
 
-## C. 首个可玩原型定义
+## First playable target
 
-- 温带草地林缘，24m×24m 地表，两窝黑园蚁，总约 50–200 个体。
-- 一个可扩建真三维巢穴，另一个巢穴最初低精度；工蚁觅食、育幼、交哺、休息、死亡，至少有限动态挖掘。
-- 地表/地下自由观察，个体跟随，基本统计两群人口、营养、死亡、觅食。
-- GM 可主动报告一个真实事件、回答追问、控制镜头、按玩家指令放置苹果、建立后续观察任务。
+Temperate grassland/edge, 24 x 24 meters, two colonies, roughly 50-200 ants. One dynamically expanding 3D nest and another initially lower-detail nest. Foraging, care, trophallaxis, rest, mortality and limited excavation; surface/underground observation, following and core colony comparisons. GM proactively reports a real event, answers evidence-based questions, controls views, places requested food and tracks subsequent effects.
 
-## D. 核心自动化验收
+## Acceptance
 
-1. 每个实体 ID 唯一、跨存档恢复稳定；跨世界不混淆。
-2. 蚂蚁不得穿越未连通地下空间；巢室几何和导航一致。
-3. 摄食/交哺/发育物质收支可核验，重要汇项记录明确。
-4. 时间步长、倍速和 headless 快速演化不会系统性更改统计规律。
-5. 远近模拟切换后个体身份/生理/重要事件连续。
-6. 统计工蚁数与活体 ID 集一致，死亡不会重复计入。
-7. GM 关闭，生态世界正常；GM 对事实引用可回溯，未授权命令不执行。
-8. 工具命令重试不能重复投放食物；每次修改具有来源和审计记录。
-9. 游戏性能在独立构建中测量，分离模拟、渲染、mesh 更新、数据库和 Agent 延迟。
+Stable identities survive saves; worlds remain isolated. No passage through disconnected space. Nutrition and trophallaxis balance with explicit sinks. Speed/headless/step changes must not systematically distort distributions beyond declared tolerance. LOD preserves state/history. Population matches unique living entities, without duplicate death. Ecology runs without GM. Commands are authorized and idempotent; claims have evidence. Measure core, rendering, mesh, database and model costs separately.
 
-## E. 首批科学验证实验
+## Earlier experiments
 
-| ID | 机制 | 观察 |
-|---|---|---|
-| F1 | 无信息素自主探索 | 食物首次发现时间、覆盖率 |
-| F2 | 信息素开/关 | 路线形成/稳定、采集量 |
-| F3 | 路线学习开/关 | 重复访问、错误与回巢成功率 |
-| F4 | 通道拥挤与招募反馈 | 行为与沉积调整 |
-| F5 | 移除食物点 | 路线衰退、重分配时间 |
-| E1 | 基础代谢 | 能量变化与活动状态 |
-| E2 | 糖充足/蛋白不足 | 幼体发育、工蚁羽化趋势 |
-| E3 | 交哺 | 营养转移的空间网络与收支 |
-| E4 | 蚁后封闭式建群 | 初始储备、产卵与首批工蚁 |
-| N1 | 幼体搬运 | 对温湿度梯度的响应 |
-| N2 | 巢室密度/人口变化 | 挖掘率、最终空间适应性 |
-| N3 | 污染物存在 | 清洁、搬运与弃置位置 |
-| N4 | 无强刺激 | 不活动工蚁分布/恢复活动 |
+F1 exploration without pheromone: discovery time and coverage. F2 trails on/off: formation, stability and collection. F3 memory on/off: revisits, errors and return. F4 congestion: behavior/recruitment feedback. F5 food removal: trail decay and redistribution.
 
-**原则：** 文献没有确切参数时，先检测方向性与机制合理性，不伪称已完成生物学定量验证。
+E1 metabolism and activity; E2 sufficient sugar versus limited protein and brood development; E3 spatial trophallaxis network/balance; E4 queen reserves, laying and first workers. Historical N1 brood movement with climate, N2 crowding/population and digging, N3 cleaning/deposition, N4 inactivity and reactivation. Qualitative direction is not quantitative species calibration.
 
-## F. 新增三维地下专题验证 X1–X10（详见 09）
+## Geometry and integrated updates
 
-先构建小土柱/初始巢室的 C++ headless 几何实验，不以完整 24×24m 世界作为第一轮几何算法对照的必要前提。测试两种地下权威表示方案的编辑成本、可重复性与内存。
+Use a small soil column before the full map. Earlier authority comparisons were superseded by option A. X1 tests projected crossings without connection; X2/X3 overlapping removal and transport conservation; X4 incremental excavation without blueprints; X5/X6 temperature/rain and conserved water; X7 view invariance; X8/X9 speed/offline/save consistency; X10 separate cost measurements.
 
-1. `X1` 交叉但不同深度的隧道绝不误连；真实挖通后动态 portal 出现。
-2. `X2/X3` 多工蚁同时挖掘不重复扣土；干土和水质量在携带、弃置与回填链上可核对。
-3. `X4` 空腔逐步形变、巢室自然由局部挖掘产生；不能只播放动画并直接切出整间巢室。
-4. `X5/X6` 温度/降水驱动微气候和水收支；黑园蚁温度响应仅以文献可支持的结果作校准方向。
-5. `X7` 切换 3D 透明、剖面和相机跟随完全不改变模拟事实。
-6. `X8/X9` 倍速、离线、存档恢复之后几何版本、通行/个体身份与物料账保持一致。
-7. `X10` 单独量化 C++ 几何编辑、NavGraph、Unity mesh/collider 与数据库写入的开销。
+Document 12 defines G0 authority/materials, G1 clearance/connectivity, G2 SDF/mesh cache, G3 Unity ABI, G4 behavior-driven digging and G5 long runs. GEOM-01-GEOM-15 enforce no duplicate soil, false connection or stale-path passage, consistent versions and view isolation.
 
-**先做正确性，再做优化**；所有科学参数标为文献测得、候选函数、或工程假设。
-
-## v0.6 地下空间原型 G0–G5 验收补充
-
-新增几何研发门槛：G0 无画面 C++ 参数化 CSG/编辑 + 材料账；G1 真实三维连通和负载净空；G2 dirty region + 局部 SDF 与网格；G3 Unity C ABI 只读快照/增量网格；G4 工蚁生物驱动挖掘；G5 长期运行、保存/加载与多精度一致性。GEOM-01 至 GEOM-15 的完整验收矩阵详见 `12_Geometry_Prototype_Test_Plan.md`。核心硬性不变式是无重复移土、无跨层假连接、禁用旧导航穿墙、版本与账本一致、Unity 镜头剖切不影响物理世界。
-
-## v0.7：新增综合核心原型门槛
-
-- **第一项工程任务建议**：先做 Headless `WorldClock + EventQueue + EntityIds + RNG + CommandIdempotency + Snapshot`，验证相同时间/种子/命令计划的可重现性。
-- **第二项**：最小 `food pickup + energy + trophallaxis`，使用动作 proposals 和资源账 atomic commit；同刻抢食不许重复扣除。
-- **第三项**：一个真三维可挖界面、材料事务与连通更新，联合数据统计产出一次可追踪闭环。
-- 强制调度验收 `SCH-01`–`SCH-30`；全套规格见 `14_Simulation_Contracts_and_Test_Matrix.md`。
-- 将 `15_Minimal_Integrated_Vertical_Slice.md` 作为后续 Codex 分批开发的输入，但用户当前仍在系统设计阶段；**未开始正式代码开发**。
+The v0.7 proposal starts with time/events/IDs/RNG/snapshots, then food/energy/trophallaxis transactions, then a 3D front with materials and statistics. Document 14 defines SCH-01-SCH-30; document 15 describes the integrated loop. Later v0.8 stages refine this order and narrow the first batch to S0.

@@ -22,6 +22,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 
 ## Implementation rules
 
+- All tracked files, filenames, code, comments, documentation, generated reports and Git commit messages must be in English. Communicate with the user in Chinese. Keep untranslated source archives local and untracked; preserve existing Git history.
 - Do not invent biological calibration values or claim a numeric fixture is a real Lasius niger constant; annotate toy values `ENGINEERING_FIXTURE`.
 - Every world mutation goes through a validated single-writer commit path; reads cannot mutate time/RNG.
 - Record units on data; default world coordinates in meters, X east/Y up/Z north, mass micrograms, energy joules, time strong int64 milliseconds.

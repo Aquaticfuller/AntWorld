@@ -1,62 +1,42 @@
-# AntWorld｜Codex 开发基线、设计冻结与架构决议 v0.8
+# Implementation baseline and architectural defaults (v0.8)
 
-**状态：开发前规格。** 这里的“冻结”指本轮交给 Codex 的第一阶段实现边界，并非永久锁定世界规则，更不是确认生物学参数已经实测。继承 v0.7 的全部已确认用户决策；`01_Decision_Register.md` 的“确定 / 建议 / 待验证 / 替代”状态仍然有效。
+The freeze limits the first authorized implementation, not all future world rules or scientific calibration. Confirmed/proposed/to-validate/superseded distinctions in document 01 remain binding.
 
-## 1. 不可改变的产品约束（用户已确认）
+## Confirmed constraints
 
-1. 世界真实、开放且自主运行；工蚁不受玩家或 LLM 中央指挥。
-2. 蚂蚁采用可解释的局部感知、行为阈值、有限记忆、信息素和生理模型；需要后续科学标定。
-3. 每只**具体实例化**蚂蚁从卵到死亡保持稳定身份；重点追踪只提高记录精度，不赋予生物优势。
-4. 首版最终地图 24 m × 24 m，带可扩展分块和多个蚁群；P0 的无画面实验场景可以小得多。
-5. 三维地下巢穴是真实物理几何，权威形式是初始材料 + 有序参数化几何编辑；局部 SDF、通行图、渲染网格是派生表示。
-6. C++ Simulation Core 独立于 Unity、云端 API 和 Agent 运行，是生态事实的唯一权威；Unity C# 负责视觉/交互。
-7. 玩家可全面观察、统计并通过 Game Master 操作世界；Game Master 是跨世界统一人格、长期记忆的 Agent，未经请求的自主环境干预需要授权。
-8. 世界历史与统计事实能够追溯；历史回放不得假装记录过未模拟的逐帧细节。
+An open autonomous world without player/LLM worker command; explainable local behavior; persistent individual identity from egg to death; observation without biological advantages; eventual expandable 24 x 24 meter multi-colony world; true 3D InitialSolid plus ordered edits; derived SDF/nav/mesh; independent authoritative C++ core; Unity presentation; cross-world persistent GM with evidence and permissioned autonomous changes; honest historical precision.
 
-## 2. P0 严格范围
+## P0 versus S0
 
-**要做**：无画面的独立 C++ 世界时钟、固定可复现随机流、唯一实体身份、未来事件队列、可验证的取食/转移/成长状态改变、最小几何挖掘事务、事实事件、基础统计、保存恢复，最后经受控场景形成一条端到端因果链。
+P0 eventually combines headless time/RNG/IDs/events, verified food/transfers/development, minimal excavation, facts/metrics and recovery into a controlled causal chain. It excludes complete-map ecology, every species, full water/heat PDEs, detailed real-time collisions, finished art/voice and mature GM infrastructure.
 
-**不做**：Unity 三维美术、整幅 24×24 米真实生态、全部物种、天气水热完整 PDE、复杂实时碰撞和厘米级森林、成熟 Hermes Agent、语音、自然纪录片、完整多世界操作台。这些作为已确认的产品长期目标保留，**并非放弃**。
+S0 is narrower: CMake, empty world, time, IDs, RNG, event queue, diagnostics, snapshots/checkpoints and tests. No foraging, ecosystem behavior, SDF, Unity or AI code.
 
-**S0 初始提交**更加严格：仅 CMake 工程、空世界、时间、实体/事件 ID、随机数、事件队列、最小测试、headless CLI；不写工蚁觅食、生态行为和 AI。
+## Reviewable engineering defaults
 
-## 3. P0 允许采用的工程默认值（尚未获逐项用户确认）
-
-| ADR | 默认决议 | 理由与复核点 |
+| ADR | Decision | Reason / review boundary |
 |---|---|---|
-| ADR-001 | 核心采用 C++20，CMake ≥3.24，CTest；首要开发目标 Windows x64，另可在 Linux 进行无画面测试 | Unity 客户端已确定 C#；无画面内核独立。平台范围仍是工程默认，不表示用户排除其他平台 |
-| ADR-002 | 核心只依赖标准 C++ 库，测试框架允许 GoogleTest，但依赖需固定精确版本并可缓存 | 保持最小可编译、可离线运行；不要无理由增加框架 |
-| ADR-003 | P0 模拟时间为带强类型封装的 int64 毫秒；整数 1ms 仅是时间表示分辨率，不代表固定每毫秒遍历 | 方便因果排序与存档；以后改变单位必须迁移 schema |
-| ADR-004 | 单线程状态提交；感知/动作提议可为未来并行保留接口 | 避免早期竞争条件；先求正确性 |
-| ADR-005 | 同时刻事件通过 `(time, phase, priority, tie, seq)` 稳定排序；事务内竞争资源使用稳定的 seed 驱动打乱 | 既可复现又避免长期低 ID 永远优先 |
-| ADR-006 | 世界用 128-bit WorldId (两段 uint64)，世界内实体/事件使用不复用的 uint64；跨世界实体引用必须包含 WorldId | 世界隔离、跨世界 GM 事实一致 |
-| ADR-007 | P0 连续量按量纲选用 double；可守恒食物/干土/水质量用 uint64 微克或 int64 微克账本，禁止无标记混用单位 | 避免负库存和重复计量；精度与量级需测试 |
-| ADR-008 | P0 存档先做到完整内存序列化/往返；正式耐久保存优先由应用层 SQLite 原子事务处理快照及 cursor | C++ Core 不依赖数据库；避免伪称历史事件可重放完整世界 |
-| ADR-009 | 定义 C ABI v1 作为边界草案，但 S0 不实现 Unity/Agent 桥接 | 先稳定 C++ 内部契约，避免跨语言反复改动 |
-| ADR-010 | 生物参数全部使用带来源和版本标记的配置；P0 数值标为 `ENGINEERING_FIXTURE` 或 `LITERATURE_CALIBRATED` | 不把游戏演示数值宣传为真实黑园蚁测量 |
-| ADR-011 | 先做到一个受控小场景通过，再增加 LOD/多蚁群/大地图 | 降低错误定位难度，不改变最终目标 |
-| ADR-012 | 开发按一次一批（S0, S1, ...）进行，每批必须提交可运行测试及摘要；不能擅自跳到全量游戏实现 | 审查门禁清晰，防止 Codex 自主扩大范围 |
+| ADR-001 | C++20, CMake >=3.24, CTest; Windows x64 first, headless Linux checks encouraged | Independent core; other platforms are not excluded |
+| ADR-002 | Standard C++ core only; optional precisely pinned/cacheable GoogleTest | Small offline-capable build; avoid unnecessary frameworks |
+| ADR-003 | Strong int64 milliseconds | Causal ordering and persistence; resolution is not update frequency; changes need schema migration |
+| ADR-004 | Single-writer commits | Correctness before parallel proposal generation |
+| ADR-005 | `(time, phase, priority, tie, sequence)` order; seeded stable competition shuffle later | Reproducibility without permanently favoring low IDs |
+| ADR-006 | 128-bit WorldId, non-reused uint64 local IDs, world-qualified references | World isolation and persistent identity |
+| ADR-007 | Dimensioned doubles for continuous quantities; integer microgram food/soil/water ledgers | Avoid negative/duplicated stock and implicit unit mixing; signedness is explicit per contract |
+| ADR-008 | Complete in-memory checkpoint first; later application-layer SQLite atomic snapshot/cursor transaction | Core independent of database; high-level journal is not full replay |
+| ADR-009 | C ABI v1 draft now, integration later | Stabilize internal behavior before cross-language work |
+| ADR-010 | Version/source-qualified biological parameters | ENGINEERING_FIXTURE unless actually LITERATURE_CALIBRATED |
+| ADR-011 | Controlled small scene before LOD/multi-colony/full map | Localize errors without abandoning full-world goals |
+| ADR-012 | One implementation stage per review | Runnable tests and evidence before a new stage |
 
-## 4. 合约级不变量
+S0-specific codec, RNG, failure semantics, CLI profile and toolchain choices are recorded in 25_S0_Implementation_Decisions.md.
 
-- **身份**：实体 ID 在一个世界中永不复用；生命周期变更不是创建新 AntId；死亡最多提交一次。
-- **物料**：同一库存的所有扣减、转移和消耗经过同一事务仲裁，不出现负数或重复收支。
-- **几何**：被移除的土壤只能计算其与现有材料的真实交集；材料账、几何 revision 与事件一起提交。
-- **因果**：时间不倒退，不允许已死亡实体成功执行后续动作；读取、镜头与 GM 不能改变随机流。
-- **外部**：相同 CommandId + 相同载荷只能成功一次；相同 ID + 不同载荷拒绝冲突。
-- **恢复**：checkpoint 包括事件队列、RNG 状态、生成器 ID、世界及几何版本、命令 ledger；不接受缺项却声称完整恢复。
-- **性能**：任何吞吐量目标都是待测指标，不以未量测的“可支持数万蚂蚁”作为交付事实。
+## Contract invariants
 
-## 5. 非阻塞开放问题
+Never reuse identity or create a new individual on stage transition. Commit death once. All shared material changes use the same arbitration/ledger path. Digging accounts only actual remaining material intersection, with geometry/event/ledger committed together. Time cannot reverse and dead entities cannot act. Reads/cameras/GM do not consume world RNG. Identical CommandId/payload succeeds once; changed payload conflicts. Checkpoints retain all implemented authoritative continuation state; future stages add geometry/commands when those systems exist. Performance is measured rather than promised.
 
-这些问题**不阻止 Codex 执行 S0**：个体任务响应参数、交哺速率、具体 SDF 算法、信息素扩散/衰减标定、Unity 绘图优化、Game Master Harness（Python/Hermes 或 C#/Agent Framework）、长期内存/存档预算。
+## Non-blocking unknowns
 
-任何拟变更上表产品约束的行为，先提交 ADR 提案及影响分析，不直接修改行为模型。改变工程默认值必须更新测试和版本号。
+Task thresholds, trophallaxis rates, SDF algorithms, pheromone calibration, Unity rendering, Agent harness and long-term storage budgets do not block S0. Product changes require a proposal and impact review. Engineering changes update ADRs, version rules and tests.
 
-## 6. 参考规范
-
-- 继承 `docs/01_Decision_Register.md`、`docs/13_Simulation_Runtime_and_Scheduler.md`、`docs/14_Simulation_Contracts_and_Test_Matrix.md`、`docs/15_Minimal_Integrated_Vertical_Slice.md`。
-- Unity 原生插件 / PInvoke：https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/plug-ins/native/overview
-- CMake / CTest：https://cmake.org/cmake/help/latest/manual/ctest.1.html
-- GoogleTest 官方 CMake 入门：https://github.com/google/googletest/blob/main/docs/quickstart-cmake.md
+References: documents 01, 13-15; https://cmake.org/cmake/help/latest/manual/ctest.1.html ; https://github.com/google/googletest/blob/main/docs/quickstart-cmake.md ; Unity native plugin documentation. These are references, not mandatory additional dependencies.

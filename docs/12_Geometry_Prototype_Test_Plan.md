@@ -1,51 +1,42 @@
-# AntWorld｜参数化几何首批原型与验收计划 v0.1
+# Parametric geometry prototype and acceptance (v0.6)
 
-**归档版本：v0.6（2026-11-08）** · **目标：技术验证，不是开始完整游戏开发**
+These are technical experiments, not authorization for a complete game. Current implementation stage boundaries are in document 22.
 
-## 1. 原型边界与阶段
+## Geometry work packages
 
-- **G0：无画面几何权威**：纯 C++ 构造初始土层 + 小巢室 + 有序 ExcavatePatch；具备空间查询、编辑提交、反复挖同点不重复计量、保存/加载。
-- **G1：三维连通和净空**：交叉不连通的两个隧道、挖通形成 Portal、回填关闭 Portal；验证空载/载物工蚁净空不同，拓扑图正确更新。
-- **G2：局部 SDF 网格缓存**：dirty AABB、跨块 halo、局部网格/法线稳定，cache miss/过期可重建，压实历史前后表面一致。
-- **G3：Unity C ABI 集成**：DLL 调用、版本化只读批量快照、Dirty/mesh 包、Unity Mesh 更新，数据读取与释放稳定。
-- **G4：行为驱动挖掘**：真正由工蚁局部感知和工作量产生 Edit；土粒实体批次、携带容量、弃置和材料账贯通。
-- **G5：长期/速度测试**：多次编辑、交错挖回填、保存加载、数个月加速、帧耗时和内存/存档大小评估。
+- G0: headless InitialSolid, seed chamber, ordered ExcavatePatch, queries, material accounting, repeated-removal protection and save/load.
+- G1: 3D connectivity and clearance: projected crossing, real opening, backfill closure, loaded/unloaded passage.
+- G2: local SDF cache, dirty AABB/halo, mesh/normals/seams, cache reconstruction and compaction equivalence.
+- G3: C ABI DLL, immutable batches, dirty/mesh packets and stable Unity ownership.
+- G4: local biological proposals produce edits, carried parcels, deposition and consistent ledgers.
+- G5: long edit histories, interleaved remove/fill, saves, months of acceleration, memory/time/storage measurements.
 
-## 2. 必须通过的单元/性质测试
+## Required tests
 
-| ID | 输入 | 断言 | 严重性 |
+| ID | Input | Assertion | Priority |
 |---|---|---|---|
-| GEOM-01 | 同一位置重复完全重合的挖掘 | 第2次实际移土体积=0，质量不增加 | P0 |
-| GEOM-02 | 两个不同深度投影交叉隧道 | 无真实三维开口时图不连通 | P0 |
-| GEOM-03 | 在交叉点打穿足够净空 | 连通性从断开→连通；无假入口 | P0 |
-| GEOM-04 | 向已打通通道回填 | 派生图能删边、断连，旧路径立即无效 | P0 |
-| GEOM-05 | 在两 chunk 接缝附近挖掘 | Dirty 同时包含受影响两块与 halo；无明显网格裂缝 | P0 |
-| GEOM-06 | 同 tick 两工蚁重叠开挖 | 串行提交或等价冲突处理；不重复减材料 | P0 |
-| GEOM-07 | 挖掘后运土与弃置 | 干土/水账误差在已定义积分与数值容差内 | P0 |
-| GEOM-08 | 插入旧 revision Mesh 包 | Unity 不接受过期包覆盖新网格 | P0 |
-| GEOM-09 | 保存-加载-继续编辑 | 材料占用、连通、ID、编辑序号和账本一致 | P0 |
-| GEOM-10 | 历史 compaction 前后 | 空间内外/材质/可通行查询在误差界内一致 | P0 |
-| GEOM-11 | 空载 vs 携带大型物体 | 通行空间随包络/负载变化，不能通过过窄入口 | P1 |
-| GEOM-12 | 剖面/透明模式来回切换 | 物理几何和 ant state 完全不改变 | P0 |
-| GEOM-13 | 异步 nav 落后 geometry | 受影响区域先封锁/保守核验，无穿墙 | P0 |
-| GEOM-14 | 极薄壁、几乎接触的两腔 | 不确定时保守拒绝通行，并报警到测试日志 | P1 |
-| GEOM-15 | C ABI 两阶段 meta/copy | 绑定同一只读 snapshot，容量不足可安全重试 | P0 |
+| GEOM-01 | Repeat identical removal | Second edit removes zero material and creates no mass | P0 |
+| GEOM-02 | Different-depth tunnels crossing in projection | No real opening means no connection | P0 |
+| GEOM-03 | Excavate sufficient connecting clearance | Actual disconnected-to-connected transition | P0 |
+| GEOM-04 | Backfill an open passage | Delete connectivity; invalidate old routes immediately | P0 |
+| GEOM-05 | Edit near a chunk seam | Dirty both sides/halo; no mesh crack | P0 |
+| GEOM-06 | Simultaneous overlapping digs | Serialized/equivalent arbitration; no duplicate material | P0 |
+| GEOM-07 | Dig, carry and deposit | Dry/water balance within declared numerical tolerance | P0 |
+| GEOM-08 | Deliver older mesh revision | Client does not overwrite newer geometry | P0 |
+| GEOM-09 | Save, load, continue editing | Occupancy, connectivity, IDs, sequence and ledgers agree | P0 |
+| GEOM-10 | Compact geometry history | Material/clearance/occupancy queries remain equivalent within error bound | P0 |
+| GEOM-11 | Unloaded versus large load | Body/load envelope changes legal passage | P1 |
+| GEOM-12 | Toggle transparency/sections | Geometry and ant state remain unchanged | P0 |
+| GEOM-13 | Navigation lags geometry | Block/revalidate affected paths; no passage through walls | P0 |
+| GEOM-14 | Thin wall/nearly touching voids | Conservatively reject uncertain passage and diagnose | P1 |
+| GEOM-15 | Metadata then mesh copy | Same snapshot; capacity failure is safely retryable | P0 |
 
-## 3. 指标与初始性能预算（仅用于测量，不是验收承诺）
+## Measurements
 
-必须分别测 `geometry commit latency (p50/p95/p99)`, `nav rebuild p95`, `mesh rebuild p95`, `dirty bricks`, `geometry query throughput`, `memory per 1000 edits`, `save size per 10000 edits`, `load & cache warmup`，还应量化表面偏差、最小通道净空误差和守恒残差。
+Report commit p50/p95/p99, nav and mesh rebuild p95, dirty brick count, geometry query throughput, memory per 1,000 edits, save size per 10,000 edits, load/warmup, surface deviation, clearance error and conservation residual. No unmeasured millisecond promises. Compare sweep length, sampling, work batch size and compaction thresholds at the same workload; FPS alone is not correctness.
 
-**不要在尚无实测前承诺固定毫秒数。** 用同一工作负载比较样条段长度、SDF brick 采样大小、挖掘批次粒度、编辑历史压实阈值。报告物理规则一致性，不仅报告 FPS。
+## End-to-end story
 
-## 4. C++/Unity 的最小端到端验收故事
+Create test soil and a connected chamber. A worker reaches a real front and proposes digging; C++ commits actual material and ExcavationCommitted. Derive legal connectivity and dirty mesh data, update Unity and change viewing modes without moving the ant. The ant actually transports soil. Queries identify actor, time and quantity; GM prose cannot create tunnels. Repeat headless from the same initial state/seed and compare facts.
 
-1. 创建一块测试土层和已连通的初始小巢室。
-2. 工蚁 A-001 接近土壤边界，自主开始挖掘，C++ 提交真实移除体积和 `ExcavationCommitted`。
-3. C++ 派生/验证新空腔和导航，产生 dirty mesh 范围并传给 Unity。
-4. Unity 更新地下视图；切换透明/任意剖面，并保持 A-001 不被瞬移。
-5. 工蚁实际运走土粒，物料账更新；Game Master 可通过查询得到“哪只蚂蚁何时挖掘了多少”，但不能凭文字生成新通道。
-6. 关闭 Unity 仅运行 C++ headless，用同一初始参数/随机种子重建并核对结果。
-
-## 5. 实验优先级和退出条件
-
-**G0+G1+G3 必须先行通过**，再扩大到多工蚁、高频挖掘与长时间加速。若参数化编辑历史在反复挖掘/回填下出现不可控的查询退化、质量误差或连通错误，应先优化编辑索引与 compaction；如原方案客观不可行，再明确记录 Architecture Decision Record (ADR) 申请修改**已选定方案 A**，而不是 Codex 私自切换到 B。
+The historical geometry plan prioritizes G0/G1/G3 before scaling. The v0.8 roadmap defers Unity to S7 and takes precedence. If ordered edits degrade, first measure/improve indexing and compaction. Changing confirmed authority option A requires an explicit ADR and user review, never a silent fallback to option B.

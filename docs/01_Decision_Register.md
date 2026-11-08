@@ -1,98 +1,90 @@
-# AntWorld｜决策登记册（v0.7）
+# AntWorld decision register (v0.8)
 
-定义：**确定** = 用户已明确确认；**建议** = 助手提出、尚可修改；**待验证** = 需实验；**替代** = 被后续决定更新。
+Confirmed means explicitly accepted by the user. Proposed means suggested and changeable. To validate means evidence or experiments are required. Superseded means replaced by a later decision.
 
-## A. 游戏与体验
+## A. Game and experience
 
-| ID | 状态 | 决策 |
+| ID | Status | Decision |
 |---|---|---|
-| G-01 | 确定 | 个人长期游玩；纯生态/生命模拟，不以关卡、副本和玩家指挥战斗为核心。 |
-| G-02 | 确定 | 低操作，主要为饲养者兼观察者，允许偶尔提供食物、水源和有限环境操作，但蚂蚁可独立生存。 |
-| G-03 | 确定 | 从一窝蚂蚁关注起点开始，逐步了解一个持续存在的开放自然生态世界。 |
-| G-04 | 确定 | 创建世界时允许不同起步状态：新婚飞蚁后、幼小群落、成熟群落；默认“少量工蚁的幼小群落”。 |
-| G-05 | 确定 | 创建世界可选生态环境；首版默认温带草地与林缘，未来扩展其他生境。 |
-| G-06 | 确定 | 首版 24m × 24m 真实物理尺度；支持空间分块扩展；初始多个独立蚁群。 |
-| G-07 | 确定 | 真实三维地表与地下，默认 2.5D 混合镜头；地下透明三维展示和各方向剖面可自由切换；支持个体跟随。 |
-| G-08 | 确定 | 精致、自然、半写实的微缩生态美术；蚂蚁形态与外在行为保持生物学真实性。 |
-| G-09 | 确定 | 生态系统采用分层精度：蚂蚁最精细，植物、蚜虫、猎物、捕食者等能自主演化但不要求逐一同精度。 |
-| G-10 | 确定 | 所有已具体模拟的蚂蚁都有基础生命档案，重点个体可深度追踪；手动收藏与自动智能追踪并存。 |
-| G-11 | 确定 | 暂停/加速、离线暂停/限时推进/持续演化规则均可由玩家自由配置。 |
-| G-12 | 确定 | 游戏有完备的宏观数据统计、个体历史、时间序列、空间热力图、蚁巢/蚁群间对比与历史回放。 |
-| G-13 | 确定 | 长期允许蚁巢迁移、繁殖、婚飞、群落衰亡与新群落建立；不保证种群持续增长。 |
+| G-01 | Confirmed | Personal long-term ecological/life simulation, without levels, instances or player-directed combat as its foundation. |
+| G-02 | Confirmed | Low-operation caretaker and observer role, with occasional food, water and limited environmental interventions; ants can survive independently. |
+| G-03 | Confirmed | Start by following one colony, gradually discovering a persistent open natural ecosystem. |
+| G-04 | Confirmed | Choose a newly mated queen, young colony or mature colony at creation; default to a young colony with few workers. |
+| G-05 | Confirmed | Select habitat at creation; initially temperate grassland and woodland edge, with other habitats later. |
+| G-06 | Confirmed | First complete world is 24 x 24 physical meters, expandable by chunks, with multiple independent initial colonies. |
+| G-07 | Confirmed | True 3D surface and underground space, default 2.5D mixed camera, freely switchable transparent underground views, arbitrary sections and individual following. |
+| G-08 | Confirmed | Refined, natural, semi-realistic miniature ecology; biologically credible ant morphology and visible behavior. |
+| G-09 | Confirmed | Layered ecological precision: ants are most detailed; plants, aphids, prey and predators evolve autonomously without equal individual detail. |
+| G-10 | Confirmed | Every instantiated ant has a basic life record; selected ants have deeper histories, with manual favorites and automatic tracking. |
+| G-11 | Confirmed | Configurable pause, speed, offline pause, limited catch-up or continuing evolution. |
+| G-12 | Confirmed | Macro statistics, individual history, time series, heatmaps, nest/colony comparisons and historical playback. |
+| G-13 | Confirmed | Allow migration, reproduction, mating flights, decline and new colonies over time; population growth is not guaranteed. |
 
 ## B. AI Game Master
 
-| ID | 状态 | 决策 |
+| ID | Status | Decision |
 |---|---|---|
-| AI-01 | 确定 | LLM **不负责每只蚂蚁的日常脑/决策**，重点担任生态 Game Master，进行主动观察、解释、叙事、分析、陪伴、命令执行。 |
-| AI-02 | 确定 | GM 是唯一统一人格，跨多个独立游戏世界共享身份和与玩家的共同记忆；各世界真实数据隔离。 |
-| AI-03 | 确定 | GM 人格核心稳定，兴趣、表达习惯、研究目标、关系记忆随共同经历逐渐变化。 |
-| AI-04 | 确定 | GM 主动观察、筛选重要事件、提出假设、追踪研究、对错误假设修正；并非只等玩家提问。 |
-| AI-05 | 确定 | GM 具备**与玩家完全对等的游戏操作能力和所有玩家可读数据的访问能力**，但未经请求的自主操作按权限分级管理。 |
-| AI-06 | 确定 | GM 可被预授权少量环境干预，重大/破坏性更改需明确许可；环境影响由生态引擎模拟；命令需审计。 |
-| AI-07 | 确定 | 文字与语音并重，允许轻量旁白与完整交互面板切换；倾向统一身份、多个表现形式。 |
-| AI-08 | 确定 | GM 自适应主动程度：安静、标准、纪录片模式；根据玩家观察对象和兴趣调整解说。 |
-| AI-09 | 确定 | GM 必须能关联每句事实性解释的模拟证据，区分事实/相关性/因果假说/文学性叙事。 |
-| AI-10 | 建议 | GM 人格、研究笔记、长期目标与对话/共同经历存储于游戏自有持久层，独立于具体 LLM/Harness。 |
+| AI-01 | Confirmed | The LLM does not make daily decisions for individual ants. It observes, explains, narrates, analyzes, accompanies the player and executes game tools. |
+| AI-02 | Confirmed | One persistent GM personality spans independent worlds, sharing player memories while keeping world facts isolated. |
+| AI-03 | Confirmed | Stable personality core; interests, expression, research goals and relationship memories develop through shared experience. |
+| AI-04 | Confirmed | Proactively observe, select meaningful events, propose and track hypotheses, and correct errors. |
+| AI-05 | Confirmed | Same game capabilities and readable data as the player; autonomous use is subject to permission levels. |
+| AI-06 | Confirmed | Small interventions may be preauthorized; major/destructive changes require explicit permission. The engine computes consequences and commands are audited. |
+| AI-07 | Confirmed | Text and voice are both important; switch between lightweight narration and a full interaction panel, with a unified identity. |
+| AI-08 | Confirmed | Quiet, standard and documentary modes adapt initiative to player interests and observation. |
+| AI-09 | Confirmed | Every factual explanation can reference simulation evidence; separate facts, correlation, causal hypotheses and literary narration. |
+| AI-10 | Proposed | Persist personality, research notes, goals and shared history in game-owned storage independent of the LLM/harness. |
 
-## C. 技术栈与模拟
+## C. Technology and simulation
 
-| ID | 状态 | 决策 |
+| ID | Status | Decision |
 |---|---|---|
-| T-01 | 确定 | **Unity + C#** 游戏客户端。 |
-| T-02 | 确定 | **独立 C++ Simulation Core**；引擎只呈现和操作，Core 为世界真实状态权威，可 headless 运行。 |
-| T-03 | 确定 | 多精度：近处/重要个体高精度、远处低频；已具体模拟蚂蚁保留 ID、状态和必要历史，不因 LOD 生成替代个体。 |
-| T-04 | 建议 | 2m × 2m 分块（24m × 24m 即 12×12 = 144 块），地表高度场与3D物体分离；地下局部稀疏体积 + 参数化巢室/通道 + 连通图。 |
-| T-05 | 建议 | Unity 通过受版本控制的 C ABI/batch snapshots 与 C++ 核心集成；Game Master 通过 World API /命令总线读写。 |
-| T-06 | 建议 | SQLite（快照、事件、聚合时序）和单独的 Game Master 记忆数据库。 |
-| T-07 | 待验证 | Agent Runtime 用 Python/Hermes、C#/Microsoft Agent Framework 或自主轻量 Harness；不能把之前建议“Python”视为已定。 |
-| T-08 | 建议 | 首版 2–4 蚁群，最初可玩原型约 50–200 蚂蚁；随后压力测试 500–2,000；成熟期更多蚂蚁是长期目标，非性能承诺。 |
-| T-09 | 确定 | 所有游戏修改都从统一命令接口经过权限、合法性检查及事件留痕；GM 不得直接修改 Unity 模型来冒充事实。 |
-| T-10 | 确定 | 先从行为和基础生命周期验证开始，随后巢内社会、3D空间、历史、GM，再交给 Codex 实现；不急于完整游戏开发。 |
-| T-11 | 确定 | 地下巢穴必须是真实三维，可自主开挖、搬运土壤和改变连通；三维透明/剖切只是观察，不改变几何事实。 |
-| T-12 | **确定** | 地下权威几何选定 **方案 A：初始材料 + 有序参数化挖除/回填编辑**；局部 SDF 仅作可重建缓存，渲染/碰撞/导航是同源派生，**替代**“A/B 对照待选”建议。 |
-| T-13 | 建议 | 使用干土质量与含水量分别记账；挖掘、运输、弃置/回填都产生结构化事件；温湿度按多分辨率/低频推进。 |
-| T-14 | 待验证 | 活跃挖掘前缘采用局部毫米级几何，环境场较粗并允许巢区细化；具体砖尺寸、网格算法与性能预算未定。 |
+| T-01 | Confirmed | Unity and C# client. |
+| T-02 | Confirmed | Independent C++ Simulation Core owns world truth and runs headless; the engine presents and requests operations. |
+| T-03 | Confirmed | Multiple precision levels: near/important interactions are detailed, distant ones lower-frequency; instantiated ants retain identity, state and necessary history across LOD changes. |
+| T-04 | Proposed | Candidate 2 x 2 meter chunks (144 in 24 x 24 meters), separate surface heightfield/3D objects, local sparse underground volume, parametric spaces and connectivity. |
+| T-05 | Proposed | Versioned C ABI and batch snapshots for Unity; World API/command bus for GM. |
+| T-06 | Proposed | SQLite for snapshots, events and aggregated time series, with separate GM memory storage. |
+| T-07 | To validate | Compare Python/Hermes, C#/Microsoft Agent Framework and a small custom harness. Python is not a confirmed default. |
+| T-08 | Proposed | Initially 2-4 colonies and roughly 50-200 ants in the playable prototype, then 500-2,000 stress tests; larger populations are goals, not performance promises. |
+| T-09 | Confirmed | All game mutations use one validated, authorized command path with event evidence. GM cannot alter Unity models to fabricate world facts. |
+| T-10 | Confirmed | Validate behavior and basic life stages before colony society, 3D, history and GM; do not rush the complete game. |
+| T-11 | Confirmed | Real 3D underground space, autonomous digging, soil transport and connectivity changes. Transparency/sections only affect observation. |
+| T-12 | Confirmed | Geometry option A: initial materials plus ordered parametric excavation/fill edits are authoritative; local SDF is rebuildable cache. Replaces the earlier open A/B choice. |
+| T-13 | Proposed | Track dry soil and water separately; structured digging/transport/deposition events; low-frequency multi-resolution heat/moisture. |
+| T-14 | To validate | Local millimeter-scale active digging fronts and coarser environmental fields; brick dimensions, mesh method and budgets remain open. |
+| T-15 | Proposed | Version geometry; derive clearance, portals and shape labels. Conservatively block/rebuild stale affected routes. |
+| T-16 | Proposed | Commit actual material removal, soil parcel, geometry revision, event and ledger atomically; overlapping excavation cannot duplicate soil. |
+| T-17 | Proposed | Stable C ABI exposes snapshot-bound dirty geometry and mesh packages; Unity cannot overwrite simulation geometry. |
+| T-18 | To validate | Parametric CSG indexing/compaction, intersection-volume error, portal clearance, local mesh quality and performance. |
+| T-19 | Proposed | Persistent region identities with split/merge lineage prevent tracking and GM history discontinuities. |
+| T-20 | Proposed / to validate | Integer SimTime with mixed discrete events, continuous integration and multiple update rates; timestamp resolution is not traversal frequency. |
+| T-21 | Proposed / to validate | Proposals read a consistent local state; shared resources, trophallaxis and excavation use single-writer arbitration and atomic commit; external commands take effect at safe boundaries. |
+| T-22 | Proposed / to validate | Real-time, accelerated, headless and offline modes share AdvanceTo semantics. LOD preserves identity and never invents unsimulated detailed history. |
+| T-23 | Proposed / to validate | Checkpoints retain queues, RNG, entities, geometry, plans and idempotency ledger. High-level events alone are not a full replay save. |
+| T-24 | Proposed / to validate | Unity/GM asynchronously consume committed snapshots/events without blocking the simulation or changing individual biology. |
+| T-25 | Proposed / to validate | SCH-01-SCH-30 validate scheduling and transactions; build a small headless causal loop before full integration. |
 
-| T-15 | 建议 | 真实几何版本化；局部净空、Portal、巢室/隧道分类均由几何派生；导航过期则受影响路径保守封锁/重建。 |
-| T-16 | 建议 | DigProposal 在单一事务中提交实际材料切除、土粒批次、权威几何版本、事件与账本，不允许重叠挖掘重复产生土量。 |
-| T-17 | 建议 | C++ 通过稳定 C ABI 向 Unity 输出绑定只读快照的几何脏区、Mesh 包；Unity 不能反写模拟几何。 |
-| T-18 | 待验证 | 参数化 CSG 索引/压实、交集体积积分误差、Portal 净空计算、局部网格质量与性能须通过原型验证。 |
-| T-19 | 建议 | 非稳定的巢室形态标签使用持久区域 ID、拆分/合并 lineage，避免追踪及 Game Master 历史断裂。 |
+## D. Biology
 
-| T-20 | 建议／待验证 | 使用统一整数 `SimTime` + 混合离散事件、连续过程积分、多速率调度；**时间戳粒度非固定遍历频率**。 |
-| T-21 | 建议／待验证 | 行为 proposals 基于一致局部状态提出；共享食物、交哺、挖掘由 C++ 单写入事务仲裁并原子提交；外部命令在安全边界生效。 |
-| T-22 | 建议／待验证 | 正常/倍速/headless/离线使用同一 `AdvanceTo` 语义；LOD 保留实体身份，不假装远处发生未计算的精细历史。 |
-| T-23 | 建议／待验证 | Checkpoint 必须保存事件队列、随机状态、实体/几何、未来计划和幂等 ledger；高层历史事件不等于完整可重放存档。 |
-| T-24 | 建议／待验证 | Unity 和 GM 异步消费**已提交**快照/事件，不能阻塞模拟；GM 自动观察系统不干扰个体生物规则。 |
-| T-25 | 建议／待验证 | 用 SCH-01–30 自动验收调度与事务，最早构建 C++ 无画面最小生态闭环；未开始代码实现。 |
-
-## D. 生物模拟方向
-
-| ID | 状态 | 决策 |
+| ID | Status | Decision |
 |---|---|---|
-| B-01 | 确定 | 首个重点物种黑园蚁 *Lasius niger*；不同蚁种需要不同生理/社会与建巢规则，不能换皮。 |
-| B-02 | 确定 | 个体行为采用简单、可解释、受约束的模型（状态机、响应阈值、随机性、有限路线记忆、信息素等），不强行拟人。 |
-| B-03 | 确定 | 蚁群没有“中央总指挥”；工作分配来自局部刺激、个体差异、交互与环境反馈。 |
-| B-04 | 建议/研究 | 营养分成碳水、蛋白、水分；成年工蚁身体能量与嗉囊携带量分开；交哺为局部真实转移事件；卵—幼虫—蛹—成虫连续身份。 |
-| B-05 | 建议/研究 | 巢内工作由育幼、清洁、挖掘、土粒搬运、空间移动、不活动等行为共同组成，具体阈值与物种机制等待实验标定。 |
-| B-06 | 建议/研究 | 挖掘从局部可达土壤界面产生，工蚁挖除真实材料并搬运；巢室形态和用途通过实际活动与几何变化派生，不预设升级房间。 |
-| B-07 | 待验证 | 黑园蚁具体挖掘响应、局部线索、湿度/拥挤/幼体影响需专项标定；其他蚁种筑造和挖掘结果不能直接作为黑园蚁的定量规律。 |
+| B-01 | Confirmed | First focus species: Lasius niger. Different species require different physiology, social and nesting rules, not cosmetic reskins. |
+| B-02 | Confirmed | Simple, explainable, bounded individual models: state machines, response thresholds, randomness, limited route memory and pheromones; avoid anthropomorphic reasoning. |
+| B-03 | Confirmed | No colony-wide commander. Allocation emerges from local stimuli, individual variation, interaction and environmental feedback. |
+| B-04 | Proposed / research | Separate carbohydrate, protein and water; body energy differs from crop contents; trophallaxis is a real local transfer; identity persists egg to adult. |
+| B-05 | Proposed / research | Brood care, cleaning, digging, transport, movement and inactivity compose nest work; thresholds and species mechanisms need calibration. |
+| B-06 | Proposed / research | Excavate reachable local interfaces and transport real material; nest shapes and functions derive from activity and geometry, not room upgrades. |
+| B-07 | To validate | Calibrate L. niger digging responses, cues, moisture, crowding and brood effects. Other species cannot supply unqualified quantitative rules. |
 
-## 被后续决策替代的设想
+## Superseded and unresolved ideas
 
-- **早期：LLM 可有限影响工蚁决策** → **已替代**：用户明确希望工蚁以简单可信的生物学行为模型运行，LLM 主要集中于 Game Master 态势感知、历史分析、叙事、陪伴及玩家/授权环境控制。
-- **早期：默认 C# Simulation Core** → **已替代**：最终已确认 **C++ Simulation Core + Unity C#**。
-- **早期：默认 Python Game Master** → **已撤回默认**：语言和 Harness 尚未确定，C# 与 Python 等需对照。
+Limited LLM control of workers was replaced by local biological behavior and a world-level GM. A C# core was replaced by C++ core plus Unity C#. Python GM was withdrawn as a default.
 
-## 不要误判为已确定的建议
+Chunk sizes, field precision, LOD rates, throughput, database tables, weather equations, geometric primitives, GM name and voice remain proposals or experiments. Option A is selected, but its numerical implementation is not. Demonstration numbers are not measurements.
 
-- 2m 分块粒度、具体环境网格精度、LOD 更新频率、蚂蚁吞吐量、SQLite 表结构、天气数学模型、蚁巢挖掘几何方法、角色名字和声音，均是设计候选或建议。
-- 游戏长期真实环境与族群行为需要文献标定和试验；不能将演示图、故事示例中的数值作为实测参数。
-- **方案 A 已明确选定**，但具体曲线原语、局部 SDF 砖尺度、网格算法和性能仍须原型验证。
+## v0.8 delivery clarification and repository policy
 
-## v0.8 补充：交付准备而非新增用户游戏机制
+The handoff completes pre-development contracts and task descriptions. Execute one stage at a time using document 22. C++20, CMake, 1 ms timestamps and persistence defaults are reviewable engineering choices in document 16, not independently confirmed product requirements.
 
-用户本轮明确要求：**完成全部 Codex 开发前的工程规格与任务书，然后转入 Codex 阶段**。正式实施以 `22_Development_Roadmap_and_Execution_Gates.md` 的 S0–S9 为界，每批均需验证。由于 1 ms SimTime、C++20、CMake、SQLite 具体策略等数值/工具并非用户逐项批准，仍作为 `16_Implementation_Freeze_and_ADRs.md` 中可复核的工程默认值，**不得误标为用户确认的产品要求**。
-
-本版本没有更改 G、AI、T、B 系列的用户已确认决策；特别保留：独立 C++ Core、Unity C#、参数化权威几何 + SDF 缓存、持续跨世界 GM 身份、GM 与玩家相同工具集合但自主操作需授权。
+On 2026-11-08 the user approved starting S0 and required English in all tracked content and commit messages, while conversation remains Chinese. This does not authorize S1-S9 in the same run and does not alter the confirmed ecological architecture.

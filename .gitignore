@@ -2,6 +2,8 @@
 /build/
 /build-*/
 /out/
+/.tools/
+/handoff/
 CMakeUserPresets.json
 
 # Local editor state

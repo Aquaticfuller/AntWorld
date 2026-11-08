@@ -1,42 +1,46 @@
-# AntWorld v0.8 设计交接包 — SHA-256 文件清单
+# AntWorld English handoff: SHA-256 manifest
 
-Generated: 2026-11-08 | Count: 37 (excluding manifest itself).
+This manifest covers maintained English design files, contracts and fixtures.
+It does not describe the original untranslated archive. Regenerate after design changes.
+
+Files: 38 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `8199cf93a4ef1bef20cd56688293a6e7c9a7a4633df2a17b158f8b0991a14230` | 3356 |
-| `CODEX_START_HERE.md` | `6ec8a03f530aa5004b5c354dacf5e287801723d4536da0c6d6429bf07e21724c` | 2846 |
-| `README_HANDOFF_CN.md` | `c7690e5d70daddbbcdf701045eb637f3f3978d6a5f98bed6427ec4536027bcd2` | 1714 |
+| `AGENTS.md` | `f4c05556924e746e058d4609b8e282adc81110f7c906ef6dd1043a8e0a0ad3d4` | 3605 |
+| `CODEX_START_HERE.md` | `cd7cfe08bfc19ce411c0f26642be390e63a5d1ccabd6c7cd12f9c6fb7e7889e2` | 2650 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
 | `contracts/antworld_c_api_v1.h` | `df131489eab2739e1357a959ca28a8f47344f543f3a4f0920dc25286bcdef697` | 2924 |
-| `docs/00_README.md` | `618bed15de3db8f2c4dc2bcdbbe6bc90c55989746b57f151aaedabda5b46a12b` | 4096 |
-| `docs/01_Decision_Register.md` | `b0c632774a46c07014bb75c717f833fd11ff4351795a5006c931e62d1e7125d7` | 10647 |
-| `docs/02_Game_Design.md` | `f4748c3d21bdfaa25d6f01a9f74af3e845ff57460c8bc0e18505261fa9bed35a` | 5289 |
-| `docs/03_Technical_Architecture.md` | `f69c390173d05b7dcc732d7c2e85abe9c99982dea08f9815e35b28dc940284a0` | 9987 |
-| `docs/04_Biology_and_Social_Simulation.md` | `5d047a3330e5909f3eb9fb93a24fe9ea08a4996cf0921ed0a89be223a1707b64` | 13275 |
-| `docs/05_Game_Master.md` | `f9c2f34d2cb849164ac721699797af40cbaa701056e4db55f99ca237926042be` | 5145 |
-| `docs/06_Roadmap_and_Acceptance.md` | `abf1f3ea005666531d6dbd4c5ba92f782bce5b101dbbcdff4c440c2687450abd` | 6549 |
-| `docs/07_References.md` | `1215abcf86e1421c4e86b292353d7961cc6272ba1d237bdb68a02404f60a2c13` | 8376 |
-| `docs/08_Open_Questions.md` | `2aa17f5b9520b5abb0f873a44eb77352589414f83afd5a13acc80093ed4a2192` | 6649 |
-| `docs/09_3D_Nest_and_Subsurface_Model.md` | `6fc310801d0fca3ca15c507747c1ef27e9820f5971458d1bf7e7c175112fd196` | 21239 |
-| `docs/10_Parametric_Geometry_Implementation.md` | `58e90b5cbb8ab417c3c0aac725c741d4e8fcea434ab13d2a3e905a299b8d8eb8` | 14191 |
-| `docs/11_Cpp_Unity_Geometry_Interface.md` | `7e08512c33f31dae95300c7c71f42bdda08573aaab3365d8ba84b5c79ba549a3` | 8907 |
-| `docs/12_Geometry_Prototype_Test_Plan.md` | `1c5e2c8c6264d3ca26b3717f4aeda92ae9ca9264fd95a616b0ffea20f938c529` | 4469 |
-| `docs/13_Simulation_Runtime_and_Scheduler.md` | `aae6709d9f279ecc9cec9cd81e785fa011f003fa508e9c0ba98d83baebd22ea3` | 16663 |
-| `docs/14_Simulation_Contracts_and_Test_Matrix.md` | `63689d7fdbe6ab17f0f9cc61e31f092b0748e3468ef3ea961879828e505e9d60` | 5509 |
-| `docs/15_Minimal_Integrated_Vertical_Slice.md` | `5ab76bd5448608d9e80d29e955db7991918d793ba06d9a79f82aef69e56561e5` | 5601 |
-| `docs/16_Implementation_Freeze_and_ADRs.md` | `bd7dd8c50e3023c8673d69425b031ccca6246181774507b0f0c5b57e9661d1ed` | 6619 |
-| `docs/17_Core_Data_Contracts.md` | `32c941901e3633443f7e0c1d8e4b68f9e7cb96a7d62c19aacdefc8312b09e0ee` | 9810 |
-| `docs/18_Scheduler_Transactions_and_Determinism.md` | `d9088d8bf35dd4a9e3888dfc7ad5bf238e267045eef8763ffc9932a3687a472b` | 6974 |
-| `docs/19_Persistence_Analytics_and_Recovery.md` | `81385e1148711127a9f454da4533a580969388a57784af960c57d722247417ba` | 7245 |
-| `docs/20_World_API_C_ABI_and_GameMaster_Tools.md` | `cf12efd3e00b83a993e864beab7d882fc2f0bc51e9f525ec578a246e978308f9` | 5731 |
-| `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `b0691c6186ab243dfa52083e9c215fddf9cc4a965ed8537372a8d8bd11048b87` | 6519 |
-| `docs/22_Development_Roadmap_and_Execution_Gates.md` | `b98bc0cad3109cc71a7dc32f134bf109118b70d0606e71177c6c33a815aaeea9` | 5427 |
-| `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `7248e43af203c88b6cdc59a433b0e4e6baf207d9cd3e27a2dc5f55b4157c0fc6` | 4668 |
-| `docs/24_Traceability_and_Quality_Gates.md` | `b7022e7607b9e5a7f5fb40a7a5c9e4379e3a592d38e7c7b9d8acfed2cd1ea478` | 4438 |
-| `docs/CHANGELOG.md` | `d4d615b6cf84aa25da212199837dc2db746463bc3a629e552192f664863f2cee` | 4295 |
+| `docs/00_README.md` | `b71306d8dfa8bc654e8c8cfd60bf0b04067f6f069411c577a4e37d9e65ff3a20` | 3036 |
+| `docs/01_Decision_Register.md` | `a95d17dd285ea3bfea3d7517ce6b0f132d70778d747fdcf6a089ad16b8580126` | 9884 |
+| `docs/02_Game_Design.md` | `1d46fdcb28b2356e41b7eb29ff045b1e358bc9fd9c7a85a8b3a62c43ffb47635` | 4603 |
+| `docs/03_Technical_Architecture.md` | `038a42c013768474b9827d5da7b5a37239c9ce2ad9da7f7ac047b5030a96ccef` | 6711 |
+| `docs/04_Biology_and_Social_Simulation.md` | `3acc48166768eb1bc90eb75c36f0fdf82b70fb2e7a8a570c98de20a4210344b2` | 9334 |
+| `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
+| `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
+| `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
+| `docs/08_Open_Questions.md` | `55cd4d6c1ba2a017d2eccef884916b8e60f7cf9f95ed7e302188eb65a1cc237b` | 4589 |
+| `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
+| `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
+| `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
+| `docs/12_Geometry_Prototype_Test_Plan.md` | `409e58bbc323fb5dfbbc1c30f92cd4ef13a18a1d0f3d08bd628965d4a4b18a50` | 3630 |
+| `docs/13_Simulation_Runtime_and_Scheduler.md` | `772ace60d3750e95d195533bd2ab21aa9ee01f40edee4e6495a62c32ec6b3a17` | 7617 |
+| `docs/14_Simulation_Contracts_and_Test_Matrix.md` | `a8707ab5888bcc1186f8badd2e893e80405fb9a40f3ca6d768a68a60f32012c3` | 4668 |
+| `docs/15_Minimal_Integrated_Vertical_Slice.md` | `ffaaa2d23ea3deba0f5b5329746cf8182b147806f9ae84d87df627a98b8b3b02` | 3319 |
+| `docs/16_Implementation_Freeze_and_ADRs.md` | `b25ecefaa511a546fcb2ef13ce16d0fe8c4ed7fed784d63c7795e716b506fef4` | 4302 |
+| `docs/17_Core_Data_Contracts.md` | `429eec3b5917b3eecb54518050c021bcc0573a6bccf12dc4a5a8f7c6115fe342` | 6934 |
+| `docs/18_Scheduler_Transactions_and_Determinism.md` | `8c65a1d1ae52fb0a5585ced24bd9928c1c50f25318f20266986723eb912cef0b` | 5012 |
+| `docs/19_Persistence_Analytics_and_Recovery.md` | `7dd97468ad868c0ba39bae2eea64746f4953da4e8c69eb177f4f13fd5fda14eb` | 5831 |
+| `docs/20_World_API_C_ABI_and_GameMaster_Tools.md` | `375e1f5e5fc7844f40f41f821d0c1056be7de95ff6edd2803953fbfb0ca06c51` | 4017 |
+| `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `c9255d057e3e31e8423d0424b71a6f27c4b52fc836e7d4672cac3a7f8dbf200b` | 5069 |
+| `docs/22_Development_Roadmap_and_Execution_Gates.md` | `0d576fa07323ebf1b08379954fa04f3adb132cf2580a490c9ebbb5e7981fc727` | 4624 |
+| `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
+| `docs/24_Traceability_and_Quality_Gates.md` | `34bc9814c0ea8b8146f16cf8fb8ef57c236d52e63acde994e65c9cd1fb493141` | 3627 |
+| `docs/25_S0_Implementation_Decisions.md` | `c6eab40078abe2844c0eac36804bf8d1c1b7661cdda34724d28f41e56d5fc3ce` | 7261 |
+| `docs/CHANGELOG.md` | `b655e6fb58539f7a2d8b8723ee154e100427b215ba6a71c385ca4375a06dd133` | 3148 |
+| `README_HANDOFF.md` | `d8b2142f5845f54f5cf3f8b5053f6ca6941b420a9bda7bdd5228fd6dd87b198f` | 1859 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
