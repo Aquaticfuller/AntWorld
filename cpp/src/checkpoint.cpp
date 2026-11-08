@@ -3,6 +3,7 @@
 #include "checkpoint_s2.hpp"
 #include "checkpoint_s3.hpp"
 #include "checkpoint_s4.hpp"
+#include "checkpoint_s5.hpp"
 #include <bit>
 #include <set>
 
@@ -28,6 +29,13 @@ WorldEvent read_fact(Reader& r) {
     e.reason = static_cast<DecisionReason>(r.get(1)); e.deposited_units = r.real(); e.forgot_memory = r.flag(); return e;
 }
 } // namespace
+std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
+    Writer writer; write_fact(writer, event); return writer.bytes;
+}
+WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
+    Reader reader{bytes}; auto event = read_fact(reader);
+    ensure(reader.cursor == bytes.size(), "trailing fact payload bytes"); return event;
+}
 namespace detail {
 std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes) {
     std::uint64_t result = UINT64_C(14695981039346656037);
@@ -41,7 +49,7 @@ std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
 
 std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
     Writer w(byte_limit); const auto& m = s.m;
-    w.put(UINT64_C(0x3554504b435741)); // AWCKPT5, then zero.
+    w.put(UINT64_C(0x3654504b435741)); // AWCKPT6, then zero.
     w.put(schema_version, 4); w.put(physics_version, 4); w.put(1, 4); // SplitMix64 v1.
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
     w.put(m.next_entity); w.put(m.next_scheduled); w.put(m.next_event); w.put(m.next_sequence); w.put(m.rng.state());
@@ -71,6 +79,7 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     write_surface(w, s);
     write_physiology(w, s);
     write_geometry(w,s);
+    write_commands(w,s);
     w.put(hash_bytes(w.bytes)); return w.bytes;
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
@@ -78,7 +87,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    ensure(r.get() == UINT64_C(0x3554504b435741), "unsupported checkpoint magic; previous-stage migration is not implemented");
+    ensure(r.get() == UINT64_C(0x3654504b435741), "unsupported checkpoint magic; previous-stage migration is not implemented");
     ensure(r.get(4) == schema_version && r.get(4) == physics_version && r.get(4) == 1, "unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -107,7 +116,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
             e.kind == FactKind::PhysiologyEnabled || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::GeometryConfigured;
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= FactKind::ExcavationDecision && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= FactKind::FoodPlaced && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.random_value == 0) &&
@@ -148,6 +157,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_surface(r, *s, limits);
     read_physiology(r, *s, limits);
     read_geometry(r,*s,limits,entity_ids);
+    read_commands(r,*s,limits);
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
     (void)introduced.total_ug();
     for (const auto& [key, e] : s->queue) {
@@ -226,6 +236,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(e.actor.value && seeded_colonies.contains(e.colony) && seeded_ants.insert(e.actor).second &&
                 e.stage != LifeStage::Dead && inside(e.position, s->config), "invalid ant seed fact");
             stages[e.actor] = e.stage; positions[e.actor] = e.position; break;
+        case FactKind::FoodPlaced:
         case FactKind::FoodSeeded: {
             ensure(e.resource.value && !e.actor.value && seeded_food.insert(e.resource).second, "invalid food seed fact");
             const auto& f = s->foods.rows[s->foods.index.at(e.resource)];
@@ -278,7 +289,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::TrailMaintenance: ensure(s->surface != nullptr, "surface fact without surface"); break;
         }
         if (nutrition_fact(e.kind)) ensure(e.transferred.total_ug() && e.outcome <= Outcome::Partial, "invalid nutrition transfer fact");
-        if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodDelivered &&
+        if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodPlaced && e.kind != FactKind::FoodDelivered &&
             !nutrition_fact(e.kind) && e.kind != FactKind::PhysiologyEnabled && e.kind != FactKind::PhysiologyUpdated)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
         if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind))

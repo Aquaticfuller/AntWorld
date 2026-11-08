@@ -170,11 +170,9 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
                           request.kind, s.m.now, request.box,      amount};
         tx.geometry_edits.set(edit_id, edit);
         bump(s.m.geometry_revision);
-        for (auto key : overlapping_bricks(request.box, c.brick_q, limits_.geometry_index_entries)) {
-            if (s.edit_index.size() >= limits_.geometry_index_entries)
-                throw std::length_error("geometry index budget exceeded");
-            tx.edit_index.set({key, edit_id}, 0);
-        }
+        index_geometry_edit(s.geometry_edits, s.edit_index, edit, c.brick_q, limits_.geometry_index_entries,
+                            [&](const auto& key) { tx.edit_index.erase(key); },
+                            [&](const auto& key) { tx.edit_index.set(key, 0); });
         const auto halo = c.sdf_band_q + c.loaded_half_q + 1;
         const BoxQ dirty{{request.box.min.x - halo, request.box.min.y - halo, request.box.min.z - halo},
                          {request.box.max.x + halo, request.box.max.y + halo, request.box.max.z + halo}};

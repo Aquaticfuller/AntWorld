@@ -61,6 +61,27 @@ inline std::optional<PointQ> quantized(PositionM p, const GeometryConfig &c) {
     return PointQ{*x, *y, *z};
 }
 std::vector<PointQ> overlapping_bricks(BoxQ, std::int32_t side, std::size_t budget);
+// Identical later boxes overwrite every classification affected by the older edit.
+// Only the disposable index is reduced; the complete edit log is retained.
+template<class Erase, class Insert>
+void index_geometry_edit(const GeometryEdits& edits, EditIndex& index, const GeometryEdit& edit,
+                         std::int32_t side, std::size_t budget, Erase erase, Insert insert) {
+    for (auto key : overlapping_bricks(edit.box, side, budget)) {
+        auto it = index.lower_bound({key, {0}});
+        while (it != index.end() && it->first.first == key) {
+            const auto old = it++->first;
+            if (edits.at(old.second).box == edit.box) erase(old);
+        }
+        if (index.size() >= budget) throw std::length_error("geometry index host budget exceeded");
+        insert(std::pair{key, edit.id});
+    }
+}
+inline void rebuild_index_edit(const GeometryEdits& edits, EditIndex& index, const GeometryEdit& edit,
+                               std::int32_t side, std::size_t budget) {
+    index_geometry_edit(edits, index, edit, side, budget,
+                        [&](const auto& key) { index.erase(key); },
+                        [&](const auto& key) { index.emplace(key, std::uint8_t{0}); });
+}
 std::vector<GeometryEditId> relevant_edits(const GeometryView &, BoxQ);
 Material material_at(const GeometryView &, PointQ);
 std::uint64_t material_volume(const GeometryView &, BoxQ, Material);

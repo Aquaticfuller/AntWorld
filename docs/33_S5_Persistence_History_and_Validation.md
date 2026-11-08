@@ -32,3 +32,13 @@ Run Debug, Release, ASan/UBSan, five GitHub CI jobs, clean-source reproduction, 
 - [SQLite download](https://sqlite.org/download.html): pinned 3.54.1 amalgamation, SHA3-256 92281c86e2957f9b9305890f9ac04204caa7b677cc868dc326d942689df28e30.
 
 These references justify engineering storage choices, not biological parameters. Power-loss durability still depends on the OS/filesystem/device honoring synchronization; actual process termination and injected I/O failures are the automated test scope.
+
+## Implementation clarifications after protocol freeze
+
+Storage compares an explicit generation token under BEGIN IMMEDIATE. SimTime can advance without changing the core's ecological revision, so save identity uses both time and revision. Each retained observation has an independent digest; deleting old checkpoint blobs never deletes basic events, observation provenance or command receipts. The default two-generation policy retains two complete continuation states, not just two event windows.
+
+An exception before COMMIT rolls back the application transaction. A SQLite COMMIT I/O error is an uncertain durability outcome: the store raises RecoveryRequired, disables further writes on that connection and requires reopening/recovery. Recovery accepts only a complete old or complete new generation; it never guesses that an unacknowledged write succeeded. Candidate-based durable commands leave the live runtime unchanged until a successful save acknowledgement. The fault-injection AfterCommit hook cannot turn a completed commit into a reported rollback.
+
+Schema 6 leaves fixed queue/fact/geometry records unchanged and appends the command receipt count and records. An otherwise identical schema-5 fixture with no commands therefore gains exactly eight bytes. S4 regression verification explicitly checks this delta while requiring every biological/geometry metric and original edit/trajectory/configuration record to match. The historical S4 corruption test offsets account for the appended count and retain their original semantic checks.
+
+The long-history workload uses 365 days of a diagnostic storage clock, 100 diagnostic events per day, daily saves, and monthly/final recovery. It is not an ecological year simulation. The two geometry histories use one repeatedly overwritten patch and two interleaved overlapping patches with real separate carriers/parcels. General distinct-shape history growth is not eliminated by the identical-box index rule.

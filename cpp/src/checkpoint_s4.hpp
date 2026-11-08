@@ -148,10 +148,7 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
                    box_valid(e.box) && encloses(c.initial_solid, e.box) && e.volume_q3,
                "invalid geometry edit provenance");
         s.geometry_edits.emplace(e.id, e);
-        for (auto key : overlapping_bricks(e.box, c.brick_q, limits.geometry_index_entries)) {
-            ensure(s.edit_index.size() < limits.geometry_index_entries, "geometry index host budget");
-            s.edit_index.emplace(std::pair{key, e.id}, std::uint8_t{0});
-        }
+        rebuild_index_edit(s.geometry_edits, s.edit_index, e, c.brick_q, limits.geometry_index_entries);
     }
     ensure(s.m.geometry_revision == s.geometry_edits.size(), "geometry revision mismatch");
     count = r.count(limits.entities, 65);
@@ -226,7 +223,7 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
 template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimits &limits) {
     if (!s.geometry) {
         for (const auto &e : s.journal)
-            ensure(e.kind < FactKind::GeometryConfigured, "geometry fact without authority");
+            ensure(e.kind < FactKind::GeometryConfigured || e.kind > FactKind::ExcavationDecision, "geometry fact without authority");
         for (const auto &[key, e] : s.queue) {
             (void)key;
             ensure(e.kind < ScheduledEvent::Kind::SoilAction, "geometry event without authority");
@@ -243,6 +240,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     std::map<EntityId, FoodMass> cargo;
     std::map<EntityId, LifeStage> stages;
     std::set<ScheduledId> completed;
+    std::set<ResourceId> present_food;
     SoilLedger ledger;
     bool configured = false;
     auto view = [&] { return GeometryView{*s.geometry, edits, index, limits.geometry_partition_cells}; };
@@ -260,13 +258,14 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ledger.initial_q3 = material_volume(view(), c.initial_solid, Material::Soil);
             ledger.remaining_q3 = ledger.initial_q3;
         }
-        if (e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded || e.kind == FactKind::ColonySeeded)
+        if (e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
             ensure(configured && clear(e.position, e.position, e.kind == FactKind::AntSeeded ? c.body_half_q : 1),
                    "seed embedded in material");
         if (e.kind == FactKind::AntSeeded) {
             positions[e.actor] = e.position;
             stages[e.actor] = e.stage;
         }
+        if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) present_food.insert(e.resource);
         if (e.kind == FactKind::Moved) {
             ensure(clear(positions.at(e.actor), e.position, half(e.actor)),
                    "historical movement crosses solid material");
@@ -366,8 +365,8 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                     for (const auto &[id, p] : positions)
                         ensure(!box_valid(intersection(around(*quantized(p, c), half(id)), request.box)),
                                "fill embeds an individual");
-                    for (const auto &food : s.foods.rows)
-                        ensure(!contains(request.box, *quantized(food.position, c)), "fill embeds food");
+                    for (auto id : present_food)
+                        ensure(!contains(request.box, *quantized(s.foods.rows[s.foods.index.at(id)].position, c)), "fill embeds food");
                     for (const auto &colony : s.colonies.rows)
                         ensure(!contains(request.box, *quantized(colony.nest_position, c)), "fill embeds nest anchor");
                     auto &parcel = parcels.at(request.parcel);
@@ -383,8 +382,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                     ledger.filled_q3 = add(ledger.filled_q3, amount);
                 }
                 edits.emplace(edit.id, edit);
-                for (auto key : overlapping_bricks(edit.box, c.brick_q, limits.geometry_index_entries))
-                    index.emplace(std::pair{key, edit.id}, std::uint8_t{0});
+                rebuild_index_edit(edits, index, edit, c.brick_q, limits.geometry_index_entries);
             } else {
                 ensure(parcels.contains(request.parcel) && !request.edit.value, "invalid parcel transfer history");
                 auto &parcel = parcels.at(request.parcel);

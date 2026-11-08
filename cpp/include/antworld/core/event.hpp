@@ -4,6 +4,7 @@
 #include "antworld/core/behavior.hpp"
 #include "antworld/core/physiology.hpp"
 #include "antworld/core/geometry.hpp"
+#include <span>
 
 namespace antworld {
 enum class Phase : std::uint32_t {
@@ -48,7 +49,7 @@ enum class FactKind : std::uint8_t {
     ActionRejected, StageChanged, AntDied, SurfaceConfigured, ForagingStarted,
     ForagingDecision, FoodDelivered, Rested, TrailMaintenance,
     PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred,
-    GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision
+    GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced
 };
 struct WorldEvent {
     EventId id;
@@ -71,4 +72,7 @@ struct WorldEvent {
     bool forgot_memory{};
     bool operator==(const WorldEvent&) const = default;
 };
+// Canonical fact payload codec. It is not a full-world recovery format.
+std::vector<std::uint8_t> encode_event(const WorldEvent&);
+WorldEvent decode_event(std::span<const std::uint8_t>);
 } // namespace antworld

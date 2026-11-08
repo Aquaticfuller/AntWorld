@@ -142,6 +142,13 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc == 2 && std::string_view(argv[1]) == "S5") {
+            WorldRuntime world({5,1},5);world.seed_colony();
+            const PlaceFoodCommand command{{5,1},{1,2},{},{100,50,25,0}};
+            sweep("place_food_command_and_receipt",world,[&]{world.place_food(command);});world.place_food(command);
+            const auto saved=world.checkpoint();sweep("restore_command_receipt",world,[&]{world.restore(saved);});
+            std::cout<<"PASS S5_ALLOCATION_FAILURE\n";return 0;
+        }
         if (argc == 2 && std::string_view(argv[1]) == "S4") { s4_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S3") { s3_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S2.1") { s2_1_sweeps(); return 0; }

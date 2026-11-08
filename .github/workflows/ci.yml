@@ -34,11 +34,13 @@ jobs:
           ./build/ci/antworld_s2_benchmark
           ./build/ci/antworld_s3_benchmark
           ./build/ci/antworld_s4_benchmark build/ci/s4-performance.csv
+          ./build/ci/antworld_s5_benchmark build/ci/s5-performance 1000 interleaved 2
+          ./build/ci/antworld_s5_history_benchmark build/ci/s5-history 30 100
       - name: Reproduce all S4 seeds (Linux Release)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
           ./build/ci/antworld_s4_experiment build/ci/s4-experiments 32
-          python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --report build/ci/s4-reproduction.json
+          python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --checkpoint-byte-delta 8 --report build/ci/s4-reproduction.json
 
   sanitizers:
     runs-on: ubuntu-24.04
@@ -48,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0, Node.js 24
       - name: Configure Clang ASan and UBSan
-        run: cmake -S cpp -B build/sanitized -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=clang++ -DANTWORLD_SANITIZERS=ON
+        run: cmake -S cpp -B build/sanitized -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DANTWORLD_SANITIZERS=ON
       - name: Build
         run: cmake --build build/sanitized --parallel 4
       - name: Test

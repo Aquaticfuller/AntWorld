@@ -16,7 +16,7 @@ $oldPath = $env:PATH
 try {
     $env:PATH = "$compiler;$cmakeBin;$toolRoot;$oldPath"
     & "$cmakeBin/cmake.exe" -S "$project/cpp" -B $BuildDirectory -G Ninja `
-        "-DCMAKE_BUILD_TYPE=$Configuration" "-DCMAKE_CXX_COMPILER=$compiler/clang++.exe" `
+        "-DCMAKE_BUILD_TYPE=$Configuration" "-DCMAKE_CXX_COMPILER=$compiler/clang++.exe" "-DCMAKE_C_COMPILER=$compiler/clang.exe" `
         "-DCMAKE_MAKE_PROGRAM=$toolRoot/ninja.exe" "-DANTWORLD_SANITIZERS=$($Sanitizers.IsPresent)"
     if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
     & "$cmakeBin/cmake.exe" --build $BuildDirectory --parallel 4

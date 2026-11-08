@@ -3,7 +3,7 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 46 (excluding the manifest itself).
+Files: 47 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
@@ -46,7 +46,8 @@ Files: 46 (excluding the manifest itself).
 | `docs/30_S2_2_Literature_and_Model_Rationale.md` | `5952289034d13ebfca18920beb6868bfbc26d064bdf26466bb4f9510cc390bfb` | 4613 |
 | `docs/31_S3_Implementation_and_Validation.md` | `6ecc2c75102cdc031150a08737bce23d295105b49da3ccc6056713c19fe46911` | 7515 |
 | `docs/32_S4_Implementation_and_Validation.md` | `2ce58875b9d6edca61d85f4898abf67d9365808909a7cc39930220c9bf2074c2` | 8082 |
-| `docs/33_S5_Persistence_History_and_Validation.md` | `f07a41eb3684fa03f5cafef423d02ab6ad74d0f53a24d4f8ee2b01441953759f` | 7644 |
+| `docs/33_S5_Persistence_History_and_Validation.md` | `21e99d1b239c384eb96957667245de9e9837b3a19b254b15221d89f3aaaacc9f` | 9610 |
+| `docs/34_S5_Metric_Definitions.md` | `73419ce0e2d95f11f46c01de2017853f288de535db22ee730f08612afd45ea4d` | 7405 |
 | `docs/CHANGELOG.md` | `103aaa654629b8f6fedfb7e608d4221a5e9f34d6c77a469a9cb9c028ace425fb` | 7581 |
 | `README_HANDOFF.md` | `81db5802a32a7506d6861c90c139bc2247b7349c7bf8c35e06b7aca24e7f0e70` | 2083 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

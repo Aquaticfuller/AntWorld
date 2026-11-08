@@ -1,6 +1,7 @@
 #pragma once
 
 #include "antworld/core/event.hpp"
+#include "antworld/core/command.hpp"
 
 #include <memory>
 #include <optional>
@@ -24,7 +25,7 @@ struct WorldSnapshot {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    static constexpr std::uint32_t schema_version = 5;
+    static constexpr std::uint32_t schema_version = 6;
     static constexpr std::uint32_t physics_version = 7;
     static constexpr std::size_t max_records = 65536;
     static constexpr std::size_t max_same_time_events = 1024;
@@ -43,6 +44,12 @@ public:
     ColonyRef seed_colony(PositionM nest = {});
     AntRef seed_ant(ColonyRef colony, const AntSeed& seed);
     FoodRef seed_food(PositionM position, FoodMass mass);
+    CommandReceipt place_food(const PlaceFoodCommand&);
+    [[nodiscard]] std::optional<CommandReceipt> command_receipt(WorldId, CommandId) const;
+    [[nodiscard]] std::vector<CommandReceipt> command_receipts() const;
+    [[nodiscard]] std::vector<AntState> ant_states() const;
+    [[nodiscard]] std::vector<Colony> colonies() const;
+    [[nodiscard]] std::vector<FoodSource> food_sources() const;
     ScheduledId submit(const ActionProposal& proposal);
     ScheduledId schedule_lifecycle(AntRef actor, SimTime at, LifeStage stage);
     void configure_surface(const SurfaceConfig&, std::span<const Cell> blocked, const BehaviorConfig& = {});

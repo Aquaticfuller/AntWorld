@@ -165,7 +165,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
         if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor))
             audit_agents.at(e.actor).enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
         if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
-        if (e.kind == FactKind::FoodSeeded) remaining[e.resource] = e.transferred;
+        if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
         if (e.kind == FactKind::ForagingStarted) {
             ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
             auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *surface.locate(e.position); f.path_size = 1;
