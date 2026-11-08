@@ -106,7 +106,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.random_value == 0) &&
-            (seeded ? e.source.value == 0 && e.time == SimTime{} : e.source.value && e.source.value < m.next_scheduled &&
+            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted) : e.source.value && e.source.value < m.next_scheduled &&
                 scheduled_ids.insert(e.source.value).second), "invalid committed event");
         previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
     }

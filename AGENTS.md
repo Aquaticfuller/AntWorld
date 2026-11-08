@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S2 only**, explicitly approved after S1 Code Review. Preserve S0/S1 transactions, ordering, conservation, checkpoints and regression tests. Implement local surface sensing/motion, individual exploration, food discovery, sparse surface pheromones, bounded route memory, autonomous collection and return. No global food oracle or centralized worker decisions. Do not implement S3 physiology, S4 underground navigation/geometry, Unity or Game Master.
+**Current authorized batch: S2.1 Foraging Model Validation & Fixes only**, explicitly requested after S2 Code Review. Start from codex/s2-foraging and deliver on codex/s2.1-foraging-validation. Preserve all S0-S2 mechanisms and regressions. Diagnose ResourceId food-choice bias and pheromone recruitment before minimal fixes; run matched naive-worker recruitment controls and retain the broad feature ablations. No global food oracle, forced paths/outcomes, seed filtering or coefficient inflation to chase positive results. Do not implement S3 physiology, S4 underground navigation/geometry, Unity or Game Master.
 
 ## Implementation rules
 
@@ -38,5 +38,5 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
 - Preserve S0/S1 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer and relevant performance checks for S2.
-- Produce `S2_RESULTS.md` with changed files, commands, test matrix, deterministic multi-seed F1/F2/F3 CSV evidence, limitations and next-gate readiness.
-- Finish **only S2** and stop for review. S3–S9 are not authorized in this run.
+- Preserve S2_RESULTS.md as historical evidence. Produce S2_1_RESULTS.md, S2_1_EXPERIMENTS.csv, figures and reproduction commands, including explicit PASS / CONDITIONAL PASS / FAIL and honest negative results.
+- Finish **only S2.1**, push its independent branch and stop for review. S3–S9 are not authorized in this run.

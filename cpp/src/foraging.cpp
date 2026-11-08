@@ -55,7 +55,7 @@ void WorldRuntime::configure_surface(const SurfaceConfig& config, std::span<cons
 }
 void WorldRuntime::start_foraging(AntRef ref) {
     auto& s = *state_; const auto ant = query_ant(ref);
-    if (!s.surface || !ant || s.m.now != SimTime{} || s.m.watermark || s.foragers.contains(ref.id) ||
+    if (!s.surface || !ant || s.foragers.contains(ref.id) ||
         ant->stage != LifeStage::Adult || ant->caste != Caste::Worker || ant->carried_food.total_ug() || !ant->carrying_capacity_ug)
         throw std::invalid_argument("invalid autonomous worker seed");
     const auto cell = s.surface->locate(ant->position);
@@ -70,7 +70,10 @@ void WorldRuntime::start_foraging(AntRef ref) {
     ForagerState f; f.enabled = true; f.path[0] = *cell; f.path_size = 1;
     f.heading = initial_heading(s.seed, ant->id);
     ScheduledEvent wake; wake.kind = ScheduledEvent::Kind::Wake; wake.actor = ant->id;
-    wake.key = {s.m.now, Phase::Perception, 0, 0, 0}; wake.issued_at = s.m.now;
+    // Initial setup retains its zero-time wake. A dormant individual's first
+    // activation later in the run cannot reopen an already executed phase.
+    const auto wake_time = s.m.now == SimTime{} && !s.m.watermark ? s.m.now : later(s.m.now, s.surface->behavior.decision_delay);
+    wake.key = {wake_time, Phase::Perception, 0, 0, 0}; wake.issued_at = s.m.now;
     f.wake = tx.insert(wake); tx.foragers.set(ant->id, f);
     if (!s.visits.contains(*cell)) tx.visits.set(*cell, 0);
     WorldEvent e; e.kind = FactKind::ForagingStarted; e.actor = ant->id; e.colony = ant->colony;
