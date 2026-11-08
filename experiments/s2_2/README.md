@@ -6,6 +6,7 @@ All values are `ENGINEERING_FIXTURE`. [Protocol](../../docs/29_S2_2_Validation_P
 
 - `baseline/local.csv`, `fixed/local.csv`: 55,296 raw local trials per version, with every seed, configuration and complete ordered trajectory. The root `S2_2_EXPERIMENTS.csv` concatenates these 110,592 local trials only. Social and broad-ablation trials are separate below.
 - `baseline/` also retains the summaries produced before the production change. `summary.csv`, `paired.csv`, `model_effects.csv`, `mirrors.csv`, `departure_survival.csv` and `input_hashes.json` compare both versions without rewriting that record.
+- `sensitivity_balanced.csv` compares all age/persistence cells on the shared, predeclared sensitivity seed set 1-128. All 512 primary seeds remain in the acceptance tables; no observed outcomes are removed.
 - `social/{social,choices,fields}.csv`: exact original S2.1 social protocol under physics 5: 1,152 trials, 24,576 choice diagnostics and sparse field samples. The S2.1 baseline remains at `../s2_1/fixed/`. `social_summary.csv` and `social_effects.csv` compare versions, including non-discoverers and negative outcomes.
 - `ablations/{summary,timeseries,aggregate,paired_differences}.csv`: original 128-run, 12-worker, 30-minute S2 matrix, with 7,808 time samples. Compare to `../s2_1/ablations/`; no-signal and memory-only results are unchanged.
 - `figures/`: standalone SVG/PNG mechanism, sensitivity/social and trajectory charts. Trajectory illustration uses seed 1, unreflected, without selecting for success. The reference line in the absence panels is an observer annotation, not a chemical signal.
@@ -45,6 +46,14 @@ python tools/analyze_s2_2.py --check
 Compare the output files with `fixed/`, `social/` and `ablations/`, normalizing CRLF/LF only on the same build/platform. `analyze_s2_2.py` without `--check` regenerates combined/derived evidence from the committed raw files. `--baseline-only` reproduces the pre-change local summaries without accessing the fixed results. Core determinism is same-build/platform, not promised floating-point byte equality across compilers.
 
 To reproduce the baseline without touching the current worktree, run `git archive --output=out/s2_2-baseline.zip 173d372 cpp scenarios`, extract into a new empty directory, configure/build that tree and execute its `antworld_s2_2_experiment OUTPUT_DIR 512`. It still uses physics 4 and reports model `s2.1`. The original S2.1 social baseline can independently be rebuilt from `c3d24e8`; all of its original evidence is preserved.
+
+After running both local versions and the fixed integrated experiments from clean builds, compare all seven raw files using:
+
+```sh
+python tools/verify_s2_2_reproduction.py --baseline out/s2_2-reproduced-baseline --fixed out/s2_2-reproduced-local --social out/s2_2-reproduced-social --ablations out/s2_2-reproduced-ablations --report out/s2_2-reproduction.json
+```
+
+`reproduction.json` retains the executed comparison's hashes and row counts. No numerical tolerance or selective metric comparison is used for repeated runs on the same compiler/platform.
 
 On Linux, configure `cmake -S cpp -B build/repro -DCMAKE_BUILD_TYPE=Release`, build with `cmake --build build/repro --parallel 4`, and test with `ctest --test-dir build/repro --output-on-failure`; use executables from `build/repro/` without `.exe`. Optional plotting uses the already pinned S2.1 matplotlib requirements, outside the core:
 

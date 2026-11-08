@@ -76,6 +76,33 @@ def analyze(baseline_only):
             assert len(positions) == n+1 and int(r['moves']) == n
             assert all(0 <= v <= 80 for p in positions for v in p)
             assert all(abs(a[0]-b[0])+abs(a[1]-b[1]) == 1 for a, b in zip(positions, positions[1:]))
+            def distance(p):
+                x, z = (80-p[0] if mirror else p[0]), p[1]
+                if context in ('straight', 'lost'):
+                    return abs(x-40)
+                if context == 'visited':
+                    return abs(x-41)
+                if context == 'bend':
+                    return min(abs(x-40)+max(0,z-26), abs(z-26)+max(0,40-x))
+                return 0 if ((x == 40 and z <= 20) or (x > 40 and z-20 in (x-40,x-41))) else 1
+            distances = [distance(p) for p in positions]; on = [d == 0 for d in distances]
+            run, longest, initial, initial_open = 0, 0, 0, True
+            for yes in on[1:]:
+                run = run+1 if yes else 0; longest = max(longest,run)
+                if initial_open and yes:
+                    initial += 1
+                if not yes:
+                    initial_open = False
+            departures = [i for i in range(1,n+1) if on[i-1] and not on[i]]
+            assert math.isclose(float(r['occupancy']), sum(on[1:])/n, abs_tol=1e-12)
+            assert math.isclose(float(r['near_occupancy']), sum(d <= 1 for d in distances[1:])/n, abs_tol=1e-12)
+            assert math.isclose(float(r['mean_distance_m']), sum(distances[1:])*.01/n, abs_tol=1e-12)
+            assert (int(r['initial_streak']), int(r['max_streak'])) == (initial, longest)
+            assert int(r['deviations']) == len(departures) and int(r['first_deviation_step']) == (departures[0] if departures else -1)
+            assert int(r['reacquisitions']) == sum(not a and b for a,b in zip(on,on[1:]))
+            initial_previous = (40,24) if context == 'lost' else ((40,23) if context == 'visited' else (40,19))
+            history = [initial_previous]+positions
+            assert int(r['uturns']) == sum(history[i] == history[i-2] for i in range(2,len(history)))
             assert math.isclose(float(r['path_m']), n*.01)
             assert int(r['streak3']) == (int(r['max_streak']) >= 3)
             assert 0 <= float(r['occupancy']) <= float(r['near_occupancy']) <= 1
@@ -144,6 +171,23 @@ def analyze(baseline_only):
                 changes.append(dict(context=context, metric=metric, difference=mean, ci_low=low, ci_high=high,
                                     contrast='s2.2-minus-s2.1-present', seed_clusters=512))
         outputs[DATA/'model_effects.csv'] = render(changes)
+        # Compare sensitivity cells on their common predeclared seed set 1-128;
+        # retain all 512 primary seeds in the acceptance tables above.
+        all_index = {(r['model'], r['context'], r['age_ms'], r['persistence_weight'], r['seed'], r['mirror'], r['treatment']): r for r in combined}
+        sensitivity_groups = defaultdict(list)
+        for r in combined:
+            if int(r['seed']) <= 128 and r['treatment'] == 'present':
+                sensitivity_groups[r['model'], r['context'], r['age_ms'], r['persistence_weight']].append(r)
+        balanced = []
+        for (model, context, age, inertia), group in sorted(sensitivity_groups.items()):
+            for metric in METRICS:
+                def delta(r):
+                    a = all_index[model, context, age, inertia, r['seed'], r['mirror'], 'absent']
+                    return float(r[metric])-float(a[metric])
+                mean, low, high = interval(cluster(group, delta))
+                balanced.append(dict(model=model, context=context, age_ms=age, persistence_weight=inertia, metric=metric,
+                                     difference=mean, ci_low=low, ci_high=high, seed_clusters=128, method='cluster-normal-95'))
+        outputs[DATA/'sensitivity_balanced.csv'] = render(balanced)
         outputs.update(social_analysis())
     for model in (v[1] for v in versions):
         for r in pairs:

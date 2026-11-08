@@ -36,7 +36,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S2_1_RESULTS.md](S2_1_RESULTS.md); S0_RESULTS.md, S1_RESULTS.md and S2_RESULTS.md preserve the historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S2_2_RESULTS.md](S2_2_RESULTS.md); earlier reports preserve their historical baselines.
 
 ## Minimal autonomous S2 use
 
@@ -105,7 +105,7 @@ python tools/analyze_s2_2.py --check
 
 The language scan checks tracked UTF-8 files and commit messages for leftover CJK text; manual review still determines English prose quality. Stage deletions/renames before scanning. The original Chinese archive remains locally under ignored `handoff/`, with pre-policy Git history preserved. All current tracked content, code/comments, documentation and commit messages are English. User conversation is Chinese.
 
-Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s2_windows.ps1 -OutputDirectory out/s2_1-performance` records sampled process memory. These fixtures do not establish full-colony or whole-map performance. See [the roadmap](docs/22_Development_Roadmap_and_Execution_Gates.md). Stop after S2.1 and obtain the next review before starting S3.
+Run `antworld_scheduler_benchmark` for queue scaling, `antworld_s1_benchmark` for fixed active transactions against varying stored populations, `antworld_s2_benchmark` for 16/128/512 autonomous workers, and `antworld_benchmark` for retained diagnostics. `tools/benchmark_s2_windows.ps1 -OutputDirectory out/s2_2-performance` records sampled process memory. These fixtures do not establish full-colony or whole-map performance. See [the roadmap](docs/22_Development_Roadmap_and_Execution_Gates.md). Stop after S2.2 and obtain the next review before starting S3.
 
 ## License
 

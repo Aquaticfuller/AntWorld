@@ -66,13 +66,14 @@ save(fig, 'mechanisms')
 
 fig, axs = plt.subplots(2, 2, figsize=(12, 8), layout='constrained')
 fig.suptitle('Planned sensitivity and limits: local influence is not a food-direction signal\nENGINEERING_FIXTURE | response stays 180 | no coefficient selected from these outcomes', fontsize=13)
+sensitivity = read('sensitivity_balanced.csv')
 for ax, context in zip(axs[0], ['straight', 'bend']):
     for inertia, color in [(0, '#81956d'), (20, '#087f8c'), (40, '#aa6045')]:
-        group = [next(r for r in paired if r['model'] == 's2.2' and r['context'] == context and r['metric'] == 'occupancy' and int(r['persistence_weight']) == inertia and int(r['age_ms']) == age) for age in [0,60000,180000]]
+        group = [next(r for r in sensitivity if r['model'] == 's2.2' and r['context'] == context and r['metric'] == 'occupancy' and int(r['persistence_weight']) == inertia and int(r['age_ms']) == age) for age in [0,60000,180000]]
         y = np.array([float(r['difference'])*100 for r in group])
         error = np.array([[float(r['difference'])-float(r['ci_low']) for r in group], [float(r['ci_high'])-float(r['difference']) for r in group]])*100
         ax.errorbar([0,60,180], y, yerr=error, fmt='o-', capsize=3, color=color, label=f'Persistence {inertia}')
-    ax.axhline(0, color='gray', linestyle=':'); ax.set(title=f'{context}: present minus absent occupancy', xlabel='Initial field age (s)', ylabel='Percentage points (95% CI)'); ax.legend(fontsize=8)
+    ax.axhline(0, color='gray', linestyle=':'); ax.set(title=f'{context}: paired occupancy, seeds 1-128', xlabel='Initial field age (s)', ylabel='Percentage points (95% CI)', xticks=[0,60,180]); ax.legend(fontsize=8)
 effects = read('social_effects.csv')
 for ax, metric, scale, label in [(axs[1,0], 'discovery_rate', 100, 'Discovery difference (percentage points)'), (axs[1,1], 'restricted_discovery_s', 1, 'Restricted discovery time difference (s)')]:
     for model, offset in [('s2.1', -5), ('s2.2', 5)]:
