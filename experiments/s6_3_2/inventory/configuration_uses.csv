@@ -1,0 +1,512 @@
+path,line,owner,variable,form,source
+cpp/apps/antworld_s1_benchmark.cpp,16,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s1_benchmark.cpp,17,PositionM,seed_food,API_AGGREGATE,{}
+cpp/apps/antworld_s1_benchmark.cpp,17,FoodMass,seed_food,API_AGGREGATE,"{UINT64_C(4000)*population, 0, 0, 0}"
+cpp/apps/antworld_s2_1_audit.cpp,8,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/apps/antworld_s2_1_experiment.cpp,127,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/apps/antworld_s3_benchmark.cpp,19,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s3_benchmark.cpp,20,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,400,400,100},1000000000,1000,0}"
+cpp/apps/antworld_s3_experiment.cpp,28,FoodMass,received,DECLARATION_OR_FUNCTION,FoodMass received;
+cpp/apps/antworld_s3_experiment.cpp,63,PhysiologyConfig,config,DECLARATION_OR_FUNCTION,PhysiologyConfig config;
+cpp/apps/antworld_s4_benchmark.cpp,41,BoxQ,remote_patch,DECLARATION_OR_FUNCTION,BoxQ remote_patch{
+cpp/apps/antworld_s4_benchmark.cpp,113,PositionM,far,DECLARATION_OR_FUNCTION,PositionM far{
+cpp/apps/antworld_s4_benchmark.cpp,36,BoxQ,,TYPED_AGGREGATE,"BoxQ{{100, 2, 2}, {112, 22, 22}}"
+cpp/apps/antworld_s4_benchmark.cpp,39,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, cfg), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/antworld_s4_benchmark.cpp,40,AntSeed,seed_ant,API_AGGREGATE,"{position({110, 12, 12}, cfg), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/antworld_s4_benchmark.cpp,114,AntSeed,seed_ant,API_AGGREGATE,{dense ? p : far}
+cpp/apps/antworld_s4_experiment.cpp,117,BoxQ,second,DECLARATION_OR_FUNCTION,BoxQ second{
+cpp/apps/antworld_s4_experiment.cpp,90,AntSeed,seed_ant,API_AGGREGATE,"{position({6, 12, 12}, f.geometry), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/antworld_s4_experiment.cpp,91,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{500, 0, 500, 0}, 1000000000, 1000, 0}"
+cpp/apps/antworld_s4_experiment.cpp,116,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, f.geometry), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/antworld_s5_history_benchmark.cpp,35,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s6_1_experiment.cpp,198,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/apps/antworld_s6_1_experiment.cpp,212,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/apps/antworld_s6_2_benchmark.cpp,163,SocialConfig,config,DECLARATION_OR_FUNCTION,SocialConfig config;
+cpp/apps/antworld_s6_2_benchmark.cpp,169,PositionM,p,DECLARATION_OR_FUNCTION,PositionM p =
+cpp/apps/antworld_s6_2_benchmark.cpp,170,PositionM,,TYPED_AGGREGATE,"PositionM{static_cast<double>(i % 32) * .01, 0,
+                                  static_cast<double>(i / 32) * .01}"
+cpp/apps/antworld_s6_2_benchmark.cpp,172,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/apps/antworld_s6_2_benchmark.cpp,173,AntSeed,seed_ant,API_AGGREGATE,{p}
+cpp/apps/antworld_s6_2_benchmark.cpp,175,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 400, 400, 100}, 1000000000, 1000, 0}"
+cpp/apps/antworld_s6_2_choice.cpp,33,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/antworld_s6_2_choice.cpp,38,PhysiologyConfig,donor_config,DECLARATION_OR_FUNCTION,PhysiologyConfig donor_config;
+cpp/apps/antworld_s6_2_choice.cpp,40,PhysiologySeed,provision,DECLARATION_OR_FUNCTION,PhysiologySeed provision;
+cpp/apps/antworld_s6_2_choice.cpp,46,PositionM,position,DECLARATION_OR_FUNCTION,PositionM position{
+cpp/apps/antworld_s6_2_choice.cpp,37,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s6_2_choice.cpp,50,AntSeed,seed_ant,API_AGGREGATE,"{position, LifeStage::Larva}"
+cpp/apps/antworld_s6_2_choice.cpp,52,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_1_experiment.cpp,134,Controls,controls,DECLARATION_OR_FUNCTION,Controls controls =
+cpp/apps/antworld_s6_3_1_experiment.cpp,144,LongTermConfig,policy,DECLARATION_OR_FUNCTION,LongTermConfig policy;
+cpp/apps/antworld_s6_3_1_experiment.cpp,422,Controls,c,DECLARATION_OR_FUNCTION,Controls c;
+cpp/apps/antworld_s6_3_1_experiment.cpp,434,Controls,c,DECLARATION_OR_FUNCTION,Controls c;
+cpp/apps/antworld_s6_3_1_experiment.cpp,455,Controls,c,DECLARATION_OR_FUNCTION,Controls c;
+cpp/apps/antworld_s6_3_1_experiment.cpp,466,Controls,c,DECLARATION_OR_FUNCTION,Controls c;
+cpp/apps/antworld_s6_3_1_experiment.cpp,134,Controls,controls,WHOLE_ASSIGNMENT,controls = {}
+cpp/apps/antworld_s6_3_2_audit.cpp,15,PhysiologyConfig,profile,DECLARATION_OR_FUNCTION,PhysiologyConfig profile(
+cpp/apps/antworld_s6_3_2_audit.cpp,16,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/apps/antworld_s6_3_2_audit.cpp,75,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/apps/antworld_s6_3_2_audit.cpp,109,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial{
+cpp/apps/antworld_s6_3_2_audit.cpp,163,PhysiologySeed,empty,DECLARATION_OR_FUNCTION,PhysiologySeed empty{
+cpp/apps/antworld_s6_3_2_audit.cpp,168,PhysiologySeed,supplied,DECLARATION_OR_FUNCTION,PhysiologySeed supplied{
+cpp/apps/antworld_s6_3_2_audit.cpp,171,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial{
+cpp/apps/antworld_s6_3_2_audit.cpp,28,LongTermConfig,configure_long_term,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_2_audit.cpp,29,SocialConfig,configure_social,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_2_audit.cpp,69,AntSeed,seed_ant,API_AGGREGATE,"{{}, stage, caste, 4000}"
+cpp/apps/antworld_s6_3_2_audit.cpp,108,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/apps/antworld_s6_3_2_audit.cpp,111,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/apps/antworld_s6_3_2_audit.cpp,115,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,98,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,102,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,96,SocialConfig,configure_social,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,111,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,112,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 100, 0, 0}, 1500000000, 1600, 0}"
+cpp/apps/antworld_s6_3_birth_benchmark.cpp,116,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/antworld_s6_3_experiment.cpp,141,LongTermConfig,policy,DECLARATION_OR_FUNCTION,LongTermConfig policy;
+cpp/apps/antworld_s6_contact_benchmark.cpp,110,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/antworld_s6_contact_benchmark.cpp,116,PositionM,p,DECLARATION_OR_FUNCTION,PositionM p =
+cpp/apps/antworld_s6_contact_benchmark.cpp,117,PositionM,,TYPED_AGGREGATE,"PositionM{static_cast<double>(i % 32) * .01, 0,
+                                        static_cast<double>(i / 32) * .01}"
+cpp/apps/antworld_s6_contact_benchmark.cpp,119,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/apps/antworld_s6_contact_benchmark.cpp,120,AntSeed,seed_ant,API_AGGREGATE,{p}
+cpp/apps/antworld_s6_contact_benchmark.cpp,123,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 400, 400, 100}, 1000000000, 1000, 0}"
+cpp/apps/antworld_s6_experiment.cpp,27,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/apps/antworld_s6_experiment.cpp,28,SocialConfig,s,DECLARATION_OR_FUNCTION,SocialConfig s;
+cpp/apps/antworld_s6_experiment.cpp,29,BehaviorConfig,b,DECLARATION_OR_FUNCTION,BehaviorConfig b;
+cpp/apps/antworld_s6_experiment.cpp,30,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/apps/antworld_s6_experiment.cpp,260,PositionM,position,DECLARATION_OR_FUNCTION,PositionM position;
+cpp/apps/s2_1_fixture.hpp,13,SurfaceConfig,grid,DECLARATION_OR_FUNCTION,SurfaceConfig grid{
+cpp/apps/s2_1_fixture.hpp,21,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/apps/s2_1_fixture.hpp,26,AntSeed,seed_ant,API_AGGREGATE,"{nest, LifeStage::Adult, Caste::Worker, 1000}"
+cpp/apps/s2_1_fixture.hpp,27,AntSeed,seed_ant,API_AGGREGATE,"{nest, LifeStage::Adult, Caste::Worker, 1000}"
+cpp/apps/s2_1_fixture.hpp,28,FoodMass,seed_food,API_AGGREGATE,"{1000000, 1000000, 1000000, 1000000}"
+cpp/apps/s2_2_fixture.hpp,17,BehaviorConfig,config,DECLARATION_OR_FUNCTION,BehaviorConfig config;
+cpp/apps/s2_fixture.hpp,8,PositionM,position,DECLARATION_OR_FUNCTION,PositionM position(
+cpp/apps/s2_fixture.hpp,13,SurfaceConfig,surface,DECLARATION_OR_FUNCTION,SurfaceConfig surface;
+cpp/apps/s2_fixture.hpp,20,BehaviorConfig,behavior,DECLARATION_OR_FUNCTION,BehaviorConfig behavior;
+cpp/apps/s2_fixture.hpp,19,SurfaceConfig,surface,WHOLE_ASSIGNMENT,"surface = {{-0.15, 0, -0.10}, 31, 21, 0.01}"
+cpp/apps/s2_fixture.hpp,27,AntSeed,seed_ant,API_AGGREGATE,"{nest, LifeStage::Adult, Caste::Worker, 1000}"
+cpp/apps/s2_fixture.hpp,29,FoodMass,seed_food,API_AGGREGATE,"{1000000, 1000000, 1000000, 1000000}"
+cpp/apps/s2_fixture.hpp,9,PositionM,position,RETURN_AGGREGATE,"{c.origin_m.x+cell.x*c.cell_size_m, c.origin_m.y, c.origin_m.z+cell.z*c.cell_size_m}"
+cpp/apps/s3_fixture.hpp,27,PhysiologyConfig,config,DECLARATION_OR_FUNCTION,PhysiologyConfig config;
+cpp/apps/s3_fixture.hpp,30,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial;
+cpp/apps/s3_fixture.hpp,35,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial;
+cpp/apps/s3_fixture.hpp,48,PhysiologyConfig,c,DECLARATION_OR_FUNCTION,PhysiologyConfig c;
+cpp/apps/s3_fixture.hpp,49,PhysiologySeed,p,DECLARATION_OR_FUNCTION,PhysiologySeed p;
+cpp/apps/s3_fixture.hpp,29,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/s3_fixture.hpp,34,AntSeed,seed_ant,API_AGGREGATE,"{{}, eggs ? LifeStage::Egg : LifeStage::Larva, Caste::Worker, 4000}"
+cpp/apps/s3_fixture.hpp,46,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/s3_fixture.hpp,47,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/s3_fixture.hpp,47,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/s3_fixture.hpp,51,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/apps/s4_fixture.hpp,10,PositionM,position,DECLARATION_OR_FUNCTION,PositionM position(
+cpp/apps/s4_fixture.hpp,13,GeometryConfig,config,DECLARATION_OR_FUNCTION,GeometryConfig config(
+cpp/apps/s4_fixture.hpp,14,GeometryConfig,c,DECLARATION_OR_FUNCTION,GeometryConfig c;
+cpp/apps/s4_fixture.hpp,19,BoxQ,room,DECLARATION_OR_FUNCTION,BoxQ room{
+cpp/apps/s4_fixture.hpp,21,GeometryConfig,geometry,DECLARATION_OR_FUNCTION,GeometryConfig geometry =
+cpp/apps/s4_fixture.hpp,35,BoxQ,box,DECLARATION_OR_FUNCTION,BoxQ box =
+cpp/apps/s4_fixture.hpp,31,AntSeed,seed_ant,API_AGGREGATE,"{p, LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/s4_fixture.hpp,33,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{500, 0, 500, 0}, 1000000000, 1000, 0}"
+cpp/apps/s4_fixture.hpp,11,PositionM,position,RETURN_AGGREGATE,"{c.origin_m.x + p.x * c.quantum_m, c.origin_m.y + p.y * c.quantum_m, c.origin_m.z + p.z * c.quantum_m}"
+cpp/apps/s5_fixture.hpp,18,GeometryConfig,geometry,DECLARATION_OR_FUNCTION,GeometryConfig geometry =
+cpp/apps/s5_fixture.hpp,51,BoxQ,b,DECLARATION_OR_FUNCTION,BoxQ b{
+cpp/apps/s5_fixture.hpp,26,AntSeed,seed_ant,API_AGGREGATE,"{p, LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/s5_fixture.hpp,27,AntSeed,seed_ant,API_AGGREGATE,"{p, LifeStage::Adult, Caste::Worker, 20000}"
+cpp/apps/s6_3_1_fixture.hpp,24,LongTermConfig,policy,DECLARATION_OR_FUNCTION,LongTermConfig policy =
+cpp/apps/s6_3_1_fixture.hpp,25,Controls,controls,DECLARATION_OR_FUNCTION,Controls controls =
+cpp/apps/s6_3_1_fixture.hpp,31,BehaviorConfig,behavior,DECLARATION_OR_FUNCTION,BehaviorConfig behavior;
+cpp/apps/s6_3_1_fixture.hpp,34,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/apps/s6_3_1_fixture.hpp,41,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/s6_3_1_fixture.hpp,51,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/apps/s6_3_1_fixture.hpp,60,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial{
+cpp/apps/s6_3_1_fixture.hpp,64,ReproductionConfig,reproduction,DECLARATION_OR_FUNCTION,ReproductionConfig reproduction;
+cpp/apps/s6_3_1_fixture.hpp,90,ResourceCycleConfig,cycle,DECLARATION_OR_FUNCTION,ResourceCycleConfig cycle;
+cpp/apps/s6_3_1_fixture.hpp,10,Controls,,TYPED_AGGREGATE,"Controls {
+  unsigned
+      reserve_mode{}; // 0 legacy, 1 interval, 2 absorption, 3 twice interval.
+  bool laying{true}, exchange{true}, positive{};
+  std::int64_t absorption_hours{6}, behavior_hours{6}, reproduction_days{2};
+  std::uint64_t lineage_basal{1};
+}"
+cpp/apps/s6_3_1_fixture.hpp,37,BoxQ,,TYPED_AGGREGATE,"BoxQ{{14, 10, 10}, {18, 14, 14}}"
+cpp/apps/s6_3_1_fixture.hpp,38,BoxQ,,TYPED_AGGREGATE,"BoxQ{{12, 8, 8}, {20, 16, 16}}"
+cpp/apps/s6_3_1_fixture.hpp,24,LongTermConfig,policy,WHOLE_ASSIGNMENT,policy = {}
+cpp/apps/s6_3_1_fixture.hpp,25,Controls,controls,WHOLE_ASSIGNMENT,controls = {}
+cpp/apps/s6_3_1_fixture.hpp,33,SurfaceConfig,configure_surface,API_AGGREGATE,"{{-.03, 0, -.03}, 7, 7, .01}"
+cpp/apps/s6_3_1_fixture.hpp,61,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen, 4000}"
+cpp/apps/s6_3_1_fixture.hpp,80,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, 4000}"
+cpp/apps/s6_3_1_fixture.hpp,86,PositionM,seed_food,API_AGGREGATE,{}
+cpp/apps/s6_3_1_fixture.hpp,86,FoodMass,seed_food,API_AGGREGATE,"{200000ULL * population, 20000ULL * population,
+                           100000ULL * population, 0}"
+cpp/apps/s6_3_1_fixture.hpp,89,PositionM,seed_food,API_AGGREGATE,"{.02, 0, .01}"
+cpp/apps/s6_3_1_fixture.hpp,89,FoodMass,seed_food,API_AGGREGATE,"{4000, 500, 4000, 0}"
+cpp/apps/s6_3_fixture.hpp,19,LongTermConfig,policy,DECLARATION_OR_FUNCTION,LongTermConfig policy =
+cpp/apps/s6_3_fixture.hpp,26,BehaviorConfig,behavior,DECLARATION_OR_FUNCTION,BehaviorConfig behavior;
+cpp/apps/s6_3_fixture.hpp,29,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/apps/s6_3_fixture.hpp,36,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/s6_3_fixture.hpp,43,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/apps/s6_3_fixture.hpp,52,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial{
+cpp/apps/s6_3_fixture.hpp,67,ResourceCycleConfig,cycle,DECLARATION_OR_FUNCTION,ResourceCycleConfig cycle;
+cpp/apps/s6_3_fixture.hpp,32,BoxQ,,TYPED_AGGREGATE,"BoxQ{{14, 10, 10}, {18, 14, 14}}"
+cpp/apps/s6_3_fixture.hpp,33,BoxQ,,TYPED_AGGREGATE,"BoxQ{{12, 8, 8}, {20, 16, 16}}"
+cpp/apps/s6_3_fixture.hpp,19,LongTermConfig,policy,WHOLE_ASSIGNMENT,policy = {}
+cpp/apps/s6_3_fixture.hpp,28,SurfaceConfig,configure_surface,API_AGGREGATE,"{{-.03, 0, -.03}, 7, 7, .01}"
+cpp/apps/s6_3_fixture.hpp,53,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen, 4000}"
+cpp/apps/s6_3_fixture.hpp,60,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, 4000}"
+cpp/apps/s6_3_fixture.hpp,66,PositionM,seed_food,API_AGGREGATE,"{.02, 0, .01}"
+cpp/apps/s6_3_fixture.hpp,66,FoodMass,seed_food,API_AGGREGATE,"{4000, 500, 4000, 0}"
+cpp/apps/s6_fixture.hpp,22,IntegratedOptions,correction_options,DECLARATION_OR_FUNCTION,IntegratedOptions correction_options(
+cpp/apps/s6_fixture.hpp,23,IntegratedOptions,result,DECLARATION_OR_FUNCTION,IntegratedOptions result;
+cpp/apps/s6_fixture.hpp,35,GeometryConfig,geometry,DECLARATION_OR_FUNCTION,GeometryConfig geometry;
+cpp/apps/s6_fixture.hpp,48,BoxQ,chamber,DECLARATION_OR_FUNCTION,BoxQ chamber{
+cpp/apps/s6_fixture.hpp,58,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/s6_fixture.hpp,68,PhysiologySeed,initial,DECLARATION_OR_FUNCTION,PhysiologySeed initial;
+cpp/apps/s6_fixture.hpp,104,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/apps/s6_fixture.hpp,113,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/apps/s6_fixture.hpp,126,FoodMass,crop,DECLARATION_OR_FUNCTION,FoodMass crop =
+cpp/apps/s6_fixture.hpp,16,IntegratedOptions,,TYPED_AGGREGATE,"IntegratedOptions {
+  unsigned workers{32};
+  std::uint64_t source_protein_ug{2000};
+  bool gift_first{}, local_work_continuation{};
+  SimTime minimum_program_time{10000};
+}"
+cpp/apps/s6_fixture.hpp,86,FoodMass,,TYPED_AGGREGATE,"FoodMass{0, 0, 2500, 2500}"
+cpp/apps/s6_fixture.hpp,87,FoodMass,,TYPED_AGGREGATE,"FoodMass{0, options.source_protein_ug, 2500, 2500-options.source_protein_ug}"
+cpp/apps/s6_fixture.hpp,127,FoodMass,,TYPED_AGGREGATE,"FoodMass{100, 0, 400, 500}"
+cpp/apps/s6_fixture.hpp,128,FoodMass,,TYPED_AGGREGATE,"FoodMass{100, 400, 400, 100}"
+cpp/apps/s6_fixture.hpp,45,SurfaceConfig,configure_surface,API_AGGREGATE,"{{-.03, 0, -.03}, 7, 7, .01}"
+cpp/apps/s6_fixture.hpp,66,AntSeed,seed_ant,API_AGGREGATE,"{{}, stage, caste, 4000}"
+cpp/apps/s6_fixture.hpp,83,PositionM,seed_food,API_AGGREGATE,"{mirror ? -.02 : .02, 0, .01}"
+cpp/apps/s6_fixture.hpp,83,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 3000, 0}"
+cpp/apps/s6_fixture.hpp,84,PositionM,seed_food,API_AGGREGATE,"{mirror ? .02 : -.02, 0, -.01}"
+cpp/apps/s6_fixture.hpp,125,AntSeed,seed_ant,API_AGGREGATE,"{p, emerged ? LifeStage::Pupa : LifeStage::Adult}"
+cpp/apps/s6_fixture.hpp,130,PhysiologySeed,enable_physiology,API_AGGREGATE,"{crop, 1000000000, 1000, emerged ? 100U : 0U}"
+cpp/apps/s6_fixture.hpp,133,AntSeed,seed_ant,API_AGGREGATE,"{q, LifeStage::Larva}"
+cpp/apps/s6_nutrition_fixture.hpp,15,SocialConfig,c,DECLARATION_OR_FUNCTION,SocialConfig c;
+cpp/apps/s6_nutrition_fixture.hpp,20,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/apps/s6_nutrition_fixture.hpp,22,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, protein, 400, 500 - protein}, 1000000000, 1000, 0}"
+cpp/apps/s6_nutrition_fixture.hpp,28,AntSeed,seed_ant,API_AGGREGATE,"{{}, eggs ? LifeStage::Egg : LifeStage::Larva, Caste::Worker, 4000}"
+cpp/apps/s6_nutrition_fixture.hpp,30,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{},
+              UINT64_C(500000000) + rng.next() % UINT64_C(500000001),
+              1000,
+              0}"
+cpp/tests/test_allocation_failure.cpp,60,SurfaceConfig,grid,DECLARATION_OR_FUNCTION,SurfaceConfig grid{
+cpp/tests/test_allocation_failure.cpp,61,BehaviorConfig,params,DECLARATION_OR_FUNCTION,BehaviorConfig params;
+cpp/tests/test_allocation_failure.cpp,96,PhysiologySeed,seed,DECLARATION_OR_FUNCTION,PhysiologySeed seed{
+cpp/tests/test_allocation_failure.cpp,112,PhysiologyConfig,config,DECLARATION_OR_FUNCTION,PhysiologyConfig config;
+cpp/tests/test_allocation_failure.cpp,117,GeometryConfig,config,DECLARATION_OR_FUNCTION,GeometryConfig config;
+cpp/tests/test_allocation_failure.cpp,117,BoxQ,room,DECLARATION_OR_FUNCTION,BoxQ room{
+cpp/tests/test_allocation_failure.cpp,119,PositionM,point,DECLARATION_OR_FUNCTION,PositionM point{
+cpp/tests/test_allocation_failure.cpp,145,SocialConfig,policy,DECLARATION_OR_FUNCTION,SocialConfig policy;
+cpp/tests/test_allocation_failure.cpp,191,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_allocation_failure.cpp,193,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/tests/test_allocation_failure.cpp,197,ResourceCycleConfig,c,DECLARATION_OR_FUNCTION,ResourceCycleConfig c;
+cpp/tests/test_allocation_failure.cpp,64,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, 1000}"
+cpp/tests/test_allocation_failure.cpp,65,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,65,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,66,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,66,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,83,SurfaceConfig,configure_surface,API_AGGREGATE,"{{}, 3, 1, 0.01}"
+cpp/tests/test_allocation_failure.cpp,84,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,84,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,84,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_allocation_failure.cpp,93,SurfaceConfig,configure_surface,API_AGGREGATE,"{{},3,1,.01}"
+cpp/tests/test_allocation_failure.cpp,94,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,94,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,95,PositionM,seed_food,API_AGGREGATE,"{.02,0,0}"
+cpp/tests/test_allocation_failure.cpp,95,FoodMass,seed_food,API_AGGREGATE,"{1000,0,0,0}"
+cpp/tests/test_allocation_failure.cpp,111,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Egg,Caste::Worker,4000}"
+cpp/tests/test_allocation_failure.cpp,112,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,120,AntSeed,seed_ant,API_AGGREGATE,"{point,LifeStage::Adult,Caste::Worker,20000}"
+cpp/tests/test_allocation_failure.cpp,121,AntSeed,seed_ant,API_AGGREGATE,"{point,LifeStage::Adult,Caste::Worker,20000}"
+cpp/tests/test_allocation_failure.cpp,138,AntSeed,seed_ant,API_AGGREGATE,"{point,LifeStage::Adult,Caste::Worker,20000}"
+cpp/tests/test_allocation_failure.cpp,147,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,147,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Larva}"
+cpp/tests/test_allocation_failure.cpp,148,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,150,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,151,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,400,0,0},1000000000,1000,0}"
+cpp/tests/test_allocation_failure.cpp,161,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,161,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Larva}"
+cpp/tests/test_allocation_failure.cpp,162,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,400,0,0},1000000000,1000,0}"
+cpp/tests/test_allocation_failure.cpp,169,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,169,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Larva}"
+cpp/tests/test_allocation_failure.cpp,169,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,170,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,100,0,0},1000000000,1000,0}"
+cpp/tests/test_allocation_failure.cpp,171,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,171,FoodMass,seed_food,API_AGGREGATE,"{200,200,600,0}"
+cpp/tests/test_allocation_failure.cpp,189,SocialConfig,configure_social,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,190,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Adult,Caste::Queen}"
+cpp/tests/test_allocation_failure.cpp,192,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,100,0,0},1500000000,1600,0}"
+cpp/tests/test_allocation_failure.cpp,197,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,197,FoodMass,seed_food,API_AGGREGATE,"{1,1,1,0}"
+cpp/tests/test_allocation_failure.cpp,219,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,219,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,220,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,220,FoodMass,seed_food,API_AGGREGATE,"{1000, 1000, 1000, 1000}"
+cpp/tests/test_allocation_failure.cpp,221,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,223,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,223,FoodMass,seed_food,API_AGGREGATE,"{1, 2, 3, 4}"
+cpp/tests/test_allocation_failure.cpp,224,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,225,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,248,FoodMass,stock,DECLARATION_OR_FUNCTION,FoodMass stock{
+cpp/tests/test_s1.cpp,77,PositionM,,TYPED_AGGREGATE,"PositionM{0.005, 0, 0}"
+cpp/tests/test_s1.cpp,275,FoodMass,,TYPED_AGGREGATE,"FoodMass{UINT64_MAX, 1, 0, 0}"
+cpp/tests/test_s1.cpp,278,FoodMass,,TYPED_AGGREGATE,"FoodMass{1, 1, 1, 0}"
+cpp/tests/test_s1.cpp,42,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,42,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,42,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,42,FoodMass,seed_food,API_AGGREGATE,"{1000, 1000, 1000, 1000}"
+cpp/tests/test_s1.cpp,66,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,115,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, 2}"
+cpp/tests/test_s1.cpp,116,AntSeed,seed_ant,API_AGGREGATE,"{{0.1, 0, 0}}"
+cpp/tests/test_s1.cpp,117,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Egg}"
+cpp/tests/test_s1.cpp,118,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/tests/test_s1.cpp,119,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,119,FoodMass,seed_food,API_AGGREGATE,"{10, 0, 0, 0}"
+cpp/tests/test_s1.cpp,150,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Egg}"
+cpp/tests/test_s1.cpp,151,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,151,FoodMass,seed_food,API_AGGREGATE,"{10, 0, 0, 0}"
+cpp/tests/test_s1.cpp,206,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,207,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,207,FoodMass,seed_food,API_AGGREGATE,"{1, 0, 0, 0}"
+cpp/tests/test_s1.cpp,260,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, total}"
+cpp/tests/test_s1.cpp,261,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,267,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, UINT64_MAX}"
+cpp/tests/test_s1.cpp,268,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,268,FoodMass,seed_food,API_AGGREGATE,"{UINT64_MAX/2, UINT64_MAX-UINT64_MAX/2, 0, 0}"
+cpp/tests/test_s1.cpp,272,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,272,FoodMass,seed_food,API_AGGREGATE,"{UINT64_MAX, 0, 0, 0}"
+cpp/tests/test_s1.cpp,273,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,273,FoodMass,seed_food,API_AGGREGATE,"{0, 1, 0, 0}"
+cpp/tests/test_s1.cpp,276,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,277,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s1.cpp,277,FoodMass,seed_food,API_AGGREGATE,"{1, 1, 1, 1}"
+cpp/tests/test_s2.cpp,34,SurfaceConfig,grid,DECLARATION_OR_FUNCTION,SurfaceConfig grid;
+cpp/tests/test_s2.cpp,38,BehaviorConfig,behavior,DECLARATION_OR_FUNCTION,BehaviorConfig behavior =
+cpp/tests/test_s2.cpp,39,FoodMass,stock,DECLARATION_OR_FUNCTION,FoodMass stock =
+cpp/tests/test_s2.cpp,48,SurfaceConfig,grid,DECLARATION_OR_FUNCTION,SurfaceConfig grid{
+cpp/tests/test_s2.cpp,60,BehaviorConfig,speed,DECLARATION_OR_FUNCTION,BehaviorConfig speed;
+cpp/tests/test_s2.cpp,65,BehaviorConfig,params,DECLARATION_OR_FUNCTION,BehaviorConfig params;
+cpp/tests/test_s2.cpp,66,SurfaceConfig,grid,DECLARATION_OR_FUNCTION,SurfaceConfig grid{
+cpp/tests/test_s2.cpp,119,BehaviorConfig,off,DECLARATION_OR_FUNCTION,BehaviorConfig off;
+cpp/tests/test_s2.cpp,135,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/tests/test_s2.cpp,208,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/tests/test_s2.cpp,56,PositionM,,TYPED_AGGREGATE,"PositionM{0, 0, 0.01}"
+cpp/tests/test_s2.cpp,99,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/tests/test_s2.cpp,38,BehaviorConfig,behavior,WHOLE_ASSIGNMENT,behavior = {}
+cpp/tests/test_s2.cpp,39,FoodMass,stock,WHOLE_ASSIGNMENT,"stock = {100000, 100000, 100000, 100000}"
+cpp/tests/test_s2.cpp,41,PositionM,seed_colony,API_AGGREGATE,"{0, 0, 0}"
+cpp/tests/test_s2.cpp,42,AntSeed,seed_ant,API_AGGREGATE,"{{0, 0, 0}, LifeStage::Adult, Caste::Worker, 1000}"
+cpp/tests/test_s2.cpp,50,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2.cpp,68,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2.cpp,69,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0}"
+cpp/tests/test_s2.cpp,69,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_s2.cpp,73,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2.cpp,73,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2.cpp,74,PositionM,seed_food,API_AGGREGATE,"{0.13, 0, 0}"
+cpp/tests/test_s2.cpp,74,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_s2.cpp,74,PositionM,seed_food,API_AGGREGATE,"{0.14, 0, 0.02}"
+cpp/tests/test_s2.cpp,74,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
+cpp/tests/test_s2.cpp,232,SurfaceConfig,configure_surface,API_AGGREGATE,"{{}, 1, 1, 0.01}"
+cpp/tests/test_s2.cpp,233,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2.cpp,239,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s2_1.cpp,18,BehaviorConfig,params,DECLARATION_OR_FUNCTION,BehaviorConfig params;
+cpp/tests/test_s2_1.cpp,61,BehaviorConfig,p,DECLARATION_OR_FUNCTION,BehaviorConfig p;
+cpp/tests/test_s2_1.cpp,62,SurfaceConfig,configure_surface,API_AGGREGATE,"{{}, 3, 3, 0.01}"
+cpp/tests/test_s2_1.cpp,63,PositionM,seed_colony,API_AGGREGATE,"{0.01, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,63,PositionM,seed_colony,API_AGGREGATE,"{0.01, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,64,AntSeed,seed_ant,API_AGGREGATE,"{{0.01, 0, 0.01}}"
+cpp/tests/test_s2_1.cpp,64,AntSeed,seed_ant,API_AGGREGATE,"{{0.01, 0, 0.01}}"
+cpp/tests/test_s2_1.cpp,65,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,65,FoodMass,seed_food,API_AGGREGATE,"{10000, 0, 0, 0}"
+cpp/tests/test_s2_1.cpp,65,PositionM,seed_food,API_AGGREGATE,"{0, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,65,FoodMass,seed_food,API_AGGREGATE,"{10000, 0, 0, 0}"
+cpp/tests/test_s2_1.cpp,66,PositionM,seed_food,API_AGGREGATE,"{0, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,66,FoodMass,seed_food,API_AGGREGATE,"{10000, 0, 0, 0}"
+cpp/tests/test_s2_1.cpp,66,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0.01}"
+cpp/tests/test_s2_1.cpp,66,FoodMass,seed_food,API_AGGREGATE,"{10000, 0, 0, 0}"
+cpp/tests/test_s3.cpp,15,PhysiologyConfig,cfg,DECLARATION_OR_FUNCTION,PhysiologyConfig cfg;
+cpp/tests/test_s3.cpp,34,PhysiologyConfig,cfg,DECLARATION_OR_FUNCTION,PhysiologyConfig cfg;
+cpp/tests/test_s3.cpp,64,AntSeed,seed,DECLARATION_OR_FUNCTION,AntSeed seed;
+cpp/tests/test_s3.cpp,90,PhysiologyConfig,cfg,DECLARATION_OR_FUNCTION,PhysiologyConfig cfg;
+cpp/tests/test_s3.cpp,22,FoodMass,,TYPED_AGGREGATE,FoodMass{}
+cpp/tests/test_s3.cpp,14,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,16,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,18,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{10,20,30,40}, 1000000000, 1000, 0}"
+cpp/tests/test_s3.cpp,25,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,25,FoodMass,seed_food,API_AGGREGATE,"{UINT64_MAX,0,0,0}"
+cpp/tests/test_s3.cpp,33,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,35,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,0,100,0},1000000000,1000,0}"
+cpp/tests/test_s3.cpp,63,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,68,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,100,100,100},1000000000,1000,0}"
+cpp/tests/test_s3.cpp,76,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,77,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,77,FoodMass,seed_food,API_AGGREGATE,"{400,200,300,100}"
+cpp/tests/test_s3.cpp,89,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,91,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,0,100,0}, water ? UINT64_C(1000000000) : UINT64_C(250001),water ? 251U : 1000U,0}"
+cpp/tests/test_s3.cpp,116,SurfaceConfig,configure_surface,API_AGGREGATE,"{{},4,1,.01}"
+cpp/tests/test_s3.cpp,116,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,117,PositionM,seed_food,API_AGGREGATE,"{.03,0,0}"
+cpp/tests/test_s3.cpp,117,FoodMass,seed_food,API_AGGREGATE,"{1000,0,0,0}"
+cpp/tests/test_s3.cpp,144,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,144,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,145,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,100,100,100},1000000000,1000,0}"
+cpp/tests/test_s3.cpp,151,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s3.cpp,152,AntSeed,seed_ant,API_AGGREGATE,"{{near ? 0.0 : .01,0,0},LifeStage::Larva,Caste::Worker,4000}"
+cpp/tests/test_s3.cpp,153,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100,400,400,100},1000000000,1000,0}"
+cpp/tests/test_s4.cpp,79,BoxQ,second,DECLARATION_OR_FUNCTION,BoxQ second{
+cpp/tests/test_s4.cpp,111,BoxQ,hard,DECLARATION_OR_FUNCTION,BoxQ hard =
+cpp/tests/test_s4.cpp,197,BoxQ,narrow,DECLARATION_OR_FUNCTION,BoxQ narrow{
+cpp/tests/test_s4.cpp,266,BoxQ,tunnel,DECLARATION_OR_FUNCTION,BoxQ tunnel{
+cpp/tests/test_s4.cpp,273,BoxQ,mine,DECLARATION_OR_FUNCTION,BoxQ mine{
+cpp/tests/test_s4.cpp,435,BehaviorConfig,behavior,DECLARATION_OR_FUNCTION,BehaviorConfig behavior;
+cpp/tests/test_s4.cpp,188,BoxQ,,TYPED_AGGREGATE,"BoxQ{{12, 4, 8}, {16, 16, 12}}"
+cpp/tests/test_s4.cpp,27,AntSeed,seed_ant,API_AGGREGATE,"{position({14, 12, 12}, f.geometry)}"
+cpp/tests/test_s4.cpp,76,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, a.geometry), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/tests/test_s4.cpp,78,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, b.geometry), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/tests/test_s4.cpp,114,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, cfg)}"
+cpp/tests/test_s4.cpp,127,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, capacity.geometry), LifeStage::Adult, Caste::Worker, 1999}"
+cpp/tests/test_s4.cpp,134,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 110000, 1000, 0}"
+cpp/tests/test_s4.cpp,179,AntSeed,seed_ant,API_AGGREGATE,"{position({6, 6, 10}, c)}"
+cpp/tests/test_s4.cpp,191,AntSeed,seed_ant,API_AGGREGATE,"{position({6, 6, 10}, c)}"
+cpp/tests/test_s4.cpp,200,AntSeed,seed_ant,API_AGGREGATE,"{position({6, 6, 6}, c)}"
+cpp/tests/test_s4.cpp,205,FoodMass,seed_food,API_AGGREGATE,"{100, 0, 0, 0}"
+cpp/tests/test_s4.cpp,220,AntSeed,seed_ant,API_AGGREGATE,"{position({9, 12, 12}, c)}"
+cpp/tests/test_s4.cpp,220,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, c)}"
+cpp/tests/test_s4.cpp,221,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 100, 100, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s4.cpp,269,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, c), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/tests/test_s4.cpp,270,AntSeed,seed_ant,API_AGGREGATE,"{position({16, 12, 12}, c)}"
+cpp/tests/test_s4.cpp,271,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 100, 100, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s4.cpp,299,AntSeed,seed_ant,API_AGGREGATE,{start}
+cpp/tests/test_s4.cpp,301,AntSeed,seed_ant,API_AGGREGATE,"{position({5, 5, 5}, f.geometry)}"
+cpp/tests/test_s4.cpp,409,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, c), LifeStage::Adult, Caste::Worker, 20000}"
+cpp/tests/test_s4.cpp,437,SurfaceConfig,configure_surface,API_AGGREGATE,"{position({8, 12, 12}, c), 5, 1, .001}"
+cpp/tests/test_s4.cpp,441,AntSeed,seed_ant,API_AGGREGATE,"{position({8, 12, 12}, c)}"
+cpp/tests/test_s4.cpp,442,FoodMass,seed_food,API_AGGREGATE,"{100, 0, 0, 0}"
+cpp/tests/test_s5.cpp,165,PhysiologyConfig,config,DECLARATION_OR_FUNCTION,PhysiologyConfig config;
+cpp/tests/test_s5.cpp,334,BoxQ,box,DECLARATION_OR_FUNCTION,BoxQ box =
+cpp/tests/test_s5.cpp,334,BoxQ,,TYPED_AGGREGATE,"BoxQ{{14, y, z}, {16, y + 3, z + 3}}"
+cpp/tests/test_s5.cpp,51,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,123,SurfaceConfig,configure_surface,API_AGGREGATE,"{{}, 5, 5, .001}"
+cpp/tests/test_s5.cpp,123,BehaviorConfig,configure_surface,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,125,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,143,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,162,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,162,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Pupa, Caste::Worker, 4000}"
+cpp/tests/test_s5.cpp,163,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,163,FoodMass,seed_food,API_AGGREGATE,"{100, 50, 25, 0}"
+cpp/tests/test_s5.cpp,167,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,264,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,264,FoodMass,seed_food,API_AGGREGATE,"{UINT64_MAX, 0, 0, 0}"
+cpp/tests/test_s5.cpp,423,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,449,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s5.cpp,449,FoodMass,seed_food,API_AGGREGATE,"{UINT64_MAX, 0, 0, 0}"
+cpp/tests/test_s6.cpp,34,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/tests/test_s6.cpp,211,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/tests/test_s6.cpp,214,BoxQ,room,DECLARATION_OR_FUNCTION,BoxQ room{
+cpp/tests/test_s6.cpp,238,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/tests/test_s6.cpp,254,FoodMass,,TYPED_AGGREGATE,"FoodMass{100, 200, 200, 0}"
+cpp/tests/test_s6.cpp,254,FoodMass,,TYPED_AGGREGATE,FoodMass{}
+cpp/tests/test_s6.cpp,38,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,38,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,40,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva, Caste::Worker, 4000}"
+cpp/tests/test_s6.cpp,41,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,42,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,43,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 2000000000, 2000, 0}"
+cpp/tests/test_s6.cpp,64,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,92,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,92,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,93,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,119,AntSeed,seed_ant,API_AGGREGATE,"{position({9, 12, 12}, g)}"
+cpp/tests/test_s6.cpp,120,AntSeed,seed_ant,API_AGGREGATE,"{position({12, 12, 12}, g), LifeStage::Larva}"
+cpp/tests/test_s6.cpp,121,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,210,SurfaceConfig,configure_surface,API_AGGREGATE,"{{-.01, 0, -.01}, 3, 3, .01}"
+cpp/tests/test_s6.cpp,218,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,219,AntSeed,seed_ant,API_AGGREGATE,"{{0, .0005, 0}, LifeStage::Larva}"
+cpp/tests/test_s6.cpp,220,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 200, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,246,SurfaceConfig,configure_surface,API_AGGREGATE,"{{}, 3, 1, .01}"
+cpp/tests/test_s6.cpp,252,AntSeed,seed_ant,API_AGGREGATE,"{{}, i < 3 ? LifeStage::Adult : LifeStage::Larva}"
+cpp/tests/test_s6.cpp,254,PhysiologySeed,enable_physiology,API_AGGREGATE,"{i < 3 ? FoodMass{100, 200, 200, 0} : FoodMass{},
+                                1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,257,PositionM,seed_food,API_AGGREGATE,"{.02, 0, 0}"
+cpp/tests/test_s6.cpp,257,FoodMass,seed_food,API_AGGREGATE,"{100, 400, 400, 100}"
+cpp/tests/test_s6.cpp,294,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,294,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/tests/test_s6.cpp,295,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 200, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,339,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6.cpp,340,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/tests/test_s6.cpp,341,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 400, 400, 100}, 1000000000, 1000, 0}"
+cpp/tests/test_s6.cpp,344,PositionM,seed_food,API_AGGREGATE,"{.8, 0, 0}"
+cpp/tests/test_s6.cpp,344,FoodMass,seed_food,API_AGGREGATE,"{100000, 100000, 100000, 0}"
+cpp/tests/test_s6.cpp,346,AntSeed,seed_ant,API_AGGREGATE,"{{.5, 0, 0}}"
+cpp/tests/test_s6.cpp,347,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6_1.cpp,14,SocialConfig,c,DECLARATION_OR_FUNCTION,SocialConfig c;
+cpp/tests/test_s6_1.cpp,87,SocialConfig,c,DECLARATION_OR_FUNCTION,SocialConfig c;
+cpp/tests/test_s6_1.cpp,155,SocialConfig,c,DECLARATION_OR_FUNCTION,SocialConfig c;
+cpp/tests/test_s6_1.cpp,215,SocialConfig,c,DECLARATION_OR_FUNCTION,SocialConfig c;
+cpp/tests/test_s6_1.cpp,247,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/tests/test_s6_1.cpp,247,PositionM,,TYPED_AGGREGATE,"PositionM{.01, 0, 0}"
+cpp/tests/test_s6_1.cpp,20,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,21,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/tests/test_s6_1.cpp,22,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,23,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,23,FoodMass,seed_food,API_AGGREGATE,"{200, 200, 600, 0}"
+cpp/tests/test_s6_1.cpp,25,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 100, 0, 0},
+                         urgent ? UINT64_C(400000000) : UINT64_C(1000000000),
+                         1000,
+                         0}"
+cpp/tests/test_s6_1.cpp,29,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 2000000000, 2000, 0}"
+cpp/tests/test_s6_1.cpp,92,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,93,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/tests/test_s6_1.cpp,94,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6_1.cpp,95,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 2000000000, 2000, 0}"
+cpp/tests/test_s6_1.cpp,160,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,160,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_1.cpp,161,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Larva}"
+cpp/tests/test_s6_1.cpp,163,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 400, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6_1.cpp,166,PositionM,seed_food,API_AGGREGATE,"{.8, 0, 0}"
+cpp/tests/test_s6_1.cpp,166,FoodMass,seed_food,API_AGGREGATE,"{0, 100000, 0, 0}"
+cpp/tests/test_s6_1.cpp,168,AntSeed,seed_ant,API_AGGREGATE,"{{.5, 0, 0}}"
+cpp/tests/test_s6_1.cpp,234,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,15,SocialConfig,s,DECLARATION_OR_FUNCTION,SocialConfig s;
+cpp/tests/test_s6_3.cpp,20,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_s6_3.cpp,32,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/tests/test_s6_3.cpp,83,ResourceCycleConfig,c,DECLARATION_OR_FUNCTION,ResourceCycleConfig c;
+cpp/tests/test_s6_3.cpp,99,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_s6_3.cpp,163,SocialConfig,social,DECLARATION_OR_FUNCTION,SocialConfig social;
+cpp/tests/test_s6_3.cpp,169,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_s6_3.cpp,91,FoodMass,,TYPED_AGGREGATE,"FoodMass{3, 4, 5, 1}"
+cpp/tests/test_s6_3.cpp,94,FoodMass,,TYPED_AGGREGATE,FoodMass{}
+cpp/tests/test_s6_3.cpp,155,PositionM,,TYPED_AGGREGATE,PositionM{}
+cpp/tests/test_s6_3.cpp,194,FoodMass,,TYPED_AGGREGATE,FoodMass{}
+cpp/tests/test_s6_3.cpp,19,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/tests/test_s6_3.cpp,31,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, protein, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6_3.cpp,82,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,82,FoodMass,seed_food,API_AGGREGATE,"{1, 1, 1, 1}"
+cpp/tests/test_s6_3.cpp,98,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,104,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,114,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,115,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 40, 0, 0}, 1000000000, 1000, 0}"
+cpp/tests/test_s6_3.cpp,167,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,168,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,174,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 2000000000, 2000, 0}"
+cpp/tests/test_s6_3.cpp,176,AntSeed,seed_ant,API_AGGREGATE,"{{name == ""NO_RECIPIENT"" ? .01 : 0, 0, 0}, LifeStage::Larva}"
+cpp/tests/test_s6_3.cpp,177,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{}, 100000000, 100, 0}"
+cpp/tests/test_s6_3.cpp,178,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,178,FoodMass,seed_food,API_AGGREGATE,"{100, 100, 100, 0}"
+cpp/tests/test_s6_3.cpp,209,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Egg}"
+cpp/tests/test_s6_3.cpp,212,SocialConfig,configure_social,API_AGGREGATE,{}
+cpp/tests/test_s6_3.cpp,223,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_s6_3_1.cpp,12,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_s6_3_1.cpp,17,GeometryConfig,g,DECLARATION_OR_FUNCTION,GeometryConfig g;
+cpp/tests/test_s6_3_1.cpp,39,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/tests/test_s6_3_1.cpp,47,PositionM,position,DECLARATION_OR_FUNCTION,PositionM position =
+cpp/tests/test_s6_3_1.cpp,170,Controls,config,DECLARATION_OR_FUNCTION,Controls config;
+cpp/tests/test_s6_3_1.cpp,200,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_s6_3_1.cpp,207,ReproductionConfig,c,DECLARATION_OR_FUNCTION,ReproductionConfig c;
+cpp/tests/test_s6_3_1.cpp,47,PositionM,position,WHOLE_ASSIGNMENT,position = {}
+cpp/tests/test_s6_3_1.cpp,26,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/tests/test_s6_3_1.cpp,38,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0, 100, 0, 0}, energy, water, 0}"
+cpp/tests/test_s6_3_1.cpp,48,AntSeed,seed_ant,API_AGGREGATE,{position}
+cpp/tests/test_s6_3_1.cpp,52,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{100, 0, 0, 0}, 1000, 100, 0}"
+cpp/tests/test_s6_3_1.cpp,199,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Queen}"
+cpp/tests/test_s6_3_1.cpp,203,PhysiologySeed,enable_physiology,API_AGGREGATE,{}

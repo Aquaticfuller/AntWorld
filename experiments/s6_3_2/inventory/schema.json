@@ -1,0 +1,986 @@
+{
+  "Controls": [
+    {
+      "owner": "Controls",
+      "name": "reserve_mode",
+      "type": "unsigned",
+      "default": "{}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 12
+    },
+    {
+      "owner": "Controls",
+      "name": "laying",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 13
+    },
+    {
+      "owner": "Controls",
+      "name": "exchange",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 13
+    },
+    {
+      "owner": "Controls",
+      "name": "positive",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 13
+    },
+    {
+      "owner": "Controls",
+      "name": "absorption_hours",
+      "type": "std::int64_t",
+      "default": "{6}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 14
+    },
+    {
+      "owner": "Controls",
+      "name": "behavior_hours",
+      "type": "std::int64_t",
+      "default": "{6}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 14
+    },
+    {
+      "owner": "Controls",
+      "name": "reproduction_days",
+      "type": "std::int64_t",
+      "default": "{2}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 14
+    },
+    {
+      "owner": "Controls",
+      "name": "lineage_basal",
+      "type": "std::uint64_t",
+      "default": "{1}",
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "line": 15
+    }
+  ],
+  "IntegratedOptions": [
+    {
+      "owner": "IntegratedOptions",
+      "name": "workers",
+      "type": "unsigned",
+      "default": "{32}",
+      "path": "cpp/apps/s6_fixture.hpp",
+      "line": 17
+    },
+    {
+      "owner": "IntegratedOptions",
+      "name": "source_protein_ug",
+      "type": "std::uint64_t",
+      "default": "{2000}",
+      "path": "cpp/apps/s6_fixture.hpp",
+      "line": 18
+    },
+    {
+      "owner": "IntegratedOptions",
+      "name": "gift_first",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/apps/s6_fixture.hpp",
+      "line": 19
+    },
+    {
+      "owner": "IntegratedOptions",
+      "name": "local_work_continuation",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/apps/s6_fixture.hpp",
+      "line": 19
+    },
+    {
+      "owner": "IntegratedOptions",
+      "name": "minimum_program_time",
+      "type": "SimTime",
+      "default": "{10000}",
+      "path": "cpp/apps/s6_fixture.hpp",
+      "line": 20
+    }
+  ],
+  "SurfaceConfig": [
+    {
+      "owner": "SurfaceConfig",
+      "name": "origin_m",
+      "type": "PositionM",
+      "default": "{-0.1, 0, -0.1}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 20
+    },
+    {
+      "owner": "SurfaceConfig",
+      "name": "width",
+      "type": "std::uint32_t",
+      "default": "{21}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 21
+    },
+    {
+      "owner": "SurfaceConfig",
+      "name": "height",
+      "type": "std::uint32_t",
+      "default": "{21}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 21
+    },
+    {
+      "owner": "SurfaceConfig",
+      "name": "cell_size_m",
+      "type": "double",
+      "default": "{0.01}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 22
+    }
+  ],
+  "BehaviorConfig": [
+    {
+      "owner": "BehaviorConfig",
+      "name": "trails_enabled",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 26
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "memory_enabled",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 26
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "sensing_radius_cells",
+      "type": "std::uint32_t",
+      "default": "{2}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 27
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "route_capacity",
+      "type": "std::uint32_t",
+      "default": "{48}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 27
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "max_trip_moves",
+      "type": "std::uint32_t",
+      "default": "{192}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 27
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "step_duration",
+      "type": "SimTime",
+      "default": "{1100}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 28
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "decision_delay",
+      "type": "SimTime",
+      "default": "{1}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 28
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "memory_lifetime",
+      "type": "SimTime",
+      "default": "{300000}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 28
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "field_interval",
+      "type": "SimTime",
+      "default": "{5000}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 28
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "trail_half_life_s",
+      "type": "double",
+      "default": "{60}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 29
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "deposit_units",
+      "type": "double",
+      "default": "{1}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 29
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "trail_cap_units",
+      "type": "double",
+      "default": "{16}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 29
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "trail_cutoff_units",
+      "type": "double",
+      "default": "{0.001}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 29
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "explore_weight",
+      "type": "std::uint32_t",
+      "default": "{10}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 30
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "persistence_weight",
+      "type": "std::uint32_t",
+      "default": "{20}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 30
+    },
+    {
+      "owner": "BehaviorConfig",
+      "name": "trail_weight",
+      "type": "std::uint32_t",
+      "default": "{180}",
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "line": 30
+    }
+  ],
+  "PositionM": [
+    {
+      "owner": "PositionM",
+      "name": "x",
+      "type": "double",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 9
+    },
+    {
+      "owner": "PositionM",
+      "name": "y",
+      "type": "double",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 9
+    },
+    {
+      "owner": "PositionM",
+      "name": "z",
+      "type": "double",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 9
+    }
+  ],
+  "FoodMass": [
+    {
+      "owner": "FoodMass",
+      "name": "carbs_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 14
+    },
+    {
+      "owner": "FoodMass",
+      "name": "protein_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 14
+    },
+    {
+      "owner": "FoodMass",
+      "name": "water_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 14
+    },
+    {
+      "owner": "FoodMass",
+      "name": "other_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 14
+    }
+  ],
+  "AntSeed": [
+    {
+      "owner": "AntSeed",
+      "name": "position",
+      "type": "PositionM",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 32
+    },
+    {
+      "owner": "AntSeed",
+      "name": "stage",
+      "type": "LifeStage",
+      "default": "{LifeStage::Adult}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 33
+    },
+    {
+      "owner": "AntSeed",
+      "name": "caste",
+      "type": "Caste",
+      "default": "{Caste::Worker}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 34
+    },
+    {
+      "owner": "AntSeed",
+      "name": "carrying_capacity_ug",
+      "type": "std::uint64_t",
+      "default": "{4000}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 35
+    }
+  ],
+  "WorldConfig": [
+    {
+      "owner": "WorldConfig",
+      "name": "min_m",
+      "type": "PositionM",
+      "default": "{-1, -1, -1}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 57
+    },
+    {
+      "owner": "WorldConfig",
+      "name": "max_m",
+      "type": "PositionM",
+      "default": "{1, 1, 1}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 57
+    },
+    {
+      "owner": "WorldConfig",
+      "name": "max_speed_m_per_s",
+      "type": "double",
+      "default": "{0.01}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 58
+    },
+    {
+      "owner": "WorldConfig",
+      "name": "contact_distance_m",
+      "type": "double",
+      "default": "{0.002}",
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "line": 58
+    }
+  ],
+  "BoxQ": [
+    {
+      "owner": "BoxQ",
+      "name": "min",
+      "type": "PointQ",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 16
+    },
+    {
+      "owner": "BoxQ",
+      "name": "max",
+      "type": "PointQ",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 16
+    }
+  ],
+  "GeometryConfig": [
+    {
+      "owner": "GeometryConfig",
+      "name": "origin_m",
+      "type": "PositionM",
+      "default": "{0, -0.016, 0}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 24
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "quantum_m",
+      "type": "double",
+      "default": "{0.0005}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 25
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "initial_solid",
+      "type": "BoxQ",
+      "default": "{{0, 0, 0}, {32, 32, 32}}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 26
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "dry_ug_per_q3",
+      "type": "std::uint64_t",
+      "default": "{100}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 27
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "water_ug_per_q3",
+      "type": "std::uint64_t",
+      "default": "{25}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 27
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "body_half_q",
+      "type": "std::int32_t",
+      "default": "{1}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 28
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "loaded_half_q",
+      "type": "std::int32_t",
+      "default": "{2}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 28
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "reach_q",
+      "type": "std::int32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 28
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "max_patch_extent_q",
+      "type": "std::int32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 28
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "brick_q",
+      "type": "std::int32_t",
+      "default": "{8}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 29
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "sample_step_q",
+      "type": "std::int32_t",
+      "default": "{2}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 29
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "sdf_band_q",
+      "type": "std::int32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 29
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "work_duration",
+      "type": "SimTime",
+      "default": "{100}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 30
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "move_duration",
+      "type": "SimTime",
+      "default": "{500}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 30
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "decision_delay",
+      "type": "SimTime",
+      "default": "{1}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 30
+    },
+    {
+      "owner": "GeometryConfig",
+      "name": "dig_energy_nj_per_q3",
+      "type": "std::uint64_t",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "line": 31
+    }
+  ],
+  "LongTermConfig": [
+    {
+      "owner": "LongTermConfig",
+      "name": "demand_feedback",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 7
+    },
+    {
+      "owner": "LongTermConfig",
+      "name": "protein_recycling",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 7
+    },
+    {
+      "owner": "LongTermConfig",
+      "name": "empty_sites_per_contact",
+      "type": "std::uint32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 8
+    },
+    {
+      "owner": "LongTermConfig",
+      "name": "complete_depot_visits",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 9
+    },
+    {
+      "owner": "LongTermConfig",
+      "name": "post_intake_contact",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 9
+    }
+  ],
+  "ReproductionConfig": [
+    {
+      "owner": "ReproductionConfig",
+      "name": "interval",
+      "type": "SimTime",
+      "default": "{172800000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 13
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "egg_protein_ug",
+      "type": "std::uint64_t",
+      "default": "{20}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 14
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "egg_water_ug",
+      "type": "std::uint64_t",
+      "default": "{200}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 14
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "egg_energy_nj",
+      "type": "std::uint64_t",
+      "default": "{500000000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 15
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "dissipated_energy_nj",
+      "type": "std::uint64_t",
+      "default": "{10000000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 15
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "offspring_carrying_capacity_ug",
+      "type": "std::uint64_t",
+      "default": "{4000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 16
+    },
+    {
+      "owner": "ReproductionConfig",
+      "name": "maintenance_horizon",
+      "type": "SimTime",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 19
+    }
+  ],
+  "ResourceCycleConfig": [
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "reserve",
+      "type": "FoodMass",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 29
+    },
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "release_limit",
+      "type": "FoodMass",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 29
+    },
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "interval",
+      "type": "SimTime",
+      "default": "{86400000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 30
+    },
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "productive_span",
+      "type": "SimTime",
+      "default": "{1296000000}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 30
+    },
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "cyclic",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 31
+    },
+    {
+      "owner": "ResourceCycleConfig",
+      "name": "low_productivity_permille",
+      "type": "std::uint32_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "line": 32
+    }
+  ],
+  "PhysiologyConfig": [
+    {
+      "owner": "PhysiologyConfig",
+      "name": "absorption_period",
+      "type": "SimTime",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 9
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "egg_duration",
+      "type": "SimTime",
+      "default": "{30000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 10
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "larva_duration",
+      "type": "SimTime",
+      "default": "{60000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 10
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "pupa_duration",
+      "type": "SimTime",
+      "default": "{30000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 10
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "crop_capacity_ug",
+      "type": "std::uint64_t",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 11
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "hydration_capacity_ug",
+      "type": "std::uint64_t",
+      "default": "{2000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 11
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "energy_capacity_nj",
+      "type": "std::uint64_t",
+      "default": "{2000000000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 12
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "carbohydrate_yield_nj_per_ug",
+      "type": "std::uint64_t",
+      "default": "{1000000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 12
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "basal_nj_per_ms",
+      "type": "std::uint64_t",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 13
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "active_nj_per_ms",
+      "type": "std::uint64_t",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 13
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "water_loss_ug_per_period",
+      "type": "std::uint64_t",
+      "default": "{1}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 13
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "carb_absorption_ug_per_s",
+      "type": "std::uint64_t",
+      "default": "{10}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 14
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "water_absorption_ug_per_s",
+      "type": "std::uint64_t",
+      "default": "{100}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 14
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "protein_absorption_ug_per_s",
+      "type": "std::uint64_t",
+      "default": "{10}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 14
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "larval_protein_requirement_ug",
+      "type": "std::uint64_t",
+      "default": "{100}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 15
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "transfer_limit_ug",
+      "type": "std::uint64_t",
+      "default": "{100}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 15
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "behavior_interval",
+      "type": "SimTime",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 16
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "water_loss_period",
+      "type": "SimTime",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 17
+    },
+    {
+      "owner": "PhysiologyConfig",
+      "name": "adult_protein_target_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 18
+    }
+  ],
+  "PhysiologySeed": [
+    {
+      "owner": "PhysiologySeed",
+      "name": "crop",
+      "type": "FoodMass",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 22
+    },
+    {
+      "owner": "PhysiologySeed",
+      "name": "body_energy_nj",
+      "type": "std::uint64_t",
+      "default": "{1000000000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 23
+    },
+    {
+      "owner": "PhysiologySeed",
+      "name": "hydration_ug",
+      "type": "std::uint64_t",
+      "default": "{1000}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 23
+    },
+    {
+      "owner": "PhysiologySeed",
+      "name": "tissue_protein_ug",
+      "type": "std::uint64_t",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "line": 23
+    }
+  ],
+  "SocialConfig": [
+    {
+      "owner": "SocialConfig",
+      "name": "demand_sensitive",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 9
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "bounded_contacts",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 9
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "exchange_enabled",
+      "type": "bool",
+      "default": "{true}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 9
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "encounter_budget",
+      "type": "std::uint32_t",
+      "default": "{16}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 10
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "decision_interval",
+      "type": "SimTime",
+      "default": "{5000}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 11
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "minimum_program_time",
+      "type": "SimTime",
+      "default": "{10000}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 11
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "rest_weight",
+      "type": "std::uint32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 12
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "forage_weight",
+      "type": "std::uint32_t",
+      "default": "{8}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 12
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "nurse_weight",
+      "type": "std::uint32_t",
+      "default": "{12}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 12
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "excavate_weight",
+      "type": "std::uint32_t",
+      "default": "{4}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 13
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "gift_first",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 16
+    },
+    {
+      "owner": "SocialConfig",
+      "name": "local_work_continuation",
+      "type": "bool",
+      "default": "{}",
+      "path": "cpp/include/antworld/core/social.hpp",
+      "line": 16
+    }
+  ]
+}

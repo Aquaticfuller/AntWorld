@@ -1,0 +1,263 @@
+{
+  "structs": {
+    "Controls": 8,
+    "IntegratedOptions": 5,
+    "SurfaceConfig": 4,
+    "BehaviorConfig": 16,
+    "PositionM": 3,
+    "FoodMass": 4,
+    "AntSeed": 4,
+    "WorldConfig": 4,
+    "BoxQ": 2,
+    "GeometryConfig": 16,
+    "LongTermConfig": 5,
+    "ReproductionConfig": 7,
+    "ResourceCycleConfig": 6,
+    "PhysiologyConfig": 19,
+    "PhysiologySeed": 4,
+    "SocialConfig": 12
+  },
+  "source_records": 1209,
+  "configuration_uses": 490,
+  "ambiguous": 0,
+  "source_files": [
+    {
+      "path": "cpp/apps/antworld_archive.cpp",
+      "sha256": "fbfd0efc5f524dd140a4d69228661799ad3b345a90747a41f7e309eae6909c4b"
+    },
+    {
+      "path": "cpp/apps/antworld_benchmark.cpp",
+      "sha256": "2f6f28c7d63892868fa26958ad9a6942bb17f7529cbbfcae4dda0d232c0b6b13"
+    },
+    {
+      "path": "cpp/apps/antworld_headless.cpp",
+      "sha256": "eb03e70f8945b6572894685c113a2ed4e47b8d34acc17483abcb49e6b9dfb3ae"
+    },
+    {
+      "path": "cpp/apps/antworld_s1_benchmark.cpp",
+      "sha256": "63d9e0413684ae514d8a36728fe71227dcac613fcf8b4f0c084c7c9cf920902e"
+    },
+    {
+      "path": "cpp/apps/antworld_s2_1_audit.cpp",
+      "sha256": "6eb99c47a1b8c02649b381e0c654ccf3cb1bd856b49d769b5b3996c0400e61cc"
+    },
+    {
+      "path": "cpp/apps/antworld_s2_1_experiment.cpp",
+      "sha256": "80ae0b70986fdac983ef9d07e2e7287a7531294b6fa1379ff2417a9735b9aff7"
+    },
+    {
+      "path": "cpp/apps/antworld_s2_2_experiment.cpp",
+      "sha256": "ad30d841afaf1729baec1e88c1c6031faa115ccde0f33a97e125be5773818945"
+    },
+    {
+      "path": "cpp/apps/antworld_s2_benchmark.cpp",
+      "sha256": "8b3ab1e8367b3a532774e671d26994a185bf40819e642093081f6cfdb8ed87a9"
+    },
+    {
+      "path": "cpp/apps/antworld_s2_experiment.cpp",
+      "sha256": "2fb0f0ad5a78578fedaadcc6a99c990d11cdc08951591ecbab1ae335789b2fa6"
+    },
+    {
+      "path": "cpp/apps/antworld_s3_benchmark.cpp",
+      "sha256": "f144e08d20498ecc6347418b85629559eea8b22fb14eb3f952c1266ad84dc453"
+    },
+    {
+      "path": "cpp/apps/antworld_s3_experiment.cpp",
+      "sha256": "1fa715c23504b140a14cd69a158cea31cb9db32adafbfd2f26f639c2096ac997"
+    },
+    {
+      "path": "cpp/apps/antworld_s4_benchmark.cpp",
+      "sha256": "b14c886d778b5f92a8b8b717e75059c2e94067ec7f185e8e82e30051b44b65e7"
+    },
+    {
+      "path": "cpp/apps/antworld_s4_experiment.cpp",
+      "sha256": "d14ca539c6b04a94767433754578b8a2f814f43b473d6316061e79816f147641"
+    },
+    {
+      "path": "cpp/apps/antworld_s5_benchmark.cpp",
+      "sha256": "0bcc6ad22a78bbe6a1ec5544cc3a424b20863a574bae4bb5af5dd4d078695390"
+    },
+    {
+      "path": "cpp/apps/antworld_s5_experiment.cpp",
+      "sha256": "88466ffe667701c6cb0cd408d73046d2f94cfdc07ee4f94660dfa54e7be85c8f"
+    },
+    {
+      "path": "cpp/apps/antworld_s5_history_benchmark.cpp",
+      "sha256": "e34e9a2a482481d3d375bb83ade1582a56b6e07bf912baa785298defee9d403f"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_1_experiment.cpp",
+      "sha256": "b098a7f52e5ad74195ae2c7b5ff1b1b469cc4b737e38184eb8a071f155c7eb06"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_1_trace.cpp",
+      "sha256": "7c44101af93cb0b2fda19c8d7408d66c91b2386ab346cdbb3a6c63b412165540"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_2_benchmark.cpp",
+      "sha256": "610d29ef708006e0d9982698ec82d79dbad62f3d951d17a92bb5b7ee9afc02d5"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_2_choice.cpp",
+      "sha256": "211cce86345d2bd2ed4549b1902e8bbf1180e4abf4d2a8ee8f7451eefa78c9e1"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_2_nutrition.cpp",
+      "sha256": "028a47b4c3f79e012c58a69868b6443838c2e6862e6626dc9c77e330045baaf8"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_3_1_experiment.cpp",
+      "sha256": "439865e939f2f9e0436abfb6e28e5aed8dadd6cfc12401c89c3d27e57d889bc0"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_3_2_audit.cpp",
+      "sha256": "462c74af96cf80306fbfd9fe2c19c53809e60926b4f1d42b73fcbfc374fc6c5e"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_3_birth_benchmark.cpp",
+      "sha256": "820945e023172af649ad4641addcef5869c802bb36c609a7b39ecec486d3b88f"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_3_experiment.cpp",
+      "sha256": "0d97037f20bbad303f50a87e979841f63233201fe8352676c11bfc58980b7ade"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_contact_benchmark.cpp",
+      "sha256": "38787e76b1b77130d24b28fff7e54e8c95e77ef52cf7fe7eb9d7bd431438048f"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_experiment.cpp",
+      "sha256": "bf77817f5b5855ce84b3fd5c402d265a10eea32e3b5de722f3117f13093ec9f2"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_nutrition.cpp",
+      "sha256": "b41fcfb3b3b7bfb5940646c27841f7ab36c227b8feb10a633402bb55c362a496"
+    },
+    {
+      "path": "cpp/apps/antworld_s6_surplus.cpp",
+      "sha256": "c2b6ea8fa5f402659d2189b3aea20e58bddf411285a82413510bdfe3c6db072c"
+    },
+    {
+      "path": "cpp/apps/antworld_scheduler_benchmark.cpp",
+      "sha256": "1ca405cf2a0c6b337f280b97bdf4e4a9c4dec8d537aefb697b78a6855bdc1231"
+    },
+    {
+      "path": "cpp/apps/process_memory.hpp",
+      "sha256": "aa3493818595970612f6ee37c22c8d3363059e33118b989feae3a12ade9c01bb"
+    },
+    {
+      "path": "cpp/apps/s2_1_fixture.hpp",
+      "sha256": "ae165abb8bb47bedaa44ede2dc58d5dd20b2d33e760e5134311d00f0f8bdca92"
+    },
+    {
+      "path": "cpp/apps/s2_2_fixture.hpp",
+      "sha256": "dc94b8c8bd9fb2b892b9ffbd29ff2295647b74e07a284ffc714270261060859c"
+    },
+    {
+      "path": "cpp/apps/s2_fixture.hpp",
+      "sha256": "805ccdace3d8078ddbf5ecd738670caefdd3dbfacff3d46f684376d93c9b037e"
+    },
+    {
+      "path": "cpp/apps/s3_fixture.hpp",
+      "sha256": "fd14914fddc923101ac5e47dc3bc01c39631fa0755d2bff3e8f35fb489c5a986"
+    },
+    {
+      "path": "cpp/apps/s4_fixture.hpp",
+      "sha256": "9c3072e11de93a10500b79c4339e13e75f1512944be32c45a5b157136968816e"
+    },
+    {
+      "path": "cpp/apps/s5_fixture.hpp",
+      "sha256": "ea0abaf44267b54ddb5993927a37d06d6cd7cdba83dd0da8ac0362d78678343a"
+    },
+    {
+      "path": "cpp/apps/s6_3_1_fixture.hpp",
+      "sha256": "9431c41dd0c6cb79eacda3da4765e928de8cf4de5aca18136eec7205a2afd23e"
+    },
+    {
+      "path": "cpp/apps/s6_3_benchmark_clock.hpp",
+      "sha256": "65b055321e3d78ed619b8cef78424a6dc3ab0e17c0cbe6d150643f94ed94fc5e"
+    },
+    {
+      "path": "cpp/apps/s6_3_fixture.hpp",
+      "sha256": "83b0ad12bfcbeec92fdbcb36f4a98c8a608744a9b01ce14f9f3388256d349a38"
+    },
+    {
+      "path": "cpp/apps/s6_fixture.hpp",
+      "sha256": "afb935db7774833d2644571275dac505d1c3106263340546a34a1ce5d724cc60"
+    },
+    {
+      "path": "cpp/apps/s6_nutrition_fixture.hpp",
+      "sha256": "b26c7eae3e0104e18eee36fc24d898655679e83451e73be209132cc01a82b7d2"
+    },
+    {
+      "path": "cpp/apps/scenario.cpp",
+      "sha256": "38509ea5d877508d1cd2733602c15c3dfe01ab03d3c5d5459c75869128e1ee9f"
+    },
+    {
+      "path": "cpp/apps/scenario.hpp",
+      "sha256": "c35a5f358491551aa4ee143c842f52a3624315afa921381b2d074ff1f5586827"
+    },
+    {
+      "path": "cpp/tests/test_allocation_failure.cpp",
+      "sha256": "69be818c64ee2507fcd9e5523b277d82f414318c35a0c5a0331f185ba4859797"
+    },
+    {
+      "path": "cpp/tests/test_core.cpp",
+      "sha256": "99c74b61c654d017e36eb1cb3e756e6497e5682d7a009084c320a8115334c1cf"
+    },
+    {
+      "path": "cpp/tests/test_s1.cpp",
+      "sha256": "ddfb1b2299d2f4ce2ea2bb7ce65b7c2b398fe28a521aeba9b91c93bd964f2094"
+    },
+    {
+      "path": "cpp/tests/test_s2.cpp",
+      "sha256": "3ce373b1a56a875514c6c926bb9e2841589e7d5fab0d1ab67bac157f01e1be31"
+    },
+    {
+      "path": "cpp/tests/test_s2_1.cpp",
+      "sha256": "58f65ae49a929d84e9dfc8d07b6f8639d42d57c852462c412d0147440228deb5"
+    },
+    {
+      "path": "cpp/tests/test_s2_2.cpp",
+      "sha256": "b47849bb38b8b65692e659aa94fdce70c542eb4b93b246333bd0992e9947a18f"
+    },
+    {
+      "path": "cpp/tests/test_s3.cpp",
+      "sha256": "b865db35cf0695eadabe99ed30561079523bbdffc73f1c4c0dadb303ce303f70"
+    },
+    {
+      "path": "cpp/tests/test_s4.cpp",
+      "sha256": "9775e23cd9cf5f78b0be5f7b81af46a9dcc30b9e7148aa149b0e3f43fe2ec021"
+    },
+    {
+      "path": "cpp/tests/test_s5.cpp",
+      "sha256": "45b0f36e2a533299f1382306b40af49fae4178deda41bb97018a7ed867cc26a9"
+    },
+    {
+      "path": "cpp/tests/test_s5_io.cpp",
+      "sha256": "6d255db89d77ef7773dd4d5cfd7a23d044cef0b0a21b913fc9cc22a703c3da24"
+    },
+    {
+      "path": "cpp/tests/test_s6.cpp",
+      "sha256": "be2d927e41790c0a4decdab6cb936c2f2f5509301646a3220533e45c79789639"
+    },
+    {
+      "path": "cpp/tests/test_s6_1.cpp",
+      "sha256": "799961c7b4fcc8c28af99efef19ac337d37eb00a99fea7d62fe1d43e535f8631"
+    },
+    {
+      "path": "cpp/tests/test_s6_3.cpp",
+      "sha256": "a6a0ff098aff49d59f84eea31089c96accbbe864b6f5b9cdd3657ba0c2594a8c"
+    },
+    {
+      "path": "cpp/tests/test_s6_3_1.cpp",
+      "sha256": "b251e1d7713d9d96a95c23978c5a3c42cb7afcfd674a70592f78581271c69161"
+    }
+  ],
+  "limitations": [
+    "Source expressions are not runtime enumeration. Scenario-dependent expressions are retained.",
+    "Name resolution is lexical; ambiguous ownership is explicit, not inferred as fact.",
+    "Returned config variables, lambda-built configurations and copies inherit source defaults and assignments; configuration_uses.csv preserves typed anchors.",
+    "Hard-coded rules, fixture control structs, world seed resources and JSON values require the complementary reviewed registries."
+  ]
+}

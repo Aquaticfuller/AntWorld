@@ -1,0 +1,1226 @@
+record_kind,parameter,owner,field,path,line,expression,resolution,variable,static_numeric_value
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/antworld_s1_benchmark.cpp,17,UINT64_C(4000)*population,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/antworld_s1_benchmark.cpp,17,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/antworld_s1_benchmark.cpp,17,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/antworld_s1_benchmark.cpp,17,0,DECLARED_API_POSITION,seed_food,0
+ASSIGNMENT,BehaviorConfig.trail_weight,BehaviorConfig,trail_weight,cpp/apps/antworld_s2_1_experiment.cpp,147,0,UNIQUE_FIELD_NAME,config,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s3_benchmark.cpp,20,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s3_benchmark.cpp,20,"{100,400,400,100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s3_benchmark.cpp,20,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s3_benchmark.cpp,20,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,PositionM.x,PositionM,x,cpp/apps/antworld_s4_benchmark.cpp,35,128,UNIQUE_FIELD_NAME,max,128
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/antworld_s4_benchmark.cpp,36,"{112, 22, 22}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/antworld_s4_benchmark.cpp,36,"{100, 2, 2}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/antworld_s4_benchmark.cpp,39,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s4_benchmark.cpp,39,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s4_benchmark.cpp,39,"position({12, 12, 12}, cfg)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s4_benchmark.cpp,39,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/antworld_s4_benchmark.cpp,40,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s4_benchmark.cpp,40,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s4_benchmark.cpp,40,"position({110, 12, 12}, cfg)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s4_benchmark.cpp,40,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/antworld_s4_benchmark.cpp,41,"{113, 14, 14}",POSITIONAL_DECLARATION,remote_patch,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/antworld_s4_benchmark.cpp,41,"{112, 10, 10}",POSITIONAL_DECLARATION,remote_patch,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.x,PositionM,x,cpp/apps/antworld_s4_benchmark.cpp,113,.05 + .006 * (i % 100),POSITIONAL_DECLARATION,far,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.y,PositionM,y,cpp/apps/antworld_s4_benchmark.cpp,113,.05 + .006 * (i / 100),POSITIONAL_DECLARATION,far,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.z,PositionM,z,cpp/apps/antworld_s4_benchmark.cpp,113,.05,POSITIONAL_DECLARATION,far,0.05
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s4_benchmark.cpp,114,dense ? p : far,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/antworld_s4_experiment.cpp,90,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s4_experiment.cpp,90,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s4_experiment.cpp,90,"position({6, 12, 12}, f.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s4_experiment.cpp,90,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s4_experiment.cpp,91,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s4_experiment.cpp,91,"{500, 0, 500, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s4_experiment.cpp,91,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s4_experiment.cpp,91,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/antworld_s4_experiment.cpp,116,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s4_experiment.cpp,116,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s4_experiment.cpp,116,"position({12, 12, 12}, f.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s4_experiment.cpp,116,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/antworld_s4_experiment.cpp,117,"{15, 16, 14}",POSITIONAL_DECLARATION,second,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/antworld_s4_experiment.cpp,117,"{14, 12, 10}",POSITIONAL_DECLARATION,second,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.workers,IntegratedOptions,workers,cpp/apps/antworld_s6_1_experiment.cpp,463,workers,LOCAL_TYPED_NAME,options,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.source_protein_ug,IntegratedOptions,source_protein_ug,cpp/apps/antworld_s6_1_experiment.cpp,464,protein,LOCAL_TYPED_NAME,options,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.minimum_program_time,IntegratedOptions,minimum_program_time,cpp/apps/antworld_s6_1_experiment.cpp,465,minimum,LOCAL_TYPED_NAME,options,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.bounded_contacts,SocialConfig,bounded_contacts,cpp/apps/antworld_s6_2_benchmark.cpp,164,bounded,LOCAL_TYPED_NAME,config,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.x,PositionM,x,cpp/apps/antworld_s6_2_benchmark.cpp,170,static_cast<double>(i % 32) * .01,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.y,PositionM,y,cpp/apps/antworld_s6_2_benchmark.cpp,170,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/apps/antworld_s6_2_benchmark.cpp,170,static_cast<double>(i / 32) * .01,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_2_benchmark.cpp,173,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_2_benchmark.cpp,175,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_2_benchmark.cpp,175,"{100, 400, 400, 100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_2_benchmark.cpp,175,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_2_benchmark.cpp,175,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/apps/antworld_s6_2_choice.cpp,34,social.local_work_continuation = true,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/apps/antworld_s6_2_choice.cpp,34,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,PhysiologyConfig.transfer_limit_ug,PhysiologyConfig,transfer_limit_ug,cpp/apps/antworld_s6_2_choice.cpp,39,1,LOCAL_TYPED_NAME,donor_config,1
+ASSIGNMENT,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/antworld_s6_2_choice.cpp,41,1000,UNIQUE_FIELD_NAME,crop,1000
+AGGREGATE,PositionM.x,PositionM,x,cpp/apps/antworld_s6_2_choice.cpp,46,"(permutation & 2 ? -1.0 : 1.0) *
+                  (static_cast<double>(slot % 4) - 1.5) * .0002",POSITIONAL_DECLARATION,position,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.y,PositionM,y,cpp/apps/antworld_s6_2_choice.cpp,48,0,POSITIONAL_DECLARATION,position,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/apps/antworld_s6_2_choice.cpp,49,(static_cast<double>(slot / 4) - 1.5) * .0002,POSITIONAL_DECLARATION,position,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_2_choice.cpp,50,position,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_2_choice.cpp,50,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.workers,IntegratedOptions,workers,cpp/apps/antworld_s6_2_nutrition.cpp,97,workers,LOCAL_TYPED_NAME,options,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.source_protein_ug,IntegratedOptions,source_protein_ug,cpp/apps/antworld_s6_2_nutrition.cpp,98,protein,LOCAL_TYPED_NAME,options,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_2_nutrition.cpp,161,"detail::subtract(a.p.crop, e.transferred)",UNIQUE_FIELD_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_2_nutrition.cpp,170,e.stage,UNIQUE_FIELD_NAME,ant,EXPRESSION; see source and scenario
+ASSIGNMENT,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_2_nutrition.cpp,176,LifeStage::Dead,UNIQUE_FIELD_NAME,ant,EXPRESSION; see source and scenario
+ASSIGNMENT,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_2_nutrition.cpp,183,e.position,UNIQUE_FIELD_NAME,ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_2_nutrition.cpp,200,"detail::sum(a.p.crop, e.transferred)",UNIQUE_FIELD_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_2_nutrition.cpp,226,"detail::subtract(a.p.crop, e.transferred)",UNIQUE_FIELD_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_2_nutrition.cpp,227,"detail::sum(q.p.crop, e.transferred)",UNIQUE_FIELD_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,Controls.reserve_mode,Controls,reserve_mode,cpp/apps/antworld_s6_3_1_experiment.cpp,135,selected_reserve,LOCAL_TYPED_NAME,controls,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.protein_recycling,LongTermConfig,protein_recycling,cpp/apps/antworld_s6_3_1_experiment.cpp,145,"arm != ""no_recycling""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.demand_feedback,LongTermConfig,demand_feedback,cpp/apps/antworld_s6_3_1_experiment.cpp,146,"arm != ""no_feedback""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.post_intake_contact,LongTermConfig,post_intake_contact,cpp/apps/antworld_s6_3_1_experiment.cpp,147,"arm != ""return_only"" && arm != ""pre_correction""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.complete_depot_visits,LongTermConfig,complete_depot_visits,cpp/apps/antworld_s6_3_1_experiment.cpp,148,"arm != ""exchange_only"" && arm != ""pre_correction""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,Controls.laying,Controls,laying,cpp/apps/antworld_s6_3_1_experiment.cpp,423,laying,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,Controls.exchange,Controls,exchange,cpp/apps/antworld_s6_3_1_experiment.cpp,424,"mode != ""restricted""",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,Controls.absorption_hours,Controls,absorption_hours,cpp/apps/antworld_s6_3_1_experiment.cpp,436,3,LOCAL_TYPED_NAME,c,3
+ASSIGNMENT,Controls.absorption_hours,Controls,absorption_hours,cpp/apps/antworld_s6_3_1_experiment.cpp,438,12,LOCAL_TYPED_NAME,c,12
+ASSIGNMENT,Controls.behavior_hours,Controls,behavior_hours,cpp/apps/antworld_s6_3_1_experiment.cpp,440,3,LOCAL_TYPED_NAME,c,3
+ASSIGNMENT,Controls.behavior_hours,Controls,behavior_hours,cpp/apps/antworld_s6_3_1_experiment.cpp,442,12,LOCAL_TYPED_NAME,c,12
+ASSIGNMENT,Controls.lineage_basal,Controls,lineage_basal,cpp/apps/antworld_s6_3_1_experiment.cpp,444,2,LOCAL_TYPED_NAME,c,2
+ASSIGNMENT,Controls.reproduction_days,Controls,reproduction_days,cpp/apps/antworld_s6_3_1_experiment.cpp,446,4,LOCAL_TYPED_NAME,c,4
+ASSIGNMENT,Controls.positive,Controls,positive,cpp/apps/antworld_s6_3_1_experiment.cpp,456,positive,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,Controls.positive,Controls,positive,cpp/apps/antworld_s6_3_1_experiment.cpp,467,true,LOCAL_TYPED_NAME,c,true
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/apps/antworld_s6_3_2_audit.cpp,17,{6 * hour},LOCAL_TYPED_NAME,p,21600000
+ASSIGNMENT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/apps/antworld_s6_3_2_audit.cpp,18,{6 * hour},LOCAL_TYPED_NAME,p,21600000
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/apps/antworld_s6_3_2_audit.cpp,19,{hour},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/apps/antworld_s6_3_2_audit.cpp,20,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.larva_duration,PhysiologyConfig,larva_duration,cpp/apps/antworld_s6_3_2_audit.cpp,21,{3 * day},LOCAL_TYPED_NAME,p,259200000
+ASSIGNMENT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/apps/antworld_s6_3_2_audit.cpp,22,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/antworld_s6_3_2_audit.cpp,23,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/apps/antworld_s6_3_2_audit.cpp,24,1,LOCAL_TYPED_NAME,p,1
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/antworld_s6_3_2_audit.cpp,69,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s6_3_2_audit.cpp,69,caste,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_3_2_audit.cpp,69,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_3_2_audit.cpp,69,stage,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/antworld_s6_3_2_audit.cpp,72,20,LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/apps/antworld_s6_3_2_audit.cpp,76,{2 * day},LOCAL_TYPED_NAME,r,172800000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s6_3_2_audit.cpp,108,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_3_2_audit.cpp,108,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_3_2_audit.cpp,108,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_3_2_audit.cpp,109,1500000000,POSITIONAL_DECLARATION,initial,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_3_2_audit.cpp,109,"{200, 100, 200, 0}",POSITIONAL_DECLARATION,initial,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_3_2_audit.cpp,109,1600,POSITIONAL_DECLARATION,initial,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_3_2_audit.cpp,109,0,POSITIONAL_DECLARATION,initial,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_3_2_audit.cpp,111,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_3_2_audit.cpp,111,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_3_2_audit.cpp,163,1500000000,POSITIONAL_DECLARATION,empty,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_3_2_audit.cpp,163,{},POSITIONAL_DECLARATION,empty,ZERO_INITIALIZED_COMPOSITE
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_3_2_audit.cpp,163,1600,POSITIONAL_DECLARATION,empty,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_3_2_audit.cpp,163,0,POSITIONAL_DECLARATION,empty,0
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_3_2_audit.cpp,168,1500000000,POSITIONAL_DECLARATION,supplied,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_3_2_audit.cpp,168,{},POSITIONAL_DECLARATION,supplied,ZERO_INITIALIZED_COMPOSITE
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_3_2_audit.cpp,168,1600,POSITIONAL_DECLARATION,supplied,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_3_2_audit.cpp,168,100,POSITIONAL_DECLARATION,supplied,100
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_3_2_audit.cpp,171,1500000000,POSITIONAL_DECLARATION,initial,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_3_2_audit.cpp,171,"{200, 100, 200, 0}",POSITIONAL_DECLARATION,initial,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_3_2_audit.cpp,171,1600,POSITIONAL_DECLARATION,initial,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_3_2_audit.cpp,171,0,POSITIONAL_DECLARATION,initial,0
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/antworld_s6_3_birth_benchmark.cpp,99,20,LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/antworld_s6_3_birth_benchmark.cpp,100,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/apps/antworld_s6_3_birth_benchmark.cpp,101,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/apps/antworld_s6_3_birth_benchmark.cpp,103,{10},LOCAL_TYPED_NAME,r,10
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/apps/antworld_s6_3_birth_benchmark.cpp,105,r.interval,LOCAL_TYPED_NAME,r,EXPRESSION; see source and scenario
+ASSIGNMENT,ReproductionConfig.egg_water_ug,ReproductionConfig,egg_water_ug,cpp/apps/antworld_s6_3_birth_benchmark.cpp,107,1,LOCAL_TYPED_NAME,r,1
+ASSIGNMENT,ReproductionConfig.egg_energy_nj,ReproductionConfig,egg_energy_nj,cpp/apps/antworld_s6_3_birth_benchmark.cpp,108,1000000,LOCAL_TYPED_NAME,r,1000000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/antworld_s6_3_birth_benchmark.cpp,111,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_3_birth_benchmark.cpp,111,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/antworld_s6_3_birth_benchmark.cpp,111,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_3_birth_benchmark.cpp,112,1500000000,DECLARED_API_POSITION,enable_physiology,1500000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_3_birth_benchmark.cpp,112,"{0, 100, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_3_birth_benchmark.cpp,112,1600,DECLARED_API_POSITION,enable_physiology,1600
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_3_birth_benchmark.cpp,112,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,LongTermConfig.protein_recycling,LongTermConfig,protein_recycling,cpp/apps/antworld_s6_3_experiment.cpp,142,"arm != ""no_recycling""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.demand_feedback,LongTermConfig,demand_feedback,cpp/apps/antworld_s6_3_experiment.cpp,143,"arm != ""no_feedback""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.post_intake_contact,LongTermConfig,post_intake_contact,cpp/apps/antworld_s6_3_experiment.cpp,144,"arm != ""return_only"" && arm != ""pre_correction""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,LongTermConfig.complete_depot_visits,LongTermConfig,complete_depot_visits,cpp/apps/antworld_s6_3_experiment.cpp,145,"arm != ""exchange_only"" && arm != ""pre_correction""",LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.bounded_contacts,SocialConfig,bounded_contacts,cpp/apps/antworld_s6_contact_benchmark.cpp,111,bounded,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.x,PositionM,x,cpp/apps/antworld_s6_contact_benchmark.cpp,117,static_cast<double>(i % 32) * .01,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.y,PositionM,y,cpp/apps/antworld_s6_contact_benchmark.cpp,117,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/apps/antworld_s6_contact_benchmark.cpp,117,static_cast<double>(i / 32) * .01,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_contact_benchmark.cpp,120,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/antworld_s6_contact_benchmark.cpp,123,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/antworld_s6_contact_benchmark.cpp,123,"{100, 400, 400, 100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/antworld_s6_contact_benchmark.cpp,123,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/antworld_s6_contact_benchmark.cpp,123,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_experiment.cpp,273,e.position,UNIQUE_FIELD_NAME,a,EXPRESSION; see source and scenario
+ASSIGNMENT,AntSeed.position,AntSeed,position,cpp/apps/antworld_s6_experiment.cpp,280,e.position,UNIQUE_FIELD_NAME,a,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/apps/s2_1_fixture.hpp,13,0.01,POSITIONAL_DECLARATION,grid,0.01
+AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/apps/s2_1_fixture.hpp,13,15,POSITIONAL_DECLARATION,grid,15
+AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/apps/s2_1_fixture.hpp,13,"{-0.10, 0, -0.07}",POSITIONAL_DECLARATION,grid,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/apps/s2_1_fixture.hpp,13,21,POSITIONAL_DECLARATION,grid,21
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/apps/s2_1_fixture.hpp,21,false,LOCAL_TYPED_NAME,p,false
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/apps/s2_1_fixture.hpp,22,false,LOCAL_TYPED_NAME,p,false
+ASSIGNMENT,BehaviorConfig.trail_weight,BehaviorConfig,trail_weight,cpp/apps/s2_1_fixture.hpp,23,0,LOCAL_TYPED_NAME,p,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s2_1_fixture.hpp,26,1000,DECLARED_API_POSITION,seed_ant,1000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s2_1_fixture.hpp,26,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s2_1_fixture.hpp,26,nest,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s2_1_fixture.hpp,26,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s2_1_fixture.hpp,27,1000,DECLARED_API_POSITION,seed_ant,1000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s2_1_fixture.hpp,27,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s2_1_fixture.hpp,27,nest,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s2_1_fixture.hpp,27,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s2_1_fixture.hpp,28,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s2_1_fixture.hpp,28,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s2_1_fixture.hpp,28,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s2_1_fixture.hpp,28,1000000,DECLARED_API_POSITION,seed_food,1000000
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/apps/s2_2_fixture.hpp,27,false,LOCAL_TYPED_NAME,config,false
+ASSIGNMENT,BehaviorConfig.persistence_weight,BehaviorConfig,persistence_weight,cpp/apps/s2_2_fixture.hpp,27,persistence,LOCAL_TYPED_NAME,config,EXPRESSION; see source and scenario
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/apps/s2_2_fixture.hpp,28,false,LOCAL_TYPED_NAME,config,false
+ASSIGNMENT,BehaviorConfig.trail_weight,BehaviorConfig,trail_weight,cpp/apps/s2_2_fixture.hpp,29,0,LOCAL_TYPED_NAME,config,0
+RETURN_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s2_fixture.hpp,9,c.origin_m.x+cell.x*c.cell_size_m,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+RETURN_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s2_fixture.hpp,9,c.origin_m.y,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+RETURN_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s2_fixture.hpp,9,c.origin_m.z+cell.z*c.cell_size_m,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+WHOLE_ASSIGNMENT,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/apps/s2_fixture.hpp,19,0.01,LEXICAL_TYPED_NAME,surface,0.01
+WHOLE_ASSIGNMENT,SurfaceConfig.height,SurfaceConfig,height,cpp/apps/s2_fixture.hpp,19,21,LEXICAL_TYPED_NAME,surface,21
+WHOLE_ASSIGNMENT,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/apps/s2_fixture.hpp,19,"{-0.15, 0, -0.10}",LEXICAL_TYPED_NAME,surface,EXPRESSION; see source and scenario
+WHOLE_ASSIGNMENT,SurfaceConfig.width,SurfaceConfig,width,cpp/apps/s2_fixture.hpp,19,31,LEXICAL_TYPED_NAME,surface,31
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/apps/s2_fixture.hpp,20,memory,LOCAL_TYPED_NAME,behavior,EXPRESSION; see source and scenario
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/apps/s2_fixture.hpp,20,trails,LOCAL_TYPED_NAME,behavior,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s2_fixture.hpp,27,1000,DECLARED_API_POSITION,seed_ant,1000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s2_fixture.hpp,27,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s2_fixture.hpp,27,nest,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s2_fixture.hpp,27,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s2_fixture.hpp,29,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s2_fixture.hpp,29,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s2_fixture.hpp,29,1000000,DECLARED_API_POSITION,seed_food,1000000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s2_fixture.hpp,29,1000000,DECLARED_API_POSITION,seed_food,1000000
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/apps/s3_fixture.hpp,27,{pulse},LOCAL_TYPED_NAME,config,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s3_fixture.hpp,30,"{100, protein ? 400U : 0U, 400, protein ? 100U : 500U}",LOCAL_TYPED_NAME,initial,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s3_fixture.hpp,34,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s3_fixture.hpp,34,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s3_fixture.hpp,34,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s3_fixture.hpp,34,eggs ? LifeStage::Egg : LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s3_fixture.hpp,35,UINT64_C(500000000)+rng.next()%UINT64_C(500000001),LOCAL_TYPED_NAME,initial,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/s3_fixture.hpp,48,0,LOCAL_TYPED_NAME,c,0
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/apps/s3_fixture.hpp,48,0,LOCAL_TYPED_NAME,c,0
+ASSIGNMENT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s3_fixture.hpp,49,"{80,40,60,20}",LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.crop_capacity_ug,PhysiologyConfig,crop_capacity_ug,cpp/apps/s3_fixture.hpp,51,capacity,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+RETURN_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s4_fixture.hpp,11,c.origin_m.x + p.x * c.quantum_m,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+RETURN_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s4_fixture.hpp,11,c.origin_m.y + p.y * c.quantum_m,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+RETURN_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s4_fixture.hpp,11,c.origin_m.z + p.z * c.quantum_m,DECLARED_RETURN_POSITION,position,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/apps/s4_fixture.hpp,15,"{0, -.012, 0}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/apps/s4_fixture.hpp,16,"{{0, 0, 0}, {32, 24, 24}}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s4_fixture.hpp,19,"{14, 22, 22}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s4_fixture.hpp,19,"{2, 2, 2}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s4_fixture.hpp,31,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s4_fixture.hpp,31,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s4_fixture.hpp,31,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s4_fixture.hpp,31,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s4_fixture.hpp,33,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s4_fixture.hpp,33,"{500, 0, 500, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s4_fixture.hpp,33,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s4_fixture.hpp,33,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s5_fixture.hpp,26,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s5_fixture.hpp,26,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s5_fixture.hpp,26,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s5_fixture.hpp,26,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s5_fixture.hpp,27,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s5_fixture.hpp,27,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s5_fixture.hpp,27,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s5_fixture.hpp,27,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s5_fixture.hpp,51,"{15, 15, 14}",POSITIONAL_DECLARATION,b,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s5_fixture.hpp,51,"{14, 11, 10}",POSITIONAL_DECLARATION,b,EXPRESSION; see source and scenario
+AGGREGATE,Controls.reserve_mode,Controls,reserve_mode,cpp/apps/s6_3_1_fixture.hpp,10,"unsigned
+      reserve_mode{}; // 0 legacy",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,Controls.exchange,Controls,exchange,cpp/apps/s6_3_1_fixture.hpp,12,2 absorption,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,Controls.laying,Controls,laying,cpp/apps/s6_3_1_fixture.hpp,12,1 interval,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,Controls.positive,Controls,positive,cpp/apps/s6_3_1_fixture.hpp,12,"3 twice interval.
+  bool laying{true}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+DEFAULT,Controls.reserve_mode,Controls,reserve_mode,cpp/apps/s6_3_1_fixture.hpp,12,{},DECLARED,,0
+AGGREGATE,Controls.absorption_hours,Controls,absorption_hours,cpp/apps/s6_3_1_fixture.hpp,13,exchange{true},POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,Controls.behavior_hours,Controls,behavior_hours,cpp/apps/s6_3_1_fixture.hpp,13,"positive{};
+  std::int64_t absorption_hours{6}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+DEFAULT,Controls.exchange,Controls,exchange,cpp/apps/s6_3_1_fixture.hpp,13,{true},DECLARED,,true
+DEFAULT,Controls.laying,Controls,laying,cpp/apps/s6_3_1_fixture.hpp,13,{true},DECLARED,,true
+DEFAULT,Controls.positive,Controls,positive,cpp/apps/s6_3_1_fixture.hpp,13,{},DECLARED,,0
+DEFAULT,Controls.absorption_hours,Controls,absorption_hours,cpp/apps/s6_3_1_fixture.hpp,14,{6},DECLARED,,6
+DEFAULT,Controls.behavior_hours,Controls,behavior_hours,cpp/apps/s6_3_1_fixture.hpp,14,{6},DECLARED,,6
+AGGREGATE,Controls.lineage_basal,Controls,lineage_basal,cpp/apps/s6_3_1_fixture.hpp,14,"reproduction_days{2};
+  std::uint64_t lineage_basal{1};",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,Controls.reproduction_days,Controls,reproduction_days,cpp/apps/s6_3_1_fixture.hpp,14,behavior_hours{6},POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+DEFAULT,Controls.reproduction_days,Controls,reproduction_days,cpp/apps/s6_3_1_fixture.hpp,14,{2},DECLARED,,2
+DEFAULT,Controls.lineage_basal,Controls,lineage_basal,cpp/apps/s6_3_1_fixture.hpp,15,{1},DECLARED,,1
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/apps/s6_3_1_fixture.hpp,32,false,LOCAL_TYPED_NAME,behavior,false
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/apps/s6_3_1_fixture.hpp,33,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/apps/s6_3_1_fixture.hpp,33,7,DECLARED_API_POSITION,configure_surface,7
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/apps/s6_3_1_fixture.hpp,33,"{-.03, 0, -.03}",DECLARED_API_POSITION,configure_surface,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/apps/s6_3_1_fixture.hpp,33,7,DECLARED_API_POSITION,configure_surface,7
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/apps/s6_3_1_fixture.hpp,35,"{-.008, -.006, -.006}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/apps/s6_3_1_fixture.hpp,36,"{{0, 0, 0}, {32, 24, 24}}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s6_3_1_fixture.hpp,37,"{18, 14, 14}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s6_3_1_fixture.hpp,37,"{14, 10, 10}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s6_3_1_fixture.hpp,38,"{20, 16, 16}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s6_3_1_fixture.hpp,38,"{12, 8, 8}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/apps/s6_3_1_fixture.hpp,42,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/apps/s6_3_1_fixture.hpp,43,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,SocialConfig.decision_interval,SocialConfig,decision_interval,cpp/apps/s6_3_1_fixture.hpp,44,{pulse_hours * hour},LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.minimum_program_time,SocialConfig,minimum_program_time,cpp/apps/s6_3_1_fixture.hpp,45,{pulse_hours * hour},LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.exchange_enabled,SocialConfig,exchange_enabled,cpp/apps/s6_3_1_fixture.hpp,46,controls.exchange,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.decision_interval,SocialConfig,decision_interval,cpp/apps/s6_3_1_fixture.hpp,47,{controls.behavior_hours * hour},LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.minimum_program_time,SocialConfig,minimum_program_time,cpp/apps/s6_3_1_fixture.hpp,48,social.decision_interval,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/apps/s6_3_1_fixture.hpp,52,{controls.absorption_hours * hour},LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/apps/s6_3_1_fixture.hpp,53,{controls.behavior_hours * hour},LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/apps/s6_3_1_fixture.hpp,54,{hour},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/apps/s6_3_1_fixture.hpp,55,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.larva_duration,PhysiologyConfig,larva_duration,cpp/apps/s6_3_1_fixture.hpp,56,{3 * day},LOCAL_TYPED_NAME,p,259200000
+ASSIGNMENT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/apps/s6_3_1_fixture.hpp,57,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/s6_3_1_fixture.hpp,58,controls.lineage_basal,LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/apps/s6_3_1_fixture.hpp,59,1,LOCAL_TYPED_NAME,p,1
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s6_3_1_fixture.hpp,60,1500000000,POSITIONAL_DECLARATION,initial,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s6_3_1_fixture.hpp,60,"{200, 100, 200, 0}",POSITIONAL_DECLARATION,initial,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s6_3_1_fixture.hpp,60,1600,POSITIONAL_DECLARATION,initial,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_3_1_fixture.hpp,60,0,POSITIONAL_DECLARATION,initial,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_3_1_fixture.hpp,61,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_3_1_fixture.hpp,61,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_3_1_fixture.hpp,61,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_3_1_fixture.hpp,61,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/s6_3_1_fixture.hpp,62,20,LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/apps/s6_3_1_fixture.hpp,65,{controls.reproduction_days * day},LOCAL_TYPED_NAME,reproduction,EXPRESSION; see source and scenario
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/apps/s6_3_1_fixture.hpp,68,"controls.reserve_mode == 1   ? reproduction.interval
+        : controls.reserve_mode == 2 ? p.absorption_period
+        : controls.reserve_mode == 3
+            ? SimTime{2 * reproduction.interval.milliseconds}
+            : SimTime{}",LOCAL_TYPED_NAME,reproduction,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/s6_3_1_fixture.hpp,76,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/s6_3_1_fixture.hpp,77,0,LOCAL_TYPED_NAME,p,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_3_1_fixture.hpp,80,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_3_1_fixture.hpp,80,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_3_1_fixture.hpp,80,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_3_1_fixture.hpp,80,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_3_1_fixture.hpp,86,200000ULL * population,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_3_1_fixture.hpp,86,20000ULL * population,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_3_1_fixture.hpp,86,100000ULL * population,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_3_1_fixture.hpp,87,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_3_1_fixture.hpp,89,4000,DECLARED_API_POSITION,seed_food,4000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_3_1_fixture.hpp,89,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_3_1_fixture.hpp,89,500,DECLARED_API_POSITION,seed_food,500
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_3_1_fixture.hpp,89,4000,DECLARED_API_POSITION,seed_food,4000
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s6_3_1_fixture.hpp,89,.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s6_3_1_fixture.hpp,89,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s6_3_1_fixture.hpp,89,.01,DECLARED_API_POSITION,seed_food,0.01
+ASSIGNMENT,ResourceCycleConfig.reserve,ResourceCycleConfig,reserve,cpp/apps/s6_3_1_fixture.hpp,91,"{20000ULL * population,
+                       (supply == ""scarce"" ? 50ULL : 2000ULL) * population,
+                       5000ULL * population, 0}",LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.release_limit,ResourceCycleConfig,release_limit,cpp/apps/s6_3_1_fixture.hpp,94,"{4000, 400, 2000, 0}",LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.cyclic,ResourceCycleConfig,cyclic,cpp/apps/s6_3_1_fixture.hpp,95,cyclic,LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/apps/s6_3_fixture.hpp,27,false,LOCAL_TYPED_NAME,behavior,false
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/apps/s6_3_fixture.hpp,28,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/apps/s6_3_fixture.hpp,28,7,DECLARED_API_POSITION,configure_surface,7
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/apps/s6_3_fixture.hpp,28,"{-.03, 0, -.03}",DECLARED_API_POSITION,configure_surface,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/apps/s6_3_fixture.hpp,28,7,DECLARED_API_POSITION,configure_surface,7
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/apps/s6_3_fixture.hpp,30,"{-.008, -.006, -.006}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/apps/s6_3_fixture.hpp,31,"{{0, 0, 0}, {32, 24, 24}}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s6_3_fixture.hpp,32,"{18, 14, 14}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s6_3_fixture.hpp,32,"{14, 10, 10}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s6_3_fixture.hpp,33,"{20, 16, 16}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s6_3_fixture.hpp,33,"{12, 8, 8}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/apps/s6_3_fixture.hpp,37,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/apps/s6_3_fixture.hpp,38,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,SocialConfig.decision_interval,SocialConfig,decision_interval,cpp/apps/s6_3_fixture.hpp,39,{pulse_hours * hour},LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.minimum_program_time,SocialConfig,minimum_program_time,cpp/apps/s6_3_fixture.hpp,40,{pulse_hours * hour},LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/apps/s6_3_fixture.hpp,44,{pulse_hours * hour},LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/apps/s6_3_fixture.hpp,45,{pulse_hours * hour},LOCAL_TYPED_NAME,p,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/apps/s6_3_fixture.hpp,46,{hour},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/apps/s6_3_fixture.hpp,47,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.larva_duration,PhysiologyConfig,larva_duration,cpp/apps/s6_3_fixture.hpp,48,{3 * day},LOCAL_TYPED_NAME,p,259200000
+ASSIGNMENT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/apps/s6_3_fixture.hpp,49,{2 * day},LOCAL_TYPED_NAME,p,172800000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/apps/s6_3_fixture.hpp,50,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/apps/s6_3_fixture.hpp,51,1,LOCAL_TYPED_NAME,p,1
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s6_3_fixture.hpp,52,1500000000,POSITIONAL_DECLARATION,initial,1500000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s6_3_fixture.hpp,52,"{200, 100, 200, 0}",POSITIONAL_DECLARATION,initial,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s6_3_fixture.hpp,52,1600,POSITIONAL_DECLARATION,initial,1600
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_3_fixture.hpp,52,0,POSITIONAL_DECLARATION,initial,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_3_fixture.hpp,53,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_3_fixture.hpp,53,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_3_fixture.hpp,53,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_3_fixture.hpp,53,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/s6_3_fixture.hpp,54,20,LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/apps/s6_3_fixture.hpp,57,0,LOCAL_TYPED_NAME,p,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_3_fixture.hpp,60,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_3_fixture.hpp,60,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_3_fixture.hpp,60,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_3_fixture.hpp,60,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_3_fixture.hpp,66,4000,DECLARED_API_POSITION,seed_food,4000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_3_fixture.hpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_3_fixture.hpp,66,500,DECLARED_API_POSITION,seed_food,500
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_3_fixture.hpp,66,4000,DECLARED_API_POSITION,seed_food,4000
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s6_3_fixture.hpp,66,.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s6_3_fixture.hpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s6_3_fixture.hpp,66,.01,DECLARED_API_POSITION,seed_food,0.01
+ASSIGNMENT,ResourceCycleConfig.reserve,ResourceCycleConfig,reserve,cpp/apps/s6_3_fixture.hpp,68,"{20000ULL * population,
+                       (supply == ""scarce"" ? 50ULL : 2000ULL) * population,
+                       5000ULL * population, 0}",LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.release_limit,ResourceCycleConfig,release_limit,cpp/apps/s6_3_fixture.hpp,71,"{4000, 400, 2000, 0}",LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.cyclic,ResourceCycleConfig,cyclic,cpp/apps/s6_3_fixture.hpp,72,cyclic,LOCAL_TYPED_NAME,cycle,EXPRESSION; see source and scenario
+AGGREGATE,IntegratedOptions.workers,IntegratedOptions,workers,cpp/apps/s6_fixture.hpp,16,"unsigned workers{32};
+  std::uint64_t source_protein_ug{2000};
+  bool gift_first{}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+DEFAULT,IntegratedOptions.workers,IntegratedOptions,workers,cpp/apps/s6_fixture.hpp,17,{32},DECLARED,,32
+DEFAULT,IntegratedOptions.source_protein_ug,IntegratedOptions,source_protein_ug,cpp/apps/s6_fixture.hpp,18,{2000},DECLARED,,2000
+DEFAULT,IntegratedOptions.gift_first,IntegratedOptions,gift_first,cpp/apps/s6_fixture.hpp,19,{},DECLARED,,0
+DEFAULT,IntegratedOptions.local_work_continuation,IntegratedOptions,local_work_continuation,cpp/apps/s6_fixture.hpp,19,{},DECLARED,,0
+AGGREGATE,IntegratedOptions.source_protein_ug,IntegratedOptions,source_protein_ug,cpp/apps/s6_fixture.hpp,19,"local_work_continuation{};
+  SimTime minimum_program_time{10000};",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+DEFAULT,IntegratedOptions.minimum_program_time,IntegratedOptions,minimum_program_time,cpp/apps/s6_fixture.hpp,20,{10000},DECLARED,,10000
+ASSIGNMENT,IntegratedOptions.gift_first,IntegratedOptions,gift_first,cpp/apps/s6_fixture.hpp,27,"policy == ""gift_first"" || policy == ""combined""",LOCAL_TYPED_NAME,result,EXPRESSION; see source and scenario
+ASSIGNMENT,IntegratedOptions.local_work_continuation,IntegratedOptions,local_work_continuation,cpp/apps/s6_fixture.hpp,28,"policy == ""local_continuation"" || policy == ""combined""",LOCAL_TYPED_NAME,result,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/apps/s6_fixture.hpp,45,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/apps/s6_fixture.hpp,45,7,DECLARED_API_POSITION,configure_surface,7
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/apps/s6_fixture.hpp,45,"{-.03, 0, -.03}",DECLARED_API_POSITION,configure_surface,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/apps/s6_fixture.hpp,45,7,DECLARED_API_POSITION,configure_surface,7
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/apps/s6_fixture.hpp,46,"{-.008, -.006, -.006}",LOCAL_TYPED_NAME,geometry,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/apps/s6_fixture.hpp,47,"{{0, 0, 0}, {32, 24, 24}}",LOCAL_TYPED_NAME,geometry,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/apps/s6_fixture.hpp,48,"{20, 16, 16}",POSITIONAL_DECLARATION,chamber,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/apps/s6_fixture.hpp,48,"{12, 8, 8}",POSITIONAL_DECLARATION,chamber,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.encounter_budget,SocialConfig,encounter_budget,cpp/apps/s6_fixture.hpp,59,budget,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/apps/s6_fixture.hpp,60,options.gift_first,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/apps/s6_fixture.hpp,61,options.local_work_continuation,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.minimum_program_time,SocialConfig,minimum_program_time,cpp/apps/s6_fixture.hpp,62,options.minimum_program_time,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_fixture.hpp,66,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_fixture.hpp,66,caste,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_fixture.hpp,66,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_fixture.hpp,66,stage,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_fixture.hpp,70,100,LOCAL_TYPED_NAME,initial,100
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_fixture.hpp,83,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_fixture.hpp,83,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_fixture.hpp,83,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_fixture.hpp,83,3000,DECLARED_API_POSITION,seed_food,3000
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s6_fixture.hpp,83,mirror ? -.02 : .02,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s6_fixture.hpp,83,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s6_fixture.hpp,83,.01,DECLARED_API_POSITION,seed_food,0.01
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/apps/s6_fixture.hpp,84,mirror ? .02 : -.02,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/apps/s6_fixture.hpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/apps/s6_fixture.hpp,84,-.01,DECLARED_API_POSITION,seed_food,-0.01
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_fixture.hpp,86,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_fixture.hpp,86,2500,POSITIONAL_TEMPORARY,,2500
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_fixture.hpp,86,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_fixture.hpp,86,2500,POSITIONAL_TEMPORARY,,2500
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_fixture.hpp,87,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_fixture.hpp,87,2500-options.source_protein_ug,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_fixture.hpp,87,options.source_protein_ug,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_fixture.hpp,87,2500,POSITIONAL_TEMPORARY,,2500
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/apps/s6_fixture.hpp,105,"{-.016, -.016, -.016}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/apps/s6_fixture.hpp,106,"{{0, 0, 0}, {64, 64, 64}}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.encounter_budget,SocialConfig,encounter_budget,cpp/apps/s6_fixture.hpp,114,budget,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.exchange_enabled,SocialConfig,exchange_enabled,cpp/apps/s6_fixture.hpp,115,"condition != ""no_response""",LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/apps/s6_fixture.hpp,117,corrections.gift_first,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/apps/s6_fixture.hpp,118,corrections.local_work_continuation,LOCAL_TYPED_NAME,social,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_fixture.hpp,125,p,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_fixture.hpp,125,emerged ? LifeStage::Pupa : LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_fixture.hpp,127,100,POSITIONAL_TEMPORARY,,100
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_fixture.hpp,127,500,POSITIONAL_TEMPORARY,,500
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_fixture.hpp,127,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_fixture.hpp,127,400,POSITIONAL_TEMPORARY,,400
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/apps/s6_fixture.hpp,128,100,POSITIONAL_TEMPORARY,,100
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/apps/s6_fixture.hpp,128,100,POSITIONAL_TEMPORARY,,100
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/apps/s6_fixture.hpp,128,400,POSITIONAL_TEMPORARY,,400
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/apps/s6_fixture.hpp,128,400,POSITIONAL_TEMPORARY,,400
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s6_fixture.hpp,130,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s6_fixture.hpp,130,crop,DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s6_fixture.hpp,130,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_fixture.hpp,130,emerged ? 100U : 0U,DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_fixture.hpp,133,q,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_fixture.hpp,133,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.bounded_contacts,SocialConfig,bounded_contacts,cpp/apps/s6_nutrition_fixture.hpp,16,false,LOCAL_TYPED_NAME,c,false
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s6_nutrition_fixture.hpp,22,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s6_nutrition_fixture.hpp,22,"{100, protein, 400, 500 - protein}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s6_nutrition_fixture.hpp,22,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_nutrition_fixture.hpp,22,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/apps/s6_nutrition_fixture.hpp,28,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/apps/s6_nutrition_fixture.hpp,28,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/apps/s6_nutrition_fixture.hpp,28,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/apps/s6_nutrition_fixture.hpp,28,eggs ? LifeStage::Egg : LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/apps/s6_nutrition_fixture.hpp,30,UINT64_C(500000000) + rng.next() % UINT64_C(500000001),DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/apps/s6_nutrition_fixture.hpp,30,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/apps/s6_nutrition_fixture.hpp,31,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/apps/s6_nutrition_fixture.hpp,32,0,DECLARED_API_POSITION,enable_physiology,0
+DEFAULT,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/include/antworld/core/behavior.hpp,20,"{-0.1, 0, -0.1}",DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,SurfaceConfig.height,SurfaceConfig,height,cpp/include/antworld/core/behavior.hpp,21,{21},DECLARED,,21
+DEFAULT,SurfaceConfig.width,SurfaceConfig,width,cpp/include/antworld/core/behavior.hpp,21,{21},DECLARED,,21
+DEFAULT,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/include/antworld/core/behavior.hpp,22,{0.01},DECLARED,,0.01
+DEFAULT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/include/antworld/core/behavior.hpp,26,{true},DECLARED,,true
+DEFAULT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/include/antworld/core/behavior.hpp,26,{true},DECLARED,,true
+DEFAULT,BehaviorConfig.max_trip_moves,BehaviorConfig,max_trip_moves,cpp/include/antworld/core/behavior.hpp,27,{192},DECLARED,,192
+DEFAULT,BehaviorConfig.route_capacity,BehaviorConfig,route_capacity,cpp/include/antworld/core/behavior.hpp,27,{48},DECLARED,,48
+DEFAULT,BehaviorConfig.sensing_radius_cells,BehaviorConfig,sensing_radius_cells,cpp/include/antworld/core/behavior.hpp,27,{2},DECLARED,,2
+DEFAULT,BehaviorConfig.decision_delay,BehaviorConfig,decision_delay,cpp/include/antworld/core/behavior.hpp,28,{1},DECLARED,,1
+DEFAULT,BehaviorConfig.field_interval,BehaviorConfig,field_interval,cpp/include/antworld/core/behavior.hpp,28,{5000},DECLARED,,5000
+DEFAULT,BehaviorConfig.memory_lifetime,BehaviorConfig,memory_lifetime,cpp/include/antworld/core/behavior.hpp,28,{300000},DECLARED,,300000
+DEFAULT,BehaviorConfig.step_duration,BehaviorConfig,step_duration,cpp/include/antworld/core/behavior.hpp,28,{1100},DECLARED,,1100
+DEFAULT,BehaviorConfig.deposit_units,BehaviorConfig,deposit_units,cpp/include/antworld/core/behavior.hpp,29,{1},DECLARED,,1
+DEFAULT,BehaviorConfig.trail_cap_units,BehaviorConfig,trail_cap_units,cpp/include/antworld/core/behavior.hpp,29,{16},DECLARED,,16
+DEFAULT,BehaviorConfig.trail_cutoff_units,BehaviorConfig,trail_cutoff_units,cpp/include/antworld/core/behavior.hpp,29,{0.001},DECLARED,,0.001
+DEFAULT,BehaviorConfig.trail_half_life_s,BehaviorConfig,trail_half_life_s,cpp/include/antworld/core/behavior.hpp,29,{60},DECLARED,,60
+DEFAULT,BehaviorConfig.explore_weight,BehaviorConfig,explore_weight,cpp/include/antworld/core/behavior.hpp,30,{10},DECLARED,,10
+DEFAULT,BehaviorConfig.persistence_weight,BehaviorConfig,persistence_weight,cpp/include/antworld/core/behavior.hpp,30,{20},DECLARED,,20
+DEFAULT,BehaviorConfig.trail_weight,BehaviorConfig,trail_weight,cpp/include/antworld/core/behavior.hpp,30,{180},DECLARED,,180
+DEFAULT,PositionM.x,PositionM,x,cpp/include/antworld/core/entities.hpp,9,{},DECLARED,,0
+DEFAULT,PositionM.y,PositionM,y,cpp/include/antworld/core/entities.hpp,9,{},DECLARED,,0
+DEFAULT,PositionM.z,PositionM,z,cpp/include/antworld/core/entities.hpp,9,{},DECLARED,,0
+DEFAULT,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/include/antworld/core/entities.hpp,14,{},DECLARED,,0
+DEFAULT,FoodMass.other_ug,FoodMass,other_ug,cpp/include/antworld/core/entities.hpp,14,{},DECLARED,,0
+DEFAULT,FoodMass.protein_ug,FoodMass,protein_ug,cpp/include/antworld/core/entities.hpp,14,{},DECLARED,,0
+DEFAULT,FoodMass.water_ug,FoodMass,water_ug,cpp/include/antworld/core/entities.hpp,14,{},DECLARED,,0
+DEFAULT,AntSeed.position,AntSeed,position,cpp/include/antworld/core/entities.hpp,32,{},DECLARED,,ZERO_INITIALIZED_COMPOSITE
+DEFAULT,AntSeed.stage,AntSeed,stage,cpp/include/antworld/core/entities.hpp,33,{LifeStage::Adult},DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,AntSeed.caste,AntSeed,caste,cpp/include/antworld/core/entities.hpp,34,{Caste::Worker},DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/include/antworld/core/entities.hpp,35,{4000},DECLARED,,4000
+DEFAULT,WorldConfig.max_m,WorldConfig,max_m,cpp/include/antworld/core/entities.hpp,57,"{1, 1, 1}",DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,WorldConfig.min_m,WorldConfig,min_m,cpp/include/antworld/core/entities.hpp,57,"{-1, -1, -1}",DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,WorldConfig.contact_distance_m,WorldConfig,contact_distance_m,cpp/include/antworld/core/entities.hpp,58,{0.002},DECLARED,,0.002
+DEFAULT,WorldConfig.max_speed_m_per_s,WorldConfig,max_speed_m_per_s,cpp/include/antworld/core/entities.hpp,58,{0.01},DECLARED,,0.01
+DEFAULT,BoxQ.max,BoxQ,max,cpp/include/antworld/core/geometry.hpp,16,{},DECLARED,,0
+DEFAULT,BoxQ.min,BoxQ,min,cpp/include/antworld/core/geometry.hpp,16,{},DECLARED,,0
+DEFAULT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/include/antworld/core/geometry.hpp,24,"{0, -0.016, 0}",DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,GeometryConfig.quantum_m,GeometryConfig,quantum_m,cpp/include/antworld/core/geometry.hpp,25,{0.0005},DECLARED,,0.0005
+DEFAULT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/include/antworld/core/geometry.hpp,26,"{{0, 0, 0}, {32, 32, 32}}",DECLARED,,EXPRESSION; see source and scenario
+DEFAULT,GeometryConfig.dry_ug_per_q3,GeometryConfig,dry_ug_per_q3,cpp/include/antworld/core/geometry.hpp,27,{100},DECLARED,,100
+DEFAULT,GeometryConfig.water_ug_per_q3,GeometryConfig,water_ug_per_q3,cpp/include/antworld/core/geometry.hpp,27,{25},DECLARED,,25
+DEFAULT,GeometryConfig.body_half_q,GeometryConfig,body_half_q,cpp/include/antworld/core/geometry.hpp,28,{1},DECLARED,,1
+DEFAULT,GeometryConfig.loaded_half_q,GeometryConfig,loaded_half_q,cpp/include/antworld/core/geometry.hpp,28,{2},DECLARED,,2
+DEFAULT,GeometryConfig.max_patch_extent_q,GeometryConfig,max_patch_extent_q,cpp/include/antworld/core/geometry.hpp,28,{4},DECLARED,,4
+DEFAULT,GeometryConfig.reach_q,GeometryConfig,reach_q,cpp/include/antworld/core/geometry.hpp,28,{4},DECLARED,,4
+DEFAULT,GeometryConfig.brick_q,GeometryConfig,brick_q,cpp/include/antworld/core/geometry.hpp,29,{8},DECLARED,,8
+DEFAULT,GeometryConfig.sample_step_q,GeometryConfig,sample_step_q,cpp/include/antworld/core/geometry.hpp,29,{2},DECLARED,,2
+DEFAULT,GeometryConfig.sdf_band_q,GeometryConfig,sdf_band_q,cpp/include/antworld/core/geometry.hpp,29,{4},DECLARED,,4
+DEFAULT,GeometryConfig.decision_delay,GeometryConfig,decision_delay,cpp/include/antworld/core/geometry.hpp,30,{1},DECLARED,,1
+DEFAULT,GeometryConfig.move_duration,GeometryConfig,move_duration,cpp/include/antworld/core/geometry.hpp,30,{500},DECLARED,,500
+DEFAULT,GeometryConfig.work_duration,GeometryConfig,work_duration,cpp/include/antworld/core/geometry.hpp,30,{100},DECLARED,,100
+DEFAULT,GeometryConfig.dig_energy_nj_per_q3,GeometryConfig,dig_energy_nj_per_q3,cpp/include/antworld/core/geometry.hpp,31,{1000},DECLARED,,1000
+DEFAULT,LongTermConfig.demand_feedback,LongTermConfig,demand_feedback,cpp/include/antworld/core/long_term.hpp,7,{true},DECLARED,,true
+DEFAULT,LongTermConfig.protein_recycling,LongTermConfig,protein_recycling,cpp/include/antworld/core/long_term.hpp,7,{true},DECLARED,,true
+DEFAULT,LongTermConfig.empty_sites_per_contact,LongTermConfig,empty_sites_per_contact,cpp/include/antworld/core/long_term.hpp,8,{4},DECLARED,,4
+DEFAULT,LongTermConfig.complete_depot_visits,LongTermConfig,complete_depot_visits,cpp/include/antworld/core/long_term.hpp,9,{true},DECLARED,,true
+DEFAULT,LongTermConfig.post_intake_contact,LongTermConfig,post_intake_contact,cpp/include/antworld/core/long_term.hpp,9,{true},DECLARED,,true
+DEFAULT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/include/antworld/core/long_term.hpp,13,{172800000},DECLARED,,172800000
+DEFAULT,ReproductionConfig.egg_protein_ug,ReproductionConfig,egg_protein_ug,cpp/include/antworld/core/long_term.hpp,14,{20},DECLARED,,20
+DEFAULT,ReproductionConfig.egg_water_ug,ReproductionConfig,egg_water_ug,cpp/include/antworld/core/long_term.hpp,14,{200},DECLARED,,200
+DEFAULT,ReproductionConfig.dissipated_energy_nj,ReproductionConfig,dissipated_energy_nj,cpp/include/antworld/core/long_term.hpp,15,{10000000},DECLARED,,10000000
+DEFAULT,ReproductionConfig.egg_energy_nj,ReproductionConfig,egg_energy_nj,cpp/include/antworld/core/long_term.hpp,15,{500000000},DECLARED,,500000000
+DEFAULT,ReproductionConfig.offspring_carrying_capacity_ug,ReproductionConfig,offspring_carrying_capacity_ug,cpp/include/antworld/core/long_term.hpp,16,{4000},DECLARED,,4000
+DEFAULT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/include/antworld/core/long_term.hpp,19,{},DECLARED,,0
+DEFAULT,ResourceCycleConfig.release_limit,ResourceCycleConfig,release_limit,cpp/include/antworld/core/long_term.hpp,29,{},DECLARED,,ZERO_INITIALIZED_COMPOSITE
+DEFAULT,ResourceCycleConfig.reserve,ResourceCycleConfig,reserve,cpp/include/antworld/core/long_term.hpp,29,{},DECLARED,,ZERO_INITIALIZED_COMPOSITE
+DEFAULT,ResourceCycleConfig.interval,ResourceCycleConfig,interval,cpp/include/antworld/core/long_term.hpp,30,{86400000},DECLARED,,86400000
+DEFAULT,ResourceCycleConfig.productive_span,ResourceCycleConfig,productive_span,cpp/include/antworld/core/long_term.hpp,30,{1296000000},DECLARED,,1296000000
+DEFAULT,ResourceCycleConfig.cyclic,ResourceCycleConfig,cyclic,cpp/include/antworld/core/long_term.hpp,31,{},DECLARED,,0
+DEFAULT,ResourceCycleConfig.low_productivity_permille,ResourceCycleConfig,low_productivity_permille,cpp/include/antworld/core/long_term.hpp,32,{},DECLARED,,0
+DEFAULT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/include/antworld/core/physiology.hpp,9,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/include/antworld/core/physiology.hpp,10,{30000},DECLARED,,30000
+DEFAULT,PhysiologyConfig.larva_duration,PhysiologyConfig,larva_duration,cpp/include/antworld/core/physiology.hpp,10,{60000},DECLARED,,60000
+DEFAULT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/include/antworld/core/physiology.hpp,10,{30000},DECLARED,,30000
+DEFAULT,PhysiologyConfig.crop_capacity_ug,PhysiologyConfig,crop_capacity_ug,cpp/include/antworld/core/physiology.hpp,11,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.hydration_capacity_ug,PhysiologyConfig,hydration_capacity_ug,cpp/include/antworld/core/physiology.hpp,11,{2000},DECLARED,,2000
+DEFAULT,PhysiologyConfig.carbohydrate_yield_nj_per_ug,PhysiologyConfig,carbohydrate_yield_nj_per_ug,cpp/include/antworld/core/physiology.hpp,12,{1000000},DECLARED,,1000000
+DEFAULT,PhysiologyConfig.energy_capacity_nj,PhysiologyConfig,energy_capacity_nj,cpp/include/antworld/core/physiology.hpp,12,{2000000000},DECLARED,,2000000000
+DEFAULT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/include/antworld/core/physiology.hpp,13,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/include/antworld/core/physiology.hpp,13,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/include/antworld/core/physiology.hpp,13,{1},DECLARED,,1
+DEFAULT,PhysiologyConfig.carb_absorption_ug_per_s,PhysiologyConfig,carb_absorption_ug_per_s,cpp/include/antworld/core/physiology.hpp,14,{10},DECLARED,,10
+DEFAULT,PhysiologyConfig.protein_absorption_ug_per_s,PhysiologyConfig,protein_absorption_ug_per_s,cpp/include/antworld/core/physiology.hpp,14,{10},DECLARED,,10
+DEFAULT,PhysiologyConfig.water_absorption_ug_per_s,PhysiologyConfig,water_absorption_ug_per_s,cpp/include/antworld/core/physiology.hpp,14,{100},DECLARED,,100
+DEFAULT,PhysiologyConfig.larval_protein_requirement_ug,PhysiologyConfig,larval_protein_requirement_ug,cpp/include/antworld/core/physiology.hpp,15,{100},DECLARED,,100
+DEFAULT,PhysiologyConfig.transfer_limit_ug,PhysiologyConfig,transfer_limit_ug,cpp/include/antworld/core/physiology.hpp,15,{100},DECLARED,,100
+DEFAULT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/include/antworld/core/physiology.hpp,16,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/include/antworld/core/physiology.hpp,17,{1000},DECLARED,,1000
+DEFAULT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/include/antworld/core/physiology.hpp,18,{},DECLARED,,0
+DEFAULT,PhysiologySeed.crop,PhysiologySeed,crop,cpp/include/antworld/core/physiology.hpp,22,{},DECLARED,,ZERO_INITIALIZED_COMPOSITE
+DEFAULT,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/include/antworld/core/physiology.hpp,23,{1000000000},DECLARED,,1000000000
+DEFAULT,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/include/antworld/core/physiology.hpp,23,{1000},DECLARED,,1000
+DEFAULT,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/include/antworld/core/physiology.hpp,23,{},DECLARED,,0
+DEFAULT,SocialConfig.bounded_contacts,SocialConfig,bounded_contacts,cpp/include/antworld/core/social.hpp,9,{true},DECLARED,,true
+DEFAULT,SocialConfig.demand_sensitive,SocialConfig,demand_sensitive,cpp/include/antworld/core/social.hpp,9,{true},DECLARED,,true
+DEFAULT,SocialConfig.exchange_enabled,SocialConfig,exchange_enabled,cpp/include/antworld/core/social.hpp,9,{true},DECLARED,,true
+DEFAULT,SocialConfig.encounter_budget,SocialConfig,encounter_budget,cpp/include/antworld/core/social.hpp,10,{16},DECLARED,,16
+DEFAULT,SocialConfig.decision_interval,SocialConfig,decision_interval,cpp/include/antworld/core/social.hpp,11,{5000},DECLARED,,5000
+DEFAULT,SocialConfig.minimum_program_time,SocialConfig,minimum_program_time,cpp/include/antworld/core/social.hpp,11,{10000},DECLARED,,10000
+DEFAULT,SocialConfig.forage_weight,SocialConfig,forage_weight,cpp/include/antworld/core/social.hpp,12,{8},DECLARED,,8
+DEFAULT,SocialConfig.nurse_weight,SocialConfig,nurse_weight,cpp/include/antworld/core/social.hpp,12,{12},DECLARED,,12
+DEFAULT,SocialConfig.rest_weight,SocialConfig,rest_weight,cpp/include/antworld/core/social.hpp,12,{4},DECLARED,,4
+DEFAULT,SocialConfig.excavate_weight,SocialConfig,excavate_weight,cpp/include/antworld/core/social.hpp,13,{4},DECLARED,,4
+DEFAULT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/include/antworld/core/social.hpp,16,{},DECLARED,,0
+DEFAULT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/include/antworld/core/social.hpp,16,{},DECLARED,,0
+AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_allocation_failure.cpp,60,0.01,POSITIONAL_DECLARATION,grid,0.01
+AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_allocation_failure.cpp,60,1,POSITIONAL_DECLARATION,grid,1
+AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_allocation_failure.cpp,60,"{0, 0, 0}",POSITIONAL_DECLARATION,grid,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_allocation_failure.cpp,60,3,POSITIONAL_DECLARATION,grid,3
+ASSIGNMENT,BehaviorConfig.trail_cutoff_units,BehaviorConfig,trail_cutoff_units,cpp/tests/test_allocation_failure.cpp,61,0.5,LOCAL_TYPED_NAME,params,0.5
+ASSIGNMENT,BehaviorConfig.trail_half_life_s,BehaviorConfig,trail_half_life_s,cpp/tests/test_allocation_failure.cpp,61,1,LOCAL_TYPED_NAME,params,1
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_allocation_failure.cpp,64,1000,DECLARED_API_POSITION,seed_ant,1000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,64,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,64,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,64,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,65,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_allocation_failure.cpp,65,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_allocation_failure.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_allocation_failure.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,66,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_allocation_failure.cpp,66,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_allocation_failure.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_allocation_failure.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_allocation_failure.cpp,83,0.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_allocation_failure.cpp,83,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_allocation_failure.cpp,83,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_allocation_failure.cpp,83,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,84,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_allocation_failure.cpp,84,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_allocation_failure.cpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_allocation_failure.cpp,84,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_allocation_failure.cpp,93,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_allocation_failure.cpp,93,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_allocation_failure.cpp,93,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_allocation_failure.cpp,93,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,95,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,95,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,95,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,95,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_allocation_failure.cpp,95,.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_allocation_failure.cpp,95,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_allocation_failure.cpp,95,0,DECLARED_API_POSITION,seed_food,0
+AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_allocation_failure.cpp,96,1000000000,POSITIONAL_DECLARATION,seed,1000000000
+AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_allocation_failure.cpp,96,"{200,200,200,0}",POSITIONAL_DECLARATION,seed,EXPRESSION; see source and scenario
+AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_allocation_failure.cpp,96,1000,POSITIONAL_DECLARATION,seed,1000
+AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_allocation_failure.cpp,96,0,POSITIONAL_DECLARATION,seed,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_allocation_failure.cpp,111,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,111,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,111,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,111,LifeStage::Egg,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/tests/test_allocation_failure.cpp,112,{2},LOCAL_TYPED_NAME,config,2
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_allocation_failure.cpp,117,"{14,22,22}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_allocation_failure.cpp,117,"{2,2,2}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_allocation_failure.cpp,119,.006,POSITIONAL_DECLARATION,point,0.006
+AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_allocation_failure.cpp,119,-.010,POSITIONAL_DECLARATION,point,-0.01
+AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_allocation_failure.cpp,119,.006,POSITIONAL_DECLARATION,point,0.006
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_allocation_failure.cpp,120,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,120,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,120,point,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,120,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_allocation_failure.cpp,121,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,121,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,121,point,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,121,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_allocation_failure.cpp,138,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,138,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,138,point,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,138,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_allocation_failure.cpp,145,corrected,LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/tests/test_allocation_failure.cpp,145,corrected,LOCAL_TYPED_NAME,policy,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,147,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,147,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_allocation_failure.cpp,151,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_allocation_failure.cpp,151,"{0,400,0,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_allocation_failure.cpp,151,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_allocation_failure.cpp,151,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,161,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,161,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_allocation_failure.cpp,162,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_allocation_failure.cpp,162,"{0,400,0,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_allocation_failure.cpp,162,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_allocation_failure.cpp,162,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,169,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,169,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_allocation_failure.cpp,170,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_allocation_failure.cpp,170,"{0,100,0,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_allocation_failure.cpp,170,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_allocation_failure.cpp,170,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,171,200,DECLARED_API_POSITION,seed_food,200
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,171,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,171,200,DECLARED_API_POSITION,seed_food,200
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,171,600,DECLARED_API_POSITION,seed_food,600
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_allocation_failure.cpp,190,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_allocation_failure.cpp,190,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_allocation_failure.cpp,190,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/tests/test_allocation_failure.cpp,191,20,LOCAL_TYPED_NAME,p,20
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_allocation_failure.cpp,192,1500000000,DECLARED_API_POSITION,enable_physiology,1500000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_allocation_failure.cpp,192,"{0,100,0,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_allocation_failure.cpp,192,1600,DECLARED_API_POSITION,enable_physiology,1600
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_allocation_failure.cpp,192,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/tests/test_allocation_failure.cpp,193,{1},LOCAL_TYPED_NAME,r,1
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/tests/test_allocation_failure.cpp,194,{1},LOCAL_TYPED_NAME,r,1
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,197,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,197,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,197,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,197,1,DECLARED_API_POSITION,seed_food,1
+ASSIGNMENT,ResourceCycleConfig.interval,ResourceCycleConfig,interval,cpp/tests/test_allocation_failure.cpp,197,{1},LOCAL_TYPED_NAME,c,1
+ASSIGNMENT,ResourceCycleConfig.release_limit,ResourceCycleConfig,release_limit,cpp/tests/test_allocation_failure.cpp,197,"{1,1,1,0}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.reserve,ResourceCycleConfig,reserve,cpp/tests/test_allocation_failure.cpp,197,"{10,10,10,0}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,220,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,220,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,220,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,220,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_allocation_failure.cpp,223,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_allocation_failure.cpp,223,4,DECLARED_API_POSITION,seed_food,4
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_allocation_failure.cpp,223,2,DECLARED_API_POSITION,seed_food,2
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_allocation_failure.cpp,223,3,DECLARED_API_POSITION,seed_food,3
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,42,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,42,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,42,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,42,1000,DECLARED_API_POSITION,seed_food,1000
+ASSIGNMENT,PositionM.x,PositionM,x,cpp/tests/test_s1.cpp,55,99,UNIQUE_FIELD_NAME,position,99
+AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s1.cpp,77,0.005,POSITIONAL_TEMPORARY,,0.005
+AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s1.cpp,77,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s1.cpp,77,0,POSITIONAL_TEMPORARY,,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s1.cpp,115,2,DECLARED_API_POSITION,seed_ant,2
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s1.cpp,115,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,115,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,115,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,116,"{0.1, 0, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,117,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,117,LifeStage::Egg,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s1.cpp,118,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,118,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,118,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,119,10,DECLARED_API_POSITION,seed_food,10
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,119,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,119,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,119,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,150,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,150,LifeStage::Egg,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,151,10,DECLARED_API_POSITION,seed_food,10
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,151,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,151,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,151,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,207,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,207,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,207,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,207,0,DECLARED_API_POSITION,seed_food,0
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,248,ingredients[0],POSITIONAL_DECLARATION,stock,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,248,ingredients[3],POSITIONAL_DECLARATION,stock,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,248,ingredients[1],POSITIONAL_DECLARATION,stock,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,248,ingredients[2],POSITIONAL_DECLARATION,stock,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s1.cpp,260,total,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s1.cpp,260,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,260,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,260,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s1.cpp,267,UINT64_MAX,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s1.cpp,267,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s1.cpp,267,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s1.cpp,267,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,268,UINT64_MAX/2,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,268,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,268,UINT64_MAX-UINT64_MAX/2,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,268,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,272,UINT64_MAX,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,272,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,272,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,272,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,273,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,273,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,273,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,273,0,DECLARED_API_POSITION,seed_food,0
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,275,UINT64_MAX,POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,275,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,275,1,POSITIONAL_TEMPORARY,,1
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,275,0,POSITIONAL_TEMPORARY,,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,277,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,277,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,277,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,277,1,DECLARED_API_POSITION,seed_food,1
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s1.cpp,278,1,POSITIONAL_TEMPORARY,,1
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s1.cpp,278,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s1.cpp,278,1,POSITIONAL_TEMPORARY,,1
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s1.cpp,278,1,POSITIONAL_TEMPORARY,,1
+WHOLE_ASSIGNMENT,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2.cpp,39,100000,LEXICAL_TYPED_NAME,stock,100000
+WHOLE_ASSIGNMENT,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2.cpp,39,100000,LEXICAL_TYPED_NAME,stock,100000
+WHOLE_ASSIGNMENT,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2.cpp,39,100000,LEXICAL_TYPED_NAME,stock,100000
+WHOLE_ASSIGNMENT,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2.cpp,39,100000,LEXICAL_TYPED_NAME,stock,100000
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2.cpp,41,0,DECLARED_API_POSITION,seed_colony,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2.cpp,41,0,DECLARED_API_POSITION,seed_colony,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2.cpp,41,0,DECLARED_API_POSITION,seed_colony,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s2.cpp,42,1000,DECLARED_API_POSITION,seed_ant,1000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s2.cpp,42,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s2.cpp,42,"{0, 0, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s2.cpp,42,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s2.cpp,48,0.01,POSITIONAL_DECLARATION,grid,0.01
+AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s2.cpp,48,3,POSITIONAL_DECLARATION,grid,3
+AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s2.cpp,48,"{0, 0, 0}",POSITIONAL_DECLARATION,grid,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s2.cpp,48,5,POSITIONAL_DECLARATION,grid,5
+AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2.cpp,56,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2.cpp,56,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2.cpp,56,0.01,POSITIONAL_TEMPORARY,,0.01
+ASSIGNMENT,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s2.cpp,58,0,UNIQUE_FIELD_NAME,invalid,0
+ASSIGNMENT,BehaviorConfig.step_duration,BehaviorConfig,step_duration,cpp/tests/test_s2.cpp,60,{1},LOCAL_TYPED_NAME,speed,1
+ASSIGNMENT,BehaviorConfig.sensing_radius_cells,BehaviorConfig,sensing_radius_cells,cpp/tests/test_s2.cpp,65,2,LOCAL_TYPED_NAME,params,2
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/tests/test_s2.cpp,65,false,LOCAL_TYPED_NAME,params,false
+AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s2.cpp,66,0.01,POSITIONAL_DECLARATION,grid,0.01
+AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s2.cpp,66,3,POSITIONAL_DECLARATION,grid,3
+AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s2.cpp,66,"{0, 0, 0}",POSITIONAL_DECLARATION,grid,EXPRESSION; see source and scenario
+AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s2.cpp,66,15,POSITIONAL_DECLARATION,grid,15
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2.cpp,69,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2.cpp,69,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2.cpp,69,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2.cpp,69,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2.cpp,69,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2.cpp,69,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2.cpp,69,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2.cpp,74,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2.cpp,74,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2.cpp,74,0.13,DECLARED_API_POSITION,seed_food,0.13
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2.cpp,74,0.14,DECLARED_API_POSITION,seed_food,0.14
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2.cpp,74,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2.cpp,74,0.02,DECLARED_API_POSITION,seed_food,0.02
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/tests/test_s2.cpp,119,false,LOCAL_TYPED_NAME,off,false
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/tests/test_s2.cpp,124,true,UNIQUE_FIELD_NAME,expired,true
+ASSIGNMENT,BehaviorConfig.memory_lifetime,BehaviorConfig,memory_lifetime,cpp/tests/test_s2.cpp,124,{0},UNIQUE_FIELD_NAME,expired,0
+ASSIGNMENT,BehaviorConfig.deposit_units,BehaviorConfig,deposit_units,cpp/tests/test_s2.cpp,135,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,BehaviorConfig.trail_cap_units,BehaviorConfig,trail_cap_units,cpp/tests/test_s2.cpp,135,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,BehaviorConfig.trail_half_life_s,BehaviorConfig,trail_half_life_s,cpp/tests/test_s2.cpp,135,10,LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/tests/test_s2.cpp,136,false,LOCAL_TYPED_NAME,off,false
+ASSIGNMENT,BehaviorConfig.explore_weight,BehaviorConfig,explore_weight,cpp/tests/test_s2.cpp,219,0,UNIQUE_FIELD_NAME,invalid,0
+ASSIGNMENT,BehaviorConfig.trail_cap_units,BehaviorConfig,trail_cap_units,cpp/tests/test_s2.cpp,221,0,UNIQUE_FIELD_NAME,invalid,0
+ASSIGNMENT,BehaviorConfig.max_trip_moves,BehaviorConfig,max_trip_moves,cpp/tests/test_s2.cpp,228,2,LOCAL_TYPED_NAME,p,2
+ASSIGNMENT,BehaviorConfig.route_capacity,BehaviorConfig,route_capacity,cpp/tests/test_s2.cpp,228,2,LOCAL_TYPED_NAME,p,2
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/tests/test_s2.cpp,228,false,LOCAL_TYPED_NAME,p,false
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s2.cpp,232,0.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s2.cpp,232,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s2.cpp,232,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s2.cpp,232,1,DECLARED_API_POSITION,configure_surface,1
+ASSIGNMENT,BehaviorConfig.trails_enabled,BehaviorConfig,trails_enabled,cpp/tests/test_s2_1.cpp,61,false,LOCAL_TYPED_NAME,p,false
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s2_1.cpp,62,0.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s2_1.cpp,62,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s2_1.cpp,62,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s2_1.cpp,62,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,63,0.01,DECLARED_API_POSITION,seed_colony,0.01
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,63,0.01,DECLARED_API_POSITION,seed_colony,0.01
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,63,0,DECLARED_API_POSITION,seed_colony,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,63,0,DECLARED_API_POSITION,seed_colony,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,63,0.01,DECLARED_API_POSITION,seed_colony,0.01
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,63,0.01,DECLARED_API_POSITION,seed_colony,0.01
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s2_1.cpp,64,"{0.01, 0, 0.01}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s2_1.cpp,64,"{0.01, 0, 0.01}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2_1.cpp,65,10000,DECLARED_API_POSITION,seed_food,10000
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2_1.cpp,65,10000,DECLARED_API_POSITION,seed_food,10000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,65,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,65,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,65,0.01,DECLARED_API_POSITION,seed_food,0.01
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,65,0.01,DECLARED_API_POSITION,seed_food,0.01
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2_1.cpp,66,10000,DECLARED_API_POSITION,seed_food,10000
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s2_1.cpp,66,10000,DECLARED_API_POSITION,seed_food,10000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s2_1.cpp,66,0.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s2_1.cpp,66,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,66,0.01,DECLARED_API_POSITION,seed_food,0.01
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s2_1.cpp,66,0.01,DECLARED_API_POSITION,seed_food,0.01
+ASSIGNMENT,BehaviorConfig.trail_weight,BehaviorConfig,trail_weight,cpp/tests/test_s2_1.cpp,81,0,LOCAL_TYPED_NAME,params,0
+ASSIGNMENT,BehaviorConfig.memory_enabled,BehaviorConfig,memory_enabled,cpp/tests/test_s2_2.cpp,20,true,UNIQUE_FIELD_NAME,config,true
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s3.cpp,15,{0},LOCAL_TYPED_NAME,cfg,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,18,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,18,"{10,20,30,40}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,18,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,18,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s3.cpp,25,UINT64_MAX,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s3.cpp,25,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s3.cpp,25,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s3.cpp,25,0,DECLARED_API_POSITION,seed_food,0
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s3.cpp,34,{pulse},LOCAL_TYPED_NAME,cfg,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/tests/test_s3.cpp,34,3,LOCAL_TYPED_NAME,cfg,3
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,35,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,35,"{100,0,100,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,35,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,35,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,PositionM.x,PositionM,x,cpp/tests/test_s3.cpp,64,.01,UNIQUE_FIELD_NAME,position,0.01
+ASSIGNMENT,AntSeed.stage,AntSeed,stage,cpp/tests/test_s3.cpp,65,LifeStage::Egg,LOCAL_TYPED_NAME,seed,EXPRESSION; see source and scenario
+ASSIGNMENT,AntSeed.stage,AntSeed,stage,cpp/tests/test_s3.cpp,66,LifeStage::Pupa,LOCAL_TYPED_NAME,seed,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,68,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,68,"{100,100,100,100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,68,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,68,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s3.cpp,77,400,DECLARED_API_POSITION,seed_food,400
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s3.cpp,77,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s3.cpp,77,200,DECLARED_API_POSITION,seed_food,200
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s3.cpp,77,300,DECLARED_API_POSITION,seed_food,300
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/tests/test_s3.cpp,90,water ? 1000U : 0U,LOCAL_TYPED_NAME,cfg,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,91,water ? UINT64_C(1000000000) : UINT64_C(250001),DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,91,"{100,0,100,0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,91,water ? 251U : 1000U,DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,91,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s3.cpp,116,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s3.cpp,116,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s3.cpp,116,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s3.cpp,116,4,DECLARED_API_POSITION,configure_surface,4
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s3.cpp,117,1000,DECLARED_API_POSITION,seed_food,1000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s3.cpp,117,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s3.cpp,117,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s3.cpp,117,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s3.cpp,117,.03,DECLARED_API_POSITION,seed_food,0.03
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s3.cpp,117,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s3.cpp,117,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,145,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,145,"{100,100,100,100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,145,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,145,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s3.cpp,152,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s3.cpp,152,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s3.cpp,152,"{near ? 0.0 : .01,0,0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s3.cpp,152,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s3.cpp,153,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s3.cpp,153,"{100,400,400,100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s3.cpp,153,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s3.cpp,153,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,27,"position({14, 12, 12}, f.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.quantum_m,GeometryConfig,quantum_m,cpp/tests/test_s4.cpp,33,0,UNIQUE_FIELD_NAME,c,0
+ASSIGNMENT,GeometryConfig.dry_ug_per_q3,GeometryConfig,dry_ug_per_q3,cpp/tests/test_s4.cpp,36,UINT64_MAX,UNIQUE_FIELD_NAME,c,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s4.cpp,76,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s4.cpp,76,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,76,"position({12, 12, 12}, a.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s4.cpp,76,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s4.cpp,78,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s4.cpp,78,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,78,"position({12, 12, 12}, b.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s4.cpp,78,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s4.cpp,79,"{15, 16, 14}",POSITIONAL_DECLARATION,second,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s4.cpp,79,"{14, 12, 10}",POSITIONAL_DECLARATION,second,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,114,"position({12, 12, 12}, cfg)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s4.cpp,127,1999,DECLARED_API_POSITION,seed_ant,1999
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s4.cpp,127,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,127,"position({12, 12, 12}, capacity.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s4.cpp,127,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s4.cpp,134,110000,DECLARED_API_POSITION,enable_physiology,110000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s4.cpp,134,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s4.cpp,134,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s4.cpp,134,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,179,"position({6, 6, 10}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s4.cpp,188,"{16, 16, 12}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s4.cpp,188,"{12, 4, 8}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,191,"position({6, 6, 10}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s4.cpp,197,"{28, 7, 7}",POSITIONAL_DECLARATION,narrow,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s4.cpp,197,"{2, 5, 5}",POSITIONAL_DECLARATION,narrow,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,200,"position({6, 6, 6}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s4.cpp,205,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s4.cpp,205,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s4.cpp,205,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s4.cpp,205,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,220,"position({9, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,220,"position({12, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s4.cpp,221,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s4.cpp,221,"{100, 100, 100, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s4.cpp,221,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s4.cpp,221,0,DECLARED_API_POSITION,enable_physiology,0
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s4.cpp,266,"{28, 14, 14}",POSITIONAL_DECLARATION,tunnel,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s4.cpp,266,"{2, 10, 10}",POSITIONAL_DECLARATION,tunnel,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s4.cpp,269,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s4.cpp,269,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,269,"position({12, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s4.cpp,269,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,270,"position({16, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s4.cpp,271,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s4.cpp,271,"{100, 100, 100, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s4.cpp,271,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s4.cpp,271,0,DECLARED_API_POSITION,enable_physiology,0
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s4.cpp,273,"{14, 15, 14}",POSITIONAL_DECLARATION,mine,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s4.cpp,273,"{10, 14, 10}",POSITIONAL_DECLARATION,mine,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,299,start,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,301,"position({5, 5, 5}, f.geometry)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s4.cpp,409,20000,DECLARED_API_POSITION,seed_ant,20000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s4.cpp,409,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,409,"position({12, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s4.cpp,409,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,BehaviorConfig.sensing_radius_cells,BehaviorConfig,sensing_radius_cells,cpp/tests/test_s4.cpp,436,3,LOCAL_TYPED_NAME,behavior,3
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s4.cpp,437,.001,DECLARED_API_POSITION,configure_surface,0.001
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s4.cpp,437,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s4.cpp,437,"position({8, 12, 12}, c)",DECLARED_API_POSITION,configure_surface,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s4.cpp,437,5,DECLARED_API_POSITION,configure_surface,5
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s4.cpp,441,"position({8, 12, 12}, c)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s4.cpp,442,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s4.cpp,442,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s4.cpp,442,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s4.cpp,442,0,DECLARED_API_POSITION,seed_food,0
+ASSIGNMENT,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s5.cpp,103,51,UNIQUE_FIELD_NAME,mass,51
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s5.cpp,123,.001,DECLARED_API_POSITION,configure_surface,0.001
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s5.cpp,123,5,DECLARED_API_POSITION,configure_surface,5
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s5.cpp,123,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s5.cpp,123,5,DECLARED_API_POSITION,configure_surface,5
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s5.cpp,162,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s5.cpp,162,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s5.cpp,162,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s5.cpp,162,LifeStage::Pupa,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s5.cpp,163,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s5.cpp,163,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s5.cpp,163,50,DECLARED_API_POSITION,seed_food,50
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s5.cpp,163,25,DECLARED_API_POSITION,seed_food,25
+ASSIGNMENT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/tests/test_s5.cpp,166,{100},LOCAL_TYPED_NAME,config,100
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s5.cpp,264,UINT64_MAX,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s5.cpp,264,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s5.cpp,264,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s5.cpp,264,0,DECLARED_API_POSITION,seed_food,0
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s5.cpp,334,"{16, y + 3, z + 3}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s5.cpp,334,"{14, y, z}",POSITIONAL_TEMPORARY,,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s5.cpp,449,UINT64_MAX,DECLARED_API_POSITION,seed_food,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s5.cpp,449,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s5.cpp,449,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s5.cpp,449,0,DECLARED_API_POSITION,seed_food,0
+ASSIGNMENT,SocialConfig.bounded_contacts,SocialConfig,bounded_contacts,cpp/tests/test_s6.cpp,35,false,LOCAL_TYPED_NAME,social,false
+API_AGGREGATE,AntSeed.carrying_capacity_ug,AntSeed,carrying_capacity_ug,cpp/tests/test_s6.cpp,40,4000,DECLARED_API_POSITION,seed_ant,4000
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s6.cpp,40,Caste::Worker,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,40,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,40,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,41,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,41,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,41,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,41,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,42,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,42,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,42,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,42,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,43,2000000000,DECLARED_API_POSITION,enable_physiology,2000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,43,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,43,2000,DECLARED_API_POSITION,enable_physiology,2000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,43,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,119,"position({9, 12, 12}, g)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,120,"position({12, 12, 12}, g)",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,120,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,121,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,121,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,121,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,121,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s6.cpp,210,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s6.cpp,210,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s6.cpp,210,"{-.01, 0, -.01}",DECLARED_API_POSITION,configure_surface,EXPRESSION; see source and scenario
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s6.cpp,210,3,DECLARED_API_POSITION,configure_surface,3
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/tests/test_s6.cpp,212,"{-.016, -.016, -.016}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/tests/test_s6.cpp,213,"{{0, 0, 0}, {64, 64, 64}}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.max,BoxQ,max,cpp/tests/test_s6.cpp,214,"{60, 60, 60}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+AGGREGATE,BoxQ.min,BoxQ,min,cpp/tests/test_s6.cpp,214,"{4, 4, 4}",POSITIONAL_DECLARATION,room,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,219,"{0, .0005, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,219,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,220,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,220,"{0, 200, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,220,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,220,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,SurfaceConfig.cell_size_m,SurfaceConfig,cell_size_m,cpp/tests/test_s6.cpp,246,.01,DECLARED_API_POSITION,configure_surface,0.01
+API_AGGREGATE,SurfaceConfig.height,SurfaceConfig,height,cpp/tests/test_s6.cpp,246,1,DECLARED_API_POSITION,configure_surface,1
+API_AGGREGATE,SurfaceConfig.origin_m,SurfaceConfig,origin_m,cpp/tests/test_s6.cpp,246,{},DECLARED_API_POSITION,configure_surface,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,SurfaceConfig.width,SurfaceConfig,width,cpp/tests/test_s6.cpp,246,3,DECLARED_API_POSITION,configure_surface,3
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,252,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,252,i < 3 ? LifeStage::Adult : LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6.cpp,254,100,POSITIONAL_TEMPORARY,,100
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6.cpp,254,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6.cpp,254,200,POSITIONAL_TEMPORARY,,200
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6.cpp,254,200,POSITIONAL_TEMPORARY,,200
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,254,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,254,"i < 3 ? FoodMass{100, 200, 200, 0} : FoodMass{}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,255,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,255,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6.cpp,257,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6.cpp,257,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6.cpp,257,400,DECLARED_API_POSITION,seed_food,400
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6.cpp,257,400,DECLARED_API_POSITION,seed_food,400
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s6.cpp,257,.02,DECLARED_API_POSITION,seed_food,0.02
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s6.cpp,257,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s6.cpp,257,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,294,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,294,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,295,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,295,"{0, 200, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,295,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,295,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,340,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6.cpp,340,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,341,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,341,"{100, 400, 400, 100}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,341,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,341,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6.cpp,344,100000,DECLARED_API_POSITION,seed_food,100000
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6.cpp,344,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6.cpp,344,100000,DECLARED_API_POSITION,seed_food,100000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6.cpp,344,100000,DECLARED_API_POSITION,seed_food,100000
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s6.cpp,344,.8,DECLARED_API_POSITION,seed_food,0.8
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s6.cpp,344,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s6.cpp,344,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6.cpp,346,"{.5, 0, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6.cpp,347,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6.cpp,347,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6.cpp,347,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6.cpp,347,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_s6_1.cpp,15,corrected,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/tests/test_s6_1.cpp,16,corrected,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.exchange_enabled,SocialConfig,exchange_enabled,cpp/tests/test_s6_1.cpp,17,response,LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_1.cpp,21,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_1.cpp,21,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6_1.cpp,23,200,DECLARED_API_POSITION,seed_food,200
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6_1.cpp,23,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6_1.cpp,23,200,DECLARED_API_POSITION,seed_food,200
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6_1.cpp,23,600,DECLARED_API_POSITION,seed_food,600
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_1.cpp,25,urgent ? UINT64_C(400000000) : UINT64_C(1000000000),DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_1.cpp,25,"{0, 100, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_1.cpp,26,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_1.cpp,27,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_1.cpp,29,2000000000,DECLARED_API_POSITION,enable_physiology,2000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_1.cpp,29,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_1.cpp,29,2000,DECLARED_API_POSITION,enable_physiology,2000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_1.cpp,29,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_s6_1.cpp,88,true,LOCAL_TYPED_NAME,c,true
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/tests/test_s6_1.cpp,89,true,LOCAL_TYPED_NAME,c,true
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_1.cpp,93,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_1.cpp,93,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_1.cpp,94,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_1.cpp,94,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_1.cpp,94,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_1.cpp,94,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_1.cpp,95,2000000000,DECLARED_API_POSITION,enable_physiology,2000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_1.cpp,95,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_1.cpp,95,2000,DECLARED_API_POSITION,enable_physiology,2000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_1.cpp,95,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_s6_1.cpp,156,true,LOCAL_TYPED_NAME,c,true
+ASSIGNMENT,SocialConfig.local_work_continuation,SocialConfig,local_work_continuation,cpp/tests/test_s6_1.cpp,157,true,LOCAL_TYPED_NAME,c,true
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_1.cpp,161,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_1.cpp,161,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_1.cpp,163,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_1.cpp,163,"{0, 400, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_1.cpp,163,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_1.cpp,163,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6_1.cpp,166,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6_1.cpp,166,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6_1.cpp,166,100000,DECLARED_API_POSITION,seed_food,100000
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6_1.cpp,166,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s6_1.cpp,166,.8,DECLARED_API_POSITION,seed_food,0.8
+API_AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s6_1.cpp,166,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s6_1.cpp,166,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_1.cpp,168,"{.5, 0, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_s6_1.cpp,216,true,LOCAL_TYPED_NAME,c,true
+ASSIGNMENT,SocialConfig.demand_sensitive,SocialConfig,demand_sensitive,cpp/tests/test_s6_1.cpp,217,false,LOCAL_TYPED_NAME,c,false
+AGGREGATE,PositionM.x,PositionM,x,cpp/tests/test_s6_1.cpp,247,.01,POSITIONAL_TEMPORARY,,0.01
+AGGREGATE,PositionM.y,PositionM,y,cpp/tests/test_s6_1.cpp,247,0,POSITIONAL_TEMPORARY,,0
+AGGREGATE,PositionM.z,PositionM,z,cpp/tests/test_s6_1.cpp,247,0,POSITIONAL_TEMPORARY,,0
+ASSIGNMENT,SocialConfig.decision_interval,SocialConfig,decision_interval,cpp/tests/test_s6_3.cpp,16,{100},LOCAL_TYPED_NAME,s,100
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s6_3.cpp,19,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3.cpp,19,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_3.cpp,19,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s6_3.cpp,21,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.egg_duration,PhysiologyConfig,egg_duration,cpp/tests/test_s6_3.cpp,22,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.larva_duration,PhysiologyConfig,larva_duration,cpp/tests/test_s6_3.cpp,23,{20},LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,PhysiologyConfig.pupa_duration,PhysiologyConfig,pupa_duration,cpp/tests/test_s6_3.cpp,24,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/tests/test_s6_3.cpp,25,{3600000},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/tests/test_s6_3.cpp,26,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/tests/test_s6_3.cpp,27,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/tests/test_s6_3.cpp,28,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.larval_protein_requirement_ug,PhysiologyConfig,larval_protein_requirement_ug,cpp/tests/test_s6_3.cpp,29,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/tests/test_s6_3.cpp,30,1,LOCAL_TYPED_NAME,p,1
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3.cpp,31,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3.cpp,31,"{0, protein, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3.cpp,31,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3.cpp,31,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/tests/test_s6_3.cpp,33,{50},LOCAL_TYPED_NAME,r,50
+ASSIGNMENT,ReproductionConfig.egg_protein_ug,ReproductionConfig,egg_protein_ug,cpp/tests/test_s6_3.cpp,34,1,LOCAL_TYPED_NAME,r,1
+ASSIGNMENT,ReproductionConfig.egg_water_ug,ReproductionConfig,egg_water_ug,cpp/tests/test_s6_3.cpp,35,10,LOCAL_TYPED_NAME,r,10
+ASSIGNMENT,ReproductionConfig.egg_energy_nj,ReproductionConfig,egg_energy_nj,cpp/tests/test_s6_3.cpp,36,1000000,LOCAL_TYPED_NAME,r,1000000
+ASSIGNMENT,ReproductionConfig.dissipated_energy_nj,ReproductionConfig,dissipated_energy_nj,cpp/tests/test_s6_3.cpp,37,1000,LOCAL_TYPED_NAME,r,1000
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6_3.cpp,82,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6_3.cpp,82,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6_3.cpp,82,1,DECLARED_API_POSITION,seed_food,1
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6_3.cpp,82,1,DECLARED_API_POSITION,seed_food,1
+ASSIGNMENT,ResourceCycleConfig.reserve,ResourceCycleConfig,reserve,cpp/tests/test_s6_3.cpp,84,"{5, 7, 9, 2}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.release_limit,ResourceCycleConfig,release_limit,cpp/tests/test_s6_3.cpp,85,"{3, 4, 5, 1}",LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
+ASSIGNMENT,ResourceCycleConfig.interval,ResourceCycleConfig,interval,cpp/tests/test_s6_3.cpp,86,{10},LOCAL_TYPED_NAME,c,10
+ASSIGNMENT,ResourceCycleConfig.productive_span,ResourceCycleConfig,productive_span,cpp/tests/test_s6_3.cpp,87,{20},LOCAL_TYPED_NAME,c,20
+ASSIGNMENT,ResourceCycleConfig.cyclic,ResourceCycleConfig,cyclic,cpp/tests/test_s6_3.cpp,88,true,LOCAL_TYPED_NAME,c,true
+AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6_3.cpp,91,3,POSITIONAL_TEMPORARY,,3
+AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6_3.cpp,91,1,POSITIONAL_TEMPORARY,,1
+AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6_3.cpp,91,4,POSITIONAL_TEMPORARY,,4
+AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6_3.cpp,91,5,POSITIONAL_TEMPORARY,,5
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/tests/test_s6_3.cpp,100,{3600000},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s6_3.cpp,101,{3600000},LOCAL_TYPED_NAME,p,3600000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/tests/test_s6_3.cpp,102,0,LOCAL_TYPED_NAME,p,0
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3.cpp,115,1000000000,DECLARED_API_POSITION,enable_physiology,1000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3.cpp,115,"{0, 40, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3.cpp,115,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3.cpp,115,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,SocialConfig.gift_first,SocialConfig,gift_first,cpp/tests/test_s6_3.cpp,164,true,LOCAL_TYPED_NAME,social,true
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/tests/test_s6_3.cpp,170,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.water_loss_ug_per_period,PhysiologyConfig,water_loss_ug_per_period,cpp/tests/test_s6_3.cpp,171,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s6_3.cpp,172,{100},LOCAL_TYPED_NAME,p,100
+ASSIGNMENT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/tests/test_s6_3.cpp,173,{100},LOCAL_TYPED_NAME,p,100
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3.cpp,174,2000000000,DECLARED_API_POSITION,enable_physiology,2000000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3.cpp,174,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3.cpp,174,2000,DECLARED_API_POSITION,enable_physiology,2000
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3.cpp,174,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3.cpp,176,"{name == ""NO_RECIPIENT"" ? .01 : 0, 0, 0}",DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_3.cpp,176,LifeStage::Larva,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3.cpp,177,100000000,DECLARED_API_POSITION,enable_physiology,100000000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3.cpp,177,{},DECLARED_API_POSITION,enable_physiology,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3.cpp,177,100,DECLARED_API_POSITION,enable_physiology,100
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3.cpp,177,0,DECLARED_API_POSITION,enable_physiology,0
+API_AGGREGATE,FoodMass.carbs_ug,FoodMass,carbs_ug,cpp/tests/test_s6_3.cpp,178,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.other_ug,FoodMass,other_ug,cpp/tests/test_s6_3.cpp,178,0,DECLARED_API_POSITION,seed_food,0
+API_AGGREGATE,FoodMass.protein_ug,FoodMass,protein_ug,cpp/tests/test_s6_3.cpp,178,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,FoodMass.water_ug,FoodMass,water_ug,cpp/tests/test_s6_3.cpp,178,100,DECLARED_API_POSITION,seed_food,100
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3.cpp,209,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_3.cpp,209,LifeStage::Egg,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.origin_m,GeometryConfig,origin_m,cpp/tests/test_s6_3_1.cpp,18,"{-.01, -.01, -.01}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+ASSIGNMENT,GeometryConfig.initial_solid,GeometryConfig,initial_solid,cpp/tests/test_s6_3_1.cpp,19,"{{0, 0, 0}, {40, 40, 40}}",LOCAL_TYPED_NAME,g,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s6_3_1.cpp,26,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3_1.cpp,26,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_3_1.cpp,26,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s6_3_1.cpp,27,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.behavior_interval,PhysiologyConfig,behavior_interval,cpp/tests/test_s6_3_1.cpp,28,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.water_loss_period,PhysiologyConfig,water_loss_period,cpp/tests/test_s6_3_1.cpp,29,{10},LOCAL_TYPED_NAME,p,10
+ASSIGNMENT,PhysiologyConfig.energy_capacity_nj,PhysiologyConfig,energy_capacity_nj,cpp/tests/test_s6_3_1.cpp,30,2000,LOCAL_TYPED_NAME,p,2000
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/tests/test_s6_3_1.cpp,31,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.active_nj_per_ms,PhysiologyConfig,active_nj_per_ms,cpp/tests/test_s6_3_1.cpp,32,0,LOCAL_TYPED_NAME,p,0
+ASSIGNMENT,PhysiologyConfig.hydration_capacity_ug,PhysiologyConfig,hydration_capacity_ug,cpp/tests/test_s6_3_1.cpp,33,200,LOCAL_TYPED_NAME,p,200
+ASSIGNMENT,PhysiologyConfig.carbohydrate_yield_nj_per_ug,PhysiologyConfig,carbohydrate_yield_nj_per_ug,cpp/tests/test_s6_3_1.cpp,34,1,LOCAL_TYPED_NAME,p,1
+ASSIGNMENT,PhysiologyConfig.carb_absorption_ug_per_s,PhysiologyConfig,carb_absorption_ug_per_s,cpp/tests/test_s6_3_1.cpp,35,100000,LOCAL_TYPED_NAME,p,100000
+ASSIGNMENT,PhysiologyConfig.water_absorption_ug_per_s,PhysiologyConfig,water_absorption_ug_per_s,cpp/tests/test_s6_3_1.cpp,36,100000,LOCAL_TYPED_NAME,p,100000
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/tests/test_s6_3_1.cpp,37,20,LOCAL_TYPED_NAME,p,20
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3_1.cpp,38,energy,DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3_1.cpp,38,"{0, 100, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3_1.cpp,38,water,DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3_1.cpp,38,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,ReproductionConfig.interval,ReproductionConfig,interval,cpp/tests/test_s6_3_1.cpp,40,{10},LOCAL_TYPED_NAME,r,10
+ASSIGNMENT,ReproductionConfig.egg_energy_nj,ReproductionConfig,egg_energy_nj,cpp/tests/test_s6_3_1.cpp,41,100,LOCAL_TYPED_NAME,r,100
+ASSIGNMENT,ReproductionConfig.dissipated_energy_nj,ReproductionConfig,dissipated_energy_nj,cpp/tests/test_s6_3_1.cpp,42,10,LOCAL_TYPED_NAME,r,10
+ASSIGNMENT,ReproductionConfig.egg_water_ug,ReproductionConfig,egg_water_ug,cpp/tests/test_s6_3_1.cpp,43,10,LOCAL_TYPED_NAME,r,10
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/tests/test_s6_3_1.cpp,44,horizon,LOCAL_TYPED_NAME,r,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3_1.cpp,48,position,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/tests/test_s6_3_1.cpp,50,0,UNIQUE_FIELD_NAME,config,0
+ASSIGNMENT,PhysiologyConfig.absorption_period,PhysiologyConfig,absorption_period,cpp/tests/test_s6_3_1.cpp,51,{1000},UNIQUE_FIELD_NAME,config,1000
+API_AGGREGATE,PhysiologySeed.body_energy_nj,PhysiologySeed,body_energy_nj,cpp/tests/test_s6_3_1.cpp,52,1000,DECLARED_API_POSITION,enable_physiology,1000
+API_AGGREGATE,PhysiologySeed.crop,PhysiologySeed,crop,cpp/tests/test_s6_3_1.cpp,52,"{100, 0, 0, 0}",DECLARED_API_POSITION,enable_physiology,EXPRESSION; see source and scenario
+API_AGGREGATE,PhysiologySeed.hydration_ug,PhysiologySeed,hydration_ug,cpp/tests/test_s6_3_1.cpp,52,100,DECLARED_API_POSITION,enable_physiology,100
+API_AGGREGATE,PhysiologySeed.tissue_protein_ug,PhysiologySeed,tissue_protein_ug,cpp/tests/test_s6_3_1.cpp,52,0,DECLARED_API_POSITION,enable_physiology,0
+ASSIGNMENT,Controls.reserve_mode,Controls,reserve_mode,cpp/tests/test_s6_3_1.cpp,171,1,LOCAL_TYPED_NAME,config,1
+ASSIGNMENT,Controls.laying,Controls,laying,cpp/tests/test_s6_3_1.cpp,182,false,LOCAL_TYPED_NAME,config,false
+ASSIGNMENT,Controls.reserve_mode,Controls,reserve_mode,cpp/tests/test_s6_3_1.cpp,185,0,LOCAL_TYPED_NAME,config,0
+API_AGGREGATE,AntSeed.caste,AntSeed,caste,cpp/tests/test_s6_3_1.cpp,199,Caste::Queen,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+API_AGGREGATE,AntSeed.position,AntSeed,position,cpp/tests/test_s6_3_1.cpp,199,{},DECLARED_API_POSITION,seed_ant,ZERO_INITIALIZED_COMPOSITE
+API_AGGREGATE,AntSeed.stage,AntSeed,stage,cpp/tests/test_s6_3_1.cpp,199,LifeStage::Adult,DECLARED_API_POSITION,seed_ant,EXPRESSION; see source and scenario
+ASSIGNMENT,PhysiologyConfig.adult_protein_target_ug,PhysiologyConfig,adult_protein_target_ug,cpp/tests/test_s6_3_1.cpp,201,20,LOCAL_TYPED_NAME,p,20
+ASSIGNMENT,PhysiologyConfig.basal_nj_per_ms,PhysiologyConfig,basal_nj_per_ms,cpp/tests/test_s6_3_1.cpp,202,1000000000,LOCAL_TYPED_NAME,p,1000000000
+ASSIGNMENT,ReproductionConfig.maintenance_horizon,ReproductionConfig,maintenance_horizon,cpp/tests/test_s6_3_1.cpp,208,{horizon},LOCAL_TYPED_NAME,c,EXPRESSION; see source and scenario
