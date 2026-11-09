@@ -1,0 +1,58 @@
+{
+  "contacts.csv": {
+    "rows": 104,
+    "normalized_lf_sha256": "746f00a2886286ab4d9bb05bbd198d4df8240e4664af84eac01e6cafddfbe60d",
+    "parts": [
+      "contacts.csv"
+    ]
+  },
+  "hwinfo.csv": {
+    "rows": 40,
+    "normalized_lf_sha256": "67cc11e295dd5fcc44aced52d7c132fb0b985a84906c4d48e11c856363bb4977",
+    "parts": [
+      "hwinfo.csv"
+    ]
+  },
+  "hwinfo_provenance.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "ae96d739eccd648686681f306703846277abc118e4211cce66470e4329c8c363",
+    "parts": [
+      "hwinfo_provenance.json"
+    ]
+  },
+  "phases.csv": {
+    "rows": 416,
+    "normalized_lf_sha256": "c18cc6256d37c9da89d184981d1141b591906e9ca5d6e4635fc5dc16888ac7aa",
+    "parts": [
+      "phases.csv"
+    ]
+  },
+  "profile.csv": {
+    "rows": 3744,
+    "normalized_lf_sha256": "2f1f974e3d597fd69131de223c96037eb53fc1dbdf74811693b056fab007d4a0",
+    "parts": [
+      "profile.csv"
+    ]
+  },
+  "receipt.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "8c88e92f3011f73e5b5cee1c947a5b088261de21f763e5125aa9c757e3438d0a",
+    "parts": [
+      "receipt.json"
+    ]
+  },
+  "schedule.csv": {
+    "rows": 104,
+    "normalized_lf_sha256": "ef80ecfbbf486eddc49599d52c9f25ff62ac1f3be462c2d0b368c42aff531ac8",
+    "parts": [
+      "schedule.csv"
+    ]
+  },
+  "telemetry.csv": {
+    "rows": 732,
+    "normalized_lf_sha256": "6fe053e8427997d872bc9396d2e804d287b2a3c43ffa40cb9dc05bfb6745d2d8",
+    "parts": [
+      "telemetry.csv"
+    ]
+  }
+}

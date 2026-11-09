@@ -1,0 +1,14 @@
+{
+  "archive.json": "bdee97fd4facc38b0626150ed2f1bff9eeb20dba871060aa9096578639c0c266",
+  "configuration.json": "5458371109f57c39e68bb16c1d2da7889c1fb37eebd26f9d0387616352f1a647",
+  "session1/archive.json": "b1b88f737199be21e1d11da772d077798efe59bcf01ec1f8233748f585938a86",
+  "session1/contacts.csv": "00d4625c471d88a1445ce4c80d9215b0e65c3c7fc21267534e5009dd97568efd",
+  "session1/hwinfo.csv": "92c1e687338cd1b5675ba59737e15f35fbdbda2530f5fdefb2c0e1df58c066b9",
+  "session1/hwinfo_corrected.csv": "40370af4867b173184bcb9ea99f19bca853893b6f10df2e2b2ad64bf8c3d3cc0",
+  "session1/hwinfo_corrected_provenance.json": "ccfdb8abcc32c3e9b3da0f7f2aa1cdd0461cd9fb045157496b13796e58547fc5",
+  "session1/hwinfo_provenance.json": "f7a0cf1beeb873b03bf9d1779dbb47fa6020960fb85c11fc83ee85efd67b58d3",
+  "session1/phases.csv": "67ae85e25fa1fcf3e64f960e6a95fc7f5659a164d48b2d733cda97c85dcb4874",
+  "session1/profile.csv": "10d0bffa0b39ad57da5ce3d23162b6f10f19808c5b00146e60222fff02bc34b0",
+  "session1/receipt.json": "92c15733e97042d60ab5b10f24317b252985a73a5d815a8fed258485d2d51fd5",
+  "session1/schedule.csv": "cf6b206b25f6b5235750083a6189e1e59027c7ec0ca5eadc690e0ab2c853f80b"
+}

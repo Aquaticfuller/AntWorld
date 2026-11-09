@@ -1,0 +1,63 @@
+{
+  "source_commit": "95bbc5a",
+  "local_builds": [
+    {
+      "configuration": "Debug",
+      "tests": 137,
+      "passed": 137,
+      "failed": 0,
+      "total_ctest_seconds": 71.71,
+      "source_commit": "95bbc5a",
+      "last_test_log_sha256": "9ea0b74fa92ddaccbf64006ca1088c87bde953a5c9234c2439eb35a4592cc0ec"
+    },
+    {
+      "configuration": "Release",
+      "tests": 137,
+      "passed": 137,
+      "failed": 0,
+      "total_ctest_seconds": 27.9,
+      "source_commit": "95bbc5a",
+      "last_test_log_sha256": "ab4aa7013676a572f940196016932d96b0e916e2f22c9f8d31105bbe8c60e633"
+    },
+    {
+      "configuration": "ASan_UBSan",
+      "tests": 137,
+      "passed": 137,
+      "failed": 0,
+      "total_ctest_seconds": 211.33,
+      "source_commit": "95bbc5a",
+      "last_test_log_sha256": "d3dc17f4a842c256ff362bbee3d8d7385ba9e7ed389429246f53ba72e5a7cae8"
+    },
+    {
+      "configuration": "Clean_Release",
+      "tests": 137,
+      "passed": 137,
+      "failed": 0,
+      "total_ctest_seconds": 19.6,
+      "source_commit": "95bbc5a",
+      "last_test_log_sha256": "7e971a0014849c24078b26bee025a0e8ad263720eb326ff3e19d6e8a167f0439"
+    },
+    {
+      "configuration": "Core_only_Release",
+      "tests": 117,
+      "passed": 117,
+      "failed": 0,
+      "total_ctest_seconds": 14.34,
+      "source_commit": "95bbc5a",
+      "last_test_log_sha256": "6ff64ff1bf1b18516949dc647b2c4624b7750d5b212ea53a7d0fdb2d9fb8e691"
+    }
+  ],
+  "test_rows": 665,
+  "inherited_test_registrations": 135,
+  "new_test_registrations": 2,
+  "toolchain": {
+    "clang": "23.1.5",
+    "llvm_mingw": "20261104-ucrt-x86_64",
+    "cmake": "3.31.10",
+    "ninja": "1.13.2",
+    "sqlite": "3.54.1"
+  },
+  "windows_sanitizers": "ASan/UBSan; detect_leaks=0 because the Windows runtime does not support LeakSanitizer",
+  "initial_failure": "All 137 Windows tests rejected at runtime startup with detect_leaks=1; retained log; corrected invocation passes 137.",
+  "timing_note": "Correctness tests may overlap builds and evidence analysis; these durations are not benchmark samples."
+}

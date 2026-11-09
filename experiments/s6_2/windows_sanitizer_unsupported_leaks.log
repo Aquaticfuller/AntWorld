@@ -1,0 +1,745 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_2-sanitized
+Test project D:/Codex_workspace/AntWorld/build/s6_2-sanitized
+        Start   1: S6_2_NUTRITION_OBSERVER
+  1/137 Test   #1: S6_2_NUTRITION_OBSERVER ..........***Failed    1.02 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_2_observer.cmake:11 (message):
+  Observer failed (1):
+
+  ==15980==AddressSanitizer: detect_leaks is not supported on this platform.
+
+
+
+
+        Start   2: S6_2_CHOICE_OBSERVER
+  2/137 Test   #2: S6_2_CHOICE_OBSERVER .............***Failed    1.10 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_2_observer.cmake:11 (message):
+  Observer failed (1):
+
+  ==18268==AddressSanitizer: detect_leaks is not supported on this platform.
+
+
+
+
+        Start   3: S6_1_GIFT_PRIORITY
+  3/137 Test   #3: S6_1_GIFT_PRIORITY ...............***Failed    0.13 sec
+==12252==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   4: S6_1_SELF_MAINTENANCE
+  4/137 Test   #4: S6_1_SELF_MAINTENANCE ............***Failed    0.03 sec
+==33496==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   5: S6_1_LOCAL_CONTINUATION
+  5/137 Test   #5: S6_1_LOCAL_CONTINUATION ..........***Failed    0.03 sec
+==23204==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   6: S6_1_RELEASE_CUE
+  6/137 Test   #6: S6_1_RELEASE_CUE .................***Failed    0.03 sec
+==24248==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   7: S6_1_CONTROLS
+  7/137 Test   #7: S6_1_CONTROLS ....................***Failed    0.03 sec
+==6572==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   8: S6_1_PARTITION
+  8/137 Test   #8: S6_1_PARTITION ...................***Failed    0.03 sec
+==6256==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start   9: S6_1_LOCALITY
+  9/137 Test   #9: S6_1_LOCALITY ....................***Failed    0.03 sec
+==9360==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  10: S6_1_CORRUPTION
+ 10/137 Test  #10: S6_1_CORRUPTION ..................***Failed    0.03 sec
+==5500==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  11: S6_1_CONTACT_LINKS
+ 11/137 Test  #11: S6_1_CONTACT_LINKS ...............***Failed    0.03 sec
+==13992==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  12: S6_DEMAND
+ 12/137 Test  #12: S6_DEMAND ........................***Failed    0.12 sec
+==27164==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  13: S6_CONCURRENT
+ 13/137 Test  #13: S6_CONCURRENT ....................***Failed    0.03 sec
+==21592==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  14: S6_CONTACTS
+ 14/137 Test  #14: S6_CONTACTS ......................***Failed    0.03 sec
+==16924==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  15: S6_CONTACT_INDEX
+ 15/137 Test  #15: S6_CONTACT_INDEX .................***Failed    0.03 sec
+==19904==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  16: S6_CONTACT_WALL
+ 16/137 Test  #16: S6_CONTACT_WALL ..................***Failed    0.03 sec
+==29336==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  17: S6_SURPLUS
+ 17/137 Test  #17: S6_SURPLUS .......................***Failed    0.03 sec
+==5632==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  18: S6_AUTONOMY_CONTROL
+ 18/137 Test  #18: S6_AUTONOMY_CONTROL ..............***Failed    0.03 sec
+==17560==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  19: S6_MIXED_SPACE
+ 19/137 Test  #19: S6_MIXED_SPACE ...................***Failed    0.03 sec
+==18428==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  20: S6_OFF_PLANE
+ 20/137 Test  #20: S6_OFF_PLANE .....................***Failed    0.03 sec
+==31816==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  21: S6_SEALED
+ 21/137 Test  #21: S6_SEALED ........................***Failed    0.03 sec
+==26600==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  22: S6_DETERMINISM
+ 22/137 Test  #22: S6_DETERMINISM ...................***Failed    0.03 sec
+==9948==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  23: S6_LIMITS
+ 23/137 Test  #23: S6_LIMITS ........................***Failed    0.03 sec
+==22036==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  24: S6_CORRUPTION
+ 24/137 Test  #24: S6_CORRUPTION ....................***Failed    0.03 sec
+==4352==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  25: S6_LOCALITY
+ 25/137 Test  #25: S6_LOCALITY ......................***Failed    0.03 sec
+==32332==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  26: S6_DURABLE_INTEGRATION
+ 26/137 Test  #26: S6_DURABLE_INTEGRATION ...........***Failed    1.08 sec
+==18636==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  27: S6_1_DURABLE_INTEGRATION
+ 27/137 Test  #27: S6_1_DURABLE_INTEGRATION .........***Failed    0.04 sec
+==7460==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  28: S5_ARCHIVE_CLI
+ 28/137 Test  #28: S5_ARCHIVE_CLI ...................***Failed    0.24 sec
+==24740==AddressSanitizer: detect_leaks is not supported on this platform.
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_archive.cmake:7 (message):
+  Archive create failed
+
+
+
+        Start  29: S5_EXPERIMENT_SMOKE
+ 29/137 Test  #29: S5_EXPERIMENT_SMOKE ..............***Failed    0.16 sec
+==22128==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  30: S5_HISTORY_STORAGE_SMOKE
+ 30/137 Test  #30: S5_HISTORY_STORAGE_SMOKE .........***Failed    0.16 sec
+==15300==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  31: S5_IO_FAILURE
+ 31/137 Test  #31: S5_IO_FAILURE ....................***Failed    0.16 sec
+==1496==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  32: S5_WAL_CRASH
+ 32/137 Test  #32: S5_WAL_CRASH .....................***Failed    0.11 sec
+==17432==AddressSanitizer: detect_leaks is not supported on this platform.
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s5_wal_crash.cmake:4 (message):
+  WAL crash seed failed
+
+
+
+        Start  33: S5_ATOMIC
+ 33/137 Test  #33: S5_ATOMIC ........................***Failed    0.16 sec
+==1688==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  34: S5_COMMANDS
+ 34/137 Test  #34: S5_COMMANDS ......................***Failed    0.04 sec
+==17996==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  35: S5_ISOLATION
+ 35/137 Test  #35: S5_ISOLATION .....................***Failed    0.03 sec
+==17972==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  36: S5_METRICS
+ 36/137 Test  #36: S5_METRICS .......................***Failed    0.03 sec
+==20712==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  37: S5_WINDOWS
+ 37/137 Test  #37: S5_WINDOWS .......................***Failed    0.04 sec
+==26596==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  38: S5_CORRUPTION
+ 38/137 Test  #38: S5_CORRUPTION ....................***Failed    0.03 sec
+==20488==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  39: S5_UINT64
+ 39/137 Test  #39: S5_UINT64 ........................***Failed    0.03 sec
+==19720==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  40: S5_GEOMETRY
+ 40/137 Test  #40: S5_GEOMETRY ......................***Failed    0.04 sec
+==25160==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  41: S5_EQUIVALENCE
+ 41/137 Test  #41: S5_EQUIVALENCE ...................***Failed    0.04 sec
+==26852==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  42: S5_HISTORY
+ 42/137 Test  #42: S5_HISTORY .......................***Failed    0.04 sec
+==17168==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  43: S5_BEHAVIORS
+ 43/137 Test  #43: S5_BEHAVIORS .....................***Failed    0.04 sec
+==33804==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  44: S5_STORAGE_LIMITS
+ 44/137 Test  #44: S5_STORAGE_LIMITS ................***Failed    0.04 sec
+==10400==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  45: S5_CRASH
+ 45/137 Test  #45: S5_CRASH .........................***Failed    0.11 sec
+==26356==AddressSanitizer: detect_leaks is not supported on this platform.
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s5_crash.cmake:5 (message):
+  Crash fixture initialization failed
+
+
+
+        Start  46: S4_EXPERIMENT_SMOKE
+ 46/137 Test  #46: S4_EXPERIMENT_SMOKE ..............***Failed    0.13 sec
+==31760==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  47: S4_INITIAL
+ 47/137 Test  #47: S4_INITIAL .......................***Failed    0.13 sec
+==14316==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  48: S4_MATERIAL
+ 48/137 Test  #48: S4_MATERIAL ......................***Failed    0.03 sec
+==7096==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  49: S4_OVERLAP
+ 49/137 Test  #49: S4_OVERLAP .......................***Failed    0.04 sec
+==19436==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  50: S4_CONSTRAINTS
+ 50/137 Test  #50: S4_CONSTRAINTS ...................***Failed    0.03 sec
+==14220==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  51: S4_SDF
+ 51/137 Test  #51: S4_SDF ...........................***Failed    0.03 sec
+==5024==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  52: S4_NAVIGATION
+ 52/137 Test  #52: S4_NAVIGATION ....................***Failed    0.03 sec
+==14676==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  53: S4_CLEARANCE
+ 53/137 Test  #53: S4_CLEARANCE .....................***Failed    0.04 sec
+==7880==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  54: S4_CONTACT
+ 54/137 Test  #54: S4_CONTACT .......................***Failed    0.03 sec
+==13456==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  55: S4_AUTONOMY
+ 55/137 Test  #55: S4_AUTONOMY ......................***Failed    0.03 sec
+==30128==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  56: S4_ROLLBACK
+ 56/137 Test  #56: S4_ROLLBACK ......................***Failed    0.03 sec
+==31496==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  57: S4_FILL_NAVIGATION
+ 57/137 Test  #57: S4_FILL_NAVIGATION ...............***Failed    0.03 sec
+==33980==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  58: S4_NEIGHBORHOOD
+ 58/137 Test  #58: S4_NEIGHBORHOOD ..................***Failed    0.03 sec
+==3196==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  59: S4_CORRUPTION
+ 59/137 Test  #59: S4_CORRUPTION ....................***Failed    0.03 sec
+==7868==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  60: S4_BUDGETS
+ 60/137 Test  #60: S4_BUDGETS .......................***Failed    0.03 sec
+==21028==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  61: S4_CONNECTIVITY
+ 61/137 Test  #61: S4_CONNECTIVITY ..................***Failed    0.03 sec
+==1756==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  62: S4_SURFACE_BARRIER
+ 62/137 Test  #62: S4_SURFACE_BARRIER ...............***Failed    0.03 sec
+==21348==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  63: S3_EXPERIMENT_SMOKE
+ 63/137 Test  #63: S3_EXPERIMENT_SMOKE ..............***Failed    0.14 sec
+==14028==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  64: S3_INITIALIZATION
+ 64/137 Test  #64: S3_INITIALIZATION ................***Failed    0.13 sec
+==26416==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  65: S3_INTEGRATION
+ 65/137 Test  #65: S3_INTEGRATION ...................***Failed    0.03 sec
+==33692==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  66: S3_EXCHANGE
+ 66/137 Test  #66: S3_EXCHANGE ......................***Failed    0.03 sec
+==34720==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  67: S3_CONSTRAINTS
+ 67/137 Test  #67: S3_CONSTRAINTS ...................***Failed    0.03 sec
+==30732==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  68: S3_INGESTION
+ 68/137 Test  #68: S3_INGESTION .....................***Failed    0.03 sec
+==18728==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  69: S3_THRESHOLDS
+ 69/137 Test  #69: S3_THRESHOLDS ....................***Failed    0.03 sec
+==6460==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  70: S3_LIFECYCLE
+ 70/137 Test  #70: S3_LIFECYCLE .....................***Failed    0.03 sec
+==24356==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  71: S3_BEHAVIOR
+ 71/137 Test  #71: S3_BEHAVIOR ......................***Failed    0.03 sec
+==11956==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  72: S3_REPLAY
+ 72/137 Test  #72: S3_REPLAY ........................***Failed    0.03 sec
+==20564==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  73: S3_ROLLBACK
+ 73/137 Test  #73: S3_ROLLBACK ......................***Failed    0.03 sec
+==11460==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  74: S3_LOCALITY
+ 74/137 Test  #74: S3_LOCALITY ......................***Failed    0.03 sec
+==21772==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  75: S3_CORRUPTION
+ 75/137 Test  #75: S3_CORRUPTION ....................***Failed    0.03 sec
+==31836==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  76: S3_ALLOCATION_LIMIT
+ 76/137 Test  #76: S3_ALLOCATION_LIMIT ..............***Failed    0.03 sec
+==15912==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  77: S2_2_MODEL
+ 77/137 Test  #77: S2_2_MODEL .......................***Failed    0.12 sec
+==33236==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  78: S2_2_LOCALITY
+ 78/137 Test  #78: S2_2_LOCALITY ....................***Failed    0.03 sec
+==23700==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  79: S2_2_CONTINUOUS
+ 79/137 Test  #79: S2_2_CONTINUOUS ..................***Failed    0.03 sec
+==7388==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  80: S2_2_REPLAY
+ 80/137 Test  #80: S2_2_REPLAY ......................***Failed    0.03 sec
+==14948==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  81: S2_2_EXPERIMENT_SMOKE
+ 81/137 Test  #81: S2_2_EXPERIMENT_SMOKE ............***Failed    0.26 sec
+==25364==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  82: S2_1_BIAS
+ 82/137 Test  #82: S2_1_BIAS ........................***Failed    0.12 sec
+==33996==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  83: S2_1_RUNTIME_BIAS
+ 83/137 Test  #83: S2_1_RUNTIME_BIAS ................***Failed    0.03 sec
+==14648==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  84: S2_1_RESPONSE
+ 84/137 Test  #84: S2_1_RESPONSE ....................***Failed    0.03 sec
+==19564==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  85: S2_1_CONTINUITY
+ 85/137 Test  #85: S2_1_CONTINUITY ..................***Failed    0.03 sec
+==14396==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  86: S2_1_ACTIVATION
+ 86/137 Test  #86: S2_1_ACTIVATION ..................***Failed    0.03 sec
+==22840==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  87: S2_1_SOCIAL
+ 87/137 Test  #87: S2_1_SOCIAL ......................***Failed    0.03 sec
+==11712==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  88: S2_1_EXPERIMENT_SMOKE
+ 88/137 Test  #88: S2_1_EXPERIMENT_SMOKE ............***Failed    0.12 sec
+==29732==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  89: S2_EXPERIMENT_SMOKE
+ 89/137 Test  #89: S2_EXPERIMENT_SMOKE ..............***Failed    0.12 sec
+==2276==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  90: S2_SURFACE
+ 90/137 Test  #90: S2_SURFACE .......................***Failed    0.12 sec
+==25096==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  91: S2_LOCALITY
+ 91/137 Test  #91: S2_LOCALITY ......................***Failed    0.03 sec
+==12744==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  92: S2_LOOP
+ 92/137 Test  #92: S2_LOOP ..........................***Failed    0.03 sec
+==34528==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  93: S2_ORDER
+ 93/137 Test  #93: S2_ORDER .........................***Failed    0.03 sec
+==7016==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  94: S2_MEMORY
+ 94/137 Test  #94: S2_MEMORY ........................***Failed    0.03 sec
+==28104==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  95: S2_TRAILS
+ 95/137 Test  #95: S2_TRAILS ........................***Failed    0.03 sec
+==19708==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  96: S2_REPLAY
+ 96/137 Test  #96: S2_REPLAY ........................***Failed    0.03 sec
+==8600==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  97: S2_ROLLBACK
+ 97/137 Test  #97: S2_ROLLBACK ......................***Failed    0.03 sec
+==31996==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  98: S2_SCHEDULING
+ 98/137 Test  #98: S2_SCHEDULING ....................***Failed    0.03 sec
+==26332==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start  99: S2_MULTISEED
+ 99/137 Test  #99: S2_MULTISEED .....................***Failed    0.03 sec
+==29544==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 100: S2_MODEL
+100/137 Test #100: S2_MODEL .........................***Failed    0.03 sec
+==6168==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 101: S2_COLONIES
+101/137 Test #101: S2_COLONIES ......................***Failed    0.03 sec
+==21852==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 102: S2_CORRUPTION
+102/137 Test #102: S2_CORRUPTION ....................***Failed    0.03 sec
+==1912==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 103: S6_ALLOCATION_FAILURE
+103/137 Test #103: S6_ALLOCATION_FAILURE ............***Failed    0.14 sec
+==18136==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 104: S5_ALLOCATION_FAILURE
+104/137 Test #104: S5_ALLOCATION_FAILURE ............***Failed    0.03 sec
+==20168==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 105: S4_ALLOCATION_FAILURE
+105/137 Test #105: S4_ALLOCATION_FAILURE ............***Failed    0.03 sec
+==3668==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 106: S3_ALLOCATION_FAILURE
+106/137 Test #106: S3_ALLOCATION_FAILURE ............***Failed    0.03 sec
+==11864==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 107: S6_1_ALLOCATION_FAILURE
+107/137 Test #107: S6_1_ALLOCATION_FAILURE ..........***Failed    0.03 sec
+==18980==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 108: S1_ALLOCATION_FAILURE
+108/137 Test #108: S1_ALLOCATION_FAILURE ............***Failed    0.03 sec
+==33224==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 109: S2_ALLOCATION_FAILURE
+109/137 Test #109: S2_ALLOCATION_FAILURE ............***Failed    0.03 sec
+==32720==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 110: S2_1_ALLOCATION_FAILURE
+110/137 Test #110: S2_1_ALLOCATION_FAILURE ..........***Failed    0.03 sec
+==16168==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 111: S1_ENTITIES
+111/137 Test #111: S1_ENTITIES ......................***Failed    0.12 sec
+==14368==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 112: S1_MOVEMENT
+112/137 Test #112: S1_MOVEMENT ......................***Failed    0.03 sec
+==19308==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 113: S1_COMPETITION
+113/137 Test #113: S1_COMPETITION ...................***Failed    0.03 sec
+==23804==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 114: S1_FAILURES
+114/137 Test #114: S1_FAILURES ......................***Failed    0.03 sec
+==23648==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 115: S1_FAIRNESS
+115/137 Test #115: S1_FAIRNESS ......................***Failed    0.03 sec
+==33356==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 116: S1_LIFECYCLE
+116/137 Test #116: S1_LIFECYCLE .....................***Failed    0.03 sec
+==20112==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 117: S1_PHASES
+117/137 Test #117: S1_PHASES ........................***Failed    0.03 sec
+==33644==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 118: S1_ROLLBACK
+118/137 Test #118: S1_ROLLBACK ......................***Failed    0.03 sec
+==16956==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 119: S1_PERSISTENCE
+119/137 Test #119: S1_PERSISTENCE ...................***Failed    0.03 sec
+==9380==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 120: S1_ARITHMETIC
+120/137 Test #120: S1_ARITHMETIC ....................***Failed    0.03 sec
+==16652==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 121: S1_BUDGETS
+121/137 Test #121: S1_BUDGETS .......................***Failed    0.03 sec
+==25808==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 122: T00
+122/137 Test #122: T00 ..............................***Failed    0.13 sec
+==22752==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 123: T01
+123/137 Test #123: T01 ..............................***Failed    0.03 sec
+==27328==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 124: T02
+124/137 Test #124: T02 ..............................***Failed    0.03 sec
+==15268==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 125: T03
+125/137 Test #125: T03 ..............................***Failed    0.03 sec
+==14960==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 126: T04
+126/137 Test #126: T04 ..............................***Failed    0.03 sec
+==5064==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 127: T05
+127/137 Test #127: T05 ..............................***Failed    0.03 sec
+==24372==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 128: T06
+128/137 Test #128: T06 ..............................***Failed    0.03 sec
+==21296==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 129: T07
+129/137 Test #129: T07 ..............................***Failed    0.03 sec
+==19592==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 130: T08
+130/137 Test #130: T08 ..............................***Failed    0.03 sec
+==6348==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 131: T09
+131/137 Test #131: T09 ..............................***Failed    0.03 sec
+==24776==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 132: T10
+132/137 Test #132: T10 ..............................***Failed    0.03 sec
+==27632==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 133: T12
+133/137 Test #133: T12 ..............................***Failed    0.03 sec
+==16504==AddressSanitizer: detect_leaks is not supported on this platform.
+
+        Start 134: T11
+134/137 Test #134: T11 ..............................***Failed    0.19 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: 1: ==26660==AddressSanitizer: detect_leaks is not supported on
+  this platform.
+
+
+
+
+        Start 135: T13
+135/137 Test #135: T13 ..............................***Failed    0.09 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: 1: ==16136==AddressSanitizer: detect_leaks is not supported on
+  this platform.
+
+
+
+
+        Start 136: CLI_VALIDATION
+136/137 Test #136: CLI_VALIDATION ...................***Failed    0.09 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: 1: ==11064==AddressSanitizer: detect_leaks is not supported on
+  this platform.
+
+
+
+
+        Start 137: CORE_EDGE_CASES
+137/137 Test #137: CORE_EDGE_CASES ..................***Failed    0.03 sec
+==7416==AddressSanitizer: detect_leaks is not supported on this platform.
+
+
+0% tests passed, 137 tests failed out of 137
+
+Label Time Summary:
+S1      =   0.44 sec*proc (12 tests)
+S2      =   0.62 sec*proc (15 tests)
+S2.1    =   0.41 sec*proc (8 tests)
+S2.2    =   0.46 sec*proc (5 tests)
+S3      =   0.65 sec*proc (15 tests)
+S4      =   0.79 sec*proc (18 tests)
+S5      =   1.53 sec*proc (19 tests)
+S6      =   1.72 sec*proc (16 tests)
+S6.1    =   0.42 sec*proc (11 tests)
+S6.2    =   2.13 sec*proc (2 tests)
+
+Total Test time (real) =  10.18 sec
+
+The following tests FAILED:
+	  1 - S6_2_NUTRITION_OBSERVER (Failed)                  S6.2
+	  2 - S6_2_CHOICE_OBSERVER (Failed)                     S6.2
+	  3 - S6_1_GIFT_PRIORITY (Failed)                       S6.1
+	  4 - S6_1_SELF_MAINTENANCE (Failed)                    S6.1
+	  5 - S6_1_LOCAL_CONTINUATION (Failed)                  S6.1
+	  6 - S6_1_RELEASE_CUE (Failed)                         S6.1
+	  7 - S6_1_CONTROLS (Failed)                            S6.1
+	  8 - S6_1_PARTITION (Failed)                           S6.1
+	  9 - S6_1_LOCALITY (Failed)                            S6.1
+	 10 - S6_1_CORRUPTION (Failed)                          S6.1
+	 11 - S6_1_CONTACT_LINKS (Failed)                       S6.1
+	 12 - S6_DEMAND (Failed)                                S6
+	 13 - S6_CONCURRENT (Failed)                            S6
+	 14 - S6_CONTACTS (Failed)                              S6
+	 15 - S6_CONTACT_INDEX (Failed)                         S6
+	 16 - S6_CONTACT_WALL (Failed)                          S6
+	 17 - S6_SURPLUS (Failed)                               S6
+	 18 - S6_AUTONOMY_CONTROL (Failed)                      S6
+	 19 - S6_MIXED_SPACE (Failed)                           S6
+	 20 - S6_OFF_PLANE (Failed)                             S6
+	 21 - S6_SEALED (Failed)                                S6
+	 22 - S6_DETERMINISM (Failed)                           S6
+	 23 - S6_LIMITS (Failed)                                S6
+	 24 - S6_CORRUPTION (Failed)                            S6
+	 25 - S6_LOCALITY (Failed)                              S6
+	 26 - S6_DURABLE_INTEGRATION (Failed)                   S6
+	 27 - S6_1_DURABLE_INTEGRATION (Failed)                 S6.1
+	 28 - S5_ARCHIVE_CLI (Failed)                           S5
+	 29 - S5_EXPERIMENT_SMOKE (Failed)                      S5
+	 30 - S5_HISTORY_STORAGE_SMOKE (Failed)                 S5
+	 31 - S5_IO_FAILURE (Failed)                            S5
+	 32 - S5_WAL_CRASH (Failed)                             S5
+	 33 - S5_ATOMIC (Failed)                                S5
+	 34 - S5_COMMANDS (Failed)                              S5
+	 35 - S5_ISOLATION (Failed)                             S5
+	 36 - S5_METRICS (Failed)                               S5
+	 37 - S5_WINDOWS (Failed)                               S5
+	 38 - S5_CORRUPTION (Failed)                            S5
+	 39 - S5_UINT64 (Failed)                                S5
+	 40 - S5_GEOMETRY (Failed)                              S5
+	 41 - S5_EQUIVALENCE (Failed)                           S5
+	 42 - S5_HISTORY (Failed)                               S5
+	 43 - S5_BEHAVIORS (Failed)                             S5
+	 44 - S5_STORAGE_LIMITS (Failed)                        S5
+	 45 - S5_CRASH (Failed)                                 S5
+	 46 - S4_EXPERIMENT_SMOKE (Failed)                      S4
+	 47 - S4_INITIAL (Failed)                               S4
+	 48 - S4_MATERIAL (Failed)                              S4
+	 49 - S4_OVERLAP (Failed)                               S4
+	 50 - S4_CONSTRAINTS (Failed)                           S4
+	 51 - S4_SDF (Failed)                                   S4
+	 52 - S4_NAVIGATION (Failed)                            S4
+	 53 - S4_CLEARANCE (Failed)                             S4
+	 54 - S4_CONTACT (Failed)                               S4
+	 55 - S4_AUTONOMY (Failed)                              S4
+	 56 - S4_ROLLBACK (Failed)                              S4
+	 57 - S4_FILL_NAVIGATION (Failed)                       S4
+	 58 - S4_NEIGHBORHOOD (Failed)                          S4
+	 59 - S4_CORRUPTION (Failed)                            S4
+	 60 - S4_BUDGETS (Failed)                               S4
+	 61 - S4_CONNECTIVITY (Failed)                          S4
+	 62 - S4_SURFACE_BARRIER (Failed)                       S4
+	 63 - S3_EXPERIMENT_SMOKE (Failed)                      S3
+	 64 - S3_INITIALIZATION (Failed)                        S3
+	 65 - S3_INTEGRATION (Failed)                           S3
+	 66 - S3_EXCHANGE (Failed)                              S3
+	 67 - S3_CONSTRAINTS (Failed)                           S3
+	 68 - S3_INGESTION (Failed)                             S3
+	 69 - S3_THRESHOLDS (Failed)                            S3
+	 70 - S3_LIFECYCLE (Failed)                             S3
+	 71 - S3_BEHAVIOR (Failed)                              S3
+	 72 - S3_REPLAY (Failed)                                S3
+	 73 - S3_ROLLBACK (Failed)                              S3
+	 74 - S3_LOCALITY (Failed)                              S3
+	 75 - S3_CORRUPTION (Failed)                            S3
+	 76 - S3_ALLOCATION_LIMIT (Failed)                      S3
+	 77 - S2_2_MODEL (Failed)                               S2.2
+	 78 - S2_2_LOCALITY (Failed)                            S2.2
+	 79 - S2_2_CONTINUOUS (Failed)                          S2.2
+	 80 - S2_2_REPLAY (Failed)                              S2.2
+	 81 - S2_2_EXPERIMENT_SMOKE (Failed)                    S2.2
+	 82 - S2_1_BIAS (Failed)                                S2.1
+	 83 - S2_1_RUNTIME_BIAS (Failed)                        S2.1
+	 84 - S2_1_RESPONSE (Failed)                            S2.1
+	 85 - S2_1_CONTINUITY (Failed)                          S2.1
+	 86 - S2_1_ACTIVATION (Failed)                          S2.1
+	 87 - S2_1_SOCIAL (Failed)                              S2.1
+	 88 - S2_1_EXPERIMENT_SMOKE (Failed)                    S2.1
+	 89 - S2_EXPERIMENT_SMOKE (Failed)                      S2
+	 90 - S2_SURFACE (Failed)                               S2
+	 91 - S2_LOCALITY (Failed)                              S2
+	 92 - S2_LOOP (Failed)                                  S2
+	 93 - S2_ORDER (Failed)                                 S2
+	 94 - S2_MEMORY (Failed)                                S2
+	 95 - S2_TRAILS (Failed)                                S2
+	 96 - S2_REPLAY (Failed)                                S2
+	 97 - S2_ROLLBACK (Failed)                              S2
+	 98 - S2_SCHEDULING (Failed)                            S2
+	 99 - S2_MULTISEED (Failed)                             S2
+	100 - S2_MODEL (Failed)                                 S2
+	101 - S2_COLONIES (Failed)                              S2
+	102 - S2_CORRUPTION (Failed)                            S2
+	103 - S6_ALLOCATION_FAILURE (Failed)                    S6
+	104 - S5_ALLOCATION_FAILURE (Failed)                    S5
+	105 - S4_ALLOCATION_FAILURE (Failed)                    S4
+	106 - S3_ALLOCATION_FAILURE (Failed)                    S3
+	107 - S6_1_ALLOCATION_FAILURE (Failed)                  S6.1
+	108 - S1_ALLOCATION_FAILURE (Failed)                    S1
+	109 - S2_ALLOCATION_FAILURE (Failed)                    S2
+	110 - S2_1_ALLOCATION_FAILURE (Failed)                  S2.1
+	111 - S1_ENTITIES (Failed)                              S1
+	112 - S1_MOVEMENT (Failed)                              S1
+	113 - S1_COMPETITION (Failed)                           S1
+	114 - S1_FAILURES (Failed)                              S1
+	115 - S1_FAIRNESS (Failed)                              S1
+	116 - S1_LIFECYCLE (Failed)                             S1
+	117 - S1_PHASES (Failed)                                S1
+	118 - S1_ROLLBACK (Failed)                              S1
+	119 - S1_PERSISTENCE (Failed)                           S1
+	120 - S1_ARITHMETIC (Failed)                            S1
+	121 - S1_BUDGETS (Failed)                               S1
+	122 - T00 (Failed)
+	123 - T01 (Failed)
+	124 - T02 (Failed)
+	125 - T03 (Failed)
+	126 - T04 (Failed)
+	127 - T05 (Failed)
+	128 - T06 (Failed)
+	129 - T07 (Failed)
+	130 - T08 (Failed)
+	131 - T09 (Failed)
+	132 - T10 (Failed)
+	133 - T12 (Failed)
+	134 - T11 (Failed)
+	135 - T13 (Failed)
+	136 - CLI_VALIDATION (Failed)
+	137 - CORE_EDGE_CASES (Failed)
+Errors while running CTest

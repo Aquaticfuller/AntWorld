@@ -1,0 +1,5 @@
+sample,session,block,slot,warmup,population,layout,policy
+0,0,0,0,0,128,dense,bounded
+1,0,1,0,0,128,dispersed,bounded
+2,0,2,0,0,128,dense,exhaustive
+3,0,3,0,0,128,dispersed,exhaustive

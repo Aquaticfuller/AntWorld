@@ -1,0 +1,15 @@
+{
+  "archive.json": "5f85da1621b00f709c10cdbaff10e701326161456752d9c17fa4be783a582520",
+  "configuration.json": "1cb6006022c4deac3d432754cd0ebea3e455dc095f4b388e741112e38ba345c6",
+  "session1/archive.json": "c9c36ac67a2625e42f926f255195dddae84322196c717202e864f64ad39179a0",
+  "session1/contacts.csv": "f9efb87301e8e7109c64dc2425ee496f3c0f440e8ca2c2f850fd1760a23d0f45",
+  "session1/hwinfo.csv": "17d3250cbda678e4e8da839f082cea06d75a60dd2ad447e77f69cb977d931270",
+  "session1/hwinfo_corrected.csv": "652c144724463ac9fff473ec67c78dded387c7b38eb1ad5c5fae468baf6ac35a",
+  "session1/hwinfo_corrected_provenance.json": "7665657a8de1109d8b985d7fc3b88172a025ec6d1cd59b61342e36d9818fa196",
+  "session1/hwinfo_provenance.json": "65dee771bec96322d684a1c4a92cde184e3041880970d0540c40dc7d67a3bd02",
+  "session1/phases.csv": "36e17cccca4fc9bbbe4dc2d919c6f9e7f55742e116baf7597e9bcdc6793a6412",
+  "session1/profile.csv": "1baaa27b9355be27e976c22012c0e51cfd62931b52fe91366f07dbb0bfa0fce6",
+  "session1/receipt.json": "88b6921f28275e9165122c91bdbc3df9c972305a59363d5d953b5cc7604b6e61",
+  "session1/schedule.csv": "f8dce7ce6ab727027e887329ac37848ee933bfde7a6c92721fc536ab826887ee",
+  "session1/telemetry.csv": "12cf471773d5fc512ed90ca5f39735e2f41af17c1fe3b5391f75e0f5284b7525"
+}

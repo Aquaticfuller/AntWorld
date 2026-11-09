@@ -57,6 +57,12 @@ jobs:
         run: |
           ./build/ci/antworld_s6_1_experiment build/ci/s6_1-observer 1 matrix 1
           python tools/analyze_s6_1.py --pilot build/ci/s6_1-observer
+      - name: Reproduce S6.2 ordered scarcity and equal-demand observers (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_2_nutrition build/ci/s6_2-nutrition 1 1
+          python tools/analyze_s6_2_nutrition.py --pilot build/ci/s6_2-nutrition
+          ./build/ci/antworld_s6_2_choice build/ci/s6_2-choice 64
 
   sanitizers:
     runs-on: ubuntu-24.04

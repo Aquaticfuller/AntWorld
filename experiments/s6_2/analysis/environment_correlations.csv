@@ -1,0 +1,11 @@
+layout,metric,blocks,pearson_r
+dense,p0_temperature_c,36,-0.05465021542900567
+dense,package_power_w,36,-0.13322966233675027
+dense,p0_clock_mhz,36,-0.08491001381307789
+dense,p0_t0_effective_clock_mhz,36,0.16528353896948575
+dense,system_busy_pct,36,0.06672852010567584
+dispersed,p0_temperature_c,36,0.11700035670252863
+dispersed,package_power_w,36,0.14109883204214352
+dispersed,p0_clock_mhz,36,0.13639025421678905
+dispersed,p0_t0_effective_clock_mhz,36,-0.09438016853993725
+dispersed,system_busy_pct,36,0.031157827562952007

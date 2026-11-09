@@ -11,8 +11,9 @@ import io
 import json
 from pathlib import Path
 
-MAPPING = {24: 'core_clock_mean_mhz', 25: 'p0_clock_mhz', 36: 'core_effective_clock_mean_mhz',
-           37: 'p0_t0_effective_clock_mhz', 38: 'p0_t1_effective_clock_mhz',
+MAPPING = {24: 'core_clock_mean_mhz', 25: 'p0_clock_mhz', 36: 'ring_llc_clock_mhz',
+           37: 'core_effective_clock_mean_mhz', 38: 'p0_t0_effective_clock_mhz',
+           39: 'p0_t1_effective_clock_mhz',
            55: 'core_usage_mean_pct', 56: 'p0_t0_usage_pct', 57: 'p0_t1_usage_pct',
            105: 'core_temperature_mean_c', 106: 'p0_temperature_c', 127: 'package_dts_temperature_c',
            128: 'core_temperature_max_c', 129: 'any_core_thermal_throttling',
@@ -38,7 +39,7 @@ def capture_map(source, target):
                                       mapping='Human-checked CPU labels; retain original local source. No missing/invalid value is filled.'), indent=2)+'\n', encoding='utf-8')
 
 
-def extract(root, mapping):
+def extract(root, mapping, stem='hwinfo'):
     mapping = json.loads(mapping.read_text(encoding='utf-8'))
     timezone_minutes = json.loads((root/'configuration.json').read_text(encoding='utf-8'))['before']['timezone_minutes']
     zone = timezone(timedelta(minutes=timezone_minutes))
@@ -71,14 +72,15 @@ def extract(root, mapping):
                     result[item['label']] = float(value) if value else ''
             rows.append(result)
         assert rows, 'no HWiNFO observations overlap this session'
-        with (session/'hwinfo.csv').open('w', encoding='utf-8', newline='') as f:
+        with (session/(stem+'.csv')).open('w', encoding='utf-8', newline='') as f:
             writer = csv.DictWriter(f, list(rows[0]), lineterminator='\n')
             writer.writeheader(); writer.writerows(rows)
         report = dict(source_prefix_bytes=len(data), source_prefix_sha256=hashlib.sha256(data).hexdigest(),
+                      mapping_sha256=hashlib.sha256(json.dumps(mapping, sort_keys=True).encode()).hexdigest(),
                       retained_rows=len(rows), incomplete_rows=incomplete, first_utc_ns=rows[0]['utc_ns'], last_utc_ns=rows[-1]['utc_ns'],
                       timezone_offset_minutes=timezone_minutes,
                       selection='Every CPU sensor row inside the declared run interval plus 3 s bracketing; no value-based filtering.')
-        (session/'hwinfo_provenance.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
+        (session/(stem+'_provenance.json')).write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
         print(session.name, 'HWiNFO rows', len(rows))
 
 
@@ -87,5 +89,6 @@ if __name__ == '__main__':
     parser.add_argument('source', type=Path)
     parser.add_argument('mapping', type=Path)
     parser.add_argument('--capture-map', action='store_true')
+    parser.add_argument('--stem', default='hwinfo')
     args = parser.parse_args()
-    capture_map(args.source, args.mapping) if args.capture_map else extract(args.source, args.mapping)
+    capture_map(args.source, args.mapping) if args.capture_map else extract(args.source, args.mapping, args.stem)

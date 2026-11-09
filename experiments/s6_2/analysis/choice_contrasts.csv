@@ -1,0 +1,9 @@
+permutation,axis,contrast,n_seeds,mean,ci_low,ci_high
+0,id_rank,lower_half_minus_upper_half,64,-0.00927734375,-0.03790283203125,0.02099609375
+0,logical_slot,lower_half_minus_upper_half,64,-0.00927734375,-0.03790283203125,0.02099609375
+1,id_rank,lower_half_minus_upper_half,64,-0.00537109375,-0.03448486328125,0.02490234375
+1,logical_slot,lower_half_minus_upper_half,64,0.00537109375,-0.02490234375,0.03448486328125
+2,id_rank,lower_half_minus_upper_half,64,-0.00927734375,-0.03790283203125,0.02099609375
+2,logical_slot,lower_half_minus_upper_half,64,-0.00927734375,-0.03790283203125,0.02099609375
+3,id_rank,lower_half_minus_upper_half,64,-0.00537109375,-0.03448486328125,0.02490234375
+3,logical_slot,lower_half_minus_upper_half,64,0.00537109375,-0.02490234375,0.03448486328125

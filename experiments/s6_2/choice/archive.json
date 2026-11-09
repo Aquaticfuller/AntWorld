@@ -1,0 +1,16 @@
+{
+  "choices.csv": {
+    "rows": 262144,
+    "normalized_lf_sha256": "5d0270abfe59b5aa794ae8b6f8cbe1141c9cb779345f6c6fc511feec466f170b",
+    "parts": [
+      "choices.csv"
+    ]
+  },
+  "summary.csv": {
+    "rows": 256,
+    "normalized_lf_sha256": "16ce59f737bcbfa30a8a3b3eb15a7857478aeb126675462b8123e634582b16ab",
+    "parts": [
+      "summary.csv"
+    ]
+  }
+}

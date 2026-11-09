@@ -1,0 +1,83 @@
+{
+  "paired": [
+    {
+      "layout": "dense",
+      "session": "1",
+      "p50_ratio": 5.376379939455195
+    },
+    {
+      "layout": "dense",
+      "session": "2",
+      "p50_ratio": 5.493349902766203
+    },
+    {
+      "layout": "dense",
+      "session": "3",
+      "p50_ratio": 5.429521958860751
+    },
+    {
+      "layout": "dense",
+      "session": "pooled",
+      "p50_ratio": 5.438312221490987
+    },
+    {
+      "layout": "dense",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.411687490197991,
+      "median_ci_low": 5.327167699343404,
+      "median_ci_high": 5.462464450193707,
+      "geometric_mean": 5.374910882692755,
+      "geometric_ci_low": 5.304546668201305,
+      "geometric_ci_high": 5.443989242757844,
+      "session_max_min": 1.0217562680889813,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    },
+    {
+      "layout": "dispersed",
+      "session": "1",
+      "p50_ratio": 5.22689724748038
+    },
+    {
+      "layout": "dispersed",
+      "session": "2",
+      "p50_ratio": 5.1458029160583205
+    },
+    {
+      "layout": "dispersed",
+      "session": "3",
+      "p50_ratio": 5.0215408461986835
+    },
+    {
+      "layout": "dispersed",
+      "session": "pooled",
+      "p50_ratio": 5.146529103053434
+    },
+    {
+      "layout": "dispersed",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.114459220029319,
+      "median_ci_low": 5.0077411340985005,
+      "median_ci_high": 5.199882688616282,
+      "geometric_mean": 5.042992764251732,
+      "geometric_ci_low": 4.953600108029236,
+      "geometric_ci_high": 5.127071614273904,
+      "session_max_min": 1.0408950972562838,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    }
+  ],
+  "matched_exhaustive_speedup": 42.35658753338925,
+  "matched_speedup_pass": true,
+  "candidate_cap_pass": true,
+  "canonical_parity": true,
+  "restored_continuation": true,
+  "raw_rows": 396,
+  "primary_measured_rows": 288,
+  "source_commit": "cc9004ecd561c453fde8ede435c94eda65426bc7",
+  "hardware_sensor_coverage": true
+}

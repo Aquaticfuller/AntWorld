@@ -1,0 +1,91 @@
+{
+  "source_commit": "95bbc5a",
+  "scope": "ENGINEERING_FIXTURE",
+  "protocol_commit": "3f6d1a9",
+  "cases": 192,
+  "schema": 8,
+  "physics": 9,
+  "binary_sha256": "e37e08d842e452a024b47e8d827127c4608fb66cf0472af60c50ba7980e5b5f2",
+  "parts": [
+    {
+      "source": "out/s6_2-nutrition-part1/summary.csv",
+      "bytes": 4318,
+      "sha256": "a0d5e22296a3f9dc70dee542c258098c8fda8fbfbd0a3b21ad6f10267cd4a743"
+    },
+    {
+      "source": "out/s6_2-nutrition-part5/summary.csv",
+      "bytes": 4297,
+      "sha256": "1ef89cdd938803cd8df883b31673eaebc77e15dbc587eb258ddeafff65430ed3"
+    },
+    {
+      "source": "out/s6_2-nutrition-part9/summary.csv",
+      "bytes": 4351,
+      "sha256": "38ab5d3bf8e51950f5f474bf93835b10a06f615195defa996f49ce6d84a4825a"
+    },
+    {
+      "source": "out/s6_2-nutrition-part13/summary.csv",
+      "bytes": 4356,
+      "sha256": "fc2496c7ad08a7c55725006b8059f7b9585631e3c1e50e62d2d22233668c1523"
+    },
+    {
+      "source": "out/s6_2-nutrition-part1/gifts.csv",
+      "bytes": 124558,
+      "sha256": "0b9c14207d15156d7a5150ea7b325f835b6c3f4960e60f31c4de83767476593f"
+    },
+    {
+      "source": "out/s6_2-nutrition-part5/gifts.csv",
+      "bytes": 109356,
+      "sha256": "21e2376bbb1a9c9fbac25c5471bf9ac91d8780714274f865be896d4f89cef353"
+    },
+    {
+      "source": "out/s6_2-nutrition-part9/gifts.csv",
+      "bytes": 121418,
+      "sha256": "bf4c7d8bec673d03d21e890342fafcd9d79aa8de7f19bf03caa7ceb4e287dbf0"
+    },
+    {
+      "source": "out/s6_2-nutrition-part13/gifts.csv",
+      "bytes": 112711,
+      "sha256": "23eceaae898ae85b1c96c796046c30e7eea19027778bc1d31d0066cf70372327"
+    },
+    {
+      "source": "out/s6_2-nutrition-part1/decisions.csv",
+      "bytes": 1374305,
+      "sha256": "605c9a35f102d348005c41c81a713c856961be0a6901c23b78cc94a3b46b2b88"
+    },
+    {
+      "source": "out/s6_2-nutrition-part5/decisions.csv",
+      "bytes": 1349611,
+      "sha256": "beb02862950e1f60b310c67ce06fface3daa0e0404bed7ec139c5d38c3b10d8a"
+    },
+    {
+      "source": "out/s6_2-nutrition-part9/decisions.csv",
+      "bytes": 1545643,
+      "sha256": "2b2635891758bbf5d4d5c756c74e02c653bbb70b052909cdb7f643cd8007281b"
+    },
+    {
+      "source": "out/s6_2-nutrition-part13/decisions.csv",
+      "bytes": 1369813,
+      "sha256": "83df57adb84ae7d74cef49afbd3e22e98743c29ceb9931ee1a9e0d8bc1bcfc4c"
+    },
+    {
+      "source": "out/s6_2-nutrition-part1/individuals.csv",
+      "bytes": 157788,
+      "sha256": "24c46c35818da5d00118abebda38bc4d10ab0d3d9c4d2b92f5b6a53bb4590c07"
+    },
+    {
+      "source": "out/s6_2-nutrition-part5/individuals.csv",
+      "bytes": 157610,
+      "sha256": "e78032b5b53c465a41165025b889637f3a1f4267b4fe92716b05bdfc6b3a222b"
+    },
+    {
+      "source": "out/s6_2-nutrition-part9/individuals.csv",
+      "bytes": 160323,
+      "sha256": "18a7d90bdf70420f31360270f1abe0c9a615aad1da199dbbe2f4c1c4b8ea4a4f"
+    },
+    {
+      "source": "out/s6_2-nutrition-part13/individuals.csv",
+      "bytes": 160959,
+      "sha256": "02ecc566e29ae68ec72bf1fbb4e160c83ca8eaa8eba59b677fb1978d8051a983"
+    }
+  ]
+}

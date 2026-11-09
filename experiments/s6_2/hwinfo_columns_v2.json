@@ -1,0 +1,157 @@
+{
+  "source_header_sha256": "bba41bc1bf8c38100c181e6eb7a18fd26cf398e29fbd2f250712729774ad1334",
+  "source_columns": 472,
+  "columns": [
+    {
+      "index": 24,
+      "label": "core_clock_mean_mhz",
+      "original_label_sha256": "ed85fdb06f27e9dbf5b97aa5510a0a4321b1a476acdfb772b257bf4c2f1ea0ae"
+    },
+    {
+      "index": 25,
+      "label": "p0_clock_mhz",
+      "original_label_sha256": "33495ecc8b403eb3e3a6d0f411c5820a16b9d271641d6ef0b3729c6715dd36b1"
+    },
+    {
+      "index": 36,
+      "label": "ring_llc_clock_mhz",
+      "original_label_sha256": "d5a07fb315ed15ad27fc5f9f7de7fb0705bed169fde8699dc763ee4b59000b2e"
+    },
+    {
+      "index": 37,
+      "label": "core_effective_clock_mean_mhz",
+      "original_label_sha256": "37205f9227108f0420c075aeddb016c80da91f6935fefc533539fca71a2dd450"
+    },
+    {
+      "index": 38,
+      "label": "p0_t0_effective_clock_mhz",
+      "original_label_sha256": "7db65659125a2a293819ea5e11d00af1aab1e71ec1ac33395388eca30d6c6cc5"
+    },
+    {
+      "index": 39,
+      "label": "p0_t1_effective_clock_mhz",
+      "original_label_sha256": "88ab30476ae3354c8974a9d24cf8bbcdf726a5187c45dd193902d47e9453f943"
+    },
+    {
+      "index": 55,
+      "label": "core_usage_mean_pct",
+      "original_label_sha256": "4ff8714819e0869aba11a52f48fd9c171395c3309e362f95d1c733fa12143992"
+    },
+    {
+      "index": 56,
+      "label": "p0_t0_usage_pct",
+      "original_label_sha256": "09a7cf0566f99f70810ed0ca07260f51c977f1c751930bfbd46c1fb6f9dace08"
+    },
+    {
+      "index": 57,
+      "label": "p0_t1_usage_pct",
+      "original_label_sha256": "ccf8b753b8ba17cc51a26dddc5e98b376856c64c2719ab773e4859093d22c46c"
+    },
+    {
+      "index": 105,
+      "label": "core_temperature_mean_c",
+      "original_label_sha256": "20626da2dea14d9006c30ec961b94da2163826230d0fa23a988731d482f6daa8"
+    },
+    {
+      "index": 106,
+      "label": "p0_temperature_c",
+      "original_label_sha256": "d588fe44f34d4ec97ec869d2fab02b9671b0fdabad4082636b9c6df2ffa9c85a"
+    },
+    {
+      "index": 127,
+      "label": "package_dts_temperature_c",
+      "original_label_sha256": "6e00e99554b5f3a5cb25140c9449f3eb8e8709852d71a4eab98251164006a490"
+    },
+    {
+      "index": 128,
+      "label": "core_temperature_max_c",
+      "original_label_sha256": "0e7cc90c67bdf2f42f93ff39c8f3334998c2f81bb656c5a566e76e54e775f7fe"
+    },
+    {
+      "index": 129,
+      "label": "any_core_thermal_throttling",
+      "original_label_sha256": "6e0a680ebcbae35fdebc8ea562b08a55a30f8ef0ad990067a758d4d2c4643979"
+    },
+    {
+      "index": 130,
+      "label": "p0_thermal_throttling",
+      "original_label_sha256": "ec2eb06a13b7e76725260a620485d90f3bdb88ee597a37842e75e61dd3e72d03"
+    },
+    {
+      "index": 140,
+      "label": "any_core_critical_temperature",
+      "original_label_sha256": "5092c106b4b0f3e98c129e5e7c42ab0907b83a7917c2bb1e8f30df83ceba71f3"
+    },
+    {
+      "index": 151,
+      "label": "any_core_power_limit",
+      "original_label_sha256": "94f654a5f921d46dc421c0c7fe8181f7f0b9897e75a046ccdba6289aa65ce2b6"
+    },
+    {
+      "index": 152,
+      "label": "p0_power_limit",
+      "original_label_sha256": "25963f4f5f7e6ce8711971d5d301638647c02306cb3774f02d3e3a1e675d2aac"
+    },
+    {
+      "index": 162,
+      "label": "package_thermal_throttling",
+      "original_label_sha256": "ad4950f86d565be8b167e34280f423f9e0059a3aa0fdd5dc94cfb359e986536f"
+    },
+    {
+      "index": 163,
+      "label": "package_critical_temperature",
+      "original_label_sha256": "e6ad5bab891d38de6f46e8c3a00cd8e3fbbbcb4b0361f5fb4b1b8b75db6d645e"
+    },
+    {
+      "index": 164,
+      "label": "package_power_limit",
+      "original_label_sha256": "8a45f8bf33fdd79474cc09b675b00292c37de2bbaecc1d2dcda4248d3d78b851"
+    },
+    {
+      "index": 165,
+      "label": "package_temperature_c",
+      "original_label_sha256": "6e00e99554b5f3a5cb25140c9449f3eb8e8709852d71a4eab98251164006a490"
+    },
+    {
+      "index": 166,
+      "label": "ia_temperature_c",
+      "original_label_sha256": "32fc8bda2269c17457448d537f64e3ef6ac5f8505979d8df8017018389e7aef7"
+    },
+    {
+      "index": 177,
+      "label": "package_power_w",
+      "original_label_sha256": "1eacb167fd54e79c45a444f567656ea237c19812172f48db3e1ef3db9dddb5c2"
+    },
+    {
+      "index": 178,
+      "label": "ia_power_w",
+      "original_label_sha256": "82bb59af14e1bd4478585538d6185a3f4eec801a7405cbcbba0a79cbd04b3b19"
+    },
+    {
+      "index": 180,
+      "label": "system_power_w",
+      "original_label_sha256": "1c33de2903070c36cb90a3bbbf15022491b5a095820d5e1a17fb6e1867f44ebe"
+    },
+    {
+      "index": 184,
+      "label": "pl1_static_w",
+      "original_label_sha256": "5109f10ebd0862830872b37c06cf1357a402818f1a276c183b7857b7b99eca5a"
+    },
+    {
+      "index": 185,
+      "label": "pl1_dynamic_w",
+      "original_label_sha256": "a99dc1c56e070c6e28b0d641e352b22736035326e31164429705750b4e76fa90"
+    },
+    {
+      "index": 186,
+      "label": "pl2_static_w",
+      "original_label_sha256": "4bea3d628bb5a96fda639daee22f780cccb84a466b510094c5fa3a92f953598a"
+    },
+    {
+      "index": 187,
+      "label": "pl2_dynamic_w",
+      "original_label_sha256": "54b3dc5489aa689da06001cd03f9e652ceedb7127acc7fe3a38f5253277aeffa"
+    }
+  ],
+  "mapping": "Human-checked CPU labels; retain original local source. No missing/invalid value is filled."
+}
