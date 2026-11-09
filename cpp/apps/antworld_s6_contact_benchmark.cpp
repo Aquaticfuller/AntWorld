@@ -23,6 +23,22 @@ double elapsed(Clock::time_point start) {
   return std::chrono::duration<double, std::milli>(Clock::now() - start)
       .count();
 }
+std::uint64_t s6_comparison_hash(std::vector<std::uint8_t> bytes) {
+  // Benchmark-only normalization: schema/physics labels and the two disabled
+  // correction flags. No state value or fact is excluded. Autonomy is empty.
+  s3_fixture::require(WorldRuntime::schema_version==8 && WorldRuntime::physics_version==9 &&
+                       bytes.size()>98 && bytes[bytes.size()-98]==1,
+                       "unexpected benchmark checkpoint layout");
+  for(std::size_t i=bytes.size()-16;i<bytes.size()-8;++i)
+    s3_fixture::require(bytes[i]==0,"benchmark autonomy must be empty");
+  const auto flags=bytes.size()-58;
+  s3_fixture::require(bytes[flags]==0 && bytes[flags+1]==0,"comparison requires disabled corrections");
+  bytes.erase(bytes.begin()+static_cast<std::ptrdiff_t>(flags),bytes.begin()+static_cast<std::ptrdiff_t>(flags+2));
+  bytes[6]='7'; bytes[8]=7; bytes[12]=8;
+  std::uint64_t hash=UINT64_C(14695981039346656037);
+  for(std::size_t i=0;i<bytes.size()-8;++i) { hash^=bytes[i]; hash*=UINT64_C(1099511628211); }
+  return hash;
+}
 std::pair<std::uint64_t, std::uint64_t> memory() {
 #ifdef _WIN32
   PROCESS_MEMORY_COUNTERS c{};
@@ -62,7 +78,7 @@ int main(int argc, char **argv) {
     profiles.exceptions(std::ios::badbit | std::ios::failbit);
     states.exceptions(std::ios::badbit | std::ios::failbit);
     profiles << "population,layout,policy,repetition,phase,instrumented,category,calls,inclusive_ns,exclusive_ns\n";
-    states << "population,layout,policy,repetition,state_hash,trace_hash\n";
+    states << "population,layout,policy,repetition,state_hash,trace_hash,s6_normalized_state_hash\n";
     std::ofstream out(dir / "contacts.csv");
     out.exceptions(std::ios::badbit | std::ios::failbit);
     out << std::setprecision(17);
@@ -132,7 +148,7 @@ int main(int argc, char **argv) {
             const auto hashes=w.snapshot();
             states << count << ',' << (dispersed ? "dispersed" : "dense") << ','
                    << (bounded ? "bounded" : "exhaustive") << ',' << rep << ','
-                   << hashes.state_hash << ',' << hashes.trace_hash << '\n';
+                   << hashes.state_hash << ',' << hashes.trace_hash << ',' << s6_comparison_hash(bytes) << '\n';
             s3_fixture::require(!bounded || work.maximum_candidates <= 16,
                                 "structural contact budget violated");
             out << "ENGINEERING_FIXTURE," << count << ','

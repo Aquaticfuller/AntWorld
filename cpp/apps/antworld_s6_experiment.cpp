@@ -19,7 +19,7 @@ double ms(Clock::time_point start) {
       .count();
 }
 void configuration(const std::filesystem::path &dir, const std::string &suite,
-                   unsigned long seeds) {
+                   unsigned long seeds, const std::string& policy) {
   std::ofstream f(dir / "configuration.json");
   f.exceptions(std::ios::badbit | std::ios::failbit);
   f << std::setprecision(17);
@@ -32,6 +32,7 @@ void configuration(const std::filesystem::path &dir, const std::string &suite,
     << "\",\"seeds\":" << seeds << ",\"first_seed\":1,\n"
     << "  \"schema_version\":" << WorldRuntime::schema_version
     << ",\"physics_version\":" << WorldRuntime::physics_version << ",\n"
+    << "  \"nursing_correction_policy\":\"" << policy << "\",\n"
     << "  "
        "\"world\":{\"id\":[6,8],\"bounds_m\":[[-1,-1,-1],[1,1,1]],\"speed_m_"
        "s\":0.01,\"contact_m\":0.002},\n"
@@ -363,9 +364,10 @@ void write_history(Output &out, const std::string &prefix,
 }
 void run(Output &out, const std::filesystem::path &dir,
          const std::string &suite, std::uint64_t seed,
-         const std::string &condition, bool mirror, std::uint32_t budget) {
+         const std::string &condition, bool mirror, std::uint32_t budget,
+         const std::string& policy) {
   const auto start = Clock::now();
-  s6_fixture::Integrated fixture(seed, condition, mirror, budget);
+  s6_fixture::Integrated fixture(seed, condition, mirror, budget,s6_fixture::correction_options(policy));
   auto &normal = fixture.world;
   WorldRuntime fast({9, 9}, 0, {}, s6_fixture::limits());
   fast.restore(normal.checkpoint());
@@ -466,11 +468,13 @@ void run(Output &out, const std::filesystem::path &dir,
 } // namespace
 int main(int argc, char **argv) {
   try {
-    if (argc < 2 || argc > 4)
+    if (argc < 2 || argc > 5)
       throw std::invalid_argument(
           "usage: antworld_s6_experiment OUTPUT_DIR [SEEDS=32] "
-          "[primary|sensitivity|long|smoke]");
+          "[primary|sensitivity|long|smoke] [legacy|gift_first|local_continuation|combined]");
     const std::string suite = argc > 3 ? argv[3] : "primary";
+    const std::string policy = argc > 4 ? argv[4] : "legacy";
+    (void)s6_fixture::correction_options(policy);
     if (suite != "primary" && suite != "sensitivity" && suite != "long" &&
         suite != "smoke")
       throw std::invalid_argument("unknown suite");
@@ -487,7 +491,7 @@ int main(int argc, char **argv) {
     require(!std::filesystem::exists(dir / "summary.csv"),
             "refusing to overwrite raw experimental results");
     std::filesystem::create_directories(dir);
-    configuration(dir, suite, seeds);
+    configuration(dir, suite, seeds,policy);
     Output out(dir);
     for (std::uint64_t seed = 1; seed <= seeds; ++seed)
       for (bool mirror : {false, true})
@@ -504,7 +508,7 @@ int main(int argc, char **argv) {
               suite == "sensitivity" ? std::vector<std::uint32_t>{8, 16, 32}
                                      : std::vector<std::uint32_t>{16};
           for (auto budget : budgets)
-            run(out, dir, suite, seed, condition, mirror, budget);
+            run(out, dir, suite, seed, condition, mirror, budget,policy);
         }
     std::cout << "PASS S6 integrated ecological evidence: " << suite << '\n';
   } catch (const std::exception &e) {

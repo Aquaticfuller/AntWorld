@@ -141,11 +141,12 @@ void s4_sweeps() {
     sweep("geometry_program_pause",active,[&] { active.set_behavior(a,IndividualBehavior::Paused); });
     std::cout << "PASS S4_ALLOCATION_FAILURE\n";
 }
-void s6_sweeps() {
+void s6_sweeps(bool corrected=false) {
+    SocialConfig policy; policy.gift_first=corrected; policy.local_work_continuation=corrected;
     WorldRuntime w({6,7},42); const auto c=w.seed_colony();
     const auto a=w.seed_ant(c,{}),b=w.seed_ant(c,{{},LifeStage::Larva});
     for (unsigned i=0;i<24;++i) w.seed_ant(c,{});
-    sweep("social_configuration_contact_tree",w,[&]{w.configure_social();}); w.configure_social();
+    sweep("social_configuration_contact_tree",w,[&]{w.configure_social(policy);}); w.configure_social(policy);
     sweep("contact_tree_seed",w,[&]{w.seed_ant(c,{});});
     w.enable_physiology(a,{{0,400,0,0},1000000000,1000,0}); w.enable_physiology(b);
     sweep("autonomy_enrollment",w,[&]{w.set_autonomy(a);});
@@ -156,14 +157,24 @@ void s6_sweeps() {
     w.schedule_lifecycle(a,{1001},LifeStage::Dead);
     sweep("contact_tree_death",w,[&]{w.advance_to({1001});});
     const auto bytes=w.checkpoint(); sweep("contact_tree_restore",w,[&]{w.restore(bytes);});
-    WorldRuntime active({6,10},1); active.configure_social(); const auto colony=active.seed_colony();
+    WorldRuntime active({6,10},1); active.configure_social(policy); const auto colony=active.seed_colony();
     const auto worker=active.seed_ant(colony,{}),larva=active.seed_ant(colony,{{},LifeStage::Larva});
     active.enable_physiology(worker,{{0,400,0,0},1000000000,1000,0}); active.enable_physiology(larva); active.set_autonomy(worker);
     active.advance_to({4999}); sweep("automatic_program_choice",active,[&]{active.advance_to({5000});}); active.advance_to({5000});
     sweep("automatic_program_pause",active,[&]{active.set_behavior(worker,IndividualBehavior::Paused);});
     active.schedule_lifecycle(worker,{5001},LifeStage::Dead);
     sweep("automatic_death_cancellation",active,[&]{active.advance_to({5001});});
-    std::cout<<"PASS S6_ALLOCATION_FAILURE\n";
+    if(corrected) {
+        WorldRuntime gift({61,6},7); gift.configure_social(policy); const auto nest=gift.seed_colony();
+        const auto donor=gift.seed_ant(nest,{}),recipient=gift.seed_ant(nest,{{},LifeStage::Larva}),carrier=gift.seed_ant(nest,{});
+        gift.enable_physiology(donor,{{0,100,0,0},1000000000,1000,0}); gift.enable_physiology(recipient);
+        const auto food=gift.seed_food({}, {200,200,600,0});
+        gift.submit({carrier,{1},ActionKind::CollectFood,food,{},1000}); gift.advance_to({1});
+        gift.submit({carrier,{2},ActionKind::DeliverFood,{},{},0}); gift.advance_to({2}); gift.set_behavior(donor,IndividualBehavior::Nurse);
+        sweep("gift_before_refill_selection",gift,[&]{gift.advance_to({1002});}); gift.advance_to({1002});
+        sweep("gift_before_refill_commit",gift,[&]{gift.advance_to({1003});});
+    }
+    std::cout<<(corrected?"PASS S6_1_ALLOCATION_FAILURE\n":"PASS S6_ALLOCATION_FAILURE\n");
 }
 } // namespace
 int main(int argc, char** argv) {
@@ -175,6 +186,7 @@ int main(int argc, char** argv) {
     });
     try {
         if (argc == 2 && std::string_view(argv[1]) == "S6") { s6_sweeps(); return 0; }
+        if (argc == 2 && std::string_view(argv[1]) == "S6.1") { s6_sweeps(true); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S5") {
             WorldRuntime world({5,1},5);world.seed_colony();
             const PlaceFoodCommand command{{5,1},{1,2},{},{100,50,25,0}};

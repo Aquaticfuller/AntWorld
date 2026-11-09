@@ -20,9 +20,18 @@ inline std::uint64_t social_fingerprint(const SocialConfig &c) {
   append(c.forage_weight);
   append(c.nurse_weight);
   append(c.excavate_weight);
+  // Preserve the historical fingerprint when both corrections are disabled.
+  if (c.gift_first || c.local_work_continuation) {
+    append(UINT64_C(0x53365f31504f4c));
+    append(c.gift_first);
+    append(c.local_work_continuation);
+  }
   return hash;
 }
 inline void validate_social(const SocialConfig &c) {
+  if ((c.gift_first || c.local_work_continuation) && !c.demand_sensitive)
+    throw std::invalid_argument(
+        "local nursing corrections require ingredient demand caps");
   if (!c.encounter_budget || c.encounter_budget > 128 ||
       c.decision_interval.milliseconds < 1 ||
       c.decision_interval.milliseconds > 60000 ||

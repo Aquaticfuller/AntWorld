@@ -119,7 +119,7 @@ void WorldRuntime::resolve_autonomy_wakes(
           {s.world, ant.id}, a.decisions ^ UINT64_C(0x45434f4c4f4759));
       choice.sample = {0, sample.candidates_examined, sample.bucket_queries,
                        sample.tree_visits, 0};
-      bool need = false;
+      bool need = false, crop_work = false;
       const bool nest_contact =
           distance(ant.position, colony.nest_position) <=
               s.config.contact_distance_m &&
@@ -137,6 +137,9 @@ void WorldRuntime::resolve_autonomy_wakes(
         if (q->crop.total_ug() < q->config.crop_capacity_ug &&
             ingredient_min(available, signaled_need(*q, stage)).total_ug())
           need = true;
+        if (q->crop.total_ug() < q->config.crop_capacity_ug &&
+            ingredient_min(p.crop, signaled_need(*q, stage)).total_ug())
+          crop_work = true;
       }
       const bool forage = at_depot && s.surface &&
                           s.surface->locate(ant.position) &&
@@ -168,6 +171,12 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (urgent &&
           ingredient_min(stock, nutrient_demand(p, ant.stage)).total_ug())
         choice.behavior = IndividualBehavior::Rest;
+      else if (config.local_work_continuation && !urgent &&
+               config.exchange_enabled && crop_work &&
+               p.behavior == IndividualBehavior::Nurse)
+        // Continue work witnessed in this local encounter. No stored request,
+        // global deficit or promised transfer survives a later failed contact.
+        choice.behavior = IndividualBehavior::Nurse;
       else {
         const std::array<std::pair<IndividualBehavior, std::uint64_t>, 4>
             options{

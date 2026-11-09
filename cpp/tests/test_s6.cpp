@@ -313,7 +313,7 @@ void corruption() {
   f.world.advance_to({35000});
   const auto bytes = f.world.checkpoint();
   for (const auto offset :
-       {bytes.size() - 16, bytes.size() - 8 - (1 + 39 + 40 + 8 + 3 * 41) + 4}) {
+       {bytes.size() - 16, bytes.size() - 8 - (1 + 41 + 40 + 8 + 3 * 41) + 4}) {
     auto bad = bytes;
     bad[offset] ^= 1;
     std::uint64_t hash = UINT64_C(14695981039346656037);

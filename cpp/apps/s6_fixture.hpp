@@ -13,17 +13,35 @@ inline RuntimeLimits limits() {
 }
 // ENGINEERING_FIXTURE: explicit frozen finite resources, never calibrated
 // ecology.
+struct IntegratedOptions {
+  unsigned workers{32};
+  std::uint64_t source_protein_ug{2000};
+  bool gift_first{}, local_work_continuation{};
+  SimTime minimum_program_time{10000};
+};
+inline IntegratedOptions correction_options(const std::string& policy) {
+  IntegratedOptions result;
+  if (policy != "legacy" && policy != "gift_first" &&
+      policy != "local_continuation" && policy != "combined")
+    throw std::invalid_argument("unknown nursing correction policy");
+  result.gift_first = policy == "gift_first" || policy == "combined";
+  result.local_work_continuation = policy == "local_continuation" || policy == "combined";
+  return result;
+}
 struct Integrated {
   WorldRuntime world;
   ColonyRef colony;
   std::vector<AntRef> identities = std::vector<AntRef>(0);
   GeometryConfig geometry;
   Integrated(std::uint64_t seed, const std::string &condition = "supplied",
-             bool mirror = false, std::uint32_t budget = 16)
+             bool mirror = false, std::uint32_t budget = 16,
+             const IntegratedOptions& options = {})
       : world({6, 8}, seed, {}, limits()) {
     if (condition != "supplied" && condition != "protein_absent" &&
         condition != "food_absent" && condition != "sealed")
       throw std::invalid_argument("unknown integrated condition");
+    if (!options.workers || options.workers > 128 || options.source_protein_ug > 2000)
+      throw std::invalid_argument("invalid declared integrated fixture variation");
     world.configure_surface({{-.03, 0, -.03}, 7, 7, .01}, {});
     geometry.origin_m = {-.008, -.006, -.006};
     geometry.initial_solid = {{0, 0, 0}, {32, 24, 24}};
@@ -39,6 +57,9 @@ struct Integrated {
     world.configure_geometry(geometry, voids, rocks);
     SocialConfig social;
     social.encounter_budget = budget;
+    social.gift_first = options.gift_first;
+    social.local_work_continuation = options.local_work_continuation;
+    social.minimum_program_time = options.minimum_program_time;
     world.configure_social(social);
     colony = world.seed_colony();
     auto seed_identity = [&](LifeStage stage, Caste caste) {
@@ -50,7 +71,7 @@ struct Integrated {
       world.enable_physiology(a, initial);
     };
     seed_identity(LifeStage::Adult, Caste::Queen);
-    for (unsigned i = 0; i < 32; ++i)
+    for (unsigned i = 0; i < options.workers; ++i)
       seed_identity(LifeStage::Adult, Caste::Worker);
     for (unsigned i = 0; i < 4; ++i)
       seed_identity(LifeStage::Egg, Caste::Worker);
@@ -63,7 +84,7 @@ struct Integrated {
       world.seed_food({mirror ? .02 : -.02, 0, -.01},
                       condition == "protein_absent"
                           ? FoodMass{0, 0, 2500, 2500}
-                          : FoodMass{0, 2000, 2500, 500});
+                          : FoodMass{0, options.source_protein_ug, 2500, 2500-options.source_protein_ug});
     }
     for (std::size_t i = 1; i < identities.size(); ++i)
       world.set_autonomy(identities[i]);
@@ -75,7 +96,7 @@ struct Surplus {
   AntRef donor;
   std::array<AntRef, 2> larvae;
   Surplus(std::uint64_t seed, const std::string &condition,
-          bool emerged = false, std::uint32_t budget = 16)
+          bool emerged = false, std::uint32_t budget = 16, const std::string& policy = "legacy")
       : world({6, 9}, seed, {}, limits()) {
     if (condition != "contact" && condition != "wall" && condition != "range" &&
         condition != "no_response" && condition != "no_protein")
@@ -92,6 +113,9 @@ struct Surplus {
     SocialConfig social;
     social.encounter_budget = budget;
     social.exchange_enabled = condition != "no_response";
+    const auto corrections=correction_options(policy);
+    social.gift_first=corrections.gift_first;
+    social.local_work_continuation=corrections.local_work_continuation;
     world.configure_social(social);
     const auto p = s4_fixture::position({31, 32, 32}, g),
                q = s4_fixture::position(

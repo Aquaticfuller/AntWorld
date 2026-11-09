@@ -41,7 +41,7 @@ jobs:
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
           ./build/ci/antworld_s4_experiment build/ci/s4-experiments 32
-          python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --checkpoint-byte-delta 9 --physics-version 8 --report build/ci/s4-reproduction.json
+          python tools/verify_s4_reproduction.py build/ci/s4-experiments --source-commit "$GITHUB_SHA" --checkpoint-byte-delta 9 --physics-version 9 --report build/ci/s4-reproduction.json
       - name: Reproduce all S5 seeds (Linux Release)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
@@ -51,7 +51,7 @@ jobs:
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
           ./build/ci/antworld_s6_experiment build/ci/s6-reproduction 1 primary
-          python tools/verify_s6_reproduction.py build/ci/s6-reproduction --source-commit "$GITHUB_SHA" --cross-platform --report build/ci/s6-reproduction.json
+          python tools/verify_s6_reproduction.py build/ci/s6-reproduction --source-commit "$GITHUB_SHA" --cross-platform --schema-version 8 --physics-version 9 --checkpoint-byte-delta 2 --report build/ci/s6-reproduction.json
 
   sanitizers:
     runs-on: ubuntu-24.04

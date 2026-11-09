@@ -54,7 +54,7 @@ def audit(root, archives):
             assert len(state)==len(expected) and {key(x) for x in state}==expected
             for x in state:
                 k=key(x)[:3]
-                pair=(x['state_hash'],x['trace_hash'])
+                pair=(x.get('s6_normalized_state_hash',x['state_hash']),x['trace_hash'])
                 if k in hashes: assert hashes[k]==pair,(name,k,'changed authoritative semantics')
                 hashes[k]=pair
         if name.startswith('profile_'):

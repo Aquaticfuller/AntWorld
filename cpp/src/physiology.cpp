@@ -195,11 +195,13 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         ScheduledEvent action; action.actor = ant.id; action.issued_at = s.m.now; action.kind = ScheduledEvent::Kind::Rest;
         action.key = {after(s.m.now, 1), Phase::Resolution, 0, 0, 0}; action.observed_position_revision = ant.position_revision;
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
-        if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
-        else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
-            distance(ant.position, colony.nest_position) <= s.config.contact_distance_m &&
-            (!s.surface || (s.social && s.geometry) || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
-        else if (p.behavior == IndividualBehavior::Nurse && p.crop.total_ug()) {
+        const bool gift_priority = s.social && s.social->gift_first;
+        const bool urgent_self = gift_priority &&
+            ((p.body_energy_nj < p.config.energy_capacity_nj/4 && !p.crop.carbs_ug) ||
+             (p.hydration_ug < p.config.hydration_capacity_ug/4 && !p.crop.water_ug));
+        auto choose_gift = [&] {
+            if (p.behavior != IndividualBehavior::Nurse || !p.crop.total_ug() ||
+                (gift_priority && !s.social->exchange_enabled)) return;
             auto rng = individual_rng(s.seed ^ UINT64_C(0x53334e55525345), ant.id, p.decisions);
             std::uint64_t seen = 0;
             // Geometry worlds use a spatial index; legacy worlds retain their canonical candidate order.
@@ -227,6 +229,14 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                     ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2)) continue;
                 ++seen; if (bounded_draw(rng, seen) == 0) { action.kind = ScheduledEvent::Kind::Trophallaxis; action.payload = id.value; }
             }
+        };
+        if (gift_priority && !urgent_self) choose_gift();
+        if (action.kind == ScheduledEvent::Kind::Rest) {
+            if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
+            else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
+                distance(ant.position, colony.nest_position) <= s.config.contact_distance_m &&
+                (!s.surface || (s.social && s.geometry) || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
+            else if (!gift_priority) choose_gift();
         }
         if (action.kind != ScheduledEvent::Kind::Rest) action.requested_ug = p.config.transfer_limit_ug;
         actions.push_back(action);

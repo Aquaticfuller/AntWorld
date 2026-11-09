@@ -35,6 +35,9 @@ def main():
     parser.add_argument('--reference', type=Path, default=ROOT/'experiments/s6/integrated')
     parser.add_argument('--source-commit', required=True)
     parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--schema-version',type=int,default=7)
+    parser.add_argument('--physics-version',type=int,default=8)
+    parser.add_argument('--checkpoint-byte-delta',type=int,default=0)
     parser.add_argument('--cross-platform', action='store_true',
                         help='Document-18 contract: exclude binary hashes; compare exported distances to 1e-12 m absolute tolerance')
     args = parser.parse_args()
@@ -44,13 +47,20 @@ def main():
     n = config['seeds']
     assert 1 <= n <= reference['seeds']
     reference['seeds'] = n
+    reference['schema_version']=args.schema_version
+    reference['physics_version']=args.physics_version
+    if 'nursing_correction_policy' in config:
+        assert config['nursing_correction_policy']=='legacy', 'this verifier compares retained legacy semantics'
+        reference['nursing_correction_policy']='legacy'
     assert config == reference, 'fixture changed'
     expected_cases = {('primary', str(s), c, str(m), '16') for s in range(1, n+1)
                       for c in ('supplied', 'protein_absent', 'food_absent', 'sealed') for m in (0, 1)}
     report = dict(source_commit=args.source_commit, first_seed=1, seeds=n, cases=len(expected_cases),
                   cross_platform=args.cross_platform, excluded_host_fields=sorted(HOST),
                   excluded_binary_fields=['state_hash', 'trace_hash'] if args.cross_platform else [],
-                  distance_absolute_tolerance_m=1e-12 if args.cross_platform else 0, files={})
+                  distance_absolute_tolerance_m=1e-12 if args.cross_platform else 0,
+                  schema_version=args.schema_version,physics_version=args.physics_version,
+                  checkpoint_byte_delta=args.checkpoint_byte_delta,files={})
     for filename in ('summary.csv', 'individuals.csv', 'events.csv', 'geometry.csv',
                      'foods.csv', 'time_series.csv', 'event_counts.csv'):
         expected = first_seeds(args.reference/filename, n)
@@ -64,6 +74,17 @@ def main():
             assert a.keys() == b.keys(), 'column mismatch'
             for field in a:
                 if field in HOST or (args.cross_platform and field in ('state_hash', 'trace_hash')):
+                    continue
+                if field=='schema_version':
+                    assert int(b[field])==args.schema_version
+                    continue
+                if field=='physics_version':
+                    assert int(b[field])==args.physics_version
+                    continue
+                if field=='checkpoint_bytes':
+                    assert int(b[field])==int(a[field])+args.checkpoint_byte_delta
+                    continue
+                if field=='state_hash' and (args.schema_version!=7 or args.physics_version!=8):
                     continue
                 if args.cross_platform and field in FLOAT_FIELDS:
                     equal = math.isclose(float(a[field]), float(b[field]), abs_tol=1e-12, rel_tol=0)

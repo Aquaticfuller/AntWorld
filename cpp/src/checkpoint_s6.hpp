@@ -17,6 +17,8 @@ template <class S> void write_social(Writer &w, const S &s) {
     w.put(c.forage_weight, 4);
     w.put(c.nurse_weight, 4);
     w.put(c.excavate_weight, 4);
+    w.put(c.gift_first, 1);
+    w.put(c.local_work_continuation, 1);
     const auto &a = s.m.contact_work;
     w.put(a.decisions);
     w.put(a.candidates_examined);
@@ -47,6 +49,8 @@ template <class S> void read_social(Reader &r, S &s) {
     c->forage_weight = static_cast<std::uint32_t>(r.get(4));
     c->nurse_weight = static_cast<std::uint32_t>(r.get(4));
     c->excavate_weight = static_cast<std::uint32_t>(r.get(4));
+    c->gift_first = r.flag();
+    c->local_work_continuation = r.flag();
     validate_social(*c);
     s.social = std::move(c);
     s.m.contact_work = {r.get(), r.get(), r.get(), r.get(), r.get()};

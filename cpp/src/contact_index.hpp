@@ -1,7 +1,7 @@
 #pragma once
 #include "antworld/core/geometry.hpp"
-#include "antworld/core/rng.hpp"
 #include "antworld/core/profiling.hpp"
+#include "antworld/core/rng.hpp"
 #include <cmath>
 #include <map>
 #include <stdexcept>
@@ -127,10 +127,12 @@ inline EntityId contact_rank(const ContactNodes &nodes, EntityId root,
     if (rank == left)
       return root;
     if (rank < left) {
-      root = n.left; node = n.left_node;
+      root = n.left;
+      node = n.left_node;
     } else {
       rank -= left + 1;
-      root = n.right; node = n.right_node;
+      root = n.right;
+      node = n.right_node;
     }
   }
   throw std::logic_error("contact rank outside bucket");

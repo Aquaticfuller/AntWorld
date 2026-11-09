@@ -11,6 +11,9 @@ struct SocialConfig {
   SimTime decision_interval{5000}, minimum_program_time{10000};
   std::uint32_t rest_weight{4}, forage_weight{8}, nurse_weight{12},
       excavate_weight{4};
+  // S6.1 ENGINEERING_FIXTURE corrections are explicit opt-ins. False/false
+  // preserves all historical S6 decisions for paired controls.
+  bool gift_first{}, local_work_continuation{};
   bool operator==(const SocialConfig &) const = default;
 };
 struct ContactSample {
