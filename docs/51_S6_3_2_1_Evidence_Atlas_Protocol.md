@@ -1,0 +1,41 @@
+# S6.3.2.1 Comprehensive Ant Biology Evidence Atlas protocol
+
+## Authorized scope and baseline
+
+The user authorizes a scientific evidence atlas and complete source audit, not biological implementation. Work on `codex/s6.3.2.1-biology-evidence-atlas` from `2e1a5fa129821176954f26a88f56791635bc8cda`. Preserve all Core/header/application/test bytes, biology defaults, old empirical and simulator data, failures, uncertainty and the latest controlled performance qualification. Do not enter S6.3.3, S6.4, Unity or later stages. No unapproved parameter fitting or biological correction. Mathematical candidates and calibration designs are proposals only.
+
+## Search and reading contract
+
+Freeze the scope and extraction definitions before building the atlas. Search species, behavior, physiology and environment combinations; trace references backward and citing works forward for important sources. Use publisher, Crossref/OpenAlex, PubMed/EuropePMC, institutional repositories and linked data archives. Attempt available scholarly index routes, recording authentication/access restrictions rather than claiming access. Primary Lasius niger experiments have priority; observational Lasius work, other species and general theory are explicitly separate. Retail/care pages and unsourced claims are leads only, never parameter evidence. No numeric publication quota substitutes for coverage.
+
+Record each search string/channel/date and selected candidates or exclusion/access reasons. For each adopted reference record DOI or stable identifier, complete verified bibliographic metadata, species/population, design, conditions, samples, controls, exact table/figure/page/section, local access receipt and reading status. Distinguish FULL_TEXT_SELECTED_SECTIONS_READ, FULL_TEXT_READ, ABSTRACT_ONLY, METADATA_ONLY, and NOT_ACCESSED. A downloaded file alone is not a read paper. Inherited S6.3.2 reading is identified as inherited and its relevant content is rechecked when extracting additional values. Never relabel a secondary compilation as the original measurement. Keep licensed full texts, OCR and page images only in ignored local output; publish short paraphrases, permitted factual excerpts, original links and structured measurements.
+
+## Frozen coverage axes
+
+Report coverage separately for: (1) caste/life-stage states, (2) behaviors, (3) environmental variables, (4) physiology endpoints, and (5) current source rules/configuration fields. A searched slot, a qualitative observation and a matched quantitative experiment are different denominators. Do not equate a paper mentioning humidity with a humidity-response experiment. Quantitative values nested within a colony are not independent colony samples.
+
+Life-stage slots: egg; larval instars individually where verified; prepupa; pupa; callow; young/mature/old worker; founding queen; established queen; virgin gyne; male immature/adult; premating and postmating reproductives; overwintering stages. Morphs and reproductive strategies are species-specific. No Lasius niger soldier caste or instar count may be inferred from another ant.
+
+Behavior slots: exploration, foraging, trail following, food collection, return, trophallaxis, brood care, brood transport, grooming, rest/inactivity, excavation, soil transport, nest maintenance, waste management, defense, aggression, thermoregulation, water management, reproduction, nuptial flight, overwintering/diapause. Audit trigger, probability, duration, termination, transitions and individual variation separately; UNKNOWN is permitted and informative.
+
+Environment slots: air, soil and chamber temperature separately; relative humidity; soil water content; soil water potential; rainfall; flooding; photoperiod; season; food abundance; food composition; soil particle size, density and hardness; disturbance. Identify stage-by-environment evidence and missing interactions. Physiology includes caste/age mass and metabolism, motion cost, carbohydrate/protein/lipid demand and reserves, crop/absorption, exchange frequency/duration/mass, water uptake/loss, egg rate/mass/cost, development, mortality and longevity.
+
+## Evidence and extraction schema
+
+New grades: A = quantitative controlled L. niger experiment; B = direct observational or qualitative L. niger study; C = other Lasius experiment; D = other ants, including Formicinae; E = other insects/general physiological or physical theory; F = engineering assumption. A measured observational value can remain B. Study grade never upgrades the grade of an adopted coefficient. Preserve legacy A-D provenance in a separate immutable snapshot and namespaced legacy columns; do not silently reinterpret historical grades.
+
+Each empirical row has a stable record ID, source ID and locator, species, population, caste, stage, age, body mass, colony size, temperature, RH, soil moisture, photoperiod, food, treatment/control, measurement/value/unit and separately stated mean/SD/SE/CI/sample size/method, DOI/page/figure/table/supplement, grade and extraction confidence. NOT_REPORTED, UNKNOWN, NOT_APPLICABLE and NOT_STUDIED_IN_RETRIEVED_EVIDENCE are distinct. Missing is never zero. Exact zero, censored, nonsignificant, contradictory and failed outcomes remain. Report published error as unspecified if its type cannot be established. Model fits, extrapolations and engineering fixtures have an explicit value-origin class.
+
+Original values and units are immutable. Derived values use separate conversion records with formulas, assumptions, source and propagated/unknown uncertainty. Figure extraction is allowed only after visual inspection and is labelled DIGITIZED_FROM_FIGURE with method/resolution uncertainty; no guessed graph values. Prefer published tables/data. No quantitative target is fabricated for a qualitative paper. Empirical rows require precise source locators; explicit gap records instead reference the search/coverage record and say UNKNOWN, never acquire a fake DOI.
+
+## Source mapping, mathematical candidates and validation
+
+Inventory every configuration/fixture from the existing delimiter-aware scanner; reconcile implicit constants and decision order manually in behavior, ecology, social, physiology, long_term, excavation, geometry and world_runtime and relevant headers/helpers. Map biology -> evidence -> actual function/condition -> parameter IDs -> gap -> candidate mathematical model -> calibration/validation design. Separate algorithmic contracts from biology. Source-line/function hashes detect drift; no code edits are authorized.
+
+Simple candidate models may include stage-specific thermal rate windows, mass-dependent metabolism, local state-dependent hazards, reserve-funded laying and observation-compatible contact duration. Use published fitted values only with their experimental domain; fitting new simulator parameters is not authorized. Calibration and independent validation datasets/colonies must be disjoint or explicitly unavailable; do not claim validation from reused fitting data. Mark current capability READY, PARTIAL, NOT_IMPLEMENTED or NOT_TESTABLE with exact missing mechanisms and uncertainty/comparison methods.
+
+## Artifacts and quality gates
+
+Deliver all requested root CSV/Markdown/BibTeX files and `ANT_BIOLOGY_EVIDENCE.sqlite`, plus a source/reading/search register, units/conversion table, coverage inventory, schema, reproducible builder/validator and S6_3_2_1_RESULTS.md. UTF-8 English only; keep current user communication Chinese. SQLite uses stable primary keys, explicit links, foreign-key/integrity checks and indexes; CSV/SQLite/BibTeX/source mappings must agree. Preserve the legacy parameter file for old-stage reproduction when the root file adopts the new schema.
+
+Validate identifiers, reference/locator completeness, grade/species/design compatibility, units/missingness, source provenance and immutable Core hashes. Report coverage by frozen axis with explicit unknowns, full-text versus abstract counts, parameter/source audit completeness and disagreements. Run applicable evidence validation and inherited CI; distinguish earlier local test evidence from checks actually executed in this stage. No performance resampling is needed for this data-only atlas. Commit/push the independent branch and stop for independent review, with scientific coverage limits and proposed next work explicit.
