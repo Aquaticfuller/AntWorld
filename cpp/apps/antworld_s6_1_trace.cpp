@@ -1,4 +1,5 @@
 #include "s6_fixture.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>

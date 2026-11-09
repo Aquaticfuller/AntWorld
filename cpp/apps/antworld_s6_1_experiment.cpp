@@ -1,4 +1,5 @@
 #include "s6_fixture.hpp"
+#include <algorithm>
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -91,6 +92,7 @@ struct Monitor {
       living_ms{}, active_ms{}, away_ms{}, moves{};
   std::uint64_t unmet_integral{}, demand_integral{}, supply_integral{};
   Observation last;
+  std::uint64_t audited_geometry_revision{UINT64_MAX};
   Monitor(WorldRuntime &world, Output &output, std::string key,
           unsigned population, const std::filesystem::path &path)
       : w(world), out(output), prefix(std::move(key)), workers(population),
@@ -343,9 +345,22 @@ struct Monitor {
       value.accessible_supply = last.accessible_supply;
     }
     last = value;
-    s6_fixture::balanced(w);
+    // Recheck material authority when its revision changes; the same geometry
+    // does not need another identical partition-volume calculation at each
+    // observer tick. Every tick still checks all current conservation ledgers.
+    const auto spatial = w.geometry_snapshot();
+    if (spatial.geometry_revision != audited_geometry_revision) {
+      s6_fixture::balanced(w);
+      audited_geometry_revision = spatial.geometry_revision;
+    }
     const auto n = w.nutrition_snapshot();
     const auto g = w.geometry_snapshot().ledger;
+    require(n.introduced == n.accounted &&
+                n.energy_input_nj == n.body_energy_nj + n.dissipated_energy_nj,
+            "observed nutrition/energy imbalance");
+    require(g.initial_q3 == g.remaining_q3 + g.carried_q3 + g.deposited_q3 &&
+                g.initial_q3 + g.filled_q3 == g.remaining_q3 + g.excavated_q3,
+            "observed material imbalance");
     out.series << prefix << t << ',' << value.living << ',' << value.larvae
                << ',' << value.unmet << ',' << value.adult_crop << ','
                << value.dead_crop << ',' << contact_sample << ','
@@ -497,7 +512,7 @@ int main(int argc, char **argv) {
                   "supplied", false);
       } else {
         for (const auto policy : {"legacy", "combined"})
-          for (const auto setting :
+          for (const auto& setting :
                std::array<std::pair<std::uint32_t, std::int64_t>, 4>{
                    {{8, 10000}, {16, 5000}, {16, 20000}, {32, 10000}}})
             run(out, dir, suite, seed, policy, 32, 2000, setting.first,
