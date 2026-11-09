@@ -161,7 +161,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     for (std::size_t i = 0; i < foods; ++i) {
         FoodSource f{{r.get()}, r.position(), r.mass(), r.mass()}; entity(f.id.value);
         ensure(inside(f.position, s->config) && f.initial.total_ug() > 0, "invalid food source");
-        if (!extended) (void)subtract(f.initial, f.remaining); s->foods.append(f);
+        if (!extended) (void)subtract(f.initial, f.remaining);
+        s->foods.append(f);
         introduced = sum(introduced, f.initial); available = sum(available, f.remaining);
     }
     read_surface(r, *s, limits);
