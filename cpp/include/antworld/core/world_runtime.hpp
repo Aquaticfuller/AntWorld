@@ -160,6 +160,7 @@ public:
     [[nodiscard]] std::optional<ResourceCycleState> query_resource_cycle(FoodRef) const;
     [[nodiscard]] FoodMass resource_reserves() const;
     static constexpr std::uint32_t care_schema_version = 11, care_physics_version = 13;
+    static constexpr std::uint32_t retrieval_schema_version = 12, retrieval_physics_version = 14;
     void configure_biology(const SpeciesCareProfile& = {}, const EnvironmentCareProfile& = {});
     void enable_brood_care(AntRef, const IndividualCareProfile& = {});
     void pause_brood_care(AntRef);

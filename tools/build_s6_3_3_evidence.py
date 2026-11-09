@@ -3,6 +3,7 @@ import argparse,csv,hashlib,io,json,re,sqlite3,tempfile
 from contextlib import closing
 from pathlib import Path
 import inventory_s6_3_2 as inventory
+from atlas_baseline import source_root
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'research/s6_3_2_1/baseline';OUT=ROOT/'research/s6_3_3'
 def sha(path):return hashlib.sha256(path.read_bytes().replace(b'\r\n',b'\n')).hexdigest()
 def read(path):
@@ -34,29 +35,31 @@ def main():
     legacy=[]
     for r in old:legacy.append(dict(r,release_namespace='HISTORICAL_S6_3_2_1',source_sha256='Verified project archive at65e7875; see source_baseline.json'))
     lookup={(r['owner'],r['field']):r for r in old if r['record_kind']!='IMPLICIT_SOURCE_CONTEXT'}
-    inventory.ROOT=ROOT;inventory.EXTRA|={'SpeciesCareProfile','IndividualCareProfile','EnvironmentCareProfile'}
+    reviewed=source_root('s6_3_3')
+    inventory.ROOT=reviewed;inventory.EXTRA|={'SpeciesCareProfile','IndividualCareProfile','EnvironmentCareProfile'}
     definitions=inventory.schemas();source,uses,_=inventory.rows_inventory(definitions);current=[]
     for index,r in enumerate(sorted(source,key=lambda x:(x['path'],x['line'],x['parameter'],x['record_kind'])),1):
         row={f:'' for f in fields};row.update(lookup.get((r['owner'],r['field']),{}));row.update(r)
-        care=r['owner'].endswith('CareProfile');row.update(parameter_id=f'S633-P{index:05}',static_numeric_value=inventory.expr_value(r['expression']),release_namespace='CURRENT_S6_3_3',source_sha256=sha(ROOT/r['path']),modification_status='P01/P10 only; legacy coefficients unchanged',evidence_grade='F',value_origin='ENGINEERING_FIXTURE',numerical_calibration_status='NOT_CALIBRATED',audit_scope='CURRENT_CONFIG_EXPRESSION')
+        care=r['owner'].endswith('CareProfile');row.update(parameter_id=f'S633-P{index:05}',static_numeric_value=inventory.expr_value(r['expression']),release_namespace='CURRENT_S6_3_3',source_sha256=sha(reviewed/r['path']),modification_status='P01/P10 only; legacy coefficients unchanged',evidence_grade='F',value_origin='ENGINEERING_FIXTURE',numerical_calibration_status='NOT_CALIBRATED',audit_scope='CURRENT_CONFIG_EXPRESSION')
         row['context']='TEST_FIXTURE' if '/tests/' in r['path'] else 'APPLICATION_FIXTURE' if '/apps/' in r['path'] else 'RUNTIME_DEFAULT'
-        if 'Fixture invalid' in (ROOT/r['path']).read_text().splitlines()[int(r['line'])-1]:row['context']='INTENTIONAL_INVALID_INPUT_TEST; rejected configuration, not a model setting'
+        if 'Fixture invalid' in (reviewed/r['path']).read_text().splitlines()[int(r['line'])-1]:row['context']='INTENTIONAL_INVALID_INPUT_TEST; rejected configuration, not a model setting'
         if care:
             row.update(unit=UNITS[r['field']],biological_meaning='P01 '+r['field']+'; definitions and limitations in document53',references='B01 B02',doi='10.1111/1365-2435.14536;10.1002/ece3.4475',page_figure='B01 Methods2.1.4/2.2.4-5/2.2.12, Figs1c-d/2c; B02 pp10411-10412, Methods2.2-2.3',experimental_conditions='L. niger; B01 21C/80%RH, 5larvae, worker removal or3-worker mesh; B02 50mm,6brood,600s,queen or3workers',measured_value_or_range='NO MATCHED NUMERICAL COEFFICIENT; 21C/80%RH are assay conditions only',related_evidence_grade='A for source manipulation endpoints; F for this coefficient',adopted_reason='Frozen unfit mechanism hypothesis in document52',sensitivity='Predeclared memory1/6/24h; inhibition0/.4/.8; decision15/60/240s; other values not varied',dimensional_audit='Unit '+UNITS[r['field']]+'; probability bounds0..1; movement speed bounded by world max; thermal/age metadata inert',parameter_range_status='UNKNOWN biological interval; code limits are engineering safeguards')
         current.append(row)
     # Include every new implicit conditional/numeric line, not just named defaults.
     implicit=[]
-    for path in [ROOT/'cpp/src/care.cpp',ROOT/'cpp/src/care_internal.hpp',ROOT/'cpp/src/observations.cpp',ROOT/'cpp/src/checkpoint_care.hpp',ROOT/'cpp/apps/antworld_s6_3_3_experiment.cpp',ROOT/'cpp/apps/s6_3_3_fixture.hpp']:
+    for path in (reviewed/name for name in ('cpp/src/care.cpp','cpp/src/care_internal.hpp','cpp/src/observations.cpp',
+                                          'cpp/src/checkpoint_care.hpp','cpp/apps/antworld_s6_3_3_experiment.cpp','cpp/apps/s6_3_3_fixture.hpp')):
         for line,text in enumerate(path.read_text().splitlines(),1):
             if not re.search(r'\b(if|else|case)\b|\d',inventory.clean(text)):continue
-            item=dict(path=path.relative_to(ROOT).as_posix(),line=line,expression=text.strip(),source_sha256=sha(path));implicit.append(item)
+            item=dict(path=path.relative_to(reviewed).as_posix(),line=line,expression=text.strip(),source_sha256=sha(path));implicit.append(item)
             row={f:'' for f in fields};row.update(parameter_id=f'S633-I{len(implicit):05}',record_kind='IMPLICIT_SOURCE_CONTEXT',parameter='Implicit.'+item['path']+':'+str(line),owner='ImplicitSource',field='SourceExpression',unit='MIXED; see typed configuration and document53',biological_meaning='Hard-coded condition, categorical policy or numeric expression; includes nonbiological limits',evidence_grade='F',references='B01 B02',doi='10.1111/1365-2435.14536;10.1002/ece3.4475',page_figure='Mechanism association only; document53 and current rule audit',value_origin='ENGINEERING_FIXTURE',numerical_calibration_status='NOT_CALIBRATED',dimensional_audit='Composite expression; RNG salts, enum values and serialization sizes are not biological coefficients',release_namespace='CURRENT_S6_3_3',audit_scope='CURRENT_IMPLICIT_LEXICAL_INVENTORY',**item);current.append(row)
     rules=[]
     for rid,path,function,condition,interpretation,sources,gap in RULES:
-        text=(ROOT/path).read_text();match=re.search(r'\b'+re.escape(function)+r'\s*\(',text)
+        text=(reviewed/path).read_text();match=re.search(r'\b'+re.escape(function)+r'\s*\(',text)
         # Analytics is a file-level mapping, not a claimed function locator.
         line=text.count('\n',0,match.start())+1 if match else 1
-        rules.append(dict(rule_id=rid,path=path,line=line,function=function if match else 'FILE_LEVEL',actual_condition=condition,interpretation=interpretation,sources=sources,mechanism_grade='A endpoint; F implementation' if sources!='F' else 'F',numeric_grade='F',limitations=gap,source_sha256=sha(ROOT/path)))
+        rules.append(dict(rule_id=rid,path=path,line=line,function=function if match else 'FILE_LEVEL',actual_condition=condition,interpretation=interpretation,sources=sources,mechanism_grade='A endpoint; F implementation' if sources!='F' else 'F',numeric_grade='F',limitations=gap,source_sha256=sha(reviewed/path)))
     merged=legacy+current
     audit=['# State machine evidence audit: S6.3.3','','The70-rule historical audit is preserved in [baseline](research/s6_3_2_1/baseline/STATE_MACHINE_EVIDENCE_AUDIT.md). Its old source locators refer to the verified project archive, not current code. P01/P10 only are implemented; other proposals and biological debts remain open. New constants have no quantitative calibration.','','|Rule|Current source/function|Actual condition|Evidence and interpretation|Limits|','|---|---|---|---|---|']
     for r in rules:audit.append('|'+ '|'.join([r['rule_id'],f"{r['path']}:{r['line']} `{r['function']}`",r['actual_condition'],r['sources']+'; '+r['interpretation'],r['limitations']])+'|')

@@ -1,0 +1,9 @@
+{
+  "commit": "de4ddc9c85fed0fb9bf9b8feb37430db8a69916e",
+  "sha256": "c908d38c75760cc36a6080208b634d6e1d38b91d5dbbaeff55a7ef9ade07f8f5",
+  "scope": [
+    "cpp",
+    "scenarios"
+  ],
+  "purpose": "Reproduce S6.3.3 evidence against the reviewed source. This archive contains only project-owned code and fixtures."
+}

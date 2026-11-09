@@ -11,6 +11,8 @@ struct SpeciesCareProfile {
     SimTime social_memory_horizon{21600000};
     double care_probability{0.5}, worker_contact_probability{0.25}, maximum_inhibition{0.8};
     double perception_radius_m{0.006}, step_m{0.001}, arrangement_m{0.00025};
+    // ENGINEERING_FIXTURE opt-in local persistence and one return to a visited pickup site.
+    bool local_retrieval{};
     bool operator==(const SpeciesCareProfile&) const = default;
 };
 enum class CareContext : std::uint8_t { FoundingQueen, EstablishedQueen, Worker };
@@ -26,7 +28,7 @@ struct EnvironmentCareProfile {
 enum class CareAct : std::uint8_t {
     Inactive, Walk, ApproachBrood, InspectBrood, ArrangeBrood, CleanBrood,
     TransportBrood, FeedBrood, CloseWorkerContact, CollectFood, DeliverFood,
-    IngestFood, TransferNutrition, Excavate, HandleSoil, Count
+    IngestFood, TransferNutrition, Excavate, HandleSoil, RevisitBroodSite, Count
 };
 enum class ObservationPhase : std::uint8_t { Opportunity, Selected, Started, Completed, Interrupted };
 struct BehaviorObservation {
@@ -39,6 +41,12 @@ struct BehaviorObservation {
     PositionM destination{};
     bool operator==(const BehaviorObservation&) const = default;
 };
+struct RetrievalMemory {
+    EntityId target;
+    ScheduledId pickup_bout;
+    PositionM pickup_site;
+    bool operator==(const RetrievalMemory&) const = default;
+};
 struct CareState {
     IndividualCareProfile profile;
     PositionM familiar_shelter;
@@ -49,6 +57,7 @@ struct CareState {
     EntityId target;
     PositionM destination;
     ScheduledId pending, bout;
+    RetrievalMemory retrieval;
     bool operator==(const CareState&) const = default;
 };
 struct BehaviorWindow {

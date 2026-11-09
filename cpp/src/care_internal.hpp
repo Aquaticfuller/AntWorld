@@ -19,6 +19,10 @@ inline void validate_care_profile(const SpeciesCareProfile& c, const Environment
 }
 inline bool brood(LifeStage stage) { return stage==LifeStage::Egg || stage==LifeStage::Larva || stage==LifeStage::Pupa; }
 inline bool handles_brood(CareAct a) { return a>=CareAct::InspectBrood && a<=CareAct::FeedBrood; }
+inline bool care_motion(CareAct act) {
+    return act==CareAct::Walk || act==CareAct::ApproachBrood || act==CareAct::TransportBrood ||
+           act==CareAct::ArrangeBrood || act==CareAct::RevisitBroodSite;
+}
 inline PositionM toward(PositionM a, PositionM b, double step) {
     const auto d=distance(a,b); if (d<=step) return b;
     return {a.x+(b.x-a.x)*step/d,a.y+(b.y-a.y)*step/d,a.z+(b.z-a.z)*step/d};

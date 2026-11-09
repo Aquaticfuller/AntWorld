@@ -1,0 +1,152 @@
+{
+  "status": "PASS",
+  "basis": "nonidle_wall",
+  "native_complete": true,
+  "pulses": [
+    {
+      "phase": "selected_pulse",
+      "own_p50": 100.00324011621649,
+      "other_p50": 0.7810390413549301
+    },
+    {
+      "phase": "reference_pulse",
+      "own_p50": 99.9921156245448,
+      "other_p50": 0.0
+    }
+  ],
+  "native_vs_system_median_abs_pp": 0.06289240523612483,
+  "pdh_vs_native_median_abs_pp": {
+    "0": 1.5492340094931167,
+    "2": 0.023708429555125754
+  },
+  "invalid_pdh": {
+    "0": {
+      "samples": 4,
+      "statuses": [
+        2147485654
+      ],
+      "idle_delta_exceeds_clock": 4
+    },
+    "2": {
+      "samples": 2,
+      "statuses": [
+        2147485654
+      ],
+      "idle_delta_exceeds_clock": 2
+    }
+  },
+  "instrument_version": 2,
+  "selected_logical": 0,
+  "reference_logical": 2,
+  "observer_affinity_mask": 65520,
+  "topology": [
+    {
+      "core": 0,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 3,
+      "logical": [
+        0,
+        1
+      ]
+    },
+    {
+      "core": 1,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 12,
+      "logical": [
+        2,
+        3
+      ]
+    },
+    {
+      "core": 2,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 48,
+      "logical": [
+        4,
+        5
+      ]
+    },
+    {
+      "core": 3,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 192,
+      "logical": [
+        6,
+        7
+      ]
+    },
+    {
+      "core": 4,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 768,
+      "logical": [
+        8,
+        9
+      ]
+    },
+    {
+      "core": 5,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 3072,
+      "logical": [
+        10,
+        11
+      ]
+    },
+    {
+      "core": 6,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 4096,
+      "logical": [
+        12
+      ]
+    },
+    {
+      "core": 7,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 8192,
+      "logical": [
+        13
+      ]
+    },
+    {
+      "core": 8,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 16384,
+      "logical": [
+        14
+      ]
+    },
+    {
+      "core": 9,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 32768,
+      "logical": [
+        15
+      ]
+    }
+  ],
+  "windows": "10.0.26200",
+  "probe_sha256": "b430327c4fb4f571ade6a14513597f78d17dd2e0bdd9d0681df3c9243d4bfbdc"
+}

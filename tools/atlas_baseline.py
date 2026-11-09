@@ -10,12 +10,12 @@ from pathlib import Path
 import zipfile
 
 PROJECT=Path(__file__).resolve().parents[1]
-def source_root():
-    base=PROJECT/'research/s6_3_2_1'
+def source_root(release='s6_3_2_1'):
+    base=PROJECT/'research'/release
     archive=base/'source_baseline.zip'
     record=json.loads((base/'source_baseline.json').read_text(encoding='utf-8'))
     assert hashlib.sha256(archive.read_bytes()).hexdigest()==record['sha256'],'frozen source archive changed'
-    destination=(PROJECT/'out/s6_3_2_1/source_baseline').resolve()
+    destination=(PROJECT/'out'/release/'source_baseline').resolve()
     destination.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(archive) as source:
         for name in source.namelist():

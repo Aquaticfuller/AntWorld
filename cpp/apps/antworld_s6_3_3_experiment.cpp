@@ -10,11 +10,13 @@
 #include <map>
 #include <set>
 #include <string>
+#include <string_view>
 using namespace antworld;
 using namespace s6_3_3_fixture;
 namespace {
 constexpr std::int64_t hour=3600000,day=24*hour;
 constexpr std::array<std::uint64_t,12> seeds{7,19,43,71,101,137,181,223,269,313,367,421};
+constexpr std::array<std::uint64_t,12> holdout_seeds{1009,1013,1019,1021,1031,1033,1039,1049,1051,1061,1063,1069};
 struct Outputs {
     std::ofstream windows,scans,runs,events;
     explicit Outputs(const std::filesystem::path& directory):windows(directory/"windows.csv"),scans(directory/"scans.csv"),runs(directory/"runs.csv"),events(directory/"events.csv") {
@@ -92,13 +94,20 @@ void assay(Outputs& out,std::uint64_t seed,const std::string& condition,int age,
     out.runs<<name<<','<<seed<<','<<(mesh?"mesh":"reversal")<<','<<condition<<','<<age<<','<<variant<<','<<profile.decision_interval.milliseconds<<','<<profile.bout_duration.milliseconds<<','<<profile.social_memory_horizon.milliseconds<<','<<profile.maximum_inhibition<<','<<profile.care_probability<<','<<profile.worker_contact_probability<<','<<profile.perception_radius_m<<','<<profile.step_m<<','<<profile.arrangement_m<<','<<end.milliseconds<<','<<history.size()<<','<<bytes.size()<<','<<advance_ms<<','<<checkpoint_ms<<','<<restore_ms<<','<<equal<<",1,,,,,\n";
     record_events(out,name,history); out.runs.flush(); out.windows.flush(); out.scans.flush(); out.events.flush();
 }
-void retrieval(Outputs& out,std::uint64_t seed,bool group) {
-    SpeciesCareProfile profile; Fixture f(seed,profile,0,group?3:0);
+void retrieval(Outputs& out,std::uint64_t seed,bool group,SpeciesCareProfile profile={},std::string_view layout="line") {
+    Fixture f(seed,profile,0,group?3:0);
     f.w.pause_brood_care(f.queen);
     if(group) { auto p=physiology();
         for(auto worker:f.workers) f.w.enable_physiology(worker,{{0,100,0,0},p.energy_capacity_nj,p.hydration_capacity_ug,0},p);
     }
-    for(unsigned i=0;i<6;++i) f.brood.push_back(f.w.seed_ant(f.colony,{{.005+static_cast<double>(i)*.002,0,0},i%2?LifeStage::Pupa:LifeStage::Larva}));
+    for(unsigned i=0;layout!="empty" && i<6;++i) {
+        PositionM place{.005+static_cast<double>(i)*.002,0,0};
+        if (layout=="mirror") place.x=-place.x;
+        if (layout=="far") place.x=.009+static_cast<double>(i)*.002;
+        if (layout=="split" && i>=3) place={0,0,-(.005+static_cast<double>(i-3)*.002)};
+        if (layout=="sheltered") place={-.0005,0,static_cast<double>(i%5)*.00025};
+        f.brood.push_back(f.w.seed_ant(f.colony,{place,i%2?LifeStage::Pupa:LifeStage::Larva}));
+    }
     const auto start=std::chrono::steady_clock::now(); advance(f.w,180000);
     if(group) for(auto worker:f.workers) f.w.enable_brood_care(worker,{CareContext::Worker,{30*day}});
     else f.w.enable_brood_care(f.queen,f.w.query_care(f.queen)->profile);
@@ -113,28 +122,49 @@ void retrieval(Outputs& out,std::uint64_t seed,bool group) {
         }
         if(i<baseline) continue;
         if(e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Started && e.observation.act>=CareAct::InspectBrood && e.observation.act<=CareAct::FeedBrood && first_contact<0) first_contact=e.time.milliseconds-180000;
-        if(e.kind==FactKind::BroodMoved && std::hypot(e.position.x,e.position.y,e.position.z)<=f.w.config().contact_distance_m) {
+        if(layout!="sheltered" && e.kind==FactKind::BroodMoved && std::hypot(e.position.x,e.position.y,e.position.z)<=f.w.config().contact_distance_m) {
             retrieved.insert(e.actor); if(first_retrieval<0) first_retrieval=e.time.milliseconds-180000; if(retrieved.size()==6 && task_end<0) task_end=e.time.milliseconds-180000;
         }
     }
     auto clock=std::chrono::steady_clock::now(); const auto bytes=f.w.checkpoint(); const auto checkpoint_ms=elapsed(clock);
     clock=std::chrono::steady_clock::now(); WorldRuntime replay({1,1},0,{},limits()); replay.restore(bytes); const auto restore_ms=elapsed(clock);
     require(bytes==replay.checkpoint(),"retrieval restore mismatch"); conserved(f.w);
-    const std::string name="retrieval_"+std::string(group?"workers":"queen")+"_"+std::to_string(seed);
+    const std::string name="retrieval_"+std::string(group?"workers":"queen")+"_"+std::to_string(seed)+
+        (layout=="line"?std::string{}:"_"+std::string(layout));
     out.runs<<name<<','<<seed<<",retrieval,"<<(group?"three_workers":"queen")<<",0,base,"<<profile.decision_interval.milliseconds<<','<<profile.bout_duration.milliseconds<<','<<profile.social_memory_horizon.milliseconds<<','<<profile.maximum_inhibition<<','<<profile.care_probability<<','<<profile.worker_contact_probability<<','<<profile.perception_radius_m<<','<<profile.step_m<<','<<profile.arrangement_m<<",780000,"<<events.size()<<','<<bytes.size()<<','<<advance_ms<<','<<checkpoint_ms<<','<<restore_ms<<",1,1,"<<first_contact<<','<<first_retrieval<<','<<retrieved.size()<<','<<task_end<<','<<path<<'\n';
     record_events(out,name,events);
 }
 }
 int main(int argc,char** argv) {
     try {
-        if(argc<2 || argc>4) throw std::invalid_argument("usage: antworld_s6_3_3_experiment OUTPUT [SEED_INDEX|all] [smoke|primary|sensitivity]");
-        const std::filesystem::path directory=argv[1]; std::filesystem::create_directories(directory); Outputs out(directory);
+        if(argc<2 || argc>5) throw std::invalid_argument("usage: antworld_s6_3_3_experiment OUTPUT [SEED_INDEX|all] [MODE] [legacy|local]");
         const std::string mode=argc>3?argv[3]:"primary",which=argc>2?argv[2]:"all";
-        for(std::size_t index=0;index<seeds.size();++index) {
+        const std::string_view policy=argc>4?argv[4]:"legacy";
+        if (policy!="legacy" && policy!="local") throw std::invalid_argument("unknown care policy");
+        SpeciesCareProfile study; study.local_retrieval=policy=="local";
+        const bool held_out=mode.starts_with("holdout-");
+        const bool retrieval_only=held_out || mode.starts_with("retrieval-");
+        const auto layout=retrieval_only?std::string_view(mode).substr(mode.find('-')+1):std::string_view("line");
+        if (layout!="line" && layout!="mirror" && layout!="split" && layout!="far" && layout!="empty" && layout!="sheltered")
+            throw std::invalid_argument("unknown brood placement");
+        const std::filesystem::path directory=argv[1]; std::filesystem::create_directories(directory); Outputs out(directory);
+        const auto& selected=held_out?holdout_seeds:seeds;
+        for(std::size_t index=0;index<selected.size();++index) {
             if(which!="all" && index!=std::stoull(which)) continue;
-            const auto seed=seeds[index];
+            const auto seed=selected[index];
             if(mode=="smoke") { assay(out,seed,"absent",55,"base",{},false,true); retrieval(out,seed,false); break; }
-            if(mode=="primary") {
+            if (retrieval_only) {
+                retrieval(out,seed,false,study,layout);
+                retrieval(out,seed,true,study,layout);
+            } else if (mode=="b01") {
+                for (const std::string condition:{"absent","added","removed"}) assay(out,seed,condition,55,"base",study);
+                if (index==0) {
+                    assay(out,seed,"sham",55,"base",study);
+                    assay(out,seed,"no_brood",55,"base",study);
+                    assay(out,seed,"barrier",52,"base",study,true);
+                    assay(out,seed,"removed",932,"base",study);
+                }
+            } else if(mode=="primary") {
                 for(int age:{35,55,932}) for(const std::string condition:{"absent","present","added","removed","sham","no_brood"}) assay(out,seed,condition,age,"base",{});
                 for(const std::string condition:{"absent","present","barrier"}) assay(out,seed,condition,52,"base",{},true);
                 retrieval(out,seed,false); retrieval(out,seed,true);

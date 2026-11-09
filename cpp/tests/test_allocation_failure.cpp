@@ -185,6 +185,28 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc==2 && std::string_view(argv[1])=="S6.3.3.1") {
+            WorldRuntime w({6331,1},7); w.configure_long_term(); w.configure_social();
+            SpeciesCareProfile cfg; cfg.local_retrieval=true; cfg.care_probability=1;
+            w.configure_biology(cfg);
+            const auto colony=w.seed_colony();
+            const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
+            const auto larva=w.seed_ant(colony,{{.004,0,0},LifeStage::Larva});
+            w.enable_physiology(queen);
+            w.enable_brood_care(queen);
+            sweep("retrieval_select",w,[&]{w.advance_to({1});});
+            w.advance_to({20006});
+            if (w.query_care(queen)->act!=CareAct::TransportBrood || !w.query_care(queen)->active)
+                throw std::runtime_error("fixture has no active carry");
+            sweep("pickup_memory_commit",w,[&]{w.advance_to({30006});}); w.advance_to({30006});
+            sweep("delivery_commit",w,[&]{w.advance_to({40008});}); w.advance_to({40008});
+            if (!w.query_care(queen)->retrieval.pickup_bout.value || w.query_ant(larva)->position.x>.002)
+                throw std::runtime_error("fixture has no evidenced pickup site after delivery");
+            sweep("revisit_select",w,[&]{w.advance_to({40009});}); w.advance_to({45000});
+            const auto saved=w.checkpoint();
+            sweep("mid_revisit_restore",w,[&]{w.restore(saved);});
+            std::cout<<"PASS S6.3.3.1 allocation failure\n"; return 0;
+        }
         if (argc==2 && std::string_view(argv[1])=="S6.3.3") {
             WorldRuntime w({633,9},7); w.configure_long_term(); w.configure_social();
             sweep("care_contract",w,[&]{w.configure_biology();}); w.configure_biology();

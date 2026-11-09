@@ -1,9 +1,11 @@
 """Prove the post-run arrangement-speed validation guard is inert for every frozen case."""
 import argparse,csv,hashlib,json,zipfile
 from pathlib import Path
+from atlas_baseline import source_root
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'experiments/s6_3_3'
 def main():
     p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');a=p.parse_args()
+    reviewed=source_root('s6_3_3')
     rows=[]
     for path in sorted((BASE/'raw').glob('*/runs.csv')):
         with path.open(newline='') as f:rows.extend(csv.DictReader(f))
@@ -15,7 +17,7 @@ def main():
         'cpp/tests/test_s6_3_3.cpp':b'    rejects([&]{SpeciesCareProfile p; p.step_m=.000001; p.bout_duration={10}; p.arrangement_m=.002; Fixture invalid(7,p);});\n'}
     frozen=json.loads((BASE/'raw/primary_manifest.json').read_text())['source_sha256'];payloads={}
     for name,line in removed.items():
-        data=(ROOT/name).read_bytes().replace(b'\r\n',b'\n');assert data.count(line)==1;data=data.replace(line,b'')
+        data=(reviewed/name).read_bytes().replace(b'\r\n',b'\n');assert data.count(line)==1;data=data.replace(line,b'')
         assert hashlib.sha256(data).hexdigest()==frozen[name],name
         payloads[name]=data
     path=ROOT/'research/s6_3_3/executed_source_snapshot.zip'
@@ -34,7 +36,7 @@ def main():
         for name,data in payloads.items():assert archive.read(name)==data,name
     result=dict(cases=384,status='PASS',new_rule='arrangement_m / bout_seconds <= world.max_speed_m_per_s',
         proof='Every frozen case has arrangement<=step. Existing validation already enforces step/bout<=max_speed. Therefore the added arrangement guard is implied for all384 recorded configurations; no accepted rule, coefficient, RNG or outcome is changed.',
-        source_sha256={p:hashlib.sha256((ROOT/p).read_bytes().replace(b'\r\n',b'\n')).hexdigest() for p in ['cpp/src/care_internal.hpp','cpp/tests/test_s6_3_3.cpp']},
+        source_sha256={p:hashlib.sha256((reviewed/p).read_bytes().replace(b'\r\n',b'\n')).hexdigest() for p in ['cpp/src/care_internal.hpp','cpp/tests/test_s6_3_3.cpp']},
         regression='CAPABILITY now rejects a tiny-step/fast-arrangement custom profile; full Debug/Release/sanitizer and independent CI seed are rerun',
         raw_archive='Frozen experiment source/binary manifests remain unchanged; this later validation-only guard is explicitly identified instead of overwriting provenance')
     result['executed_source_archive_sha256']=archive_digest

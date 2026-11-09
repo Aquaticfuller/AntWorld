@@ -1,10 +1,12 @@
 """Retain executed source and verify the limited MSVC Debug exception-safety correction."""
 import argparse,hashlib,json,zipfile
 from pathlib import Path
+from atlas_baseline import source_root
 ROOT=Path(__file__).resolve().parents[1];BASE=ROOT/'experiments/s6_3_3'
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');a=p.parse_args()
+    reviewed=source_root('s6_3_3')
     changes={
         'cpp/src/care.cpp':[
             ('    std::vector<EntityId> blocked(0);','    std::vector<EntityId> blocked;'),
@@ -22,7 +24,7 @@ def main():
     }
     frozen=json.loads((BASE/'raw/primary_manifest.json').read_text())['source_sha256'];payloads={};current={}
     for name,replacements in changes.items():
-        text=(ROOT/name).read_text(encoding='utf-8');current[name]=hashlib.sha256(text.encode()).hexdigest()
+        text=(reviewed/name).read_text(encoding='utf-8');current[name]=hashlib.sha256(text.encode()).hexdigest()
         for after,before in replacements:
             assert text.count(after)==1,name;text=text.replace(after,before)
         payloads[name]=text.encode();assert hashlib.sha256(payloads[name]).hexdigest()==frozen[name],name
@@ -40,7 +42,7 @@ def main():
     app='cpp/apps/antworld_s6_3_3_experiment.cpp'
     executed=(ROOT/'research/s6_3_3/executed_experiment.cpp.txt').read_bytes()
     assert hashlib.sha256(executed).hexdigest()==frozen[app]
-    current_app=(ROOT/app).read_text(encoding='utf-8');reconstructed=current_app
+    current_app=(reviewed/app).read_text(encoding='utf-8');reconstructed=current_app
     for variant in ['memory24h','inhibition0_4','decision240s']:
         split=';\n                    if(variant=="'+variant+'")'
         assert reconstructed.count(split)==1;reconstructed=reconstructed.replace(split,'; if(variant=="'+variant+'")')
