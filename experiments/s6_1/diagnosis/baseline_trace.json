@@ -1,0 +1,113 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "baseline_source": "2505f53e9ec8b6ba72828a651bd244934fde4431",
+  "seed": 7,
+  "condition": "supplied",
+  "mirror": 0,
+  "primary_facts": 63143,
+  "long_facts": 66658,
+  "primary_is_exact_prefix": true,
+  "fact_codec_bytes": 159,
+  "primary_fact_sha256": "14cb5ad6128fab472390f466f2856fc64ed98df2df9dfb4a367d3a9348022042",
+  "long_fact_sha256": "1568b8fd0b8a083d612cc999182356fa4af2118482721cdc7ad72f6bf816ef10",
+  "cumulative_emergence": 5,
+  "unemerged_ids": [
+    35,
+    36,
+    37,
+    39,
+    42,
+    43,
+    44
+  ],
+  "final_crop_protein_ug": 1549,
+  "final_tissue_protein_ug": 651,
+  "dead": 45,
+  "donors": {
+    "3": {
+      "nest_protein_ug": 88,
+      "intakes": 4,
+      "given_protein_ug": 88,
+      "gifts": 2,
+      "retained_crop_protein_ug": 0
+    },
+    "8": {
+      "nest_protein_ug": 22,
+      "intakes": 1,
+      "retained_crop_protein_ug": 22
+    },
+    "19": {
+      "nest_protein_ug": 222,
+      "intakes": 10,
+      "nurse_to_forage_with_protein": 1,
+      "retained_crop_protein_ug": 222
+    },
+    "20": {
+      "nest_protein_ug": 222,
+      "intakes": 10,
+      "nurse_to_forage_with_protein": 1,
+      "retained_crop_protein_ug": 222
+    },
+    "21": {
+      "nest_protein_ug": 422,
+      "intakes": 19,
+      "given_protein_ug": 54,
+      "gifts": 1,
+      "nurse_to_forage_with_protein": 1,
+      "retained_crop_protein_ug": 368
+    },
+    "30": {
+      "nest_protein_ug": 423,
+      "intakes": 19,
+      "given_protein_ug": 55,
+      "gifts": 1,
+      "nurse_to_forage_with_protein": 1,
+      "retained_crop_protein_ug": 368
+    },
+    "31": {
+      "nest_protein_ug": 400,
+      "intakes": 18,
+      "given_protein_ug": 53,
+      "gifts": 1,
+      "nurse_to_forage_with_protein": 1,
+      "retained_crop_protein_ug": 347
+    },
+    "34": {
+      "nest_protein_ug": 201,
+      "intakes": 9,
+      "given_protein_ug": 201,
+      "gifts": 3,
+      "retained_crop_protein_ug": 0
+    }
+  },
+  "all_fact_counts": {
+    "ActionRejected": 17,
+    "AntDied": 45,
+    "AntSeeded": 45,
+    "AutonomyChanged": 44,
+    "AutonomyDecision": 3765,
+    "BehaviorChanged": 71,
+    "ColonySeeded": 1,
+    "ExcavationDecision": 623,
+    "FoodCollected": 3,
+    "FoodDelivered": 3,
+    "FoodSeeded": 2,
+    "ForagingDecision": 16546,
+    "ForagingStarted": 37,
+    "GeometryConfigured": 1,
+    "Moved": 16972,
+    "NestIngested": 90,
+    "NutritionDecision": 262,
+    "NutritionTransferred": 8,
+    "PhysiologyEnabled": 45,
+    "PhysiologyUpdated": 27414,
+    "Rested": 164,
+    "SocialConfigured": 1,
+    "SoilDropped": 63,
+    "SoilExcavated": 63,
+    "StageChanged": 12,
+    "SurfaceConfigured": 1,
+    "TrailMaintenance": 360
+  },
+  "caveat": "Inventory and program history reconstructed from every actual fact. A selected action is not a successful transfer. Local perception itself is not fully encoded in S6 facts."
+}

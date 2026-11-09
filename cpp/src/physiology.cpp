@@ -51,6 +51,7 @@ void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause caus
     p.death_cause = cause; tx.physiology.set(id, p);
 }
 void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) {
+    profiling::Scope profile(profiling::Category::Physiology);
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i); auto p = s.physiology.at(e.actor);
     if (!ant.alive() || p.physiology_event != e.id) throw std::logic_error("invalid physiology event ownership");
     settle(p, ant.stage, s.m.now); p.physiology_event = {};
@@ -185,6 +186,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
     tx.physiology.set(e.actor, p);
 }
 void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<ScheduledEvent>& wakes) {
+    profiling::Scope profile(profiling::Category::Policy);
     auto& s = *state_; std::vector<ScheduledEvent> actions(0); actions.reserve(wakes.size());
     std::vector<ContactSample> encounters(wakes.size());
     for (const auto& wake : wakes) {
@@ -253,6 +255,7 @@ void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledE
     p.behavior_event = tx.insert(e); tx.physiology.set(e.actor, p);
 }
 std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const {
+    profiling::Scope profile(profiling::Category::Physiology);
     const auto& s = *state_; const auto ant = query_ant(ref);
     if (!ant || !s.physiology.contains(ref.id)) return {};
     auto p = s.physiology.at(ref.id); settle(p, ant->stage, s.m.now); return p;

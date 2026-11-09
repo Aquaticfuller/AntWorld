@@ -62,6 +62,7 @@ double WorldRuntime::query_signed_distance(PositionM p) const {
     return signed_distance(geometry_view(s, limits_), *q);
 }
 bool WorldRuntime::spatially_clear(PositionM a, PositionM b, std::int32_t half) const {
+    profiling::Scope profile(profiling::Category::Spatial);
     const auto &s = *state_;
     if (!finite(a) || !finite(b))
         return false;

@@ -1,6 +1,7 @@
 #pragma once
 #include "antworld/core/geometry.hpp"
 #include "antworld/core/rng.hpp"
+#include "antworld/core/profiling.hpp"
 #include <cmath>
 #include <map>
 #include <stdexcept>
@@ -136,6 +137,7 @@ struct ContactRebuilder {
   }
 };
 template <class S> void rebuild_contacts(S &s) {
+  profiling::Scope profile(profiling::Category::Index);
   if (!s.social || !s.social->bounded_contacts)
     return;
   ContactRebuilder journal{s.contact_nodes};

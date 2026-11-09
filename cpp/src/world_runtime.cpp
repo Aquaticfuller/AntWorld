@@ -245,6 +245,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
     }
 }
 void WorldRuntime::advance_to(SimTime target) {
+    profiling::Scope profile(profiling::Category::Advance);
     auto& s = *state_;
     if (target < s.m.now) throw std::invalid_argument("simulation time cannot move backwards");
     Transaction tx(s, limits_);

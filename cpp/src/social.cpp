@@ -30,6 +30,7 @@ ContactWork WorldRuntime::contact_work() const {
 }
 void WorldRuntime::index_contact(Transaction &tx, EntityId id,
                                  std::optional<PositionM> position) {
+  profiling::Scope profile(profiling::Category::Index);
   using namespace detail;
   auto &s = *state_;
   if (!s.social || !s.social->bounded_contacts)
@@ -59,6 +60,7 @@ void WorldRuntime::index_contact(Transaction &tx, EntityId id,
 }
 ContactSample WorldRuntime::sample_contacts(AntRef ref,
                                             std::uint64_t decision) const {
+  profiling::Scope profile(profiling::Category::Sampling);
   using namespace detail;
   const auto &s = *state_;
   const auto ant = query_ant(ref);

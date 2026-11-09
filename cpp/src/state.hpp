@@ -4,6 +4,7 @@
 #include "surface_internal.hpp"
 #include "geometry_internal.hpp"
 #include "contact_index.hpp"
+#include "antworld/core/profiling.hpp"
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -114,7 +115,8 @@ template <typename Map> class MapJournal {
 public:
     explicit MapJournal(Map& map) : data(map) { static_assert(std::is_nothrow_copy_assignable_v<Value>); }
     ~MapJournal() noexcept {
-        if (done) return;
+        profiling::Scope profile(profiling::Category::Transaction);
+        if (done) { changes.clear(); return; }
         for (auto i = changes.rbegin(); i != changes.rend(); ++i) {
             if (i->inserted) data.erase(i->key);
             else if (i->removed) data.insert(std::move(i->removed));
@@ -124,6 +126,7 @@ public:
     MapJournal(const MapJournal&) = delete;
     MapJournal& operator=(const MapJournal&) = delete;
     void set(const Key& key, const Value& value) {
+        profiling::Scope profile(profiling::Category::Transaction);
         const auto it = data.find(key);
         if (it != data.end()) { changes.push_back({key, it->second, false, {}}); it->second = value; }
         else {
@@ -132,6 +135,7 @@ public:
         }
     }
     void erase(const Key& key) {
+        profiling::Scope profile(profiling::Category::Transaction);
         if (!data.contains(key)) return;
         changes.push_back({key, {}, false, {}}); changes.back().removed = data.extract(key);
     }
@@ -260,7 +264,8 @@ public:
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
-        if (committed) return;
+        profiling::Scope profile(profiling::Category::Transaction);
+        if (committed) { queue_undo.clear(); return; }
         for (auto i = ant_undo.rbegin(); i != ant_undo.rend(); ++i) s.ants.set(i->first, i->second);
         for (auto i = food_undo.rbegin(); i != food_undo.rend(); ++i) s.foods.rows[i->first] = i->second;
         for (auto i = colony_undo.rbegin(); i != colony_undo.rend(); ++i) s.colonies.rows[i->first] = i->second;
@@ -276,6 +281,7 @@ public:
         s.social = social_before;
     }
     void commit() noexcept {
+        profiling::Scope profile(profiling::Category::Transaction);
         committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
         contact_nodes.commit(); contact_roots.commit(); autonomy.commit();
         geometry_edits.commit(); edit_index.commit(); spatial_index.commit(); parcels.commit(); carriers.commit();
@@ -290,6 +296,7 @@ public:
             throw std::length_error("entity host budget exceeded");
     }
     ScheduledId insert(ScheduledEvent e) {
+        profiling::Scope profile(profiling::Category::Scheduler);
         if (e.key.time < s.m.now || (e.key.time == s.m.now && s.m.watermark &&
             EventKey{e.key.time, e.key.phase, e.key.priority, e.key.tie, s.m.next_sequence} <= *s.m.watermark))
             throw std::invalid_argument("event precedes the persisted execution watermark");
@@ -302,6 +309,7 @@ public:
         detail::bump(s.m.revision); return e.id;
     }
     ScheduledEvent remove(EventKey key) {
+        profiling::Scope profile(profiling::Category::Scheduler);
         const auto e = s.queue.at(key);
         queue_undo.push_back({key, e.id, false, {}, {}});
         queue_undo.back().event = s.queue.extract(key); queue_undo.back().index = s.queue_index.extract(e.id);
@@ -317,6 +325,7 @@ public:
         ++s.m.executed; s.m.watermark = e.key;
     }
     void fact(WorldEvent e) {
+        profiling::Scope profile(profiling::Category::History);
         if (s.journal.size() >= limits.committed_events) throw std::length_error("committed event host budget exceeded");
         e.id = {detail::take(s.m.next_event)}; e.world = s.world; e.time = s.m.now;
         detail::bump(s.m.revision); e.revision = s.m.revision; s.journal.push_back(e);

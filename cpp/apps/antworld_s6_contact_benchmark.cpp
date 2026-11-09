@@ -1,4 +1,5 @@
 #include "s3_fixture.hpp"
+#include "antworld/core/profiling.hpp"
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -55,6 +56,13 @@ int main(int argc, char **argv) {
     if (!repetitions || repetitions > 100 ||
         (only && only != 128 && only != 512 && only != 2048))
       throw std::invalid_argument("invalid benchmark size");
+    if (std::filesystem::exists(dir / "contacts.csv"))
+      throw std::invalid_argument("refusing to overwrite contact evidence");
+    std::ofstream profiles(dir / "profile.csv"), states(dir / "states.csv");
+    profiles.exceptions(std::ios::badbit | std::ios::failbit);
+    states.exceptions(std::ios::badbit | std::ios::failbit);
+    profiles << "population,layout,policy,repetition,phase,instrumented,category,calls,inclusive_ns,exclusive_ns\n";
+    states << "population,layout,policy,repetition,state_hash,trace_hash\n";
     std::ofstream out(dir / "contacts.csv");
     out.exceptions(std::ios::badbit | std::ios::failbit);
     out << std::setprecision(17);
@@ -68,6 +76,15 @@ int main(int argc, char **argv) {
       for (bool dispersed : {false, true})
         for (bool bounded : {false, true})
           for (unsigned rep = 0; rep < repetitions; ++rep) {
+            auto dump_profile = [&](const char* phase) {
+              const auto counts=profiling::snapshot();
+              for (std::size_t i=0;i<counts.size();++i)
+                profiles << count << ',' << (dispersed ? "dispersed" : "dense") << ','
+                         << (bounded ? "bounded" : "exhaustive") << ',' << rep << ',' << phase << ','
+                         << profiling::enabled << ',' << profiling::names[i] << ',' << counts[i].calls
+                         << ',' << counts[i].inclusive_ns << ',' << counts[i].exclusive_ns << '\n';
+            };
+            profiling::reset();
             const auto setup_start = Clock::now();
             RuntimeLimits limits;
             limits.events_per_timestamp = 10000;
@@ -92,10 +109,12 @@ int main(int argc, char **argv) {
             for (auto a : ants)
               w.set_behavior(a, IndividualBehavior::Nurse);
             const auto setup = elapsed(setup_start);
+            dump_profile("setup"); profiling::reset();
             const auto start = Clock::now();
             for (std::int64_t t = 1000; t <= 10000; t += 1000)
               w.advance_to({t});
             const auto advance = elapsed(start);
+            dump_profile("advance"); profiling::reset();
             s3_fixture::balanced(w);
             const auto encode_start = Clock::now();
             const auto bytes = w.checkpoint();
@@ -104,11 +123,16 @@ int main(int argc, char **argv) {
             const auto restore_start = Clock::now();
             restored.restore(bytes);
             const auto restore = elapsed(restore_start);
+            dump_profile("encode_restore");
             s3_fixture::require(bytes == restored.checkpoint(),
                                 "contact benchmark restore divergence");
             const auto work = w.contact_work();
             const auto q = w.summary();
             const auto [rss, peak] = memory();
+            const auto hashes=w.snapshot();
+            states << count << ',' << (dispersed ? "dispersed" : "dense") << ','
+                   << (bounded ? "bounded" : "exhaustive") << ',' << rep << ','
+                   << hashes.state_hash << ',' << hashes.trace_hash << '\n';
             s3_fixture::require(!bounded || work.maximum_candidates <= 16,
                                 "structural contact budget violated");
             out << "ENGINEERING_FIXTURE," << count << ','

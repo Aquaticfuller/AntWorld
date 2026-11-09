@@ -80,6 +80,7 @@ void WorldRuntime::stop_autonomy(Transaction &tx, EntityId id) {
 }
 void WorldRuntime::resolve_autonomy_wakes(
     Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
+  profiling::Scope profile(profiling::Category::Policy);
   auto &s = *state_;
   const auto &config = *s.social;
   // Keep the frozen decision record scalar: only work counters survive local
