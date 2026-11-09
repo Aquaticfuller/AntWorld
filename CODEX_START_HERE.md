@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6 received independent CONDITIONAL PASS, with S7 withheld. S6.1 engineering passed but the complete stage failed. The current authorized batch is S6.2 Performance Validation and Scarcity Diagnosis on codex/s6.2-performance-scarcity. Read frozen document 39 before new measurements or modifications. Preserve all S6 evidence and its unresolved nutrition/task coupling and missed contact scaling target. S7 is not authorized.
+This is the v0.8 design and engineering handoff. S6.2 received independent CONDITIONAL PASS and the user authorized S6.3 Long-Term Ecological Loop Completion. Read frozen document 41 before implementation. Preserve all 137 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3-long-term-ecology; S6.4 and S7-S9 remain unauthorized.
 
 ## Architecture
 

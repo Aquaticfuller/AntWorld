@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 53 (excluding the manifest itself).
+Files: 54 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `7fdf4f31d2899fae238af4115499bba5b2f55e086acdc47660079ace3edd364b` | 4557 |
-| `CODEX_START_HERE.md` | `18d68bd77165c75ca2e026d72eafb1bda2f91ff3230f5c980c27e5561b644ebb` | 4268 |
+| `AGENTS.md` | `7f33e8d92cb3e6cecdae57a51d3a1936bcedc0594726a85dcbe29a5cbb7e6252` | 4415 |
+| `CODEX_START_HERE.md` | `6c2e2c7cebfca03fb3420f84e8c78b41575c89d8ffa5b0911df213384707030e` | 4149 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -60,3 +60,4 @@ Files: 53 (excluding the manifest itself).
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
 | `tools/verify_handoff.py` | `fa698924271b13fb92206d6e47fca1b9758254aa2eb8de57bc2cfac30d365c7e` | 1408 |
+| `docs/41_S6_3_Frozen_Protocol.md` | `ed8bbb94ea3e297cdfbe24b47364cd7d8b0b6db06bdb4b56d894e33ff30a2d75` | 11704 |
