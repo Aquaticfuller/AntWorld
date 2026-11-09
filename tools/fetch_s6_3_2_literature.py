@@ -23,6 +23,7 @@ def main():
         assert dest.parent == folder and entry['url'].startswith('https://')
         record = dict(entry, accessed_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))
         try:
+            cached = dest.exists()
             if not dest.exists():
                 request = urllib.request.Request(entry['url'], headers={'User-Agent': 'AntWorldResearchAudit/1.0 (academic literature verification)'})
                 with urllib.request.urlopen(request, timeout=45) as response:
@@ -31,7 +32,7 @@ def main():
                     record['content_type'] = response.headers.get('Content-Type', '')
                 dest.write_bytes(data)
             data = dest.read_bytes()
-            record.update(status='FETCHED_REQUIRES_CONTENT_INSPECTION', bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
+            record.update(status='CACHE_PRESENT_SOURCE_NOT_REVALIDATED' if cached else 'FETCHED_REQUIRES_CONTENT_INSPECTION', bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
         except Exception as error:
             record.update(status='ACCESS_FAILED', error=str(error))
         return record

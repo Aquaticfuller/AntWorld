@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 56 (excluding the manifest itself).
+Files: 62 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `95635e95fedb7c3c9d47fd5ebb8b747bcffcd6fdf71c15c7111319fceed8dfc2` | 4585 |
-| `CODEX_START_HERE.md` | `4bf0c37c321a3da298e1928bc5fe2b25ccdd8551be2f7707628723c3f235bab6` | 5409 |
+| `AGENTS.md` | `ac36dedad7cae8e62d54b46c31a01175de00f524ed204e89833c15d233d025e8` | 4674 |
+| `CODEX_START_HERE.md` | `eef1e8452fd08f32914d1dce05b533496ceeaf06a7488a907cf5cd939bfa8207` | 6250 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 56 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `f9da66b352b8606264b4d67dc89d446734387c6476262a69f166d61a11cedc4d` | 34470 |
+| `docs/08_Open_Questions.md` | `65f7ff3a98c3412e8cc2d7e03f6bcee4137ffb0d5fb8f3b61f7724374580f1e6` | 37877 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -54,12 +54,6 @@ Files: 56 (excluding the manifest itself).
 | `docs/38_S6_1_Implementation_and_Metric_Definitions.md` | `838cc136e504675170fca92aa57f4f0ab50bd81dcf1105c6880f0c792a4523c3` | 10989 |
 | `docs/39_S6_2_Performance_and_Scarcity_Protocol.md` | `349755be0b314b99eca854b8855824c992c63af821c14f67b760444a2dae4651` | 12329 |
 | `docs/40_S6_2_Measurement_and_Observer_Implementation.md` | `4736c69ed9d016aed5cbd7130b19850ac8e3a1c751cb5d3dbc91eabbc1eb6820` | 8306 |
-| `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
-| `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
-| `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
-| `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
-| `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
-| `tools/verify_handoff.py` | `fa698924271b13fb92206d6e47fca1b9758254aa2eb8de57bc2cfac30d365c7e` | 1408 |
 | `docs/41_S6_3_Frozen_Protocol.md` | `ed8bbb94ea3e297cdfbe24b47364cd7d8b0b6db06bdb4b56d894e33ff30a2d75` | 11704 |
 | `docs/42_S6_3_Correction_Protocol.md` | `2cc6f8af2383b297686f4aa94546b79e9084a2aa5b1b744a48aa3001d3e4819a` | 5475 |
 | `docs/43_S6_3_Implementation_and_Metrics.md` | `4804e5d80b7eedc38add1e7800b599aae73cc0be350548e3ab68e2609a521fa6` | 9217 |
@@ -67,3 +61,11 @@ Files: 56 (excluding the manifest itself).
 | `docs/45_S6_3_1_Observer_Contracts.md` | `ac80b4f465f41be48a733580935de097f9c9d8323bd24c6615d61d9f8038cfbd` | 2777 |
 | `docs/46_S6_3_1_Correction_Protocol.md` | `464838ed6d5a893d6b8f3ae7844b8cdc448f3a562a87e4b5c8414bfe7d2c7cd2` | 6830 |
 | `docs/47_S6_3_1_Verification_and_Metrics.md` | `69a73f77352edcf0e3da5ed7228c48ddf1787b89823f50d5550edc38487c365f` | 6210 |
+| `docs/48_S6_3_2_Frozen_Audit_and_Performance_Protocol.md` | `52a1eedf641d6dab7ec4987ef0fcda677d96137a76e4fdf5924adf577eed67ef` | 8750 |
+| `docs/49_S6_3_2_Biological_Comparison_Freeze.md` | `25a07375d0b8606c7c96a1c0eecdf97987013cca4aa56f5b604c0596d4d94296` | 6636 |
+| `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
+| `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
+| `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
+| `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
+| `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
+| `tools/verify_handoff.py` | `fa698924271b13fb92206d6e47fca1b9758254aa2eb8de57bc2cfac30d365c7e` | 1408 |

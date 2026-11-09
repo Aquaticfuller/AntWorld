@@ -1,0 +1,262 @@
+{
+  "baseline": "accdb4c7037c792ac55e45277c9a16379828b09c",
+  "comparison": "All Core headers/sources and inherited test sources; LF-normalized bytes",
+  "files": [
+    {
+      "path": "cpp/include/antworld/core/behavior.hpp",
+      "normalized_sha256": "6e71f83bd05959e12c7e761269634e21143be7d90b04199838b4b8936b9b9831"
+    },
+    {
+      "path": "cpp/include/antworld/core/command.hpp",
+      "normalized_sha256": "222502877f12369ffdea14b6f225b24426ba607dc6fa544c05ad4ccb5423496f"
+    },
+    {
+      "path": "cpp/include/antworld/core/entities.hpp",
+      "normalized_sha256": "cac789b6360d95dc30492e167ba53aec1b9b096721f9d4b257c4d44d41c44c01"
+    },
+    {
+      "path": "cpp/include/antworld/core/event.hpp",
+      "normalized_sha256": "700820cf7e15c8aced5cb7f43717c4e4489a4a491ac7b6a1100be1068b0723db"
+    },
+    {
+      "path": "cpp/include/antworld/core/geometry.hpp",
+      "normalized_sha256": "80b6ee586900fb1fa1f05b1166b15b1ae14043cb59a6dfeda49ffa5d3e633165"
+    },
+    {
+      "path": "cpp/include/antworld/core/inspection.hpp",
+      "normalized_sha256": "0ffd074feb764864cc14cfac9d5ec32ff14eef97b12c385b72eaa50de190cd23"
+    },
+    {
+      "path": "cpp/include/antworld/core/long_term.hpp",
+      "normalized_sha256": "914cebdcdbbf02fd59d1c0b2550440b12b3ab6727a48b5c2cb95ec4c87aff3c3"
+    },
+    {
+      "path": "cpp/include/antworld/core/physiology.hpp",
+      "normalized_sha256": "764b1f2e1cd46f9f4a8fa8c26745b26e5f3ea152b0035c36d2f6c87d2a9cba38"
+    },
+    {
+      "path": "cpp/include/antworld/core/profiling.hpp",
+      "normalized_sha256": "a5a482ad1a268a3a7be2d35434ee7d3d26c710e19b7fabcbf78e8200219d1d16"
+    },
+    {
+      "path": "cpp/include/antworld/core/rng.hpp",
+      "normalized_sha256": "848ec0b939d072f58372bfcdb84c7f822cb769340abd94f9dd48f946ae9c4164"
+    },
+    {
+      "path": "cpp/include/antworld/core/social.hpp",
+      "normalized_sha256": "cd9d5535729ef14e63fd694c21196c41e3a8ee24ee52a4d5eec9f777f2a9ea00"
+    },
+    {
+      "path": "cpp/include/antworld/core/types.hpp",
+      "normalized_sha256": "4a9abbd1317ff3bdffc933c3129564355a5b6ddca96dc957b310f410004c791f"
+    },
+    {
+      "path": "cpp/include/antworld/core/world_runtime.hpp",
+      "normalized_sha256": "c4cc3e747371268b5d565d434069823c6822c5b047eff612bf3c97c9ad87d243"
+    },
+    {
+      "path": "cpp/include/antworld/storage/analytics.hpp",
+      "normalized_sha256": "972ab90ee8dd58e8ddfc92d8345cef52b6d19ecaf0366e24b29891159d474bac"
+    },
+    {
+      "path": "cpp/include/antworld/storage/store.hpp",
+      "normalized_sha256": "0d7cedd31381ad0e80f51f984329ce8eab16cf9f09bbda7ddd7c33212e745e56"
+    },
+    {
+      "path": "cpp/src/behavior.cpp",
+      "normalized_sha256": "f8372a7ec0f9d2e26bac5c1d173358a3db430de28141f3e1635aeaeccbbbb97e"
+    },
+    {
+      "path": "cpp/src/behavior_rng.hpp",
+      "normalized_sha256": "37fe02a7098de2110b960550af98a39c413f161c0c2ece1c6279baf38cf88ba3"
+    },
+    {
+      "path": "cpp/src/checkpoint.cpp",
+      "normalized_sha256": "1caecc12529a47af362d7b16da481bee68d765b6edf0f7b9c709b1fe74e7abbf"
+    },
+    {
+      "path": "cpp/src/checkpoint_codec.hpp",
+      "normalized_sha256": "e68b15dff69db1f28c48072357c5f909767f8fb1e39288c7a45754757f647132"
+    },
+    {
+      "path": "cpp/src/checkpoint_s2.hpp",
+      "normalized_sha256": "ef532b131c89702ba5940af28840d9e99cdb061eeb2efce489fb9c6dc489f774"
+    },
+    {
+      "path": "cpp/src/checkpoint_s3.hpp",
+      "normalized_sha256": "e90637a87eb7a92d15298ae8727bc8fe5dfc3d2985fe6ff9fede9db3852e0d8c"
+    },
+    {
+      "path": "cpp/src/checkpoint_s4.hpp",
+      "normalized_sha256": "52976db1528ca659a53b5b41bb2d77568d025d5652a19ffdf722ae353c25d171"
+    },
+    {
+      "path": "cpp/src/checkpoint_s5.hpp",
+      "normalized_sha256": "9de28479f83585f84004167081dc2703f05394afbef5ad6813c9bdec39ba1df7"
+    },
+    {
+      "path": "cpp/src/checkpoint_s6.hpp",
+      "normalized_sha256": "d67e58e6507735d25fe6c12f768995db22f04dd6635518f40cf67385baa08f17"
+    },
+    {
+      "path": "cpp/src/checkpoint_s6_3.hpp",
+      "normalized_sha256": "363337fd3922ffc7c0c0b83873c3e89aa57228deeae0eabe291830ee9a9dc6da"
+    },
+    {
+      "path": "cpp/src/commands.cpp",
+      "normalized_sha256": "01514f6538a4c22e3e7b273ea52bccf0eec0feb9affd6e59d5e71ec283a13597"
+    },
+    {
+      "path": "cpp/src/contact_index.hpp",
+      "normalized_sha256": "784c9f1d859fa7b4a6a332856cd40c938edddf2b022aefa2a634f5c16c4ea731"
+    },
+    {
+      "path": "cpp/src/ecology.cpp",
+      "normalized_sha256": "940eb6f06029d2928cf216126e32c5dfb7a82f77da1dda5d3d951413c75e559e"
+    },
+    {
+      "path": "cpp/src/excavation.cpp",
+      "normalized_sha256": "8fae5d1bfed9daf06d9dd4fc89effc14e417b88bade55af45114f8f34ea226fa"
+    },
+    {
+      "path": "cpp/src/foraging.cpp",
+      "normalized_sha256": "5531e2831c2d8940a50ba6d3baf2732d17d9e706e34f77d75cc25958cf40a064"
+    },
+    {
+      "path": "cpp/src/geometry.cpp",
+      "normalized_sha256": "e9a8f60080e41e17ff12fc6edfd7b62d1997c494215df33efec3c795e490a5ce"
+    },
+    {
+      "path": "cpp/src/geometry_internal.hpp",
+      "normalized_sha256": "20adcf5546d9ad0867c2bb8128d9211b65821e5d2205129ac2a127b3475754a4"
+    },
+    {
+      "path": "cpp/src/geometry_kernel.cpp",
+      "normalized_sha256": "ba38a5739a915b3b3d33b651b5c2d1252f116d028b2196a1e11c2343faac1a4e"
+    },
+    {
+      "path": "cpp/src/inspection.cpp",
+      "normalized_sha256": "2e0d46df5e48d1fc07b33323dc739c480d38cbf28fa7d819a8c34fd52b0a45b8"
+    },
+    {
+      "path": "cpp/src/long_term.cpp",
+      "normalized_sha256": "c0b66337a437c5211df76e5e4e69d8109975a8c206e616e4790b9a39a34bbf22"
+    },
+    {
+      "path": "cpp/src/long_term_internal.hpp",
+      "normalized_sha256": "f631fd9f6a2cf1c33b64667d7440c0baa24bd9c31ccb95064097175cd0b10683"
+    },
+    {
+      "path": "cpp/src/physiology.cpp",
+      "normalized_sha256": "57cba19b798c600bd76d26109ac0178d2ae06727a657e23e2a4da14b149e73d3"
+    },
+    {
+      "path": "cpp/src/physiology_internal.hpp",
+      "normalized_sha256": "5a5866bc5961e3b0153e065c8365f97d946bcd61e8ce739e308073049c659c48"
+    },
+    {
+      "path": "cpp/src/social.cpp",
+      "normalized_sha256": "d8d2709e1212ce657d414e2ffd6410f5c81302bbfd0ba5a08782a6e0d9060808"
+    },
+    {
+      "path": "cpp/src/social_internal.hpp",
+      "normalized_sha256": "ca411eba04216e3862bcba09a97dcfc7f7f206bdbe8e621a577428ae89e544cd"
+    },
+    {
+      "path": "cpp/src/state.hpp",
+      "normalized_sha256": "02cbdee139975db02391ef9849afd2ba4e70a43ec1e9294946ea9b29a78c4f01"
+    },
+    {
+      "path": "cpp/src/surface_internal.hpp",
+      "normalized_sha256": "c52bb5c8c8a6e8ffe997162e6294492f6b6bc54e8e3f766472e0df1844c50fb2"
+    },
+    {
+      "path": "cpp/src/types.cpp",
+      "normalized_sha256": "ea40f1932acc549221f73c71f6eb2394f1ee4f2da15df75dc41979d156d8693a"
+    },
+    {
+      "path": "cpp/src/world_runtime.cpp",
+      "normalized_sha256": "8db94bba23eaacf41d0504b1c100ffce50da48535092f8335170c4dedba52a6e"
+    },
+    {
+      "path": "cpp/tests/test_allocation_failure.cpp",
+      "normalized_sha256": "69be818c64ee2507fcd9e5523b277d82f414318c35a0c5a0331f185ba4859797"
+    },
+    {
+      "path": "cpp/tests/test_archive.cmake",
+      "normalized_sha256": "1584aad3f58fe3bc352c2e0e0e433cb31c0011e82316afc62b266d9cd0cf784f"
+    },
+    {
+      "path": "cpp/tests/test_cli.cmake",
+      "normalized_sha256": "d2f665af060fd2aec10145f4adf83ab2091267244cc0565b7a59086acd977df0"
+    },
+    {
+      "path": "cpp/tests/test_core.cpp",
+      "normalized_sha256": "99c74b61c654d017e36eb1cb3e756e6497e5682d7a009084c320a8115334c1cf"
+    },
+    {
+      "path": "cpp/tests/test_s1.cpp",
+      "normalized_sha256": "ddfb1b2299d2f4ce2ea2bb7ce65b7c2b398fe28a521aeba9b91c93bd964f2094"
+    },
+    {
+      "path": "cpp/tests/test_s2.cpp",
+      "normalized_sha256": "3ce373b1a56a875514c6c926bb9e2841589e7d5fab0d1ab67bac157f01e1be31"
+    },
+    {
+      "path": "cpp/tests/test_s2_1.cpp",
+      "normalized_sha256": "58f65ae49a929d84e9dfc8d07b6f8639d42d57c852462c412d0147440228deb5"
+    },
+    {
+      "path": "cpp/tests/test_s2_2.cpp",
+      "normalized_sha256": "b47849bb38b8b65692e659aa94fdce70c542eb4b93b246333bd0992e9947a18f"
+    },
+    {
+      "path": "cpp/tests/test_s3.cpp",
+      "normalized_sha256": "b865db35cf0695eadabe99ed30561079523bbdffc73f1c4c0dadb303ce303f70"
+    },
+    {
+      "path": "cpp/tests/test_s4.cpp",
+      "normalized_sha256": "9775e23cd9cf5f78b0be5f7b81af46a9dcc30b9e7148aa149b0e3f43fe2ec021"
+    },
+    {
+      "path": "cpp/tests/test_s5.cpp",
+      "normalized_sha256": "45b0f36e2a533299f1382306b40af49fae4178deda41bb97018a7ed867cc26a9"
+    },
+    {
+      "path": "cpp/tests/test_s5_crash.cmake",
+      "normalized_sha256": "afe9fa7fd3b04137f4938d4712e863de9824f7ef610528a066eb0b2ece3e5f4b"
+    },
+    {
+      "path": "cpp/tests/test_s5_io.cpp",
+      "normalized_sha256": "6d255db89d77ef7773dd4d5cfd7a23d044cef0b0a21b913fc9cc22a703c3da24"
+    },
+    {
+      "path": "cpp/tests/test_s5_wal_crash.cmake",
+      "normalized_sha256": "e682058d816c05e331ccca1f118da16f7c91323ba58b73df71d6f123fd538a41"
+    },
+    {
+      "path": "cpp/tests/test_s6.cpp",
+      "normalized_sha256": "be2d927e41790c0a4decdab6cb936c2f2f5509301646a3220533e45c79789639"
+    },
+    {
+      "path": "cpp/tests/test_s6_1.cpp",
+      "normalized_sha256": "799961c7b4fcc8c28af99efef19ac337d37eb00a99fea7d62fe1d43e535f8631"
+    },
+    {
+      "path": "cpp/tests/test_s6_2_observer.cmake",
+      "normalized_sha256": "e91757862c1d9fe69ecaee25c7bd7210d14d1eb0bada06039da85546b66a162b"
+    },
+    {
+      "path": "cpp/tests/test_s6_3.cpp",
+      "normalized_sha256": "a6a0ff098aff49d59f84eea31089c96accbbe864b6f5b9cdd3657ba0c2594a8c"
+    },
+    {
+      "path": "cpp/tests/test_s6_3_1.cpp",
+      "normalized_sha256": "b251e1d7713d9d96a95c23978c5a3c42cb7afcfd674a70592f78581271c69161"
+    },
+    {
+      "path": "cpp/tests/test_s6_3_experiment.cmake",
+      "normalized_sha256": "1508aedcf98b8ced6551ad1bf6d2af0a763e4c97a60b05ecf7e0abb5f1bfd7cd"
+    }
+  ]
+}

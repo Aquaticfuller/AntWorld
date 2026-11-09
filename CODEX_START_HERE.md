@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.3 received engineering PASS and bounded ecological CONDITIONAL PASS; the user authorized S6.3.1 Queen Provisioning and Reproductive Allocation Validation. Read frozen document 44 before diagnostic implementation. Preserve all 153 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3.1-queen-validation; S6.4 and S7-S9 remain unauthorized.
+This is the v0.8 design and engineering handoff. S6.3.1 received engineering PASS and conditional reproductive-mechanism approval, without biological or latest performance qualification. The user authorized S6.3.2 Biological Evidence, Model Validation and Performance Requalification. Read frozen documents 48/49 and the root evidence/provenance/proposal reports. Preserve all 161 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3.2-biology-audit; S6.4 and S7-S9 remain unauthorized.
 
 ## Architecture
 
@@ -28,6 +28,8 @@ This is the v0.8 design and engineering handoff. S6.3 received engineering PASS 
 13. docs/29_S2_2_Validation_Protocol.md and docs/30_S2_2_Literature_and_Model_Rationale.md for the current frozen protocol and primary research.
 
 ## Current implementation gate
+
+S6.3.2 is an audit of unchanged biological rules, not authorization to implement proposed corrections. Queen founding care/plastic specialization, physiological compartments/caste scaling, developmental temperature and observation-compatible behavioral endpoints have substantial gaps. Read BIOLOGY_EVIDENCE_MATRIX.md, PARAMETER_PROVENANCE.csv, BIOLOGICAL_VALIDATION_REPORT.md and MODEL_CORRECTION_PROPOSALS.md. The two-day maternal guard remains an uncalibrated local safety hypothesis. Performance admission failures and all measured rows must remain, without weakened thresholds or selected reruns. S6_3_2_RESULTS.md records final verification and readiness; historical stage statements below remain evidence, not the current authorization.
 
 S6.3.1 is implemented for independent review. Read S6_3_1_RESULTS.md and protocols/contracts 44-47. Preserve all 161 current tests and the 432-run archive, including every negative queen outcome. Positive maternal-maintenance horizons explicitly use schema 10 / physics 12; zero retains old schema 9 / physics 11 and exact legacy behavior. The final source reproduces all 192 baseline controls. SD-08 remains open despite 180-day sustained reproduction in the six adequate-access 32-worker fixtures: small-colony supply and ordinary-access outcomes still fail, and all parameters remain ENGINEERING_FIXTURE. The new noisy wall-time performance batch is NOT PASSED (contact p50 growth 6.315x, birth 8.154x); paired/cycle results and historical passes do not replace its frozen gate. Stop; S6.4 and S7-S9 require new authorization. The S6.3 statement below is historical context.
 

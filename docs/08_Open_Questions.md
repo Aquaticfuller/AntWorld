@@ -1,5 +1,22 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## Current S6.3.2 biological evidence and requalification boundary
+
+The S6.3.1 independent review passed engineering, conditionally accepted the local reproductive guard, withheld biological validation and did not pass the latest performance batch. S6.3.2 audits unchanged Core rules under protocols 48/49; all 161 inherited tests and negative archives remain. Evidence grades apply separately to mechanisms and numeric adoption. Read the root evidence matrix, parameter provenance, biological validation and correction proposals P01-P10 before further implementation. S6.4 and Unity remain unauthorized.
+
+| Debt | S6.3.2 finding and required review |
+|---|---|
+| SD-08 queen provisioning/allocation | OPEN. The two-day guard is not measured. Ordinary32 and adequate-access8 failures remain. Direct L. niger experiments show founding care and reversible worker-dependent specialization; the current queen caste gate prohibits both. P01/P03 require separately validated local mechanisms, never global worker counts or forced supply |
+| SD-09 physiological and developmental calibration | NEW / BLOCKING biological readiness. Current caste/stage rates and usable reserve compartments are uncalibrated; carbohydrate credit is 1 kJ/g with undefined gross/net mapping; uptake pulses interact with death. Seven-day supplied development and no temperature/diapause cannot reproduce B06. P02/P04/P10 require matched units, compartments and observables before fitting |
+| SD-04 nutrient allocation | OPEN. Exact contacted-individual stores are a local engineering demand proxy, not demonstrated sensory access. B08 has heterogeneous duration-defined exchanges, not calibrated transfer mass or queen dosage. Selective scarcity, timing, maturation and redistribution remain unresolved; P05 |
+| SD-06/TD-04 nest organization | OPEN. B12 surface building and B13 underground thermal response are distinct assays. Cuboid edits, contact/vacancy proxy and noncolliding piles do not validate morphology or microclimate feedback; P09 |
+| SD-07 activity and task plasticity | OPEN. Program assignment is not observed activity or sleep. Fixed weights/holding times and no individual maturation cannot be calibrated by a mean active fraction; P06 |
+| SD-01/02 trails and memory | OPEN. Approximately two initial uninterrupted following steps and weak social recruitment remain. Direct local-choice evidence does not validate long-distance recruitment, perfect one-visit memory or fixed loaded-only deposition; P08 |
+| TD-01/08 performance | OPEN pending the exact S6.3.2 report. Preserve S6.1 24.229x unknown-cause anomaly and S6.3.1 6.315x/8.154x failures. Failed low-load admissions and invalid PDH readings are evidence, not deletable slow samples. The <=6 threshold is unchanged |
+| TD-03/06 history/storage | OPEN. Full fact history, synchronous snapshots and long-run memory/storage growth remain. No record deletion or biology reduction is allowed to manufacture performance |
+
+No empirical paper supports the complete current state machine. Direct qualitative support, extrapolation, engineering approximation, conflict and absent observables are distinct statuses. No current numeric biology fixture is upgraded to measured calibration in S6.3.2. Queen care, physiological/thermal development and measurement-contract gaps prevent a claim of biologically ready Core; review P01-P10 individually before any correction.
+
 ## Current S6.3.1 validation and review boundary
 
 S6.3 independent review passed engineering correctness and conditionally accepted the frozen long-term mechanisms, while explicitly withholding S6.4. S6.3.1 diagnoses SD-08 under protocols 44-47. It preserves all 153 inherited tests, adds eight regressions and retains all earlier negative evidence. Its single optional local maternal-maintenance gate does not alter workers, egg costs, food inputs or metabolic rates. See S6_3_1_RESULTS.md and the complete 432-run archive; completion requires independent review and does not authorize S6.4 or Unity.

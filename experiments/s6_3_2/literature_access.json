@@ -1,0 +1,251 @@
+[
+  {
+    "filename": "queen_specialization_2024.html",
+    "url": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2435.14536",
+    "accessed_utc": "2026-11-09T12:32:08Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "filename": "queen_care_2018.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6238135/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:08Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6238135/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 77707,
+    "sha256": "a34485faa6db1539dcfe618970b5e2ecfbdaab0af060a8a890e1420a4d7c0c42"
+  },
+  {
+    "filename": "founding_feeding_2024.pdf",
+    "url": "https://dea.lib.unideb.hu/server/api/core/bitstreams/1669b66a-3988-4993-9d2f-6309717c9a50/content",
+    "accessed_utc": "2026-11-09T12:32:08Z",
+    "status": "ACCESS_FAILED",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>"
+  },
+  {
+    "filename": "nutrition_growth_2020.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7391535/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:08Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7391535/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 155649,
+    "sha256": "1c079adaf4ab38c4729a8d091f2f0507f011cd8652ac8109657c9518d81c88b2"
+  },
+  {
+    "filename": "trophallaxis_2019.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6821819/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:09Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6821819/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 96791,
+    "sha256": "feedcc2d06149eeaf7703f24ce3f133cf78fe1a6378a40783e5a70791644197c"
+  },
+  {
+    "filename": "worker_age_2023.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9814961/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:09Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9814961/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 141800,
+    "sha256": "943b5f29dfcfa178d6de1a417b96e2aca6d834bd124ae5953d3675d26ee5cc66"
+  },
+  {
+    "filename": "construction_2016.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4747701/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:10Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 500: "
+  },
+  {
+    "filename": "trail_geometry_2014.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4204274/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:10Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4204274/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 72770,
+    "sha256": "12c6852c2642ab2e18d3b30e297c5b4e8f52f08491808a142c774803360e5575"
+  },
+  {
+    "filename": "fire_ant_excavation_2023.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10189599/fullTextXML",
+    "accessed_utc": "2026-11-09T12:32:15Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 500: "
+  },
+  {
+    "filename": "temperature_development_2004.pdf",
+    "url": "https://link.springer.com/content/pdf/10.1023/B:JOEY.0000033808.45455.75.pdf",
+    "accessed_utc": "2026-11-09T12:32:18Z",
+    "resolved_url": "https://link.springer.com/content/pdf/10.1023/B:JOEY.0000033808.45455.75.pdf?error=cookies_not_supported&code=3cfbf1b9-c016-428d-a45b-ed5f2dce59b8",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 120905,
+    "sha256": "b8f897d22096c1d073a00f992ac7f6700e67c12ae1a79476632d38999a53e3de"
+  },
+  {
+    "filename": "bioturbation_2024.html",
+    "url": "https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2656.14040",
+    "accessed_utc": "2026-11-09T12:32:19Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "filename": "trail_memory_2011.pdf",
+    "url": "https://www.socialinsect-research.com/resources/Publications/Czaczkesetal.2011.pdf",
+    "accessed_utc": "2026-11-09T12:32:19Z",
+    "resolved_url": "https://www.socialinsect-research.com/resources/Publications/Czaczkesetal.2011.pdf",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 320966,
+    "sha256": "905863d2baa92ca55ab45d7ece662b13aef25a3f55d0ddd8d3cb7199c37f2fe4"
+  },
+  {
+    "filename": "protein_survival_2012.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3350685/fullTextXML",
+    "accessed_utc": "2026-11-09T12:35:15Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 500: "
+  },
+  {
+    "filename": "young_colony_diets_2025.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12214729/fullTextXML",
+    "accessed_utc": "2026-11-09T12:35:15Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12214729/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 83973,
+    "sha256": "2acd2aeb752b5137c409f164878217486fd60940b06d96717039ff77f812ce88"
+  },
+  {
+    "filename": "nutrition_preferences_2024.xml",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10923885/fullTextXML",
+    "accessed_utc": "2026-11-09T12:35:15Z",
+    "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10923885/fullTextXML",
+    "content_type": "application/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 150263,
+    "sha256": "da863813e941af8db6593e27b402af6901c7649914c20776bc53e2b3fc61a119"
+  },
+  {
+    "filename": "sexual_energy_1985.pdf",
+    "url": "https://link.springer.com/content/pdf/10.1007/BF00299234.pdf",
+    "accessed_utc": "2026-11-09T12:35:15Z",
+    "resolved_url": "https://link.springer.com/content/pdf/10.1007/BF00299234.pdf?error=cookies_not_supported&code=21752a94-cfde-49ad-9147-a1078068c01d",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 898790,
+    "sha256": "d97f7e0cc6481fd6bd7cdd4f5f93567b33500e37d088d0a2224a4009f4a4159d"
+  },
+  {
+    "filename": "construction_2016.html",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4747701/",
+    "accessed_utc": "2026-11-09T12:35:16Z",
+    "resolved_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4747701/",
+    "content_type": "text/html; charset=utf-8",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 250524,
+    "sha256": "8d85b15b036f28a3559d31ff77e059f7c4a00f75d6644bb11796df2fb03fdc8d"
+  },
+  {
+    "filename": "fire_ant_excavation_2023.html",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10189599/",
+    "accessed_utc": "2026-11-09T12:35:16Z",
+    "resolved_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10189599/",
+    "content_type": "text/html; charset=utf-8",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 226763,
+    "sha256": "abb3b76dd6cc55aaba8652ba9009f3c5683359d849ef5348c824ba25e5627d3d"
+  },
+  {
+    "filename": "trail_2026.pdf",
+    "url": "https://link.springer.com/content/pdf/10.1007/s00040-026-01106-9.pdf",
+    "accessed_utc": "2026-11-09T12:35:16Z",
+    "resolved_url": "https://link.springer.com/content/pdf/10.1007/s00040-026-01106-9.pdf?error=cookies_not_supported&code=990c11fe-ac07-4ae4-9aa2-ca587fea0a5e",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 1444515,
+    "sha256": "ee24e87394fc19b09dcc295d656464e72895bf3cbf89f4b74e2de6570bba8be8"
+  },
+  {
+    "filename": "task_polyethism_1983.html",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1111/j.1439-0310.1983.tb00088.x",
+    "accessed_utc": "2026-11-09T12:35:17Z",
+    "status": "ACCESS_FAILED",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "filename": "trail_learning_2016.xml",
+    "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0149720&type=manuscript",
+    "accessed_utc": "2026-11-09T12:35:17Z",
+    "resolved_url": "https://corpus-prod.f505aadad1e46610c8f8563037eb3c4b.r2.cloudflarestorage.com/10.1371/journal.pone.0149720/1/pone.0149720.xml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20261109T040119Z&X-Amz-SignedHeaders=host&X-Amz-Credential=8260ac00150bac2a2b0d76db61250012%2F20261109%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Expires=86400&X-Amz-Signature=b255036bc5b91bd199788bb61f3854b589742e23698af14b77d31444ace4aa39",
+    "content_type": "text/xml",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 93749,
+    "sha256": "e3cc8802831fbd6aeeda78653e8789d33ab4e57c6ff8885717995cf9d47d0ed2"
+  },
+  {
+    "filename": "founding_immunity_2020.html",
+    "url": "https://www.frontiersin.org/journals/ecology-and-evolution/articles/10.3389/fevo.2020.00076/full",
+    "accessed_utc": "2026-11-09T12:35:17Z",
+    "resolved_url": "https://www.frontiersin.org/journals/ecology-and-evolution/articles/10.3389/fevo.2020.00076/full",
+    "content_type": "text/html;charset=utf-8",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 772055,
+    "sha256": "00da3b998b9db723a0309a7a1a78223132aa66c53eb13e1dce159fc6cd9f0e1a"
+  },
+  {
+    "filename": "worker_lifespan_2016.pdf",
+    "url": "https://pure.rug.nl/ws/portalfiles/portal/40659139/1_s2.0_S0531556516303345_main.pdf",
+    "accessed_utc": "2026-11-09T12:46:13Z",
+    "resolved_url": "https://pure.rug.nl/ws/portalfiles/portal/40659139/1_s2.0_S0531556516303345_main.pdf",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 686230,
+    "sha256": "03936c7f4fa762fc7cd89eb9894d3811a394f49b762768cdfa2bae24085a3677"
+  },
+  {
+    "filename": "task_polyethism_1983.pdf",
+    "url": "https://www.dictionnaire-amoureux-des-fourmis.fr/Noms%20propres/L/Lenoir%20Alain/Publis%20Alain%20lenoir/Lenoir-Ataya-Z-Tierpsychol-1983.pdf",
+    "accessed_utc": "2026-11-09T12:46:13Z",
+    "resolved_url": "https://www.dictionnaire-amoureux-des-fourmis.fr/Noms%20propres/L/Lenoir%20Alain/Publis%20Alain%20lenoir/Lenoir-Ataya-Z-Tierpsychol-1983.pdf",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 344051,
+    "sha256": "734441d90df63326a39c500b1972bb46117458c879aa42a74d020d419edd4383"
+  },
+  {
+    "filename": "trail_crowding_2013.pdf",
+    "url": "https://www.socialinsect-research.com/resources/Publications/Czaczkesetal.2013b.pdf",
+    "accessed_utc": "2026-11-09T12:46:13Z",
+    "resolved_url": "https://www.socialinsect-research.com/resources/Publications/Czaczkesetal.2013b.pdf",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 423612,
+    "sha256": "9d1f3bb11237b19c980836130ec9a75fc94a851b04d766121c343132de1e74d9"
+  },
+  {
+    "filename": "trail_spatial_2024.pdf",
+    "url": "https://link.springer.com/content/pdf/10.1007/s00040-024-00995-y.pdf",
+    "accessed_utc": "2026-11-09T12:46:13Z",
+    "resolved_url": "https://link.springer.com/content/pdf/10.1007/s00040-024-00995-y.pdf?error=cookies_not_supported&code=a910dc8c-bbac-4c89-b54a-84772fdb39f9",
+    "content_type": "application/pdf",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 1777432,
+    "sha256": "111ca087c5c44f0ba0b36287e671ea4f3827e358cd03d58621446359e4c2fec3"
+  },
+  {
+    "filename": "protein_survival_2012.html",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3350685/",
+    "accessed_utc": "2026-11-09T12:46:14Z",
+    "resolved_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3350685/",
+    "content_type": "text/html; charset=utf-8",
+    "status": "FETCHED_REQUIRES_CONTENT_INSPECTION",
+    "bytes": 181194,
+    "sha256": "78386978443df0988b5d78ca8f56a51cbf84a801c1c366b8946ada4e94377e9f"
+  }
+]

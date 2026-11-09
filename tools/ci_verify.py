@@ -21,6 +21,12 @@ checks = [
     ['tools/analyze_s6_3_performance.py', '--check'],
     ['tools/analyze_s6_3_1.py', '--check'],
     ['tools/analyze_s6_3_1_performance.py', '--check'],
+    ['tools/inventory_s6_3_2.py', '--check'],
+    ['tools/provenance_s6_3_2.py', '--check'],
+    ['tools/literature_measurements_s6_3_2.py', '--check'],
+    ['tools/analyze_s6_3_2_biology.py', '--check'],
+    ['tools/analyze_s6_3_2_performance.py', '--check'],
+    ['tools/verify_s6_3_2_sources.py'],
 ]
 for check in checks:
     result = subprocess.run([sys.executable, *check], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

@@ -1,0 +1,1742 @@
+{
+  "attempt": 1,
+  "started_utc_ns": 1794231597156307900,
+  "ended_utc_ns": 1794231657168165200,
+  "admitted": true,
+  "checks": {
+    "system_busy_pct_complete": true,
+    "system_busy_pct_p50": 2.9370597587241254,
+    "system_busy_pct_p95": 11.933374540486026,
+    "processor_busy_pct_complete": true,
+    "processor_busy_pct_p50": 0.029001300663672458,
+    "processor_busy_pct_p95": 4.6989957065857615,
+    "power_valid": true,
+    "sensors_valid": true
+  },
+  "host_before": {
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "os": [
+      {
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "TotalVisibleMemorySize": 16494648
+      }
+    ],
+    "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "timezone_minutes": 60,
+    "processes": [
+      {
+        "Id": 9256,
+        "ProcessName": "AggregatorHost",
+        "CPU": null,
+        "WorkingSet": 12881920
+      },
+      {
+        "Id": 20156,
+        "ProcessName": "AppActions",
+        "CPU": 2.75,
+        "WorkingSet": 46260224
+      },
+      {
+        "Id": 15084,
+        "ProcessName": "ApplicationFrameHost",
+        "CPU": 3.328125,
+        "WorkingSet": 63578112
+      },
+      {
+        "Id": 26016,
+        "ProcessName": "AppProvisioningPlugin",
+        "CPU": null,
+        "WorkingSet": 8052736
+      },
+      {
+        "Id": 440,
+        "ProcessName": "ChatGPT",
+        "CPU": 2.890625,
+        "WorkingSet": 22880256
+      },
+      {
+        "Id": 7824,
+        "ProcessName": "ChatGPT",
+        "CPU": 1.796875,
+        "WorkingSet": 66326528
+      },
+      {
+        "Id": 15496,
+        "ProcessName": "ChatGPT",
+        "CPU": 891.609375,
+        "WorkingSet": 189853696
+      },
+      {
+        "Id": 15628,
+        "ProcessName": "ChatGPT",
+        "CPU": 0.140625,
+        "WorkingSet": 14225408
+      },
+      {
+        "Id": 16148,
+        "ProcessName": "ChatGPT",
+        "CPU": 1273.953125,
+        "WorkingSet": 139198464
+      },
+      {
+        "Id": 17156,
+        "ProcessName": "ChatGPT",
+        "CPU": 2.296875,
+        "WorkingSet": 90316800
+      },
+      {
+        "Id": 17652,
+        "ProcessName": "ChatGPT",
+        "CPU": 0.21875,
+        "WorkingSet": 12328960
+      },
+      {
+        "Id": 19652,
+        "ProcessName": "ChatGPT",
+        "CPU": 23.203125,
+        "WorkingSet": 182796288
+      },
+      {
+        "Id": 20228,
+        "ProcessName": "ChatGPT",
+        "CPU": 20.375,
+        "WorkingSet": 66969600
+      },
+      {
+        "Id": 23480,
+        "ProcessName": "ChatGPT",
+        "CPU": 6.609375,
+        "WorkingSet": 32223232
+      },
+      {
+        "Id": 24768,
+        "ProcessName": "ChatGPT",
+        "CPU": 90.640625,
+        "WorkingSet": 53260288
+      },
+      {
+        "Id": 25120,
+        "ProcessName": "ChatGPT",
+        "CPU": 825.65625,
+        "WorkingSet": 325550080
+      },
+      {
+        "Id": 30608,
+        "ProcessName": "ChatGPT",
+        "CPU": 2996.109375,
+        "WorkingSet": 732147712
+      },
+      {
+        "Id": 31940,
+        "ProcessName": "ChatGPT",
+        "CPU": 154.71875,
+        "WorkingSet": 322707456
+      },
+      {
+        "Id": 34308,
+        "ProcessName": "ChatGPT",
+        "CPU": 2.046875,
+        "WorkingSet": 23695360
+      },
+      {
+        "Id": 5612,
+        "ProcessName": "ChsIME",
+        "CPU": 0.03125,
+        "WorkingSet": 11620352
+      },
+      {
+        "Id": 16600,
+        "ProcessName": "clouddrive_desktop_widget",
+        "CPU": null,
+        "WorkingSet": 6901760
+      },
+      {
+        "Id": 4612,
+        "ProcessName": "cmd",
+        "CPU": 0.0625,
+        "WorkingSet": 6676480
+      },
+      {
+        "Id": 2176,
+        "ProcessName": "codex",
+        "CPU": 59.765625,
+        "WorkingSet": 95416320
+      },
+      {
+        "Id": 14212,
+        "ProcessName": "codex",
+        "CPU": 0.109375,
+        "WorkingSet": 110530560
+      },
+      {
+        "Id": 17612,
+        "ProcessName": "codex",
+        "CPU": 2251.25,
+        "WorkingSet": 256397312
+      },
+      {
+        "Id": 22648,
+        "ProcessName": "codex",
+        "CPU": 0.109375,
+        "WorkingSet": 110567424
+      },
+      {
+        "Id": 28900,
+        "ProcessName": "codex",
+        "CPU": 0.0625,
+        "WorkingSet": 110600192
+      },
+      {
+        "Id": 30452,
+        "ProcessName": "codex",
+        "CPU": 0.03125,
+        "WorkingSet": 110751744
+      },
+      {
+        "Id": 21180,
+        "ProcessName": "codex-code-mode-host",
+        "CPU": 8.234375,
+        "WorkingSet": 29356032
+      },
+      {
+        "Id": 31100,
+        "ProcessName": "codex-computer-use",
+        "CPU": 93.609375,
+        "WorkingSet": 82444288
+      },
+      {
+        "Id": 18180,
+        "ProcessName": "codex-computer-use-swift",
+        "CPU": 3.265625,
+        "WorkingSet": 39350272
+      },
+      {
+        "Id": 13008,
+        "ProcessName": "codex-windows-sandbox-service",
+        "CPU": null,
+        "WorkingSet": 24322048
+      },
+      {
+        "Id": 2912,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7950336
+      },
+      {
+        "Id": 3944,
+        "ProcessName": "conhost",
+        "CPU": null,
+        "WorkingSet": 1323008
+      },
+      {
+        "Id": 5068,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7512064
+      },
+      {
+        "Id": 9976,
+        "ProcessName": "conhost",
+        "CPU": 0.046875,
+        "WorkingSet": 7356416
+      },
+      {
+        "Id": 17404,
+        "ProcessName": "conhost",
+        "CPU": null,
+        "WorkingSet": 2260992
+      },
+      {
+        "Id": 20412,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7352320
+      },
+      {
+        "Id": 20496,
+        "ProcessName": "conhost",
+        "CPU": 0.046875,
+        "WorkingSet": 7360512
+      },
+      {
+        "Id": 20548,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7438336
+      },
+      {
+        "Id": 22180,
+        "ProcessName": "conhost",
+        "CPU": 0.03125,
+        "WorkingSet": 8081408
+      },
+      {
+        "Id": 22192,
+        "ProcessName": "conhost",
+        "CPU": 0.046875,
+        "WorkingSet": 1081344
+      },
+      {
+        "Id": 22576,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7430144
+      },
+      {
+        "Id": 23128,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7782400
+      },
+      {
+        "Id": 30216,
+        "ProcessName": "conhost",
+        "CPU": null,
+        "WorkingSet": 9076736
+      },
+      {
+        "Id": 31044,
+        "ProcessName": "conhost",
+        "CPU": 0,
+        "WorkingSet": 7471104
+      },
+      {
+        "Id": 33248,
+        "ProcessName": "conhost",
+        "CPU": 0,
+        "WorkingSet": 7999488
+      },
+      {
+        "Id": 33908,
+        "ProcessName": "conhost",
+        "CPU": 0.234375,
+        "WorkingSet": 7352320
+      },
+      {
+        "Id": 33992,
+        "ProcessName": "conhost",
+        "CPU": 0.015625,
+        "WorkingSet": 7503872
+      },
+      {
+        "Id": 11180,
+        "ProcessName": "CoreTelemetryPlugin",
+        "CPU": 0.859375,
+        "WorkingSet": 39981056
+      },
+      {
+        "Id": 34420,
+        "ProcessName": "crashpad_handler",
+        "CPU": 0.109375,
+        "WorkingSet": 11403264
+      },
+      {
+        "Id": 31604,
+        "ProcessName": "CrossDeviceResume",
+        "CPU": 1.140625,
+        "WorkingSet": 52527104
+      },
+      {
+        "Id": 13012,
+        "ProcessName": "CrossDeviceService",
+        "CPU": 96.109375,
+        "WorkingSet": 112566272
+      },
+      {
+        "Id": 1308,
+        "ProcessName": "csrss",
+        "CPU": null,
+        "WorkingSet": 4444160
+      },
+      {
+        "Id": 26284,
+        "ProcessName": "csrss",
+        "CPU": null,
+        "WorkingSet": 10186752
+      },
+      {
+        "Id": 24884,
+        "ProcessName": "ctfmon",
+        "CPU": 23.984375,
+        "WorkingSet": 67026944
+      },
+      {
+        "Id": 1540,
+        "ProcessName": "dasHost",
+        "CPU": null,
+        "WorkingSet": 8040448
+      },
+      {
+        "Id": 27740,
+        "ProcessName": "dllhost",
+        "CPU": 0.40625,
+        "WorkingSet": 15159296
+      },
+      {
+        "Id": 30384,
+        "ProcessName": "dllhost",
+        "CPU": 0.046875,
+        "WorkingSet": 15732736
+      },
+      {
+        "Id": 1740,
+        "ProcessName": "dwm",
+        "CPU": null,
+        "WorkingSet": 159182848
+      },
+      {
+        "Id": 5540,
+        "ProcessName": "Everything",
+        "CPU": null,
+        "WorkingSet": 1630208
+      },
+      {
+        "Id": 14356,
+        "ProcessName": "explorer",
+        "CPU": 184.984375,
+        "WorkingSet": 350035968
+      },
+      {
+        "Id": 7812,
+        "ProcessName": "FileSyncHelper",
+        "CPU": null,
+        "WorkingSet": 32157696
+      },
+      {
+        "Id": 5548,
+        "ProcessName": "FMService64",
+        "CPU": null,
+        "WorkingSet": 3502080
+      },
+      {
+        "Id": 29308,
+        "ProcessName": "FnHotkeyCapsLKNumLK",
+        "CPU": 0.625,
+        "WorkingSet": 17113088
+      },
+      {
+        "Id": 7208,
+        "ProcessName": "FnHotkeyUtility",
+        "CPU": 3.421875,
+        "WorkingSet": 36442112
+      },
+      {
+        "Id": 1792,
+        "ProcessName": "fontdrvhost",
+        "CPU": null,
+        "WorkingSet": 1712128
+      },
+      {
+        "Id": 19064,
+        "ProcessName": "fontdrvhost",
+        "CPU": null,
+        "WorkingSet": 23654400
+      },
+      {
+        "Id": 5728,
+        "ProcessName": "GameInputRedistService",
+        "CPU": null,
+        "WorkingSet": 7045120
+      },
+      {
+        "Id": 11636,
+        "ProcessName": "gamingservices",
+        "CPU": null,
+        "WorkingSet": 28356608
+      },
+      {
+        "Id": 11644,
+        "ProcessName": "gamingservicesnet",
+        "CPU": null,
+        "WorkingSet": 4177920
+      },
+      {
+        "Id": 2516,
+        "ProcessName": "HipsDaemon",
+        "CPU": null,
+        "WorkingSet": 323833856
+      },
+      {
+        "Id": 15348,
+        "ProcessName": "HipsTray",
+        "CPU": 618.890625,
+        "WorkingSet": 5451776
+      },
+      {
+        "Id": 9840,
+        "ProcessName": "HWiNFO64",
+        "CPU": 2149.578125,
+        "WorkingSet": 166551552
+      },
+      {
+        "Id": 0,
+        "ProcessName": "Idle",
+        "CPU": null,
+        "WorkingSet": 8192
+      },
+      {
+        "Id": 5796,
+        "ProcessName": "IntelAudioService",
+        "CPU": null,
+        "WorkingSet": 11350016
+      },
+      {
+        "Id": 2360,
+        "ProcessName": "IntelCpHDCPSvc",
+        "CPU": null,
+        "WorkingSet": 2719744
+      },
+      {
+        "Id": 11620,
+        "ProcessName": "IntelGraphicsSoftware.Service",
+        "CPU": null,
+        "WorkingSet": 26071040
+      },
+      {
+        "Id": 8716,
+        "ProcessName": "IntelGraphicsSoftware.Service.Graphics",
+        "CPU": null,
+        "WorkingSet": 48603136
+      },
+      {
+        "Id": 2564,
+        "ProcessName": "ipf_helper",
+        "CPU": 97,
+        "WorkingSet": 13119488
+      },
+      {
+        "Id": 6292,
+        "ProcessName": "ipf_uf",
+        "CPU": null,
+        "WorkingSet": 4751360
+      },
+      {
+        "Id": 6212,
+        "ProcessName": "ipfsvc",
+        "CPU": null,
+        "WorkingSet": 2543616
+      },
+      {
+        "Id": 7100,
+        "ProcessName": "jhi_service",
+        "CPU": null,
+        "WorkingSet": 1441792
+      },
+      {
+        "Id": 5672,
+        "ProcessName": "LenovoUtilityService",
+        "CPU": null,
+        "WorkingSet": 13697024
+      },
+      {
+        "Id": 7600,
+        "ProcessName": "Locator",
+        "CPU": null,
+        "WorkingSet": 847872
+      },
+      {
+        "Id": 12740,
+        "ProcessName": "LockApp",
+        "CPU": 11.984375,
+        "WorkingSet": 125054976
+      },
+      {
+        "Id": 17872,
+        "ProcessName": "LogonUI",
+        "CPU": null,
+        "WorkingSet": 132243456
+      },
+      {
+        "Id": 1592,
+        "ProcessName": "LsaIso",
+        "CPU": null,
+        "WorkingSet": 2293760
+      },
+      {
+        "Id": 1604,
+        "ProcessName": "lsass",
+        "CPU": null,
+        "WorkingSet": 31936512
+      },
+      {
+        "Id": 5876,
+        "ProcessName": "MAFSvr",
+        "CPU": null,
+        "WorkingSet": 13545472
+      },
+      {
+        "Id": 3768,
+        "ProcessName": "Memory Compression",
+        "CPU": null,
+        "WorkingSet": 268001280
+      },
+      {
+        "Id": 6076,
+        "ProcessName": "MessagingPlugin",
+        "CPU": 33.625,
+        "WorkingSet": 47312896
+      },
+      {
+        "Id": 30420,
+        "ProcessName": "MicrosoftStartFeedProvider",
+        "CPU": 10.21875,
+        "WorkingSet": 49979392
+      },
+      {
+        "Id": 5828,
+        "ProcessName": "MiService",
+        "CPU": null,
+        "WorkingSet": 29032448
+      },
+      {
+        "Id": 4240,
+        "ProcessName": "msedge",
+        "CPU": 0.5,
+        "WorkingSet": 60465152
+      },
+      {
+        "Id": 7488,
+        "ProcessName": "msedge",
+        "CPU": 0.078125,
+        "WorkingSet": 21651456
+      },
+      {
+        "Id": 32004,
+        "ProcessName": "msedge",
+        "CPU": 11.9375,
+        "WorkingSet": 228044800
+      },
+      {
+        "Id": 33044,
+        "ProcessName": "msedge",
+        "CPU": 0.921875,
+        "WorkingSet": 48652288
+      },
+      {
+        "Id": 33592,
+        "ProcessName": "msedge",
+        "CPU": 0.140625,
+        "WorkingSet": 15896576
+      },
+      {
+        "Id": 15640,
+        "ProcessName": "msedgewebview2",
+        "CPU": 4.5,
+        "WorkingSet": 44900352
+      },
+      {
+        "Id": 16488,
+        "ProcessName": "msedgewebview2",
+        "CPU": 0.4375,
+        "WorkingSet": 20922368
+      },
+      {
+        "Id": 16528,
+        "ProcessName": "msedgewebview2",
+        "CPU": 15.203125,
+        "WorkingSet": 100741120
+      },
+      {
+        "Id": 22976,
+        "ProcessName": "msedgewebview2",
+        "CPU": 3.8125,
+        "WorkingSet": 83365888
+      },
+      {
+        "Id": 28608,
+        "ProcessName": "msedgewebview2",
+        "CPU": 0.515625,
+        "WorkingSet": 13426688
+      },
+      {
+        "Id": 32404,
+        "ProcessName": "msedgewebview2",
+        "CPU": 1.5625,
+        "WorkingSet": 56594432
+      },
+      {
+        "Id": 5348,
+        "ProcessName": "Nahimic3",
+        "CPU": 0.328125,
+        "WorkingSet": 82501632
+      },
+      {
+        "Id": 2816,
+        "ProcessName": "nahimicNotifSys",
+        "CPU": 3.078125,
+        "WorkingSet": 57368576
+      },
+      {
+        "Id": 5664,
+        "ProcessName": "NahimicService",
+        "CPU": null,
+        "WorkingSet": 30654464
+      },
+      {
+        "Id": 10580,
+        "ProcessName": "NahimicSvc32",
+        "CPU": 11.4375,
+        "WorkingSet": 5025792
+      },
+      {
+        "Id": 10820,
+        "ProcessName": "NahimicSvc64",
+        "CPU": 80.109375,
+        "WorkingSet": 8585216
+      },
+      {
+        "Id": 12916,
+        "ProcessName": "NgcIso",
+        "CPU": null,
+        "WorkingSet": 1249280
+      },
+      {
+        "Id": 2060,
+        "ProcessName": "node",
+        "CPU": 0.25,
+        "WorkingSet": 38035456
+      },
+      {
+        "Id": 11380,
+        "ProcessName": "node",
+        "CPU": 0.4375,
+        "WorkingSet": 43417600
+      },
+      {
+        "Id": 24344,
+        "ProcessName": "node",
+        "CPU": 1.25,
+        "WorkingSet": 45711360
+      },
+      {
+        "Id": 32508,
+        "ProcessName": "node",
+        "CPU": 0.46875,
+        "WorkingSet": 47009792
+      },
+      {
+        "Id": 3708,
+        "ProcessName": "node_repl",
+        "CPU": 0.234375,
+        "WorkingSet": 14151680
+      },
+      {
+        "Id": 5836,
+        "ProcessName": "nvcontainer",
+        "CPU": null,
+        "WorkingSet": 21078016
+      },
+      {
+        "Id": 19916,
+        "ProcessName": "nvcontainer",
+        "CPU": 23.046875,
+        "WorkingSet": 40947712
+      },
+      {
+        "Id": 3440,
+        "ProcessName": "NVDisplay.Container",
+        "CPU": null,
+        "WorkingSet": 51388416
+      },
+      {
+        "Id": 14160,
+        "ProcessName": "NVDisplay.Container",
+        "CPU": null,
+        "WorkingSet": 56217600
+      },
+      {
+        "Id": 684,
+        "ProcessName": "NVIDIA Web Helper",
+        "CPU": 4.734375,
+        "WorkingSet": 7450624
+      },
+      {
+        "Id": 25128,
+        "ProcessName": "OfficeClickToRun",
+        "CPU": null,
+        "WorkingSet": 78598144
+      },
+      {
+        "Id": 14016,
+        "ProcessName": "OneDrive",
+        "CPU": 36.71875,
+        "WorkingSet": 128864256
+      },
+      {
+        "Id": 10288,
+        "ProcessName": "OneDrive.Sync.Service",
+        "CPU": 87.546875,
+        "WorkingSet": 88907776
+      },
+      {
+        "Id": 21716,
+        "ProcessName": "PhoneExperienceHost",
+        "CPU": 75.625,
+        "WorkingSet": 173817856
+      },
+      {
+        "Id": 3264,
+        "ProcessName": "powershell",
+        "CPU": 0.609375,
+        "WorkingSet": 89899008
+      },
+      {
+        "Id": 2120,
+        "ProcessName": "PresentMonService",
+        "CPU": null,
+        "WorkingSet": 2035712
+      },
+      {
+        "Id": 30744,
+        "ProcessName": "pwsh",
+        "CPU": 0.390625,
+        "WorkingSet": 83697664
+      },
+      {
+        "Id": 27028,
+        "ProcessName": "python",
+        "CPU": 0.265625,
+        "WorkingSet": 24817664
+      },
+      {
+        "Id": 280,
+        "ProcessName": "Registry",
+        "CPU": null,
+        "WorkingSet": 37838848
+      },
+      {
+        "Id": 5924,
+        "ProcessName": "RtkAudUService64",
+        "CPU": null,
+        "WorkingSet": 7528448
+      },
+      {
+        "Id": 14584,
+        "ProcessName": "RtkAudUService64",
+        "CPU": 1.96875,
+        "WorkingSet": 20488192
+      },
+      {
+        "Id": 13236,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 0.46875,
+        "WorkingSet": 15687680
+      },
+      {
+        "Id": 17180,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 0.171875,
+        "WorkingSet": 16003072
+      },
+      {
+        "Id": 17992,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 3.90625,
+        "WorkingSet": 47693824
+      },
+      {
+        "Id": 18388,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 0.265625,
+        "WorkingSet": 24592384
+      },
+      {
+        "Id": 21736,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 0.4375,
+        "WorkingSet": 25817088
+      },
+      {
+        "Id": 26036,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 5.34375,
+        "WorkingSet": 47403008
+      },
+      {
+        "Id": 26048,
+        "ProcessName": "RuntimeBroker",
+        "CPU": 0.375,
+        "WorkingSet": 32641024
+      },
+      {
+        "Id": 5968,
+        "ProcessName": "SangforPWEx",
+        "CPU": null,
+        "WorkingSet": 8949760
+      },
+      {
+        "Id": 9736,
+        "ProcessName": "SangforUDProtectEx",
+        "CPU": null,
+        "WorkingSet": 13975552
+      },
+      {
+        "Id": 15832,
+        "ProcessName": "SearchHost",
+        "CPU": 7.546875,
+        "WorkingSet": 133427200
+      },
+      {
+        "Id": 1556,
+        "ProcessName": "SearchIndexer",
+        "CPU": null,
+        "WorkingSet": 65613824
+      },
+      {
+        "Id": 20916,
+        "ProcessName": "SearchProtocolHost",
+        "CPU": null,
+        "WorkingSet": 22990848
+      },
+      {
+        "Id": 236,
+        "ProcessName": "Secure System",
+        "CPU": null,
+        "WorkingSet": 58720256
+      },
+      {
+        "Id": 15720,
+        "ProcessName": "SecurityHealthService",
+        "CPU": null,
+        "WorkingSet": 19632128
+      },
+      {
+        "Id": 27256,
+        "ProcessName": "SecurityHealthSystray",
+        "CPU": 0.21875,
+        "WorkingSet": 15826944
+      },
+      {
+        "Id": 1508,
+        "ProcessName": "services",
+        "CPU": null,
+        "WorkingSet": 16011264
+      },
+      {
+        "Id": 31864,
+        "ProcessName": "ShellExperienceHost",
+        "CPU": 62.296875,
+        "WorkingSet": 141455360
+      },
+      {
+        "Id": 16632,
+        "ProcessName": "ShellHost",
+        "CPU": 0.53125,
+        "WorkingSet": 71270400
+      },
+      {
+        "Id": 22336,
+        "ProcessName": "sihost",
+        "CPU": 35.421875,
+        "WorkingSet": 57028608
+      },
+      {
+        "Id": 820,
+        "ProcessName": "smss",
+        "CPU": null,
+        "WorkingSet": 811008
+      },
+      {
+        "Id": 5420,
+        "ProcessName": "SpitCamSrv",
+        "CPU": null,
+        "WorkingSet": 2191360
+      },
+      {
+        "Id": 4576,
+        "ProcessName": "spoolsv",
+        "CPU": null,
+        "WorkingSet": 15454208
+      },
+      {
+        "Id": 32540,
+        "ProcessName": "ssh-agent",
+        "CPU": null,
+        "WorkingSet": 7946240
+      },
+      {
+        "Id": 22316,
+        "ProcessName": "StartMenuExperienceHost",
+        "CPU": 29.5625,
+        "WorkingSet": 145494016
+      },
+      {
+        "Id": 1288,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 19165184
+      },
+      {
+        "Id": 1416,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 1667072
+      },
+      {
+        "Id": 1648,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 4063232
+      },
+      {
+        "Id": 1760,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 47210496
+      },
+      {
+        "Id": 1776,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 23527424
+      },
+      {
+        "Id": 1936,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 19345408
+      },
+      {
+        "Id": 1952,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 13246464
+      },
+      {
+        "Id": 1980,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 10956800
+      },
+      {
+        "Id": 2236,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 9256960
+      },
+      {
+        "Id": 2248,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 6905856
+      },
+      {
+        "Id": 2340,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 13103104
+      },
+      {
+        "Id": 2396,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3284992
+      },
+      {
+        "Id": 2496,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 9379840
+      },
+      {
+        "Id": 2536,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 11337728
+      },
+      {
+        "Id": 2640,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 20197376
+      },
+      {
+        "Id": 2736,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3100672
+      },
+      {
+        "Id": 2860,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 19755008
+      },
+      {
+        "Id": 3064,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7491584
+      },
+      {
+        "Id": 3128,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 14278656
+      },
+      {
+        "Id": 3276,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5951488
+      },
+      {
+        "Id": 3372,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7254016
+      },
+      {
+        "Id": 3380,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 12324864
+      },
+      {
+        "Id": 3552,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5574656
+      },
+      {
+        "Id": 3556,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 16015360
+      },
+      {
+        "Id": 3612,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 2170880
+      },
+      {
+        "Id": 3628,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 10178560
+      },
+      {
+        "Id": 3636,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 6361088
+      },
+      {
+        "Id": 3680,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5005312
+      },
+      {
+        "Id": 3816,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7966720
+      },
+      {
+        "Id": 3836,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3301376
+      },
+      {
+        "Id": 3864,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7499776
+      },
+      {
+        "Id": 3872,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7061504
+      },
+      {
+        "Id": 3900,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 37015552
+      },
+      {
+        "Id": 3916,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 30253056
+      },
+      {
+        "Id": 4076,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 15175680
+      },
+      {
+        "Id": 4108,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 8323072
+      },
+      {
+        "Id": 4116,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 10833920
+      },
+      {
+        "Id": 4276,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 4849664
+      },
+      {
+        "Id": 4376,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 29229056
+      },
+      {
+        "Id": 4428,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 21303296
+      },
+      {
+        "Id": 4744,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 24244224
+      },
+      {
+        "Id": 5088,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 13451264
+      },
+      {
+        "Id": 5164,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5959680
+      },
+      {
+        "Id": 5264,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3620864
+      },
+      {
+        "Id": 5444,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 54784000
+      },
+      {
+        "Id": 5480,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 59146240
+      },
+      {
+        "Id": 5528,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3985408
+      },
+      {
+        "Id": 5556,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 9072640
+      },
+      {
+        "Id": 5600,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 22806528
+      },
+      {
+        "Id": 5616,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 2035712
+      },
+      {
+        "Id": 5720,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3272704
+      },
+      {
+        "Id": 5744,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 2396160
+      },
+      {
+        "Id": 5820,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 26845184
+      },
+      {
+        "Id": 6136,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 3104768
+      },
+      {
+        "Id": 6376,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 9023488
+      },
+      {
+        "Id": 7108,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5935104
+      },
+      {
+        "Id": 7392,
+        "ProcessName": "svchost",
+        "CPU": 2.515625,
+        "WorkingSet": 46706688
+      },
+      {
+        "Id": 7644,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 15847424
+      },
+      {
+        "Id": 7700,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 4947968
+      },
+      {
+        "Id": 9356,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 7802880
+      },
+      {
+        "Id": 11036,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 5480448
+      },
+      {
+        "Id": 11524,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 2551808
+      },
+      {
+        "Id": 11568,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 11161600
+      },
+      {
+        "Id": 12264,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 8089600
+      },
+      {
+        "Id": 12776,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 8728576
+      },
+      {
+        "Id": 12812,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 21778432
+      },
+      {
+        "Id": 13372,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 18288640
+      },
+      {
+        "Id": 13392,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 14372864
+      },
+      {
+        "Id": 13440,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 11309056
+      },
+      {
+        "Id": 13624,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 4198400
+      },
+      {
+        "Id": 13896,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 24256512
+      },
+      {
+        "Id": 14380,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 14151680
+      },
+      {
+        "Id": 14556,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 65302528
+      },
+      {
+        "Id": 14916,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 6975488
+      },
+      {
+        "Id": 15412,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 33443840
+      },
+      {
+        "Id": 19364,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 24391680
+      },
+      {
+        "Id": 19812,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 9101312
+      },
+      {
+        "Id": 20360,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 14274560
+      },
+      {
+        "Id": 22832,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 1757184
+      },
+      {
+        "Id": 23084,
+        "ProcessName": "svchost",
+        "CPU": 1.03125,
+        "WorkingSet": 26808320
+      },
+      {
+        "Id": 23612,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 31244288
+      },
+      {
+        "Id": 24736,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 6365184
+      },
+      {
+        "Id": 25032,
+        "ProcessName": "svchost",
+        "CPU": 117.6875,
+        "WorkingSet": 41119744
+      },
+      {
+        "Id": 25256,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 12197888
+      },
+      {
+        "Id": 26124,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 16343040
+      },
+      {
+        "Id": 26688,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 30044160
+      },
+      {
+        "Id": 26904,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 27947008
+      },
+      {
+        "Id": 27016,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 25624576
+      },
+      {
+        "Id": 27232,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 18989056
+      },
+      {
+        "Id": 28116,
+        "ProcessName": "svchost",
+        "CPU": 4.75,
+        "WorkingSet": 47476736
+      },
+      {
+        "Id": 28392,
+        "ProcessName": "svchost",
+        "CPU": 1.09375,
+        "WorkingSet": 24952832
+      },
+      {
+        "Id": 28472,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 12283904
+      },
+      {
+        "Id": 29056,
+        "ProcessName": "svchost",
+        "CPU": 0.296875,
+        "WorkingSet": 16388096
+      },
+      {
+        "Id": 29948,
+        "ProcessName": "svchost",
+        "CPU": null,
+        "WorkingSet": 4767744
+      },
+      {
+        "Id": 33716,
+        "ProcessName": "svchost",
+        "CPU": 0.046875,
+        "WorkingSet": 8462336
+      },
+      {
+        "Id": 33800,
+        "ProcessName": "svchost",
+        "CPU": 0.921875,
+        "WorkingSet": 16945152
+      },
+      {
+        "Id": 4,
+        "ProcessName": "System",
+        "CPU": null,
+        "WorkingSet": 1339392
+      },
+      {
+        "Id": 29448,
+        "ProcessName": "SystemSettings",
+        "CPU": 4.3125,
+        "WorkingSet": 19922944
+      },
+      {
+        "Id": 6152,
+        "ProcessName": "taskhostw",
+        "CPU": 135.5,
+        "WorkingSet": 22482944
+      },
+      {
+        "Id": 19112,
+        "ProcessName": "taskhostw",
+        "CPU": 3.953125,
+        "WorkingSet": 28188672
+      },
+      {
+        "Id": 22332,
+        "ProcessName": "TextInputHost",
+        "CPU": 15.46875,
+        "WorkingSet": 148029440
+      },
+      {
+        "Id": 6116,
+        "ProcessName": "UDClientService",
+        "CPU": null,
+        "WorkingSet": 47144960
+      },
+      {
+        "Id": 22560,
+        "ProcessName": "unsecapp",
+        "CPU": null,
+        "WorkingSet": 5193728
+      },
+      {
+        "Id": 28000,
+        "ProcessName": "unsecapp",
+        "CPU": 0.390625,
+        "WorkingSet": 11481088
+      },
+      {
+        "Id": 29136,
+        "ProcessName": "unsecapp",
+        "CPU": 0.671875,
+        "WorkingSet": 12079104
+      },
+      {
+        "Id": 21704,
+        "ProcessName": "UserOOBEBroker",
+        "CPU": 0.140625,
+        "WorkingSet": 12804096
+      },
+      {
+        "Id": 25100,
+        "ProcessName": "vmcompute",
+        "CPU": null,
+        "WorkingSet": 16113664
+      },
+      {
+        "Id": 4136,
+        "ProcessName": "vpnagent",
+        "CPU": null,
+        "WorkingSet": 20242432
+      },
+      {
+        "Id": 27948,
+        "ProcessName": "WidgetBoard",
+        "CPU": 1.59375,
+        "WorkingSet": 32358400
+      },
+      {
+        "Id": 1964,
+        "ProcessName": "WidgetService",
+        "CPU": 7.265625,
+        "WorkingSet": 34103296
+      },
+      {
+        "Id": 1424,
+        "ProcessName": "wininit",
+        "CPU": null,
+        "WorkingSet": 5783552
+      },
+      {
+        "Id": 16332,
+        "ProcessName": "winlogon",
+        "CPU": null,
+        "WorkingSet": 26030080
+      },
+      {
+        "Id": 11160,
+        "ProcessName": "wlanext",
+        "CPU": null,
+        "WorkingSet": 2871296
+      },
+      {
+        "Id": 5944,
+        "ProcessName": "WmiApSrv",
+        "CPU": null,
+        "WorkingSet": 6406144
+      },
+      {
+        "Id": 5176,
+        "ProcessName": "WmiPrvSE",
+        "CPU": null,
+        "WorkingSet": 33488896
+      },
+      {
+        "Id": 29812,
+        "ProcessName": "WmiPrvSE",
+        "CPU": null,
+        "WorkingSet": 19628032
+      },
+      {
+        "Id": 6180,
+        "ProcessName": "WMIRegistrationService",
+        "CPU": null,
+        "WorkingSet": 2707456
+      },
+      {
+        "Id": 33436,
+        "ProcessName": "wps",
+        "CPU": 112.5,
+        "WorkingSet": 111194112
+      },
+      {
+        "Id": 22780,
+        "ProcessName": "wsctrlsvc",
+        "CPU": null,
+        "WorkingSet": 6131712
+      },
+      {
+        "Id": 6108,
+        "ProcessName": "wslservice",
+        "CPU": null,
+        "WorkingSet": 28909568
+      },
+      {
+        "Id": 1836,
+        "ProcessName": "WUDFHost",
+        "CPU": null,
+        "WorkingSet": 3489792
+      },
+      {
+        "Id": 2076,
+        "ProcessName": "WUDFHost",
+        "CPU": null,
+        "WorkingSet": 5967872
+      },
+      {
+        "Id": 3996,
+        "ProcessName": "WUDFHost",
+        "CPU": null,
+        "WorkingSet": 9150464
+      },
+      {
+        "Id": 8216,
+        "ProcessName": "WUDFHost",
+        "CPU": null,
+        "WorkingSet": 2228224
+      },
+      {
+        "Id": 8532,
+        "ProcessName": "WUDFHost",
+        "CPU": null,
+        "WorkingSet": 17453056
+      },
+      {
+        "Id": 5932,
+        "ProcessName": "XboxService",
+        "CPU": null,
+        "WorkingSet": 5808128
+      },
+      {
+        "Id": 5708,
+        "ProcessName": "XtuService",
+        "CPU": null,
+        "WorkingSet": 21999616
+      },
+      {
+        "Id": 11804,
+        "ProcessName": "YunDetectService",
+        "CPU": 57.34375,
+        "WorkingSet": 21262336
+      }
+    ]
+  },
+  "source_header_sha256": "bba41bc1bf8c38100c181e6eb7a18fd26cf398e29fbd2f250712729774ad1334"
+}

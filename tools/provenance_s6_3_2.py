@@ -173,7 +173,7 @@ REFS = {
  'B16': ('10.1371/journal.pone.0149720','Methods; Figs 2-6','A'),
  'B17': ('10.1007/s00040-026-01106-9','PDF pp 3-5; Figs 2-3','A'),
  'B18': ('10.1098/rsif.2012.1009','pp 2-4; Figs 1-2','A'),
- 'B19': ('10.1016/j.exger.2016.09.008','Methods; Fig 2; Results','A'),
+ 'B19': ('10.1016/j.exger.2016.09.008','Methods pp19-20; Figs 3-4 p21; Results','A'),
  'B20': ('10.1111/j.1439-0310.1983.tb00088.x','pp 214-216; Fig 6 p 226; pp 229-230','A'),
  'B21': ('10.1098/rsif.2022.0597','Methods; Figs 1-3','C; Solenopsis invicta'),
  'B22': ('10.1021/ja01876a028','NIST sucrose condensed-phase thermochemistry entry; original pp 1720-1723 not accessed','C; chemistry compilation'),

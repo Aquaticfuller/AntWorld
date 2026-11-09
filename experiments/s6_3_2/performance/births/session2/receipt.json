@@ -1,0 +1,10 @@
+{
+  "pid": 14708,
+  "exit_code": 0,
+  "started_utc_ns": 1794231657235072700,
+  "ended_utc_ns": 1794231661348323400,
+  "rows": 56,
+  "telemetry_rows": 41,
+  "binary_sha256": "c3cdbb06bfdf998568843917c5e2fbc42db2235a3911db001de3d86ba1d5894a",
+  "admission_attempt": 1
+}

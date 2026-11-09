@@ -1,0 +1,4 @@
+condition,seeds,survivors,simulation_seed_survival_wilson_low,simulation_seed_survival_wilson_high,observed_lifetime_or_censor_p50,deaths_with_external_or_depot_carbs,last48_physical_contacts_p50,last48_queen_sampled_p50,last48_matching_donors_p50,last48_selected_queen_p50,last48_gifts_p50,final_received_carbs_ug_p50,final_received_protein_ug_p50,final_egg_energy_nj_p50,final_reproductive_dissipation_nj_p50,final_basal_cost_nj_p50
+ordinary32,6,0,0.0,0.3903342879021653,71.67245370370371,3,798.5,2.5,2.5,0.0,0.0,13523.0,280.0,9000000000.0,180000000.0,6192500000.0
+adequate_access8,6,0,0.0,0.3903342879021653,50.648148148148145,6,173.5,17.5,15.0,1.5,1.0,5268.0,35.0,3000000000.0,60000000.0,4376000000.0
+adequate_access32,6,6,0.6096657120978346,1.0,180.0,0,1775.5,21.5,13.0,10.5,10.5,55935.0,1500.0,40000000000.0,800000000.0,15552000000.0

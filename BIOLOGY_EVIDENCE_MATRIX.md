@@ -78,6 +78,6 @@ Evidence A means an original Lasius niger experiment; B means another Lasius spe
 
 ## Decision
 
-Direct support exists for founding care/plastic specialization, condition-sensitive reproduction, continuous stage identity as a modeling choice, nutritional constraints, local trophallaxis, route learning, pheromone response and context-dependent excavation. This does not support the full current transition system. Q01 is a clear conflict; Q03/F11 omit demonstrated conditional responses; L06 has a large time-scale mismatch. S03, S07, F07-F09 and X01-X03 are specific uncalibrated engineering rules, not biology established by a citation.
+Direct support exists for founding care/plastic specialization, condition-sensitive reproduction, nutritional constraints, local trophallaxis, route learning, pheromone response and context-dependent excavation. Continuous software identity is an engineering choice. These findings do not support the full current transition system. Q01 is a clear conflict; Q03/F11 omit demonstrated conditional responses; L06 has a large time-scale mismatch. S03, S07, F07-F09 and X01-X03 are specific uncalibrated engineering rules, not biology established by a citation.
 
 The main prerequisites for S6.4 biological readiness are P01-P05 plus explicit acceptance of limited movement/task/geometry scope. Parameter adoption and biological corrections require review of [the frozen proposals](MODEL_CORRECTION_PROPOSALS.md). Neither all inherited tests passing nor a longer-lived queen closes these findings.
