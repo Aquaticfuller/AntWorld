@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. The current explicit authorization is S6.3.3 Biological Observability and Founding Queen Care (P10/P01 only), on codex/s6.3.3-queen-care-observability. Read frozen document52, implementation document53, S6_3_3_RESULTS.md and the Evidence Atlas. Preserve all162 inherited tests and every historical result. P02 metabolism, P03 reproductive allocation and P04 thermal development remain excluded. Stop for independent review after S6.3.3; S6.3.4, S6.4 and Unity are not authorized.
+This is the v0.8 design and engineering handoff. The current authorization is S6.3.3.1 Brood Retrieval, Behavioral Fidelity and Performance Validation on `codex/s6.3.3.1-brood-retrieval-validation`. Read documents 52 through 54, S6_3_3_RESULTS.md and the Evidence Atlas. The prior review passed P10 and P01 capability while leaving quantitative validation and final performance qualification open. Preserve all 180 inherited tests, 384 prior runs and their evidence. The targeted retrieval correction excludes P02 metabolism, P03 reproductive allocation and P04 thermal development. Stop for independent review at S6.3.3.1.
 
 ## Architecture
 
