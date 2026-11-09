@@ -53,7 +53,7 @@ Files: 53 (excluding the manifest itself).
 | `docs/37_S6_1_Corrections_Validation_Protocol.md` | `b9b0ac1d1a1acbc5736ebc443a4f163235b531f45888e59642ffeb12c4d7e27b` | 10627 |
 | `docs/38_S6_1_Implementation_and_Metric_Definitions.md` | `838cc136e504675170fca92aa57f4f0ab50bd81dcf1105c6880f0c792a4523c3` | 10989 |
 | `docs/39_S6_2_Performance_and_Scarcity_Protocol.md` | `349755be0b314b99eca854b8855824c992c63af821c14f67b760444a2dae4651` | 12329 |
-| `docs/40_S6_2_Measurement_and_Observer_Implementation.md` | `f2b3ee7131e3abed717699728ce235146e13ab5bd8295b5bddea1325a76c4493` | 4670 |
+| `docs/40_S6_2_Measurement_and_Observer_Implementation.md` | `8f2369cd402ad5dc1df9f59ab76bf8d0ff87ac54707e8687aa811b97a70c7b45` | 6640 |
 | `docs/CHANGELOG.md` | `bb244da3d51cf87ba46b899e6fbe0dd425d38b77a18a4373c3124ca162d96016` | 8654 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

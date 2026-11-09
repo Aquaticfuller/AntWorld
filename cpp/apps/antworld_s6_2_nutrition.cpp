@@ -15,7 +15,7 @@ struct Person {
   AntState ant;
   PhysiologyState p;
   LifeStage seeded;
-  std::int64_t threshold{-1}, adult{-1}, death{-1};
+  std::int64_t threshold{-1}, tissue_threshold{-1}, adult{-1}, death{-1};
   std::uint64_t received{}, given{};
 };
 using People = std::map<EntityId, Person>;
@@ -44,10 +44,10 @@ struct Output {
            "ug,urgent,actual_candidates,actual_contacts,reachable_eligible,"
            "reachable_protein_larvae,sampled_eligible,sampled_protein_larvae,"
            "chosen_recipient,action_kind,canceled_by_timestamp_end\n";
-    people
-        << key
-        << "entity_id,seed_stage,stage,threshold_ms,adult_ms,death_ms,received_"
-           "protein_ug,given_protein_ug,crop_protein_ug,tissue_protein_ug\n";
+    people << key
+           << "entity_id,seed_stage,stage,threshold_ms,tissue_threshold_ms,"
+              "adult_ms,death_ms,received_"
+              "protein_ug,given_protein_ug,crop_protein_ug,tissue_protein_ug\n";
   }
 };
 bool close_enough(const AntState &a, const AntState &b, double radius) {
@@ -104,7 +104,8 @@ void replay(Output &out, std::uint64_t seed, unsigned workers,
   for (const auto &a : w.ant_states()) {
     const auto p = *w.query_physiology({w.summary().world, a.id});
     people.emplace(a.id,
-                   Person{a, p, a.stage, p.tissue_protein_ug >= 100 ? 0 : -1});
+                   Person{a, p, a.stage, p.tissue_protein_ug >= 100 ? 0 : -1,
+                          p.tissue_protein_ug >= 100 ? 0 : -1});
   }
   WorldRuntime fast({9, 9}, 0, {}, s6_fixture::limits()),
       restored({9, 8}, 0, {}, s6_fixture::limits());
@@ -159,6 +160,8 @@ void replay(Output &out, std::uint64_t seed, unsigned workers,
         if (e.kind == FactKind::PhysiologyUpdated) {
           a.p.crop = detail::subtract(a.p.crop, e.transferred);
           a.p.tissue_protein_ug += e.transferred.protein_ug;
+          if (a.tissue_threshold < 0 && a.p.tissue_protein_ug >= 100)
+            a.tissue_threshold = at.milliseconds;
           a.p.body_energy_nj +=
               e.transferred.carbs_ug * a.p.config.carbohydrate_yield_nj_per_ug;
           a.p.hydration_ug += e.transferred.water_ug;
@@ -346,9 +349,9 @@ void replay(Output &out, std::uint64_t seed, unsigned workers,
   for (const auto &[id, q] : people)
     out.people << prefix << id.value << ',' << static_cast<unsigned>(q.seeded)
                << ',' << static_cast<unsigned>(q.ant.stage) << ','
-               << q.threshold << ',' << q.adult << ',' << q.death << ','
-               << q.received << ',' << q.given << ',' << q.p.crop.protein_ug
-               << ',' << q.p.tissue_protein_ug << '\n';
+               << q.threshold << ',' << q.tissue_threshold << ',' << q.adult
+               << ',' << q.death << ',' << q.received << ',' << q.given << ','
+               << q.p.crop.protein_ug << ',' << q.p.tissue_protein_ug << '\n';
   const auto state = w.snapshot();
   out.summary << prefix << state.committed_events << ',' << state.state_hash
               << ',' << state.trace_hash << ',' << attempts << ',' << given
@@ -365,6 +368,13 @@ int main(int argc, char **argv) {
     const std::filesystem::path dir = argv[1];
     require(!std::filesystem::exists(dir), "refusing existing output");
     std::filesystem::create_directories(dir);
+    if (argc == 3 && std::string(argv[2]) == "smoke") {
+      Output out(dir);
+      for (const auto *policy : {"legacy", "combined"})
+        replay(out, 1, 8, 500, policy);
+      std::cout << "PASS S6.2 ordered scarcity observer smoke\n";
+      return 0;
+    }
     const auto seeds = argc > 2 ? std::stoul(argv[2]) : 16,
                first = argc > 3 ? std::stoul(argv[3]) : 1;
     require(seeds && first && first + seeds <= 17,
