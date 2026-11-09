@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S6.1 Integrated Ecology Corrections**, on codex/s6.1-ecology-corrections from reviewed S6 commit 2505f53. S6 received CONDITIONAL PASS but S7 was withheld. Read S6_RESULTS.md and documents 35-37. Freeze controls and diagnose before changing behavior; profile before optimizing. Preserve all 124 S0-S6 tests, raw archives, single-writer rollback, identity, deterministic scheduling and conservation. Address SD-04 local nutrition/task coupling and TD-01 actual costs without retuning biology, changing event semantics or deleting history. Keep TD-03/06 and SD-01/02/06 limitations. No global nutrition averaging, food oracle, rescue feeding, laying or weather. S7-S9, Unity and Game Master remain unauthorized.
+**Current authorized batch: S6.2 Performance Validation and Scarcity Diagnosis**, on codex/s6.2-performance-scarcity from reviewed S6.1 commit 4a4827c. S6.1 engineering passed, the complete stage failed, and S7 remains withheld. Read S6_1_RESULTS.md and frozen document 39. Freeze balanced timing/telemetry and scarcity controls before measurements or changes. Preserve all 135 S0-S6.1 tests and every historical result. Diagnose real costs and allocation before any minimal correction; retain the <=6x target and do not change behavior, RNG, contacts or history for speed. Keep SD-04 scarcity counterexamples and SD-06/07, S2 recruitment and TD-03/06 debts. No global allocator, hidden resources, biological retuning, LOD implementation, Unity, Game Master or S7-S9.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve all 124 S0-S6 tests and historical results, documenting intentional version/semantic changes. Debug, Release, sanitizer, CI, multi-seed integration, local nutrition, dense contact, geometry, durable recovery and history reconciliation evidence is recorded in S6_RESULTS.md.
+- Preserve all 135 S0-S6.1 tests and historical results, documenting intentional version/semantic changes. Debug, Release, sanitizer, CI, multi-seed integration, local nutrition, dense contact, geometry, durable recovery and history reconciliation evidence is recorded in S6_RESULTS.md.
 - Keep document 35 frozen; preserve S6_RESULTS.md, all raw experimental/performance evidence, figures, definitions in document 36 and reproducible commands.
-- Follow frozen document 37, deliver S6_1_RESULTS.md with separate engineering, SD-04 and TD-01 conclusions, commit/push the independent S6.1 branch and stop for review. S7-S9 are not authorized in this run.
+- Follow frozen document 39, deliver S6_2_RESULTS.md with separate engineering, performance and biological conclusions, commit/push the independent S6.2 branch and stop for review. S7-S9 are not authorized in this run.

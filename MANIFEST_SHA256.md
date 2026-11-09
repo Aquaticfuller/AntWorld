@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 51 (excluding the manifest itself).
+Files: 52 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `f0a8f8e36ab0fc8a40006a80e252a35cd0a5bc7fc85f3acb84a3e12d11317bca` | 4514 |
-| `CODEX_START_HERE.md` | `0b14819aa6b47a6104e3bd68c6a90738ae338b09707a44dab3906e42f9462a83` | 4148 |
+| `AGENTS.md` | `7fdf4f31d2899fae238af4115499bba5b2f55e086acdc47660079ace3edd364b` | 4557 |
+| `CODEX_START_HERE.md` | `1dbc386a78056ae8175d7ef662ff320f0099020a347622f81d6497af4fd1761b` | 4227 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -52,6 +52,7 @@ Files: 51 (excluding the manifest itself).
 | `docs/36_S6_Implementation_and_Metric_Definitions.md` | `4c6c621cd18d2104dc40395e8eb4e90c5ce871003da47e55cc2b469bc36a1904` | 13432 |
 | `docs/37_S6_1_Corrections_Validation_Protocol.md` | `b9b0ac1d1a1acbc5736ebc443a4f163235b531f45888e59642ffeb12c4d7e27b` | 10627 |
 | `docs/38_S6_1_Implementation_and_Metric_Definitions.md` | `838cc136e504675170fca92aa57f4f0ab50bd81dcf1105c6880f0c792a4523c3` | 10989 |
+| `docs/39_S6_2_Performance_and_Scarcity_Protocol.md` | `349755be0b314b99eca854b8855824c992c63af821c14f67b760444a2dae4651` | 12329 |
 | `docs/CHANGELOG.md` | `bb244da3d51cf87ba46b899e6fbe0dd425d38b77a18a4373c3124ca162d96016` | 8654 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
