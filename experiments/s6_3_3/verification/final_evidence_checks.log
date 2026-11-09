@@ -1,0 +1,720 @@
+PASS: verified 66 files
+BINARY: review language-bearing metadata manually: ANT_BIOLOGY_EVIDENCE.sqlite
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/ablations.png
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/recruitment.png
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/trail_fields.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/mechanisms.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/sensitivity_and_social.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/trajectories.png
+BINARY: review language-bearing metadata manually: experiments/s3/figures/nutrition_and_development.png
+BINARY: review language-bearing metadata manually: experiments/s4/figures/excavation_outcomes.png
+BINARY: review language-bearing metadata manually: experiments/s4/figures/geometry_sections.png
+BINARY: review language-bearing metadata manually: experiments/s5/figures/geometry_storage.png
+BINARY: review language-bearing metadata manually: experiments/s5/figures/long_history.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/contact_scaling.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/ecology_and_history.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/nutrition_and_surplus.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/sensitivity_and_continuation.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/behavior_feedback.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/contact_performance.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/integrated_outcomes.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/nutrition_matrix.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/seed7_nutrition.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/balanced_growth.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/equal_demand_choices.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/exclusive_attribution.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/hardware_telemetry.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/recipient_allocation.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/scarcity_controls.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/separate_phases.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/transfer_timeline.png
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/1_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/1_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/1_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/2_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/2_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/2_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/3_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/3_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/3_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/4_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/4_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/4_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/5_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/5_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/5_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/6_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/6_32_scarce_constant_no_feedback_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/controls-v2/6_32_scarce_constant_no_recycling_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/1_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/1_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/1_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/1_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/2_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/2_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/2_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/2_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/3_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/3_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/3_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/3_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/4_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/4_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/4_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/4_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/5_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/5_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/5_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/5_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/6_8_balanced_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/6_8_balanced_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/6_8_empty_constant_exchange_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/factorial-v2/6_8_empty_constant_return_only_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/1_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/2_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/3_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/4_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/5_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v1/6_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/1_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/2_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/3_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/4_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/5_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_32_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_32_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_32_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_32_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_8_balanced_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_8_balanced_cyclic_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_8_empty_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/primary-v2/6_8_scarce_constant_full_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/1_8_balanced_constant_full_12/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/1_8_balanced_constant_full_3/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/2_8_balanced_constant_full_12/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/2_8_balanced_constant_full_3/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/3_8_balanced_constant_full_12/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/sensitivity-v2/3_8_balanced_constant_full_3/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/1_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/2_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/3_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/4_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/5_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/ecology/spatial-v2/6_32_balanced_constant_compact_6/events.bin.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3/figures/nutrition_activity_controls.png
+BINARY: review language-bearing metadata manually: experiments/s6_3/figures/performance_growth.png
+BINARY: review language-bearing metadata manually: experiments/s6_3/figures/population_resources.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/1_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/1_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/1_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/1_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/2_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/2_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/2_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/2_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/3_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/3_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/3_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/3_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/4_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/4_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/4_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/4_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/5_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/5_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/5_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/5_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/6_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/6_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/6_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/causal/6_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/1_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/1_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/1_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/2_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/2_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/2_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/3_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/3_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/3_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/4_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/4_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/4_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/5_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/5_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/5_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/6_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/6_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/historical/6_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/1_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/1_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/1_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/2_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/2_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/2_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/3_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/3_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/3_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/4_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/4_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/4_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/5_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/5_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/5_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/6_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/6_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/positive/6_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/1_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/1_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/2_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/2_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/3_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/3_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/4_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/4_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/5_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/5_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/6_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/restricted/6_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/1_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/2_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/3_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/4_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/5_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/baseline/sensitivity/6_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/1_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/1_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/1_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/1_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/2_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/2_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/2_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/2_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/3_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/3_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/3_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/3_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/4_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/4_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/4_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/4_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/5_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/5_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/5_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/5_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/6_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/6_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/6_32_scarce_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/causal/6_32_scarce_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/1_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/1_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/1_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/2_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/2_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/2_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/3_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/3_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/3_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/4_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/4_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/4_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/5_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/5_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/5_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/5_8_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/6_32_balanced_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/6_32_balanced_cyclic_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/historical/6_32_scarce_constant_full_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/1_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/2_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/3_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/4_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/5_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_positive_absorption_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_8_balanced_constant_positive_absorption_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/horizons/6_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/1_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/1_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/1_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/2_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/2_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/2_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/3_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/3_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/3_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/4_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/4_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/4_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/5_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/5_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/5_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/6_32_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/6_32_balanced_constant_positive_6/life_events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/positive/6_8_balanced_constant_positive_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/1_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/1_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/2_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/2_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/3_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/3_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/4_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/4_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/5_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/5_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/6_32_balanced_constant_laying_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/restricted/6_32_balanced_constant_suppressed_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/1_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/2_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/3_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/4_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/5_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/6_8_balanced_constant_absorb_12h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/ecology/corrected/sensitivity/6_8_balanced_constant_behavior_3h_6/decisions.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/performance_uncertainty.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/population_and_resources.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/queen_energy_account.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/queen_survival.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/reproductive_timeline.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_1/figures/supply_controls.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_2/figures/contact_requalification.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_2/figures/development_mismatch.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_2/figures/queen_supply_diagnosis.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_2/figures/quiet_birth_completion.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_2/figures/retained_queen_survival.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/analysis/care_and_retrieval.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/analysis/sensitivity.png
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/primary_19/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/primary_43/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/primary_7/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/primary_71/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/primary_71/events.csv.gz.incomplete
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/sensitivity_19/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/sensitivity_43/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/pre_observer_correction/sensitivity_7/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_101/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_137/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_181/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_19/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_223/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_269/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_313/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_367/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_421/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_43/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_7/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/primary_71/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_101/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_137/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_19/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_43/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_7/events.csv.gz
+BINARY: review language-bearing metadata manually: experiments/s6_3_3/raw/sensitivity_71/events.csv.gz
+BINARY: review language-bearing metadata manually: research/s6_3_2_1/baseline/ANT_BIOLOGY_EVIDENCE.sqlite
+BINARY: review language-bearing metadata manually: research/s6_3_2_1/figures/coverage.png
+BINARY: review language-bearing metadata manually: research/s6_3_2_1/figures/development.png
+BINARY: review language-bearing metadata manually: research/s6_3_2_1/figures/respiration.png
+BINARY: review language-bearing metadata manually: research/s6_3_2_1/source_baseline.zip
+BINARY: review language-bearing metadata manually: research/s6_3_3/executed_source_snapshot.zip
+PASS: no CJK content in 5369 tracked UTF-8 files or commit messages; 433 binaries
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+PASS S2.1 audit: 51712 raw trial rows, 260648 sparse field samples; matched controls, censoring, physics and conservation checked
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+s2.1 bend occupancy: delta=0.060872, 95%=[0.046834,0.074870]
+s2.1 bend streak3: delta=0.166992, 95%=[0.107422,0.226562]
+s2.1 lost selected_marked: delta=0.000000, 95%=[0.000000,0.000000]
+s2.1 straight occupancy: delta=0.058919, 95%=[0.043050,0.075033]
+s2.1 straight streak3: delta=0.148438, 95%=[0.083984,0.210938]
+s2.1 y_symmetric selected_marked: delta=0.176758, 95%=[0.155273,0.197266]
+s2.2 bend occupancy: delta=0.087687, 95%=[0.072835,0.102132]
+s2.2 bend streak3: delta=0.212891, 95%=[0.155273,0.269531]
+s2.2 lost selected_marked: delta=0.203125, 95%=[0.181641,0.223633]
+s2.2 straight occupancy: delta=0.083008, 95%=[0.066488,0.099040]
+s2.2 straight streak3: delta=0.201172, 95%=[0.140625,0.259766]
+s2.2 y_symmetric selected_marked: delta=0.176758, 95%=[0.155273,0.197266]
+PASS S2.2 local evidence, controls, trajectories, censoring and clustered analysis
+PASS S3: 1536 runs, 5376 individual rows, complete seeds, ingredient/energy budgets, order and partition checks
+S4 audit passed: 160 runs, 1612 edits, 3872 trajectory rows; all ledgers and paired reversals agree
+PASS S5: 128 exact-continuation runs, 360 performance samples, 365 diagnostic days; complete seeds and zero nutrient/energy residuals
+PASS S6 primary: 256 cases / 768 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 sensitivity: 48 cases / 144 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 long: 16 cases / 48 modes; identity, event, geometry and integer ledger reconciliation
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "primary_cases": 256,
+  "sensitivity_cases": 48,
+  "long_cases": 16,
+  "paired_execution_modes": 960,
+  "nutrition_cases_per_archive": 768,
+  "surplus_cases": 640,
+  "exact_primary_sensitivity_baseline_pairs": 16,
+  "surplus_sensitivity_cases": 96,
+  "independent_primary_seeds": 32,
+  "bootstrap_resamples": 4096,
+  "analysis_seed": 6006,
+  "confidence": "95% percentile bootstrap; mirrors averaged within seed; modes paired",
+  "conservation_identity_history_continuation": "PASS",
+  "contact_acceptance": {
+    "contact_initial": {
+      "bounded_candidates": "PASS",
+      "dense_2048_speedup": 30.010507998137342,
+      "speedup_at_least_4x": "PASS",
+      "dense_512_to_2048_growth": 7.518261741996399,
+      "growth_at_most_6x": "FAIL"
+    },
+    "performance": {
+      "bounded_candidates": "PASS",
+      "dense_2048_speedup": 28.17605623487426,
+      "speedup_at_least_4x": "PASS",
+      "dense_512_to_2048_growth": 6.875887442704614,
+      "growth_at_most_6x": "FAIL"
+    }
+  }
+}
+{
+  "targets": {
+    "performance_baseline": {
+      "dense_2048_speedup": 84.61452731234816,
+      "dense_512_to_2048_growth": 2.445925455275424,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "uninstrumented"
+    },
+    "unprofiled_before": {
+      "dense_2048_speedup": 29.423878988906978,
+      "dense_512_to_2048_growth": 6.4972262145964645,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    },
+    "profile_before": {
+      "dense_2048_speedup": 34.452533287263066,
+      "dense_512_to_2048_growth": 6.060025696560332,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "attribution only"
+    },
+    "profile_after": {
+      "dense_2048_speedup": 49.066083614207564,
+      "dense_512_to_2048_growth": 5.128861082466718,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "attribution only"
+    },
+    "performance_final": {
+      "dense_2048_speedup": 39.682350700126285,
+      "dense_512_to_2048_growth": 24.228682066564414,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    }
+  },
+  "canonical_hash_groups": 12,
+  "semantic_parity": "PASS"
+}
+
+PASS observer matrix: 576 cases, complete row/ledger/identity/geometry reconciliation
+PASS observer sensitivity: 128 cases, complete row/ledger/identity/geometry reconciliation
+PASS observer integrated: 512 cases, complete row/ledger/identity/geometry reconciliation
+PASS S6 primary: 256 cases / 768 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 long: 16 cases / 48 modes; identity, event, geometry and integer ledger reconciliation
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "matrix_cases": 576,
+  "sensitivity_cases": 128,
+  "integrated_observer_cases": 512,
+  "durable_cases": 272,
+  "durable_execution_modes": 816,
+  "observer_durable_or_original_exact_trace_pairs": 512,
+  "independent_integrated_seeds": 32,
+  "interrupted_execution_prefix_rows_reproduced": {
+    "matrix": 102,
+    "observer_integrated": 64,
+    "integrated": 69
+  },
+  "executed_local_test_rows": 655,
+  "bootstrap_resamples": 4096,
+  "analysis_seed": 6106,
+  "conservation_identity_history_geometry": "PASS",
+  "confidence": "95% paired seed percentile bootstrap; mirrors averaged within seed; modes are verification replicas",
+  "accessible_integral": "Unique reachable recipient demand and adult crop supply; coexistence diagnostic, not maximum feasible flow",
+  "gift_completion_fraction": "Successful plus partial committed transfers / resolved attempts; undefined with zero attempts. Conditional intervals show defined seed counts; every raw case and attempt count is retained."
+}
+
+PASS post-hoc scarcity endpoints and all declared default-cell gift failures; no fitted parameters
+{
+  "paired": [
+    {
+      "layout": "dense",
+      "session": "1",
+      "p50_ratio": 5.376379939455195
+    },
+    {
+      "layout": "dense",
+      "session": "2",
+      "p50_ratio": 5.493349902766203
+    },
+    {
+      "layout": "dense",
+      "session": "3",
+      "p50_ratio": 5.429521958860751
+    },
+    {
+      "layout": "dense",
+      "session": "pooled",
+      "p50_ratio": 5.438312221490987
+    },
+    {
+      "layout": "dense",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.411687490197991,
+      "median_ci_low": 5.327167699343404,
+      "median_ci_high": 5.462464450193707,
+      "geometric_mean": 5.374910882692755,
+      "geometric_ci_low": 5.304546668201305,
+      "geometric_ci_high": 5.443989242757844,
+      "session_max_min": 1.0217562680889813,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    },
+    {
+      "layout": "dispersed",
+      "session": "1",
+      "p50_ratio": 5.22689724748038
+    },
+    {
+      "layout": "dispersed",
+      "session": "2",
+      "p50_ratio": 5.1458029160583205
+    },
+    {
+      "layout": "dispersed",
+      "session": "3",
+      "p50_ratio": 5.0215408461986835
+    },
+    {
+      "layout": "dispersed",
+      "session": "pooled",
+      "p50_ratio": 5.146529103053434
+    },
+    {
+      "layout": "dispersed",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.114459220029319,
+      "median_ci_low": 5.0077411340985005,
+      "median_ci_high": 5.199882688616282,
+      "geometric_mean": 5.042992764251732,
+      "geometric_ci_low": 4.953600108029236,
+      "geometric_ci_high": 5.127071614273904,
+      "session_max_min": 1.0408950972562838,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    }
+  ],
+  "matched_exhaustive_speedup": 42.35658753338925,
+  "matched_speedup_pass": true,
+  "candidate_cap_pass": true,
+  "canonical_parity": true,
+  "restored_continuation": true,
+  "raw_rows": 396,
+  "primary_measured_rows": 288,
+  "source_commit": "cc9004ecd561c453fde8ede435c94eda65426bc7",
+  "hardware_sensor_coverage": true
+}
+PASS 192 exact S6.1 scarcity states/traces; all protein gifts and recipient thresholds reconciled
+PASS 256 equal-demand cases; 16384 committed choices and 262144 inclusion records
+{
+  "runs": 150,
+  "daily_snapshots": 8549,
+  "completed": 126,
+  "censored": 24,
+  "primary_v2_complete": 48,
+  "exact_completed_continuations": 126,
+  "durable_checks": 8,
+  "uncertainty": "4096 seed-bootstrap resamples, seed 6303; six or three independent seeds; descriptive, unadjusted multiple endpoints. Censored rows are last observed outcomes, not 90-day outcomes."
+}
+{
+  "raw_rows": 1008,
+  "measured_rows": 936,
+  "exact_work_state_and_trace": true,
+  "fixed_affinity": true,
+  "note": "4096 session/block bootstrap resamples, seed 6303. Host sensor samples bracket sessions, not every millisecond phase. Process peak memory is a process-lifetime high water mark, including warmups."
+}
+{'batch': 'contacts-baseline-final', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 18.404920045728478, 'paired_median': 18.521920517975417, 'ci_low': 17.63976480939086, 'ci_high': 19.392133757387377}
+{'batch': 'contacts-baseline-final', 'layout': 'dense', 'phase': 'advance', 'p50_growth': 5.445345222614403, 'paired_median': 5.394151011413627, 'ci_low': 5.334385844328457, 'ci_high': 5.449894438779229}
+{'batch': 'contacts-final', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 3.4453396844701194, 'paired_median': 3.11850723216339, 'ci_low': 2.776936411877702, 'ci_high': 3.4002653050099036}
+{'batch': 'contacts-final', 'layout': 'dense', 'phase': 'advance', 'p50_growth': 5.349986039952831, 'paired_median': 5.338093549356362, 'ci_low': 5.224611005658276, 'ci_high': 5.417852403130119}
+{'batch': 'birth-before-index', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 4.3142377275133725, 'paired_median': 4.343104209796055, 'ci_low': 4.287850477248115, 'ci_high': 4.382535167102079}
+{'batch': 'birth-before-index', 'layout': 'dense', 'phase': 'birth_advance', 'p50_growth': 20.82679286314437, 'paired_median': 20.783406116138394, 'ci_low': 20.474086057085433, 'ci_high': 21.054027004562073}
+{'batch': 'birth-after-index', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 4.335459909013363, 'paired_median': 4.3617056391203315, 'ci_low': 4.324036881843503, 'ci_high': 4.389968432180436}
+{'batch': 'birth-after-index', 'layout': 'dense', 'phase': 'birth_advance', 'p50_growth': 4.205383106782985, 'paired_median': 4.244048415873006, 'ci_low': 4.159077868160799, 'ci_high': 4.3235677884513715}
+PASS 432 complete frozen worlds; 7222847 exact observer accounts; 32 SQLite checks
+TD-01 measured ratio 6.314992043842793 paired 5.374796704907352 95% CI 5.032078024595461 5.745462970010146 target <=6; report does not change the target
+PASS: 1209 parameter source expressions unchanged
+PASS: 119 configuration fields; 1209 source expressions; 469 supplemental fixture/JSON contexts
+B06: 40 observed or explicitly unavailable endpoints; no inferred confidence intervals
+ordinary32 alive 0 /6; lifetimes ['68.15972222222223', '75.18518518518519', '65.28935185185185', '76.50462962962963', '86.11111111111111', '62.557870370370374']
+adequate_access8 alive 0 /6; lifetimes ['21.79398148148148', '123.95833333333333', '34.675925925925924', '66.62037037037037', '22.09490740740741', '106.19212962962963']
+adequate_access32 alive 6 /6; lifetimes ['180.0', '180.0', '180.0', '180.0', '180.0', '180.0']
+PASS: 30 new unchanged-model probes and all 18 frozen historical contrasts reconcile
+[{"kind": "contacts", "completed_sessions": 3, "required_sessions": 3, "raw_rows": 336, "required_rows": 336, "status": "COMPLETE"}, {"kind": "births", "completed_sessions": 2, "required_sessions": 3, "raw_rows": 112, "required_rows": 168, "status": "NOT_QUALIFIED_INCOMPLETE"}]
+[{"kind": "contacts", "layout": "dense", "phase": "advance", "ratio_of_p50": 5.418486046160809, "pooled_ci_low": 5.29789677642063, "pooled_ci_high": 5.501400324110442, "paired_median": 5.3385761731620915, "paired_ci_low": 5.226317325599711, "paired_ci_high": 5.426444061193702, "status": "PASS", "target": 6}, {"kind": "births", "layout": "dense", "phase": "birth_advance", "ratio_of_p50": 4.250833375211484, "pooled_ci_low": 4.1407496533729065, "pooled_ci_high": 4.383082343188726, "paired_median": 4.228951356429876, "paired_ci_low": 4.1365348640175, "paired_ci_high": 4.360389385436154, "status": "INCOMPLETE_NO_VERDICT", "target": 6}]
+PASS: all 168 predeclared rows, original workload/hash/continuation and admission equality; old incomplete series unchanged
+{"phase": "birth_advance", "ratio_of_p50": 4.169259837344944, "pooled_ci_low": 4.0493592187629135, "pooled_ci_high": 4.335740175392524, "paired_median": 4.194797376471404, "paired_ci_low": 4.115608061347079, "paired_ci_high": 4.370481735884888, "status": "PASS", "target": 6}
+PASS: 64 unchanged Core/test sources and complete raw probe hashes
+PASS: {"baseline": "2e1a5fa129821176954f26a88f56791635bc8cda", "calibrated_parameters": 0, "config_fields": 119, "coverage": {"behavior": {"DIRECT_OBSERVATIONAL": 1, "DIRECT_QUALITATIVE": 2, "DIRECT_QUANTITATIVE": 14, "PARTIAL_ENDPOINT": 3, "UNKNOWN": 1}, "environment": {"DIRECT_OBSERVATIONAL": 1, "DIRECT_QUANTITATIVE": 6, "EXPOSURE_ONLY": 2, "EXTRAPOLATION_ONLY": 1, "PARTIAL_ENDPOINT": 4, "UNKNOWN": 2}, "life_stage": {"ABSTRACT_ONLY": 3, "DIRECT_OBSERVATIONAL": 1, "DIRECT_QUALITATIVE": 4, "DIRECT_QUANTITATIVE": 11, "PARTIAL_ENDPOINT": 3}, "physiology": {"DIRECT_QUANTITATIVE": 9, "PARTIAL_ENDPOINT": 8, "THEORY_ONLY": 1, "UNKNOWN": 7}}, "implicit_source_expressions": 881, "legacy_source_expressions": 1209, "legacy_supplemental": 469, "measurement_grades": {"A": 217, "B": 38, "C": 21, "D": 15, "E": 1}, "measurement_records": 292, "parameter_records": 2559, "raw_dataset_rows": {"raw_n07_survival": 432, "raw_n10_condition_means": 20, "raw_n10_ctmin": 289, "raw_n10_lte50": 20, "raw_n10_smr": 57}, "raw_dataset_rows_total": 818, "reading_status": {"ABSTRACT_ONLY": 1, "FULL_TEXT_SELECTED_SECTIONS_READ": 47, "METADATA_ONLY_ORIGINAL;SECONDARY_COMPILATION_READ": 1}, "reviewed_rule_groups": 70, "sources": 49, "species": 15, "validation_designs": 20, "validation_executed": 0}
+{"historical_parameter_records": 2559, "current_parameter_records": 1600, "current_typed_expressions": 1341, "current_implicit_expressions": 259, "new_rule_groups": 16, "calibrated_behavioral_coefficients": 0, "profile_fields": {"SpeciesCareProfile": 10, "IndividualCareProfile": 2, "EnvironmentCareProfile": 2}}
+{"runs": 384, "windows": 1080, "conservation_and_restore": "384/384", "paper_clusters": 759, "quantitative_comparisons": 36, "all_parameters_fitted": 0, "raw_discrepancies": ["B01 reversibility: raw50 versus text51 scans; older queens14 labels with3 NA rows;13 measured units per hour versus text12", "B01 mesh:60 raw queens;175 observed queen-hours; varying scan counts 1-52; no deletion", "B02 author R script explains70 raw first-worker groups ->67 queen-worker pairs ->61 productivity cohort; all398 trials retained"], "missing_source_observations": 3, "interpretation": "Bootstrap seed/queen cluster intervals; no biological equivalence margin; approximate geometry and passive-worker cue controls; no calibration"}
+{
+  "completed_preliminary_cases": 105,
+  "groups": [
+    "primary_19",
+    "primary_43",
+    "primary_7",
+    "sensitivity_19",
+    "sensitivity_7"
+  ],
+  "unchanged": "All scans/window endpoints, biological configurations, paths, contact/retrieval endpoints and conservation/restore flags",
+  "excluded_from_comparison": "Wall times, event counts and encoded size; observer labels legitimately alter history size",
+  "partial_cases": "Retained under pre_observer_correction, never declared completed replicates"
+}
+
+{
+  "cases": 384,
+  "status": "PASS",
+  "new_rule": "arrangement_m / bout_seconds <= world.max_speed_m_per_s",
+  "proof": "Every frozen case has arrangement<=step. Existing validation already enforces step/bout<=max_speed. Therefore the added arrangement guard is implied for all384 recorded configurations; no accepted rule, coefficient, RNG or outcome is changed.",
+  "source_sha256": {
+    "cpp/src/care_internal.hpp": "3e62ea8e189b51c14eb2b043e3ace1cce5cbbd7bf3add772be808b1f78291491",
+    "cpp/tests/test_s6_3_3.cpp": "8830d11b42da245d2f6a73775f032e57cffb9bfb3c558098212376edd9b78bf8"
+  },
+  "regression": "CAPABILITY now rejects a tiny-step/fast-arrangement custom profile; full Debug/Release/sanitizer and independent CI seed are rerun",
+  "raw_archive": "Frozen experiment source/binary manifests remain unchanged; this later validation-only guard is explicitly identified instead of overwriting provenance",
+  "executed_source_archive_sha256": "c88eff905fea75ffd30ea9961e1dad5c845758f3e1a2a7de82d54cf932b53bce"
+}
+
+[{"kind": "contacts", "completed_sessions": 0, "required_sessions": 3, "raw_rows": 0, "required_rows": 336, "status": "NOT_QUALIFIED_INCOMPLETE"}]
+[]
+[{"kind": "contacts", "completed_sessions": 1, "required_sessions": 3, "raw_rows": 112, "required_rows": 336, "status": "NOT_QUALIFIED_INCOMPLETE"}]
+[{"kind": "contacts", "layout": "dense", "phase": "advance", "ratio_of_p50": 5.50736294499352, "pooled_ci_low": 5.325693518616357, "pooled_ci_high": 5.583563183878108, "paired_median": 5.386031855117894, "paired_ci_low": 5.2817923392842125, "paired_ci_high": 5.555379704181766, "status": "INCOMPLETE_NO_VERDICT", "target": 6}]

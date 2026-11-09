@@ -1,0 +1,13 @@
+{
+  "cases": 384,
+  "status": "PASS",
+  "new_rule": "arrangement_m / bout_seconds <= world.max_speed_m_per_s",
+  "proof": "Every frozen case has arrangement<=step. Existing validation already enforces step/bout<=max_speed. Therefore the added arrangement guard is implied for all384 recorded configurations; no accepted rule, coefficient, RNG or outcome is changed.",
+  "source_sha256": {
+    "cpp/src/care_internal.hpp": "3e62ea8e189b51c14eb2b043e3ace1cce5cbbd7bf3add772be808b1f78291491",
+    "cpp/tests/test_s6_3_3.cpp": "8830d11b42da245d2f6a73775f032e57cffb9bfb3c558098212376edd9b78bf8"
+  },
+  "regression": "CAPABILITY now rejects a tiny-step/fast-arrangement custom profile; full Debug/Release/sanitizer and independent CI seed are rerun",
+  "raw_archive": "Frozen experiment source/binary manifests remain unchanged; this later validation-only guard is explicitly identified instead of overwriting provenance",
+  "executed_source_archive_sha256": "c88eff905fea75ffd30ea9961e1dad5c845758f3e1a2a7de82d54cf932b53bce"
+}
