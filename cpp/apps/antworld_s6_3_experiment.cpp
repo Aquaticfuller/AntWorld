@@ -319,7 +319,7 @@ int main(int argc, char **argv) {
     if (argc != 3)
       throw std::invalid_argument(
           "usage: antworld_s6_3_experiment OUTPUT_DIR "
-          "smoke|primary|controls|sensitivity|factorial|spatial");
+          "smoke|primary|controls|sensitivity|factorial|spatial|review");
     const std::filesystem::path root = argv[1];
     const std::string mode = argv[2];
     require(!std::filesystem::exists(root / "summary.csv"),
@@ -356,6 +356,9 @@ int main(int argc, char **argv) {
     } else if (mode == "spatial") {
       for (std::uint64_t seed = 1; seed <= 6; ++seed)
         run(root, summary, seed, 32, "balanced", false, "compact", 90);
+    } else if (mode == "review") {
+      run(root, summary, 1, 8, "balanced", false, "full", 90);
+      run(root, summary, 1, 32, "balanced", false, "compact", 90);
     } else
       throw std::invalid_argument("unknown frozen experiment matrix");
   } catch (const std::exception &e) {

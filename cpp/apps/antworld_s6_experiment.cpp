@@ -13,7 +13,7 @@ using s3_fixture::require;
 namespace {
 using Clock = std::chrono::steady_clock;
 using Values =
-    std::array<std::uint64_t, static_cast<std::size_t>(Metric::Count)>;
+    std::array<std::uint64_t, static_cast<std::size_t>(Metric::Born)>;
 double ms(Clock::time_point start) {
   return std::chrono::duration<double, std::milli>(Clock::now() - start)
       .count();
@@ -132,8 +132,8 @@ struct Evidence {
                event, geometry,
                edits.contains(event.id) ? &edits.at(event.id) : nullptr))
         if (!value.owner.value)
-          flows[static_cast<std::size_t>(value.metric)] = checked_add(
-              flows[static_cast<std::size_t>(value.metric)], value.value);
+          flows.at(static_cast<std::size_t>(value.metric)) = checked_add(
+              flows.at(static_cast<std::size_t>(value.metric)), value.value);
       cursor = event.id;
     }
   }
@@ -141,7 +141,7 @@ struct Evidence {
     auto result = flows;
     for (const auto &value : observe(w).values)
       if (!value.owner.value)
-        result[static_cast<std::size_t>(value.metric)] = value.value;
+        result.at(static_cast<std::size_t>(value.metric)) = value.value;
     return result;
   }
 };
@@ -171,7 +171,8 @@ struct Output {
            "residual_nj,soil_residual_q3";
     series
         << "suite,seed,condition,mirror,encounter_budget,time_ms,event_cursor";
-    for (const auto &d : metric_definitions()) {
+    // This frozen legacy experiment retains its original 60-column metric schema.
+    for (const auto &d : metric_definitions().first(Values{}.size())) {
       summary << ',' << d.name;
       series << ',' << d.name;
     }
@@ -209,7 +210,7 @@ void reconcile(Store &store, const WorldRuntime &w, const Evidence &evidence) {
                 rows.back().cursor.value == meta.committed_events,
             "stored gauge does not match actual state");
   }
-  for (const auto &definition : metric_definitions())
+  for (const auto &definition : metric_definitions().first(Values{}.size()))
     if (definition.kind == MetricKind::Flow)
       require(store.flow_total(meta.world, {}, definition.id, {0},
                                {meta.now.milliseconds + 1}) ==
