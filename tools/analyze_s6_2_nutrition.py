@@ -1,5 +1,6 @@
 """Reconcile ordered scarcity evidence with every declared S6.1 case and equal-demand choice."""
 import argparse
+import hashlib
 import json
 import random
 import statistics as st
@@ -185,6 +186,7 @@ def analyze(root, check, pilot=None):
                       failed_donor_empty=statuses['donor_empty_at_resolution'],
                       failed_recipient_full=statuses['recipient_full_at_resolution'],
                       protein_gifts=statuses['protein_transferred'],
+                      protein_before_egg_hatch_ug=sum(int(r['protein_ug']) for r in gs if int(r['time_ms']) < 30000),
                       nurse_exits_holding_protein=exits, forage_entries_holding_protein=foraging,
                       protein_nurse_exposure_ug_s=exposure[2], protein_forage_exposure_ug_s=exposure[3],
                       protein_rest_exposure_ug_s=exposure[1], protein_excavate_exposure_ug_s=exposure[4],
@@ -255,6 +257,40 @@ def choices(root, check):
     print('PASS 256 equal-demand cases; 16384 committed choices and 262144 inclusion records')
 
 
+def archived_controls(root, check):
+    """All original ablation arms are retained; these are archived, not new runs."""
+    groups = defaultdict(list)
+    for r in rows(ROOT/'experiments/s6_1/matrix', 'summary'):
+        groups[r['workers'], r['source_protein_ug'], r['policy']].append(r)
+    metrics = ('given_protein_ug', 'emerged', 'unmet_integral_ug_s', 'program_switches', 'adult_crop_protein_ug')
+    data = []
+    for (workers, protein, arm), group in sorted(groups.items()):
+        assert len(group) == 16
+        ordered = sorted(group, key=lambda r: int(r['seed']))
+        legacy = sorted(groups[workers, protein, 'legacy'], key=lambda r: int(r['seed']))
+        for metric in metrics:
+            for comparison in ('endpoint', 'minus_legacy'):
+                values = [int(r[metric])-(int(a[metric]) if comparison == 'minus_legacy' else 0)
+                          for r, a in zip(ordered, legacy)]
+                data.append(dict(source='immutable_S6.1_archive', workers=workers, source_protein_ug=protein,
+                                 policy=arm, metric=metric, comparison=comparison, **interval(values)))
+    streams = defaultdict(list)
+    fields = ('time_ms', 'actor', 'payload', 'outcome', 'carbs_ug', 'protein_ug', 'water_ug', 'other_ug')
+    for r in rows(ROOT/'experiments/s6_1/matrix', 'events'):
+        if r['workers'] == '128' and r['source_protein_ug'] == '500' and r['kind'] == '21':
+            streams[int(r['seed']), r['policy']].append(tuple(r[f] for f in fields))
+    comparison = []
+    for seed in range(1, 17):
+        for a, b in (('legacy', 'local_continuation'), ('gift_first', 'combined')):
+            left, right = streams[seed, a], streams[seed, b]
+            comparison.append(dict(seed=seed, workers=128, source_protein_ug=500, first=a, second=b,
+                                   gifts_first=len(left), gifts_second=len(right), exact_gift_sequence_equal=left == right,
+                                   first_sha256=hashlib.sha256(json.dumps(left).encode()).hexdigest(),
+                                   second_sha256=hashlib.sha256(json.dumps(right).encode()).hexdigest()))
+    emit(root/'analysis/archived_ablations.csv', data, check)
+    emit(root/'analysis/dense_gift_sequence_comparison.csv', comparison, check)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path, default=ROOT/'experiments/s6_2')
@@ -264,6 +300,7 @@ def main():
     analyze(args.root, args.check, args.pilot)
     if not args.pilot:
         choices(args.root, args.check)
+        archived_controls(args.root, args.check)
 
 
 if __name__ == '__main__':

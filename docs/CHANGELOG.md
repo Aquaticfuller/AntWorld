@@ -1,5 +1,14 @@
 # Design and implementation changelog
 
+## 2026-11-09: S6.2 performance validation and scarcity diagnosis
+
+- Froze document 39 before measurements; preserved the S6.1 overall failure, 135 tests and all earlier raw evidence.
+- Added balanced phase timing, CPU affinity/telemetry, actual scope attribution and complete raw hardware provenance without changing Core semantics or parameters.
+- Retained and corrected a HWiNFO frequency-column translation error from immutable source prefixes; no raw value, timing or unfavorable sample was removed.
+- Replayed all 192 scarcity cases with exact ordered state/transfer/choice reconciliation and restored continuation; completed 256 equal-demand ID/mirror cases and retained negative allocation outcomes.
+- Controlled <=6x advance gate passes with unchanged Core; biological scarcity limitations and earlier timing causality remain open. Added TD-08 for separately quantified quadratic enrollment validation.
+- Added two observer regressions, Debug/Release/ASan/UBSan/clean/core-only verification, GitHub CI, eight figures, raw CSVs and reproduction commands. Stop for review; no S7 work.
+
 ## 2026-11-08: S5 durable saves, history and analytics
 
 - Recorded conditional S4 approval, TD-03/04/05 and SD-06 before implementation; retained SD-04 and TD-01 deadlines.

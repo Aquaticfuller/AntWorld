@@ -1,5 +1,17 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## Current S6.2 review status
+
+S6.1 engineering passed but the overall stage failed; S6.2 was authorized for controlled performance validation and scarcity diagnosis only. S6_2_RESULTS.md, frozen protocol 39 and implementation document 40 now record completed evidence. The historical stage statements below remain part of the record. No S7 permission is inferred.
+
+| ID | Current status | S6.2 evidence and remaining work |
+|---|---|---|
+| TD-01 | Controlled stationary fixture PASS; broader scope OPEN | Unchanged Core, fixed binary/affinity and three balanced sessions give dense p50 growth 5.4383x; paired median 5.4117, 95% interval [5.3272, 5.4625], all frozen <=6x/stability checks pass. Matched exhaustive speedup is 42.3566x; candidate cap remains 16. Keep the original 24.229x failed batch and its unknown cause. This stationary provisioned-adult contact fixture does not validate moving 3D colonies, continuous successful gifts, other hosts or long histories. Future broader timing requires a reviewed workload/protocol, with every action and fact retained. |
+| SD-04 | Scarcity diagnosed; biological redistribution OPEN | All 192 ordered cases reproduce exact S6.1 facts/state. At 8 workers/500 ug, more total protein reaches more partially supplied brood, but mean new emergence falls 0.5. At 128/500, transfer falls 14.9375 ug and adult retention rises by the same amount; no failed gift resolutions or protein-bearing Nurse departures explain the difference. Archived four-arm gift sequences isolate the dense condition's difference to gift/refill priority. Equal-demand ID/mirror controls show no systematic lower-ID preference, without proving general fairness. Demand thresholds, selective/partial provisioning, supply timing, nutrition intake by other task owners and recirculation remain uncalibrated; do not add a global optimizer or force completion. |
+| TD-08 | OPEN; setup/enrollment scaling | Separate dense setup p50 rises 17.850->329.586 ms for 512->2,048. Repeated capacity validation performs 131,328->2,098,176 physiology queries during enrollment. This is outside the inherited advance gate but is real cost. A future bulk validated enrollment proposal must preserve identities, complete seed/history evidence, invariants and rollback; it has not been implemented or approved here. |
+
+SD-01/02 retain approximately two initial following steps and unproven long-distance/social recruitment. SD-06 retains resource-insensitive excavation and missing calibrated functional nest-demand feedback. SD-07 retains approximately 97.6% active-task ownership, not a measured physical activity budget. TD-03/06 retain synchronous full-history saves, growing memory/storage and the need for evidence-preserving background archival. No new laying, weather, activity quota, global food knowledge, directed chemical arrows or biological retuning was introduced. Every uncalibrated rule remains ENGINEERING_FIXTURE. These debts are not closed by a controlled performance pass.
+
 ## Active scientific validation debt after S2.2 approval
 
 Independent S2.2 Code Review passed and explicitly authorized S3. The historical stage restrictions below describe earlier gates, not the current authorization. Passing the engineering gate does not close these debts.
