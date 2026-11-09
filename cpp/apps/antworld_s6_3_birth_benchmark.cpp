@@ -101,6 +101,9 @@ int main(int argc, char **argv) {
       p.water_loss_ug_per_period = 0;
       ReproductionConfig r;
       r.interval = {10};
+#ifdef ANTWORLD_ALLOCATION_BENCHMARK
+      r.maintenance_horizon = r.interval;
+#endif
       r.egg_water_ug = 1;
       r.egg_energy_nj = 1000000;
       for (unsigned long i = 0; i < n; ++i) {

@@ -61,6 +61,8 @@ def check(q):
 
 def diagnose(folder, summary):
     config = read(folder/'configuration.csv')[0]
+    config.setdefault('reserve_mode','0')
+    config.setdefault('maintenance_horizon_ms','0')
     rate = int(config['lineage_basal'])
     obs = [{k:int(v) for k,v in r.items()} for r in read(folder/'decisions.csv')]
     pending = {}
@@ -125,6 +127,11 @@ def diagnose(folder, summary):
                     row.update({f'pre_{k}':v for k,v in before.items() if k!='time_ms'})
                     row.update({f'post_{k}':v for k,v in q.items() if k!='time_ms'})
                     row['post_maintenance_hours']=q['body_energy_nj']/(rate*HOUR)
+                    absorption_period=int(config['absorption_hours'])*HOUR
+                    until_absorption=absorption_period-time%absorption_period
+                    row['until_next_absorption_ms']=until_absorption
+                    row['post_energy_covers_next_absorption']=int(q['body_energy_nj']>rate*until_absorption)
+                    row['post_water_covers_next_absorption']=int(q['hydration_ug']>(until_absorption+q['water_remainder'])//HOUR)
                     qrows.append(row)
                     timeline.append((time,copy.copy(q)))
                 if kind in (2,35):
@@ -167,6 +174,9 @@ def diagnose(folder, summary):
              births=summary['births'],emerged=summary['emerged'],final_alive=summary['alive'],last_birth_day=births[-1]/DAY if births else '',late_births_120_180=sum(120*DAY<=t<=180*DAY for t in births),queen_gifts=len(gifts),verified_observations=seen,
              last48_decisions=len(recent),last48_physical_contacts=sum(o['reachable_queen'] for o in recent),last48_nutrition_decisions=len(nutrition),last48_queen_sampled=sum(o['sampled_queen'] for o in nutrition),last48_matching_donors=len(matching),last48_selected_queen=sum(o['recipient']==2 for o in nutrition),last48_gifts=sum(lifetime-2*DAY<=t<=lifetime for t,_ in gifts),
              minimum_post_lay_maintenance_hours=min((r['post_maintenance_hours'] for r in qrows if r['kind']==35),default=''))
+    row['unsafe_post_lay_energy']=sum(r['kind']==35 and not r['post_energy_covers_next_absorption'] for r in qrows)
+    row['unsafe_post_lay_water']=sum(r['kind']==35 and not r['post_water_covers_next_absorption'] for r in qrows)
+    row['deferred_attempts']=sum(r['kind']==34 and not r['payload'] for r in qrows)
     row.update({f'final_{k}':v for k,v in last.items() if k not in ('day','time_ms','observed_time_ms')})
     for name in ('nest','available','cargo','living_worker_crop'):
         for n in ('carbs','protein','water','other'):

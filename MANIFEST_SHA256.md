@@ -66,3 +66,4 @@ Files: 56 (excluding the manifest itself).
 | `docs/44_S6_3_1_Frozen_Protocol.md` | `3fe3e0c56b62dc82d3ec499da8eeeb5d0468a6df17d7c8ae854957cfec922168` | 11591 |
 | `docs/45_S6_3_1_Observer_Contracts.md` | `pending` | 0 |
 | `docs/46_S6_3_1_Correction_Protocol.md` | `pending` | 0 |
+| `docs/47_S6_3_1_Verification_and_Metrics.md` | `pending` | 0 |
