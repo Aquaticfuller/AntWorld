@@ -119,6 +119,8 @@ def audit_observer(base, suite, seeds, shape):
         assert len(gifts) == integer(r, 'gift_attempts')
         assert sum(e['kind'] != '21' for e in gifts) == integer(r, 'gift_failed')
         assert sum(e['kind'] == '21' for e in gifts) == integer(r, 'gift_success')+integer(r, 'gift_partial')
+        assert sum(e['kind'] == '21' and e['outcome'] == '1' for e in gifts) == integer(r, 'gift_partial')
+        assert sum(e['kind'] == '21' and e['outcome'] == '0' for e in gifts) == integer(r, 'gift_success')
         assert sum(integer(e, 'protein_ug') for e in gifts if e['kind'] == '21') == integer(r, 'given_protein_ug')
         assert selected[20] == integer(r, 'nest_intakes') and selected[17] == integer(r, 'program_switches')
         assert by_kind.get(4, 0) == integer(r, 'moves')

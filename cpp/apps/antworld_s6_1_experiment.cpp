@@ -498,15 +498,18 @@ void run(Output &out, const std::filesystem::path &dir,
 } // namespace
 int main(int argc, char **argv) {
   try {
-    if (argc < 2 || argc > 4)
-      throw std::invalid_argument("usage: antworld_s6_1_experiment OUTPUT_DIR "
-                                  "[SEEDS=16] [matrix|sensitivity|integrated]");
+    if (argc < 2 || argc > 5)
+      throw std::invalid_argument(
+          "usage: antworld_s6_1_experiment OUTPUT_DIR "
+          "[SEEDS=16] [matrix|sensitivity|integrated] [FIRST_SEED=1]");
     const std::string suite = argc > 3 ? argv[3] : "matrix";
     if (suite != "matrix" && suite != "sensitivity" && suite != "integrated")
       throw std::invalid_argument("unknown suite");
     const auto seeds = argc > 2 ? std::stoul(argv[2]) : 16UL;
-    require(seeds && seeds <= (suite == "integrated" ? 32UL : 16UL),
-            "invalid complete seed prefix");
+    const auto first = argc > 4 ? std::stoul(argv[4]) : 1UL;
+    const auto maximum = suite == "integrated" ? 32UL : 16UL;
+    require(first && first <= maximum && seeds && seeds <= maximum - first + 1,
+            "invalid frozen seed interval");
     const std::filesystem::path dir = argv[1];
     require(!std::filesystem::exists(dir / "summary.csv"),
             "refusing to overwrite results");
@@ -516,7 +519,7 @@ int main(int argc, char **argv) {
     config.exceptions(std::ios::badbit | std::ios::failbit);
     config << "{\"scope\":\"ENGINEERING_FIXTURE\",\"protocol\":\"document 37 "
               "at 03ae833\",\"suite\":\""
-           << suite << "\",\"first_seed\":1,\"seeds\":" << seeds
+           << suite << "\",\"first_seed\":" << first << ",\"seeds\":" << seeds
            << ",\"schema\":" << WorldRuntime::schema_version
            << ",\"physics\":" << WorldRuntime::physics_version
            << ",\"samples_ms\":1000,\"exhaustive_observer_ms\":10000,"
@@ -524,7 +527,8 @@ int main(int argc, char **argv) {
               "observations\",\"comparison_ms\":30000,"
               "\"history\":\"complete canonical facts in per-case binary; "
               "selected CSV and all kind counts\"}\n";
-    for (std::uint64_t seed = 1; seed <= seeds; ++seed) {
+    config.close();
+    for (std::uint64_t seed = first; seed < first + seeds; ++seed) {
       if (suite == "integrated") {
         for (const auto policy : {"legacy", "combined"})
           for (bool mirror : {false, true})

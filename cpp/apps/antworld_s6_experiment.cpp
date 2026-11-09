@@ -19,7 +19,8 @@ double ms(Clock::time_point start) {
       .count();
 }
 void configuration(const std::filesystem::path &dir, const std::string &suite,
-                   unsigned long seeds, const std::string& policy) {
+                   unsigned long seeds, const std::string &policy,
+                   unsigned long first) {
   std::ofstream f(dir / "configuration.json");
   f.exceptions(std::ios::badbit | std::ios::failbit);
   f << std::setprecision(17);
@@ -29,7 +30,7 @@ void configuration(const std::filesystem::path &dir, const std::string &suite,
   const GeometryConfig g;
   const auto l = s6_fixture::limits();
   f << "{\n  \"scope\":\"ENGINEERING_FIXTURE\",\"suite\":\"" << suite
-    << "\",\"seeds\":" << seeds << ",\"first_seed\":1,\n"
+    << "\",\"seeds\":" << seeds << ",\"first_seed\":" << first << ",\n"
     << "  \"schema_version\":" << WorldRuntime::schema_version
     << ",\"physics_version\":" << WorldRuntime::physics_version << ",\n"
     << "  \"nursing_correction_policy\":\"" << policy << "\",\n"
@@ -365,9 +366,10 @@ void write_history(Output &out, const std::string &prefix,
 void run(Output &out, const std::filesystem::path &dir,
          const std::string &suite, std::uint64_t seed,
          const std::string &condition, bool mirror, std::uint32_t budget,
-         const std::string& policy) {
+         const std::string &policy) {
   const auto start = Clock::now();
-  s6_fixture::Integrated fixture(seed, condition, mirror, budget,s6_fixture::correction_options(policy));
+  s6_fixture::Integrated fixture(seed, condition, mirror, budget,
+                                 s6_fixture::correction_options(policy));
   auto &normal = fixture.world;
   WorldRuntime fast({9, 9}, 0, {}, s6_fixture::limits());
   fast.restore(normal.checkpoint());
@@ -468,10 +470,11 @@ void run(Output &out, const std::filesystem::path &dir,
 } // namespace
 int main(int argc, char **argv) {
   try {
-    if (argc < 2 || argc > 5)
+    if (argc < 2 || argc > 6)
       throw std::invalid_argument(
           "usage: antworld_s6_experiment OUTPUT_DIR [SEEDS=32] "
-          "[primary|sensitivity|long|smoke] [legacy|gift_first|local_continuation|combined]");
+          "[primary|sensitivity|long|smoke] "
+          "[legacy|gift_first|local_continuation|combined] [FIRST_SEED=1]");
     const std::string suite = argc > 3 ? argv[3] : "primary";
     const std::string policy = argc > 4 ? argv[4] : "legacy";
     (void)s6_fixture::correction_options(policy);
@@ -483,7 +486,8 @@ int main(int argc, char **argv) {
                          : suite == "long"        ? 8UL
                                                   : 1UL;
     const auto seeds = argc > 2 ? std::stoul(argv[2]) : maximum;
-    if (!seeds || seeds > maximum)
+    const auto first = argc > 5 ? std::stoul(argv[5]) : 1UL;
+    if (!first || first > maximum || !seeds || seeds > maximum - first + 1)
       throw std::invalid_argument("invalid frozen seed range");
     std::filesystem::path dir = argv[1];
     if (suite == "smoke")
@@ -491,9 +495,9 @@ int main(int argc, char **argv) {
     require(!std::filesystem::exists(dir / "summary.csv"),
             "refusing to overwrite raw experimental results");
     std::filesystem::create_directories(dir);
-    configuration(dir, suite, seeds,policy);
+    configuration(dir, suite, seeds, policy, first);
     Output out(dir);
-    for (std::uint64_t seed = 1; seed <= seeds; ++seed)
+    for (std::uint64_t seed = first; seed < first + seeds; ++seed)
       for (bool mirror : {false, true})
         for (const auto condition :
              {"supplied", "protein_absent", "food_absent", "sealed"}) {
@@ -508,7 +512,7 @@ int main(int argc, char **argv) {
               suite == "sensitivity" ? std::vector<std::uint32_t>{8, 16, 32}
                                      : std::vector<std::uint32_t>{16};
           for (auto budget : budgets)
-            run(out, dir, suite, seed, condition, mirror, budget,policy);
+            run(out, dir, suite, seed, condition, mirror, budget, policy);
         }
     std::cout << "PASS S6 integrated ecological evidence: " << suite << '\n';
   } catch (const std::exception &e) {
