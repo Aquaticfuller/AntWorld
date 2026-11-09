@@ -121,7 +121,7 @@ private:
     void execute_physiology(Transaction&, const ScheduledEvent&);
     void resolve_nutrition_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     void resolve_nutrition_action(Transaction&, const ScheduledEvent&, WorldEvent&);
-    void continue_nutrition_behavior(Transaction&, const ScheduledEvent&);
+    void continue_nutrition_behavior(Transaction&, const ScheduledEvent&, const WorldEvent&);
     void schedule_physiology(Transaction&, EntityId);
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
@@ -148,7 +148,7 @@ private:
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
 public:
-    static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 10;
+    static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 11;
     void configure_long_term(const LongTermConfig& = {});
     [[nodiscard]] std::optional<LongTermConfig> long_term_config() const;
     void enable_reproduction(AntRef, const ReproductionConfig& = {});

@@ -242,12 +242,13 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             throw std::logic_error("invalid action event kind");
         }
         after_action(tx, e, f, before);
-        continue_nutrition_behavior(tx, e);
+        continue_nutrition_behavior(tx, e, f);
         after_excavation_action(tx,e,f,before);
         if (s.long_term && ant.position==s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position &&
             !ant.carried_food.total_ug() && !s.carriers.contains(ant.id) &&
             (f.kind==FactKind::FoodDelivered || f.kind==FactKind::SoilDropped ||
-             (f.kind==FactKind::Moved && s.foragers.contains(ant.id) && s.foragers.at(ant.id).mode==BehaviorMode::Return)))
+             (f.kind==FactKind::Moved && s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled &&
+                (s.long_term->complete_depot_visits || s.foragers.at(ant.id).mode==BehaviorMode::Return))))
             notify_return(tx,ant.id);
         tx.fact(f);
     }

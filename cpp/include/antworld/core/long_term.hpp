@@ -6,6 +6,7 @@ namespace antworld {
 struct LongTermConfig {
     bool demand_feedback{true}, protein_recycling{true};
     std::uint32_t empty_sites_per_contact{4};
+    bool complete_depot_visits{true}, post_intake_contact{true};
     bool operator==(const LongTermConfig&) const = default;
 };
 struct ReproductionConfig {

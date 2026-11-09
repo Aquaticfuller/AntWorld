@@ -7,8 +7,9 @@ inline void validate_long_term(const LongTermConfig& c) {
         throw std::invalid_argument("invalid local space ENGINEERING_FIXTURE");
 }
 inline std::uint64_t long_term_fingerprint(const LongTermConfig& c) {
-    return UINT64_C(0x5336330000000000) | (std::uint64_t{c.empty_sites_per_contact} << 2) |
-        (c.demand_feedback ? 1U : 0U) | (c.protein_recycling ? 2U : 0U);
+    return UINT64_C(0x5336330000000000) | (std::uint64_t{c.empty_sites_per_contact} << 4) |
+        (c.demand_feedback ? 1U : 0U) | (c.protein_recycling ? 2U : 0U) |
+        (c.complete_depot_visits ? 4U : 0U) | (c.post_intake_contact ? 8U : 0U);
 }
 inline void validate_reproduction(const ReproductionConfig& c, const PhysiologyConfig& p) {
     if (c.interval.milliseconds < 1 || c.interval.milliseconds > INT64_C(31536000000) ||

@@ -8,6 +8,7 @@ inline constexpr std::array reproduction_values{&ReproductionConfig::egg_protein
 template<class S> void write_long_term(Writer& w,const S& s) {
     if (!s.long_term) return;
     w.put(s.long_term->demand_feedback,1); w.put(s.long_term->protein_recycling,1); w.put(s.long_term->empty_sites_per_contact,4);
+    w.put(s.long_term->complete_depot_visits,1); w.put(s.long_term->post_intake_contact,1);
     w.put(s.reproduction.size());
     for (const auto& [id,r]:s.reproduction) {
         w.put(id.value); w.time(r.config.interval); for (const auto m:reproduction_values) w.put(r.config.*m);
@@ -21,7 +22,7 @@ template<class S> void write_long_term(Writer& w,const S& s) {
 }
 template<class S> void read_long_term(Reader& r,S& s) {
     if (!s.long_term) return;
-    LongTermConfig c{r.flag(),r.flag(),static_cast<std::uint32_t>(r.get(4))}; validate_long_term(c); s.long_term=std::make_shared<const LongTermConfig>(c);
+    LongTermConfig c{r.flag(),r.flag(),static_cast<std::uint32_t>(r.get(4)),r.flag(),r.flag()}; validate_long_term(c); s.long_term=std::make_shared<const LongTermConfig>(c);
     auto count=r.count(s.ants.size(),80);
     for (std::size_t i=0;i<count;++i) {
         const EntityId id{r.get()}; ReproductionState q; q.config.interval=r.time(); for (const auto m:reproduction_values) q.config.*m=r.get();

@@ -77,7 +77,9 @@ void run(const std::filesystem::path& root,std::ostream& summary,std::uint64_t s
     const auto name=std::to_string(seed)+"_"+std::to_string(workers)+"_"+std::string(supply)+"_"+(cyclic?"cyclic":"constant")+"_"+std::string(arm)+"_"+std::to_string(pulse);
     const auto dir=root/name; require(!std::filesystem::exists(dir),"refusing to overwrite world evidence"); std::filesystem::create_directories(dir);
     LongTermConfig policy; policy.protein_recycling=arm!="no_recycling"; policy.demand_feedback=arm!="no_feedback";
-    const auto setup_start=Clock::now(); s6_3_fixture::World fixture(seed,workers,supply,cyclic,policy,pulse); auto& w=fixture.world;
+    policy.post_intake_contact=arm!="return_only" && arm!="pre_correction";
+    policy.complete_depot_visits=arm!="exchange_only" && arm!="pre_correction";
+    const auto setup_start=Clock::now(); s6_3_fixture::World fixture(seed,workers,supply,cyclic,policy,pulse,arm=="compact"); auto& w=fixture.world;
     const auto setup=elapsed(setup_start);
     auto series=file(dir/"daily.csv"),individuals=file(dir/"individuals.csv"),life=file(dir/"life_events.csv"),binary=file(dir/"events.bin"),performance=file(dir/"performance.csv");
     series<<"day,time_ms,egg,larva,pupa,adult,dead,births,emerged,transfers,transferred_protein_ug,recycled_protein_ug,switches,rejected,unmet_larval_protein_ug,living_worker_crop_protein_ug";
@@ -138,7 +140,7 @@ void run(const std::filesystem::path& root,std::ostream& summary,std::uint64_t s
 }
 int main(int argc,char** argv) {
     try {
-        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_experiment OUTPUT_DIR smoke|primary|controls|sensitivity");
+        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_experiment OUTPUT_DIR smoke|primary|controls|sensitivity|factorial|spatial");
         const std::filesystem::path root=argv[1]; const std::string mode=argv[2];
         require(!std::filesystem::exists(root/"summary.csv"),"refusing to overwrite experiment"); std::filesystem::create_directories(root);
         auto summary=file(root/"summary.csv"); summary<<"scope,run,seed,workers,supply,cyclic,arm,pulse_hours,requested_days,completed_days,status,reason,alive,births,emerged,deaths,protein_transferred_ug,recycled_protein_ug,events,geometry_edits,setup_ms,advance_ms,exact_continuation,durable_checked,state_hash,trace_hash\n";
@@ -148,6 +150,8 @@ int main(int argc,char** argv) {
             run(root,summary,seed,workers,"balanced",true,"full",90);
         } } else if (mode=="controls") { for (std::uint64_t seed=1;seed<=6;++seed) for (const auto arm:{"full","no_recycling","no_feedback"}) run(root,summary,seed,32,"scarce",false,arm,14); }
         else if (mode=="sensitivity") { for (std::uint64_t seed=1;seed<=3;++seed) for (const auto pulse:{3,12}) run(root,summary,seed,8,"balanced",false,"full",14,pulse); }
+        else if (mode=="factorial") { for (std::uint64_t seed=1;seed<=6;++seed) for (const auto supply:{"balanced","empty"}) for (const auto arm:{"return_only","exchange_only"}) run(root,summary,seed,8,supply,false,arm,14); }
+        else if (mode=="spatial") { for (std::uint64_t seed=1;seed<=6;++seed) run(root,summary,seed,32,"balanced",false,"compact",90); }
         else throw std::invalid_argument("unknown frozen experiment matrix");
     } catch(const std::exception& e) { std::cerr<<e.what()<<'\n'; return 1; }
 }

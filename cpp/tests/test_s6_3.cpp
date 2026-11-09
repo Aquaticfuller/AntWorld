@@ -63,6 +63,30 @@ void run(std::string_view name) {
         for (int d=3;d<=30;++d) f.world.advance_to({d*s6_3_fixture::day});
         other.advance_to({30*s6_3_fixture::day}); require(other.checkpoint()==f.world.checkpoint(),"month acceleration changed facts");
         roundtrip(f.world,{31*s6_3_fixture::day});
+    } else if (name=="RETURN_VISIT") {
+        s6_3_fixture::World f(1,8,"empty"); f.world.advance_to({8*s6_3_fixture::day});
+        require(f.world.summary().committed_events<100000,"empty trips bypassed local recovery");
+        bool returned=false; for (const auto& e:f.world.committed_events()) if (e.kind==FactKind::Moved && e.position==PositionM{} && e.mode!=BehaviorMode::Return) returned=true;
+        require(returned,"test did not exercise an ordinary depot revisit"); roundtrip(f.world,{9*s6_3_fixture::day});
+    } else if (name=="CONTACT_SEQUENCE" || name=="NO_RECIPIENT") {
+        WorldRuntime w({63,3},7); w.configure_long_term(); SocialConfig social; social.gift_first=true; w.configure_social(social);
+        const auto c=w.seed_colony(); const auto nurse=w.seed_ant(c,{}); const auto carrier=w.seed_ant(c,{});
+        PhysiologyConfig p; p.basal_nj_per_ms=0; p.water_loss_ug_per_s=0; p.absorption_period={100}; p.behavior_interval={100};
+        w.enable_physiology(nurse,{{},2000000000,2000,0},p);
+        const auto larva=w.seed_ant(c,{{name=="NO_RECIPIENT"?.01:0,0,0},LifeStage::Larva});
+        w.enable_physiology(larva,{{},100000000,100,0},p); const auto food=w.seed_food({},{100,100,100,0});
+        w.submit({carrier,{1},ActionKind::CollectFood,food,{},300}); w.advance_to({1});
+        w.submit({carrier,{2},ActionKind::DeliverFood,{},{},0}); w.advance_to({2}); w.set_behavior(nurse,IndividualBehavior::Nurse);
+        w.advance_to({103}); // Actual local intake has committed; the follow-up has not.
+        roundtrip(w,{110});
+        const auto recipient=*w.query_physiology(larva);
+        if (name=="CONTACT_SEQUENCE") require(recipient.crop.carbs_ug && recipient.crop.protein_ug && recipient.crop.water_ug,"local exchange lost the transferable meal to the donor's next absorption pulse");
+        else require(recipient.crop==FoodMass{},"follow-up invented a distant recipient");
+    } else if (name=="SPACE_RESPONSE") {
+        s6_3_fixture::World ample(1,32),compact(1,32,"balanced",false,{},6,true);
+        ample.world.advance_to({2*s6_3_fixture::day}); compact.world.advance_to({2*s6_3_fixture::day});
+        require(ample.world.geometry_snapshot().geometry_revision==0,"ample local space failed to inhibit work");
+        require(compact.world.geometry_snapshot().geometry_revision>0,"compact local space elicited no physical excavation"); roundtrip(compact.world,{3*s6_3_fixture::day});
     } else if (name=="CORRUPTION") {
         Tiny f; f.w.advance_to({60}); const auto before=f.w.checkpoint(); auto corrupt=before; corrupt.back()^=1;
         bool failed=false; try { f.w.restore(corrupt); } catch(const std::exception&) { failed=true; }

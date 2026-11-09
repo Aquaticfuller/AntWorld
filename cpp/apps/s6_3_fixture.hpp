@@ -12,7 +12,7 @@ struct World {
     AntRef queen;
     std::vector<AntRef> workers=std::vector<AntRef>(0);
     World(std::uint64_t seed,unsigned population=8,std::string_view supply="balanced",bool cyclic=false,
-          LongTermConfig policy={},std::int64_t pulse_hours=6)
+          LongTermConfig policy={},std::int64_t pulse_hours=6,bool compact=false)
         : world({63,1},seed,{},limits()) {
         if ((supply!="balanced" && supply!="scarce" && supply!="empty") || !population || population>2048)
             throw std::invalid_argument("invalid frozen long-term fixture");
@@ -20,7 +20,7 @@ struct World {
         BehaviorConfig behavior; behavior.trails_enabled=false;
         world.configure_surface({{-.03,0,-.03},7,7,.01},{},behavior);
         GeometryConfig g; g.origin_m={-.008,-.006,-.006}; g.initial_solid={{0,0,0},{32,24,24}};
-        const std::array<BoxQ,2> voids{{{{12,8,8},{20,16,16}},{{0,10,10},{32,14,14}}}};
+        const std::array<BoxQ,2> voids{{compact ? BoxQ{{14,10,10},{18,14,14}} : BoxQ{{12,8,8},{20,16,16}},{{0,10,10},{32,14,14}}}};
         world.configure_geometry(g,voids);
         SocialConfig social; social.gift_first=true; social.local_work_continuation=true;
         social.decision_interval={pulse_hours*hour}; social.minimum_program_time={pulse_hours*hour}; world.configure_social(social);

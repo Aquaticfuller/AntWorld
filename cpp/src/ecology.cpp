@@ -9,6 +9,7 @@ void WorldRuntime::set_autonomy(AntRef ref, bool enabled) {
   tx.commit();
 }
 void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
+  profiling::Scope profile(profiling::Category::Policy);
   auto &s = *state_;
   const auto ant = query_ant(ref);
   if (!s.social || !ant || !ant->alive() || ant->caste != Caste::Worker ||

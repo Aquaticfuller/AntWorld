@@ -304,11 +304,13 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         f.kind = FactKind::NutritionDecision; f.payload = p.decisions; tx.fact(f);
     }
 }
-void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledEvent& action) {
+void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledEvent& action, const WorldEvent& fact) {
     auto& s = *state_; if (!s.physiology.contains(action.actor)) return;
     auto p = s.physiology.at(action.actor); if (p.behavior_event != action.id) return;
     ScheduledEvent e; e.actor = action.actor; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
-    e.key = {after(s.m.now, p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
+    const bool ongoing_contact=s.long_term && s.long_term->post_intake_contact &&
+        p.behavior==IndividualBehavior::Nurse && fact.kind==FactKind::NestIngested;
+    e.key = {after(s.m.now, ongoing_contact ? 1 : p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
     p.behavior_event = tx.insert(e); tx.physiology.set(e.actor, p);
 }
 std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const {
