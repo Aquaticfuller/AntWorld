@@ -13,6 +13,10 @@ struct ContactNode {
   PointQ bucket;
   EntityId left, right;
   std::uint64_t size{1}, priority{};
+  // std::map node addresses survive insertion and node-handle rollback.
+  // Disposable child references avoid an additional logarithmic lookup at
+  // every rank-walk edge. Journaled IDs remain the mutation authority.
+  const ContactNode *left_node{}, *right_node{};
 };
 using ContactNodes = std::map<EntityId, ContactNode>;
 using ContactRoots = std::map<PointQ, EntityId>;
@@ -43,6 +47,8 @@ void contact_set(const ContactNodes &nodes, Journal &journal, EntityId id,
                  ContactNode node) {
   node.size =
       1 + contact_size(nodes, node.left) + contact_size(nodes, node.right);
+  node.left_node = node.left.value ? &nodes.at(node.left) : nullptr;
+  node.right_node = node.right.value ? &nodes.at(node.right) : nullptr;
   journal.set(id, node);
 }
 template <class Journal>
@@ -113,17 +119,18 @@ EntityId contact_remove(const ContactNodes &nodes, Journal &journal,
 }
 inline EntityId contact_rank(const ContactNodes &nodes, EntityId root,
                              std::uint64_t rank, std::uint64_t &visits) {
+  const auto *node = root.value ? &nodes.at(root) : nullptr;
   while (root.value) {
     ++visits;
-    const auto &n = nodes.at(root);
-    const auto left = contact_size(nodes, n.left);
+    const auto &n = *node;
+    const auto left = n.left_node ? n.left_node->size : 0;
     if (rank == left)
       return root;
-    if (rank < left)
-      root = n.left;
-    else {
+    if (rank < left) {
+      root = n.left; node = n.left_node;
+    } else {
       rank -= left + 1;
-      root = n.right;
+      root = n.right; node = n.right_node;
     }
   }
   throw std::logic_error("contact rank outside bucket");
