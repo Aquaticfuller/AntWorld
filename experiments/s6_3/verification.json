@@ -66,5 +66,14 @@
     "Three short balanced host sessions per comparison, not independent hardware samples.",
     "No physical power-cut test, continuous large-population ecology, calibrated reproduction or indefinite storage budget.",
     "All 48 primary queens die from accounted energy depletion; no forced rescue."
-  ]
+  ],
+  "clean_source": {
+    "commit": "dedc6cab62fe4bba1cfb31d6cd11916215e992e9",
+    "export": "git archive HEAD cpp and scenarios; fresh CMake build directory",
+    "tests": 153,
+    "failed": 0,
+    "elapsed_s": 15.86,
+    "sha256": "e874f0fd6bca3d3f940f0adb6db31785a83ed283b71227e75707f8fb8821754d"
+  },
+  "final_branch_ci": "https://github.com/Aquaticfuller/AntWorld/actions?query=branch%3Acodex%2Fs6.3-long-term-ecology"
 }

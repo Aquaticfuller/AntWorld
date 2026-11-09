@@ -1,12 +1,12 @@
 # S6.3: Long-Term Ecological Loop Completion
 
-Status: implementation complete; verification and evidence receipts are listed below. This is an engineering fixture, not a calibrated Lasius niger colony. Stop at S6.3 for independent review. S6.4 and S7-S9 are not authorized.
+Status: implementation and local verification complete; evidence receipts are listed below. This is an engineering fixture, not a calibrated Lasius niger colony. Stop at S6.3 for independent review. S6.4 and S7-S9 are not authorized.
 
 ## Acceptance boundaries
 
 | Dimension | Conclusion | Scope |
 |---|---|---|
-| Engineering correctness | PASS, subject to the final verification receipt | Funded internal birth transfers, finite sourced resources, identity, atomic rollback, deterministic continuation, spatial constraints and authentic event evidence. All 137 inherited regressions are retained; 16 are added. |
+| Engineering correctness | PASS | Funded internal birth transfers, finite sourced resources, identity, atomic rollback, deterministic continuation, spatial constraints and authentic event evidence. All 137 inherited regressions are retained; 16 are added. |
 | Ecological loop completeness | CONDITIONAL PASS for the bounded headless mechanism | All 48 corrected primary worlds run 90 actual game days; births, development, emergence, deaths, transfers and environmental availability are integrated. Six compact-chamber worlds additionally exercise actual autonomous geometry changes. Survival and indefinite reproduction are not guaranteed. |
 | Biological realism | UNVALIDATED | Every numeric biological parameter and new response rule is ENGINEERING_FIXTURE. All primary queens eventually die of accounted energy depletion. Scarcity, reproductive allocation, activity, nesting and social recruitment remain scientific debts. |
 | Performance scaling | PASS for measured gates; broader scope OPEN | Controlled stationary dense advance stays below 6x growth; the proposed dynamic-birth registration target also passes. This does not establish 2048-ant, multi-month ecological scaling or indefinite history storage. |
@@ -75,7 +75,7 @@ Disabling demand/space feedback reduces emergence by 1.333 [1.000,1.667], but al
 
 The matched six-seed compact-chamber experiment produces **15-19 edits**, mean 16.5 [15.67,17.50], versus zero in the ample chamber. Its emergence difference is -0.833 [-5.667,3.667]; no ecological benefit is established. Material and connectivity remain authoritative, but real nest morphology/functional needs remain SD-06/TD-04.
 
-Timing sensitivity is substantial: three-hour periods yield mean 2.333 emergences at day 14 in seeds 1-3; twelve-hour periods yield zero. The matched six-hour observations and every individual are retained. This supports an explicit calibration/timing limitation, not selection of a favorable interval.
+Timing sensitivity is substantial: three-hour periods yield mean 2.333 emergences at day 14 in seeds 1-3; the matched six-hour observations yield 0.667 (per seed: 0, 1, 1), and twelve-hour periods yield zero. Every individual is retained. This supports an explicit calibration/timing limitation, not selection of a favorable interval.
 
 ![Paired scarcity controls](experiments/s6_3/figures/nutrition_activity_controls.png)
 
@@ -112,7 +112,7 @@ Separate instrumented medians at 2048 attribute actual costs, rather than estima
 | Policy | 64.531 | 0.632 |
 | Residual scoped advance work | 18.050 | 2.491 |
 
-Zero means the fixture did not execute that category during that phase, not that indexing or physiology is free. The full [profile.csv](experiments/s6_3/performance_analysis/profile.csv) includes all sizes/layouts, calls, inclusive/exclusive times, setup and restore. Scope overhead is why these numbers are excluded from the acceptance wall-time distributions.
+Zero means no instrumentation call for that category in this phase, not that indexing or physiology is free; computation outside those scopes remains in residual work. The full [profile.csv](experiments/s6_3/performance_analysis/profile.csv) includes all sizes/layouts, calls, inclusive/exclusive times, setup and restore. Scope overhead is why these numbers are excluded from the acceptance wall-time distributions.
 
 At 2048, final stationary RSS median is 51.5 MB and birth-fixture RSS median 33.8 MB. Process peak RSS includes warmups/earlier rows; it is not a per-population isolated peak. Bootstrap intervals resample sessions and paired blocks, 4,096 times, seed 6303. Only three host sessions exist. HWiNFO's roughly two-second sampling cannot identify the thermal state of each millisecond-scale birth phase. Power-limit flags/background load and short birth-session durations remain visible; intervals describe this host/protocol, not universal hardware performance. S6.1's 24.229x anomaly and unknown cause remain untouched.
 
@@ -123,6 +123,8 @@ Primary-world descriptive costs range from 14,525 to 524,924 facts and 0.104-2.1
 ## Verification and evidence retention
 
 Local Clang 23.1.5 / CMake 3.31.10 / Ninja 1.13.2 / SQLite 3.54.1 builds use pinned workspace dependencies. Debug, Release and ASan+UBSan each executed **153/153 tests**. Windows ASan uses `detect_leaks=0`; Linux CI enables leak detection. New cases cover funded birth/death identity, shortage, dead queen, finite cyclic source, integer water remainder, recycling, rollback, month-scale continuation, rechecksummed corruption, trip recovery, post-intake exchange/no-recipient, spatial feedback and pending conflict reconstruction, plus allocation-failure sweeps and durable integration. Existing barrier/contact, geometry, resource-ID, scheduling and persistence regressions remain.
+
+An independent storage-disabled build passes **132/132** tests. A fresh Release build from the committed `cpp` and `scenarios` Git archive passes **153/153** tests in 15.86 s. The five-job CI matrix at `d1aa36a` passes Linux/Windows Debug/Release and Linux sanitizers. The evidence branch additionally runs the two frozen 90-day review cases in CI; [current branch runs](https://github.com/Aquaticfuller/AntWorld/actions?query=branch%3Acodex%2Fs6.3-long-term-ecology) show the final publication checks.
 
 The archive has **150 ecological runs, 8,549 daily observations, 126 completed exact continuations and 24 censored runs**. Eight selected durable saves also compare SQLite recovery against the authoritative checkpoint. Complete canonical 159-byte fact streams are losslessly compressed, with every original CSV row retained. Daily snapshots and readable events are independently reconciled with those streams, including IDs, births, stages, deaths, transfers, accounting and censoring. Complete checkpoint/database duplicates remain local with hashes; their state can be reconstructed by the commands below. Compression is archival only, not a simulation optimization.
 
