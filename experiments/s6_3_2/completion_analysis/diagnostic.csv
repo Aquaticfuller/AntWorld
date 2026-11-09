@@ -1,0 +1,2 @@
+samples,primary_invalid,legacy_invalid,coincident_invalid,primary_nonpositive_second_deltas,failed_first_delta_exceeds_second,system_busy_p50,hwinfo_thread_usage_p50
+60,2,2,2,0,2,3.4110656203798495,0.0

@@ -1,0 +1,10 @@
+{
+  "pid": 9224,
+  "exit_code": 0,
+  "started_utc_ns": 1794234806050468600,
+  "ended_utc_ns": 1794234810262970200,
+  "rows": 56,
+  "telemetry_rows": 42,
+  "binary_sha256": "c3cdbb06bfdf998568843917c5e2fbc42db2235a3911db001de3d86ba1d5894a",
+  "admission_attempt": 1
+}

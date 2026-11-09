@@ -1,0 +1,4 @@
+session,source,system_busy_pct_complete,system_busy_pct_p50,system_busy_pct_p95,processor_busy_pct_complete,processor_busy_pct_p50,processor_busy_pct_p95,power_valid,sensors_valid
+session1,experiments/s6_3_2/performance_quiet_1/births/session1,True,3.126527370478982,4.810684429193788,True,0.005699623598326431,1.5696796567104432,True,True
+session2,experiments/s6_3_2/performance/births/session2,True,2.9370597587241254,11.933374540486026,True,0.029001300663672458,4.6989957065857615,True,True
+session3,experiments/s6_3_2/performance/births/session3,True,2.8348104440887703,3.7234963009991717,True,0.00287491731588152,1.6031865900693665,True,True

@@ -11,6 +11,9 @@ The source baseline is S6.3.1 `accdb4c7037c792ac55e45277c9a16379828b09c`. Protoc
 - `analysis`: independently checked probe outputs and all 18 prespecified historical queen contrasts (six ordinary32, six adequate-access8, six adequate-access32). Original 432-run S6.3.1 files remain untouched; source paths identify provenance.
 - `performance`: all preplanned schedules, admissions, raw timings, phase CPU/cycles, OS load, host snapshots and normalized HWiNFO samples. Missing birth sessions have no invented rows. Raw localized HWiNFO prefixes remain private with hashes.
 - `performance_analysis`: percentiles, paired ratios, fixed bootstrap intervals, work/memory, telemetry and explicit completion status.
+- `performance_quiet_1`: separately archived user-authorized session-1 completion under document 50; original completed sessions are never rerun or overwritten. Its generated session-2/3 schedules are unused plans, not measurements.
+- `quiet_1_diagnostic`: 60 fixed raw PDH/legacy-counter and HWiNFO observations before the new admission. These are neither qualification samples nor timing results.
+- `completion_analysis`: predeclared combination of quiet session 1 and original sessions 2/3, all 168 rows, source hashes, exact workload/continuation equality, phase percentiles and unchanged bootstrap/gate. Original incomplete analysis remains intact.
 - `figures`: standalone PNG and SVG generated from the above evidence; no article figures are republished.
 - `verification`: executed local test logs; verification.json records versions, counts, hashes and CI status.
 
@@ -47,6 +50,7 @@ python tools/provenance_s6_3_2.py --check
 python tools/literature_measurements_s6_3_2.py --check
 python tools/analyze_s6_3_2_biology.py --check
 python tools/analyze_s6_3_2_performance.py --check
+python tools/analyze_s6_3_2_quiet_completion.py --check
 python tools/ci_verify.py
 ```
 
@@ -65,7 +69,19 @@ python tools/archive_s6_3_2_performance.py out/s6_3_2/performance
 python tools/analyze_s6_3_2_performance.py --check
 ```
 
-The runner refuses started-session repeats, premature retries, changed binaries and more than three failed admissions. Do not remove receipts to bypass these guards. A failed birth admission is not a timing result. The final performance report explains missing qualification and the reviewable measurement follow-up. Retain old 24.229x, 6.315x and 8.154x batches and their uncertainties.
+The runner refuses started-session repeats, premature retries, changed binaries and more than three failed admissions. Do not remove receipts to bypass these guards. A failed birth admission is not a timing result. The final performance report distinguishes the original missing qualification from the subsequent user-authorized completion. Retain old 24.229x, 6.315x and 8.154x batches and their uncertainties.
+
+The later user-arranged quiet interval was separately frozen in document 50, commit `7badade`. These are the executed extension commands, not permission to repeat completed timing:
+
+```sh
+python tools/diagnose_s6_3_2_counters.py --out out/s6_3_2/quiet_1_diagnostic --hwinfo-csv PATH_TO_HWINFO_CSV
+python tools/run_s6_3_2_performance.py --binary build/s6_3_1-release/antworld_s6_3_1_birth_benchmark.exe --out out/s6_3_2/performance_quiet_1/births --kind births --session 1 --hwinfo-csv PATH_TO_HWINFO_CSV
+python tools/archive_s6_3_2_performance.py out/s6_3_2/performance_quiet_1 --destination experiments/s6_3_2/performance_quiet_1
+python tools/analyze_s6_3_2_quiet_completion.py --check
+python tools/plot_s6_3_2_quiet_completion.py
+```
+
+The diagnostic CSV/configuration were copied to `quiet_1_diagnostic` without filtering. The unchanged runner writes all three schedules, but only session 1 is authorized in this extension. New series and diagnostics refuse overwriting started work. Existing original-session evidence stays at its original paths. The new plot uses the same pinned optional dependencies and is separate from all historical figures.
 
 ## Literature access and publication
 

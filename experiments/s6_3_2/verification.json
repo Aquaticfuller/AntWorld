@@ -54,6 +54,12 @@
       "run_id": 42629659960,
       "commit": "b2275055dbe5079a8199cfe582cd942f8c803144",
       "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42629659960"
+    },
+    {
+      "run_id": 42632533893,
+      "commit": "1671737a0a0d0e556e438340f5ba91604221bdb2",
+      "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42632533893",
+      "conclusion": "success"
     }
   ],
   "performance": {
@@ -72,5 +78,23 @@
     "branch": "codex/s6.3.2-biology-audit",
     "url": "https://github.com/Aquaticfuller/AntWorld/actions?query=branch%3Acodex%2Fs6.3.2-biology-audit",
     "note": "Match the workflow to the final delivery commit; the recorded green revision has identical executable code."
+  },
+  "quiet_completion": {
+    "protocol_commit": "7badade",
+    "user_authorized": true,
+    "changed_core_files": 0,
+    "changed_acceptance_runner": false,
+    "combined_rows": 168,
+    "required_rows": 168,
+    "birth_growth": 4.169259837344944,
+    "birth_ci": [
+      4.0493592187629135,
+      4.335740175392524
+    ],
+    "verdict": "PASS within frozen funded-birth workload",
+    "historical_original_series": "NOT_QUALIFIED_INCOMPLETE retained",
+    "analysis": "completion_analysis",
+    "raw": "performance_quiet_1",
+    "publication_ci": "Match the delivery commit on codex/s6.3.2-biology-audit"
   }
 }

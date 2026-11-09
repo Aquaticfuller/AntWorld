@@ -1,6 +1,6 @@
 # S6.3.2 performance requalification
 
-**Dense contact advance: PASS within the frozen workload. Birth registration: NOT QUALIFIED / incomplete; no new acceptance verdict. Overall performance requalification is not complete.** The <=6 pooled p50 growth criterion is unchanged. No Core algorithm, biological decision, contact frequency, event count, history or random state was changed to obtain these results.
+**Dense contact advance: PASS within the frozen workload. Funded birth registration: PASS in the user-authorized completion extension (document 50).** The original birth series remains an incomplete historical series with 112/168 rows; its pre-extension findings below are retained. The completed extension has all 168 predeclared rows and does not rerun timed sessions. The <=6 pooled p50 growth criterion is unchanged. No Core algorithm, biological decision, contact frequency, event count, history or random state was changed to obtain these results.
 
 ## Frozen design and execution
 
@@ -25,6 +25,8 @@ All entries below are milliseconds. Full setup/advance/checkpoint/restore p50/p9
 Dense advance pooled growth is **5.418486**, with **95% session/block bootstrap interval [5.297897, 5.501400]**. The paired-block median is **5.338576 [5.226317, 5.426444]**. Dispersed pooled growth is 5.086816 [4.899987, 5.191410]. Resampling uses all three sessions and intact balanced blocks, 4096 replicates, seed 63201. The point estimator is the frozen acceptance criterion; intervals describe uncertainty and do not replace it. Three sessions on one machine do not establish universal hardware performance.
 
 ![Every paired advance block](experiments/s6_3_2/figures/contact_requalification.png)
+
+This original-delivery figure is preserved unchanged. Its footer describes birth qualification before the separate quiet-interval completion documented below.
 
 ## Workload and memory identity
 
@@ -67,7 +69,32 @@ S6.1's **24.229x** anomaly remains archived with unknown cause. S6.3.1's **6.315
 
 No algorithm optimization is justified by the passing contact replication. The tree-visit growth of about 5.17x is consistent with bounded sampling plus index traversal; it does not prove a particular CPU bottleneck. Existing S6.2/S6.3 exclusive instrumentation remains historical attribution, not a new S6.3.2 profile. Setup, advance, checkpoint and restore are separately measured here; internal category counters in the uninstrumented acceptance binary are zero and must not be misreported as zero computational cost.
 
-For birth registration, **do not declare PASS or increase the <=6 target**. Review a measurement-only follow-up: retain this exhausted admission series; first diagnose PDH raw counter/time-base validity and cross-check an independent per-core source over a declared quiet interval; then freeze any sensor substitution or new admission series before timing. Keep the same binaries, schedules, all samples and the original threshold. If a fully qualified birth batch still fails, instrument the unchanged registration path separately to partition index maintenance, scheduler insertion, transaction/journal, history and physiology, quantify profiler overhead and verify identical state/work hashes before proposing any optimization. Global allocation scans, history/checkpoint growth and dynamic-registration validation are candidates for measurement, not established causes of the missing batch.
+At the original delivery, birth registration received **no PASS and no increased <=6 target**. The proposed follow-up was to retain the exhausted admission series, diagnose PDH raw counter/time-base validity and cross-check another per-core source during a user-arranged quiet interval, then freeze any new admission series before timing. The user subsequently provided that interval; the outcome follows. No sensor substitution was made. If a future qualified workload fails, instrument the unchanged path separately and quantify profiling overhead before proposing optimization. Global allocation scans, history/checkpoint growth and dynamic registration remain broader scaling questions, not established causes of the missing original batch.
+
+## User-authorized quiet-interval completion
+
+After original delivery `1671737`, the user answered the pending request and made a quiet interval available. Document 50 and the diagnostic collector were frozen in `7badade` before any new observation. The new series lives in `performance_quiet_1`; original `performance` and `performance_analysis` files are unchanged. Only the previously untimed session 1 was run; original sessions 2/3 were not repeated. The completion analysis combines precisely these three predeclared sessions, not a favorable subset. All three schedules match the original plans; the runner, binary, topology, affinities and workload are unchanged.
+
+The preceding diagnostic retained 60 one-second samples. Processor Information and legacy Processor counters both returned `0x800007D6` at the same two observations. Their raw values matched: first-value increments 11,562,500 / 12,500,000 versus second-value increments 9,998,802 / 9,994,351; the queried time base stayed 10,000,000. All second-value increments were positive. HWiNFO thread usage at those points was 0.4% / 0%; system load median was 3.411%. This localizes the symptom to inconsistent raw interval accounting shared by both counter objects; it does **not** establish an OS/firmware cause, explain historical slow timings, or license treating invalid data as zero. The two PDH objects are not independent hardware truths, and HWiNFO has different cadence. Raw status/type/timestamp/value data and host metadata are archived in `quiet_1_diagnostic`. The official [raw-counter contract](https://learn.microsoft.com/en-us/windows/win32/api/pdh/ns-pdh-pdh_raw_counter) distinguishes raw values and validity; no alternative source replaced the admission counter.
+
+The first new formal admission passed all 60 valid samples. System busy p50/p95 was **3.1265/4.8107%**, selected core **0.0057/1.5697%**; AC/saver and sensor checks passed. The unchanged executable then completed all **56 rows** once. Combined with the original 112 rows, every state/trace hash, fact count, pending event count, checkpoint size, funded birth count, exact restore and nutrient/energy check matches the historical workload.
+
+| Birth phase | 512 p50 | 512 p95 | 512 p99 | 2048 p50 | 2048 p95 | 2048 p99 | p50 growth |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Setup | 2.8058 | 3.3849 | 4.8388 | 12.1905 | 14.0781 | 15.3800 | 4.3448 |
+| **Advance** | **3.0433** | **3.5805** | **4.5181** | **12.6881** | **15.2967** | **19.1652** | **4.1693** |
+| Checkpoint | 4.1043 | 4.9182 | 5.4826 | 15.3317 | 17.8087 | 21.9585 | 3.7356 |
+| Restore | 7.7234 | 9.0309 | 13.6297 | 34.3149 | 37.3432 | 38.2100 | 4.4430 |
+
+Times are milliseconds. Completion-extension advance growth is **4.169260 [4.049359,4.335740]**, paired median **4.194797 [4.115608,4.370482]** (same 4096 session/block bootstrap draws, seed 63201). This meets the unchanged <=6 point-estimator gate. Session 1 alone has advance p50 3.11375/12.73255 ms; all its slow observations remain, including maxima 6.2768/27.1634 ms. Original two-session 4.250833x and incomplete status remain reproducible in their original analysis directory.
+
+The added run lasted about 4.21 s and retained 42 OS readings, including one invalid core reading and system busy p50/p95 **11.7484/25.3167%** during execution. The latter includes benchmark work and is not a pure background-load measurement. The frozen admission rule and no-post-start-exclusion rule were both applied: these excursions are disclosed, not filtered or rerun. Five bracketing HWiNFO rows span 51–64 C / 3.107–24.665 W, maximum gap 2.006 s and no sampled throttling/power-limit flag. Their P0 effective-clock median of 5 MHz includes idle bracketing samples and must not be interpreted as the benchmark's execution frequency; this very short run cannot resolve per-phase thermal/power causation. Raw OS frequency/performance readings remain available.
+
+Combined resident-memory p50 is 14,290,944 / 33,609,728 bytes for 512/2048; maxima 16,965,632 / 36,970,496. Process high-water maxima are shared across sequential samples, 48,443,392 bytes, not independent population peaks. Facts remain 3,587 / 14,339; pending events 2,048 / 8,192; checkpoint bytes 1,426,479 / 5,702,703. N is the benchmark's funded queens/births (2N initial, 3N final ants), not a biological multi-queen claim. Full per-session phase percentiles, CPU/cycles, work, telemetry, admission reconstruction and source hashes are in `completion_analysis`.
+
+![Predeclared birth completion extension](experiments/s6_3_2/figures/quiet_birth_completion.png)
+
+This closes the missing controlled measurement for the specified workload only. TD-01/08 broader moving-population/long-history scaling remains open; all scientific blockers for S6.4 are unchanged. No algorithm optimization or threshold adjustment was necessary or performed.
 
 ## Reproduction
 

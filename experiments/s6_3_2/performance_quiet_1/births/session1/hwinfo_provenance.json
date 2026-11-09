@@ -1,0 +1,9 @@
+{
+  "source_prefix_bytes": 41915782,
+  "source_prefix_sha256": "0236082f988f480f6df4998554c235d412931b42c313137fa643399a8f0e5eeb",
+  "mapping_sha256": "2889cc2e1f1b10eabff6f176b5ad9108cc4e5d5ff5286f5156378caaebe59507",
+  "retained_rows": 5,
+  "incomplete_rows": 0,
+  "timezone_offset_minutes": 60,
+  "selection": "Every sensor row in run interval plus 3 s bracketing; no value filtering"
+}

@@ -26,6 +26,7 @@ checks = [
     ['tools/literature_measurements_s6_3_2.py', '--check'],
     ['tools/analyze_s6_3_2_biology.py', '--check'],
     ['tools/analyze_s6_3_2_performance.py', '--check'],
+    ['tools/analyze_s6_3_2_quiet_completion.py', '--check'],
     ['tools/verify_s6_3_2_sources.py'],
 ]
 for check in checks:
