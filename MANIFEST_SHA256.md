@@ -7,8 +7,8 @@ Files: 56 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `7f33e8d92cb3e6cecdae57a51d3a1936bcedc0594726a85dcbe29a5cbb7e6252` | 4415 |
-| `CODEX_START_HERE.md` | `39251c8bcdf2eadfd5574c1698b4059a29de61f67060dc03877ef9a9d750f641` | 4470 |
+| `AGENTS.md` | `95635e95fedb7c3c9d47fd5ebb8b747bcffcd6fdf71c15c7111319fceed8dfc2` | 4585 |
+| `CODEX_START_HERE.md` | `9c52f1f971019f75573aa888721fc58340ad0a9b57d9a67ab26c882434e45fd8` | 4882 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -63,3 +63,4 @@ Files: 56 (excluding the manifest itself).
 | `docs/41_S6_3_Frozen_Protocol.md` | `ed8bbb94ea3e297cdfbe24b47364cd7d8b0b6db06bdb4b56d894e33ff30a2d75` | 11704 |
 | `docs/42_S6_3_Correction_Protocol.md` | `2cc6f8af2383b297686f4aa94546b79e9084a2aa5b1b744a48aa3001d3e4819a` | 5475 |
 | `docs/43_S6_3_Implementation_and_Metrics.md` | `4804e5d80b7eedc38add1e7800b599aae73cc0be350548e3ab68e2609a521fa6` | 9217 |
+| `docs/44_S6_3_1_Frozen_Protocol.md` | `3fe3e0c56b62dc82d3ec499da8eeeb5d0468a6df17d7c8ae854957cfec922168` | 11591 |

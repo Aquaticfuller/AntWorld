@@ -18,7 +18,7 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 3. Follow `docs/22_Development_Roadmap_and_Execution_Gates.md` and current batch spec.
 4. Earlier suggested ideas are nonbinding if they conflict with later confirmed decisions.
 
-**Current authorized batch: S6.3 Long-Term Ecological Loop Completion**, on codex/s6.3-long-term-ecology from reviewed S6.2 commit 1abf4f4. Read frozen document 41 before implementation. Preserve all 137 S0-S6.2 tests and historical evidence. Implement resource-constrained reproduction, finite resource regeneration, local activity/space feedback, nutrition recycling and multi-month headless experiments. Keep all uncalibrated biology ENGINEERING_FIXTURE. Retain SD-01/02/04/06/07 and TD-03/06/08. No global food oracle, central allocator, hidden nutrients or forced growth. No S6.4, Unity, Game Master, multispecies or S7-S9.
+**Current authorized batch: S6.3.1 Queen Provisioning and Reproductive Allocation Validation**, on codex/s6.3.1-queen-validation from reviewed S6.3 commit 1865a5d. Read frozen document 44 before diagnostic implementation. Preserve all 153 S0-S6.3 tests, old model bytes and historical evidence. Diagnose complete queen budgets and local supply before selecting minimal evidence-supported corrections under a subsequent mechanism freeze. Compare laying/suppression, social supply, resources, worker counts and independent time scales; include a finite adequate-access 180-day positive control. Keep all uncalibrated biology ENGINEERING_FIXTURE and retain scientific/storage debts. No global food oracle, central allocator, hidden nutrients, fixed lifespan protection or forced survival. No S6.4, Unity, Game Master, weather, multispecies or S7-S9.
 
 ## Implementation rules
 
@@ -37,6 +37,6 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.
 - Run build and tests; report actual commands/results. If tests cannot run, mark NOT RUN with reason. Never claim a test passed without executing it.
 - When an ambiguity blocks a decision, choose the smallest reversible engineering assumption; record it in an ADR and update tests. Do not silently alter confirmed user intent.
-- Preserve all 137 S0-S6.2 tests and historical results, documenting intentional version/semantic changes. Debug, Release, sanitizer, CI, multi-seed integration, local nutrition, dense contact, geometry, durable recovery and history reconciliation evidence is recorded in S6_RESULTS.md.
+- Preserve all 153 S0-S6.3 tests and historical results, documenting intentional version/semantic changes. Run Debug, Release, sanitizer, CI, multi-seed queen/local nutrition and durable recovery checks; preserve the existing performance gates.
 - Keep document 35 frozen; preserve S6_RESULTS.md, all raw experimental/performance evidence, figures, definitions in document 36 and reproducible commands.
-- Follow frozen document 41, deliver S6_3_RESULTS.md and complete raw evidence with separate engineering, closure, biological and performance conclusions. Commit/push the independent S6.3 branch and stop for review.
+- Follow frozen document 44, deliver S6_3_1_RESULTS.md, raw evidence and figures with separate engineering, mechanism and calibration conclusions. Commit/push the independent S6.3.1 branch and stop for review.

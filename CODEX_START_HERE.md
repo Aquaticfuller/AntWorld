@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.2 received independent CONDITIONAL PASS and the user authorized S6.3 Long-Term Ecological Loop Completion. Read frozen document 41 before implementation. Preserve all 137 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3-long-term-ecology; S6.4 and S7-S9 remain unauthorized.
+This is the v0.8 design and engineering handoff. S6.3 received engineering PASS and bounded ecological CONDITIONAL PASS; the user authorized S6.3.1 Queen Provisioning and Reproductive Allocation Validation. Read frozen document 44 before diagnostic implementation. Preserve all 153 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3.1-queen-validation; S6.4 and S7-S9 remain unauthorized.
 
 ## Architecture
 
@@ -28,6 +28,8 @@ This is the v0.8 design and engineering handoff. S6.2 received independent CONDI
 13. docs/29_S2_2_Validation_Protocol.md and docs/30_S2_2_Literature_and_Model_Rationale.md for the current frozen protocol and primary research.
 
 ## Current implementation gate
+
+S6.3.1 is authorized for SD-08 diagnosis, frozen causal/positive controls and minimal evidence-supported local corrections. Document 44 governs the active stage. The completed S6.3 statement below is retained as historical context; it does not override the new authorization. No mechanism change may be selected by tuning survival to a 90-day target.
 
 S6.3 is implemented for independent review. Read S6_3_RESULTS.md, frozen protocols 41/42 and implementation/metrics document 43. Preserve S6_2_RESULTS.md and protocols 39/40, S6.1's 24.229x anomalous performance batch, and all earlier facts and negative results. The new opt-in world contract provides funded births, finite resource availability, local recovery/space feedback and actual protein recycling. Legacy worlds retain schema 8 / physics 9; the corrected long-term contract is schema 9 / physics 11. The initial 9/10 prototype and its censored/negative results remain archived and reproducible from their source revision. All 137 inherited tests remain, with 16 new regressions. Controlled stationary contacts and the proposed dynamic-birth registration fixture pass their <=6x growth targets, without extending that result to arbitrary long histories or colony sizes. SD-04/06/07 and new SD-08 reproductive allocation remain biologically open; all primary queens eventually exhaust energy. Preserve SD-01/02 and TD-03/04/05/06/08 limits in document 08. Retain document 31 for physiology, 32 for geometry and 33/34 for persistence. Stop after S6.3; S6.4 and S7-S9 require new authorization.
 
