@@ -33,6 +33,7 @@ checks = [
     ['tools/analyze_s6_3_3.py', '--check'],
     ['tools/verify_s6_3_3_observer_correction.py', '--check'],
     ['tools/verify_s6_3_3_validation_guard.py', '--check'],
+    ['tools/verify_s6_3_3_portable_allocation.py', '--check'],
     ['tools/analyze_s6_3_3_performance.py', '--check'],
 ]
 for check in checks:

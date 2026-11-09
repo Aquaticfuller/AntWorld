@@ -10,7 +10,7 @@ BehaviorWindow WorldRuntime::behavior_window(AntRef ref, SimTime begin, SimTime 
         return static_cast<std::uint64_t>(std::max<std::int64_t>(0,std::min(to.milliseconds,end.milliseconds)-std::max(from.milliseconds,begin.milliseconds)));
     };
     std::map<ScheduledId,BehaviorObservation> active;
-    std::vector<std::pair<SimTime,SimTime>> intervals;
+    std::vector<std::pair<SimTime,SimTime>> intervals(0);
     auto close=[&](const BehaviorObservation& o,SimTime at) {
         if (!o.duration_known) return;
         const auto duration=overlap(o.began_at,at); out.duration_ms[static_cast<std::size_t>(o.act)]+=duration;

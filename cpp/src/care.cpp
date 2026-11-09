@@ -91,7 +91,7 @@ void WorldRuntime::interrupt_care(Transaction& tx, EntityId id, Outcome reason, 
 }
 void WorldRuntime::validate_active_care(Transaction& tx) {
     auto& s=*state_; if (!s.care_profile) return;
-    std::vector<EntityId> blocked;
+    std::vector<EntityId> blocked(0);
     for (const auto& [id,c]:s.care) if (c.enabled && c.active) {
         const auto a=s.ants.get(s.ants.index.at(id));
         const auto half=care_extent(s,body_half(id),c.act);
@@ -109,8 +109,10 @@ void WorldRuntime::validate_active_care(Transaction& tx) {
 }
 void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<ScheduledEvent>& wakes) {
     auto& s=*state_; const auto& cfg=*s.care_profile;
-    std::vector<CareState> choices; choices.reserve(wakes.size());
-    std::vector<std::vector<AntRef>> opportunities(wakes.size());
+    // Throwing count constructors preserve rollback when MSVC Debug allocates iterator proxies.
+    std::vector<CareState> choices(0); choices.reserve(wakes.size());
+    std::vector<std::vector<AntRef>> opportunities(0); opportunities.reserve(wakes.size());
+    for (std::size_t n=0;n<wakes.size();++n) opportunities.emplace_back(0);
     for (std::size_t n=0;n<wakes.size();++n) {
         const auto& wake=wakes[n]; auto c=s.care.at(wake.actor); const auto a=*query_ant({s.world,wake.actor});
         if (!c.enabled || c.active || c.pending!=wake.id || !a.alive()) throw std::logic_error("care wake ownership");
@@ -118,7 +120,7 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         auto draw=[&](double probability) { return static_cast<double>(bounded_draw(rng,1000000))/1000000<probability; };
         c.act=CareAct::Inactive; c.target={}; c.destination=a.position; c.bout={};
         const auto local=query_neighborhood({s.world,a.id},cfg.perception_radius_m);
-        std::vector<AntRef> brood_candidates,workers;
+        std::vector<AntRef> brood_candidates(0),workers(0);
         for (auto ref:local.ants) {
             const auto other=*query_ant(ref);
             if (other.colony!=a.colony || !other.alive()) continue;

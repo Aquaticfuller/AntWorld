@@ -198,6 +198,7 @@ int main(int argc, char** argv) {
             sweep("care_pause",w,[&]{w.pause_brood_care(queen);});
             const auto end=w.pending_events().front().key.time;
             sweep("care_complete",w,[&]{w.advance_to(end);}); w.advance_to(end);
+            sweep("care_observer_query",w,[&]{(void)w.behavior_window(queen,{0},w.summary().now);});
             const auto saved=w.checkpoint(); sweep("care_restore",w,[&]{w.restore(saved);});
             std::cout<<"PASS S6.3.3 allocation failure\n"; return 0;
         }

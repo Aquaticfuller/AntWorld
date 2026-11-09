@@ -216,9 +216,9 @@ cpp/tests/test_allocation_failure.cpp,117,BoxQ,room,DECLARATION_OR_FUNCTION,BoxQ
 cpp/tests/test_allocation_failure.cpp,119,PositionM,point,DECLARATION_OR_FUNCTION,PositionM point{
 cpp/tests/test_allocation_failure.cpp,145,SocialConfig,policy,DECLARATION_OR_FUNCTION,SocialConfig policy;
 cpp/tests/test_allocation_failure.cpp,193,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
-cpp/tests/test_allocation_failure.cpp,207,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
-cpp/tests/test_allocation_failure.cpp,209,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
-cpp/tests/test_allocation_failure.cpp,213,ResourceCycleConfig,c,DECLARATION_OR_FUNCTION,ResourceCycleConfig c;
+cpp/tests/test_allocation_failure.cpp,208,PhysiologyConfig,p,DECLARATION_OR_FUNCTION,PhysiologyConfig p;
+cpp/tests/test_allocation_failure.cpp,210,ReproductionConfig,r,DECLARATION_OR_FUNCTION,ReproductionConfig r;
+cpp/tests/test_allocation_failure.cpp,214,ResourceCycleConfig,c,DECLARATION_OR_FUNCTION,ResourceCycleConfig c;
 cpp/tests/test_allocation_failure.cpp,64,AntSeed,seed_ant,API_AGGREGATE,"{{}, LifeStage::Adult, Caste::Worker, 1000}"
 cpp/tests/test_allocation_failure.cpp,65,PositionM,seed_food,API_AGGREGATE,"{0.02, 0, 0}"
 cpp/tests/test_allocation_failure.cpp,65,FoodMass,seed_food,API_AGGREGATE,"{1000, 0, 0, 0}"
@@ -256,20 +256,20 @@ cpp/tests/test_allocation_failure.cpp,191,AntSeed,seed_ant,API_AGGREGATE,"{{},Li
 cpp/tests/test_allocation_failure.cpp,192,AntSeed,seed_ant,API_AGGREGATE,"{{.001,0,0},LifeStage::Larva}"
 cpp/tests/test_allocation_failure.cpp,194,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,400,0,0},1000000000,1000,0}"
 cpp/tests/test_allocation_failure.cpp,194,PhysiologySeed,enable_physiology,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,205,SocialConfig,configure_social,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,206,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Adult,Caste::Queen}"
-cpp/tests/test_allocation_failure.cpp,208,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,100,0,0},1500000000,1600,0}"
-cpp/tests/test_allocation_failure.cpp,213,PositionM,seed_food,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,213,FoodMass,seed_food,API_AGGREGATE,"{1,1,1,0}"
-cpp/tests/test_allocation_failure.cpp,235,AntSeed,seed_ant,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,235,AntSeed,seed_ant,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,236,PositionM,seed_food,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,236,FoodMass,seed_food,API_AGGREGATE,"{1000, 1000, 1000, 1000}"
-cpp/tests/test_allocation_failure.cpp,237,AntSeed,seed_ant,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,239,PositionM,seed_food,API_AGGREGATE,{}
-cpp/tests/test_allocation_failure.cpp,239,FoodMass,seed_food,API_AGGREGATE,"{1, 2, 3, 4}"
-cpp/tests/test_allocation_failure.cpp,240,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,206,SocialConfig,configure_social,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,207,AntSeed,seed_ant,API_AGGREGATE,"{{},LifeStage::Adult,Caste::Queen}"
+cpp/tests/test_allocation_failure.cpp,209,PhysiologySeed,enable_physiology,API_AGGREGATE,"{{0,100,0,0},1500000000,1600,0}"
+cpp/tests/test_allocation_failure.cpp,214,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,214,FoodMass,seed_food,API_AGGREGATE,"{1,1,1,0}"
+cpp/tests/test_allocation_failure.cpp,236,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,236,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,237,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,237,FoodMass,seed_food,API_AGGREGATE,"{1000, 1000, 1000, 1000}"
+cpp/tests/test_allocation_failure.cpp,238,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,240,PositionM,seed_food,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,240,FoodMass,seed_food,API_AGGREGATE,"{1, 2, 3, 4}"
 cpp/tests/test_allocation_failure.cpp,241,AntSeed,seed_ant,API_AGGREGATE,{}
+cpp/tests/test_allocation_failure.cpp,242,AntSeed,seed_ant,API_AGGREGATE,{}
 cpp/tests/test_s1.cpp,248,FoodMass,stock,DECLARATION_OR_FUNCTION,FoodMass stock{
 cpp/tests/test_s1.cpp,77,PositionM,,TYPED_AGGREGATE,"PositionM{0.005, 0, 0}"
 cpp/tests/test_s1.cpp,275,FoodMass,,TYPED_AGGREGATE,"FoodMass{UINT64_MAX, 1, 0, 0}"

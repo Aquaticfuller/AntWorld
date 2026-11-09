@@ -1,0 +1,26 @@
+[
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/35a0df49eebbffd17c97bc3d223476aa8bd92590/.github",
+    "start_line": 429,
+    "start_column": null,
+    "end_line": 429,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "",
+    "message": "Process completed with exit code 1.",
+    "raw_details": ""
+  },
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/35a0df49eebbffd17c97bc3d223476aa8bd92590/.github",
+    "start_line": 395,
+    "start_column": null,
+    "end_line": 395,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "CTest failure summary",
+    "message": "133/180 Test #133: S6_3_3_ALLOCATION_FAILURE ........***Failed    0.04 sec\nUnexpected terminate: scenario=care_select allocation=37\ncare_contract rollback_points=31\nqueen_care_enrollment rollback_points=52\n\n\nPassed    0.07 sec\n        Start 180: S6_3_3_EXPERIMENT_SMOKE\n180/180 Test #180: S6_3_3_EXPERIMENT_SMOKE ..........   Passed    0.08 sec\n\n99% tests passed, 1 tests failed out of 180\n\nLabel Time Summary:\nS1        =   5.38 sec*proc (12 tests)\nS2        =   6.93 sec*proc (15 tests)\nS2.1      =   3.14 sec*proc (8 tests)\nS2.2      =   0.98 sec*proc (5 tests)\nS3        =   2.69 sec*proc (15 tests)\nS4        =   8.81 sec*proc (18 tests)\nS5        =  23.64 sec*proc (19 tests)\nS6        =  11.45 sec*proc (16 tests)\nS6.1      =  23.37 sec*proc (11 tests)\nS6.2      =   7.84 sec*proc (2 tests)\nS6.3      =  10.23 sec*proc (16 tests)\nS6.3.1    =   2.12 sec*proc (8 tests)\nS6.3.2    =   0.45 sec*proc (1 test)\nS6.3.3    =   2.23 sec*proc (17 tests)\n\nTotal Test time (real) = 109.80 sec\n\nThe following tests FAILED:\n\t133 - S6_3_3_ALLOCATION_FAILURE (Failed)                S6.3.3\nErrors while running CTest\n",
+    "raw_details": ""
+  }
+]

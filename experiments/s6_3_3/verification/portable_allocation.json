@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "source_sha256": {
+    "cpp/src/care.cpp": "9cdac6d06c63f6fe5a6d9d70736e2b9f08895991d919b24d333b09f95a0ffa22",
+    "cpp/src/observations.cpp": "09159886e8637ccbd4d220d7840e884926b32cca0ef222a139f05c18160356c0",
+    "cpp/tests/test_allocation_failure.cpp": "966081f1e482da8a94fd4d4fbcd8dddbe4f770ff7f2d1b35cd2cfd3c6928f819"
+  },
+  "executed_source_archive_sha256": "6cc4877f2c3a06e2f5b89d03bbe20026479b1e26411e39626049b1461f268c7b",
+  "failure": "Initial Windows MSVC Debug fault injection terminated at care_select allocation37",
+  "change": "Empty vectors use throwing count constructors, including nested opportunity vectors; an observer-query allocation sweep is added",
+  "preserved": "Same empty contents, opportunity count/order, biological coefficients, RNG draws and committed behavior; no failure injection or history is disabled",
+  "validation": "Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path"
+}

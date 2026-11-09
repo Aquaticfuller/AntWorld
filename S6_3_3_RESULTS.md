@@ -1,6 +1,6 @@
 # S6.3.3 Biological Observability and Founding Queen Care
 
-Engineering regressions: **PASS** locally (180/180 Debug, Release and ASan+UBSan). P01 local maternal capability/plasticity: **CONDITIONAL PASS within the fixtures**. Quantitative B01/B02 species validation: **NOT PASSED**. Final performance qualification: **NOT QUALIFIED** after three rejected admissions. Stage acceptance is left to independent review; this is not a full biological/performance PASS. GitHub CI status is recorded below after the pushed revision runs.
+Engineering regressions: final local Debug/Release **PASS** (180/180 each); the constructor correction's sanitizer/CI reruns are pending. P01 local maternal capability/plasticity: **CONDITIONAL PASS within the fixtures**. Quantitative B01/B02 species validation: **NOT PASSED**. Final performance qualification: **NOT QUALIFIED** after three rejected admissions. Stage acceptance is left to independent review; this is not a full biological/performance PASS. GitHub CI status is recorded below after the pushed revision runs.
 
 ## Scope and evidence
 
@@ -59,15 +59,15 @@ Sensitivity uses the same six seeds including the base configuration. Inhibition
 
 The source `With_workers` group receives workers at setup (B01 Methods2.2.4), so the numerical comparison uses the frozen **added** condition, not the continuously present engineering control. Only the source removal group has prior three-day worker exposure. Glass-tube-to-arena transfer remains an unmodeled source condition. This source-history mapping is independent of whether it improves a numerical error.
 
-Figures: [care and retrieval](experiments/s6_3_3/analysis/care_and_retrieval.png), [sensitivity](experiments/s6_3_3/analysis/sensitivity.png). There are36 matched quantitative comparisons,759 extracted endpoint records (including three explicit missing values),14 care-profile fields,1341 current typed parameter/fixture expressions and259 new implicit-source expressions. All2559 historical provenance records and70 historical rule groups remain intact; the current16-rule extension and SQLite source links are independently checked. Zero behavioral coefficients were fitted.
+Figures: [care and retrieval](experiments/s6_3_3/analysis/care_and_retrieval.png), [sensitivity](experiments/s6_3_3/analysis/sensitivity.png). There are36 matched quantitative comparisons,759 extracted endpoint records (including three explicit missing values),14 care-profile fields,1341 current typed parameter/fixture expressions and265 new implicit-source expressions. All2559 historical provenance records and70 historical rule groups remain intact; the current16-rule extension and SQLite source links are independently checked. Zero behavioral coefficients were fitted.
 
 ## Engineering and performance verification
 
 |Check|Actual result|
 |---|---|
-|Release, LLVM-MinGW clang23.1.5|180/180 PASS;23.83s|
-|Debug, same compiler|180/180 PASS;104.32s|
-|Windows Clang ASan+UBSan|180/180 PASS;355.23s; leak detection unsupported/disabled locally|
+|Release, LLVM-MinGW clang23.1.5|180/180 PASS;30.05s|
+|Debug, same compiler|180/180 PASS;108.10s|
+|Windows Clang ASan+UBSan|Final constructor-correction rerun pending; prior180/180 PASS;355.23s; leak detection unsupported/disabled locally|
 |Inherited regressions|All162 retained;18 additional cases including allocation-failure sweep|
 |Frozen matrix conservation/restore|384/384 PASS|
 |Observation correction comparison|105/105 completed preliminary cases retain biological outputs|
@@ -79,6 +79,8 @@ Full local logs are in `experiments/s6_3_3/verification`. History, state and geo
 A final validation-only guard rejects custom arrangement displacement/duration above the world speed limit. Every frozen case has arrangement<=step, and the pre-existing step-speed guard already holds, so this added check is mathematically inert for all384 configurations. `verify_s6_3_3_validation_guard.py` verifies that implication and retains the exact two pre-guard source files in a SHA256-checked project-source archive. Original run manifests are not overwritten. Regression suites and independent CI reproduction are rerun on the stricter review build.
 
 The first GitHub run42691683492 exposed a portable-verification defect: the archive checker compared a newly encoded ZIP with the original Windows ZIP. ZIP creator metadata is host-dependent. The corrected checker verifies the unchanged archive's pinned SHA256, member list, CRC and every reconstructed source payload directly. The original archive and all run/source hashes remain unchanged. Initial failure annotations are retained; the correction changes only verification, not C++ rules, parameters or experiment outcomes.
+
+The same run's Windows MSVC Debug allocation sweep found an exception-safety defect at `care_select` allocation37. Newly introduced empty vectors used the standard library's default constructor, which is noexcept although MSVC Debug allocates iterator proxies. They now use the throwing zero-count constructor, including each nested opportunity vector, following the existing AntStore/transaction convention. A read-only observation allocation sweep is added. No failure injection, iterator checks, behavior or history is disabled. `verify_s6_3_3_portable_allocation.py` reconstructs and hashes the exact executed source from the limited constructor changes, preserving the original three files separately. All scientific coefficients, empty-container contents and decision order remain unchanged; full suites and event reproduction are rerun.
 
 The [performance report](S6_3_3_PERFORMANCE_RESULTS.md) retains every admission and preliminary sample. Core-counter invalid samples were4/1/10 across the three attempts; final core-load p95=51.0686%. Power/temperature/freshness were recorded. No target or invalid-value rule was relaxed. Final wall-time percentiles, growth ratio and CI are NOT ESTIMABLE; an earlier single-session binary is not substituted. The bounded care smoke diagnostic records about32-33ms total process wall time and roughly7.2MB observed peak working set (10ms sampling, a lower bound on the true process peak), plus native phase timings. This is descriptive, not an admitted scale gate. Primary cases span88-281661 committed facts and17878-50953329 checkpoint bytes; concurrent experiment timings are explicitly diagnostic.
 
