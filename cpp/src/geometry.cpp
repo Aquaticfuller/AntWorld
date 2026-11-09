@@ -101,6 +101,7 @@ void WorldRuntime::index_position(Transaction &tx, EntityId id, PositionM from, 
     }
 }
 Neighborhood WorldRuntime::query_neighborhood(AntRef ref, double radius) const {
+    profiling::Scope profile(profiling::Category::Neighborhood);
     const auto &s = *state_;
     const auto ant = query_ant(ref);
     if (!ant || !std::isfinite(radius) || radius < 0)
@@ -137,6 +138,7 @@ Neighborhood WorldRuntime::query_neighborhood(AntRef ref, double radius) const {
     auto by_id = [](const auto &a, const auto &b) { return a.id < b.id; };
     std::sort(result.ants.begin(), result.ants.end(), by_id);
     std::sort(result.food.begin(), result.food.end(), by_id);
+    profiling::record_work(profiling::Category::Neighborhood,result.candidates_examined);
     return result;
 }
 Route3D WorldRuntime::query_route(AntRef ref, PositionM destination) const {

@@ -75,7 +75,12 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
         w.position(e.destination); w.put(e.requested_ug); w.time(e.issued_at); w.put(e.observed_position_revision);
         w.put(static_cast<std::uint8_t>(e.stage), 1);
     }
-    w.put(s.journal.size()); for (const auto& e : s.journal) write_fact(w, e);
+    {
+        profiling::Scope profile(profiling::Category::CheckpointHistory);
+        w.put(s.journal.size());
+        for (const auto& e : s.journal) write_fact(w, e);
+        profiling::record_work(profiling::Category::CheckpointHistory,s.journal.size());
+    }
     w.position(s.config.min_m); w.position(s.config.max_m); w.real(s.config.max_speed_m_per_s); w.real(s.config.contact_distance_m);
     w.put(m.watermark.has_value(), 1); if (m.watermark) w.key(*m.watermark);
     w.put(m.executed); w.put(m.living); w.mass(m.ledger.introduced); w.mass(m.ledger.available); w.mass(m.ledger.carried); w.mass(m.ledger.stored);

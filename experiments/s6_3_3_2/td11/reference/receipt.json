@@ -1,0 +1,13 @@
+{
+  "reference_core": "05a68474754fbf3ce597cfdf0b7ad81975cb1f0f",
+  "protocol_commit": "de9107b",
+  "mode": "Release ANTWORLD_PROFILE=ON",
+  "compiler": "LLVM MinGW clang 23.1.5",
+  "executable_sha256": "20372f0641c8f3d068908bafdfffc9ea4259a182b106e5461c71cdf96cc9e90b",
+  "samples": 64,
+  "profile_rows": 2304,
+  "files": {
+    "samples.csv": "67394f9b82b3dc8abe2e43b45939802797ab7efecae18e770c2dd2863ee0ca9d",
+    "profile.csv": "acf866d40f64864acea69bff00274925d11b56981f897714fb6920eb0571244f"
+  }
+}

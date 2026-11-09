@@ -17,9 +17,12 @@ enum class Category : unsigned {
   History,
   Physiology,
   Policy,
+  Neighborhood,
+  CareOpportunities,
+  CheckpointHistory,
   Count
 };
-inline constexpr std::array<std::string_view, 9> names{"advance",
+inline constexpr std::array<std::string_view, 12> names{"advance",
                                                        "contact_index",
                                                        "candidate_sampling",
                                                        "spatial_validation",
@@ -27,9 +30,12 @@ inline constexpr std::array<std::string_view, 9> names{"advance",
                                                        "transaction_journal",
                                                        "fact_history",
                                                        "physiology",
-                                                       "policy"};
+                                                       "policy",
+                                                       "neighborhood",
+                                                       "care_opportunities",
+                                                       "checkpoint_history"};
 struct Counter {
-  std::uint64_t calls{}, inclusive_ns{}, exclusive_ns{};
+  std::uint64_t calls{}, inclusive_ns{}, exclusive_ns{}, work{};
 };
 using Counters = std::array<Counter, names.size()>;
 #ifdef ANTWORLD_PROFILE
@@ -67,6 +73,9 @@ public:
 };
 inline void reset() noexcept { counters = {}; }
 inline Counters snapshot() noexcept { return counters; }
+inline void record_work(Category category, std::uint64_t count) noexcept {
+  counters[static_cast<unsigned>(category)].work += count;
+}
 #else
 inline constexpr bool enabled = false;
 struct Scope {
@@ -74,5 +83,6 @@ struct Scope {
 };
 inline void reset() noexcept {}
 inline Counters snapshot() noexcept { return {}; }
+inline void record_work(Category, std::uint64_t) noexcept {}
 #endif
 } // namespace antworld::profiling

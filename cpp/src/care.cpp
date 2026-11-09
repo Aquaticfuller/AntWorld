@@ -209,8 +209,12 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         WorldEvent tick; tick.kind=FactKind::CareTick; tick.actor=wake.actor;
         const auto a=*query_ant({s.world,wake.actor}); tick.colony=a.colony; tick.stage=a.stage; tick.position=a.position;
         tick.source=wake.id; tick.payload=static_cast<std::uint64_t>(wake.kind); tx.fact(tick);
-        for (auto other:opportunities[n]) observe(tx,wake.actor,wake.id,{ObservationPhase::Opportunity,
-            brood(query_ant(other)->stage)?CareAct::InspectBrood:CareAct::CloseWorkerContact,other.id,{},s.m.now,false});
+        {
+            profiling::Scope profile(profiling::Category::CareOpportunities);
+            for (auto other:opportunities[n]) observe(tx,wake.actor,wake.id,{ObservationPhase::Opportunity,
+                brood(query_ant(other)->stage)?CareAct::InspectBrood:CareAct::CloseWorkerContact,other.id,{},s.m.now,false});
+            profiling::record_work(profiling::Category::CareOpportunities,opportunities[n].size());
+        }
         ScheduledEvent e; e.actor=wake.actor; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
         e.key={after(s.m.now,1),Phase::Resolution,0,0,0};
         c.pending=tx.insert(e); c.bout=c.pending; tx.care.set(wake.actor,c);
