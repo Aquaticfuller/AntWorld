@@ -1,0 +1,26 @@
+[
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/769494c18b9fe57b3b48a8ea25a54ff467edc9b3/.github",
+    "start_line": 201,
+    "start_column": null,
+    "end_line": 201,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "",
+    "message": "Process completed with exit code 2.",
+    "raw_details": ""
+  },
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/769494c18b9fe57b3b48a8ea25a54ff467edc9b3/.github",
+    "start_line": 183,
+    "start_column": null,
+    "end_line": 183,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "C++ build diagnostics",
+    "message": "/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp: In function \u2018int main(int, char**)\u2019:\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:144:21: error: this \u2018if\u2019 clause does not guard... [-Werror=misleading-indentation]\n  144 |                     if(variant==\"memory1h\") p.social_memory_horizon={hour}; if(variant==\"memory24h\") p.social_memory_horizon={day};\n      |                     ^~\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:144:77: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  144 |                     if(variant==\"memory1h\") p.social_memory_horizon={hour}; if(variant==\"memory24h\") p.social_memory_horizon={day};\n      |                                                                             ^~\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:145:21: error: this \u2018if\u2019 clause does not guard... [-Werror=misleading-indentation]\n  145 |                     if(variant==\"inhibition0\") p.maximum_inhibition=0; if(variant==\"inhibition0_4\") p.maximum_inhibition=.4;\n      |                     ^~\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:145:72: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  145 |                     if(variant==\"inhibition0\") p.maximum_inhibition=0; if(variant==\"inhibition0_4\") p.maximum_inhibition=.4;\n      |                                                                        ^~\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:146:21: error: this \u2018if\u2019 clause does not guard... [-Werror=misleading-indentation]\n  146 |                     if(variant==\"decision15s\") p.decision_interval={15000}; if(variant==\"decision240s\") p.decision_interval={240000};\n      |                     ^~\n/home/runner/work/AntWorld/AntWorld/cpp/apps/antworld_s6_3_3_experiment.cpp:146:77: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  146 |                     if(variant==\"decision15s\") p.decision_interval={15000}; if(variant==\"decision240s\") p.decision_interval={240000};",
+    "raw_details": ""
+  }
+]

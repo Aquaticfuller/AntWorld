@@ -175,73 +175,76 @@ cpp/src/checkpoint_care.hpp,93,if (audit.contains(e.actor)) audit.at(e.actor).se
 cpp/src/checkpoint_care.hpp,94,if (o.phase==ObservationPhase::Completed && o.act==CareAct::CloseWorkerContact && o.duration_known) {,1fffd126a6916767232245d9587fb121321c3b92849932d898791c0f7b2d3f8b
 cpp/src/checkpoint_care.hpp,100,"ensure(configured==1 && audit.size()==s.care.size(),""care configuration/enrollment evidence missing"");",1fffd126a6916767232245d9587fb121321c3b92849932d898791c0f7b2d3f8b
 cpp/src/checkpoint_care.hpp,105,if (c.active || (c.enabled && s.queue.at(s.queue_index.at(c.pending)).kind==ScheduledEvent::Kind::CareBegin)) {,1fffd126a6916767232245d9587fb121321c3b92849932d898791c0f7b2d3f8b
-cpp/apps/antworld_s6_3_3_experiment.cpp,14,using namespace s6_3_3_fixture;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,16,"constexpr std::int64_t hour=3600000,day=24*hour;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,17,"constexpr std::array<std::uint64_t,12> seeds{7,19,43,71,101,137,181,223,269,313,367,421};",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,27,"struct Window { std::int64_t begin{},label{}; };",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,29,"void advance(WorldRuntime& w,std::int64_t end) {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,35,if(e.kind!=FactKind::BiologicalObservation && e.kind!=FactKind::BroodMoved && e.kind!=FactKind::NutritionTransferred &&,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,40,"<<o.began_at.milliseconds<<','<<o.duration_known<<','<<static_cast<unsigned>(e.outcome)<<','<<std::setprecision(17)<<e.position.x<<','<<e.position.y<<','<<e.position.z<<','",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,44,"void assay(Outputs& out,std::uint64_t seed,const std::string& condition,int age,const std::string& variant,",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,46,const auto context=age>100?CareContext::EstablishedQueen:CareContext::FoundingQueen;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,48,"Fixture f(seed,profile,condition==""no_brood""?0:5,absent?0:mesh?3:5,condition==""barrier"",context,{age*day},true,condition==""added"");",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,52,"if(smoke) windows.push_back({0,0});",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,53,"else if(mesh) windows={{2*hour,2},{6*hour,6},{24*hour,24}};",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,54,else {,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,55,"windows={{71*hour,0},{96*hour,24},{120*hour,48}};",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,56,"advance(f.w,3*day);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,57,"if(condition==""removed"" || condition==""added"" || condition==""sham"") {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,58,"for(auto worker:f.workers) f.w.submit({worker,{3*day+10000},ActionKind::Move,{},",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,59,"condition==""removed""?PositionM{.02,0,.02}:PositionM{0,0,-.00025},0});",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,63,"std::map<std::int64_t,PhysiologyState> physiology_windows;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,64,"std::map<std::int64_t,CareState> care_windows;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,68,"std::vector<std::pair<std::int64_t,std::int64_t>> bouts;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,69,for(const auto& e:history) if(e.actor==f.queen.id && e.kind==FactKind::BiologicalObservation && e.observation.duration_known && active_care(e.observation.act) &&,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,71,"const auto current=f.w.query_care(f.queen); if(current->active && active_care(current->act)) bouts.emplace_back(current->began_at.milliseconds,f.w.summary().now.milliseconds);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,73,"unsigned positive=0,positive50=0; bool alive=true;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,74,for(const auto& e:history) if(e.actor==f.queen.id && e.kind==FactKind::AntDied && e.time.milliseconds<window.begin+hour) alive=false;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,75,for(unsigned minute=5;minute<=55;++minute) {,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,76,"const auto begin=window.begin+static_cast<std::int64_t>(minute)*60000,end=begin+10000;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,78,if(found) { ++positive; if(minute<55) ++positive50; },7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,79,"out.scans<<name<<','<<seed<<','<<window.label<<','<<minute-5<<','<<begin<<','<<end<<','<<found<<','<<alive<<'\n';",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,83,"out.windows<<name<<','<<seed<<','<<(mesh?""mesh"":""reversal"")<<','<<condition<<','<<age<<','<<variant<<','<<window.label<<','<<window.begin<<','<<window.begin+hour<<','<<alive<<"",51,""<<positive<<','<<positive50<<','",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,89,"clock=std::chrono::steady_clock::now(); WorldRuntime replay({1,1},0,{},limits()); replay.restore(bytes); const auto restore_ms=elapsed(clock);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,90,const auto end=f.w.summary().now; replay.advance_to({end.milliseconds+1234}); f.w.advance_to({end.milliseconds+1234});,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,95,"void retrieval(Outputs& out,std::uint64_t seed,bool group) {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,96,"SpeciesCareProfile profile; Fixture f(seed,profile,0,group?3:0);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,98,if(group) { auto p=physiology();,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,99,"for(auto worker:f.workers) f.w.enable_physiology(worker,{{0,100,0,0},p.energy_capacity_nj,p.hydration_capacity_ug,0},p);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,101,"for(unsigned i=0;i<6;++i) f.brood.push_back(f.w.seed_ant(f.colony,{{.005+static_cast<double>(i)*.002,0,0},i%2?LifeStage::Pupa:LifeStage::Larva}));",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,102,"const auto start=std::chrono::steady_clock::now(); advance(f.w,180000);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,103,"if(group) for(auto worker:f.workers) f.w.enable_brood_care(worker,{CareContext::Worker,{30*day}});",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,104,"else f.w.enable_brood_care(f.queen,f.w.query_care(f.queen)->profile);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,106,"advance(f.w,780000); const auto advance_ms=elapsed(start); const auto events=f.w.committed_events();",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,107,"std::set<EntityId> retrieved; std::int64_t first_contact=-1,first_retrieval=-1,task_end=-1; double path=0;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,109,for(std::size_t i=0;i<events.size();++i) {,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,111,if(e.kind==FactKind::Moved && positions.contains(e.actor)) {,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,112,"const auto old=positions.at(e.actor); if(i>=baseline) path+=std::hypot(e.position.x-old.x,e.position.y-old.y,e.position.z-old.z); positions[e.actor]=e.position;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,114,if(i<baseline) continue;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,115,if(e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Started && e.observation.act>=CareAct::InspectBrood && e.observation.act<=CareAct::FeedBrood && first_contact<0) first_contact=e.time.milliseconds-180000;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,116,"if(e.kind==FactKind::BroodMoved && std::hypot(e.position.x,e.position.y,e.position.z)<=f.w.config().contact_distance_m) {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,117,retrieved.insert(e.actor); if(first_retrieval<0) first_retrieval=e.time.milliseconds-180000; if(retrieved.size()==6 && task_end<0) task_end=e.time.milliseconds-180000;,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,121,"clock=std::chrono::steady_clock::now(); WorldRuntime replay({1,1},0,{},limits()); replay.restore(bytes); const auto restore_ms=elapsed(clock);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,130,"if(argc<2 || argc>4) throw std::invalid_argument(""usage: antworld_s6_3_3_experiment OUTPUT [SEED_INDEX|all] [smoke|primary|sensitivity]"");",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,131,const std::filesystem::path directory=argv[1]; std::filesystem::create_directories(directory); Outputs out(directory);,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,132,"const std::string mode=argc>3?argv[3]:""primary"",which=argc>2?argv[2]:""all"";",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,133,for(std::size_t index=0;index<seeds.size();++index) {,7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,134,"if(which!=""all"" && index!=std::stoull(which)) continue;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,136,"if(mode==""smoke"") { assay(out,seed,""absent"",55,""base"",{},false,true); retrieval(out,seed,false); break; }",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,137,"if(mode==""primary"") {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,138,"for(int age:{35,55,932}) for(const std::string condition:{""absent"",""present"",""added"",""removed"",""sham"",""no_brood""}) assay(out,seed,condition,age,""base"",{});",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,139,"for(const std::string condition:{""absent"",""present"",""barrier""}) assay(out,seed,condition,52,""base"",{},true);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,141,"} else if(mode==""sensitivity"" && index<6) {",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,144,"if(variant==""memory1h"") p.social_memory_horizon={hour}; if(variant==""memory24h"") p.social_memory_horizon={day};",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,145,"if(variant==""inhibition0"") p.maximum_inhibition=0; if(variant==""inhibition0_4"") p.maximum_inhibition=.4;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,146,"if(variant==""decision15s"") p.decision_interval={15000}; if(variant==""decision240s"") p.decision_interval={240000};",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,147,"for(const std::string condition:{""absent"",""present"",""removed""}) assay(out,seed,condition,55,variant,p);",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,149,"} else if(mode!=""sensitivity"") throw std::invalid_argument(""unknown experiment mode"");",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,151,"std::cout<<""Completed ""<<mode<<"" seed selection ""<<which<<'\n'; return 0;",7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
-cpp/apps/antworld_s6_3_3_experiment.cpp,152,} catch(const std::exception& e) { std::cerr<<e.what()<<'\n'; return 1; },7532d7c0884a92cd15c3b9ffd6958649e2d3c99e1f066d6e87aa7b097e8ccbfc
+cpp/apps/antworld_s6_3_3_experiment.cpp,14,using namespace s6_3_3_fixture;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,16,"constexpr std::int64_t hour=3600000,day=24*hour;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,17,"constexpr std::array<std::uint64_t,12> seeds{7,19,43,71,101,137,181,223,269,313,367,421};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,27,"struct Window { std::int64_t begin{},label{}; };",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,29,"void advance(WorldRuntime& w,std::int64_t end) {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,35,if(e.kind!=FactKind::BiologicalObservation && e.kind!=FactKind::BroodMoved && e.kind!=FactKind::NutritionTransferred &&,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,40,"<<o.began_at.milliseconds<<','<<o.duration_known<<','<<static_cast<unsigned>(e.outcome)<<','<<std::setprecision(17)<<e.position.x<<','<<e.position.y<<','<<e.position.z<<','",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,44,"void assay(Outputs& out,std::uint64_t seed,const std::string& condition,int age,const std::string& variant,",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,46,const auto context=age>100?CareContext::EstablishedQueen:CareContext::FoundingQueen;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,48,"Fixture f(seed,profile,condition==""no_brood""?0:5,absent?0:mesh?3:5,condition==""barrier"",context,{age*day},true,condition==""added"");",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,52,"if(smoke) windows.push_back({0,0});",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,53,"else if(mesh) windows={{2*hour,2},{6*hour,6},{24*hour,24}};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,54,else {,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,55,"windows={{71*hour,0},{96*hour,24},{120*hour,48}};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,56,"advance(f.w,3*day);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,57,"if(condition==""removed"" || condition==""added"" || condition==""sham"") {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,58,"for(auto worker:f.workers) f.w.submit({worker,{3*day+10000},ActionKind::Move,{},",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,59,"condition==""removed""?PositionM{.02,0,.02}:PositionM{0,0,-.00025},0});",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,63,"std::map<std::int64_t,PhysiologyState> physiology_windows;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,64,"std::map<std::int64_t,CareState> care_windows;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,68,"std::vector<std::pair<std::int64_t,std::int64_t>> bouts;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,69,for(const auto& e:history) if(e.actor==f.queen.id && e.kind==FactKind::BiologicalObservation && e.observation.duration_known && active_care(e.observation.act) &&,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,71,"const auto current=f.w.query_care(f.queen); if(current->active && active_care(current->act)) bouts.emplace_back(current->began_at.milliseconds,f.w.summary().now.milliseconds);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,73,"unsigned positive=0,positive50=0; bool alive=true;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,74,for(const auto& e:history) if(e.actor==f.queen.id && e.kind==FactKind::AntDied && e.time.milliseconds<window.begin+hour) alive=false;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,75,for(unsigned minute=5;minute<=55;++minute) {,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,76,"const auto begin=window.begin+static_cast<std::int64_t>(minute)*60000,end=begin+10000;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,78,if(found) { ++positive; if(minute<55) ++positive50; },261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,79,"out.scans<<name<<','<<seed<<','<<window.label<<','<<minute-5<<','<<begin<<','<<end<<','<<found<<','<<alive<<'\n';",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,83,"out.windows<<name<<','<<seed<<','<<(mesh?""mesh"":""reversal"")<<','<<condition<<','<<age<<','<<variant<<','<<window.label<<','<<window.begin<<','<<window.begin+hour<<','<<alive<<"",51,""<<positive<<','<<positive50<<','",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,89,"clock=std::chrono::steady_clock::now(); WorldRuntime replay({1,1},0,{},limits()); replay.restore(bytes); const auto restore_ms=elapsed(clock);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,90,const auto end=f.w.summary().now; replay.advance_to({end.milliseconds+1234}); f.w.advance_to({end.milliseconds+1234});,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,95,"void retrieval(Outputs& out,std::uint64_t seed,bool group) {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,96,"SpeciesCareProfile profile; Fixture f(seed,profile,0,group?3:0);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,98,if(group) { auto p=physiology();,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,99,"for(auto worker:f.workers) f.w.enable_physiology(worker,{{0,100,0,0},p.energy_capacity_nj,p.hydration_capacity_ug,0},p);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,101,"for(unsigned i=0;i<6;++i) f.brood.push_back(f.w.seed_ant(f.colony,{{.005+static_cast<double>(i)*.002,0,0},i%2?LifeStage::Pupa:LifeStage::Larva}));",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,102,"const auto start=std::chrono::steady_clock::now(); advance(f.w,180000);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,103,"if(group) for(auto worker:f.workers) f.w.enable_brood_care(worker,{CareContext::Worker,{30*day}});",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,104,"else f.w.enable_brood_care(f.queen,f.w.query_care(f.queen)->profile);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,106,"advance(f.w,780000); const auto advance_ms=elapsed(start); const auto events=f.w.committed_events();",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,107,"std::set<EntityId> retrieved; std::int64_t first_contact=-1,first_retrieval=-1,task_end=-1; double path=0;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,109,for(std::size_t i=0;i<events.size();++i) {,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,111,if(e.kind==FactKind::Moved && positions.contains(e.actor)) {,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,112,"const auto old=positions.at(e.actor); if(i>=baseline) path+=std::hypot(e.position.x-old.x,e.position.y-old.y,e.position.z-old.z); positions[e.actor]=e.position;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,114,if(i<baseline) continue;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,115,if(e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Started && e.observation.act>=CareAct::InspectBrood && e.observation.act<=CareAct::FeedBrood && first_contact<0) first_contact=e.time.milliseconds-180000;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,116,"if(e.kind==FactKind::BroodMoved && std::hypot(e.position.x,e.position.y,e.position.z)<=f.w.config().contact_distance_m) {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,117,retrieved.insert(e.actor); if(first_retrieval<0) first_retrieval=e.time.milliseconds-180000; if(retrieved.size()==6 && task_end<0) task_end=e.time.milliseconds-180000;,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,121,"clock=std::chrono::steady_clock::now(); WorldRuntime replay({1,1},0,{},limits()); replay.restore(bytes); const auto restore_ms=elapsed(clock);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,130,"if(argc<2 || argc>4) throw std::invalid_argument(""usage: antworld_s6_3_3_experiment OUTPUT [SEED_INDEX|all] [smoke|primary|sensitivity]"");",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,131,const std::filesystem::path directory=argv[1]; std::filesystem::create_directories(directory); Outputs out(directory);,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,132,"const std::string mode=argc>3?argv[3]:""primary"",which=argc>2?argv[2]:""all"";",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,133,for(std::size_t index=0;index<seeds.size();++index) {,261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,134,"if(which!=""all"" && index!=std::stoull(which)) continue;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,136,"if(mode==""smoke"") { assay(out,seed,""absent"",55,""base"",{},false,true); retrieval(out,seed,false); break; }",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,137,"if(mode==""primary"") {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,138,"for(int age:{35,55,932}) for(const std::string condition:{""absent"",""present"",""added"",""removed"",""sham"",""no_brood""}) assay(out,seed,condition,age,""base"",{});",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,139,"for(const std::string condition:{""absent"",""present"",""barrier""}) assay(out,seed,condition,52,""base"",{},true);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,141,"} else if(mode==""sensitivity"" && index<6) {",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,144,"if(variant==""memory1h"") p.social_memory_horizon={hour};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,145,"if(variant==""memory24h"") p.social_memory_horizon={day};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,146,"if(variant==""inhibition0"") p.maximum_inhibition=0;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,147,"if(variant==""inhibition0_4"") p.maximum_inhibition=.4;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,148,"if(variant==""decision15s"") p.decision_interval={15000};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,149,"if(variant==""decision240s"") p.decision_interval={240000};",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,150,"for(const std::string condition:{""absent"",""present"",""removed""}) assay(out,seed,condition,55,variant,p);",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,152,"} else if(mode!=""sensitivity"") throw std::invalid_argument(""unknown experiment mode"");",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,154,"std::cout<<""Completed ""<<mode<<"" seed selection ""<<which<<'\n'; return 0;",261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
+cpp/apps/antworld_s6_3_3_experiment.cpp,155,} catch(const std::exception& e) { std::cerr<<e.what()<<'\n'; return 1; },261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db
 cpp/apps/s6_3_3_fixture.hpp,5,namespace s6_3_3_fixture {,e439e59f00d740436bd88061b44cf413e6f973324b99d35ade491be53bd13830
 cpp/apps/s6_3_3_fixture.hpp,8,RuntimeLimits l; l.committed_events=2000000; l.checkpoint_bytes=1024ULL*1024*1024;,e439e59f00d740436bd88061b44cf413e6f973324b99d35ade491be53bd13830
 cpp/apps/s6_3_3_fixture.hpp,9,l.events_per_timestamp=100000; return l;,e439e59f00d740436bd88061b44cf413e6f973324b99d35ade491be53bd13830

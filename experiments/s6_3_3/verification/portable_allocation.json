@@ -9,5 +9,7 @@
   "failure": "Initial Windows MSVC Debug fault injection terminated at care_select allocation37",
   "change": "Empty vectors use throwing count constructors, including nested opportunity vectors; an observer-query allocation sweep is added",
   "preserved": "Same empty contents, opportunity count/order, biological coefficients, RNG draws and committed behavior; no failure injection or history is disabled",
-  "validation": "Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path"
+  "validation": "Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path",
+  "experiment_layout": "Three semicolon-separated independent if statements are split across lines for GCC -Werror=misleading-indentation; exact original source is retained and reconstructed",
+  "experiment_source_sha256": "261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db"
 }

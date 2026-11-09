@@ -1,0 +1,33 @@
+build_s6_3_3_evidence exit=0
+{"historical_parameter_records": 2559, "current_parameter_records": 1609, "current_typed_expressions": 1341, "current_implicit_expressions": 268, "new_rule_groups": 16, "calibrated_behavioral_coefficients": 0, "profile_fields": {"SpeciesCareProfile": 10, "IndividualCareProfile": 2, "EnvironmentCareProfile": 2}}
+verify_s6_3_3_validation_guard exit=0
+{
+  "cases": 384,
+  "status": "PASS",
+  "new_rule": "arrangement_m / bout_seconds <= world.max_speed_m_per_s",
+  "proof": "Every frozen case has arrangement<=step. Existing validation already enforces step/bout<=max_speed. Therefore the added arrangement guard is implied for all384 recorded configurations; no accepted rule, coefficient, RNG or outcome is changed.",
+  "source_sha256": {
+    "cpp/src/care_internal.hpp": "3e62ea8e189b51c14eb2b043e3ace1cce5cbbd7bf3add772be808b1f78291491",
+    "cpp/tests/test_s6_3_3.cpp": "8830d11b42da245d2f6a73775f032e57cffb9bfb3c558098212376edd9b78bf8"
+  },
+  "regression": "CAPABILITY now rejects a tiny-step/fast-arrangement custom profile; full Debug/Release/sanitizer and independent CI seed are rerun",
+  "raw_archive": "Frozen experiment source/binary manifests remain unchanged; this later validation-only guard is explicitly identified instead of overwriting provenance",
+  "executed_source_archive_sha256": "c88eff905fea75ffd30ea9961e1dad5c845758f3e1a2a7de82d54cf932b53bce"
+}
+
+verify_s6_3_3_portable_allocation exit=0
+{
+  "status": "PASS",
+  "source_sha256": {
+    "cpp/src/care.cpp": "9cdac6d06c63f6fe5a6d9d70736e2b9f08895991d919b24d333b09f95a0ffa22",
+    "cpp/src/observations.cpp": "09159886e8637ccbd4d220d7840e884926b32cca0ef222a139f05c18160356c0",
+    "cpp/tests/test_allocation_failure.cpp": "966081f1e482da8a94fd4d4fbcd8dddbe4f770ff7f2d1b35cd2cfd3c6928f819"
+  },
+  "executed_source_archive_sha256": "6cc4877f2c3a06e2f5b89d03bbe20026479b1e26411e39626049b1461f268c7b",
+  "failure": "Initial Windows MSVC Debug fault injection terminated at care_select allocation37",
+  "change": "Empty vectors use throwing count constructors, including nested opportunity vectors; an observer-query allocation sweep is added",
+  "preserved": "Same empty contents, opportunity count/order, biological coefficients, RNG draws and committed behavior; no failure injection or history is disabled",
+  "validation": "Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path",
+  "experiment_layout": "Three semicolon-separated independent if statements are split across lines for GCC -Werror=misleading-indentation; exact original source is retained and reconstructed",
+  "experiment_source_sha256": "261011acb8b351043c49af25488f39d5d1f6a3186315ef74ff9b88a01d15a6db"
+}

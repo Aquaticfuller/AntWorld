@@ -37,11 +37,21 @@ def main():
     with zipfile.ZipFile(archive) as z:
         assert z.namelist()==list(payloads) and z.testzip() is None
         for name,data in payloads.items():assert z.read(name)==data,name
+    app='cpp/apps/antworld_s6_3_3_experiment.cpp'
+    executed=(ROOT/'research/s6_3_3/executed_experiment.cpp.txt').read_bytes()
+    assert hashlib.sha256(executed).hexdigest()==frozen[app]
+    current_app=(ROOT/app).read_text(encoding='utf-8');reconstructed=current_app
+    for variant in ['memory24h','inhibition0_4','decision240s']:
+        split=';\n                    if(variant=="'+variant+'")'
+        assert reconstructed.count(split)==1;reconstructed=reconstructed.replace(split,'; if(variant=="'+variant+'")')
+    assert reconstructed.encode()==executed,'experiment change beyond the three line breaks'
     result=dict(status='PASS',source_sha256=current,executed_source_archive_sha256=digest,
         failure='Initial Windows MSVC Debug fault injection terminated at care_select allocation37',
         change='Empty vectors use throwing count constructors, including nested opportunity vectors; an observer-query allocation sweep is added',
         preserved='Same empty contents, opportunity count/order, biological coefficients, RNG draws and committed behavior; no failure injection or history is disabled',
-        validation='Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path')
+        validation='Retain raw384 cases and original hashes; rerun180-test Debug/Release/sanitizer suites and complete primary seed7 event comparison; MSVC Debug CI verifies the previously failing path',
+        experiment_layout='Three semicolon-separated independent if statements are split across lines for GCC -Werror=misleading-indentation; exact original source is retained and reconstructed',
+        experiment_source_sha256=hashlib.sha256(current_app.encode()).hexdigest())
     text=json.dumps(result,indent=2)+'\n'
     if a.check:assert receipt.read_text()==text
     else:receipt.write_text(text,encoding='utf-8',newline='\n')

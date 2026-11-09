@@ -1,16 +1,17 @@
 # S6.3.3 verification records
 
-Implementation revision: `35a0df49eebbffd17c97bc3d223476aa8bd92590`. All162 inherited tests remain; the18 additions bring the total to180. The old build-directory names were reused, but the executable sources are the current S6.3.3 checkout.
+Initial implementation: `35a0df49eebbffd17c97bc3d223476aa8bd92590`; final exception-safe implementation: `769494c18b9fe57b3b48a8ea25a54ff467edc9b3`. All162 inherited tests remain; the18 additions bring the total to180. The old build-directory names were reused, but the executable sources are the current S6.3.3 checkout.
 
 - `ctest-debug.txt`, `ctest-release.txt`, `ctest-sanitized.txt`: final review-source suites,180/180 each. Clang23.1.5, pinned LLVM-MinGW20261104, CMake3.31.10, Windows x64. Windows leak detection is unavailable; Linux CI enables it.
 - `pre_guard_ctest-*.txt`: earlier successful suites, retained separately from the final custom-input speed validation.
-- `review_reproduction.json`: independently rebuilt final executable reproduces23 complete primary seed7 cases, every exported event and all biological endpoints. Wall timings are excluded; position serialization alone permits1e-12m roundoff.
+- `review_reproduction.json`: post-speed-guard executable reproduces23 complete primary seed7 cases. `portable_reproduction.json` repeats the comparison after the MSVC constructor correction, including every exported event and all biological endpoints. Wall timings are excluded; position serialization alone permits1e-12m roundoff.
 - `validation_guard.json`: mathematical implication checked for all384 frozen configurations, plus the exact pre-guard project-source archive. No coefficient or accepted experiment behavior was changed.
 - `evidence_checks.log`: earlier complete policy/atlas/historical/current evidence audit.
-- `final_evidence_checks.log`: complete audit after raw-file checksum validation and separate preliminary performance summaries were added.
+- `final_evidence_checks.log`: complete audit after raw-file checksum validation and separate preliminary performance summaries were added, before the later constructor correction. The current source/portability checks are in `portable_source_checks.log`; CI repeats the entire audit against the final source.
 - `repository_policy.log`: language-bearing tracked text/commit checks after all new files were staged. Original localized hardware snapshots and publisher papers are untracked.
 - `ci_initial_failure.json`: first Linux CI failure annotations for host-dependent ZIP re-encoding equality. `portable_archive_check.txt` verifies the replacement check against the unchanged archive digest and exact source payloads; it does not regenerate or relabel historical evidence.
 - `ci_initial.json` and `ci_initial_windows_debug_failure.json`: complete first-run status and the MSVC Debug allocation37 failure. `portable_allocation.json` verifies the limited empty-vector constructor correction against the frozen source hashes; no behavioral coefficient, RNG call or successful action was changed.
+- `ci_gcc_build_failure.json`: GCC's experiment-driver indentation diagnostics. Only three line breaks changed; the portability checker reconstructs and hashes the retained executed driver. No warning suppression or condition/value change is used.
 
 Actual local regression commands, after prepending the pinned compiler and Ninja directories to PATH:
 

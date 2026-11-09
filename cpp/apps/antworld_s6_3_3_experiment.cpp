@@ -141,9 +141,12 @@ int main(int argc,char** argv) {
             } else if(mode=="sensitivity" && index<6) {
                 for(const std::string variant:{"memory1h","memory24h","inhibition0","inhibition0_4","decision15s","decision240s"}) {
                     SpeciesCareProfile p;
-                    if(variant=="memory1h") p.social_memory_horizon={hour}; if(variant=="memory24h") p.social_memory_horizon={day};
-                    if(variant=="inhibition0") p.maximum_inhibition=0; if(variant=="inhibition0_4") p.maximum_inhibition=.4;
-                    if(variant=="decision15s") p.decision_interval={15000}; if(variant=="decision240s") p.decision_interval={240000};
+                    if(variant=="memory1h") p.social_memory_horizon={hour};
+                    if(variant=="memory24h") p.social_memory_horizon={day};
+                    if(variant=="inhibition0") p.maximum_inhibition=0;
+                    if(variant=="inhibition0_4") p.maximum_inhibition=.4;
+                    if(variant=="decision15s") p.decision_interval={15000};
+                    if(variant=="decision240s") p.decision_interval={240000};
                     for(const std::string condition:{"absent","present","removed"}) assay(out,seed,condition,55,variant,p);
                 }
             } else if(mode!="sensitivity") throw std::invalid_argument("unknown experiment mode");
