@@ -287,7 +287,9 @@ def main():
         # Match the source-inventory column order.
         rows.append({k:row.get(k,'') for k in rows[0]})
     output=rendered(rows)
-    target=ROOT/'PARAMETER_PROVENANCE.csv'
+    # S6.3.2.1 uses an expanded A-F atlas at the root. Preserve this stage's
+    # original A-D artifact and its exact regeneration independently.
+    target=BASE/'PARAMETER_PROVENANCE_S6_3_2.csv'
     if args.check:
         assert target.read_text(encoding='utf-8')==output,'provenance drift'
     else:

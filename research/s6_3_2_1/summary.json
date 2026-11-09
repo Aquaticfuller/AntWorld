@@ -1,0 +1,65 @@
+{
+  "baseline": "2e1a5fa129821176954f26a88f56791635bc8cda",
+  "calibrated_parameters": 0,
+  "config_fields": 119,
+  "coverage": {
+    "behavior": {
+      "DIRECT_OBSERVATIONAL": 1,
+      "DIRECT_QUALITATIVE": 2,
+      "DIRECT_QUANTITATIVE": 14,
+      "PARTIAL_ENDPOINT": 3,
+      "UNKNOWN": 1
+    },
+    "environment": {
+      "DIRECT_OBSERVATIONAL": 1,
+      "DIRECT_QUANTITATIVE": 6,
+      "EXPOSURE_ONLY": 2,
+      "EXTRAPOLATION_ONLY": 1,
+      "PARTIAL_ENDPOINT": 4,
+      "UNKNOWN": 2
+    },
+    "life_stage": {
+      "ABSTRACT_ONLY": 3,
+      "DIRECT_OBSERVATIONAL": 1,
+      "DIRECT_QUALITATIVE": 4,
+      "DIRECT_QUANTITATIVE": 11,
+      "PARTIAL_ENDPOINT": 3
+    },
+    "physiology": {
+      "DIRECT_QUANTITATIVE": 9,
+      "PARTIAL_ENDPOINT": 8,
+      "THEORY_ONLY": 1,
+      "UNKNOWN": 7
+    }
+  },
+  "implicit_source_expressions": 881,
+  "legacy_source_expressions": 1209,
+  "legacy_supplemental": 469,
+  "measurement_grades": {
+    "A": 217,
+    "B": 38,
+    "C": 21,
+    "D": 15,
+    "E": 1
+  },
+  "measurement_records": 292,
+  "parameter_records": 2559,
+  "raw_dataset_rows": {
+    "raw_n07_survival": 432,
+    "raw_n10_condition_means": 20,
+    "raw_n10_ctmin": 289,
+    "raw_n10_lte50": 20,
+    "raw_n10_smr": 57
+  },
+  "raw_dataset_rows_total": 818,
+  "reading_status": {
+    "ABSTRACT_ONLY": 1,
+    "FULL_TEXT_SELECTED_SECTIONS_READ": 47,
+    "METADATA_ONLY_ORIGINAL;SECONDARY_COMPILATION_READ": 1
+  },
+  "reviewed_rule_groups": 70,
+  "sources": 49,
+  "species": 15,
+  "validation_designs": 20,
+  "validation_executed": 0
+}

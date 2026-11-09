@@ -1,0 +1,89 @@
+[
+  {
+    "configuration": "debug",
+    "phase": "build",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\cmake.exe",
+      "--build",
+      "build/s6_3_2-debug",
+      "--parallel",
+      "2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.15403175354003906,
+    "log": "research/s6_3_2_1/verification/debug-build.txt",
+    "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+  },
+  {
+    "configuration": "debug",
+    "phase": "ctest",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\ctest.exe",
+      "--test-dir",
+      "build/s6_3_2-debug",
+      "--output-on-failure"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 67.40911221504211,
+    "log": "research/s6_3_2_1/verification/debug-ctest.txt",
+    "sha256": "90b3ca514a5f1ecf98a141787b1bee7354f926ccc708286f37f46e532cce392f"
+  },
+  {
+    "configuration": "release",
+    "phase": "build",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\cmake.exe",
+      "--build",
+      "build/s6_3_2-release",
+      "--parallel",
+      "2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.114776611328125,
+    "log": "research/s6_3_2_1/verification/release-build.txt",
+    "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+  },
+  {
+    "configuration": "release",
+    "phase": "ctest",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\ctest.exe",
+      "--test-dir",
+      "build/s6_3_2-release",
+      "--output-on-failure"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 13.633040428161621,
+    "log": "research/s6_3_2_1/verification/release-ctest.txt",
+    "sha256": "dad332f0058f4b17170156d6627ff5b5359a5f0b5195b8106d626af63423a7b1"
+  },
+  {
+    "configuration": "sanitized",
+    "phase": "build",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\cmake.exe",
+      "--build",
+      "build/s6_3_2-sanitized",
+      "--parallel",
+      "2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.11456036567687988,
+    "log": "research/s6_3_2_1/verification/sanitized-build.txt",
+    "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+  },
+  {
+    "configuration": "sanitized",
+    "phase": "ctest",
+    "command": [
+      "D:\\Codex_workspace\\AntWorld\\.tools\\cmake-3.31.10-windows-x86_64\\bin\\ctest.exe",
+      "--test-dir",
+      "build/s6_3_2-sanitized",
+      "--output-on-failure"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 255.5510516166687,
+    "log": "research/s6_3_2_1/verification/sanitized-ctest.txt",
+    "sha256": "a2a706326153bb19afafbd2d7fa096e05e42f2c453517a507fc1897bb4a10835"
+  }
+]

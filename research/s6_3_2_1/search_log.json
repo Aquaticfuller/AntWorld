@@ -1,0 +1,322 @@
+[
+  {
+    "search_id": "Q001",
+    "channel": "web",
+    "query": "\"Lasius niger\" larval instars development morphology egg male",
+    "date": "2026-11-09",
+    "scope": "instars",
+    "candidate_doi": "10.1127/entom.gen/19/1994/009",
+    "note": "Secondary index lead only; seek primary full text"
+  },
+  {
+    "search_id": "Q002",
+    "channel": "web",
+    "query": "\"Lasius niger\" water balance desiccation humidity water loss",
+    "date": "2026-11-09",
+    "scope": "water",
+    "note": "Initial combined results inconclusive; targeted follow-up required"
+  },
+  {
+    "search_id": "Q003",
+    "channel": "web",
+    "query": "\"Lasius niger\" trophallaxis crop volume duration feeding",
+    "date": "2026-11-09",
+    "scope": "trophallaxis",
+    "note": "Buffin/Portha primary studies identified as leads"
+  },
+  {
+    "search_id": "Q004",
+    "channel": "web",
+    "query": "\"Lasius niger\" nuptial flight temperature humidity rainfall mating",
+    "date": "2026-11-09",
+    "scope": "flight",
+    "candidate_doi": "10.1007/bf00348045",
+    "note": "Primary paper lead from index; care sites excluded"
+  },
+  {
+    "search_id": "Q005",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"water loss\" desiccation",
+    "date": "2026-11-09",
+    "scope": "water_loss",
+    "note": "Primary-source discovery; see adopted source register for actual reading"
+  },
+  {
+    "search_id": "Q006",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"humidity\" brood preference experiment",
+    "date": "2026-11-09",
+    "scope": "brood_humidity",
+    "note": "Primary-source discovery; see adopted source register for actual reading"
+  },
+  {
+    "search_id": "Q007",
+    "channel": "web",
+    "query": "\"Trophallaxis in Lasius niger\" duration food types DOI",
+    "date": "2026-11-09",
+    "scope": "exchange_duration",
+    "note": "Primary-source discovery; see adopted source register for actual reading"
+  },
+  {
+    "search_id": "Q008",
+    "channel": "web",
+    "query": "\"Lasius niger\" crop volume Portha 2004",
+    "date": "2026-11-09",
+    "scope": "crop_volume",
+    "note": "Primary-source discovery; see adopted source register for actual reading"
+  },
+  {
+    "search_id": "Q009",
+    "channel": "web_primary_domains",
+    "query": "\"Lasius niger\" desiccation acclimation cuticular hydrocarbons water",
+    "date": "2026-11-09",
+    "note": "Publisher and PMC discovery; no retail evidence adopted"
+  },
+  {
+    "search_id": "Q010",
+    "channel": "web_primary_domains",
+    "query": "\"Lasius niger\" sleep circadian inactivity photoperiod",
+    "date": "2026-11-09",
+    "note": "Publisher and PMC discovery; no retail evidence adopted"
+  },
+  {
+    "search_id": "Q011",
+    "channel": "web_primary_domains",
+    "query": "\"Lasius niger\" grooming waste toilets corpse removal",
+    "date": "2026-11-09",
+    "note": "Publisher and PMC discovery; no retail evidence adopted"
+  },
+  {
+    "search_id": "Q012",
+    "channel": "web_primary_domains",
+    "query": "\"Lasius niger\" aggression defense alarm pheromone",
+    "date": "2026-11-09",
+    "note": "Publisher and PMC discovery; no retail evidence adopted"
+  },
+  {
+    "search_id": "Q013",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"Baumgart\" 2022 desiccation survival",
+    "date": "2026-11-09",
+    "note": "Targeted primary references"
+  },
+  {
+    "search_id": "Q014",
+    "channel": "web",
+    "query": "\"Lasius niger\" toilets waste management 2015 Czaczkes",
+    "date": "2026-11-09",
+    "note": "Targeted primary references"
+  },
+  {
+    "search_id": "Q015",
+    "channel": "web",
+    "query": "\"Lasius niger\" queen burial corpse founding 2017",
+    "date": "2026-11-09",
+    "note": "Targeted primary references"
+  },
+  {
+    "search_id": "Q016",
+    "channel": "web",
+    "query": "\"Lasius niger\" circadian rhythm resting activity 24 hours",
+    "date": "2026-11-09",
+    "note": "Targeted primary references"
+  },
+  {
+    "search_id": "Q017",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"soil\" \"water potential\" excavation",
+    "date": "2026-11-09",
+    "note": "Soil, dormancy, intake and motion coverage search"
+  },
+  {
+    "search_id": "Q018",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"diapause\" photoperiod brood temperature experimental",
+    "date": "2026-11-09",
+    "note": "Soil, dormancy, intake and motion coverage search"
+  },
+  {
+    "search_id": "Q019",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"crop\" \"Portha\" \"2004\" individual workers",
+    "date": "2026-11-09",
+    "note": "Soil, dormancy, intake and motion coverage search"
+  },
+  {
+    "search_id": "Q020",
+    "channel": "web",
+    "query": "\"Lasius niger\" locomotion \"metabolic\" activity speed energy",
+    "date": "2026-11-09",
+    "note": "Soil, dormancy, intake and motion coverage search"
+  },
+  {
+    "search_id": "Q021",
+    "channel": "web",
+    "query": "\"Portha\" \"2004\" \"Lasius\" \"food\" brood",
+    "date": "2026-11-09",
+    "note": "Primary follow-up and explicit sleep/water evidence gaps"
+  },
+  {
+    "search_id": "Q022",
+    "channel": "web",
+    "query": "\"Lasius niger\" \"sleep\" experimental study",
+    "date": "2026-11-09",
+    "note": "Primary follow-up and explicit sleep/water evidence gaps"
+  },
+  {
+    "search_id": "Q023",
+    "channel": "web",
+    "query": "\"The spatial distribution and environmental triggers of ant mating flights\" DOI",
+    "date": "2026-11-09",
+    "note": "Primary follow-up and explicit sleep/water evidence gaps"
+  },
+  {
+    "search_id": "Q024",
+    "channel": "web",
+    "query": "\"Lasius niger\" water collection drinking starvation crop volume",
+    "date": "2026-11-09",
+    "note": "Primary follow-up and explicit sleep/water evidence gaps"
+  },
+  {
+    "id": "Q025",
+    "query": "\"The influence of red light\" \"Lasius\" DOI",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q025"
+  },
+  {
+    "id": "Q026",
+    "query": "\"Lasius niger\" \"wing discs\" larvae Kloft Buschinger 1994 pdf",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q026"
+  },
+  {
+    "id": "Q027",
+    "query": "\"Lasius niger\" \"water loss\" respiration humidity",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q027"
+  },
+  {
+    "id": "Q028",
+    "query": "\"Endogenous colony dormancy\" pdf",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q028"
+  },
+  {
+    "id": "Q029",
+    "query": "\"Lasius niger\" \"larval instars\" Kloft",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q029"
+  },
+  {
+    "id": "Q030",
+    "query": "\"Why do ants differ in acclimatory ability\" pdf Baumgart",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q030"
+  },
+  {
+    "id": "Q031",
+    "query": "\"Lasius niger\" \"resting site\" \"0739\"",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q031"
+  },
+  {
+    "id": "Q032",
+    "query": "\"Lasius niger\" water management flood humidity larvae soil moisture experiment",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q032"
+  },
+  {
+    "id": "Q033",
+    "query": "\"Lasius niger\" \"protein\" \"larvae\" trophallaxis instar feeding experiment",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q033"
+  },
+  {
+    "id": "Q034",
+    "query": "\"Lasius niger\" grooming corpse removal 2014 0306",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q034"
+  },
+  {
+    "id": "Q035",
+    "query": "\"How food type and brood influence\" pdf",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q035"
+  },
+  {
+    "id": "Q036",
+    "query": "\"Keep the nest clean\" \"20140306\" pmc",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q036"
+  },
+  {
+    "id": "Q037",
+    "query": "\"Does substrate coarseness matter\" Lasius niger DOI",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q037"
+  },
+  {
+    "id": "Q038",
+    "query": "\"Lasius japonicus\" \"818\" development temperature photoperiod",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q038"
+  },
+  {
+    "id": "Q039",
+    "query": "site.zenodo.org \"Lasius niger\" \"competitive\"",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q039"
+  },
+  {
+    "id": "Q040",
+    "query": "\"Effects of environmental factors on life cycle regulation\" pdf",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q040"
+  },
+  {
+    "id": "Q041",
+    "query": "\"The influence of red light\" \"brood-tenders\"",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q041"
+  },
+  {
+    "id": "Q042",
+    "query": "\"Lasius niger\" \"egg mass\" micrograms",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q042"
+  },
+  {
+    "id": "Q043",
+    "query": "\"Lasius niger\" \"water loss\" \"queen\" experimental",
+    "channel": "web search",
+    "date": "2026-11-09",
+    "search_id": "Q043"
+  },
+  {
+    "search_id": "Q044",
+    "channel": "web; publisher; backward and forward citation trace",
+    "query": "\"Lasius niger\" \"Kervella\" \"104698\"",
+    "date": "2026-11-09",
+    "scope": "Original allometry and subsequent caste metabolism",
+    "candidate_doi": "10.1016/j.jinsphys.2024.104698",
+    "note": "N27 obtained by user after publisher403; B04 retrieved as citing follow-up; primary PDF/Table1 inspected. Not an exhaustive citation census."
+  }
+]

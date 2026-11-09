@@ -1,0 +1,7 @@
+ConversionId,SourceId,OriginalValue,OriginalUnit,Formula,DerivedValue,DerivedUnit,Locator,Meaning,Uncertainty
+U01,B22,5644.17,kJ/mol,5644.17 / 342.2965,16.48912565568155,kJ/g,NIST sucrose condensed-phase data; molar mass342.2965g/mol,Gross combustion magnitude,Thermochemical measurement uncertainty not propagated; not net ant yield
+U02,,1000000,nJ/ug,1000000 * 1e-9 J/nJ * 1e6 ug/g / 1000 J/kJ,1,kJ/g,PhysiologyConfig.carbohydrate_yield_nj_per_ug,Current Core default net-credit fixture,Engineering value; net/gross interpretation unresolved
+U03,,1,nJ/ms,1e-9 J / 1e-3 s,1e-06,J/s,PhysiologyConfig.basal_nj_per_ms,Rate unit identity;1 nJ/ms =1 uW,Exact SI conversion; biological rate unknown
+U04,,1,day,24 * 60 * 60 * 1000,86400000,ms,SimTime; long-term fixture day constant,Physical time conversion,Exact; does not calibrate game-day developmental biology
+U05,,1,ug/s,rate * elapsed_ms / 1000; retain integer remainder,0.001,ug/ms,physiology_internal.hpp:pulse_allowance,"Continuous rate integrated between pulses, not ug per pulse",Exact units; pulse discretization still changes starvation timing
+U06,B05,20.1,J/mL O2,oxygen_uL_per_h * 20.1 / 1000 / 3600,5.583333333333333e-06,J/s per (uL O2/h),B05 energy-budget calculation; printed pp23-24,Conditional published respiratory energy equivalent,Substrate-dependent assumption; do not silently apply to B04 normalized pools

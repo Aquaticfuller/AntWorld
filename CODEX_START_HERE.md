@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.3.1 received engineering PASS and conditional reproductive-mechanism approval, without biological or latest performance qualification. The user authorized S6.3.2 Biological Evidence, Model Validation and Performance Requalification. Read frozen documents 48/49 and the root evidence/provenance/proposal reports. Preserve all 161 inherited tests, prior raw evidence and scientific debts. Work on codex/s6.3.2-biology-audit; S6.4 and S7-S9 remain unauthorized.
+This is the v0.8 design and engineering handoff. The current user authorization is S6.3.2.1 Comprehensive Ant Biology Evidence Atlas: scientific research and unchanged-source audit only. Read frozen document51, ANT_BIOLOGY_EVIDENCE_ATLAS.md, S6_3_2_1_RESULTS.md and research/s6_3_2_1/README.md. Preserve all162 tests, all Core/header/application/test bytes, prior raw evidence and scientific debts. Work on codex/s6.3.2.1-biology-evidence-atlas. Do not implement or fit biological corrections; S6.3.3, S6.4 and S7-S9 remain unauthorized.
 
 ## Architecture
 
@@ -28,6 +28,8 @@ This is the v0.8 design and engineering handoff. S6.3.1 received engineering PAS
 13. docs/29_S2_2_Validation_Protocol.md and docs/30_S2_2_Literature_and_Model_Rationale.md for the current frozen protocol and primary research.
 
 ## Current implementation gate
+
+S6.3.2.1 delivers an evidence atlas with source-specific reading status, original units, explicit cross-species boundaries and A-F grades. The root parameter file uses the new schema; the old A-D snapshot remains in experiments/s6_3_2/PARAMETER_PROVENANCE_S6_3_2.csv. All current biological coefficients remain F/ENGINEERING_FIXTURE;49 references and direct endpoints do not establish a calibrated state machine. Queen maternal care, caste/stage physiology, thermal development and observation contracts remain foundational gaps. Read CONTRADICTIONS_AND_GAPS.md and the review-only MODEL_CORRECTION_ROADMAP.md before proposing implementation. Historical stage summaries below preserve evidence and are not new authorization.
 
 S6.3.2 is an audit of unchanged biological rules, not authorization to implement proposed corrections. Queen founding care/plastic specialization, physiological compartments/caste scaling, developmental temperature and observation-compatible behavioral endpoints have substantial gaps. Read BIOLOGY_EVIDENCE_MATRIX.md, PARAMETER_PROVENANCE.csv, BIOLOGICAL_VALIDATION_REPORT.md and MODEL_CORRECTION_PROPOSALS.md. The two-day maternal guard remains an uncalibrated local safety hypothesis. Performance admission failures and all measured rows must remain, without weakened thresholds or selected reruns. S6_3_2_RESULTS.md records final verification and readiness; historical stage statements below remain evidence, not the current authorization.
 

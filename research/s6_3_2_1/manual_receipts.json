@@ -1,0 +1,68 @@
+[
+  {
+    "ReceiptId": "USER-N07",
+    "SourceId": "N07",
+    "FileName": "DownloadCombinedArticleAndSupplmentPdf.pdf",
+    "SHA256": "45053b9cf7a639297a2469f5f35e8858ae973981416b7f0321a6d445f0e950f8",
+    "Bytes": 2825272,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "FULL_TEXT_SELECTED_SECTIONS_READ",
+    "Locator": "Methods/Results main article PDF pp2-11; survival workbook sheet survival, rows2-433; supplements present but not exhaustively read",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  },
+  {
+    "ReceiptId": "USER-N14",
+    "SourceId": "N14",
+    "FileName": "1-s2.0-S0003347204001071-main.pdf",
+    "SHA256": "755c1ec04841c986433f84d26d321cc90495df38de691af70bffe0ace8e95a33",
+    "Bytes": 271465,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "FULL_TEXT_SELECTED_SECTIONS_READ",
+    "Locator": "Methods pp116-117; Table1 p117; Results pp118-120/Figs2-4; table visually checked",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  },
+  {
+    "ReceiptId": "USER-N17",
+    "SourceId": "N17",
+    "FileName": "1-s2.0-S0022191004000678-main.pdf",
+    "SHA256": "dbf4344ef2c030c571a7f7a73528f20a91f95d292365574655aed12cc501578f",
+    "Bytes": 289302,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "FULL_TEXT_SELECTED_SECTIONS_READ",
+    "Locator": "Methods/Results pp630-634; Figs1-3; reported approximate percentages, no digitization",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  },
+  {
+    "ReceiptId": "USER-N25",
+    "SourceId": "N25",
+    "FileName": "1-s2.0-S0022191007002594-main.pdf",
+    "SHA256": "1e37005a38bb231c3cefd3ac6ccd5c0bdf4733dd7cf6299bcc83a02815247629",
+    "Bytes": 286947,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "FULL_TEXT_SELECTED_SECTIONS_READ",
+    "Locator": "Methods pp535-537; Results pp538-539; Figs2-5; grain units visually verified p536",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  },
+  {
+    "ReceiptId": "USER-N27",
+    "SourceId": "N27",
+    "FileName": "1-s2.0-S0022191024000866-main.pdf",
+    "SHA256": "c34ff63ef34d63cf454e235b379318d69f151cc832b7fa1fc1f179bc996c4eb8",
+    "Bytes": 4586114,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "FULL_TEXT_SELECTED_SECTIONS_READ",
+    "Locator": "Methods pp2,4; Results3.1-3.4 pp4-7; Table1 and Fig3 p5 visually inspected; allometry p6; conclusion p8",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  },
+  {
+    "ReceiptId": "USER-N03",
+    "SourceId": "N03",
+    "FileName": "entomologia_Volume_19_Number_1_2_p9-13_Larvale_Anlage_von_Flugelimaginalscheiben_bei_Normal_und_Pygmaen_Arbeiterinnen_der_Wegameise_Lasius_niger_Hymenoptera_Formicidae_79964.pdf",
+    "SHA256": "a72981de752884ac21c4002936ba4287fe0e4ecfdf6a163f7a9d26bcb2910edf",
+    "Bytes": 614859,
+    "Acquisition": "USER_PROVIDED_LOCAL",
+    "Reading": "ABSTRACT_ONLY",
+    "Locator": "Printed p9 abstract only; article pp9-13 not fully acquired",
+    "Redistribution": "NO_PDF_OR_FULL_TEXT_IN_GIT"
+  }
+]

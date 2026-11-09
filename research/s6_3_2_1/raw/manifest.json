@@ -1,0 +1,140 @@
+[
+  {
+    "SourceId": "N07",
+    "DatasetDOI": "10.5061/dryad.k98sf7m8n",
+    "SourceFile": "Raw_data_Baumgart_et_al.xlsx",
+    "SourceSHA256": "757db8909ac3ff79ff5e69a78c823b8552ce9278be3aea3e9a1c88b7002cb121",
+    "SourceSheet": "survival",
+    "OriginalHeaders": [
+      "ID",
+      "colony",
+      "species",
+      "acclimation_treatment",
+      "test_temperature",
+      "testday",
+      "survival_observed death hour",
+      "status",
+      "survival_unknown death treated as death in first hour",
+      "survival_unknown death treated as death directly before first observation"
+    ],
+    "AtlasHeaders": [
+      "IndividualLabel",
+      "Colony",
+      "SpeciesCode",
+      "AcclimationC",
+      "TestTemperatureC",
+      "TestBatch",
+      "ObservedDeathHour",
+      "RawStatus",
+      "EarlyDeathAssumedHour1",
+      "EarlyDeathAssumedBeforeFirstObservation"
+    ],
+    "CSV": "N07_survival.csv",
+    "CSVNormalizedSHA256": "f468726e2eb36a51003d220a1f54000eac9ac17a7485037261bafd92e3994fc1",
+    "Rows": 432,
+    "License": "CC0-1.0",
+    "Transform": "Only English column labels and explicit SourceRow added; numeric cells and source missing/status codes preserved; no fitting"
+  },
+  {
+    "SourceId": "N10",
+    "DatasetDOI": "10.5061/dryad.931zcrk1q",
+    "SourceFile": "data_ctmin.xlsx",
+    "SourceSHA256": "4f59a5b29fd71d62f7b1482e91aed62d29ad4d2dc6c467f31c909f2c07cb4c03",
+    "SourceSheet": "CTmin",
+    "OriginalHeaders": [
+      "Species",
+      "Acclimatation (\u00b0C)",
+      "Colony dormancy",
+      "CTmin (\u00b0C)"
+    ],
+    "AtlasHeaders": [
+      "Species",
+      "AcclimationC",
+      "ColonyDormancy",
+      "CTminC"
+    ],
+    "CSV": "N10_ctmin.csv",
+    "CSVNormalizedSHA256": "ee71aee1628ebf376425684a9a52fabdcb9bd43737dd6618a0625b2b9bb6b201",
+    "Rows": 289,
+    "License": "CC0-1.0",
+    "Transform": "Only English column labels and explicit SourceRow added; numeric cells and source missing/status codes preserved; no fitting"
+  },
+  {
+    "SourceId": "N10",
+    "DatasetDOI": "10.5061/dryad.931zcrk1q",
+    "SourceFile": "data_lte50.xlsx",
+    "SourceSHA256": "e5fd43bc7b2ad354c64172116e88d6da205b6df90d462ba26ea3f5b1e76e1565",
+    "SourceSheet": "Lte50",
+    "OriginalHeaders": [
+      "Species",
+      "Acclimatation (\u00b0C)",
+      "Colony dormancy",
+      "LTe50 estimate(\u00b0C)",
+      "Lower  95% CI (\u00b0C)",
+      "Upper 95% CI (\u00b0C)"
+    ],
+    "AtlasHeaders": [
+      "Species",
+      "AcclimationC",
+      "ColonyDormancy",
+      "LTe50C",
+      "Lower95CI_C",
+      "Upper95CI_C"
+    ],
+    "CSV": "N10_lte50.csv",
+    "CSVNormalizedSHA256": "c8507b30b24e3533583b2d70033036a823e1bc994ad744a2ccef271b380fef89",
+    "Rows": 20,
+    "License": "CC0-1.0",
+    "Transform": "Only English column labels and explicit SourceRow added; numeric cells and source missing/status codes preserved; no fitting"
+  },
+  {
+    "SourceId": "N10",
+    "DatasetDOI": "10.5061/dryad.931zcrk1q",
+    "SourceFile": "data_smr.xlsx",
+    "SourceSHA256": "08c9e92603514816575ec9a8c92058f29f39565cf8a9d393c64f8d9a62b67b2e",
+    "SourceSheet": "SMR",
+    "OriginalHeaders": [
+      "Species",
+      "Replicate ",
+      "Colony Dormancy",
+      "SMR 18\u00b0C (VCO2 18\u00b0C (\u00b5l*h-1*mg-1))"
+    ],
+    "AtlasHeaders": [
+      "Species",
+      "Replicate",
+      "ColonyDormancy",
+      "SMR_uL_CO2_per_h_per_mg"
+    ],
+    "CSV": "N10_smr.csv",
+    "CSVNormalizedSHA256": "8ec17eb73d04556cdeff347489c7b9dc45d732fbdd5d6766f12811b33b026e11",
+    "Rows": 57,
+    "License": "CC0-1.0",
+    "Transform": "Only English column labels and explicit SourceRow added; numeric cells and source missing/status codes preserved; no fitting"
+  },
+  {
+    "SourceId": "N10",
+    "DatasetDOI": "10.5061/dryad.931zcrk1q",
+    "SourceFile": "data_Condition_means_ctmin_lte50.xlsx",
+    "SourceSHA256": "2ee83d07cca298e29a6c67ae09be53b585cdb5a64b5e02a6c77a9cefe87689c8",
+    "SourceSheet": "Mean CTmin and Lte50 estimates1",
+    "OriginalHeaders": [
+      "Species",
+      "Acclimatation (\u00b0C)",
+      "Colony dormancy",
+      "Condition mean CTmin (\u00b0C)",
+      "Condition LTe50 estimate(\u00b0C)"
+    ],
+    "AtlasHeaders": [
+      "Species",
+      "AcclimationC",
+      "ColonyDormancy",
+      "MeanCTminC",
+      "LTe50C"
+    ],
+    "CSV": "N10_condition_means.csv",
+    "CSVNormalizedSHA256": "b7685ed36cbe30cc352a24454f7c84181c67c61947a0de0ee5475fdcdfbca002",
+    "Rows": 20,
+    "License": "CC0-1.0",
+    "Transform": "Only English column labels and explicit SourceRow added; numeric cells and source missing/status codes preserved; no fitting"
+  }
+]

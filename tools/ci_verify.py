@@ -28,6 +28,7 @@ checks = [
     ['tools/analyze_s6_3_2_performance.py', '--check'],
     ['tools/analyze_s6_3_2_quiet_completion.py', '--check'],
     ['tools/verify_s6_3_2_sources.py'],
+    ['tools/build_s6_3_2_1_atlas.py', '--check'],
 ]
 for check in checks:
     result = subprocess.run([sys.executable, *check], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

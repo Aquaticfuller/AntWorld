@@ -1,5 +1,19 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## Current S6.3.2.1 evidence-atlas review boundary
+
+The user authorized research/audit only under frozen document51. The atlas retains all162 tests and every prior model dataset without changing Core behavior or parameters. New A-F grades are distinct from the inherited A-D namespace. See ANT_BIOLOGY_EVIDENCE_ATLAS.md, CONTRADICTIONS_AND_GAPS.md and MODEL_CORRECTION_ROADMAP.md. Forty of84 frozen coverage slots have at least one direct quantitative endpoint; this is not full mechanism coverage or calibration. All119 current configuration fields remain uncalibrated.
+
+- **SD-08 and SD-09 remain BLOCKING biological readiness.** Queen care/plasticity, maternal physiology and reproductive allocation are unresolved. N27 now identifies the cited allometric coefficients as mixed-species/pool fits, not L. niger individual constants. Net usable energy, egg composition/cost, absorption kinetics and stage-temperature growth still need matched evidence. Two-day maintenance protection is an engineering hypothesis, not measured queen physiology.
+- **SD-04 remains OPEN.** New N14 load/brood contrasts and N01 timing do not determine queen-directed transfer mass or a globally optimal allocation. Retain scarcity tradeoffs, failed provisioning and all event-level accounting. Local need signals, contact duration, task persistence and true recycling require isolated comparisons.
+- **SD-06/TD-04/TD-05 remain OPEN.** Substrate-sensitive movement and distinct surface/underground construction studies do not validate six-direction box-shaped nest organization, parcel collision or a future versioned Geometry Dirty API. Soil moisture and water potential are distinct; chamber microclimate and functional feedback remain incomplete.
+- **SD-07 remains OPEN.** N17 aggregation and N27 isolated-worker null rhythms cannot calibrate program-residence activity, sleep or natural circadian behavior. Age, role and morph remain separate.
+- **SD-01/02 remain OPEN.** Short initial following and weak social recruitment remain; new ingestion/marking evidence does not justify stronger trail weights, perfect memory or directional chemical arrows.
+- **TD-01/08 and TD-03/06 remain OPEN beyond qualified workloads.** No new timing in this data-only stage. Retain contact5.418486x and funded-birth4.169260x controlled results, original incomplete series,6.315x/8.154x failures and unexplained24.229x anomaly. Full-history storage and synchronous persistence are unchanged.
+- **Evidence quality debt:** N03 is first-page-only; N07 status legend and several published sample/unit discrepancies remain explicitly quarantined. No statistical fit is made from ambiguous codes. Private source PDFs are not published; source links, factual exports and extraction locators are.
+
+Proposals P01-P10 remain unimplemented and require independent approval with a frozen calibration/validation split. No S6.3.3, S6.4 or Unity work follows automatically.
+
 ## Current S6.3.2 biological evidence and requalification boundary
 
 The S6.3.1 independent review passed engineering, conditionally accepted the local reproductive guard, withheld biological validation and did not pass the latest performance batch. S6.3.2 audits unchanged Core rules under protocols 48/49; all 161 inherited tests and negative archives remain. Evidence grades apply separately to mechanisms and numeric adoption. Read the root evidence matrix, parameter provenance, biological validation and correction proposals P01-P10 before further implementation. S6.4 and Unity remain unauthorized.

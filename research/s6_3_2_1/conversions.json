@@ -1,0 +1,74 @@
+[
+  {
+    "ConversionId": "U01",
+    "SourceId": "B22",
+    "OriginalValue": "5644.17",
+    "OriginalUnit": "kJ/mol",
+    "Formula": "5644.17 / 342.2965",
+    "DerivedValue": 16.48912565568155,
+    "DerivedUnit": "kJ/g",
+    "Locator": "NIST sucrose condensed-phase data; molar mass342.2965g/mol",
+    "Meaning": "Gross combustion magnitude",
+    "Uncertainty": "Thermochemical measurement uncertainty not propagated; not net ant yield"
+  },
+  {
+    "ConversionId": "U02",
+    "SourceId": "",
+    "OriginalValue": "1000000",
+    "OriginalUnit": "nJ/ug",
+    "Formula": "1000000 * 1e-9 J/nJ * 1e6 ug/g / 1000 J/kJ",
+    "DerivedValue": 1,
+    "DerivedUnit": "kJ/g",
+    "Locator": "PhysiologyConfig.carbohydrate_yield_nj_per_ug",
+    "Meaning": "Current Core default net-credit fixture",
+    "Uncertainty": "Engineering value; net/gross interpretation unresolved"
+  },
+  {
+    "ConversionId": "U03",
+    "SourceId": "",
+    "OriginalValue": "1",
+    "OriginalUnit": "nJ/ms",
+    "Formula": "1e-9 J / 1e-3 s",
+    "DerivedValue": 1e-06,
+    "DerivedUnit": "J/s",
+    "Locator": "PhysiologyConfig.basal_nj_per_ms",
+    "Meaning": "Rate unit identity;1 nJ/ms =1 uW",
+    "Uncertainty": "Exact SI conversion; biological rate unknown"
+  },
+  {
+    "ConversionId": "U04",
+    "SourceId": "",
+    "OriginalValue": "1",
+    "OriginalUnit": "day",
+    "Formula": "24 * 60 * 60 * 1000",
+    "DerivedValue": 86400000,
+    "DerivedUnit": "ms",
+    "Locator": "SimTime; long-term fixture day constant",
+    "Meaning": "Physical time conversion",
+    "Uncertainty": "Exact; does not calibrate game-day developmental biology"
+  },
+  {
+    "ConversionId": "U05",
+    "SourceId": "",
+    "OriginalValue": "1",
+    "OriginalUnit": "ug/s",
+    "Formula": "rate * elapsed_ms / 1000; retain integer remainder",
+    "DerivedValue": 0.001,
+    "DerivedUnit": "ug/ms",
+    "Locator": "physiology_internal.hpp:pulse_allowance",
+    "Meaning": "Continuous rate integrated between pulses, not ug per pulse",
+    "Uncertainty": "Exact units; pulse discretization still changes starvation timing"
+  },
+  {
+    "ConversionId": "U06",
+    "SourceId": "B05",
+    "OriginalValue": "20.1",
+    "OriginalUnit": "J/mL O2",
+    "Formula": "oxygen_uL_per_h * 20.1 / 1000 / 3600",
+    "DerivedValue": 5.583333333333333e-06,
+    "DerivedUnit": "J/s per (uL O2/h)",
+    "Locator": "B05 energy-budget calculation; printed pp23-24",
+    "Meaning": "Conditional published respiratory energy equivalent",
+    "Uncertainty": "Substrate-dependent assumption; do not silently apply to B04 normalized pools"
+  }
+]
