@@ -120,7 +120,7 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         auto rng=individual_rng(s.seed ^ UINT64_C(0x51434152454d4f44),a.id,c.decisions);
         auto draw=[&](double probability) { return static_cast<double>(bounded_draw(rng,1000000))/1000000<probability; };
         c.act=CareAct::Inactive; c.target={}; c.destination=a.position; c.bout={};
-        const auto local=query_neighborhood({s.world,a.id},cfg.perception_radius_m);
+        const auto local=care_neighborhood({s.world,a.id},cfg.perception_radius_m);
         std::vector<AntRef> brood_candidates(0),workers(0);
         for (auto ref:local.ants) {
             const auto other=*query_ant(ref);

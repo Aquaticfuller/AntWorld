@@ -169,6 +169,7 @@ public:
     [[nodiscard]] BehaviorWindow behavior_window(AntRef, SimTime begin, SimTime end) const;
 private:
     void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    [[nodiscard]] Neighborhood care_neighborhood(AntRef, double radius) const;
     void execute_care_action(Transaction&, const ScheduledEvent&);
     void interrupt_care(Transaction&, EntityId, Outcome, bool disable = false);
     void validate_active_care(Transaction&);

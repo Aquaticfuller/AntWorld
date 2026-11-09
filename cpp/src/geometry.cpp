@@ -100,6 +100,42 @@ void WorldRuntime::index_position(Transaction &tx, EntityId id, PositionM from, 
         tx.parcels.set(parcel.id, parcel);
     }
 }
+Neighborhood WorldRuntime::care_neighborhood(AntRef ref,double radius) const {
+    const auto& s=*state_;
+    const auto width=s.config.contact_distance_m;
+    if (s.geometry || !s.social->bounded_contacts || radius/width>=INT32_MAX)
+        return query_neighborhood(ref,radius);
+    profiling::Scope profile(profiling::Category::Neighborhood);
+    const auto ant=*query_ant(ref);
+    const auto key=contact_key(ant.position,width);
+    // One extra bucket keeps roundoff at a bucket edge out of the exact radius test.
+    const auto pad=static_cast<std::int64_t>(std::ceil(radius/width))+1;
+    const auto limit=[&](std::int32_t q,std::int64_t offset) {
+        return static_cast<std::int32_t>(std::clamp<std::int64_t>(q+offset,INT32_MIN,INT32_MAX));
+    };
+    const PointQ lo{limit(key.x,-pad),limit(key.y,-pad),limit(key.z,-pad)};
+    const PointQ hi{limit(key.x,pad),limit(key.y,pad),limit(key.z,pad)};
+    Neighborhood result;
+    const auto visit=[&](const auto& self,EntityId id,const ContactNode* node) -> void {
+        if (!node) return;
+        self(self,node->left,node->left_node);
+        ++result.candidates_examined;
+        if (id!=ref.id && distance(ant.position,s.ants.get(s.ants.index.at(id)).position)<=radius)
+            result.ants.push_back({s.world,id});
+        self(self,node->right,node->right_node);
+    };
+    for (auto it=s.contact_roots.lower_bound({lo.x,INT32_MIN,INT32_MIN});
+         it!=s.contact_roots.end() && it->first.x<=hi.x;++it) {
+        const auto q=it->first;
+        if (q.y>=lo.y && q.y<=hi.y && q.z>=lo.z && q.z<=hi.z)
+            visit(visit,it->second,&s.contact_nodes.at(it->second));
+    }
+    const auto by_id=[](AntRef a,AntRef b) { return a.id<b.id; };
+    if (!std::is_sorted(result.ants.begin(),result.ants.end(),by_id))
+        std::sort(result.ants.begin(),result.ants.end(),by_id);
+    profiling::record_work(profiling::Category::Neighborhood,result.candidates_examined);
+    return result;
+}
 Neighborhood WorldRuntime::query_neighborhood(AntRef ref, double radius) const {
     profiling::Scope profile(profiling::Category::Neighborhood);
     const auto &s = *state_;
