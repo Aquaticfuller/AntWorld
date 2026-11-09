@@ -214,6 +214,23 @@ struct WorldRuntime::State {
     DirtyBricks dirty_bricks;
     using Commands = std::map<CommandId, CommandReceipt>;
     Commands commands;
+    using PendingConflicts = std::map<EntityId,std::array<std::uint64_t,2>>;
+    PendingConflicts pending_conflicts; // Derived long-term per-actor development/resolution counts.
+    [[nodiscard]] bool external_resolution(EntityId id) const {
+        const auto entry=pending_conflicts.find(id);
+        const auto count=entry==pending_conflicts.end()?0:entry->second[1];
+        const std::array<ScheduledId,3> owned{
+            physiology.contains(id)?physiology.at(id).behavior_event:ScheduledId{},
+            foragers.contains(id)?foragers.at(id).action:ScheduledId{},
+            excavators.contains(id)?excavators.at(id).action:ScheduledId{}};
+        std::uint64_t known=0;
+        for (std::size_t i=0;i<owned.size();++i) {
+            bool unique=true; for (std::size_t j=0;j<i;++j) if (owned[i]==owned[j]) unique=false;
+            if (unique && queue_index.contains(owned[i]) && queue_index.at(owned[i]).phase==Phase::Resolution) ++known;
+        }
+        if (known>count) throw std::logic_error("pending actor conflict index disagrees with ownership");
+        return count>known;
+    }
     State(WorldId id, std::uint64_t value, WorldConfig c = {}) : world(id), seed(value), config(c) { m.rng = Rng(value); }
     State(const State&) = delete;
     State& operator=(const State&) = delete;
@@ -263,6 +280,7 @@ public:
     detail::MapJournal<State::Commands> commands;
     detail::MapJournal<State::Reproduction> reproduction;
     detail::MapJournal<State::ResourceCycles> resource_cycles;
+    detail::MapJournal<State::PendingConflicts> pending_conflicts;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
         geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
@@ -271,7 +289,7 @@ public:
         contact_nodes(s.contact_nodes), contact_roots(s.contact_roots), autonomy(s.autonomy),
         geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
         soil_requests(s.soil_requests), excavators(s.excavators), sdf_cache(s.sdf_cache), dirty_bricks(s.dirty_bricks), commands(s.commands),
-        reproduction(s.reproduction), resource_cycles(s.resource_cycles) {}
+        reproduction(s.reproduction), resource_cycles(s.resource_cycles), pending_conflicts(s.pending_conflicts) {}
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
@@ -300,6 +318,7 @@ public:
         soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();
         commands.commit();
         reproduction.commit(); resource_cycles.commit();
+        pending_conflicts.commit();
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }
@@ -321,6 +340,10 @@ public:
         s.queue.insert(temporary.extract(e.key)); s.queue_index.insert(temporary_index.extract(e.id));
         if (e.kind == ScheduledEvent::Kind::Lifecycle && e.stage != LifeStage::Dead) detail::bump(s.m.development_commands);
         if (e.key.phase==Phase::Resolution) detail::bump(s.m.resolution_commands);
+        if (s.long_term && e.actor.value && ((e.kind==ScheduledEvent::Kind::Lifecycle && e.stage!=LifeStage::Dead) || e.key.phase==Phase::Resolution)) {
+            auto counts=s.pending_conflicts.contains(e.actor)?s.pending_conflicts.at(e.actor):std::array<std::uint64_t,2>{};
+            detail::bump(counts[e.key.phase==Phase::Resolution?1:0]); pending_conflicts.set(e.actor,counts);
+        }
         detail::bump(s.m.revision); return e.id;
     }
     ScheduledEvent remove(EventKey key) {
@@ -330,6 +353,10 @@ public:
         queue_undo.back().event = s.queue.extract(key); queue_undo.back().index = s.queue_index.extract(e.id);
         if (e.kind == ScheduledEvent::Kind::Lifecycle && e.stage != LifeStage::Dead) --s.m.development_commands;
         if (e.key.phase==Phase::Resolution) --s.m.resolution_commands;
+        if (s.long_term && e.actor.value && ((e.kind==ScheduledEvent::Kind::Lifecycle && e.stage!=LifeStage::Dead) || e.key.phase==Phase::Resolution)) {
+            auto counts=s.pending_conflicts.at(e.actor); --counts[e.key.phase==Phase::Resolution?1:0];
+            if (counts[0] || counts[1]) pending_conflicts.set(e.actor,counts); else pending_conflicts.erase(e.actor);
+        }
         return e;
     }
     void time(SimTime at) {

@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
             << ",\n  \"hydration_capacity_ug\": " << config.hydration_capacity_ug << ",\n  \"energy_capacity_nj\": " << config.energy_capacity_nj
             << ",\n  \"carbohydrate_yield_nj_per_ug\": " << config.carbohydrate_yield_nj_per_ug
             << ",\n  \"basal_nj_per_ms\": " << config.basal_nj_per_ms << ",\n  \"active_nj_per_ms\": " << config.active_nj_per_ms
-            << ",\n  \"water_loss_ug_per_s\": " << config.water_loss_ug_per_s
+            << ",\n  \"water_loss_ug_per_s\": " << config.water_loss_ug_per_period
             << ",\n  \"carb_absorption_ug_per_s\": " << config.carb_absorption_ug_per_s
             << ",\n  \"water_absorption_ug_per_s\": " << config.water_absorption_ug_per_s
             << ",\n  \"protein_absorption_ug_per_s\": " << config.protein_absorption_ug_per_s

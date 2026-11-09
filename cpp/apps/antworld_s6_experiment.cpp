@@ -63,7 +63,7 @@ void configuration(const std::filesystem::path &dir, const std::string &suite,
     << ",\"carb_yield_nj_ug\":" << p.carbohydrate_yield_nj_per_ug
     << ",\"basal_nj_ms\":" << p.basal_nj_per_ms
     << ",\"active_nj_ms\":" << p.active_nj_per_ms
-    << ",\"water_loss_ug_s\":" << p.water_loss_ug_per_s
+    << ",\"water_loss_ug_s\":" << p.water_loss_ug_per_period
     << ",\"carb_absorption_ug_s\":" << p.carb_absorption_ug_per_s
     << ",\"water_absorption_ug_s\":" << p.water_absorption_ug_per_s
     << ",\"protein_absorption_ug_s\":" << p.protein_absorption_ug_per_s

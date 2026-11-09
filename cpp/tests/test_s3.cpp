@@ -31,7 +31,7 @@ void initialization() {
 void integration() {
     for (auto pulse : {250,1000,2000}) {
         WorldRuntime w({1,3}, 2); const auto c = w.seed_colony(); const auto a = w.seed_ant(c, {});
-        PhysiologyConfig cfg; cfg.absorption_period = {pulse}; cfg.water_loss_ug_per_s = 3;
+        PhysiologyConfig cfg; cfg.absorption_period = {pulse}; cfg.water_loss_ug_per_period = 3;
         w.enable_physiology(a, {{100,0,100,0},1000000000,1000,0}, cfg);
         WorldRuntime copy({1,4}, 0); copy.restore(w.checkpoint());
         w.advance_to({10333}); for (std::int64_t t = 17; t < 10333; t += 137) copy.advance_to({t}); copy.advance_to({10333});
@@ -87,7 +87,7 @@ void ingestion() {
 void thresholds() {
     for (bool water : {false,true}) {
         WorldRuntime w({1,3}, 2); const auto c = w.seed_colony(); const auto a = w.seed_ant(c, {});
-        PhysiologyConfig cfg; cfg.water_loss_ug_per_s = water ? 1000U : 0U;
+        PhysiologyConfig cfg; cfg.water_loss_ug_per_period = water ? 1000U : 0U;
         w.enable_physiology(a, {{100,0,100,0}, water ? UINT64_C(1000000000) : UINT64_C(250001),water ? 251U : 1000U,0},cfg);
         w.submit({a,{251},ActionKind::Rest,{},{},0}); w.advance_to({10000});
         require(w.query_ant(a)->stage == LifeStage::Dead, "depletion did not kill before action");

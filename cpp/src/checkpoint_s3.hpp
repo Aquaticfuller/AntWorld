@@ -10,7 +10,7 @@ inline constexpr std::array physiology_config_times{
 inline constexpr std::array physiology_config_values{
     &PhysiologyConfig::crop_capacity_ug, &PhysiologyConfig::hydration_capacity_ug, &PhysiologyConfig::energy_capacity_nj,
     &PhysiologyConfig::carbohydrate_yield_nj_per_ug, &PhysiologyConfig::basal_nj_per_ms, &PhysiologyConfig::active_nj_per_ms,
-    &PhysiologyConfig::water_loss_ug_per_s, &PhysiologyConfig::carb_absorption_ug_per_s, &PhysiologyConfig::water_absorption_ug_per_s,
+    &PhysiologyConfig::water_loss_ug_per_period, &PhysiologyConfig::carb_absorption_ug_per_s, &PhysiologyConfig::water_absorption_ug_per_s,
     &PhysiologyConfig::protein_absorption_ug_per_s, &PhysiologyConfig::larval_protein_requirement_ug, &PhysiologyConfig::transfer_limit_ug};
 inline constexpr std::array physiology_values{
     &PhysiologyState::body_energy_nj, &PhysiologyState::hydration_ug, &PhysiologyState::tissue_protein_ug,

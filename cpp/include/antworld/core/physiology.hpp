@@ -10,11 +10,11 @@ struct PhysiologyConfig {
     SimTime egg_duration{30000}, larva_duration{60000}, pupa_duration{30000};
     std::uint64_t crop_capacity_ug{1000}, hydration_capacity_ug{2000};
     std::uint64_t energy_capacity_nj{2000000000}, carbohydrate_yield_nj_per_ug{1000000};
-    std::uint64_t basal_nj_per_ms{1000}, active_nj_per_ms{1000}, water_loss_ug_per_s{1};
+    std::uint64_t basal_nj_per_ms{1000}, active_nj_per_ms{1000}, water_loss_ug_per_period{1};
     std::uint64_t carb_absorption_ug_per_s{10}, water_absorption_ug_per_s{100}, protein_absorption_ug_per_s{10};
     std::uint64_t larval_protein_requirement_ug{100}, transfer_limit_ug{100};
     SimTime behavior_interval{1000};
-    SimTime water_loss_period{1000}; // Rate numerator above is ug per this period.
+    SimTime water_loss_period{1000}; // water_loss_ug_per_period is ug per this interval.
     std::uint64_t adult_protein_target_ug{}; // Queen provisioning; zero in legacy worlds.
     bool operator==(const PhysiologyConfig&) const = default;
 };

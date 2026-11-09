@@ -16,7 +16,9 @@ void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
       !s.physiology.contains(ref.id))
     throw std::invalid_argument(
         "autonomy requires a living physiological worker and social policy");
-  if (enabled && s.m.resolution_commands)
+  if (enabled && s.long_term && s.external_resolution(ref.id))
+    throw std::invalid_argument("resolve external actions before enrolling autonomy");
+  if (enabled && !s.long_term && s.m.resolution_commands)
     for (const auto &[key, e] : s.queue) {
       if (e.actor == ref.id && key.phase == Phase::Resolution &&
           e.id != s.physiology.at(ref.id).behavior_event &&

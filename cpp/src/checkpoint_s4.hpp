@@ -259,7 +259,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ledger.remaining_q3 = ledger.initial_q3;
         }
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
-            ensure(configured && clear(e.position, e.position, e.kind == FactKind::AntSeeded ? c.body_half_q : 1),
+            ensure(configured && clear(e.position, e.position, e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn ? c.body_half_q : 1),
                    "seed embedded in material");
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
             positions[e.actor] = e.position;

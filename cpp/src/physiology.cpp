@@ -13,7 +13,9 @@ void WorldRuntime::enable_physiology(AntRef ref, const PhysiologySeed& seed, con
          config.absorption_period.milliseconds > 60000 || config.behavior_interval.milliseconds > 60000)) ||
         (config.adult_protein_target_ug && ant->caste != Caste::Queen))
         throw std::invalid_argument("long-term physiology requires its explicit world contract");
-    if (s.m.development_commands) for (const auto& [key, e] : s.queue) {
+    if (s.long_term && s.pending_conflicts.contains(ref.id) && s.pending_conflicts.at(ref.id)[0])
+        throw std::invalid_argument("remove forced development before enabling physiology");
+    if (!s.long_term && s.m.development_commands) for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.kind == ScheduledEvent::Kind::Lifecycle && e.stage != LifeStage::Dead)
             throw std::invalid_argument("remove forced development before enabling physiology");
@@ -95,7 +97,9 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
     if (behavior == IndividualBehavior::Forage && (!s.surface || !s.surface->locate(ant->position))) throw std::invalid_argument("foraging requires a surface position");
     if (behavior == IndividualBehavior::Excavate && !s.geometry) throw std::invalid_argument("excavation requires geometry");
     // External pending actions must be explicitly resolved/cancelled, never silently commandeered.
-    if (!source.value && s.m.resolution_commands) for (const auto& [key, e] : s.queue) {
+    if (!source.value && s.long_term && s.external_resolution(ref.id))
+        throw std::invalid_argument("individual has an external pending action");
+    if (!source.value && !s.long_term && s.m.resolution_commands) for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.key.phase == Phase::Resolution && e.id != s.physiology.at(ref.id).behavior_event &&
             (!s.foragers.contains(ref.id) || e.id != s.foragers.at(ref.id).action) &&

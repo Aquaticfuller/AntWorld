@@ -45,7 +45,7 @@ struct Exchange {
     Exchange(std::uint64_t seed, std::uint64_t capacity, bool supply, bool reverse)
         : world({3,4}, seed), colony(world.seed_colony()), first(world.seed_ant(colony, {})),
           second(world.seed_ant(colony, {})), recipient(world.seed_ant(colony, {})) {
-        PhysiologyConfig c; c.basal_nj_per_ms = 0; c.water_loss_ug_per_s = 0;
+        PhysiologyConfig c; c.basal_nj_per_ms = 0; c.water_loss_ug_per_period = 0;
         PhysiologySeed p; if (supply) p.crop = {80,40,60,20};
         world.enable_physiology(first, p, c); world.enable_physiology(second, p, c);
         c.crop_capacity_ug = capacity; world.enable_physiology(recipient, {}, c);
