@@ -3,7 +3,7 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 54 (excluding the manifest itself).
+Files: 55 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
@@ -61,3 +61,4 @@ Files: 54 (excluding the manifest itself).
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |
 | `tools/verify_handoff.py` | `fa698924271b13fb92206d6e47fca1b9758254aa2eb8de57bc2cfac30d365c7e` | 1408 |
 | `docs/41_S6_3_Frozen_Protocol.md` | `ed8bbb94ea3e297cdfbe24b47364cd7d8b0b6db06bdb4b56d894e33ff30a2d75` | 11704 |
+| `docs/42_S6_3_Correction_Protocol.md` | `2cc6f8af2383b297686f4aa94546b79e9084a2aa5b1b744a48aa3001d3e4819a` | 5475 |
