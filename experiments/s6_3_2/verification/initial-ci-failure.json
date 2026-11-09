@@ -1,0 +1,26 @@
+[
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/c667300a1bd664cb071f5cb11b916126c2895d02/.github",
+    "start_line": 662,
+    "start_column": null,
+    "end_line": 662,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "",
+    "message": "Process completed with exit code 1.",
+    "raw_details": ""
+  },
+  {
+    "path": ".github",
+    "blob_href": "https://github.com/Aquaticfuller/AntWorld/blob/c667300a1bd664cb071f5cb11b916126c2895d02/.github",
+    "start_line": 656,
+    "start_column": null,
+    "end_line": 656,
+    "end_column": null,
+    "annotation_level": "failure",
+    "title": "Evidence audit failed (tools/verify_s6_3_2_sources.py)",
+    "message": "Traceback (most recent call last):\n  File \"/home/runner/work/AntWorld/AntWorld/tools/verify_s6_3_2_sources.py\", line 10, in <module>\n    data=(BASE/'probes'/name).read_bytes();assert len(data)==item['bytes'] and hashlib.sha256(data).hexdigest()==item['sha256'],name\n                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: eligibility.csv\n",
+    "raw_details": ""
+  }
+]

@@ -43,5 +43,34 @@
   "sanitizers_windows": "ASan+UBSan; detect_leaks=0:halt_on_error=1; halt_on_error=1:print_stacktrace=1",
   "sanitizers_linux_ci": "ASan+UBSan; detect_leaks=1",
   "audit_binary_sha256": "1df4a5c036b5e8e4f6b710db286ed48a8a67727e1aafc2329b43ae5c2c561763",
-  "ci_status": "PENDING_PUBLICATION"
+  "ci_status": "PASS: five jobs on b227505; original archive-hash failure retained",
+  "ci_runs": [
+    {
+      "run_id": 42629257526,
+      "commit": "c667300a1bd664cb071f5cb11b916126c2895d02",
+      "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42629257526"
+    },
+    {
+      "run_id": 42629659960,
+      "commit": "b2275055dbe5079a8199cfe582cd942f8c803144",
+      "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42629659960"
+    }
+  ],
+  "performance": {
+    "contact_sessions": 3,
+    "contact_rows": 336,
+    "contact_p50_growth": 5.418486046160809,
+    "contact_verdict": "PASS",
+    "birth_sessions": 2,
+    "birth_rows": 112,
+    "birth_required_rows": 168,
+    "birth_conditional_p50_growth": 4.250833375211484,
+    "birth_verdict": "NOT_QUALIFIED_INCOMPLETE; no PASS"
+  },
+  "recorded_ci_utc": "2026-11-09T14:08:16.807128+00:00",
+  "publication_ci": {
+    "branch": "codex/s6.3.2-biology-audit",
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions?query=branch%3Acodex%2Fs6.3.2-biology-audit",
+    "note": "Match the workflow to the final delivery commit; the recorded green revision has identical executable code."
+  }
 }

@@ -2,7 +2,7 @@
 
 ## Review conclusion
 
-**Local engineering verification PASS. Biological readiness NOT PASSED. Dense-contact performance PASS for the frozen workload; birth-registration requalification incomplete. S6.4 remains blocked.** GitHub CI status is recorded in `experiments/s6_3_2/verification.json` once the published workflow finishes; no unexecuted check is called passed.
+**Engineering verification PASS. Biological readiness NOT PASSED. Dense-contact performance PASS for the frozen workload; birth-registration requalification incomplete. S6.4 remains blocked.** GitHub CI passed all five jobs on audited code revision `b227505`; [the completed run](https://github.com/Aquaticfuller/AntWorld/actions/runs/42629659960) and machine-readable receipts are recorded in `experiments/s6_3_2/verification.json`. The final evidence-publication workflow uses the same executable code and is identified by the delivery commit on the branch.
 
 This stage changes **no Simulation Core biological rule, parameter, RNG decision, scheduler semantics, resource flow or history retention**. It adds a source/provenance audit, unchanged-model diagnostic executable, empirical endpoint extraction, performance admission/analysis tools and evidence reports. All 161 inherited tests and all earlier negative results remain; one diagnostic smoke test brings local suites to 162.
 
@@ -46,7 +46,9 @@ Executed with pinned LLVM-MinGW 20261104 / Clang 23.1.5, CMake 3.31.10, Ninja 1.
 
 Windows leak detection is unsupported and disabled; Linux sanitizer CI enables it. Existing geometry, material, deterministic phase order, failure rollback, identity, SQLite crash/restore and all prior biological fixture regressions remain. New probes also compare one large advance against observation-paced advances and restored continuation. Raw logs and hashes accompany verification.json; the CI workflow additionally reproduces all six new diagnostic seeds and retains prior S6.3.1 180-day controls.
 
-The three qualified contact sessions retain all 336 samples and exact historical state/work equality. Dense advance grows **5.418486x [5.297897,5.501400]**, paired median **5.338576x [5.226317,5.426444]**, satisfying <=6. The detailed performance report separates setup, advance, checkpoint, restore, memory and CPU/cycle measurements. Birth session 1 exhausted three failed admissions without starting timing; the overall birth batch cannot receive PASS. Valid-load excursions and PDH invalid-denominator readings are distinct, retained measurement limitations. Neither the earlier 24.229x anomaly nor the 6.315x/8.154x failures are erased or assigned an unproven cause.
+The initial publication CI correctly rejected probe artifact hashes after Git normalized Windows CRLF output to LF. The archive now records original-source hashes separately from published LF hashes; no values, event payloads or Core rules changed. Both the failed run and successful corrected run remain in the verification receipts. All 64 Core/header/inherited-test files match the reviewed baseline after line-ending normalization.
+
+The three qualified contact sessions retain all 336 samples and exact historical state/work equality. Dense advance grows **5.418486x [5.297897,5.501400]**, paired median **5.338576x [5.226317,5.426444]**, satisfying <=6. The detailed performance report separates setup, advance, checkpoint, restore, memory and CPU/cycle measurements. Birth session 1 exhausted three failed admissions without starting timing; sessions 2/3 completed 112 of the planned 168 rows. Their pooled growth is **4.250833x [4.140750,4.383082]**, conditional on the available sessions, and the incomplete birth batch receives **no PASS verdict**. Valid-load excursions and PDH invalid-denominator readings are distinct, retained measurement limitations. Neither the earlier 24.229x anomaly nor the 6.315x/8.154x failures are erased or assigned an unproven cause.
 
 ## Deliverables and gate
 
