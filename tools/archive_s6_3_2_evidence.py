@@ -13,8 +13,11 @@ def main():
     target=BASE/'probes';target.mkdir(exist_ok=True)
     archive={}
     for name in ('eligibility.csv','time_series.csv','events.csv','checks.csv'):
-        path=args.source/'probes'/name;shutil.copyfile(path,target/name)
-        archive[name]=dict(bytes=path.stat().st_size,sha256=digest(path))
+        path=args.source/'probes'/name;raw=path.read_bytes()
+        # Git's text policy stores LF. Preserve source hashes separately so the
+        # published artifact hash verifies on Windows and Linux alike.
+        normalized=raw.replace(b'\r\n',b'\n');(target/name).write_bytes(normalized)
+        archive[name]=dict(bytes=len(normalized),sha256=hashlib.sha256(normalized).hexdigest(),source_bytes=len(raw),source_sha256=hashlib.sha256(raw).hexdigest(),normalization='UTF-8 CSV; CRLF to LF only; all values and canonical event payload bytes unchanged')
     (target/'archive.json').write_text(json.dumps(archive,indent=2)+'\n',encoding='utf-8')
     accesses=[]
     for path in sorted(args.source.glob('paper_requests_*_access.json')):

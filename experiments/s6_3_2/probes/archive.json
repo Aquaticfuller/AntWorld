@@ -1,18 +1,30 @@
 {
   "eligibility.csv": {
-    "bytes": 408,
-    "sha256": "d843acae698b7df38a3ac7ba48548cb041b9e119893a4998654d87be39ba3a38"
+    "bytes": 389,
+    "sha256": "9043e3e7c82fc016130397e0802e80fb8f89a63cc950098bbcace4779b7e3c47",
+    "source_bytes": 408,
+    "source_sha256": "d843acae698b7df38a3ac7ba48548cb041b9e119893a4998654d87be39ba3a38",
+    "normalization": "UTF-8 CSV; CRLF to LF only; all values and canonical event payload bytes unchanged"
   },
   "time_series.csv": {
-    "bytes": 130468,
-    "sha256": "f0c494d8338d4b096a3c5dedc63f1d65cd845225f5fb0c108591a8e2400e419f"
+    "bytes": 129285,
+    "sha256": "85337523da8d39813e66c1189a735ab9144e3e11233e6a36c7409cb28c0c8cfb",
+    "source_bytes": 130468,
+    "source_sha256": "f0c494d8338d4b096a3c5dedc63f1d65cd845225f5fb0c108591a8e2400e419f",
+    "normalization": "UTF-8 CSV; CRLF to LF only; all values and canonical event payload bytes unchanged"
   },
   "events.csv": {
-    "bytes": 512004,
-    "sha256": "6d4d30d6480feb7f0a0deea141db9d171599141bf1075e20123779c302d4c4cb"
+    "bytes": 510581,
+    "sha256": "73c621feed1ef3e56beae02b24f8ee5e17e123c8c50bccf64b5fcb755a25a2d1",
+    "source_bytes": 512004,
+    "source_sha256": "6d4d30d6480feb7f0a0deea141db9d171599141bf1075e20123779c302d4c4cb",
+    "normalization": "UTF-8 CSV; CRLF to LF only; all values and canonical event payload bytes unchanged"
   },
   "checks.csv": {
-    "bytes": 2113,
-    "sha256": "8c9af60f003c276db1c0ce31fa9e06a8526a9f37a3a59c937c90c50c98b02951"
+    "bytes": 2082,
+    "sha256": "5f8c6b1f3652f4255bfae63b981fce0189d9166aebe13f3a5abe2e6b00123cab",
+    "source_bytes": 2113,
+    "source_sha256": "8c9af60f003c276db1c0ce31fa9e06a8526a9f37a3a59c937c90c50c98b02951",
+    "normalization": "UTF-8 CSV; CRLF to LF only; all values and canonical event payload bytes unchanged"
   }
 }
