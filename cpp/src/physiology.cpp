@@ -49,6 +49,7 @@ void WorldRuntime::schedule_physiology(Transaction& tx, EntityId id) {
     tx.physiology.set(id, p);
 }
 void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause cause) {
+    interrupt_care(tx,id,Outcome::DeadActor,true);
     stop_reproduction(tx, id);
     auto& s = *state_; if (!s.physiology.contains(id)) return;
     auto p = s.physiology.at(id);
@@ -75,6 +76,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause); stop_autonomy(tx,e.actor);
     } else {
         if (developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage)) {
+            interrupt_care(tx,e.actor,Outcome::InvalidStage);
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
             if (ant.stage==LifeStage::Adult) schedule_autonomy(tx,e.actor);
@@ -84,6 +86,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     tx.fact(f);
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
+    if (state_->care.contains(ref.id) && state_->care.at(ref.id).enabled) throw std::invalid_argument("pause care before changing worker program");
     Transaction tx(*state_,limits_);
     change_behavior(tx,ref,behavior);
     if (state_->autonomy.contains(ref.id) && state_->autonomy.at(ref.id).enabled) change_autonomy(tx,ref,false);
@@ -143,6 +146,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
 }
 ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
     auto& s = *state_; const auto ant = query_ant(proposal.actor);
+    if (s.care.contains(proposal.actor.id) && s.care.at(proposal.actor.id).enabled) throw std::invalid_argument("pause care before external nutrition action");
     if (!ant || !s.physiology.contains(ant->id) || (s.autonomy.contains(ant->id) && s.autonomy.at(ant->id).enabled) || proposal.kind > NutritionAction::ReturnProtein || !proposal.requested_ug ||
         s.physiology.at(ant->id).behavior != IndividualBehavior::Paused ||
         (s.foragers.contains(ant->id) && s.foragers.at(ant->id).enabled)) throw std::invalid_argument("invalid nutrition proposal");
@@ -309,6 +313,15 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             f.random_value=sample.candidates_examined;
         }
         f.kind = FactKind::NutritionDecision; f.payload = p.decisions; tx.fact(f);
+        if (s.care_profile) {
+            for (auto ref:encounters[i].ants) observe(tx,ant.id,wakes[i].id,{ObservationPhase::Opportunity,
+                query_ant(ref)->stage==LifeStage::Larva?CareAct::FeedBrood:CareAct::TransferNutrition,ref.id,{},s.m.now,false});
+            const auto kind=actions[i].kind;
+            const auto target=kind==ScheduledEvent::Kind::Trophallaxis?EntityId{actions[i].payload}:EntityId{};
+            const auto act=kind==ScheduledEvent::Kind::Rest?CareAct::Inactive:target.value?
+                (query_ant({s.world,target})->stage==LifeStage::Larva?CareAct::FeedBrood:CareAct::TransferNutrition):CareAct::IngestFood;
+            observe(tx,ant.id,wakes[i].id,{ObservationPhase::Selected,act,target,p.behavior_event,s.m.now,false});
+        }
     }
 }
 void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledEvent& action, const WorldEvent& fact) {

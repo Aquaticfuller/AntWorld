@@ -23,3 +23,7 @@ __pycache__/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Localized raw hardware logs stay local; reviewed English sensor exports are tracked.
+/experiments/s6_3_3/performance/*/session*/hwinfo_*.raw
+/experiments/s6_3_3/performance_pre_observer_correction/*/session*/hwinfo_*.raw

@@ -19,6 +19,8 @@ from pathlib import Path
 from inventory_s6_3_2 import clean, end_group
 
 ROOT = Path(__file__).resolve().parents[1]
+from atlas_baseline import source_root
+SOURCE_ROOT=source_root()
 DATA = ROOT / 'research/s6_3_2_1'
 LEGACY = ROOT / 'experiments/s6_3_2/PARAMETER_PROVENANCE_S6_3_2.csv'
 BASELINE = '2e1a5fa129821176954f26a88f56791635bc8cda'
@@ -54,7 +56,7 @@ def source_ids(text):
 def source_inventory(rules):
     rows = []
     for relative in SOURCE_FILES:
-        path = ROOT / relative
+        path = SOURCE_ROOT / relative
         raw = path.read_text(encoding='utf-8')
         masked = clean(raw)
         spans = []
@@ -236,7 +238,7 @@ def validate(sources, measurements, coverage, rules, validations, params, conver
             assert set(source_ids(row[key])) <= ids, row
     for rule in rules:
         assert rule['NumericEvidenceGrade'] == 'F'
-        assert all((ROOT/p).is_file() for p in rule['SourceFiles'].split(';')), rule['RuleId']
+        assert all((SOURCE_ROOT/p).is_file() for p in rule['SourceFiles'].split(';')), rule['RuleId']
     for item in conversions:
         assert item['SourceId'] in ids or not item['SourceId']
     assert all(p['evidence_grade'] == 'F' for p in params)
@@ -249,7 +251,7 @@ def validate(sources, measurements, coverage, rules, validations, params, conver
     # Existing complete immutable source identity check includes headers/apps/tests.
     manifest = json.loads((ROOT/'experiments/s6_3_2/core_and_tests_identity.json').read_text(encoding='utf-8'))
     for item in manifest['files']:
-        assert digest((ROOT/item['path']).read_bytes().replace(b'\r\n',b'\n')) == item['normalized_sha256'], item['path']
+        assert digest((SOURCE_ROOT/item['path']).read_bytes().replace(b'\r\n',b'\n')) == item['normalized_sha256'], item['path']
 
 
 def table(db, name, rows, primary, references=None):
@@ -384,6 +386,8 @@ def main():
     outputs['research/s6_3_2_1/summary.json']=json.dumps(summary,sort_keys=True,indent=2)+'\n'
     for relative,content in outputs.items():
         path=ROOT/relative
+        if relative in ('PARAMETER_PROVENANCE.csv','STATE_MACHINE_EVIDENCE_AUDIT.md'):
+            path=DATA/'baseline'/relative
         if args.check:
             assert path.read_text(encoding='utf-8')==content, 'Generated artifact drift: '+relative
         else:
@@ -401,7 +405,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='atlas-',dir=scratch) as temp:
         assert Path(temp).resolve().is_relative_to(scratch)
         generated=Path(temp)/'atlas.sqlite'; build_db(generated,data)
-        target=ROOT/'ANT_BIOLOGY_EVIDENCE.sqlite'
+        target=DATA/'baseline/ANT_BIOLOGY_EVIDENCE.sqlite'
         if args.check:
             assert db_logical_dump(target)==db_logical_dump(generated),'SQLite logical content drift'
         else:

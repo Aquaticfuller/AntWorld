@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 64 (excluding the manifest itself).
+Files: 66 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `2177fd6b6228e5bcc97059fc897dcbdb2dcba7b62b072057b9cee6c857275d35` | 4946 |
-| `CODEX_START_HERE.md` | `82b680316c668c838d9624d020dc433669cd4489201d86d8707126f03036dddb` | 7003 |
+| `AGENTS.md` | `e8dec1e872472cb9c067869424ca23257d311f15abda8315a7fdeea4ee0253b6` | 5020 |
+| `CODEX_START_HERE.md` | `23dbc75b995727a364f4e6ab1318d343c2cc84c25c20b7af1fa8e13c65ec7498` | 7568 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 64 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `6b1ba9a9a66eee27df3a6e5a61812c0fdd20ddbc6b37c42101b651343e0bee9c` | 41139 |
+| `docs/08_Open_Questions.md` | `d540fb2c92ddb26d91d3ed60bb1e3996e284873111303383ea784b77120b0438` | 44361 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -65,6 +65,8 @@ Files: 64 (excluding the manifest itself).
 | `docs/49_S6_3_2_Biological_Comparison_Freeze.md` | `25a07375d0b8606c7c96a1c0eecdf97987013cca4aa56f5b604c0596d4d94296` | 6636 |
 | `docs/50_S6_3_2_Quiet_Interval_Performance_Addendum.md` | `9ff9c1a30777cbc8717a48ef5d39e682cbccd82ec173173170192765a509901d` | 4235 |
 | `docs/51_S6_3_2_1_Evidence_Atlas_Protocol.md` | `d3f3c300021381e318c80293a2826675c2e201242f285c04ff850d1e296cb163` | 8336 |
+| `docs/52_S6_3_3_Queen_Care_Protocol.md` | `197305f3827759299d4daa60c97792e323b82f7fb0c01bfe5efed12bcf3ca6a4` | 10387 |
+| `docs/53_S6_3_3_Care_and_Observation_Contract.md` | `b6d9fbe9f5226c6be9fb62e0ffcc3f655b64a7b3b8d561ddb81be5cb43e5dd9c` | 9572 |
 | `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

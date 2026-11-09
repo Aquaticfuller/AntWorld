@@ -1,6 +1,6 @@
 # Review-only model correction roadmap
 
-No proposal below is implemented or implicitly authorized. Preserve the current Core, all negative datasets and the local maternal reserve guard. Its two-day horizon remains F / `ENGINEERING_FIXTURE`. The P01–P10 identifiers deliberately continue [S6.3.2 proposals](MODEL_CORRECTION_PROPOSALS.md); that older document uses historical A–D grades. This document and the atlas use A–F. A later implementation needs an explicit scoped approval, its own frozen control protocol and unchanged-model baseline.
+The user explicitly authorized P10/P01 for S6.3.3. Their bounded implementation and limitations are documented in S6_3_3_RESULTS.md and document53; this does not authorize P02-P09 or follow-on stages. Preserve all negative datasets and the local maternal reserve guard; its two-day horizon remains F / `ENGINEERING_FIXTURE`. P01-P10 continue the historical S6.3.2 proposals, which used A-D grades; this atlas uses A-F. Further changes require scoped review, frozen controls and the old-model evidence.
 
 ## Priority and dependencies
 

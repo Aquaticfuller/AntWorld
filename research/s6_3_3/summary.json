@@ -1,0 +1,13 @@
+{
+  "historical_parameter_records": 2559,
+  "current_parameter_records": 1600,
+  "current_typed_expressions": 1341,
+  "current_implicit_expressions": 259,
+  "new_rule_groups": 16,
+  "calibrated_behavioral_coefficients": 0,
+  "profile_fields": {
+    "SpeciesCareProfile": 10,
+    "IndividualCareProfile": 2,
+    "EnvironmentCareProfile": 2
+  }
+}

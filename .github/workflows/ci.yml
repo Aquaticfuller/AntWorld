@@ -79,6 +79,11 @@ jobs:
         run: |
           ./build/ci/antworld_s6_3_2_audit build/ci/s6_3_2-audit 6
           python tools/analyze_s6_3_2_biology.py --probes build/ci/s6_3_2-audit --verify-only
+      - name: Reproduce complete S6.3.3 observation seed (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3-reproduction 0 primary
+          python tools/verify_s6_3_3_reproduction.py build/ci/s6_3_3-reproduction
 
   sanitizers:
     runs-on: ubuntu-24.04

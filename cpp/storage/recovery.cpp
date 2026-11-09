@@ -71,6 +71,12 @@ LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) c
             expected_participants[{{fact.payload}, fact.id}] = true;
         if (fact.kind == FactKind::NutritionTransferred || fact.kind==FactKind::AntBorn)
             people.at(EntityId{fact.payload}).last_event = fact.id;
+        const auto care_related=fact.kind==FactKind::BiologicalObservation?fact.observation.target.value:
+            fact.kind==FactKind::BroodMoved?fact.payload:0;
+        if (care_related) {
+            expected_participants[{{care_related},fact.id}]=true;
+            people.at(EntityId{care_related}).last_event=fact.id;
+        }
         if (fact.kind == FactKind::StageChanged || fact.kind == FactKind::AntDied)
             people.at(fact.actor).current_stage = fact.stage;
         if (fact.kind == FactKind::AntDied) {

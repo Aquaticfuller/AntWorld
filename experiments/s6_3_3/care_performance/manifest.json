@@ -1,0 +1,11 @@
+{
+  "binary_sha256": "c6f5ca1ff8690328b136ce35e4ea7490d427a8714b738a9420779e0be9c2644e",
+  "source_manifest": "../raw/primary_manifest.json",
+  "mode": "smoke",
+  "repetitions": 5,
+  "warmup": 1,
+  "sampling_ms": 10,
+  "status": "DIAGNOSTIC_NOT_QUIET_GATE",
+  "peak_memory": "Maximum process-reported peak observed before exit; lower bound if late peak missed",
+  "later_guard": "See verification/validation_guard.json; inert for this configuration"
+}

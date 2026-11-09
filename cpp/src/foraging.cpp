@@ -152,6 +152,11 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         fact.forgot_memory = r.decision.forget_memory;
         // Count the explicitly recorded local food cue, never an unrecorded global discovery.
         fact.resource = r.decision.resource;
+        if (s.care_profile) {
+            const auto act=action.kind==ScheduledEvent::Kind::Move?CareAct::Walk:action.kind==ScheduledEvent::Kind::CollectFood?
+                CareAct::CollectFood:action.kind==ScheduledEvent::Kind::DeliverFood?CareAct::DeliverFood:CareAct::Inactive;
+            observe(tx,ant.id,r.event.id,{ObservationPhase::Selected,act,{},f.action,s.m.now,false});
+        }
         if (!fact.resource.value && r.local.food_count) fact.resource = r.local.food[0].resource;
         if (fact.resource.value && !s.discoveries.contains(fact.resource)) tx.discoveries.set(fact.resource, {s.m.now, ant.id});
         tx.fact(fact);

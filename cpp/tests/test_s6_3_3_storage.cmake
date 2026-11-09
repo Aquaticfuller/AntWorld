@@ -1,0 +1,7 @@
+file(REMOVE "${OUTPUT}" "${OUTPUT}-wal" "${OUTPUT}-shm")
+get_filename_component(directory "${OUTPUT}" DIRECTORY)
+file(MAKE_DIRECTORY "${directory}")
+execute_process(COMMAND "${CLI}" STORAGE "${OUTPUT}" RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE error)
+if(NOT result EQUAL 0)
+    message(FATAL_ERROR "${output}\n${error}")
+endif()

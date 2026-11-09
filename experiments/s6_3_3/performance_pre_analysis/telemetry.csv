@@ -1,0 +1,2 @@
+kind,session,os_samples,invalid_core_samples,system_busy_p50,system_busy_p95,temperature_min_c,temperature_max_c,power_min_w,power_max_w,p0_effective_mhz_p50,thermal_flag_max,power_limit_flag_max,maximum_sensor_gap_s
+contacts,session1,598,10,14.858175006689862,29.06976744186046,52.0,77.0,5.577,43.217,2441.2,0.0,1.0,2.016999936

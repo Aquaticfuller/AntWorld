@@ -115,6 +115,7 @@ FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
 }
 ScheduledId WorldRuntime::submit(const ActionProposal& p) {
     auto& s = *state_; const auto ant = query_ant(p.actor);
+    if (s.care.contains(p.actor.id) && s.care.at(p.actor.id).enabled) throw std::invalid_argument("pause care before external action");
     if (!ant || p.kind > ActionKind::Rest || s.foragers.contains(p.actor.id) || (s.autonomy.contains(p.actor.id) && s.autonomy.at(p.actor.id).enabled) ||
         (s.physiology.contains(p.actor.id) && s.physiology.at(p.actor.id).behavior != IndividualBehavior::Paused) ||
         (p.kind == ActionKind::CollectFood && (!query_food(p.food) || p.requested_ug == 0)) ||
@@ -160,6 +161,7 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
     else if (e.stage != LifeStage::Dead && static_cast<unsigned>(e.stage) != static_cast<unsigned>(ant.stage)+1)
         fact.outcome = Outcome::InvalidTransition;
     else {
+        interrupt_care(tx,e.actor,Outcome::InvalidStage,e.stage==LifeStage::Dead);
         synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
         fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
@@ -180,6 +182,14 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             std::tuple{b.resource.value, rank(s.seed, s.m.now, b.resource, b.actor), b.actor.value, b.key.sequence};
     });
     for (const auto& e : ordered) {
+        if (e.kind==ScheduledEvent::Kind::CareBegin || e.kind==ScheduledEvent::Kind::CareEnd) {
+            // Another same-boundary action can invalidate a removed pending care event.
+            if (s.care.at(e.actor).pending==e.id && s.care.at(e.actor).enabled) execute_care_action(tx,e);
+            else { WorldEvent tick; const auto a=s.ants.get(s.ants.index.at(e.actor));
+                tick.kind=FactKind::CareTick; tick.source=e.id; tick.actor=e.actor; tick.colony=a.colony;
+                tick.stage=a.stage; tick.position=a.position; tick.payload=static_cast<std::uint64_t>(e.kind); tx.fact(tick); }
+            continue;
+        }
         const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i);
         const auto before = ant;
         WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.resource = e.resource;
@@ -251,6 +261,8 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
                 (s.long_term->complete_depot_visits || s.foragers.at(ant.id).mode==BehaviorMode::Return))))
             notify_return(tx,ant.id);
         tx.fact(f);
+        if (f.kind==FactKind::SoilFilled || f.kind==FactKind::SoilExcavated) validate_active_care(tx);
+        observe_legacy_action(tx,e,f);
     }
 }
 void WorldRuntime::advance_to(SimTime target) {
@@ -264,10 +276,11 @@ void WorldRuntime::advance_to(SimTime target) {
             std::vector<ScheduledEvent> wakes(0);
             while (!s.queue.empty() && s.queue.begin()->first.time == key.time && s.queue.begin()->first.phase == Phase::Perception) {
                 const auto e = tx.remove(s.queue.begin()->first); tx.executing(e);
-                if (e.kind == ScheduledEvent::Kind::Wake || e.kind == ScheduledEvent::Kind::NutritionWake || e.kind == ScheduledEvent::Kind::ExcavationWake) wakes.push_back(e); else execute(tx, e);
+                if (e.kind == ScheduledEvent::Kind::Wake || e.kind == ScheduledEvent::Kind::NutritionWake || e.kind == ScheduledEvent::Kind::ExcavationWake || e.kind==ScheduledEvent::Kind::CareWake) wakes.push_back(e); else execute(tx, e);
             }
-            std::vector<ScheduledEvent> foragers(0), nurses(0), excavators(0);
-            for (const auto& e : wakes) (e.kind == ScheduledEvent::Kind::Wake ? foragers : e.kind == ScheduledEvent::Kind::NutritionWake ? nurses : excavators).push_back(e);
+            std::vector<ScheduledEvent> foragers(0), nurses(0), excavators(0), carers(0);
+            for (const auto& e : wakes) (e.kind==ScheduledEvent::Kind::CareWake?carers:e.kind == ScheduledEvent::Kind::Wake ? foragers : e.kind == ScheduledEvent::Kind::NutritionWake ? nurses : excavators).push_back(e);
+            if (!carers.empty()) resolve_care_wakes(tx,carers);
             if (!foragers.empty()) resolve_wakes(tx, foragers);
             if (!nurses.empty()) resolve_nutrition_wakes(tx, nurses);
             if (!excavators.empty()) resolve_excavation_wakes(tx,excavators);

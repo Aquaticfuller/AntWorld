@@ -6,6 +6,7 @@
 #include "checkpoint_s5.hpp"
 #include "checkpoint_s6.hpp"
 #include "checkpoint_s6_3.hpp"
+#include "checkpoint_care.hpp"
 #include <bit>
 #include <set>
 
@@ -20,6 +21,10 @@ void write_fact(Writer& w, const WorldEvent& e) {
     w.put(static_cast<std::uint8_t>(e.outcome), 1);
     w.put(static_cast<std::uint8_t>(e.mode), 1); w.put(static_cast<std::uint8_t>(e.reason), 1);
     w.real(e.deposited_units); w.put(e.forgot_memory, 1);
+    if (e.kind==FactKind::BiologicalObservation) {
+        const auto& o=e.observation; w.put(static_cast<std::uint8_t>(o.phase),1); w.put(static_cast<std::uint8_t>(o.act),1);
+        w.put(o.target.value); w.put(o.bout.value); w.time(o.began_at); w.put(o.duration_known,1); w.position(o.destination);
+    }
 }
 WorldEvent read_fact(Reader& r) {
     WorldEvent e;
@@ -28,7 +33,12 @@ WorldEvent read_fact(Reader& r) {
     e.kind = static_cast<FactKind>(r.get(1)); e.actor = {r.get()}; e.colony = {r.get()}; e.resource = {r.get()};
     e.position = r.position(); e.transferred = r.mass(); e.stage = static_cast<LifeStage>(r.get(1));
     e.outcome = static_cast<Outcome>(r.get(1)); e.mode = static_cast<BehaviorMode>(r.get(1));
-    e.reason = static_cast<DecisionReason>(r.get(1)); e.deposited_units = r.real(); e.forgot_memory = r.flag(); return e;
+    e.reason = static_cast<DecisionReason>(r.get(1)); e.deposited_units = r.real(); e.forgot_memory = r.flag();
+    if (e.kind==FactKind::BiologicalObservation) {
+        auto& o=e.observation; o.phase=static_cast<ObservationPhase>(r.get(1)); o.act=static_cast<CareAct>(r.get(1));
+        o.target={r.get()}; o.bout={r.get()}; o.began_at=r.time(); o.duration_known=r.flag(); o.destination=r.position();
+    }
+    return e;
 }
 } // namespace
 std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
@@ -51,10 +61,10 @@ std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
 
 std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
     Writer w(byte_limit); const auto& m = s.m;
-    const bool guarded=has_maternal_reserve(s);
-    w.put(guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741));
-    w.put(guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    const bool guarded=s.care_profile || has_maternal_reserve(s);
+    w.put(s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741));
+    w.put(s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
     w.put(m.next_entity); w.put(m.next_scheduled); w.put(m.next_event); w.put(m.next_sequence); w.put(m.rng.state());
     w.put(s.queue.size());
@@ -86,6 +96,7 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     write_commands(w,s);
     write_social(w,s);
     write_long_term(w,s,guarded);
+    write_care(w,s);
     w.put(hash_bytes(w.bytes)); return w.bytes;
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
@@ -93,10 +104,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    const auto magic=r.get(); const bool guarded=magic==UINT64_C(0x4154504b435741);
+    const auto magic=r.get(); const bool care_contract=magic==UINT64_C(0x4254504b435741);
+    const bool guarded=care_contract || magic==UINT64_C(0x4154504b435741);
     const bool extended=guarded || magic==UINT64_C(0x3954504b435741);
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
-    ensure(r.get(4) == (guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version) && r.get(4) == (guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version) && r.get(4) == 1, "unsupported schema, physics or RNG version");
+    ensure(r.get(4) == (care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version) && r.get(4) == (care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version) && r.get(4) == 1, "unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
     if (extended) s->long_term=std::make_shared<const LongTermConfig>();
@@ -112,28 +124,31 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         e.stage = static_cast<LifeStage>(r.get(1));
         ensure(e.id.value && e.id.value < m.next_scheduled && e.key.sequence && e.key.sequence < m.next_sequence &&
             e.key.time >= m.now && valid(e.key.phase) && valid(e.action) && valid(e.stage) &&
-            e.kind <= (extended ? ScheduledEvent::Kind::ReturnProtein : ScheduledEvent::Kind::AutonomyWake) && finite(e.destination) && e.issued_at <= m.now &&
+            e.kind <= (care_contract ? ScheduledEvent::Kind::CareEnd : extended ? ScheduledEvent::Kind::ReturnProtein : ScheduledEvent::Kind::AutonomyWake) && finite(e.destination) && e.issued_at <= m.now &&
             scheduled_ids.insert(e.id.value).second && sequences.insert(e.key.sequence).second &&
             (s->queue.empty() || s->queue.rbegin()->first < e.key), "invalid future event");
         s->queue.emplace(e.key, e); s->queue_index.emplace(e.id, e.key);
     }
     const auto facts = r.count(limits.committed_events, 159);
     std::uint64_t previous_revision = 0; SimTime previous_time{};
+    std::set<ScheduledId> care_ticks;
     for (std::size_t i = 0; i < facts; ++i) {
         const auto e = read_fact(r);
         const auto seeded = e.kind == FactKind::ColonySeeded || e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded ||
             e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
             e.kind == FactKind::PhysiologyEnabled || (e.kind == FactKind::BehaviorChanged && !e.source.value) || e.kind==FactKind::GeometryConfigured ||
             e.kind == FactKind::SocialConfigured || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::LongTermConfigured ||
-            e.kind==FactKind::ReproductionEnabled || e.kind==FactKind::ResourceCycleConfigured;
-        const bool auxiliary=(e.kind==FactKind::BehaviorChanged || e.kind==FactKind::AntBorn) && e.source.value;
+            e.kind==FactKind::ReproductionEnabled || e.kind==FactKind::ResourceCycleConfigured || e.kind==FactKind::BiologyConfigured || e.kind==FactKind::CareProgramChanged;
+        if (e.kind==FactKind::CareTick) ensure(care_ticks.insert(e.source).second,"duplicate care tick");
+        const bool auxiliary=((e.kind==FactKind::BehaviorChanged || e.kind==FactKind::AntBorn) && e.source.value) ||
+            e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source));
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= (extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= (care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
                 (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || e.random_value == 0) &&
-            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged) : e.source.value && e.source.value < m.next_scheduled &&
+            (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
     }
@@ -174,7 +189,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_commands(r,*s,limits);
     read_social(r,*s);
     read_long_term(r,*s,guarded);
-    ensure(has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
+    if (care_contract) read_care(r,*s,limits);
+    ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
     (void)introduced.total_ug();
@@ -193,6 +209,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 !e.requested_ug && !e.observed_position_revision && e.destination==PositionM{} && e.stage==LifeStage::Egg &&
                 e.action==DiagnosticAction::Record && (queen ? (!e.resource.value && s->reproduction.contains(e.actor) && s->reproduction.at(e.actor).wake==e.id) :
                 (!e.actor.value && s->resource_cycles.contains(e.resource) && s->resource_cycles.at(e.resource).wake==e.id)),"invalid long-term scheduled event");
+        } else if (e.kind>=ScheduledEvent::Kind::CareWake) {
+            ensure(care_contract && s->care.contains(e.actor) && s->care.at(e.actor).pending==e.id &&
+                key.phase==(e.kind==ScheduledEvent::Kind::CareWake?Phase::Perception:Phase::Resolution) &&
+                !key.priority && !key.tie && !e.payload && !e.resource.value && !e.requested_ug && !e.observed_position_revision &&
+                e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,"invalid care schedule fields");
         } else if (e.kind==ScheduledEvent::Kind::ReturnProtein) {
             ensure(extended && s->long_term->protein_recycling && s->physiology.contains(e.actor) && key.phase==Phase::Resolution &&
                 !key.priority && !key.tie && !e.payload && !e.resource.value && e.requested_ug && e.destination==PositionM{} &&
@@ -255,7 +276,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     std::map<ColonyId, FoodMass> delivered;
     std::uint64_t executed_now = 0;
     for (const auto& e : s->journal) {
-        if (e.source.value && e.time == m.now && e.kind!=FactKind::BehaviorChanged && e.kind!=FactKind::AntBorn) ++executed_now;
+        if (e.source.value && e.time == m.now && e.kind!=FactKind::BehaviorChanged && e.kind!=FactKind::AntBorn &&
+            e.kind!=FactKind::BiologicalObservation && (!care_ticks.contains(e.source) || e.kind==FactKind::CareTick)) ++executed_now;
         ensure((!e.actor.value || s->ants.index.contains(e.actor)) && (!e.colony.value || s->colonies.index.contains(e.colony)) &&
             (!e.resource.value || s->foods.index.contains(e.resource)), "fact has missing entity");
         if (e.actor.value) ensure(e.colony == s->ants.get(s->ants.index.at(e.actor)).colony, "fact colony mismatch");
@@ -282,6 +304,14 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult && e.stage == LifeStage::Adult &&
                 inside(e.position, s->config) && !e.resource.value, "invalid movement fact");
             positions[e.actor] = e.position; ++moves[e.actor]; break;
+        case FactKind::BroodMoved:
+            ensure(care_contract && seeded_ants.contains(e.actor) && brood(stages[e.actor]) && e.stage==stages[e.actor] &&
+                s->care.contains(EntityId{e.payload}) && inside(e.position,s->config) && care_ticks.contains(e.source),"invalid handled brood movement");
+            positions[e.actor]=e.position; ++moves[e.actor]; break;
+        case FactKind::BiologyConfigured:
+        case FactKind::CareProgramChanged:
+        case FactKind::CareTick:
+        case FactKind::BiologicalObservation: ensure(care_contract,"care fact without contract"); break;
         case FactKind::FoodCollected:
             ensure(seeded_ants.contains(e.actor) && seeded_food.contains(e.resource) && stages[e.actor] == LifeStage::Adult &&
                 e.transferred.total_ug() > 0 && (e.outcome == Outcome::Success || e.outcome == Outcome::Partial), "invalid collection fact");
@@ -339,9 +369,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (nutrition_fact(e.kind)) ensure(e.transferred.total_ug() && e.outcome <= Outcome::Partial, "invalid nutrition transfer fact");
         if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodPlaced && e.kind != FactKind::FoodDelivered &&
             !nutrition_fact(e.kind) && e.kind != FactKind::PhysiologyEnabled && e.kind != FactKind::PhysiologyUpdated &&
-            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled)
+            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
-        if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind) && e.kind!=FactKind::ProteinRecycled)
+        if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind) && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation)
             ensure(e.outcome == Outcome::Success, "unexpected fact outcome");
     }
     ensure(seeded_colonies.size() == colonies && seeded_ants.size() == ants && seeded_food.size() == foods &&
@@ -358,6 +388,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     validate_physiology_evidence(*s);
     validate_autonomy_evidence(*s);
     validate_long_term_evidence(*s);
+    validate_care_evidence(*s);
     rebuild_nutrition_budget(*s);
     ensure(m.next_event == facts+1 && r.cursor == r.bytes.size(), "invalid event allocator or trailing checkpoint bytes");
     return s;

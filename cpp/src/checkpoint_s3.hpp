@@ -68,7 +68,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
     for (const auto& [id,r]:s.resource_cycles) { (void)id; accounted=sum(accounted,r.remaining); }
     for (const auto& e : s.journal) {
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
-        if (e.kind == FactKind::Moved) positions[e.actor] = e.position;
+        if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) positions[e.actor] = e.position;
         if (e.kind == FactKind::ForagingStarted) active_foragers.insert(e.actor);
         if (e.kind == FactKind::PhysiologyEnabled || e.kind==FactKind::AntBorn) {
             ensure(s.physiology.contains(e.actor) && !audit.contains(e.actor), "missing/duplicate physiology initialization");
@@ -132,7 +132,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 auto& recipient = audit.at(target); const auto target_stage = stages.at(target); settle(recipient, target_stage, e.time);
                 auto a = s.ants.get(s.ants.index.at(e.actor)), b = s.ants.get(s.ants.index.at(target));
                 a.position = positions.at(e.actor); b.position = positions.at(target);
-                ensure(prior_stage == LifeStage::Adult && a.caste == Caste::Worker &&
+                ensure(prior_stage == LifeStage::Adult && (a.caste == Caste::Worker || (s.care_profile && a.caste==Caste::Queen && s.care.contains(e.actor))) &&
                     (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.social && s.geometry ? nullptr : s.surface.get()),
                     "transfer has no living local contact evidence");
                 if (s.social) {
@@ -170,12 +170,13 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 "wrong physiology threshold schedule");
         } else ensure(!saved.physiology_event.value && !saved.behavior_event.value && saved.behavior == IndividualBehavior::Paused,
             "dead physiology still scheduled");
-        const bool nursing = ant.alive() && (saved.behavior == IndividualBehavior::Nurse || saved.behavior == IndividualBehavior::Rest);
+        const bool caring=s.care.contains(id) && s.care.at(id).enabled;
+        const bool nursing = ant.alive() && (saved.behavior == IndividualBehavior::Nurse || saved.behavior == IndividualBehavior::Rest || caring);
         ensure(nursing == (saved.behavior_event.value != 0), "nutrition behavior schedule mismatch");
         if (nursing) {
-            ensure(ant.stage == LifeStage::Adult && ant.caste == Caste::Worker && s.queue_index.contains(saved.behavior_event), "missing behavior event");
+            ensure(ant.stage == LifeStage::Adult && (ant.caste == Caste::Worker || caring) && s.queue_index.contains(saved.behavior_event), "missing behavior event");
             const auto& e = s.queue.at(s.queue_index.at(saved.behavior_event));
-            ensure(e.actor == id && (e.kind == ScheduledEvent::Kind::NutritionWake || e.key.phase == Phase::Resolution), "foreign behavior ownership");
+            ensure(e.actor == id && (e.kind == ScheduledEvent::Kind::NutritionWake || e.key.phase == Phase::Resolution || (caring && e.kind==ScheduledEvent::Kind::CareWake)), "foreign behavior ownership");
         }
         const auto f = s.foragers.find(id);
         ensure((saved.behavior == IndividualBehavior::Forage) == (f != s.foragers.end() && f->second.enabled), "foraging program mismatch");

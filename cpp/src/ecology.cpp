@@ -9,6 +9,8 @@ void WorldRuntime::set_autonomy(AntRef ref, bool enabled) {
   tx.commit();
 }
 void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
+  if (enabled && state_->care.contains(ref.id) && state_->care.at(ref.id).enabled)
+    throw std::invalid_argument("pause dedicated care before worker autonomy");
   profiling::Scope profile(profiling::Category::Policy);
   auto &s = *state_;
   const auto ant = query_ant(ref);

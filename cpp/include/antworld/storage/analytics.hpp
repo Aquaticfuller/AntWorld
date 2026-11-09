@@ -73,6 +73,13 @@ enum class Metric : std::uint32_t {
     ReserveProtein,
     ReserveWater,
     ReserveOther,
+    BiologicalSelected,
+    BiologicalStarted,
+    BiologicalCompleted,
+    BiologicalInterrupted,
+    ContactOpportunities,
+    CareActiveCompletedMs,
+    CareInactiveCompletedMs,
     Count
 };
 enum class MetricKind { Gauge, Flow };

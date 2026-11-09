@@ -1,0 +1,71 @@
+{
+  "dataset_doi": "10.5061/dryad.pnvx0k6wd",
+  "paper_doi": "10.1111/1365-2435.14536",
+  "license": "CC0-1.0",
+  "supplied_archive_sha256": "871b119b1b461f80f76bdfa83309f2b088a2ed805a403bf6f7f43949d41b1376",
+  "tables": [
+    {
+      "source_file": "Reversibility_of_worker_effect_3_days.txt",
+      "source_sha256": "f6b666793e30daeba8ac499e409e1827502794343f52c1974b73191a285d6e82",
+      "csv": "Reversibility_of_worker_effect_3_days.csv",
+      "csv_sha256": "948e31ecec22b17b66e67a3c28d76dbc927debdf4fb07e87c3e81482868cb9b4",
+      "rows": 144,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Reversibility_of_worker_effect_3_days.txt; each original table row retained"
+    },
+    {
+      "source_file": "Reversibility_of_worker_effect_2.5_years.txt",
+      "source_sha256": "13e78fddf78256191d117a9c2951ace1d0a796928c884fc978a0528e6ab8b178",
+      "csv": "Reversibility_of_worker_effect_2.5_years.csv",
+      "csv_sha256": "a279d5a8af47a6f3a970f1b4a10343f6045e4a4b9b1d8bafbe58bf289eb50091",
+      "rows": 42,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Reversibility_of_worker_effect_2.5_years.txt; each original table row retained"
+    },
+    {
+      "source_file": "Effect_of_worker_cues_wire_mesh_BORIS_output.txt",
+      "source_sha256": "2d69238f851de38e1e88a0ac396a8f0a524d63b8cdd156e7a63d44a65eb89d5b",
+      "csv": "Effect_of_worker_cues_wire_mesh_BORIS_output.csv",
+      "csv_sha256": "45adc55ddf78f55a9d9752a6df3a3133f444d10c19104e23d9c21fa17d130c9f",
+      "rows": 8750,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Effect_of_worker_cues_wire_mesh_BORIS_output.txt; each original table row retained"
+    },
+    {
+      "source_file": "Effect_of_worker_cues_wire_mesh_design_info.txt",
+      "source_sha256": "3f7a3fc21d47c006868250abe77db3e5ba15b94a37441fa6c039bdc6a4ad8ca8",
+      "csv": "Effect_of_worker_cues_wire_mesh_design_info.csv",
+      "csv_sha256": "cef31dc71645961f9858f5c46f8e9541e8d0fe670155c4503110d8361b426d16",
+      "rows": 60,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Effect_of_worker_cues_wire_mesh_design_info.txt; each original table row retained"
+    },
+    {
+      "source_file": "Effect_of_number_of_workers_5_larvae.txt",
+      "source_sha256": "b3347db44980c31cf7844a9915cb527df5a5f3d78a0a00a856a243e5148af1fe",
+      "csv": "Effect_of_number_of_workers_5_larvae.csv",
+      "csv_sha256": "88e457bddab272492756a4ac122a0978f26bd4aed9452ae9ab2044995962d8bd",
+      "rows": 228,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Effect_of_number_of_workers_5_larvae.txt; each original table row retained"
+    },
+    {
+      "source_file": "Effect_of_worker_emergence.txt",
+      "source_sha256": "882e0da9185d2b7df636835f8cf69a5234562fdb3e803f48ea8ffacd46510c23",
+      "csv": "Effect_of_worker_emergence.csv",
+      "csv_sha256": "adb66da15a7532c8e6e2a8297383e5f1d208076759732dccd3db9a3c52abc508",
+      "rows": 24,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Effect_of_worker_emergence.txt; each original table row retained"
+    },
+    {
+      "source_file": "Effect_of_worker_presence_and_food.txt",
+      "source_sha256": "b3e5e1bcf0421c868fa101d60b288d68b2016917d53d4d5bc02f84f9f823b824",
+      "csv": "Effect_of_worker_presence_and_food.csv",
+      "csv_sha256": "9999ee51409c6a3cd5cb0f59a65b307c10e7af8253cd73df86fd92c3ef70f4dd",
+      "rows": 840,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B01 Methods2.1.4/2.2; Dryad file Effect_of_worker_presence_and_food.txt; each original table row retained"
+    }
+  ]
+}

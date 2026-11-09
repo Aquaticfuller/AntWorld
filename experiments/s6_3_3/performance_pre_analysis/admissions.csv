@@ -1,0 +1,4 @@
+kind,session,attempt,admitted,started_utc_ns,ended_utc_ns,invalid_core_samples,invalid_statuses,system_busy_pct_complete,system_busy_pct_p50,system_busy_pct_p95,processor_busy_pct_complete,processor_busy_pct_p50,processor_busy_pct_p95,power_valid,sensors_valid
+contacts,session1,1,True,1794251980827085500,1794252040826944600,0,,True,5.094625598222718,13.511081919021212,True,0.026707827581606836,9.440643420884658,True,True
+contacts,session2,1,False,1794252123789988800,1794252183797041700,4,2147485654,True,9.724497916764197,16.37990930676111,False,10.938171678477715,22.270924953685657,True,True
+contacts,session2,2,False,1794252507093949800,1794252567104120600,1,2147485654,True,4.828209005376344,7.342042042042044,False,1.5733564587825932,11.145489558515662,True,True

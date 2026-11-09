@@ -185,6 +185,22 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc==2 && std::string_view(argv[1])=="S6.3.3") {
+            WorldRuntime w({633,9},7); w.configure_long_term(); w.configure_social();
+            sweep("care_contract",w,[&]{w.configure_biology();}); w.configure_biology();
+            const auto colony=w.seed_colony(); const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
+            const auto larva=w.seed_ant(colony,{{.001,0,0},LifeStage::Larva});
+            PhysiologyConfig p; p.basal_nj_per_ms=1; p.active_nj_per_ms=1; p.absorption_period={100000};
+            w.enable_physiology(queen,{{0,400,0,0},1000000000,1000,0},p); w.enable_physiology(larva,{},p);
+            sweep("queen_care_enrollment",w,[&]{w.enable_brood_care(queen);}); w.enable_brood_care(queen);
+            sweep("care_select",w,[&]{w.advance_to({1});}); w.advance_to({1});
+            sweep("care_start_and_reserve",w,[&]{w.advance_to({2});}); w.advance_to({2});
+            sweep("care_pause",w,[&]{w.pause_brood_care(queen);});
+            const auto end=w.pending_events().front().key.time;
+            sweep("care_complete",w,[&]{w.advance_to(end);}); w.advance_to(end);
+            const auto saved=w.checkpoint(); sweep("care_restore",w,[&]{w.restore(saved);});
+            std::cout<<"PASS S6.3.3 allocation failure\n"; return 0;
+        }
         if (argc==2 && (std::string_view(argv[1])=="S6.3" || std::string_view(argv[1])=="S6.3.1")) {
             WorldRuntime w({63,9},7); w.configure_long_term(); w.configure_social({});
             const auto colony=w.seed_colony(); const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});

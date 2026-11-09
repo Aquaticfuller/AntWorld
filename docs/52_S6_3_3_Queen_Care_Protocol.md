@@ -41,3 +41,11 @@ Engineering PASS requires full Debug/Release/ASan+UBSan/CI, all inherited tests,
 Performance: retain the <=6x 512-to-2048 advance target and historical failures. Use unchanged S6.3.2 qualified contact/birth workloads and event counts, balanced ABBA order, setup/advance/checkpoint/restore separated, raw samples and machine/CPU/load/temperature/power availability recorded. Use the existing frozen admission/telemetry tool; an inadmissible environment is NOT RUN/INCONCLUSIVE, not a relaxed target. Also report a bounded new-care workload and observation/storage overhead with full facts retained. No behavior/event reductions for speed.
 
 Deliver S6_3_3_RESULTS.md, current evidence/parameter extensions while preserving the atlas baseline, original CSVs, source comparisons, figures, test/performance evidence, commands and open questions. Push only the independent S6.3.3 branch and stop for review.
+
+## Source-data clarification before experimental execution
+
+The user supplied Dryad version 2024-02-09 after the original freeze and before any scientific matrix runs. The three-day and 2.5-year reversibility tables record **50 scans**, while Methods2.1.4 describes51. Preserve the frozen51-window output and additionally score50 windows (minutes5-54) for data-aligned sensitivity; compute empirical fractions with each original row's actual Scans denominator. This is an observation-denominator discrepancy, not permission to change care coefficients. Preserve raw missing values and different sample counts. The individual-context labels are not independent lifetime experiments. The common local movement and urgency primitives also remain explicit engineering assumptions, registered with the new rules.
+
+## Observation-only correction, before the final complete matrix
+
+An audit during performance suspension found close adult queens were included in the worker-contact opportunity category. Restrict that category to actual adult workers; brood opportunities remain separate. No behavior choice, coefficient or transfer law changes. Preserve completed/partial first executions under `pre_observer_correction`, including source/binary manifests, and rerun all384 fixed cases with corrected labels. Prior performance files remain preliminary if they refer to the older binary. No old biological outcome is removed or used to tune the correction.

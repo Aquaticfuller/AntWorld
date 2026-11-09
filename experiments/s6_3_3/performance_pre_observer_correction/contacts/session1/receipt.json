@@ -1,0 +1,10 @@
+{
+  "pid": 19624,
+  "exit_code": 0,
+  "started_utc_ns": 1794252040832106100,
+  "ended_utc_ns": 1794252100957378100,
+  "rows": 112,
+  "telemetry_rows": 598,
+  "binary_sha256": "c2b1395b02ba9e5842c09f6bff554b00a4eae4887f916732e1de850a5ea8f080",
+  "admission_attempt": 1
+}

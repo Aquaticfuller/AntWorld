@@ -4,6 +4,7 @@
 #include "antworld/core/behavior.hpp"
 #include "antworld/core/physiology.hpp"
 #include "antworld/core/geometry.hpp"
+#include "antworld/core/care.hpp"
 #include <span>
 
 namespace antworld {
@@ -35,7 +36,7 @@ struct ScheduledEvent {
     std::uint64_t payload{};
     enum class Kind : std::uint8_t { Diagnostic, Move, CollectFood, Lifecycle, Wake, DeliverFood, Rest, TrailMaintenance,
         Physiology, NutritionWake, IngestCargo, WithdrawNest, Trophallaxis, SoilAction, ExcavationWake, AutonomyWake,
-        Reproduction, ResourceRelease, ReturnProtein } kind{};
+        Reproduction, ResourceRelease, ReturnProtein, CareWake, CareBegin, CareEnd } kind{};
     EntityId actor;
     ResourceId resource;
     PositionM destination;
@@ -52,7 +53,8 @@ enum class FactKind : std::uint8_t {
     PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred,
     GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced,
     SocialConfigured, AutonomyChanged, AutonomyDecision, LongTermConfigured, ReproductionEnabled,
-    ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled
+    ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled,
+    BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved
 };
 struct WorldEvent {
     EventId id;
@@ -73,6 +75,7 @@ struct WorldEvent {
     DecisionReason reason{DecisionReason::None};
     double deposited_units{};
     bool forgot_memory{};
+    BehaviorObservation observation; // Encoded only for BiologicalObservation facts.
     bool operator==(const WorldEvent&) const = default;
 };
 // Canonical fact payload codec. It is not a full-world recovery format.

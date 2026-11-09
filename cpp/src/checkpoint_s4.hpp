@@ -266,7 +266,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             stages[e.actor] = e.stage;
         }
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) present_food.insert(e.resource);
-        if (e.kind == FactKind::Moved) {
+        if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) {
             ensure(clear(positions.at(e.actor), e.position, half(e.actor)),
                    "historical movement crosses solid material");
             positions[e.actor] = e.position;

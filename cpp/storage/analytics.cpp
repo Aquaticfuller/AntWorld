@@ -95,7 +95,14 @@ constexpr auto definitions = std::to_array<MetricDefinition>(
      {Metric::ReserveCarbs, "environment.reserve_carbs", "ug", "World-only inaccessible finite carbohydrate reserve", K::Gauge},
      {Metric::ReserveProtein, "environment.reserve_protein", "ug", "World-only inaccessible finite protein reserve", K::Gauge},
      {Metric::ReserveWater, "environment.reserve_water", "ug", "World-only inaccessible finite water reserve", K::Gauge},
-     {Metric::ReserveOther, "environment.reserve_other", "ug", "World-only inaccessible finite other reserve", K::Gauge}});
+     {Metric::ReserveOther, "environment.reserve_other", "ug", "World-only inaccessible finite other reserve", K::Gauge},
+     {Metric::BiologicalSelected,"biology.selected","events","Committed individual selections, not performed acts",K::Flow},
+     {Metric::BiologicalStarted,"biology.started","events","Validated starts; unknown legacy duration is not imputed",K::Flow},
+     {Metric::BiologicalCompleted,"biology.completed","events","Completed acts, including zero-time legacy transactions",K::Flow},
+     {Metric::BiologicalInterrupted,"biology.interrupted","events","Interrupted or rejected selected acts",K::Flow},
+     {Metric::ContactOpportunities,"biology.contact_opportunities","observations","Locally reachable sampled candidates, not successful contacts",K::Flow},
+     {Metric::CareActiveCompletedMs,"biology.completed_active_time","ms","Known bout duration attributed at completion; use behavior_window for overlap/censoring",K::Flow},
+     {Metric::CareInactiveCompletedMs,"biology.completed_inactive_time","ms","Explicit inactive bout duration attributed at completion; no legacy imputation",K::Flow}});
 static_assert(definitions.size() == static_cast<std::size_t>(Metric::Count));
 constexpr auto gauges = static_cast<std::size_t>(Metric::Seeded);
 using Values = std::array<std::uint64_t, gauges>;
@@ -210,6 +217,16 @@ std::vector<MetricValue> contributions(const WorldEvent &e, const GeometrySnapsh
             add_flow(static_cast<Metric>(static_cast<unsigned>(first) + i), v[i]);
     };
     switch (e.kind) {
+    case FactKind::BiologicalObservation: {
+        const auto& o=e.observation;
+        const auto metric=o.phase==ObservationPhase::Selected?Metric::BiologicalSelected:o.phase==ObservationPhase::Started?Metric::BiologicalStarted:
+            o.phase==ObservationPhase::Completed?Metric::BiologicalCompleted:o.phase==ObservationPhase::Interrupted?Metric::BiologicalInterrupted:Metric::ContactOpportunities;
+        add_flow(metric,1);
+        if(o.phase==ObservationPhase::Completed && o.duration_known)
+            add_flow(o.act==CareAct::Inactive?Metric::CareInactiveCompletedMs:Metric::CareActiveCompletedMs,
+                static_cast<std::uint64_t>(e.time.milliseconds-o.began_at.milliseconds));
+        break;
+    }
     case FactKind::AntBorn: add_flow(Metric::Born,1); break;
     case FactKind::ProteinRecycled: add_flow(Metric::RecycledProtein,e.transferred.protein_ug); break;
     case FactKind::ResourceReleased: food(Metric::ReleasedCarbs); break;

@@ -1,0 +1,4 @@
+run,seed,assay,condition,age_days,variant,decision_ms,bout_ms,memory_ms,inhibition,care_probability,worker_contact_probability,perception_m,step_m,arrangement_m,end_ms,events,checkpoint_bytes,advance_ms,checkpoint_ms,restore_ms,continuation_equal,conserved,first_contact_ms,first_retrieval_ms,retrieved,task_end_ms,path_m
+reversal_absent_55_memory1h_43,43,reversal,absent,55,memory1h,60000,10000,3600000,0.8,0.5,0.25,0.006,0.001,0.00025,435600000,137625,26963240,101.951,97.389,77.6912,1,1,,,,,
+reversal_present_55_memory1h_43,43,reversal,present,55,memory1h,60000,10000,3600000,0.8,0.5,0.25,0.006,0.001,0.00025,435600000,171264,34300923,90.6977,132.791,92.1973,1,1,,,,,
+reversal_removed_55_memory1h_43,43,reversal,removed,55,memory1h,60000,10000,3600000,0.8,0.5,0.25,0.006,0.001,0.00025,435600000,157118,31225356,69.6925,100.658,88.4659,1,1,,,,,

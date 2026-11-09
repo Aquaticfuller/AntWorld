@@ -1,0 +1,10 @@
+{
+  "protocol": "docs/52_S6_3_3_Queen_Care_Protocol.md; inherited S6.3.2 low-load admission and ABBA schedule unchanged",
+  "freeze": "Before any S6.3.3 performance admission/timing",
+  "threshold": "512 to 2048 simulation advance growth <= 6",
+  "binary_sha256": {
+    "contacts": "c2b1395b02ba9e5842c09f6bff554b00a4eae4887f916732e1de850a5ea8f080",
+    "births": "59981388e9103e61f5a1f11de6c765a2affacbfcb71eabaebe901192140d5a92"
+  },
+  "restrictions": "No concurrent experiment/build/test; retain all admission attempts, all timing samples and hardware telemetry. Three sessions per workload. No changed decisions, event counts, histories or threshold."
+}

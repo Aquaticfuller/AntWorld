@@ -1,5 +1,7 @@
 # Ant biology evidence atlas — S6.3.2.1
 
+Current authorized implementation extension: [S6.3.3 P01/P10](research/s6_3_3/README.md), frozen in document52. This atlas is the continuing scientific reference. Historical artifacts/source checks remain in research/s6_3_2_1/baseline; root parameter/state audits and SQLite include separately namespaced current records. No source endpoint is promoted to numerical parameter calibration. The coverage and historical research conclusions below are retained as the reviewed baseline.
+
 This is a traceable research baseline, **not a calibrated ant simulator or a completed systematic review**. The target is *Lasius niger*. Other species occupy separate records and cannot supply an unmarked substitute for a target-species measurement. No Simulation Core code, biological default, action, history or experiment outcome was changed.
 
 The [frozen protocol](docs/51_S6_3_2_1_Evidence_Atlas_Protocol.md) was committed as `765032d` before atlas construction. The unchanged source baseline is `2e1a5fa129821176954f26a88f56791635bc8cda`. The [file index and reproduction guide](research/s6_3_2_1/README.md) describes every delivery and the [schema](research/s6_3_2_1/SCHEMA.md) defines joins, missingness and units.

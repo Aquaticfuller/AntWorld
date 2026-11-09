@@ -35,7 +35,7 @@ inline SaveToken token(Statement &q, WorldId world) {
 }
 inline HistoryRecord record(Statement &q) {
     HistoryRecord r;
-    r.fact = decode_event(q.blob(12, 159));
+    r.fact = decode_event(q.blob(12, 210)); // Legacy159 + typed observation51; decoded length remains exact.
     r.related = {q.u64(4)};
     r.geometry_edit = {q.u64(10)};
     r.parcel = {q.u64(11)};
@@ -45,7 +45,8 @@ inline HistoryRecord record(Statement &q) {
                 q.u64(5) == e.colony.value && q.u64(6) == e.resource.value && q.u64(7) == e.source.value &&
                 q.u64(8) == e.revision && q.text(9) == e.world.str(),
             "history index disagrees with fact payload");
-    require(r.related.value == (e.kind == FactKind::NutritionTransferred || e.kind==FactKind::AntBorn ? e.payload : 0),
+    require(r.related.value == (e.kind==FactKind::BiologicalObservation?e.observation.target.value:
+        e.kind == FactKind::NutritionTransferred || e.kind==FactKind::AntBorn || e.kind==FactKind::BroodMoved ? e.payload : 0),
             "invalid related-entity evidence");
     const bool soil = e.kind >= FactKind::SoilExcavated && e.kind <= FactKind::SoilFilled;
     require(r.parcel.value == (soil ? e.payload : 0), "invalid parcel evidence");

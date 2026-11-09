@@ -1,0 +1,16 @@
+{
+  "protocol": "docs/52_S6_3_3_Queen_Care_Protocol.md; inherited S6.3.2 low-load admission and ABBA schedule unchanged",
+  "freeze": "Before any S6.3.3 performance admission/timing",
+  "threshold": "512 to 2048 simulation advance growth <= 6",
+  "binary_sha256": {
+    "contacts": "b0cdd583917d2f4e418e08785ffa348223602fdf34968975f31f8365c9359569",
+    "births": "b2de7ec1d2b69b530a898b61bbdde6f10b72b773beb03c99ec0ef2afe90a68e9"
+  },
+  "restrictions": "No concurrent experiment/build/test; retain all admission attempts, all timing samples and hardware telemetry. Three sessions per workload. No changed decisions, event counts, histories or threshold.",
+  "observer_correction": "Measurement candidate changes only queen-versus-worker opportunity labeling in opt-in care worlds. Previous binary samples retained under performance_pre_observer_correction and not pooled. The two rejected session2 admissions count toward the same three-attempt limit; no reset.",
+  "review_binary_sha256": {
+    "contacts": "d8f39d8d7eb96926cdf101a1377f867b1ed6feb10caf3dd851f6e9c5dcd5719c",
+    "births": "9076f76605ca6df2be9c506c3a202f37645b9d2669b8f949a9d8473b8b79ab80"
+  },
+  "post_run_validation_guard": "The review build additionally rejects an excessively fast custom brood-arrangement profile. It is provably inert for all384 frozen configurations and absent in disabled-care legacy workloads. Original measurement hashes remain pinned; no final wall-time qualification is inferred."
+}

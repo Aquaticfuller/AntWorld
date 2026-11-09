@@ -121,7 +121,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       stages[e.actor] = e.stage;
       positions[e.actor] = e.position;
     }
-    if (e.kind == FactKind::Moved)
+    if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved)
       positions[e.actor] = e.position;
     if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
       stages[e.actor] = e.stage;

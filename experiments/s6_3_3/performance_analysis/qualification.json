@@ -1,0 +1,8 @@
+{
+  "final_binary_contact_timing": "NOT_QUALIFIED",
+  "final_binary_birth_timing": "NOT_RUN: quiet qualification stopped after three failed admissions",
+  "rejected_admissions": 3,
+  "threshold": 6,
+  "preliminary": "One earlier observer binary contact session retained separately; never pooled or promoted to final qualification",
+  "next_step": "Review Windows per-core telemetry validity against an independent cumulative-time source; freeze any instrument change and a new quiet interval before retesting. Do not weaken <=6 or discard invalid/slow rows."
+}

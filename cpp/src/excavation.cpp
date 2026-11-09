@@ -31,6 +31,7 @@ ScheduledId WorldRuntime::submit_soil(const SoilProposal &p) {
     auto &s = *state_;
     const auto ant = query_ant(p.actor);
     if (!s.geometry || !ant || p.kind > SoilAction::Fill ||
+        (s.care.contains(p.actor.id) && s.care.at(p.actor.id).enabled) ||
         (s.autonomy.contains(p.actor.id) && s.autonomy.at(p.actor.id).enabled) ||
         (s.foragers.contains(p.actor.id) && s.foragers.at(p.actor.id).enabled) ||
         (s.physiology.contains(p.actor.id) && s.physiology.at(p.actor.id).behavior != IndividualBehavior::Paused) ||
@@ -387,6 +388,11 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         f.position = ant.position;
         f.stage = ant.stage;
         tx.fact(f);
+        if (s.care_profile) {
+            const auto act=choice.action.kind==ScheduledEvent::Kind::Move?CareAct::Walk:choice.action.kind==ScheduledEvent::Kind::Rest?
+                CareAct::Inactive:choice.soil.kind==SoilAction::Excavate?CareAct::Excavate:CareAct::HandleSoil;
+            observe(tx,ant.id,wakes[i].id,{ObservationPhase::Selected,act,{},worker.action,s.m.now,false});
+        }
     }
 }
 void WorldRuntime::after_excavation_action(Transaction &tx, const ScheduledEvent &e, const WorldEvent &f,

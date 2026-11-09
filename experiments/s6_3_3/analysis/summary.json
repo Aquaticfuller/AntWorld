@@ -1,0 +1,15 @@
+{
+  "runs": 384,
+  "windows": 1080,
+  "conservation_and_restore": "384/384",
+  "paper_clusters": 759,
+  "quantitative_comparisons": 36,
+  "all_parameters_fitted": 0,
+  "raw_discrepancies": [
+    "B01 reversibility: raw50 versus text51 scans; older queens14 labels with3 NA rows;13 measured units per hour versus text12",
+    "B01 mesh:60 raw queens;175 observed queen-hours; varying scan counts 1-52; no deletion",
+    "B02 author R script explains70 raw first-worker groups ->67 queen-worker pairs ->61 productivity cohort; all398 trials retained"
+  ],
+  "missing_source_observations": 3,
+  "interpretation": "Bootstrap seed/queen cluster intervals; no biological equivalence margin; approximate geometry and passive-worker cue controls; no calibration"
+}

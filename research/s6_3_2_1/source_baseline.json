@@ -1,0 +1,5 @@
+{
+  "commit": "65e78752c9b8793834d719bfda1a012c959e3111",
+  "sha256": "33ac479b6d5acfa2bcdea78f190d24b0175824def30323df471f014b067b8494",
+  "purpose": "Frozen S6.3.2 and S6.3.2.1 source audits; later authorized code uses a separate current audit"
+}

@@ -1,0 +1,26 @@
+{
+  "dataset_doi": "10.5061/dryad.qm114cj",
+  "paper_doi": "10.1002/ece3.4475",
+  "license": "CC0-1.0",
+  "supplied_archive_sha256": "c4913e6614a1d3ba932e2596a41b85308ad14b6b642ad977b7d7d2a88c9cc2cc",
+  "tables": [
+    {
+      "source_file": "Copie+de+Lasius+all+data_check.csv",
+      "source_sha256": "b85236d5abd5cd5f1d445d32d794e13dbd9b8b9582c7a823fb96afe8755eee55",
+      "csv": "B02_retrieval.csv",
+      "csv_sha256": "2b26b2416cf8a76ac0b9ae4886c51f35c4424db9266c0e2f74733c1e8589ed91",
+      "rows": 398,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B02 pp10411-10412 Methods2.2-2.3; Dryad file Copie+de+Lasius+all+data_check.csv; each original table row retained"
+    },
+    {
+      "source_file": "colony+productivity.csv",
+      "source_sha256": "198753944fc808dcf480f0434f1d7934625f87ae4f762b86b8a6f810ed83f874",
+      "csv": "B02_productivity.csv",
+      "csv_sha256": "1e5101e99618df28f2b5f00395ec3a603892fabf836208761b6a516d4e00afc7",
+      "rows": 61,
+      "extraction": "REPOSITORY_MEASUREMENT; delimiter/newline normalization only; missing values retained",
+      "locator": "B02 pp10411-10412 Methods2.2-2.3; Dryad file colony+productivity.csv; each original table row retained"
+    }
+  ]
+}

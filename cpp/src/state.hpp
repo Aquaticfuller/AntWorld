@@ -192,6 +192,12 @@ struct WorldRuntime::State {
     using ResourceCycles = std::map<ResourceId, ResourceCycleState>;
     Reproduction reproduction;
     ResourceCycles resource_cycles;
+    std::shared_ptr<const SpeciesCareProfile> care_profile;
+    EnvironmentCareProfile care_environment;
+    using Care = std::map<EntityId, CareState>;
+    using CareLocks = std::map<EntityId, EntityId>;
+    Care care;
+    CareLocks care_locks;
     detail::ContactNodes contact_nodes;
     detail::ContactRoots contact_roots;
     using Autonomy = std::map<EntityId,AutonomyState>;
@@ -251,6 +257,8 @@ class WorldRuntime::Transaction {
     std::shared_ptr<const detail::GeometryDefinition> geometry_before;
     std::shared_ptr<const SocialConfig> social_before;
     std::shared_ptr<const LongTermConfig> long_term_before;
+    std::shared_ptr<const SpeciesCareProfile> care_profile_before;
+    EnvironmentCareProfile care_environment_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
     std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
     std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
@@ -281,15 +289,18 @@ public:
     detail::MapJournal<State::Reproduction> reproduction;
     detail::MapJournal<State::ResourceCycles> resource_cycles;
     detail::MapJournal<State::PendingConflicts> pending_conflicts;
+    detail::MapJournal<State::Care> care;
+    detail::MapJournal<State::CareLocks> care_locks;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
         geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term),
+        care_profile_before(state.care_profile), care_environment_before(state.care_environment),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
         visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
         contact_nodes(s.contact_nodes), contact_roots(s.contact_roots), autonomy(s.autonomy),
         geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
         soil_requests(s.soil_requests), excavators(s.excavators), sdf_cache(s.sdf_cache), dirty_bricks(s.dirty_bricks), commands(s.commands),
-        reproduction(s.reproduction), resource_cycles(s.resource_cycles), pending_conflicts(s.pending_conflicts) {}
+        reproduction(s.reproduction), resource_cycles(s.resource_cycles), pending_conflicts(s.pending_conflicts), care(s.care), care_locks(s.care_locks) {}
     Transaction(const Transaction&) = delete;
     Transaction& operator=(const Transaction&) = delete;
     ~Transaction() noexcept {
@@ -309,6 +320,7 @@ public:
         s.geometry = geometry_before;
         s.social = social_before;
         s.long_term = long_term_before;
+        s.care_profile = care_profile_before; s.care_environment = care_environment_before;
     }
     void commit() noexcept {
         profiling::Scope profile(profiling::Category::Transaction);
@@ -319,6 +331,7 @@ public:
         commands.commit();
         reproduction.commit(); resource_cycles.commit();
         pending_conflicts.commit();
+        care.commit(); care_locks.commit();
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }

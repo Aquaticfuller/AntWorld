@@ -1,0 +1,12 @@
+{
+  "seed": 7,
+  "mode": "primary",
+  "returncode": 0,
+  "elapsed_s": 53.635293400031514,
+  "files": {
+    "events.csv.gz": "32a932fd8760eb26e9badaa01581ec882eb1badcb30bddc4fa5b32a6d6f9d8b6",
+    "runs.csv": "926f9b609414eb38c6dc57ae2ead09b2d9d21026d4e6da15b723f8b95c7a1615",
+    "scans.csv": "cdb04bbec0c3d574893c49d35b1b6bc729d9ca39f56a52ff08ad77c87a5fda6d",
+    "windows.csv": "55e1e8be66b366107c7e2022d713f3033b00015866953e1177591ec0089b629e"
+  }
+}

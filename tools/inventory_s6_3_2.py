@@ -15,6 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'experiments/s6_3_2'
+from atlas_baseline import source_root
+ROOT = source_root()
 EXTRA = {'AntSeed', 'PhysiologySeed', 'FoodMass', 'PositionM', 'BoxQ', 'Controls', 'IntegratedOptions'}
 TOKEN = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')
 

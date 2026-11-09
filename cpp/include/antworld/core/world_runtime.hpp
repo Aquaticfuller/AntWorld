@@ -159,5 +159,20 @@ public:
     void configure_resource_cycle(FoodRef, const ResourceCycleConfig&);
     [[nodiscard]] std::optional<ResourceCycleState> query_resource_cycle(FoodRef) const;
     [[nodiscard]] FoodMass resource_reserves() const;
+    static constexpr std::uint32_t care_schema_version = 11, care_physics_version = 13;
+    void configure_biology(const SpeciesCareProfile& = {}, const EnvironmentCareProfile& = {});
+    void enable_brood_care(AntRef, const IndividualCareProfile& = {});
+    void pause_brood_care(AntRef);
+    [[nodiscard]] std::optional<CareState> query_care(AntRef) const;
+    [[nodiscard]] std::optional<SpeciesCareProfile> care_profile() const;
+    [[nodiscard]] BehaviorWindow behavior_window(AntRef, SimTime begin, SimTime end) const;
+private:
+    void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    void execute_care_action(Transaction&, const ScheduledEvent&);
+    void interrupt_care(Transaction&, EntityId, Outcome, bool disable = false);
+    void validate_active_care(Transaction&);
+    void schedule_care(Transaction&, EntityId, SimTime);
+    void observe(Transaction&, EntityId, ScheduledId, const BehaviorObservation&, FoodMass = {}, Outcome = Outcome::Success);
+    void observe_legacy_action(Transaction&, const ScheduledEvent&, const WorldEvent&);
 };
 } // namespace antworld

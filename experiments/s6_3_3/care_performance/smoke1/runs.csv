@@ -1,0 +1,3 @@
+run,seed,assay,condition,age_days,variant,decision_ms,bout_ms,memory_ms,inhibition,care_probability,worker_contact_probability,perception_m,step_m,arrangement_m,end_ms,events,checkpoint_bytes,advance_ms,checkpoint_ms,restore_ms,continuation_equal,conserved,first_contact_ms,first_retrieval_ms,retrieved,task_end_ms,path_m
+reversal_absent_55_base_7,7,reversal,absent,55,base,60000,10000,21600000,0.8,0.5,0.25,0.006,0.001,0.00025,3600000,1225,243368,0.8196,0.7482,0.5731,1,1,,,,,
+retrieval_queen_7,7,retrieval,queen,0,base,60000,10000,21600000,0.8,0.5,0.25,0.006,0.001,0.00025,780000,169,33001,0.1473,0.1038,0.109,1,1,350022,580036,1,-1,0.011

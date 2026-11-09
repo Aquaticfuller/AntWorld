@@ -1,0 +1,13 @@
+{
+  "completed_preliminary_cases": 105,
+  "groups": [
+    "primary_19",
+    "primary_43",
+    "primary_7",
+    "sensitivity_19",
+    "sensitivity_7"
+  ],
+  "unchanged": "All scans/window endpoints, biological configurations, paths, contact/retrieval endpoints and conservation/restore flags",
+  "excluded_from_comparison": "Wall times, event counts and encoded size; observer labels legitimately alter history size",
+  "partial_cases": "Retained under pre_observer_correction, never declared completed replicates"
+}

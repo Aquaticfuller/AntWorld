@@ -1,0 +1,760 @@
+source,file,csv_line,unit_id,assay,age,condition,window_h,metric,value,denominator,locator
+B01,Reversibility_of_worker_effect_3_days.csv,2,E11-44,reversal,55,absent,0,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,3,E11-22,reversal,55,added,0,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,4,E11-42,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,5,E11-19,reversal,55,absent,0,care_fraction,0.18,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,6,E11-47,reversal,55,added,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,7,E11-27,reversal,55,removed,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,8,E11-37,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,9,E11-25,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,10,E11-24,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,11,E11-09,reversal,55,absent,0,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,12,E11-16,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,13,E11-41,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,14,E11-34,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,15,E11-01,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,16,E11-32,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,17,E11-36,reversal,55,absent,0,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,18,E11-33,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,19,E11-46,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,20,E11-23,reversal,55,absent,0,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,21,E11-31,reversal,55,added,0,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,22,E11-06,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,23,E11-17,reversal,55,absent,0,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,24,E11-45,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,25,E11-35,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,26,E11-11,reversal,55,absent,0,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,27,E11-07,reversal,55,added,0,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,28,E11-29,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,29,E11-48,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,30,E11-02,reversal,55,added,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,31,E11-21,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,32,E11-38,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,33,E11-18,reversal,55,added,0,care_fraction,0.28,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,34,E11-12,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,35,E11-43,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,36,E11-13,reversal,55,added,0,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,37,E11-04,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,38,E11-28,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,39,E11-26,reversal,55,added,0,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,40,E11-14,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,41,E11-40,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,42,E11-05,reversal,55,added,0,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,43,E11-39,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,44,E11-30,reversal,55,absent,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,45,E11-15,reversal,55,added,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,46,E11-10,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,47,E11-20,reversal,55,absent,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,48,E11-03,reversal,55,added,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,49,E11-08,reversal,55,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,50,E11-44,reversal,55,absent,24,care_fraction,0.28,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,51,E11-22,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,52,E11-42,reversal,55,removed,24,care_fraction,0.18,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,53,E11-19,reversal,55,absent,24,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,54,E11-47,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,55,E11-27,reversal,55,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,56,E11-37,reversal,55,absent,24,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,57,E11-25,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,58,E11-24,reversal,55,removed,24,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,59,E11-09,reversal,55,absent,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,60,E11-16,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,61,E11-41,reversal,55,removed,24,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,62,E11-34,reversal,55,absent,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,63,E11-01,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,64,E11-32,reversal,55,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,65,E11-36,reversal,55,absent,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,66,E11-33,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,67,E11-46,reversal,55,removed,24,care_fraction,0.16,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,68,E11-23,reversal,55,absent,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,69,E11-31,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,70,E11-06,reversal,55,removed,24,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,71,E11-17,reversal,55,absent,24,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,72,E11-45,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,73,E11-35,reversal,55,removed,24,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,74,E11-11,reversal,55,absent,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,75,E11-07,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,76,E11-29,reversal,55,removed,24,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,77,E11-48,reversal,55,absent,24,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,78,E11-02,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,79,E11-21,reversal,55,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,80,E11-38,reversal,55,absent,24,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,81,E11-18,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,82,E11-12,reversal,55,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,83,E11-43,reversal,55,absent,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,84,E11-13,reversal,55,added,24,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,85,E11-04,reversal,55,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,86,E11-28,reversal,55,absent,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,87,E11-26,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,88,E11-14,reversal,55,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,89,E11-40,reversal,55,absent,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,90,E11-05,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,91,E11-39,reversal,55,removed,24,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,92,E11-30,reversal,55,absent,24,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,93,E11-15,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,94,E11-10,reversal,55,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,95,E11-20,reversal,55,absent,24,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,96,E11-03,reversal,55,added,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,97,E11-08,reversal,55,removed,24,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,98,E11-44,reversal,55,absent,48,care_fraction,0.32,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,99,E11-22,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,100,E11-42,reversal,55,removed,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,101,E11-19,reversal,55,absent,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,102,E11-47,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,103,E11-27,reversal,55,removed,48,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,104,E11-37,reversal,55,absent,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,105,E11-25,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,106,E11-24,reversal,55,removed,48,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,107,E11-09,reversal,55,absent,48,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,108,E11-16,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,109,E11-41,reversal,55,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,110,E11-34,reversal,55,absent,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,111,E11-01,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,112,E11-32,reversal,55,removed,48,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,113,E11-36,reversal,55,absent,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,114,E11-33,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,115,E11-46,reversal,55,removed,48,care_fraction,0.4,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,116,E11-23,reversal,55,absent,48,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,117,E11-31,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,118,E11-06,reversal,55,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,119,E11-17,reversal,55,absent,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,120,E11-45,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,121,E11-35,reversal,55,removed,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,122,E11-11,reversal,55,absent,48,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,123,E11-07,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,124,E11-29,reversal,55,removed,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,125,E11-48,reversal,55,absent,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,126,E11-02,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,127,E11-21,reversal,55,removed,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,128,E11-38,reversal,55,absent,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,129,E11-18,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,130,E11-12,reversal,55,removed,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,131,E11-43,reversal,55,absent,48,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,132,E11-13,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,133,E11-04,reversal,55,removed,48,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,134,E11-28,reversal,55,absent,48,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,135,E11-26,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,136,E11-14,reversal,55,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,137,E11-40,reversal,55,absent,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,138,E11-05,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,139,E11-39,reversal,55,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,140,E11-30,reversal,55,absent,48,care_fraction,0.26,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,141,E11-15,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,142,E11-10,reversal,55,removed,48,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,143,E11-20,reversal,55,absent,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,144,E11-03,reversal,55,added,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_3_days.csv,145,E11-08,reversal,55,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,2,E4b_13,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,3,E4b_13,reversal,932,removed,24,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,4,E4b_13,reversal,932,removed,48,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,5,E2a_02,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,6,E2a_02,reversal,932,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,7,E2a_02,reversal,932,removed,48,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,8,E5_76,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,9,E5_76,reversal,932,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,10,E5_76,reversal,932,removed,48,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,11,E1_68,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,12,E1_68,reversal,932,removed,24,care_fraction,0.2,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,13,E1_68,reversal,932,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,14,E8_12,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,15,E8_12,reversal,932,removed,24,care_fraction,0.08,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,16,E8_12,reversal,932,removed,48,care_fraction,0.26,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,17,E4b_08,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,18,E4b_08,reversal,932,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,19,E4b_08,reversal,932,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,20,E4b_62,reversal,932,removed,0,care_fraction,0.02,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,21,E4b_62,reversal,932,removed,24,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,22,E4b_62,reversal,932,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,23,E4b_63,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,24,E4b_63,reversal,932,removed,24,care_fraction,0.18,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,25,E4b_63,reversal,932,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,26,E5_54,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,27,E5_54,reversal,932,removed,24,care_fraction,0.06,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,28,E5_54,reversal,932,removed,48,care_fraction,0.28,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,29,E1_55,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,30,E1_55,reversal,932,removed,24,care_fraction,0.1,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,31,E1_55,reversal,932,removed,48,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,32,E5_41,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,33,E5_41,reversal,932,removed,24,care_fraction,0.16,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,34,E5_41,reversal,932,removed,48,care_fraction,0.12,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,35,E8_09,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,36,E8_09,reversal,932,removed,24,care_fraction,0.2,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,37,E8_09,reversal,932,removed,48,care_fraction,0.14,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,38,E4b_17,reversal,932,removed,0,care_fraction,MISSING,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,39,E4b_17,reversal,932,removed,24,care_fraction,0.04,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,40,E4b_17,reversal,932,removed,48,care_fraction,0.24,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,41,E4b_87,reversal,932,removed,0,care_fraction,0.0,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,42,E4b_87,reversal,932,removed,24,care_fraction,MISSING,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Reversibility_of_worker_effect_2.5_years.csv,43,E4b_87,reversal,932,removed,48,care_fraction,MISSING,50,Methods2.1.4/2.2.4-5; Fig1c-d
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-02,mesh,52,barrier,24,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-02,mesh,52,barrier,2,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-02,mesh,52,barrier,6,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-04,mesh,52,barrier,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-04,mesh,52,barrier,2,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-04,mesh,52,barrier,6,care_fraction,0.21568627450980393,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-05,mesh,52,barrier,24,care_fraction,0.2549019607843137,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-05,mesh,52,barrier,2,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-05,mesh,52,barrier,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-06,mesh,52,absent,24,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-06,mesh,52,absent,2,care_fraction,0.5098039215686274,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-06,mesh,52,absent,6,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-09,mesh,52,barrier,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-09,mesh,52,barrier,2,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-09,mesh,52,barrier,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-10,mesh,52,present,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-10,mesh,52,present,2,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-10,mesh,52,present,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-11,mesh,52,barrier,24,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-11,mesh,52,barrier,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-11,mesh,52,barrier,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-12,mesh,52,barrier,24,care_fraction,0.3333333333333333,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-12,mesh,52,barrier,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-01,mesh,52,absent,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-12,mesh,52,barrier,6,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-01,mesh,52,absent,2,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-13,mesh,52,present,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-13,mesh,52,present,2,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-13,mesh,52,present,6,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-14,mesh,52,absent,24,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-14,mesh,52,absent,2,care_fraction,0.5686274509803921,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-14,mesh,52,absent,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-16,mesh,52,present,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-16,mesh,52,present,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-16,mesh,52,present,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-01,mesh,52,absent,6,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-17,mesh,52,absent,24,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-17,mesh,52,absent,2,care_fraction,0.37254901960784315,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-17,mesh,52,absent,6,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-18,mesh,52,barrier,24,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-18,mesh,52,barrier,2,care_fraction,0.17647058823529413,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-18,mesh,52,barrier,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-19,mesh,52,absent,24,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-19,mesh,52,absent,2,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-19,mesh,52,absent,6,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-21,mesh,52,absent,24,care_fraction,0.24,50,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-21,mesh,52,absent,2,care_fraction,0.27450980392156865,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-21,mesh,52,absent,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-22,mesh,52,barrier,24,care_fraction,0.1,10,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-22,mesh,52,barrier,2,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-22,mesh,52,barrier,6,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-23,mesh,52,barrier,2,care_fraction,0,9,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-24,mesh,52,present,24,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-24,mesh,52,present,2,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-24,mesh,52,present,6,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-26,mesh,52,barrier,24,care_fraction,0.2549019607843137,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-26,mesh,52,barrier,2,care_fraction,0.43137254901960786,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-26,mesh,52,barrier,6,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-27,mesh,52,barrier,24,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-27,mesh,52,barrier,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-27,mesh,52,barrier,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-28,mesh,52,absent,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-28,mesh,52,absent,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-28,mesh,52,absent,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-29,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-29,mesh,52,present,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-29,mesh,52,present,6,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-30,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-30,mesh,52,present,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-30,mesh,52,present,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-31,mesh,52,absent,24,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-31,mesh,52,absent,2,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-31,mesh,52,absent,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-32,mesh,52,barrier,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-32,mesh,52,barrier,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-32,mesh,52,barrier,6,care_fraction,0.21568627450980393,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-33,mesh,52,absent,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-33,mesh,52,absent,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-33,mesh,52,absent,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-34,mesh,52,absent,24,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-34,mesh,52,absent,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-34,mesh,52,absent,6,care_fraction,0.29411764705882354,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-35,mesh,52,absent,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-35,mesh,52,absent,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-35,mesh,52,absent,6,care_fraction,0.27450980392156865,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-36,mesh,52,barrier,24,care_fraction,0,1,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-36,mesh,52,barrier,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-36,mesh,52,barrier,6,care_fraction,0.29411764705882354,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-37,mesh,52,barrier,24,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-37,mesh,52,barrier,2,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-37,mesh,52,barrier,6,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-38,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-38,mesh,52,present,2,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-38,mesh,52,present,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-39,mesh,52,barrier,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-39,mesh,52,barrier,2,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-39,mesh,52,barrier,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-40,mesh,52,barrier,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-40,mesh,52,barrier,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-40,mesh,52,barrier,6,care_fraction,0.21568627450980393,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-41,mesh,52,present,2,care_fraction,0,10,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-42,mesh,52,absent,24,care_fraction,0,52,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-42,mesh,52,absent,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-42,mesh,52,absent,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-43,mesh,52,barrier,24,care_fraction,0.3333333333333333,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-43,mesh,52,barrier,2,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-43,mesh,52,barrier,6,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-44,mesh,52,present,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-44,mesh,52,present,2,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-44,mesh,52,present,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-45,mesh,52,absent,24,care_fraction,0.17647058823529413,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-45,mesh,52,absent,2,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-45,mesh,52,absent,6,care_fraction,0.14,50,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-46,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-46,mesh,52,present,2,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-46,mesh,52,present,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-47,mesh,52,absent,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-47,mesh,52,absent,2,care_fraction,0.3333333333333333,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-47,mesh,52,absent,6,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-48,mesh,52,absent,24,care_fraction,0.27450980392156865,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-48,mesh,52,absent,2,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-48,mesh,52,absent,6,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-49,mesh,52,barrier,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-49,mesh,52,barrier,2,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-49,mesh,52,barrier,6,care_fraction,0.27450980392156865,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-50,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-50,mesh,52,present,2,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-50,mesh,52,present,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-51,mesh,52,present,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-51,mesh,52,present,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-51,mesh,52,present,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-52,mesh,52,absent,24,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-52,mesh,52,absent,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-52,mesh,52,absent,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-53,mesh,52,barrier,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-53,mesh,52,barrier,2,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-53,mesh,52,barrier,6,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-54,mesh,52,barrier,2,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-54,mesh,52,barrier,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-55,mesh,52,barrier,24,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-55,mesh,52,barrier,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-55,mesh,52,barrier,6,care_fraction,0.21568627450980393,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-56,mesh,52,absent,24,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-56,mesh,52,absent,2,care_fraction,0.43137254901960786,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-56,mesh,52,absent,6,care_fraction,0.23529411764705882,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-58,mesh,52,absent,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-58,mesh,52,absent,2,care_fraction,0.3333333333333333,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-58,mesh,52,absent,6,care_fraction,0.3333333333333333,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-59,mesh,52,barrier,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-59,mesh,52,barrier,2,care_fraction,0.2549019607843137,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-59,mesh,52,barrier,6,care_fraction,0.11764705882352941,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-60,mesh,52,present,24,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-60,mesh,52,present,2,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-60,mesh,52,present,6,care_fraction,0.058823529411764705,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-61,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-61,mesh,52,present,2,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-61,mesh,52,present,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-62,mesh,52,barrier,24,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-62,mesh,52,barrier,2,care_fraction,0.19607843137254902,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-62,mesh,52,barrier,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-63,mesh,52,absent,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-63,mesh,52,absent,2,care_fraction,0.29411764705882354,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-63,mesh,52,absent,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-64,mesh,52,absent,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-64,mesh,52,absent,2,care_fraction,0.1568627450980392,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-64,mesh,52,absent,6,care_fraction,0.0392156862745098,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-65,mesh,52,present,24,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-65,mesh,52,present,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-65,mesh,52,present,6,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-66,mesh,52,barrier,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-66,mesh,52,barrier,2,care_fraction,0.13725490196078433,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-66,mesh,52,barrier,6,care_fraction,0.0784313725490196,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-08,mesh,52,present,24,care_fraction,0,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-08,mesh,52,present,2,care_fraction,0.09803921568627451,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B01,Effect_of_worker_cues_wire_mesh_BORIS_output.csv,GROUP_BY Box_label AND Time_since_setup_h,E4-20-08,mesh,52,present,6,care_fraction,0.0196078431372549,51,Methods2.2.12; Fig2c; partial/unequal scan counts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,queen,0,first_contact_capped_s,106.1,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,three_workers,0,first_contact_capped_s,81.39500000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,later_workers,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,1,retrieval,0,later_workers,0,first_contact_capped_s,46.875,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,queen,0,first_contact_capped_s,70.55,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,three_workers,0,first_contact_capped_s,17.16,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,later_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,2,retrieval,0,later_workers,0,first_contact_capped_s,287.385,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,3,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,3,retrieval,0,queen,0,first_contact_capped_s,306.27,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,3,retrieval,0,three_workers,0,retrieved,2.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,3,retrieval,0,three_workers,0,first_contact_capped_s,73.96,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,4,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,4,retrieval,0,queen,0,first_contact_capped_s,136.975,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,4,retrieval,0,three_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,4,retrieval,0,three_workers,0,first_contact_capped_s,36.035,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,queen,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,queen,0,first_contact_capped_s,305.83,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,three_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,three_workers,0,first_contact_capped_s,49.815,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,later_workers,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,5,retrieval,0,later_workers,0,first_contact_capped_s,23.23,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,queen,0,first_contact_capped_s,25.955,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,three_workers,0,first_contact_capped_s,9.16,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,later_workers,0,retrieved,1.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,6,retrieval,0,later_workers,0,first_contact_capped_s,20.515,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,7,retrieval,0,queen,0,retrieved,2.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,7,retrieval,0,queen,0,first_contact_capped_s,37.23,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,7,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,7,retrieval,0,three_workers,0,first_contact_capped_s,27.86,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,8,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,8,retrieval,0,three_workers,0,first_contact_capped_s,9.565,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,queen,0,first_contact_capped_s,26.835,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,three_workers,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,three_workers,0,first_contact_capped_s,19.85,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,9,retrieval,0,later_workers,0,first_contact_capped_s,21.92,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,10,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,10,retrieval,0,queen,0,first_contact_capped_s,28.84,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,11,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,11,retrieval,0,queen,0,first_contact_capped_s,11.655000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,queen,0,first_contact_capped_s,28.3,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,three_workers,0,first_contact_capped_s,12.48,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,later_workers,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,12,retrieval,0,later_workers,0,first_contact_capped_s,74.38499999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,13,retrieval,0,queen,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,13,retrieval,0,queen,0,first_contact_capped_s,19.69,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,13,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,13,retrieval,0,three_workers,0,first_contact_capped_s,64.795,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,queen,0,first_contact_capped_s,40.15,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,three_workers,0,first_contact_capped_s,103.19999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,14,retrieval,0,later_workers,0,first_contact_capped_s,190.75,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,queen,0,first_contact_capped_s,44.709999999999994,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,three_workers,0,first_contact_capped_s,9.68,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,later_workers,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,15,retrieval,0,later_workers,0,first_contact_capped_s,35.3,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,16,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,16,retrieval,0,queen,0,first_contact_capped_s,12.58,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,16,retrieval,0,three_workers,0,retrieved,2.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,16,retrieval,0,three_workers,0,first_contact_capped_s,214.915,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,17,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,17,retrieval,0,three_workers,0,first_contact_capped_s,16.75,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,queen,0,first_contact_capped_s,153.355,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,three_workers,0,first_contact_capped_s,18.325,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,later_workers,0,retrieved,4.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,18,retrieval,0,later_workers,0,first_contact_capped_s,69.28999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,queen,0,first_contact_capped_s,43.92,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,three_workers,0,first_contact_capped_s,7.82,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,19,retrieval,0,later_workers,0,first_contact_capped_s,600.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,queen,0,retrieved,4.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,queen,0,first_contact_capped_s,36.585,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,three_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,three_workers,0,first_contact_capped_s,54.64,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,20,retrieval,0,later_workers,0,first_contact_capped_s,337.46500000000003,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,queen,0,first_contact_capped_s,322.15,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,three_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,three_workers,0,first_contact_capped_s,27.165,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,21,retrieval,0,later_workers,0,first_contact_capped_s,342.425,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,queen,0,first_contact_capped_s,115.33500000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,three_workers,0,first_contact_capped_s,7.55,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,22,retrieval,0,later_workers,0,first_contact_capped_s,465.51,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,queen,0,first_contact_capped_s,15.695,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,three_workers,0,retrieved,4.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,three_workers,0,first_contact_capped_s,8.215,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,23,retrieval,0,later_workers,0,first_contact_capped_s,178.03,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,queen,0,first_contact_capped_s,22.1,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,three_workers,0,first_contact_capped_s,8.459999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,24,retrieval,0,later_workers,0,first_contact_capped_s,344.765,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,queen,0,first_contact_capped_s,29.58,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,three_workers,0,first_contact_capped_s,14.305,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,25,retrieval,0,later_workers,0,first_contact_capped_s,32.79,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,26,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,26,retrieval,0,queen,0,first_contact_capped_s,16.675,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,queen,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,queen,0,first_contact_capped_s,30.494999999999997,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,three_workers,0,first_contact_capped_s,59.900000000000006,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,later_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,27,retrieval,0,later_workers,0,first_contact_capped_s,25.380000000000003,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,queen,0,first_contact_capped_s,12.025,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,three_workers,0,first_contact_capped_s,7.305,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,28,retrieval,0,later_workers,0,first_contact_capped_s,66.08,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,queen,0,first_contact_capped_s,17.475,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,three_workers,0,first_contact_capped_s,15.565,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,29,retrieval,0,later_workers,0,first_contact_capped_s,23.6,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,queen,0,first_contact_capped_s,12.395,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,three_workers,0,first_contact_capped_s,23.11,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,later_workers,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,30,retrieval,0,later_workers,0,first_contact_capped_s,190.82,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,queen,0,first_contact_capped_s,124.095,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,three_workers,0,first_contact_capped_s,13.135000000000002,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,31,retrieval,0,later_workers,0,first_contact_capped_s,317.51,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,queen,0,first_contact_capped_s,74.03999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,three_workers,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,three_workers,0,first_contact_capped_s,15.705,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,32,retrieval,0,later_workers,0,first_contact_capped_s,277.19,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,queen,0,first_contact_capped_s,17.62,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,three_workers,0,first_contact_capped_s,10.215,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,33,retrieval,0,later_workers,0,first_contact_capped_s,497.13,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,34,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,34,retrieval,0,queen,0,first_contact_capped_s,11.905,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,34,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,34,retrieval,0,three_workers,0,first_contact_capped_s,9.035,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,queen,0,first_contact_capped_s,19.885,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,three_workers,0,first_contact_capped_s,59.015,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,35,retrieval,0,later_workers,0,first_contact_capped_s,600.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,36,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,36,retrieval,0,queen,0,first_contact_capped_s,12.645,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,36,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,36,retrieval,0,three_workers,0,first_contact_capped_s,18.895,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,37,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,37,retrieval,0,queen,0,first_contact_capped_s,18.14,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,queen,0,first_contact_capped_s,36.535,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,three_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,three_workers,0,first_contact_capped_s,10.190000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,later_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,38,retrieval,0,later_workers,0,first_contact_capped_s,312.21,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,39,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,39,retrieval,0,queen,0,first_contact_capped_s,18.24,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,39,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,39,retrieval,0,three_workers,0,first_contact_capped_s,63.28,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,queen,0,first_contact_capped_s,39.385,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,three_workers,0,first_contact_capped_s,6.85,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,later_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,40,retrieval,0,later_workers,0,first_contact_capped_s,45.945,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,queen,0,first_contact_capped_s,45.74,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,three_workers,0,first_contact_capped_s,13.100000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,41,retrieval,0,later_workers,0,first_contact_capped_s,25.38,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,42,retrieval,0,queen,0,retrieved,2.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,42,retrieval,0,queen,0,first_contact_capped_s,17.175,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,42,retrieval,0,three_workers,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,42,retrieval,0,three_workers,0,first_contact_capped_s,109.03,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,43,retrieval,0,queen,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,43,retrieval,0,queen,0,first_contact_capped_s,16.28,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,43,retrieval,0,three_workers,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,43,retrieval,0,three_workers,0,first_contact_capped_s,9.065000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,queen,0,first_contact_capped_s,16.535,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,three_workers,0,first_contact_capped_s,45.345,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,later_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,44,retrieval,0,later_workers,0,first_contact_capped_s,22.884999999999998,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,45,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,45,retrieval,0,queen,0,first_contact_capped_s,20.450000000000003,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,45,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,45,retrieval,0,three_workers,0,first_contact_capped_s,9.870000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,queen,0,first_contact_capped_s,11.440000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,three_workers,0,first_contact_capped_s,22.77,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,46,retrieval,0,later_workers,0,first_contact_capped_s,142.47,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,queen,0,first_contact_capped_s,403.49,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,three_workers,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,three_workers,0,first_contact_capped_s,22.39,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,later_workers,0,retrieved,4.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,47,retrieval,0,later_workers,0,first_contact_capped_s,37.195,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,queen,0,first_contact_capped_s,13.95,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,three_workers,0,first_contact_capped_s,307.475,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,48,retrieval,0,later_workers,0,first_contact_capped_s,600.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,queen,0,first_contact_capped_s,303.725,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,three_workers,0,first_contact_capped_s,12.245000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,49,retrieval,0,later_workers,0,first_contact_capped_s,25.16,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,queen,0,first_contact_capped_s,307.98,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,three_workers,0,first_contact_capped_s,72.905,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,later_workers,0,retrieved,4.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,50,retrieval,0,later_workers,0,first_contact_capped_s,10.79,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,queen,0,first_contact_capped_s,23.29,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,three_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,three_workers,0,first_contact_capped_s,8.665,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,later_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,51,retrieval,0,later_workers,0,first_contact_capped_s,13.899999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,52,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,52,retrieval,0,queen,0,first_contact_capped_s,44.84,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,52,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,52,retrieval,0,three_workers,0,first_contact_capped_s,8.015,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,53,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,53,retrieval,0,queen,0,first_contact_capped_s,235.655,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,54,retrieval,0,queen,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,54,retrieval,0,queen,0,first_contact_capped_s,17.04,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,queen,0,retrieved,2.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,queen,0,first_contact_capped_s,44.474999999999994,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,three_workers,0,first_contact_capped_s,10.765,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,later_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,55,retrieval,0,later_workers,0,first_contact_capped_s,59.72,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,56,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,56,retrieval,0,queen,0,first_contact_capped_s,62.54,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,56,retrieval,0,three_workers,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,56,retrieval,0,three_workers,0,first_contact_capped_s,112.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,57,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,57,retrieval,0,queen,0,first_contact_capped_s,27.884999999999998,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,queen,0,first_contact_capped_s,9.795,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,three_workers,0,first_contact_capped_s,46.96,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,58,retrieval,0,later_workers,0,first_contact_capped_s,43.74,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,queen,0,first_contact_capped_s,86.1,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,three_workers,0,first_contact_capped_s,41.864999999999995,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,later_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,59,retrieval,0,later_workers,0,first_contact_capped_s,316.29,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,60,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,60,retrieval,0,queen,0,first_contact_capped_s,10.469999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,queen,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,queen,0,first_contact_capped_s,56.89,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,three_workers,0,first_contact_capped_s,11.925,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,61,retrieval,0,later_workers,0,first_contact_capped_s,159.92499999999998,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,62,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,62,retrieval,0,queen,0,first_contact_capped_s,54.05,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,62,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,62,retrieval,0,three_workers,0,first_contact_capped_s,42.925,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,queen,0,first_contact_capped_s,255.315,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,three_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,three_workers,0,first_contact_capped_s,40.68,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,63,retrieval,0,later_workers,0,first_contact_capped_s,491.74,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,64,retrieval,0,three_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,64,retrieval,0,three_workers,0,first_contact_capped_s,13.335,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,queen,0,retrieved,2.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,queen,0,first_contact_capped_s,365.59000000000003,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,three_workers,0,first_contact_capped_s,25.555,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,later_workers,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,65,retrieval,0,later_workers,0,first_contact_capped_s,29.019999999999996,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,queen,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,queen,0,first_contact_capped_s,23.165,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,three_workers,0,first_contact_capped_s,7.234999999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,later_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,66,retrieval,0,later_workers,0,first_contact_capped_s,395.03499999999997,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,queen,0,retrieved,1.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,queen,0,first_contact_capped_s,318.305,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,three_workers,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,three_workers,0,first_contact_capped_s,10.675,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,later_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,67,retrieval,0,later_workers,0,first_contact_capped_s,74.515,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,68,retrieval,0,queen,0,retrieved,5.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,68,retrieval,0,queen,0,first_contact_capped_s,11.39,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,68,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,68,retrieval,0,three_workers,0,first_contact_capped_s,69.30499999999999,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,queen,0,first_contact_capped_s,329.775,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,three_workers,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,three_workers,0,first_contact_capped_s,303.82,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,69,retrieval,0,later_workers,0,first_contact_capped_s,140.445,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,70,retrieval,0,queen,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,70,retrieval,0,queen,0,first_contact_capped_s,116.21000000000001,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,queen,0,retrieved,2.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,queen,0,first_contact_capped_s,93.43,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,three_workers,0,first_contact_capped_s,16.009999999999998,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,71,retrieval,0,later_workers,0,first_contact_capped_s,47.725,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,72,retrieval,0,queen,0,retrieved,3.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,72,retrieval,0,queen,0,first_contact_capped_s,285.42,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,queen,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,queen,0,first_contact_capped_s,59.17,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,three_workers,0,first_contact_capped_s,18.61,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,73,retrieval,0,later_workers,0,first_contact_capped_s,24.94,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,74,retrieval,0,queen,0,retrieved,1.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,74,retrieval,0,queen,0,first_contact_capped_s,36.595,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,75,retrieval,0,queen,0,retrieved,4.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,75,retrieval,0,queen,0,first_contact_capped_s,39.33,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,75,retrieval,0,three_workers,0,retrieved,1.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,75,retrieval,0,three_workers,0,first_contact_capped_s,122.145,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,76,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,76,retrieval,0,queen,0,first_contact_capped_s,345.505,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,76,retrieval,0,three_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,76,retrieval,0,three_workers,0,first_contact_capped_s,29.135,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,queen,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,queen,0,first_contact_capped_s,48.855,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,three_workers,0,first_contact_capped_s,14.73,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,later_workers,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,77,retrieval,0,later_workers,0,first_contact_capped_s,310.43499999999995,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,queen,0,first_contact_capped_s,9.46,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,three_workers,0,first_contact_capped_s,12.285,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,78,retrieval,0,later_workers,0,first_contact_capped_s,31.63,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,79,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,79,retrieval,0,queen,0,first_contact_capped_s,48.44,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,queen,0,first_contact_capped_s,302.555,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,three_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,three_workers,0,first_contact_capped_s,13.915,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,later_workers,0,retrieved,5.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,80,retrieval,0,later_workers,0,first_contact_capped_s,16.25,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,queen,0,retrieved,3.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,queen,0,first_contact_capped_s,168.51999999999998,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,three_workers,0,first_contact_capped_s,10.655,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,later_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,81,retrieval,0,later_workers,0,first_contact_capped_s,18.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,queen,0,retrieved,0.5,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,queen,0,first_contact_capped_s,366.775,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,three_workers,0,retrieved,6.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,three_workers,0,first_contact_capped_s,14.665,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,later_workers,0,retrieved,0.0,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
+B02,B02_retrieval.csv,GROUP_BY qw AND queen; mean of both trials,82,retrieval,0,later_workers,0,first_contact_capped_s,315.865,2,pp10411-10412; Methods2.2-2.3; Fig1-2; 600s noncontacts retained
