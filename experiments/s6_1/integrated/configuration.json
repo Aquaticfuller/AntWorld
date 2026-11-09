@@ -1,0 +1,303 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "suite": "primary",
+  "schema_version": 8,
+  "physics_version": 9,
+  "nursing_correction_policy": "combined",
+  "world": {
+    "id": [
+      6,
+      8
+    ],
+    "bounds_m": [
+      [
+        -1,
+        -1,
+        -1
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "speed_m_s": 0.01,
+    "contact_m": 0.002
+  },
+  "population": {
+    "queen": 1,
+    "workers": 32,
+    "eggs": 4,
+    "larvae": 6,
+    "pupae": 2,
+    "initial_position_m": [
+      0,
+      0,
+      0
+    ],
+    "carrying_ug": 4000,
+    "body_energy_nj_each": 1000000000,
+    "hydration_ug_each": 1000,
+    "crop_each": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pupal_tissue_protein_ug_each": 100
+  },
+  "food_ingredients_ug_order": [
+    "carbs",
+    "protein",
+    "water",
+    "other"
+  ],
+  "food": [
+    {
+      "position_m": [
+        0.02,
+        0,
+        0.01
+      ],
+      "mass": [
+        1000,
+        0,
+        3000,
+        0
+      ]
+    },
+    {
+      "position_m": [
+        -0.02,
+        0,
+        -0.01
+      ],
+      "mass": [
+        0,
+        2000,
+        2500,
+        500
+      ]
+    }
+  ],
+  "controls": {
+    "mirror": "negate food X",
+    "protein_absent_source_2": [
+      0,
+      0,
+      2500,
+      2500
+    ],
+    "food_absent": "omit both sources",
+    "sealed": "same food; omit passage and add rock shell"
+  },
+  "physiology": {
+    "absorption_ms": 1000,
+    "egg_ms": 30000,
+    "larva_ms": 60000,
+    "pupa_ms": 30000,
+    "behavior_ms": 1000,
+    "crop_capacity_ug": 1000,
+    "hydration_capacity_ug": 2000,
+    "energy_capacity_nj": 2000000000,
+    "carb_yield_nj_ug": 1000000,
+    "basal_nj_ms": 1000,
+    "active_nj_ms": 1000,
+    "water_loss_ug_s": 1,
+    "carb_absorption_ug_s": 10,
+    "water_absorption_ug_s": 100,
+    "protein_absorption_ug_s": 10,
+    "larval_protein_ug": 100,
+    "gift_ug": 100
+  },
+  "social": {
+    "decision_ms": 5000,
+    "minimum_program_ms": 10000,
+    "weights_rest_forage_nurse_excavate": [
+      4,
+      8,
+      12,
+      4
+    ],
+    "budgets": [
+      16
+    ],
+    "adult_urgent_fraction": 0.25,
+    "crowding_others": 2
+  },
+  "surface": {
+    "origin_m": [
+      -0.03,
+      0,
+      -0.03
+    ],
+    "width": 7,
+    "height": 7,
+    "cell_m": 0.01,
+    "blocked": [],
+    "trails": true,
+    "memory": true,
+    "sensing_radius_cells": 2,
+    "route_capacity": 48,
+    "max_trip_moves": 192,
+    "step_ms": 1100,
+    "decision_ms": 1,
+    "memory_ms": 300000,
+    "field_ms": 5000,
+    "half_life_s": 60,
+    "deposit_units": 1,
+    "cap_units": 16,
+    "cutoff_units": 0.001,
+    "weights_explore_persistence_trail": [
+      10,
+      20,
+      180
+    ]
+  },
+  "geometry": {
+    "quantum_m": 0.0005,
+    "origin_m": [
+      -0.008,
+      -0.006,
+      -0.006
+    ],
+    "initial_solid_q": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        32,
+        24,
+        24
+      ]
+    ],
+    "chamber_q": [
+      [
+        12,
+        8,
+        8
+      ],
+      [
+        20,
+        16,
+        16
+      ]
+    ],
+    "passage_q": [
+      [
+        0,
+        10,
+        10
+      ],
+      [
+        32,
+        14,
+        14
+      ]
+    ],
+    "sealed_rocks_q": [
+      [
+        [
+          10,
+          6,
+          6
+        ],
+        [
+          12,
+          18,
+          18
+        ]
+      ],
+      [
+        [
+          20,
+          6,
+          6
+        ],
+        [
+          22,
+          18,
+          18
+        ]
+      ],
+      [
+        [
+          12,
+          6,
+          6
+        ],
+        [
+          20,
+          8,
+          18
+        ]
+      ],
+      [
+        [
+          12,
+          16,
+          6
+        ],
+        [
+          20,
+          18,
+          18
+        ]
+      ],
+      [
+        [
+          12,
+          8,
+          6
+        ],
+        [
+          20,
+          16,
+          8
+        ]
+      ],
+      [
+        [
+          12,
+          8,
+          16
+        ],
+        [
+          20,
+          16,
+          18
+        ]
+      ]
+    ],
+    "dry_ug_q3": 100,
+    "water_ug_q3": 25,
+    "body_half_q": 1,
+    "loaded_half_q": 2,
+    "reach_q": 4,
+    "max_patch_q": 4,
+    "brick_q": 8,
+    "sample_step_q": 2,
+    "sdf_band_q": 4,
+    "work_ms": 100,
+    "move_ms": 500,
+    "decision_ms": 1,
+    "dig_nj_q3": 1000
+  },
+  "host": {
+    "committed_events": 1000000,
+    "events_per_timestamp": 10000,
+    "checkpoint_bytes": 268435456
+  },
+  "observation": {
+    "normal_step_ms": 1000,
+    "time_series_ms": 10000,
+    "accelerated_step_ms": 60000,
+    "save_interval_ms": 60000,
+    "retained_checkpoints": 2,
+    "history_policy": "retain all committed facts"
+  },
+  "first_seed": 1,
+  "seeds": 32
+}

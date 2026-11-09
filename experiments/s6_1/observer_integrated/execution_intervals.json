@@ -1,0 +1,30 @@
+[
+  {
+    "directory": "out/s6_1-parts/observer-1",
+    "first_seed": 1,
+    "seeds": 8,
+    "summary_rows": 128,
+    "summary_sha256": "3701b2b97061b866de6b1f9918914e696109c87f1f94452c99e758e54428495b"
+  },
+  {
+    "directory": "out/s6_1-parts/observer-9",
+    "first_seed": 9,
+    "seeds": 8,
+    "summary_rows": 128,
+    "summary_sha256": "092782a5a5489efed1cb66b8ddd7cb40e96e781a46fad6d0b7f8768f8d905df9"
+  },
+  {
+    "directory": "out/s6_1-parts/observer-17",
+    "first_seed": 17,
+    "seeds": 8,
+    "summary_rows": 128,
+    "summary_sha256": "e38cf223a8b1ea9c3e832f05195f18810e1d78d72fc20339243d9993eadc9dd0"
+  },
+  {
+    "directory": "out/s6_1-parts/observer-25",
+    "first_seed": 25,
+    "seeds": 8,
+    "summary_rows": 128,
+    "summary_sha256": "e17d9f063407f4716a83b6e6127cd4f06fe43c11f2d153a2b64f10241ca577d2"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "matrix_cases": 576,
+  "sensitivity_cases": 128,
+  "integrated_observer_cases": 512,
+  "durable_cases": 272,
+  "durable_execution_modes": 816,
+  "observer_durable_or_original_exact_trace_pairs": 512,
+  "independent_integrated_seeds": 32,
+  "interrupted_execution_prefix_rows_reproduced": {
+    "matrix": 102,
+    "observer_integrated": 64,
+    "integrated": 69
+  },
+  "executed_local_test_rows": 655,
+  "bootstrap_resamples": 4096,
+  "analysis_seed": 6106,
+  "conservation_identity_history_geometry": "PASS",
+  "confidence": "95% paired seed percentile bootstrap; mirrors averaged within seed; modes are verification replicas",
+  "accessible_integral": "Unique reachable recipient demand and adult crop supply; coexistence diagnostic, not maximum feasible flow",
+  "gift_completion_fraction": "Successful plus partial committed transfers / resolved attempts; undefined with zero attempts. Conditional intervals show defined seed counts; every raw case and attempt count is retained."
+}

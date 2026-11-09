@@ -1,0 +1,14 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "protocol": "document 37 at 03ae833",
+  "suite": "sensitivity",
+  "schema": 8,
+  "physics": 9,
+  "samples_ms": 1000,
+  "exhaustive_observer_ms": 10000,
+  "normal": "event-boundary advance with 1 s observations",
+  "comparison_ms": 30000,
+  "history": "complete canonical facts in per-case binary; selected CSV and all kind counts",
+  "first_seed": 1,
+  "seeds": 16
+}

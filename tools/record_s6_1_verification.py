@@ -52,7 +52,7 @@ def main():
     ci = json.loads(args.ci.read_text(encoding='utf-8-sig'))
     assert ci['source_commit'] == args.source and ci['conclusion'] == 'success'
     assert len(ci['jobs']) == 5 and all(j['conclusion'] == 'success' for j in ci['jobs'])
-    hardware = json.loads((ROOT/'experiments/s6/verification.json').read_text(encoding='utf-8'))['hardware']
+    hardware = json.loads((ROOT/'experiments/s6_1/provenance.json').read_text(encoding='utf-8'))['hardware']
     report = dict(source_commit=args.source, local_builds=builds, test_rows=len(rows),
                   test_rows_sha256=hashlib.sha256((target/'executed_tests.csv').read_bytes()).hexdigest(),
                   inherited_test_registrations=124, new_test_registrations=11, github_source_ci=ci,

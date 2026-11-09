@@ -1,0 +1,30 @@
+[
+  {
+    "directory": "out/s6_1-parts/matrix-1",
+    "first_seed": 1,
+    "seeds": 4,
+    "summary_rows": 144,
+    "summary_sha256": "da072a008cf875434950ec12462c2140e206099aa022c99d9a47df7006afe880"
+  },
+  {
+    "directory": "out/s6_1-parts/matrix-5",
+    "first_seed": 5,
+    "seeds": 4,
+    "summary_rows": 144,
+    "summary_sha256": "dc3056f874f453a82a80b11a4704bb5105426082dc11eb508c78a4dd152e8ada"
+  },
+  {
+    "directory": "out/s6_1-parts/matrix-9",
+    "first_seed": 9,
+    "seeds": 4,
+    "summary_rows": 144,
+    "summary_sha256": "8dafe312c3e78ac6cc35fd284c12706d917bcc228740a392360e0c5eb7ba917d"
+  },
+  {
+    "directory": "out/s6_1-parts/matrix-13",
+    "first_seed": 13,
+    "seeds": 4,
+    "summary_rows": 144,
+    "summary_sha256": "efeb1ef2e55e857edd0d0c7f9cb526febc9e8fe5c293daceda9af62b16987ef3"
+  }
+]

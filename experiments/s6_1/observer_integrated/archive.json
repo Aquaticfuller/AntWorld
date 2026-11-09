@@ -1,0 +1,78 @@
+{
+  "canonical_facts.csv": {
+    "rows": 512,
+    "normalized_lf_sha256": "df8d992759e70bfd7a6d06f3a42cfde1d62b9aadfb9f04b59a0efab2ab6e0af0",
+    "parts": [
+      "canonical_facts.csv"
+    ]
+  },
+  "configuration.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "cfd5f5b0cdfe09fba7a1c2dc7fb9471c2a7df09a232965e59fbfc5979f97694b",
+    "parts": [
+      "configuration.json"
+    ]
+  },
+  "decisions.csv": {
+    "rows": 1963971,
+    "normalized_lf_sha256": "9f0909bd343de84d6458e546a48b417c2d344c4e3fe519268d26d86aa3e5bf2b",
+    "parts": [
+      "decisions/part0000.csv",
+      "decisions/part0001.csv",
+      "decisions/part0002.csv",
+      "decisions/part0003.csv",
+      "decisions/part0004.csv",
+      "decisions/part0005.csv"
+    ]
+  },
+  "event_counts.csv": {
+    "rows": 11624,
+    "normalized_lf_sha256": "a653cf7fa57ea62d53efc1e1cd0197797bd001820d7a261e6f71b8f719f73e1a",
+    "parts": [
+      "event_counts.csv"
+    ]
+  },
+  "events.csv": {
+    "rows": 163978,
+    "normalized_lf_sha256": "889c15ef19a74a9a58278375b32266e101ba502818628da1839cb6ea62a6d791",
+    "parts": [
+      "events.csv"
+    ]
+  },
+  "execution_intervals.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "bb90545777e4bfe427007d49a81c239122864905c2c1c4d0a325eec867b3f4bb",
+    "parts": [
+      "execution_intervals.json"
+    ]
+  },
+  "geometry.csv": {
+    "rows": 36120,
+    "normalized_lf_sha256": "4a775031a818dd82d37e3c6942198c595e19a1cd8d1d4785c74e7094b454216d",
+    "parts": [
+      "geometry.csv"
+    ]
+  },
+  "individuals.csv": {
+    "rows": 23040,
+    "normalized_lf_sha256": "96e2e869dd4277b4d9e215748cefc85aee78794e3da0a4ca1de77060e3b08c9c",
+    "parts": [
+      "individuals.csv"
+    ]
+  },
+  "summary.csv": {
+    "rows": 512,
+    "normalized_lf_sha256": "b8eeed7025ad9cbfecd20349193a5a7f1603cc687e9d93af47d0e44d4e580abf",
+    "parts": [
+      "summary.csv"
+    ]
+  },
+  "time_series.csv": {
+    "rows": 307712,
+    "normalized_lf_sha256": "2e4efaecffd4453cae03bc19ba26b5db4b99c17b07d952b7ae0c33cdb3cf7a8b",
+    "parts": [
+      "time_series/part0000.csv",
+      "time_series/part0001.csv"
+    ]
+  }
+}

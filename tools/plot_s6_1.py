@@ -16,7 +16,10 @@ COLORS = {'legacy': '#64748b', 'combined': '#0f766e'}
 
 def save(fig, base, name):
     fig.savefig(base/f'{name}.png', dpi=180, bbox_inches='tight')
-    fig.savefig(base/f'{name}.svg', bbox_inches='tight')
+    svg = base/f'{name}.svg'
+    fig.savefig(svg, bbox_inches='tight', metadata={'Date': None})
+    svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',
+                   encoding='utf-8', newline='\n')
     plt.close(fig)
 
 
@@ -27,9 +30,12 @@ def main():
     base = args.root
     target = base/'figures'
     target.mkdir(exist_ok=True)
-    plt.rcParams.update({'font.size': 9, 'axes.spines.top': False, 'axes.spines.right': False})
+    plt.rcParams.update({'font.size': 9, 'axes.spines.top': False, 'axes.spines.right': False,
+                         'svg.hashsalt': 'antworld-s6.1'})
     stats = list(rows(base/'analysis', 'ecology'))
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.6), constrained_layout=True)
+    matrix_limit = max(1, *(abs(float(r['mean']))/1000 for r in stats if r['suite'] == 'matrix' and
+                           r['comparison'] == 'minus_legacy' and r['metric'] == 'unmet_integral_ug_s'))
     for ax, arm in zip(axes, ('gift_first', 'local_continuation', 'combined'), strict=True):
         values, intervals = np.zeros((3, 3)), {}
         for i, workers in enumerate((8, 32, 128)):
@@ -39,14 +45,14 @@ def main():
                          r['workers'] == str(workers) and r['source_protein_ug'] == str(protein))
                 values[i, j] = float(r['mean'])/1000
                 intervals[i, j] = float(r['ci95_low'])/1000, float(r['ci95_high'])/1000
-        limit = max(1, abs(values).max())
+        limit = matrix_limit
         ax.imshow(values, cmap='RdBu_r', vmin=-limit, vmax=limit)
         for (i, j), bounds in intervals.items():
             ax.text(j, i, f'{values[i,j]:.1f}\n[{bounds[0]:.1f}, {bounds[1]:.1f}]', ha='center', va='center',
                     fontsize=8, color='white' if abs(values[i,j]) > .6*limit else 'black')
         ax.set(title=arm.replace('_', ' '), xticks=range(3), xticklabels=(0, 500, 2000),
                yticks=range(3), yticklabels=(8, 32, 128), xlabel='Source protein (ug)', ylabel='Initial adult workers')
-    fig.suptitle('ENGINEERING_FIXTURE: unmet-demand exposure difference from legacy (1000 ug*s)\n16 paired seeds; 95% bootstrap intervals; negative means less unmet demand')
+    fig.suptitle('ENGINEERING_FIXTURE: unmet-demand exposure difference from legacy (1000 ug*s)\n16 paired seeds; 95% intervals; shared color scale; negative means less unmet demand')
     save(fig, target, 'nutrition_matrix')
 
     fig, axes = plt.subplots(2, 2, figsize=(10, 7), constrained_layout=True)
@@ -70,6 +76,27 @@ def main():
     axes[0, 0].legend()
     fig.suptitle('ENGINEERING_FIXTURE: integrated 600 s outcomes\n32 seeds; mirror means within seed; 95% bootstrap intervals; all conditions retained')
     save(fig, target, 'integrated_outcomes')
+
+    fig, axes = plt.subplots(2, 2, figsize=(10, 7), constrained_layout=True)
+    for ax, (metric, label, scale) in zip(axes.flat, (
+            ('active_fraction', 'Initial adult active-program time (%)', .01),
+            ('away_fraction', 'Initial adult time away from depot (%)', .01),
+            ('blocked_fraction', 'Travel/cargo-blocked reconsiderations (%)', .01),
+            ('excavated_q3', 'Actual excavated volume (fixture q^3)', 1)), strict=True):
+        for offset, policy in ((-.12, 'legacy'), (.12, 'combined')):
+            selected = [next(r for r in stats if r['suite'] == 'integrated' and r['condition'] == c and
+                             r['policy'] == policy and r['comparison'] == 'endpoint' and r['metric'] == metric)
+                        for c in conditions]
+            center = np.array([float(r['mean'])/scale for r in selected])
+            low = np.array([float(r['ci95_low'])/scale for r in selected])
+            high = np.array([float(r['ci95_high'])/scale for r in selected])
+            ax.errorbar(np.arange(4)+offset, center, yerr=(center-low, high-center), fmt='o', capsize=3,
+                        color=COLORS[policy], label=policy)
+        ax.set(xticks=range(4), xticklabels=('Supplied', 'No protein', 'No food', 'Sealed'), ylabel=label)
+        ax.grid(axis='y', alpha=.2)
+    axes[0, 0].legend()
+    fig.suptitle('ENGINEERING_FIXTURE: task residence and spatial feedback\n32 seeds with paired mirrors; active ownership is not continuous locomotion')
+    save(fig, target, 'behavior_feedback')
 
     fig, axes = plt.subplots(2, 2, figsize=(10, 6), constrained_layout=True)
     seed7 = [r for r in rows(base/'observer_integrated', 'time_series') if r['seed'] == '7' and
@@ -96,10 +123,10 @@ def main():
         for field, style in (('p50', '-o'), ('p95', '--'), ('p99', ':')):
             axes[0].plot((128, 512, 2048), [float(r[field]) for r in selected], style, color=color, label=f'{policy} {field}')
     axes[0].set(xscale='log', yscale='log', xlabel='Workers', ylabel='Advance latency (ms)',
-                title='Final uninstrumented dense fixture; 10 repeats')
+                title='Final dense fixture; 10 repeats\n512 to 2048 growth: 24.23x; limit 6x FAILED')
+    axes[0].set_xticks((128, 512, 2048), labels=('128', '512', '2048'))
     axes[0].legend(fontsize=7)
     axes[0].grid(alpha=.2)
-    categories = ('index', 'sampling', 'spatial', 'scheduler', 'transaction', 'history', 'physiology', 'policy', 'advance')
     # Plot measured exclusive category totals per matrix, not absolute before /
     # after speedup: host speed and instrumentation overhead varied materially.
     all_categories = sorted({r['category'] for r in profile})
@@ -117,7 +144,7 @@ def main():
     axes[1].legend(fontsize=6, bbox_to_anchor=(1, 1), loc='upper left')
     fig.suptitle('ENGINEERING_FIXTURE: fixed events, candidates, collision checks and history retained')
     save(fig, target, 'contact_performance')
-    print(f'Wrote four PNG/SVG figure pairs in {target}')
+    print(f'Wrote five PNG/SVG figure pairs in {target}')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,65 @@
+{
+  "configuration.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "140bc4a0ad660cbad0f42feac0cd2ced912b16c887b33b2f47c806393a8bb0f0",
+    "parts": [
+      "configuration.json"
+    ]
+  },
+  "event_counts.csv": {
+    "rows": 5812,
+    "normalized_lf_sha256": "6c0a37738cc65d382ed7ac59a37735da22298ad2d8503bad4d14c83ac9e5e5bd",
+    "parts": [
+      "event_counts.csv"
+    ]
+  },
+  "events.csv": {
+    "rows": 82442,
+    "normalized_lf_sha256": "ff72dca328b95aeb96714834157fd3d5ba45e7cc4d02c3dad1941f2fd68a1ed3",
+    "parts": [
+      "events.csv"
+    ]
+  },
+  "execution_intervals.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "d1827f0ae668ea5a1bd85852eaed1a63365b3bcf987e4f05293d1123eee123a0",
+    "parts": [
+      "execution_intervals.json"
+    ]
+  },
+  "foods.csv": {
+    "rows": 384,
+    "normalized_lf_sha256": "9a887aab11b58786666b4d04179c69ba6d6849ca03fb6fefe3b12bef9bf5926a",
+    "parts": [
+      "foods.csv"
+    ]
+  },
+  "geometry.csv": {
+    "rows": 18060,
+    "normalized_lf_sha256": "3289780dfa5b5c0d57d0a6c941f33dbea3f805559b23e4aaac50b836a3152786",
+    "parts": [
+      "geometry.csv"
+    ]
+  },
+  "individuals.csv": {
+    "rows": 11520,
+    "normalized_lf_sha256": "223e00ea85c6e481ba9740c30dfc6f3f27029ec86287131ebb4a1b4380604f4f",
+    "parts": [
+      "individuals.csv"
+    ]
+  },
+  "summary.csv": {
+    "rows": 768,
+    "normalized_lf_sha256": "a6b0988c0c458610105b795842f53a84f8d4d65839d37d6f83e3373efbef55f8",
+    "parts": [
+      "summary.csv"
+    ]
+  },
+  "time_series.csv": {
+    "rows": 15616,
+    "normalized_lf_sha256": "fd06741dedd4b6128a1999a6fed69ffb1638b10bc90eb27e9e6525fd3cb4586f",
+    "parts": [
+      "time_series.csv"
+    ]
+  }
+}

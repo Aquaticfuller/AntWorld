@@ -12,6 +12,9 @@ checks = [
     ['tools/analyze_s2_2.py', '--check'], ['tools/analyze_s3.py', '--check'],
     ['tools/analyze_s4.py', '--check'], ['tools/analyze_s5.py', '--check'],
     ['tools/analyze_s6.py', '--check'],
+    ['tools/analyze_s6_1_performance.py', '--check'],
+    ['tools/analyze_s6_1.py', '--check'],
+    ['tools/analyze_s6_1_scarcity.py', '--check'],
 ]
 for check in checks:
     result = subprocess.run([sys.executable, *check], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

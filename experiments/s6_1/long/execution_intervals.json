@@ -1,0 +1,30 @@
+[
+  {
+    "directory": "out/s6_1-parts/long-1",
+    "first_seed": 1,
+    "seeds": 2,
+    "summary_rows": 12,
+    "summary_sha256": "ed331021649686d6d074d3aa6c6691a853a73ff7dae9979a36436ef52da69164"
+  },
+  {
+    "directory": "out/s6_1-parts/long-3",
+    "first_seed": 3,
+    "seeds": 2,
+    "summary_rows": 12,
+    "summary_sha256": "3926348d21aaba53ff4f1714fbab2bf6422c949813fc1132cdc29bf22b63eafb"
+  },
+  {
+    "directory": "out/s6_1-parts/long-5",
+    "first_seed": 5,
+    "seeds": 2,
+    "summary_rows": 12,
+    "summary_sha256": "cf39202aba4c97ef63fd646377f4ee27043c51cbbd3500aafc5ba507030ad022"
+  },
+  {
+    "directory": "out/s6_1-parts/long-7",
+    "first_seed": 7,
+    "seeds": 2,
+    "summary_rows": 12,
+    "summary_sha256": "faacf82832834d7e4f7c195d8f11d780ca6b50604db7f732f6100e85422de0dd"
+  }
+]

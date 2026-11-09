@@ -1,0 +1,74 @@
+{
+  "canonical_facts.csv": {
+    "rows": 576,
+    "normalized_lf_sha256": "7366d34cac40d7f8860437bf94433b672e1fb7f8020564b0f2bc933063fe0bb1",
+    "parts": [
+      "canonical_facts.csv"
+    ]
+  },
+  "configuration.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "001efb6292e3efa953d20e3c1a597b50d9f48264fff46368f013c13c94ad0dad",
+    "parts": [
+      "configuration.json"
+    ]
+  },
+  "decisions.csv": {
+    "rows": 1211309,
+    "normalized_lf_sha256": "8efe067b9423a1ea4d589ad74d5bc377fc101f83c4b28a983f25ab080336f71f",
+    "parts": [
+      "decisions/part0000.csv",
+      "decisions/part0001.csv",
+      "decisions/part0002.csv"
+    ]
+  },
+  "event_counts.csv": {
+    "rows": 14945,
+    "normalized_lf_sha256": "9447afbeda879e78344a809c27b13c0546dd4d14f2efbfd377c6a152c0087062",
+    "parts": [
+      "event_counts.csv"
+    ]
+  },
+  "events.csv": {
+    "rows": 330532,
+    "normalized_lf_sha256": "b73322b3af9ff270d0d7894bccdd38c98525f503a0e612ab5c55d46f7c7033c7",
+    "parts": [
+      "events.csv"
+    ]
+  },
+  "execution_intervals.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "0e52c0350bfc0be8fb0d943c4597f777d3536408487542567fb15a53edfed163",
+    "parts": [
+      "execution_intervals.json"
+    ]
+  },
+  "geometry.csv": {
+    "rows": 84367,
+    "normalized_lf_sha256": "d60da7b31c45817fb63d05e29a8fb7d118913c1ce1fc9343a5fcc0df3a8f175e",
+    "parts": [
+      "geometry.csv"
+    ]
+  },
+  "individuals.csv": {
+    "rows": 39744,
+    "normalized_lf_sha256": "1eca6e85abe6af1fff0bf3ad16a5114862dfcb33f378b1109f657d56a40a2e9a",
+    "parts": [
+      "individuals.csv"
+    ]
+  },
+  "summary.csv": {
+    "rows": 576,
+    "normalized_lf_sha256": "02f1a2f068075f963e9ecba75cdd17bbece6a7c309b6a743ca82640a581b8fb1",
+    "parts": [
+      "summary.csv"
+    ]
+  },
+  "time_series.csv": {
+    "rows": 104256,
+    "normalized_lf_sha256": "41d815137b15b70f99ac7c9adf5d6264e128f9589ba5d50bfcd5038add3526ac",
+    "parts": [
+      "time_series.csv"
+    ]
+  }
+}

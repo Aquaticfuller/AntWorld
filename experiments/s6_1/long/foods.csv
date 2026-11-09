@@ -1,0 +1,17 @@
+suite,seed,condition,mirror,encounter_budget,resource_id,x_m,y_m,z_m,initial_carbs_ug,initial_protein_ug,initial_water_ug,initial_other_ug,remaining_carbs_ug,remaining_protein_ug,remaining_water_ug,remaining_other_ug
+long,1,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,1,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,2,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,2,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,3,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,3,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,4,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,4,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,5,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,5,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,6,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,6,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,7,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,7,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0
+long,8,supplied,0,16,47,0.02,0,0.01,1000,0,3000,0,0,0,0,0
+long,8,supplied,0,16,48,-0.02,0,-0.01,0,2000,2500,500,0,0,0,0

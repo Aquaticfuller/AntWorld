@@ -1,0 +1,34 @@
+{
+  "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+  "s4": {
+    "summary.csv": {
+      "equal_except_declared_checkpoint_bytes": true,
+      "checkpoint_byte_delta": 9,
+      "declared_physics_version": 9,
+      "rows": 160,
+      "sha256": "43520b5211063faafc6d910f92ba46b5bbf8f773195eb41950c87529650bac46"
+    },
+    "edits.csv": {
+      "equal": true,
+      "sha256": "b2220b37a15a1f3281db243ea3201704cc9599bb86280b955a902c41f81a7f68"
+    },
+    "trajectories.csv": {
+      "equal": true,
+      "sha256": "1a8d8f6f3fedd81091047038e859ff8bea4bdec4c0b09f80bb827fb512a2644c"
+    },
+    "configuration.json": {
+      "equal_except_declared_physics_version": true,
+      "declared_physics_version": 9
+    }
+  },
+  "s3_semantic_regression": {
+    "summary.csv": {
+      "rows": 1536,
+      "equal_except_physics_version": true
+    },
+    "individuals.csv": {
+      "rows": 5376,
+      "equal_except_physics_version": true
+    }
+  }
+}

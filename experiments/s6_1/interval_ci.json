@@ -1,0 +1,43 @@
+{
+  "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019",
+  "jobs": [
+    {
+      "name": "sanitizers",
+      "conclusion": "success",
+      "started_at": "2026-11-09T01:40:45Z",
+      "completed_at": "2026-11-09T01:43:18Z",
+      "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019/job/128933509363"
+    },
+    {
+      "name": "build (ubuntu-24.04, Debug)",
+      "conclusion": "success",
+      "started_at": "2026-11-09T01:40:45Z",
+      "completed_at": "2026-11-09T01:43:24Z",
+      "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019/job/128933509558"
+    },
+    {
+      "name": "build (windows-2022, Debug)",
+      "conclusion": "success",
+      "started_at": "2026-11-09T01:40:45Z",
+      "completed_at": "2026-11-09T01:45:55Z",
+      "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019/job/128933509610"
+    },
+    {
+      "name": "build (windows-2022, Release)",
+      "conclusion": "success",
+      "started_at": "2026-11-09T01:40:45Z",
+      "completed_at": "2026-11-09T01:44:35Z",
+      "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019/job/128933509624"
+    },
+    {
+      "name": "build (ubuntu-24.04, Release)",
+      "conclusion": "success",
+      "started_at": "2026-11-09T01:40:46Z",
+      "completed_at": "2026-11-09T01:46:05Z",
+      "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42546825019/job/128933509652"
+    }
+  ],
+  "conclusion": "success",
+  "source_commit": "fbe8852fe7eac77709394310262f138216902ef0",
+  "run_id": 42546825019
+}

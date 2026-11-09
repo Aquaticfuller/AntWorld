@@ -1,0 +1,79 @@
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "hardware": {
+    "power_plan_guid": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "memory": [
+      {
+        "TotalPhysicalMemory": 16890519552
+      }
+    ],
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "collected_utc": "2026-11-09T01:30:10.7897526Z",
+    "os": [
+      {
+        "Caption": "Microsoft Windows 11 Home",
+        "Version": "10.0.26200",
+        "BuildNumber": "26200"
+      }
+    ],
+    "power_plan": "Balanced"
+  },
+  "source_chronology": {
+    "protocol": "03ae833",
+    "diagnosis_profile": "f6a46b9addbc8ccc5f3f28cf8302068fa51406e0",
+    "optimized_profile": "4591160cca2c7b9504e859e2cc5e9545d7441da2",
+    "final_contact_executable": "d60c8ff1e9d8eaa331b708439d149721325d9679",
+    "observer_export_and_core_verification": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+    "interval_execution": "fbe8852fe7eac77709394310262f138216902ef0"
+  },
+  "isolated_contact_timing": {
+    "baseline": {
+      "start_utc": "2026-11-09T00:42:57.3849829Z",
+      "end_utc": "2026-11-09T00:47:54.1031150Z"
+    },
+    "final": {
+      "start_utc": "2026-11-09T01:17:02.5080446Z",
+      "end_utc": "2026-11-09T01:27:00.5660266Z"
+    }
+  },
+  "interrupted_serial_attempt": {
+    "processes": [
+      {
+        "Id": 24960,
+        "ProcessName": "antworld_s6_1_experiment",
+        "StartTime": "2026-11-09T02:29:07.3790018+01:00",
+        "CPU": 462.203125
+      },
+      {
+        "Id": 25812,
+        "ProcessName": "antworld_s6_1_experiment",
+        "StartTime": "2026-11-09T02:29:07.2892181+01:00",
+        "CPU": 463.28125
+      },
+      {
+        "Id": 4392,
+        "ProcessName": "antworld_s6_experiment",
+        "StartTime": "2026-11-09T02:29:07.4499442+01:00",
+        "CPU": 452.921875
+      }
+    ],
+    "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+    "reason": "Execution-only partitioning of the identical frozen complete seed grid; all interrupted-prefix outputs retained for parity checks",
+    "stopped_utc": "2026-11-09T01:38:43.9392805Z"
+  },
+  "retained_complete_prefix_summary_rows": {
+    "matrix": 102,
+    "observer_integrated": 64,
+    "integrated": 69
+  },
+  "prefix_policy": "All completed serial-prefix cases retained and compared with interval reruns. Incomplete in-progress cases remain local, are not passed results, and are rerun in the complete frozen grid. Each final case contributes once.",
+  "core_unchanged_after_c8dd6d0": true,
+  "limitations": "No CPU frequency, thermal or scheduler telemetry was sampled during the acceptance timing matrix. Host metadata collected afterward cannot identify the timing-variation cause. Ecology timings overlap independent executions and are not isolated latency benchmarks."
+}

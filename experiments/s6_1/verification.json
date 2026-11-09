@@ -1,0 +1,138 @@
+{
+  "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+  "local_builds": [
+    {
+      "configuration": "Debug",
+      "tests": 135,
+      "passed": 135,
+      "failed": 0,
+      "total_ctest_seconds": 113.95,
+      "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+      "last_test_log_sha256": "a2b51a6eea8507a35b8e4d881dea05d326c281cd03f7f5a58038bf7a8a6cbb5e"
+    },
+    {
+      "configuration": "Release",
+      "tests": 135,
+      "passed": 135,
+      "failed": 0,
+      "total_ctest_seconds": 14.83,
+      "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+      "last_test_log_sha256": "6f07fb2078dcf1348d4b4ddbed1003a11cd4adc61aafe69fe5eb4f8e3c042c3d"
+    },
+    {
+      "configuration": "ASan_UBSan",
+      "tests": 135,
+      "passed": 135,
+      "failed": 0,
+      "total_ctest_seconds": 699.03,
+      "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+      "last_test_log_sha256": "852a59516687ec589d849d35a96b50c6b2f235156090ea5072dff844be63fe1b"
+    },
+    {
+      "configuration": "Clean_Release",
+      "tests": 135,
+      "passed": 135,
+      "failed": 0,
+      "total_ctest_seconds": 50.36,
+      "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+      "last_test_log_sha256": "627c4113af2b1111f0340af756331ff9e6324856cb8665668add27d092589538"
+    },
+    {
+      "configuration": "Core_only_Release",
+      "tests": 115,
+      "passed": 115,
+      "failed": 0,
+      "total_ctest_seconds": 29.94,
+      "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+      "last_test_log_sha256": "0b6fb2eb8597c65e89ca550a7961c7e46392ce1167a9ce67ef7eb48b48fe4b25"
+    }
+  ],
+  "test_rows": 655,
+  "test_rows_sha256": "726d5a32ab25784dc4c9390587904553e77b4896bd71d31d14ba0c2c34157834",
+  "inherited_test_registrations": 124,
+  "new_test_registrations": 11,
+  "github_source_ci": {
+    "source_commit": "c8dd6d0329497a13b5d59e01fdfbf16a2f63edc4",
+    "jobs": [
+      {
+        "name": "sanitizers",
+        "conclusion": "success",
+        "started_at": "2026-11-09T01:28:36Z",
+        "completed_at": "2026-11-09T01:31:06Z",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277/job/128930296508"
+      },
+      {
+        "name": "build (ubuntu-24.04, Debug)",
+        "conclusion": "success",
+        "started_at": "2026-11-09T01:28:36Z",
+        "completed_at": "2026-11-09T01:31:17Z",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277/job/128930296652"
+      },
+      {
+        "name": "build (windows-2022, Debug)",
+        "conclusion": "success",
+        "started_at": "2026-11-09T01:28:36Z",
+        "completed_at": "2026-11-09T01:33:44Z",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277/job/128930296723"
+      },
+      {
+        "name": "build (windows-2022, Release)",
+        "conclusion": "success",
+        "started_at": "2026-11-09T01:28:36Z",
+        "completed_at": "2026-11-09T01:31:12Z",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277/job/128930296797"
+      },
+      {
+        "name": "build (ubuntu-24.04, Release)",
+        "conclusion": "success",
+        "started_at": "2026-11-09T01:28:36Z",
+        "completed_at": "2026-11-09T01:30:56Z",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277/job/128930297129"
+      }
+    ],
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42545756277",
+    "conclusion": "success",
+    "run_id": 42545756277
+  },
+  "hardware": {
+    "power_plan_guid": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "memory": [
+      {
+        "TotalPhysicalMemory": 16890519552
+      }
+    ],
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "collected_utc": "2026-11-09T01:30:10.7897526Z",
+    "os": [
+      {
+        "Caption": "Microsoft Windows 11 Home",
+        "Version": "10.0.26200",
+        "BuildNumber": "26200"
+      }
+    ],
+    "power_plan": "Balanced"
+  },
+  "toolchain": {
+    "clang": "23.1.5",
+    "llvm_mingw": "20261104-ucrt-x86_64",
+    "cmake": "3.31.10",
+    "ninja": "1.13.2",
+    "sqlite": "3.54.1"
+  },
+  "timing_note": "Correctness builds may overlap ecology; their elapsed time is not an isolated benchmark.",
+  "initial_ci_failure": {
+    "run_id": 42544150073,
+    "source_commit": "d60c8ff1e9d8eaa331b708439d149721325d9679",
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42544150073",
+    "correction": "Add explicit algorithm include and avoid range-loop pair copy in observer executable; no simulation rule changed.",
+    "corrected_run": 42544457489,
+    "corrected_all_five_jobs": "success"
+  }
+}

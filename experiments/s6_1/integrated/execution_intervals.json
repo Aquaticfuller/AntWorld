@@ -1,0 +1,30 @@
+[
+  {
+    "directory": "out/s6_1-parts/integrated-1",
+    "first_seed": 1,
+    "seeds": 8,
+    "summary_rows": 192,
+    "summary_sha256": "2074ba5dadcabc831e9a4a5e349309b78adc1a80776f8b38dc5e2274b4d2540e"
+  },
+  {
+    "directory": "out/s6_1-parts/integrated-9",
+    "first_seed": 9,
+    "seeds": 8,
+    "summary_rows": 192,
+    "summary_sha256": "439ccfcbd57e5797c44abb521e6f15645fccff48d07d2416ed45e0f6cfa7b56d"
+  },
+  {
+    "directory": "out/s6_1-parts/integrated-17",
+    "first_seed": 17,
+    "seeds": 8,
+    "summary_rows": 192,
+    "summary_sha256": "cb5d0dc7d36a54c12e638e925941af8895a5c73a9b8e2b1b473d8ac458efc865"
+  },
+  {
+    "directory": "out/s6_1-parts/integrated-25",
+    "first_seed": 25,
+    "seeds": 8,
+    "summary_rows": 192,
+    "summary_sha256": "a2938118247402dee2b364b08fe631030a1b71065d1c15a1579dee5f140596a8"
+  }
+]

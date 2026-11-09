@@ -23,6 +23,8 @@ METRICS = ('emerged', 'unemerged_brood', 'unmet_integral_ug_s',
            'adult_crop_protein_ug', 'dead_crop_protein_ug', 'given_protein_ug',
            'gift_attempts', 'gift_completion_fraction', 'gift_failed',
            'program_switches', 'nurse_exits_with_sampled_work', 'nest_intakes',
+           'program_switches_per_sim_min', 'nonurgent_nurse_exits_with_sampled_work',
+           'collected_protein_ug', 'delivered_protein_ug', 'nest_intake_protein_ug',
            'active_fraction', 'away_fraction', 'blocked_fraction', 'moves',
            'excavated_q3', 'living')
 
@@ -87,6 +89,18 @@ def audit_observer(base, suite, seeds, shape):
     summaries = list(rows(base, 'summary'))
     assert len(summaries) == len(expected(suite, seeds))
     assert {key(r) for r in summaries} == expected(suite, seeds)
+    indexed_facts = list(rows(base, 'canonical_facts'))
+    if (base/'archive.json').exists():
+        assert indexed_facts, 'complete observer fact index missing'
+    if indexed_facts:
+        by_file = {Path(f['file']).name: f for f in indexed_facts}
+        assert len(by_file) == len(summaries) == len(indexed_facts)
+        for r in summaries:
+            name = '-'.join(key(r))+'-facts.bin'
+            f = by_file[name]
+            assert integer(f, 'facts') == integer(r, 'events')
+            assert integer(f, 'bytes') == 159*integer(r, 'events')
+            assert len(f['sha256']) == 64 and all(c in '0123456789abcdef' for c in f['sha256'])
     cursors = {name: Groups(base, name) for name in
                ('time_series', 'events', 'decisions', 'individuals', 'event_counts', 'geometry')}
     duration = 600000 if suite == 'integrated' else 180000
@@ -114,6 +128,7 @@ def audit_observer(base, suite, seeds, shape):
             assert selected[kind] == by_kind.get(kind, 0), (case, kind)
         ids = [integer(e, 'event_id') for e in events]
         assert ids == sorted(set(ids))
+        assert [integer(e, 'time_ms') for e in events] == sorted(integer(e, 'time_ms') for e in events)
         assert all(0 <= integer(e, 'time_ms') <= duration and 2 <= integer(e, 'actor') < workers+15 for e in events)
         gifts = [e for e in events if e['scheduled_kind'] == '12']
         assert len(gifts) == integer(r, 'gift_attempts')
@@ -170,12 +185,17 @@ def audit_observer(base, suite, seeds, shape):
         for field in ('demand', 'supply'):
             assert 10*sum(integer(t, 'accessible_'+field+'_ug') for t in contact[:-1]) == integer(r, 'accessible_'+field+'_integral_ug_s')
         for t in series:
+            source_protein = 0 if r['condition'] == 'protein_absent' else integer(r, 'source_protein_ug')
+            introduced = {'carbs': 1000, 'protein': 200+source_protein,
+                          'water': (workers+13)*1000+5500, 'other': 2500-source_protein}
+            if r['condition'] == 'food_absent':
+                introduced = {'carbs': 0, 'protein': 200, 'water': (workers+13)*1000, 'other': 0}
             for ingredient, singular in (('carbs', 'carb'), ('protein', 'protein'), ('water', 'water'), ('other', 'other')):
                 inventory = sum(integer(t, location+'_'+ingredient+'_ug') for location in ('available', 'stored', 'carried', 'crop'))
                 inventory += (integer(t, 'oxidized_carbs_ug') if ingredient == 'carbs' else
                               integer(t, 'tissue_protein_ug') if ingredient == 'protein' else
                               integer(t, 'hydration_ug')+integer(t, 'lost_water_ug') if ingredient == 'water' else 0)
-                assert inventory == integer(t, singular+'_introduced_ug') == integer(t, singular+'_accounted_ug')
+                assert inventory == introduced[ingredient] == integer(t, singular+'_introduced_ug') == integer(t, singular+'_accounted_ug')
             assert integer(t, 'energy_input_nj') == (workers+13)*1000000000+integer(t, 'oxidized_carbs_ug')*1000000
             assert integer(t, 'energy_input_nj') == integer(t, 'body_energy_nj')+integer(t, 'dissipated_energy_nj')
             assert integer(t, 'soil_initial_q3') == sum(integer(t, 'soil_'+name+'_q3') for name in ('remaining', 'carried', 'deposited'))
@@ -210,6 +230,11 @@ def audit_observer(base, suite, seeds, shape):
         n = integer(r, 'gift_attempts')
         results.append(dict(r, gift_completion_fraction=(integer(r, 'gift_success')+integer(r, 'gift_partial'))/n if n else math.nan,
                             active_fraction=active_ms/living_ms, away_fraction=integer(r, 'initial_worker_away_ms')/living_ms,
+                            program_switches_per_sim_min=integer(r, 'program_switches')/(duration/60000),
+                            nonurgent_nurse_exits_with_sampled_work=sum(d['urgent'] == '0' for d in exits),
+                            collected_protein_ug=sum(integer(e, 'protein_ug') for e in events if e['kind'] == '5'),
+                            delivered_protein_ug=sum(integer(e, 'protein_ug') for e in events if e['kind'] == '12'),
+                            nest_intake_protein_ug=sum(integer(e, 'protein_ug') for e in events if e['kind'] == '20'),
                             blocked_fraction=integer(r, 'blocked_travel_decisions')/max(1, len(decisions))))
         digs = [e for e in events if e['kind'] == '23']
         delivered = [integer(e, 'time_ms') for e in events if e['kind'] == '12']
@@ -252,6 +277,51 @@ def emit(path, data, check):
     previous.emit(path, data, check)
 
 
+def audit_execution_prefixes(root):
+    counts = {}
+    for name in ('matrix', 'observer_integrated', 'integrated'):
+        fields = KEY if name != 'integrated' else (*previous.KEY, 'mode')
+        make_key = lambda r: tuple(r[f] for f in fields)
+        complete = {make_key(r): r for r in rows(root/name, 'summary')}
+        prefix = list(rows(root/'execution_prefixes', name))
+        assert prefix
+        for row in prefix:
+            expected_row = complete[make_key(row)]
+            excluded = {'setup_ms', 'advance_ms', 'save_ms', 'load_ms', 'database_bytes'} if name == 'integrated' else set()
+            assert {k: v for k, v in row.items() if k not in excluded} == {
+                k: v for k, v in expected_row.items() if k not in excluded}, (name, 'execution partition changed facts')
+        counts[name] = len(prefix)
+    full = {}
+    for name in ('matrix', 'observer_integrated'):
+        for r in rows(root/name, 'canonical_facts'):
+            full[name, Path(r['file']).name] = (r['facts'], r['sha256'])
+    for r in rows(root/'execution_prefixes', 'canonical_facts'):
+        assert full[r['suite'], r['filename']] == (r['facts'], r['sha256'])
+    assert counts == {'matrix': 102, 'observer_integrated': 64, 'integrated': 69}
+    return counts
+
+
+def audit_verification(root):
+    verification = json.loads((root/'verification.json').read_text(encoding='utf-8'))
+    tests = list(rows(root, 'executed_tests'))
+    assert len(tests) == verification['test_rows'] == 655
+    assert all(t['result'] == 'Passed' for t in tests)
+    assert hashlib.sha256((root/'executed_tests.csv').read_text(encoding='utf-8').encode()).hexdigest() == verification['test_rows_sha256']
+    inherited = {t['test'] for t in rows(ROOT/'experiments/s6', 'executed_tests')}
+    assert len(inherited) == 124
+    for build in verification['local_builds']:
+        selected = [t for t in tests if t['configuration'] == build['configuration']]
+        assert len(selected) == build['tests'] == build['passed'] and build['failed'] == 0
+        assert len({t['test'] for t in selected}) == len(selected)
+        assert all(t['source_commit'] == build['source_commit'] for t in selected)
+        if len(selected) == 135:
+            assert inherited <= {t['test'] for t in selected}
+    for ci in (verification['github_source_ci'], json.loads((root/'interval_ci.json').read_text(encoding='utf-8-sig'))):
+        assert ci['conclusion'] == 'success' and len(ci['jobs']) == 5
+        assert all(j['conclusion'] == 'success' for j in ci['jobs'])
+    return len(tests)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=ROOT/'experiments/s6_1')
@@ -273,6 +343,7 @@ def main():
     # historical S6 validation retains its original version defaults.
     durable = []
     for directory, suite, seeds, duration in [('integrated', 'primary', 32, 600000), ('long', 'long', 8, 1800000)]:
+        verify(root/directory)
         a, _ = previous.audit_integration(root, directory, suite, seeds, duration, schema=8, physics=9)
         durable.extend(a)
     old = {tuple(r[f] for f in ('seed', 'condition', 'mirror')): r
@@ -293,6 +364,8 @@ def main():
             assert r['state_hash'] == reference['state_hash'], (k, 'observer versus durable state')
         pairs += 1
     assert pairs == 512
+    prefixes = audit_execution_prefixes(root)
+    executed = audit_verification(root)
     output = root/'analysis'
     if not args.check:
         output.mkdir(exist_ok=True, parents=True)
@@ -302,6 +375,8 @@ def main():
     report = dict(scope='ENGINEERING_FIXTURE', matrix_cases=576, sensitivity_cases=128,
                   integrated_observer_cases=512, durable_cases=272, durable_execution_modes=816,
                   observer_durable_or_original_exact_trace_pairs=pairs, independent_integrated_seeds=32,
+                  interrupted_execution_prefix_rows_reproduced=prefixes,
+                  executed_local_test_rows=executed,
                   bootstrap_resamples=4096, analysis_seed=6106, conservation_identity_history_geometry='PASS',
                   confidence='95% paired seed percentile bootstrap; mirrors averaged within seed; modes are verification replicas',
                   accessible_integral='Unique reachable recipient demand and adult crop supply; coexistence diagnostic, not maximum feasible flow',
