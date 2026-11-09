@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.3.3.1 Brood Retrieval, Behavioral Fidelity and Performance Validation is submitted for independent review on `codex/s6.3.3.1-brood-retrieval-validation`. Read documents 52 through 57, S6_3_3_1_RESULTS.md and the Evidence Atlas supplement. The opt-in local retrieval policy improves exploratory B02 endpoints while species-level quantitative validation remains open. The fixed Windows performance workloads pass. Preserve all 187 current tests, 384 historical runs, 416 new assays and their evidence. P02 metabolism, P03 reproductive allocation, P04 thermal development and later stages remain review-gated.
+This is the v0.8 design and engineering handoff. S6.3.3.2 Brood Care Fidelity and Integration proceeds from reviewed `05a6847` on `codex/s6.3.3.2-brood-care-fidelity`. Read documents 52 through 59, S6_3_3_1_RESULTS.md and the Evidence Atlas supplements. The prior local retrieval engineering and bounded Windows timing pass. Species-level quantitative validation and TD-11 remain open. Preserve all 187 inherited tests, 384 historical runs, 416 S6.3.3.1 assays and their evidence. P02 metabolism, P03 reproductive allocation, P04 thermal development and later stages remain review-gated.
 
 ## Architecture
 

@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 70 (excluding the manifest itself).
+Files: 72 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `23c2d9cffc46f8b48e067d0a2bd63f2eb8132d08e19747cfac38b23b8133e28f` | 5083 |
-| `CODEX_START_HERE.md` | `6b8c099d54c49335fa4ec72136f313dd516fc5971099256aa4f978ef63a3808b` | 7698 |
+| `AGENTS.md` | `1cc62e2312721d275308ac6da9ebe6e7dd2001db9323691e58c417f4830e8b5c` | 4771 |
+| `CODEX_START_HERE.md` | `04e698680853de768b814b92c5328073deba5878937beb8ab41f00d9041dbcf0` | 7627 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -71,6 +71,8 @@ Files: 70 (excluding the manifest itself).
 | `docs/55_S6_3_3_1_Performance_Instrument_Protocol.md` | `ba7b1b9ac5e0dc48587a08f2dae859ab1ab0246ce32bd3cc84623cb96db9c4f8` | 5559 |
 | `docs/56_S6_3_3_1_Retrieval_Candidate.md` | `379feb34f8c32a05f86b1c700ebfb889e71f0652d9dc3dd19bf6171bb244e099` | 6715 |
 | `docs/57_S6_3_3_1_Reserve_Birth_Benchmark_Correction.md` | `f2deeb7de9223b89897c2738f3300aedaa27d528990b494cc2229ef0c64af4f6` | 1862 |
+| `docs/58_S6_3_3_2_Frozen_Baseline_and_Protocol.md` | `0124da5251143d96b43109912acd4933c4bfb0d5423709ba28cd4ec1216a8a27` | 9266 |
+| `docs/59_S6_3_3_2_Care_Design_Audit.md` | `f211e6db97e8d228ab7e59adee84a0f8d1f97c70fa540e82bd605381b06cf9eb` | 8529 |
 | `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
