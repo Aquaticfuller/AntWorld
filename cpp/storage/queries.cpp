@@ -13,7 +13,7 @@ std::optional<WorldCoverage> Store::coverage(WorldId world) const {
 }
 std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
     range(filter.begin, filter.end, filter.limit);
-    if (filter.kind && *filter.kind > FactKind::AutonomyDecision)
+    if (filter.kind && *filter.kind > FactKind::ProteinRecycled)
         throw std::invalid_argument("invalid fact kind");
     std::string sql = "SELECT ";
     sql += history_columns;
@@ -67,6 +67,10 @@ std::optional<IndividualRecord> Store::individual(AntRef ref) const {
     if (q.number(8) >= 0)
         r.died_at = SimTime{q.number(8)};
     r.death_cause_code = q.u64(9);
+    Statement origin(impl_->db,"SELECT kind FROM events WHERE world=? AND id=?");
+    origin.text(1,ref.world.str()); origin.u64(2,r.created_event.value);
+    require(origin.row(),"identity lacks creation evidence");
+    r.seeded=origin.number(0)==static_cast<std::int64_t>(FactKind::AntSeeded);
     return r;
 }
 std::vector<MetricPoint> Store::series(WorldId world, ColonyId owner, Metric metric, SimTime begin,

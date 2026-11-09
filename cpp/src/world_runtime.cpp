@@ -65,6 +65,7 @@ bool WorldRuntime::cancel(ScheduledId id) {
     if (found == s.queue_index.end()) return false;
     const auto& event = s.queue.at(found->second);
     if (event.kind == ScheduledEvent::Kind::Wake || event.kind == ScheduledEvent::Kind::TrailMaintenance ||
+        event.kind==ScheduledEvent::Kind::Reproduction || event.kind==ScheduledEvent::Kind::ResourceRelease ||
         event.kind == ScheduledEvent::Kind::Physiology || event.kind == ScheduledEvent::Kind::NutritionWake || event.kind == ScheduledEvent::Kind::ExcavationWake || event.kind==ScheduledEvent::Kind::AutonomyWake ||
         (s.excavators.contains(event.actor) && s.excavators.at(event.actor).action == id) ||
         (s.physiology.contains(event.actor) && s.physiology.at(event.actor).behavior_event == id) ||
@@ -143,6 +144,8 @@ ScheduledId WorldRuntime::schedule_lifecycle(AntRef actor, SimTime at, LifeStage
 void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
     auto& s = *state_; WorldEvent fact; fact.source = e.id; fact.actor = e.actor;
     if (e.kind == ScheduledEvent::Kind::Physiology) { execute_physiology(tx, e); return; }
+    if (e.kind == ScheduledEvent::Kind::Reproduction) { execute_reproduction(tx,e); return; }
+    if (e.kind == ScheduledEvent::Kind::ResourceRelease) { execute_resource_release(tx,e); return; }
     if (e.kind == ScheduledEvent::Kind::TrailMaintenance) { maintain_trails(tx, e); return; }
     if (e.kind == ScheduledEvent::Kind::Diagnostic) {
         fact.action = e.action; fact.payload = e.payload;
@@ -187,7 +190,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         else if (e.observed_position_revision != ant.position_revision) f.outcome = Outcome::StalePosition;
         else if (e.kind == ScheduledEvent::Kind::SoilAction) {
             resolve_soil_action(tx,e,f);
-        } else if (e.kind >= ScheduledEvent::Kind::IngestCargo && e.kind <= ScheduledEvent::Kind::Trophallaxis) {
+        } else if ((e.kind >= ScheduledEvent::Kind::IngestCargo && e.kind <= ScheduledEvent::Kind::Trophallaxis) || e.kind==ScheduledEvent::Kind::ReturnProtein) {
             resolve_nutrition_action(tx, e, f);
         } else if (e.kind == ScheduledEvent::Kind::Move) {
             const bool planar=s.surface && (!(s.social && s.geometry) || (s.foragers.contains(e.actor) && s.foragers.at(e.actor).enabled));
@@ -241,6 +244,11 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         after_action(tx, e, f, before);
         continue_nutrition_behavior(tx, e);
         after_excavation_action(tx,e,f,before);
+        if (s.long_term && ant.position==s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position &&
+            !ant.carried_food.total_ug() && !s.carriers.contains(ant.id) &&
+            (f.kind==FactKind::FoodDelivered || f.kind==FactKind::SoilDropped ||
+             (f.kind==FactKind::Moved && s.foragers.contains(ant.id) && s.foragers.at(ant.id).mode==BehaviorMode::Return)))
+            notify_return(tx,ant.id);
         tx.fact(f);
     }
 }

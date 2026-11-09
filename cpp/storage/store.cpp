@@ -140,7 +140,7 @@ SaveToken Store::save(const WorldRuntime &w, std::optional<SaveToken> expected, 
             continue;
         const auto edit = edits.find(e.id);
         const auto *linked = edit == edits.end() ? nullptr : &edit->second;
-        const auto related = e.kind == FactKind::NutritionTransferred ? e.payload : 0;
+        const auto related = e.kind == FactKind::NutritionTransferred || e.kind==FactKind::AntBorn ? e.payload : 0;
         const bool soil = e.kind >= FactKind::SoilExcavated && e.kind <= FactKind::SoilFilled;
         fact.text(1, e.world.str());
         fact.u64(2, e.id.value);
@@ -165,7 +165,7 @@ SaveToken Store::save(const WorldRuntime &w, std::optional<SaveToken> expected, 
                 put.u64(3, e.id.value);
                 put.done();
             }
-        if (e.kind == FactKind::AntSeeded) {
+        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
             const auto ant = w.query_ant({e.world, e.actor});
             require(ant.has_value(), "seeded identity missing");
             Statement put(impl_->db, "INSERT INTO individuals VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");

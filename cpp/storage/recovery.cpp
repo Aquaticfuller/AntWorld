@@ -52,7 +52,7 @@ LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) c
         for (const auto &value : contributions(fact, geometry, edit))
             expected_flows.emplace(FlowKey{value.owner, value.metric, fact.id},
                                    std::pair{fact.time, value.value});
-        if (fact.kind == FactKind::AntSeeded) {
+        if (fact.kind == FactKind::AntSeeded || fact.kind==FactKind::AntBorn) {
             IndividualRecord p;
             p.ant = {world, fact.actor};
             p.colony = fact.colony;
@@ -60,15 +60,16 @@ LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) c
             p.current_stage = fact.stage;
             p.created_at = fact.time;
             p.created_event = fact.id;
+            p.seeded=fact.kind==FactKind::AntSeeded;
             people.emplace(fact.actor, p);
         }
         if (fact.actor.value)
             people.at(fact.actor).last_event = fact.id;
         if (fact.actor.value)
             expected_participants[{fact.actor, fact.id}] = true;
-        if (fact.kind == FactKind::NutritionTransferred)
+        if (fact.kind == FactKind::NutritionTransferred || fact.kind==FactKind::AntBorn)
             expected_participants[{{fact.payload}, fact.id}] = true;
-        if (fact.kind == FactKind::NutritionTransferred)
+        if (fact.kind == FactKind::NutritionTransferred || fact.kind==FactKind::AntBorn)
             people.at(EntityId{fact.payload}).last_event = fact.id;
         if (fact.kind == FactKind::StageChanged || fact.kind == FactKind::AntDied)
             people.at(fact.actor).current_stage = fact.stage;
@@ -138,7 +139,7 @@ LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) c
             const auto &expected = people.at(ant.id);
             require(actual && actual->colony == ant.colony && actual->caste == ant.caste &&
                         actual->current_stage == ant.stage && actual->created_at == expected.created_at &&
-                        actual->seeded_stage == expected.seeded_stage &&
+                        actual->seeded_stage == expected.seeded_stage && actual->seeded==expected.seeded &&
                         actual->created_event == expected.created_event &&
                         actual->last_event == expected.last_event &&
                         actual->death_event == expected.death_event && actual->died_at == expected.died_at &&

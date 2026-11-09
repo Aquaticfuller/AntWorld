@@ -1,5 +1,7 @@
 #include "antworld/storage/analytics.hpp"
 #include <array>
+#include <algorithm>
+#include <tuple>
 #include <limits>
 #include <map>
 #include <stdexcept>
@@ -84,7 +86,16 @@ constexpr auto definitions = std::to_array<MetricDefinition>(
      {Metric::FilledWater, "fill.water", "ug", "Actual supplied soil water filled", K::Flow},
      {Metric::Moves, "behavior.moves", "events", "Committed moves, not intentions", K::Flow},
      {Metric::Rejected, "behavior.rejected", "events", "Rejected outcomes, not ecological success", K::Flow},
-     {Metric::BehaviorChanges, "behavior.changes", "events", "Explicit recorded program changes", K::Flow}});
+     {Metric::BehaviorChanges, "behavior.changes", "events", "Explicit recorded program changes", K::Flow},
+     {Metric::Born, "life.born", "events", "Actual maternally funded AntBorn facts, excluding fixture seeds", K::Flow},
+     {Metric::RecycledProtein, "nutrition.recycled_protein", "ug", "Actual worker crop protein returned to a contacted depot", K::Flow},
+     {Metric::ReleasedCarbs, "environment.released_carbs", "ug", "Finite reserve to accessible source transfer, not new input", K::Flow},
+     {Metric::ReleasedProtein, "environment.released_protein", "ug", "Finite reserve to accessible source transfer, not new input", K::Flow},
+     {Metric::ReleasedWater, "environment.released_water", "ug", "Finite reserve to accessible source transfer, not new input", K::Flow},
+     {Metric::ReserveCarbs, "environment.reserve_carbs", "ug", "World-only inaccessible finite carbohydrate reserve", K::Gauge},
+     {Metric::ReserveProtein, "environment.reserve_protein", "ug", "World-only inaccessible finite protein reserve", K::Gauge},
+     {Metric::ReserveWater, "environment.reserve_water", "ug", "World-only inaccessible finite water reserve", K::Gauge},
+     {Metric::ReserveOther, "environment.reserve_other", "ug", "World-only inaccessible finite other reserve", K::Gauge}});
 static_assert(definitions.size() == static_cast<std::size_t>(Metric::Count));
 constexpr auto gauges = static_cast<std::size_t>(Metric::Seeded);
 using Values = std::array<std::uint64_t, gauges>;
@@ -176,6 +187,11 @@ Observation observe(const WorldRuntime &w) {
                 continue;
             o.values.push_back({owner, static_cast<Metric>(i), v[i]});
         }
+    if (w.long_term_config()) {
+        auto metric=static_cast<std::uint32_t>(Metric::ReserveCarbs);
+        for (const auto amount:w.resource_reserves().components()) o.values.push_back({{},static_cast<Metric>(metric++),amount});
+        std::sort(o.values.begin(),o.values.end(),[](const auto& a,const auto& b){return std::tie(a.owner,a.metric)<std::tie(b.owner,b.metric);});
+    }
     return o;
 }
 std::vector<MetricValue> contributions(const WorldEvent &e, const GeometrySnapshot &g,
@@ -194,6 +210,9 @@ std::vector<MetricValue> contributions(const WorldEvent &e, const GeometrySnapsh
             add_flow(static_cast<Metric>(static_cast<unsigned>(first) + i), v[i]);
     };
     switch (e.kind) {
+    case FactKind::AntBorn: add_flow(Metric::Born,1); break;
+    case FactKind::ProteinRecycled: add_flow(Metric::RecycledProtein,e.transferred.protein_ug); break;
+    case FactKind::ResourceReleased: food(Metric::ReleasedCarbs); break;
     case FactKind::AntSeeded:
         add_flow(Metric::Seeded, 1);
         break;

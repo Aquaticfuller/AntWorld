@@ -1,4 +1,5 @@
 #pragma once
+#include "antworld/core/long_term.hpp"
 
 #include "antworld/core/event.hpp"
 #include "antworld/core/command.hpp"
@@ -125,6 +126,11 @@ private:
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
     void validate_nutrition_capacity() const;
+    void execute_reproduction(Transaction&, const ScheduledEvent&);
+    void execute_resource_release(Transaction&, const ScheduledEvent&);
+    void stop_reproduction(Transaction&, EntityId);
+    void notify_return(Transaction&, EntityId);
+    [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     void resolve_soil_action(Transaction&, const ScheduledEvent&, WorldEvent&);
     void resolve_excavation_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     void after_excavation_action(Transaction&, const ScheduledEvent&, const WorldEvent&, const AntState&);
@@ -141,5 +147,14 @@ private:
     [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
+public:
+    static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 10;
+    void configure_long_term(const LongTermConfig& = {});
+    [[nodiscard]] std::optional<LongTermConfig> long_term_config() const;
+    void enable_reproduction(AntRef, const ReproductionConfig& = {});
+    [[nodiscard]] std::optional<ReproductionState> query_reproduction(AntRef) const;
+    void configure_resource_cycle(FoodRef, const ResourceCycleConfig&);
+    [[nodiscard]] std::optional<ResourceCycleState> query_resource_cycle(FoodRef) const;
+    [[nodiscard]] FoodMass resource_reserves() const;
 };
 } // namespace antworld

@@ -64,6 +64,15 @@ enum class Metric : std::uint32_t {
     Moves,
     Rejected,
     BehaviorChanges,
+    Born,
+    RecycledProtein,
+    ReleasedCarbs,
+    ReleasedProtein,
+    ReleasedWater,
+    ReserveCarbs,
+    ReserveProtein,
+    ReserveWater,
+    ReserveOther,
     Count
 };
 enum class MetricKind { Gauge, Flow };

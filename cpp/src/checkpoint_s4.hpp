@@ -258,10 +258,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ledger.initial_q3 = material_volume(view(), c.initial_solid, Material::Soil);
             ledger.remaining_q3 = ledger.initial_q3;
         }
-        if (e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
+        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
             ensure(configured && clear(e.position, e.position, e.kind == FactKind::AntSeeded ? c.body_half_q : 1),
                    "seed embedded in material");
-        if (e.kind == FactKind::AntSeeded) {
+        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
             positions[e.actor] = e.position;
             stages[e.actor] = e.stage;
         }
@@ -292,7 +292,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                    "food crosses solid material");
             cargo[e.actor] = sum(cargo[e.actor], e.transferred);
         }
-        if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::NestIngested)
+        if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::NestIngested || e.kind==FactKind::ProteinRecycled)
             ensure(clear(positions.at(e.actor), s.colonies.rows[s.colonies.index.at(e.colony)].nest_position, 1),
                    "nest inventory crosses solid material");
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::CargoIngested)

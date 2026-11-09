@@ -7,6 +7,8 @@ void WorldRuntime::configure_social(const SocialConfig &config) {
   if (s.social || s.m.now != SimTime{} || s.m.watermark)
     throw std::invalid_argument("social policy requires an unexecuted world");
   detail::validate_social(config);
+  if (!s.long_term && (config.decision_interval.milliseconds>60000 || config.minimum_program_time.milliseconds>3600000))
+    throw std::invalid_argument("long social intervals require the explicit long-term contract");
   auto policy = std::make_shared<const SocialConfig>(config);
   Transaction tx(s, limits_);
   s.social = std::move(policy);

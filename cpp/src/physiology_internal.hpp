@@ -15,8 +15,10 @@ inline SimTime after(SimTime at, std::int64_t delay) {
     return {at.milliseconds+delay};
 }
 inline void validate_physiology(const PhysiologySeed& seed, const PhysiologyConfig& c) {
-    if (c.absorption_period.milliseconds <= 0 || c.absorption_period.milliseconds > 60000 ||
-        c.behavior_interval.milliseconds <= 0 || c.behavior_interval.milliseconds > 60000 ||
+    if (c.absorption_period.milliseconds <= 0 || c.absorption_period.milliseconds > 604800000 ||
+        c.behavior_interval.milliseconds <= 0 || c.behavior_interval.milliseconds > 604800000 ||
+        c.water_loss_period.milliseconds < 1 || c.water_loss_period.milliseconds > 86400000 ||
+        c.adult_protein_target_ug > c.crop_capacity_ug ||
         c.egg_duration.milliseconds <= 0 || c.larva_duration.milliseconds <= 0 || c.pupa_duration.milliseconds <= 0 ||
         !c.energy_capacity_nj || c.energy_capacity_nj > UINT64_C(1000000000000000) ||
         !seed.body_energy_nj || seed.body_energy_nj > c.energy_capacity_nj ||
@@ -51,8 +53,9 @@ inline void settle(PhysiologyState& p, LifeStage stage, SimTime at) {
     const auto used = std::min(p.body_energy_nj, multiply(expenditure(p, stage), dt));
     p.body_energy_nj -= used; p.dissipated_energy_nj = add(p.dissipated_energy_nj, used);
     const auto water = add(multiply(p.config.water_loss_ug_per_s, dt), p.water_loss_remainder);
-    const auto lost = std::min(p.hydration_ug, water/1000);
-    p.hydration_ug -= lost; p.lost_water_ug = add(p.lost_water_ug, lost); p.water_loss_remainder = water%1000;
+    const auto period = static_cast<std::uint64_t>(p.config.water_loss_period.milliseconds);
+    const auto lost = std::min(p.hydration_ug, water/period);
+    p.hydration_ug -= lost; p.lost_water_ug = add(p.lost_water_ug, lost); p.water_loss_remainder = water%period;
     if (developing(p, stage)) p.stage_progress = after(p.stage_progress, static_cast<std::int64_t>(dt));
     p.updated_at = at;
 }
@@ -84,7 +87,7 @@ inline SimTime next_physiology(const PhysiologyState& p, LifeStage stage) {
         if (rate) dt = std::min(dt, static_cast<std::int64_t>(amount/rate + (amount%rate != 0)));
     };
     shorten(p.body_energy_nj, expenditure(p, stage));
-    shorten(multiply(p.hydration_ug, 1000)-p.water_loss_remainder, p.config.water_loss_ug_per_s);
+    shorten(multiply(p.hydration_ug, static_cast<std::uint64_t>(p.config.water_loss_period.milliseconds))-p.water_loss_remainder, p.config.water_loss_ug_per_s);
     if (developing(p, stage)) dt = std::min(dt, stage_duration(p.config, stage).milliseconds-p.stage_progress.milliseconds);
     return after(p.updated_at, dt);
 }

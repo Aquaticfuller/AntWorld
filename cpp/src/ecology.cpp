@@ -15,7 +15,7 @@ void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
       !s.physiology.contains(ref.id))
     throw std::invalid_argument(
         "autonomy requires a living physiological worker and social policy");
-  if (enabled)
+  if (enabled && s.m.resolution_commands)
     for (const auto &[key, e] : s.queue) {
       if (e.actor == ref.id && key.phase == Phase::Resolution &&
           e.id != s.physiology.at(ref.id).behavior_event &&
@@ -114,12 +114,14 @@ void WorldRuntime::resolve_autonomy_wakes(
         p.behavior == IndividualBehavior::Paused ||
         s.m.now.milliseconds - a.last_program_change.milliseconds >=
             config.minimum_program_time.milliseconds;
-    if (can_switch && ready) {
+    if (can_switch && wake.payload==1 && s.long_term) {
+      choice.behavior=IndividualBehavior::Rest;
+    } else if (can_switch && ready) {
       const auto sample = sample_contacts(
           {s.world, ant.id}, a.decisions ^ UINT64_C(0x45434f4c4f4759));
       choice.sample = {0, sample.candidates_examined, sample.bucket_queries,
                        sample.tree_visits, 0};
-      bool need = false, crop_work = false;
+      bool need = false, crop_work = false, unmet = false;
       const bool nest_contact =
           distance(ant.position, colony.nest_position) <=
               s.config.contact_distance_m &&
@@ -134,14 +136,16 @@ void WorldRuntime::resolve_autonomy_wakes(
         if (!q)
           continue;
         const auto stage = s.ants.get(s.ants.index.at(other.id)).stage;
+        const auto signal=signaled_need(*q,stage,s.long_term!=nullptr);
+        if (signal.total_ug() && ingredient_min(available,signal)!=signal) unmet=true;
         if (q->crop.total_ug() < q->config.crop_capacity_ug &&
-            ingredient_min(available, signaled_need(*q, stage)).total_ug())
+            ingredient_min(available, signaled_need(*q, stage,s.long_term!=nullptr)).total_ug())
           need = true;
         if (q->crop.total_ug() < q->config.crop_capacity_ug &&
-            ingredient_min(p.crop, signaled_need(*q, stage)).total_ug())
+            ingredient_min(p.crop, signaled_need(*q, stage,s.long_term!=nullptr)).total_ug())
           crop_work = true;
       }
-      const bool forage = at_depot && s.surface &&
+      bool forage = at_depot && s.surface &&
                           s.surface->locate(ant.position) &&
                           sense({s.world, ant.id}).step_count;
       bool soil = false;
@@ -168,6 +172,11 @@ void WorldRuntime::resolve_autonomy_wakes(
       }
       const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
                           p.hydration_ug < p.config.hydration_capacity_ug / 4;
+      if (s.long_term && s.long_term->demand_feedback) {
+        const auto self=signaled_need(p,ant.stage);
+        forage=forage && (unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
+        soil=soil && !urgent && local_space_demand({s.world,ant.id},sample.ants.size());
+      }
       if (urgent &&
           ingredient_min(stock, nutrient_demand(p, ant.stage)).total_ug())
         choice.behavior = IndividualBehavior::Rest;

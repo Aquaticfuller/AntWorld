@@ -14,6 +14,8 @@ struct PhysiologyConfig {
     std::uint64_t carb_absorption_ug_per_s{10}, water_absorption_ug_per_s{100}, protein_absorption_ug_per_s{10};
     std::uint64_t larval_protein_requirement_ug{100}, transfer_limit_ug{100};
     SimTime behavior_interval{1000};
+    SimTime water_loss_period{1000}; // Rate numerator above is ug per this period.
+    std::uint64_t adult_protein_target_ug{}; // Queen provisioning; zero in legacy worlds.
     bool operator==(const PhysiologyConfig&) const = default;
 };
 struct PhysiologySeed {
@@ -33,10 +35,12 @@ struct PhysiologyState {
     IndividualBehavior behavior{IndividualBehavior::Paused};
     DeathCause death_cause{DeathCause::None};
     std::uint64_t decisions{};
+    EntityId mother; // Nonzero means initial stores were funded by a birth, not external input.
+    std::uint64_t exported_energy_nj{};
     [[nodiscard]] double body_energy_j() const { return static_cast<double>(body_energy_nj) / 1e9; }
     bool operator==(const PhysiologyState&) const = default;
 };
-enum class NutritionAction : std::uint8_t { IngestCargo, WithdrawNest, Trophallaxis };
+enum class NutritionAction : std::uint8_t { IngestCargo, WithdrawNest, Trophallaxis, ReturnProtein };
 struct NutritionProposal {
     AntRef actor;
     SimTime execute_at;

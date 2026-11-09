@@ -23,6 +23,7 @@ template <typename S> void write_physiology(Writer& w, const S& s) {
         w.put(id.value);
         for (const auto member : physiology_config_times) w.time(p.config.*member);
         for (const auto member : physiology_config_values) w.put(p.config.*member);
+        if (s.long_term) { w.time(p.config.water_loss_period); w.put(p.config.adult_protein_target_ug); w.put(p.mother.value); w.put(p.exported_energy_nj); }
         w.mass(p.initial.crop); w.put(p.initial.body_energy_nj); w.put(p.initial.hydration_ug); w.put(p.initial.tissue_protein_ug);
         w.mass(p.crop); for (const auto member : physiology_values) w.put(p.*member);
         w.time(p.updated_at); w.time(p.next_absorption); w.time(p.stage_progress);
@@ -36,16 +37,18 @@ template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits&
         const EntityId id{r.get()}; PhysiologyState p;
         for (const auto member : physiology_config_times) p.config.*member = r.time();
         for (const auto member : physiology_config_values) p.config.*member = r.get();
+        if (s.long_term) { p.config.water_loss_period=r.time(); p.config.adult_protein_target_ug=r.get(); p.mother={r.get()}; p.exported_energy_nj=r.get(); }
         p.initial = {r.mass(), r.get(), r.get(), r.get()}; p.crop = r.mass();
         for (const auto member : physiology_values) p.*member = r.get();
         p.updated_at = r.time(); p.next_absorption = r.time(); p.stage_progress = r.time();
         p.physiology_event = {r.get()}; p.behavior_event = {r.get()};
         p.behavior = static_cast<IndividualBehavior>(r.get(1)); p.death_cause = static_cast<DeathCause>(r.get(1));
         validate_physiology(p.initial, p.config);
+        ensure(s.long_term || (p.config.absorption_period.milliseconds<=60000 && p.config.behavior_interval.milliseconds<=60000),"legacy physiology interval exceeds its contract");
         ensure(s.ants.index.contains(id) && p.crop.total_ug() <= p.config.crop_capacity_ug &&
             p.body_energy_nj <= p.config.energy_capacity_nj && p.hydration_ug <= p.config.hydration_capacity_ug &&
             p.tissue_protein_ug <= p.config.larval_protein_requirement_ug &&
-            p.water_loss_remainder < 1000 && p.carb_remainder < 1000 && p.water_remainder < 1000 && p.protein_remainder < 1000 &&
+            p.water_loss_remainder < static_cast<std::uint64_t>(p.config.water_loss_period.milliseconds) && p.carb_remainder < 1000 && p.water_remainder < 1000 && p.protein_remainder < 1000 &&
             p.updated_at <= s.m.now && p.behavior <= IndividualBehavior::Excavate && p.death_cause <= DeathCause::Fixture &&
             s.physiology.emplace(id, p).second, "invalid physiology state");
     }
@@ -61,25 +64,48 @@ template <typename S> void validate_physiology_evidence(const S& s) {
     FoodMass introduced = s.m.ledger.introduced;
     std::uint64_t initial_energy = 0, max_yield = 0;
     FoodMass accounted = sum(sum(s.m.ledger.available, s.m.ledger.carried), s.m.ledger.stored);
+    for (const auto& [id,r]:s.resource_cycles) { (void)id; accounted=sum(accounted,r.remaining); }
     for (const auto& e : s.journal) {
-        if (e.kind == FactKind::AntSeeded) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
+        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
         if (e.kind == FactKind::Moved) positions[e.actor] = e.position;
         if (e.kind == FactKind::ForagingStarted) active_foragers.insert(e.actor);
-        if (e.kind == FactKind::PhysiologyEnabled) {
+        if (e.kind == FactKind::PhysiologyEnabled || e.kind==FactKind::AntBorn) {
             ensure(s.physiology.contains(e.actor) && !audit.contains(e.actor), "missing/duplicate physiology initialization");
             const auto& saved = s.physiology.at(e.actor); PhysiologyState p; p.config = saved.config; p.initial = saved.initial;
             p.crop = p.initial.crop; p.body_energy_nj = p.initial.body_energy_nj; p.hydration_ug = p.initial.hydration_ug;
-            p.tissue_protein_ug = p.initial.tissue_protein_ug; p.next_absorption = p.config.absorption_period;
+            p.tissue_protein_ug = p.initial.tissue_protein_ug; p.next_absorption = after(e.time,p.config.absorption_period.milliseconds);
+            p.updated_at=e.time; p.mother=saved.mother;
             if (active_foragers.contains(e.actor)) p.behavior = IndividualBehavior::Forage;
-            ensure(e.time == SimTime{} && e.transferred == p.crop, "invalid physiology seed evidence"); audit.emplace(e.actor, p);
+            if (e.kind==FactKind::AntBorn) {
+                const EntityId parent{e.payload}; ensure(s.long_term && p.mother==parent && audit.contains(parent) && s.reproduction.contains(parent),"missing birth parent");
+                auto& mother=audit.at(parent); const auto& c=s.reproduction.at(parent).config;
+                settle(mother,stages.at(parent),e.time);
+                ensure(stages.at(parent)==LifeStage::Adult && e.position==positions.at(parent) &&
+                    p.initial==PhysiologySeed{{},c.egg_energy_nj,c.egg_water_ug,c.egg_protein_ug} &&
+                    e.transferred==FoodMass{0,c.egg_protein_ug,c.egg_water_ug,0} && e.random_value==c.egg_energy_nj &&
+                    mother.crop.protein_ug>=c.egg_protein_ug && mother.hydration_ug>c.egg_water_ug &&
+                    mother.body_energy_nj>add(c.egg_energy_nj,c.dissipated_energy_nj),"unfunded birth evidence");
+                auto expected_config=mother.config; expected_config.adult_protein_target_ug=0;
+                ensure(p.config==expected_config,"offspring configuration lacks inheritance evidence");
+                mother.crop.protein_ug-=c.egg_protein_ug; mother.hydration_ug-=c.egg_water_ug;
+                mother.body_energy_nj-=add(c.egg_energy_nj,c.dissipated_energy_nj);
+                mother.exported_energy_nj=add(mother.exported_energy_nj,c.egg_energy_nj);
+                mother.dissipated_energy_nj=add(mother.dissipated_energy_nj,c.dissipated_energy_nj);
+            } else ensure(e.time == SimTime{} && e.transferred == p.crop && !p.mother.value, "invalid physiology seed evidence");
+            audit.emplace(e.actor, p);
         } else if (audit.contains(e.actor)) {
             auto& p = audit.at(e.actor); const auto prior_stage = stages.at(e.actor);
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || (e.kind == FactKind::ActionRejected && e.payload))
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || (e.kind == FactKind::ActionRejected && e.payload))
                 settle(p, prior_stage, e.time);
             if (e.kind == FactKind::PhysiologyUpdated) {
                 ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
                     "invalid absorption evidence");
+            } else if (e.kind==FactKind::ReproductionAttempt) {
+                ensure(s.reproduction.contains(e.actor),"attempt lacks reproduction configuration");
+                const auto& c=s.reproduction.at(e.actor).config;
+                const bool funded=p.crop.protein_ug>=c.egg_protein_ug && p.hydration_ug>c.egg_water_ug && p.body_energy_nj>add(c.egg_energy_nj,c.dissipated_energy_nj);
+                ensure(funded==(e.payload!=0),"reproduction outcome differs from physiological funding");
             } else if (e.kind == FactKind::StageChanged) {
                 ensure(p.body_energy_nj && p.hydration_ug && developing(p, prior_stage) &&
                     p.stage_progress == stage_duration(p.config, prior_stage), "unearned development evidence"); p.stage_progress = {};
@@ -116,6 +142,11 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 }
                 p.crop = subtract(p.crop, e.transferred); recipient.crop = sum(recipient.crop, e.transferred);
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");
+            } else if (e.kind == FactKind::ProteinRecycled) {
+                ensure(s.long_term && s.long_term->protein_recycling && prior_stage==LifeStage::Adult &&
+                    s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker &&
+                    e.transferred.protein_ug && e.transferred.total_ug()==e.transferred.protein_ug,"invalid crop recycling evidence");
+                p.crop=subtract(p.crop,e.transferred);
             } else if (e.kind == FactKind::CargoIngested || e.kind == FactKind::NestIngested) p.crop = sum(p.crop, e.transferred);
             if (e.kind == FactKind::ActionRejected && e.payload && audit.contains(EntityId{e.payload}))
                 settle(audit.at(EntityId{e.payload}), stages.at(EntityId{e.payload}), e.time);
@@ -149,12 +180,14 @@ template <typename S> void validate_physiology_evidence(const S& s) {
         ensure((saved.behavior == IndividualBehavior::Forage) == (f != s.foragers.end() && f->second.enabled), "foraging program mismatch");
         const auto excavator=s.excavators.find(id);
         ensure((saved.behavior==IndividualBehavior::Excavate)==(excavator!=s.excavators.end() && excavator->second.enabled),"excavation program mismatch");
-        introduced = sum(introduced, sum(saved.initial.crop, {0, saved.initial.tissue_protein_ug, saved.initial.hydration_ug, 0}));
-        initial_energy = add(initial_energy, saved.initial.body_energy_nj);
+        if (!saved.mother.value) {
+            introduced = sum(introduced, sum(saved.initial.crop, {0, saved.initial.tissue_protein_ug, saved.initial.hydration_ug, 0}));
+            initial_energy = add(initial_energy, saved.initial.body_energy_nj);
+        }
         max_yield = std::max(max_yield, saved.config.carbohydrate_yield_nj_per_ug);
         accounted = sum(accounted, sum(saved.crop, {saved.oxidized_carbs_ug, saved.tissue_protein_ug, add(saved.hydration_ug, saved.lost_water_ug), 0}));
         ensure(add(saved.initial.body_energy_nj, multiply(saved.oxidized_carbs_ug, saved.config.carbohydrate_yield_nj_per_ug)) ==
-            add(saved.body_energy_nj, saved.dissipated_energy_nj), "energy ledger mismatch");
+            add(add(saved.body_energy_nj, saved.dissipated_energy_nj),saved.exported_energy_nj), "energy ledger mismatch");
     }
     for (const auto& [id, f] : s.foragers) if (!s.physiology.contains(id))
         ensure(f.enabled == s.ants.get(s.ants.index.at(id)).alive(), "legacy forager activity mismatch");

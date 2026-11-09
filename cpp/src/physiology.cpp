@@ -9,7 +9,11 @@ void WorldRuntime::enable_physiology(AntRef ref, const PhysiologySeed& seed, con
     if (!ant || !ant->alive() || s.m.now != SimTime{} || s.m.watermark || s.physiology.contains(ref.id))
         throw std::invalid_argument("physiology fixture initialization requires an unexecuted living individual");
     validate_physiology(seed, config);
-    for (const auto& [key, e] : s.queue) {
+    if ((!s.long_term && (config.water_loss_period != SimTime{1000} || config.adult_protein_target_ug ||
+         config.absorption_period.milliseconds > 60000 || config.behavior_interval.milliseconds > 60000)) ||
+        (config.adult_protein_target_ug && ant->caste != Caste::Queen))
+        throw std::invalid_argument("long-term physiology requires its explicit world contract");
+    if (s.m.development_commands) for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.kind == ScheduledEvent::Kind::Lifecycle && e.stage != LifeStage::Dead)
             throw std::invalid_argument("remove forced development before enabling physiology");
@@ -20,6 +24,9 @@ void WorldRuntime::enable_physiology(AntRef ref, const PhysiologySeed& seed, con
     p.next_absorption = config.absorption_period;
     if (s.foragers.contains(ref.id) && s.foragers.at(ref.id).enabled) p.behavior = IndividualBehavior::Forage;
     tx.physiology.set(ref.id, p); schedule_physiology(tx, ref.id);
+    s.m.physiology_inputs = sum(s.m.physiology_inputs, sum(seed.crop, {0, seed.tissue_protein_ug, seed.hydration_ug, 0}));
+    s.m.initial_energy = add(s.m.initial_energy, seed.body_energy_nj);
+    s.m.maximum_yield = std::max(s.m.maximum_yield, config.carbohydrate_yield_nj_per_ug);
     WorldEvent f; f.kind = FactKind::PhysiologyEnabled; f.actor = ref.id; f.colony = ant->colony; f.stage = ant->stage;
     f.position = ant->position; f.transferred = seed.crop; tx.fact(f);
     validate_nutrition_capacity();
@@ -40,6 +47,7 @@ void WorldRuntime::schedule_physiology(Transaction& tx, EntityId id) {
     tx.physiology.set(id, p);
 }
 void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause cause) {
+    stop_reproduction(tx, id);
     auto& s = *state_; if (!s.physiology.contains(id)) return;
     auto p = s.physiology.at(id);
     // Lifecycle fixtures may interrupt before the next physiological boundary.
@@ -87,7 +95,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
     if (behavior == IndividualBehavior::Forage && (!s.surface || !s.surface->locate(ant->position))) throw std::invalid_argument("foraging requires a surface position");
     if (behavior == IndividualBehavior::Excavate && !s.geometry) throw std::invalid_argument("excavation requires geometry");
     // External pending actions must be explicitly resolved/cancelled, never silently commandeered.
-    if (!source.value) for (const auto& [key, e] : s.queue) {
+    if (!source.value && s.m.resolution_commands) for (const auto& [key, e] : s.queue) {
         (void)key;
         if (e.actor == ref.id && e.key.phase == Phase::Resolution && e.id != s.physiology.at(ref.id).behavior_event &&
             (!s.foragers.contains(ref.id) || e.id != s.foragers.at(ref.id).action) &&
@@ -131,7 +139,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
 }
 ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
     auto& s = *state_; const auto ant = query_ant(proposal.actor);
-    if (!ant || !s.physiology.contains(ant->id) || (s.autonomy.contains(ant->id) && s.autonomy.at(ant->id).enabled) || proposal.kind > NutritionAction::Trophallaxis || !proposal.requested_ug ||
+    if (!ant || !s.physiology.contains(ant->id) || (s.autonomy.contains(ant->id) && s.autonomy.at(ant->id).enabled) || proposal.kind > NutritionAction::ReturnProtein || !proposal.requested_ug ||
         s.physiology.at(ant->id).behavior != IndividualBehavior::Paused ||
         (s.foragers.contains(ant->id) && s.foragers.at(ant->id).enabled)) throw std::invalid_argument("invalid nutrition proposal");
     if (proposal.kind == NutritionAction::Trophallaxis && (!query_ant(proposal.recipient) ||
@@ -139,6 +147,10 @@ ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
         throw std::invalid_argument("invalid world-qualified nutrition recipient");
     ScheduledEvent e; e.actor = ant->id; e.issued_at = s.m.now; e.requested_ug = proposal.requested_ug;
     e.kind = static_cast<ScheduledEvent::Kind>(static_cast<unsigned>(ScheduledEvent::Kind::IngestCargo)+static_cast<unsigned>(proposal.kind));
+    if (proposal.kind == NutritionAction::ReturnProtein) {
+        if (!s.long_term || !s.long_term->protein_recycling) throw std::invalid_argument("protein recycling disabled");
+        e.kind = ScheduledEvent::Kind::ReturnProtein;
+    }
     e.payload = proposal.kind == NutritionAction::Trophallaxis ? proposal.recipient.id.value : 0;
     e.observed_position_revision = ant->position_revision; e.key = {proposal.execute_at, Phase::Resolution, 0, 0, 0};
     Transaction tx(s, limits_); const auto id = tx.insert(e); tx.commit(); return id;
@@ -164,6 +176,36 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
             (s.surface && !(s.social && s.geometry) && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) { f.outcome = Outcome::NotAtNest; return; }
         supply = colony.nest_food;
+        if (e.kind == ScheduledEvent::Kind::ReturnProtein) {
+            const auto amount = std::min(p.crop.protein_ug, e.requested_ug);
+            if (!amount) { f.outcome = Outcome::EmptyInventory; return; }
+            if (!s.long_term || !s.long_term->protein_recycling) throw std::logic_error("unexpected recycling action");
+            f.transferred.protein_ug = amount; f.kind = FactKind::ProteinRecycled;
+            f.outcome = amount == e.requested_ug ? Outcome::Success : Outcome::Partial;
+            const auto j = s.colonies.index.at(ant.colony); tx.touch_colony(j);
+            s.colonies.rows[j].nest_food = sum(colony.nest_food, f.transferred);
+            s.m.ledger.stored = sum(s.m.ledger.stored, f.transferred);
+            p.crop = subtract(p.crop, f.transferred); tx.physiology.set(e.actor, p); return;
+        }
+        if (s.long_term) {
+            auto demand = nutrient_demand(p, ant.stage);
+            if (p.behavior == IndividualBehavior::Nurse) {
+                const auto sample = sample_contacts({s.world, ant.id}, p.decisions);
+                if (sample.candidates_examined) {
+                    auto& work=s.m.contact_work; bump(work.decisions); f.random_value=sample.candidates_examined;
+                    work.candidates_examined=add(work.candidates_examined,sample.candidates_examined);
+                    work.bucket_queries=add(work.bucket_queries,sample.bucket_queries); work.tree_visits=add(work.tree_visits,sample.tree_visits);
+                    work.maximum_candidates=std::max(work.maximum_candidates,sample.candidates_examined);
+                }
+                for (const auto ref : sample.ants) if (const auto q = query_physiology(ref)) {
+                    const auto need = signaled_need(*q, s.ants.get(s.ants.index.at(ref.id)).stage,true);
+                    demand.carbs_ug = std::max(demand.carbs_ug, need.carbs_ug);
+                    demand.protein_ug = std::max(demand.protein_ug, need.protein_ug);
+                    demand.water_ug = std::max(demand.water_ug, need.water_ug);
+                }
+            }
+            supply = ingredient_min(supply, demand);
+        }
     }
     if (!room) { f.outcome = Outcome::Capacity; return; }
     if (!supply.total_ug()) { f.outcome = Outcome::EmptyInventory; return; }
@@ -225,12 +267,17 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                 const bool hungry_adult = other.stage == LifeStage::Adult &&
                     (q.body_energy_nj < q.config.energy_capacity_nj/4 || q.hydration_ug < q.config.hydration_capacity_ug/4);
                 const bool demand=s.social && s.social->demand_sensitive;
-                if (demand ? (!ingredient_min(p.crop,signaled_need(q,other.stage)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
+                if (demand ? (!ingredient_min(p.crop,signaled_need(q,other.stage,s.long_term!=nullptr)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
                     ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2)) continue;
                 ++seen; if (bounded_draw(rng, seen) == 0) { action.kind = ScheduledEvent::Kind::Trophallaxis; action.payload = id.value; }
             }
         };
         if (gift_priority && !urgent_self) choose_gift();
+        if (action.kind == ScheduledEvent::Kind::Rest) {
+            if (s.long_term && s.long_term->protein_recycling && p.behavior == IndividualBehavior::Rest &&
+                p.crop.protein_ug && distance(ant.position,colony.nest_position) <= s.config.contact_distance_m &&
+                spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::ReturnProtein;
+        }
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
             else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
@@ -273,13 +320,14 @@ std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const 
 NutritionSnapshot WorldRuntime::nutrition_snapshot() const {
     const auto& s = *state_; NutritionSnapshot n;
     n.introduced = s.m.ledger.introduced; n.accounted = sum(sum(s.m.ledger.available, s.m.ledger.carried), s.m.ledger.stored);
+    n.accounted = sum(n.accounted, resource_reserves());
     for (const auto& [id, unused] : s.physiology) {
         (void)unused; const auto p = *query_physiology({s.world, id}); ++n.individuals;
-        n.introduced = sum(n.introduced, sum(p.initial.crop, {0, p.initial.tissue_protein_ug, p.initial.hydration_ug, 0}));
+        if (!p.mother.value) n.introduced = sum(n.introduced, sum(p.initial.crop, {0, p.initial.tissue_protein_ug, p.initial.hydration_ug, 0}));
         n.crop = sum(n.crop, p.crop); n.hydration_ug = add(n.hydration_ug, p.hydration_ug);
         n.tissue_protein_ug = add(n.tissue_protein_ug, p.tissue_protein_ug); n.oxidized_carbs_ug = add(n.oxidized_carbs_ug, p.oxidized_carbs_ug);
         n.lost_water_ug = add(n.lost_water_ug, p.lost_water_ug);
-        n.energy_input_nj = add(n.energy_input_nj, add(p.initial.body_energy_nj, multiply(p.oxidized_carbs_ug, p.config.carbohydrate_yield_nj_per_ug)));
+        n.energy_input_nj = add(n.energy_input_nj, add(p.mother.value ? 0 : p.initial.body_energy_nj, multiply(p.oxidized_carbs_ug, p.config.carbohydrate_yield_nj_per_ug)));
         n.body_energy_nj = add(n.body_energy_nj, p.body_energy_nj); n.dissipated_energy_nj = add(n.dissipated_energy_nj, p.dissipated_energy_nj);
     }
     n.accounted = sum(n.accounted, sum(n.crop, {n.oxidized_carbs_ug, n.tissue_protein_ug, add(n.hydration_ug, n.lost_water_ug), 0}));
@@ -287,14 +335,9 @@ NutritionSnapshot WorldRuntime::nutrition_snapshot() const {
 }
 void WorldRuntime::validate_nutrition_capacity() const {
     const auto& s = *state_; if (s.physiology.empty()) return;
-    const auto n = nutrition_snapshot(); (void)n.introduced.total_ug();
-    std::uint64_t initial_energy = 0, max_yield = 0;
-    for (const auto& [id, p] : s.physiology) {
-        (void)id; initial_energy = add(initial_energy, p.initial.body_energy_nj);
-        max_yield = std::max(max_yield, p.config.carbohydrate_yield_nj_per_ug);
-    }
+    const auto introduced = sum(s.m.ledger.introduced, s.m.physiology_inputs); (void)introduced.total_ug();
     // Bound even complete future carbohydrate oxidation, so queries never discover
     // an overflow that a previous mutation should have rejected.
-    (void)add(initial_energy, multiply(n.introduced.carbs_ug, max_yield));
+    (void)add(s.m.initial_energy, multiply(introduced.carbs_ug, s.m.maximum_yield));
 }
 } // namespace antworld

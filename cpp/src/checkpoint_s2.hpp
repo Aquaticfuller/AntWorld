@@ -169,14 +169,15 @@ template <typename S> void validate_surface_evidence(const S& s) {
     ForagingCounters counts; bool configured = false;
     for (const auto& e : s.journal) {
         if (e.kind == FactKind::SurfaceConfigured) {
-            ensure(!configured && e.id == EventId{1} && e.position == surface.config.origin_m && !e.actor.value && !e.colony.value &&
+            ensure(!configured && (e.id == EventId{1} || (s.long_term && e.id==EventId{2} && s.journal.front().kind==FactKind::LongTermConfigured)) && e.position == surface.config.origin_m && !e.actor.value && !e.colony.value &&
                 !e.resource.value, "invalid surface configuration evidence"); configured = true;
         }
-        if (e.kind == FactKind::AntSeeded) positions[e.actor] = e.position;
+        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) positions[e.actor] = e.position;
         if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor))
             audit_agents.at(e.actor).enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
         if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
+        if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
         if (e.kind == FactKind::ForagingStarted) {
             ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
             auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *surface.locate(e.position); f.path_size = 1;

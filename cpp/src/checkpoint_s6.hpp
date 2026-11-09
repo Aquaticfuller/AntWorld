@@ -52,6 +52,7 @@ template <class S> void read_social(Reader &r, S &s) {
     c->gift_first = r.flag();
     c->local_work_continuation = r.flag();
     validate_social(*c);
+    ensure(s.long_term || (c->decision_interval.milliseconds<=60000 && c->minimum_program_time.milliseconds<=3600000),"legacy social interval exceeds its contract");
     s.social = std::move(c);
     s.m.contact_work = {r.get(), r.get(), r.get(), r.get(), r.get()};
     const auto count = r.count(s.ants.size(), 41);
@@ -83,7 +84,8 @@ template <class S> void read_social(Reader &r, S &s) {
   std::uint64_t sampled = 0;
   for (const auto &e : s.journal)
     if (e.kind == FactKind::NutritionDecision ||
-        e.kind == FactKind::AutonomyDecision) {
+        e.kind == FactKind::AutonomyDecision || (s.long_term && e.random_value &&
+            (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected))) {
       if (s.social) {
         bump(audit.decisions);
         audit.candidates_examined =
@@ -115,7 +117,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   std::map<EntityId, PositionM> positions;
   std::map<ScheduledId, WorldEvent> switches;
   for (const auto &e : s.journal) {
-    if (e.kind == FactKind::AntSeeded) {
+    if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
       stages[e.actor] = e.stage;
       positions[e.actor] = e.position;
     }
@@ -179,7 +181,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::AutonomyWake &&
                  e.key.phase == Phase::Reschedule &&
                  e.key.time == after(e.issued_at,
-                                     s.social->decision_interval.milliseconds),
+                                     e.payload==1 && s.long_term ? 1 : s.social->decision_interval.milliseconds),
              "wrong automatic wake schedule");
     }
   }

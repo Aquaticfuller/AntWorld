@@ -34,9 +34,9 @@ inline void validate_social(const SocialConfig &c) {
         "local nursing corrections require ingredient demand caps");
   if (!c.encounter_budget || c.encounter_budget > 128 ||
       c.decision_interval.milliseconds < 1 ||
-      c.decision_interval.milliseconds > 60000 ||
+      c.decision_interval.milliseconds > 86400000 ||
       c.minimum_program_time.milliseconds < 0 ||
-      c.minimum_program_time.milliseconds > 3600000 || !c.rest_weight ||
+      c.minimum_program_time.milliseconds > 604800000 || !c.rest_weight ||
       !c.forage_weight || !c.nurse_weight || !c.excavate_weight ||
       c.rest_weight > 1000000 || c.forage_weight > 1000000 ||
       c.nurse_weight > 1000000 || c.excavate_weight > 1000000)
@@ -62,20 +62,22 @@ inline FoodMass nutrient_demand(const PhysiologyState &p, LifeStage stage) {
           stage == LifeStage::Larva
               ? remaining(p.config.larval_protein_requirement_ug,
                           add(p.tissue_protein_ug, p.crop.protein_ug))
-              : 0,
+              : remaining(p.config.adult_protein_target_ug, p.crop.protein_ug),
           remaining(p.config.hydration_capacity_ug - p.hydration_ug,
                     p.crop.water_ug),
           0};
 }
-inline FoodMass signaled_need(const PhysiologyState &p, LifeStage stage) {
+inline FoodMass signaled_need(const PhysiologyState &p, LifeStage stage, bool metabolic_brood = false) {
   // Retain S3's urgent-adult threshold; the new ingredient cap does not turn
   // every small deviation from full reserves into a request for social feeding.
   const bool larva =
-      stage == LifeStage::Larva && add(p.tissue_protein_ug, p.crop.protein_ug) <
-                                       p.config.larval_protein_requirement_ug;
+      stage == LifeStage::Larva && (add(p.tissue_protein_ug, p.crop.protein_ug) <
+                                       p.config.larval_protein_requirement_ug ||
+          (metabolic_brood && (p.body_energy_nj < p.config.energy_capacity_nj/4 || p.hydration_ug < p.config.hydration_capacity_ug/4)));
   const bool adult = stage == LifeStage::Adult &&
                      (p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
-                      p.hydration_ug < p.config.hydration_capacity_ug / 4);
+                      p.hydration_ug < p.config.hydration_capacity_ug / 4 ||
+                      p.crop.protein_ug < p.config.adult_protein_target_ug);
   return larva || adult ? nutrient_demand(p, stage) : FoodMass{};
 }
 } // namespace antworld::detail

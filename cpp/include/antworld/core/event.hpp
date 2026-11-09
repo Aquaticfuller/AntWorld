@@ -34,7 +34,8 @@ struct ScheduledEvent {
     DiagnosticAction action{};
     std::uint64_t payload{};
     enum class Kind : std::uint8_t { Diagnostic, Move, CollectFood, Lifecycle, Wake, DeliverFood, Rest, TrailMaintenance,
-        Physiology, NutritionWake, IngestCargo, WithdrawNest, Trophallaxis, SoilAction, ExcavationWake, AutonomyWake } kind{};
+        Physiology, NutritionWake, IngestCargo, WithdrawNest, Trophallaxis, SoilAction, ExcavationWake, AutonomyWake,
+        Reproduction, ResourceRelease, ReturnProtein } kind{};
     EntityId actor;
     ResourceId resource;
     PositionM destination;
@@ -50,7 +51,8 @@ enum class FactKind : std::uint8_t {
     ForagingDecision, FoodDelivered, Rested, TrailMaintenance,
     PhysiologyEnabled, PhysiologyUpdated, BehaviorChanged, NutritionDecision, CargoIngested, NestIngested, NutritionTransferred,
     GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced,
-    SocialConfigured, AutonomyChanged, AutonomyDecision
+    SocialConfigured, AutonomyChanged, AutonomyDecision, LongTermConfigured, ReproductionEnabled,
+    ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled
 };
 struct WorldEvent {
     EventId id;
