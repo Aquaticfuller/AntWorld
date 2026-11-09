@@ -63,6 +63,7 @@ Files: 62 (excluding the manifest itself).
 | `docs/47_S6_3_1_Verification_and_Metrics.md` | `69a73f77352edcf0e3da5ed7228c48ddf1787b89823f50d5550edc38487c365f` | 6210 |
 | `docs/48_S6_3_2_Frozen_Audit_and_Performance_Protocol.md` | `52a1eedf641d6dab7ec4987ef0fcda677d96137a76e4fdf5924adf577eed67ef` | 8750 |
 | `docs/49_S6_3_2_Biological_Comparison_Freeze.md` | `25a07375d0b8606c7c96a1c0eecdf97987013cca4aa56f5b604c0596d4d94296` | 6636 |
+| `docs/50_S6_3_2_Quiet_Interval_Performance_Addendum.md` | `9ff9c1a30777cbc8717a48ef5d39e682cbccd82ec173173170192765a509901d` | 4235 |
 | `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
