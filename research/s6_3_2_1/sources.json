@@ -1107,7 +1107,7 @@
     "SourceId": "N25",
     "Species": "Lasius niger",
     "PopulationAndConditions": "Five Toulouse colonies;500-worker standardized groups replenished from stock;25+/-2 C,12:12,4d starvation;25 ants/substrate for120s trajectories;6 preference pairs x26 trials;40 ants20 training trials",
-    "UsedDataAndLocator": "Methods pp535-537; Results pp538-539; Figs2-5; grain units visually verified p536",
+    "UsedDataAndLocator": "Methods pp535-537; Results pp538-539; Figs1-3; grain units visually verified p536",
     "Limitations": "Methods fine grains400-560 um versus captions400-450 um inconsistency. Speed is projected2D, not energy expenditure. Published errors are95%CI. Within-ant800 training intervals are not800 independent ants.",
     "ReadingStatus": "FULL_TEXT_SELECTED_SECTIONS_READ",
     "ReadingProvenance": "User-supplied publisher PDF; Methods and Results inspected in S6.3.2.1",

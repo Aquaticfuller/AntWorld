@@ -1023,7 +1023,7 @@
     "LegacyGradeNamespace": "NOT_APPLICABLE",
     "MechanismEvidenceScope": "Endpoint-specific; N11: A/B by endpoint; C/D for other species; N25: A/B by endpoint; C/D for other species",
     "MathematicalCandidate": "See proposal MC07 in MODEL_CORRECTION_ROADMAP.md; no fit or implementation",
-    "EvidenceLocators": "N11: 10.1371/journal.pone.0076531; Methods; Results/Figs1,4-8;69 trajectories/inclination in Fig8; N25: 10.1016/j.jinsphys.2007.12.001; Methods pp535-537; Results pp538-539; Figs2-5; grain units visually verified p536"
+    "EvidenceLocators": "N11: 10.1371/journal.pone.0076531; Methods; Results/Figs1,4-8;69 trajectories/inclination in Fig8; N25: 10.1016/j.jinsphys.2007.12.001; Methods pp535-537; Results pp538-539; Figs1-3; grain units visually verified p536"
   },
   {
     "RuleId": "H04",
