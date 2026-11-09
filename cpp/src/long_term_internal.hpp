@@ -27,6 +27,7 @@ inline void validate_reproduction(const ReproductionConfig &c,
         "invalid funded reproduction ENGINEERING_FIXTURE");
 }
 inline void validate_cycle(const ResourceCycleConfig &c) {
+  (void)multiply(c.release_limit.total_ug(), 1000);
   if (!c.reserve.total_ug() || !c.release_limit.total_ug() ||
       c.interval.milliseconds < 1 ||
       c.interval.milliseconds > INT64_C(31536000000) ||
