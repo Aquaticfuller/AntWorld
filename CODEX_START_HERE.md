@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S5 received CONDITIONAL PASS with explicit S6 authorization. S6 implementation and its frozen experiments are complete, awaiting independent Code Review. Its self-assessment is CONDITIONAL PASS with unresolved nutrition/task coupling and a missed contact scaling target. S7 is not authorized.
+This is the v0.8 design and engineering handoff. S6 received independent CONDITIONAL PASS, with S7 withheld. The current authorized batch is S6.1 Integrated Ecology Corrections on codex/s6.1-ecology-corrections. Read document 37 before instrumentation or modifications. Preserve all S6 evidence and its unresolved nutrition/task coupling and missed contact scaling target. S7 is not authorized.
 
 ## Architecture
 
