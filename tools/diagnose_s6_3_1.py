@@ -171,7 +171,7 @@ def diagnose(folder, summary):
     nutrition=[o for o in recent if o['context']==0]
     matching=[o for o in nutrition if o['sampled_queen'] and not o['donor_urgent'] and any(o['signal_'+n+'_ug'] and o['donor_crop_'+n+'_ug'] for n in ('carbs','protein','water'))]
     row=dict(**config,run=summary['run'],status=summary['status'],observed_days=summary['completed_days'],queen_alive=last['alive'],queen_lifetime_days=lifetime/DAY,queen_death_ms='' if death_time is None else death_time,
-             births=summary['births'],emerged=summary['emerged'],final_alive=summary['alive'],last_birth_day=births[-1]/DAY if births else '',late_births_120_180=sum(120*DAY<=t<=180*DAY for t in births),queen_gifts=len(gifts),verified_observations=seen,
+             births=summary['births'],emerged=summary['emerged'],final_population=summary['alive'],last_birth_day=births[-1]/DAY if births else '',late_births_120_180=sum(120*DAY<=t<=180*DAY for t in births),queen_gifts=len(gifts),verified_observations=seen,
              last48_decisions=len(recent),last48_physical_contacts=sum(o['reachable_queen'] for o in recent),last48_nutrition_decisions=len(nutrition),last48_queen_sampled=sum(o['sampled_queen'] for o in nutrition),last48_matching_donors=len(matching),last48_selected_queen=sum(o['recipient']==2 for o in nutrition),last48_gifts=sum(lifetime-2*DAY<=t<=lifetime for t,_ in gifts),
              minimum_post_lay_maintenance_hours=min((r['post_maintenance_hours'] for r in qrows if r['kind']==35),default=''))
     row['unsafe_post_lay_energy']=sum(r['kind']==35 and not r['post_energy_covers_next_absorption'] for r in qrows)

@@ -1,0 +1,2 @@
+scope,seed,workers,supply,cyclic,arm,days,laying,exchange,positive,absorption_hours,behavior_hours,lineage_basal,reproduction_days,reserve_mode,maintenance_horizon_ms
+ENGINEERING_FIXTURE,6,8,balanced,0,positive,180,1,1,1,6,6,1,2,1,172800000

@@ -1,0 +1,13 @@
+scope,run,seed,workers,supply,cyclic,arm,pulse_hours,requested_days,completed_days,status,reason,alive,births,emerged,deaths,protein_transferred_ug,recycled_protein_ug,events,geometry_edits,setup_ms,advance_ms,exact_continuation,durable_checked,state_hash,trace_hash
+ENGINEERING_FIXTURE,1_8_balanced_constant_positive_6,1,8,balanced,0,positive,6,180,180,complete,,10,2,2,1,160,806,28624,0,0.76780000000000004,229.79760000000002,1,1,3e45809df8ba268e,c831fb5337b609ec
+ENGINEERING_FIXTURE,1_32_balanced_constant_positive_6,1,32,balanced,0,positive,6,180,180,complete,,111,78,71,0,7432,4034,191461,0,1.0375000000000001,2979.8787000000007,1,0,467af5131ed7035e,1a83f82b05111e84
+ENGINEERING_FIXTURE,2_8_balanced_constant_positive_6,2,8,balanced,0,positive,6,180,180,complete,,13,9,5,5,650,985,34945,0,2.1446999999999998,664.38030000000003,1,0,cd0f1c471965258a,b49c466d3267f6f9
+ENGINEERING_FIXTURE,2_32_balanced_constant_positive_6,2,32,balanced,0,positive,6,180,180,complete,,101,68,62,0,6488,3903,170290,0,1.1500999999999999,4439.6133999999984,1,0,f0701123f0234a32,750b6db2adb38016
+ENGINEERING_FIXTURE,3_8_balanced_constant_positive_6,3,8,balanced,0,positive,6,180,180,complete,,10,2,2,1,160,801,28990,0,1.6858,320.71579999999994,1,0,8796e9b0c29a4835,787b017d44444549
+ENGINEERING_FIXTURE,3_32_balanced_constant_positive_6,3,32,balanced,0,positive,6,180,180,complete,,115,82,75,0,7857,4057,205897,0,1.2678,4235.3312000000014,1,0,af25f0d5a5c5a9b7,45f66007730f45f4
+ENGINEERING_FIXTURE,4_8_balanced_constant_positive_6,4,8,balanced,0,positive,6,180,180,complete,,13,8,5,4,592,881,36957,0,1.732,528.11570000000029,1,0,d15f524735bdcd4f,3b79019bedc3d0c0
+ENGINEERING_FIXTURE,4_32_balanced_constant_positive_6,4,32,balanced,0,positive,6,180,180,complete,,112,79,73,0,7558,3993,196431,0,1.2057,3748.6615000000011,1,0,98c4a38f68c37cbc,58de0bd9f593a5f1
+ENGINEERING_FIXTURE,5_8_balanced_constant_positive_6,5,8,balanced,0,positive,6,180,180,complete,,10,4,2,3,252,842,29348,0,1.0669999999999999,322.5326,1,0,8e7c88983a915e1b,9a15839236ab661a
+ENGINEERING_FIXTURE,5_32_balanced_constant_positive_6,5,32,balanced,0,positive,6,180,180,complete,,117,84,79,0,8067,4091,206630,0,1.2393000000000001,4294.0439000000015,1,0,337bcb48eca936fd,f503a56338485624
+ENGINEERING_FIXTURE,6_8_balanced_constant_positive_6,6,8,balanced,0,positive,6,180,180,complete,,12,8,4,5,545,926,35065,0,1.1313,336.1289000000001,1,0,18e05eed497272ee,d80dabdaa4528d78
+ENGINEERING_FIXTURE,6_32_balanced_constant_positive_6,6,32,balanced,0,positive,6,180,180,complete,,114,81,75,0,7774,4022,198856,0,0.89410000000000001,3100.9333999999999,1,0,090b5fb7e899d1c9,8f1ccc5d4e61999e

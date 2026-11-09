@@ -8,7 +8,7 @@ Files: 56 (excluding the manifest itself).
 | Path | SHA-256 | Bytes |
 |---|---|---:|
 | `AGENTS.md` | `95635e95fedb7c3c9d47fd5ebb8b747bcffcd6fdf71c15c7111319fceed8dfc2` | 4585 |
-| `CODEX_START_HERE.md` | `9c52f1f971019f75573aa888721fc58340ad0a9b57d9a67ab26c882434e45fd8` | 4882 |
+| `CODEX_START_HERE.md` | `4bf0c37c321a3da298e1928bc5fe2b25ccdd8551be2f7707628723c3f235bab6` | 5409 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 56 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `7113202c260cd41402f6583a10006d764efdb1af4d1eb6104649ef3533dc8c00` | 30935 |
+| `docs/08_Open_Questions.md` | `f9da66b352b8606264b4d67dc89d446734387c6476262a69f166d61a11cedc4d` | 34470 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -64,6 +64,6 @@ Files: 56 (excluding the manifest itself).
 | `docs/42_S6_3_Correction_Protocol.md` | `2cc6f8af2383b297686f4aa94546b79e9084a2aa5b1b744a48aa3001d3e4819a` | 5475 |
 | `docs/43_S6_3_Implementation_and_Metrics.md` | `4804e5d80b7eedc38add1e7800b599aae73cc0be350548e3ab68e2609a521fa6` | 9217 |
 | `docs/44_S6_3_1_Frozen_Protocol.md` | `3fe3e0c56b62dc82d3ec499da8eeeb5d0468a6df17d7c8ae854957cfec922168` | 11591 |
-| `docs/45_S6_3_1_Observer_Contracts.md` | `pending` | 0 |
-| `docs/46_S6_3_1_Correction_Protocol.md` | `pending` | 0 |
-| `docs/47_S6_3_1_Verification_and_Metrics.md` | `pending` | 0 |
+| `docs/45_S6_3_1_Observer_Contracts.md` | `ac80b4f465f41be48a733580935de097f9c9d8323bd24c6615d61d9f8038cfbd` | 2777 |
+| `docs/46_S6_3_1_Correction_Protocol.md` | `464838ed6d5a893d6b8f3ae7844b8cdc448f3a562a87e4b5c8414bfe7d2c7cd2` | 6830 |
+| `docs/47_S6_3_1_Verification_and_Metrics.md` | `69a73f77352edcf0e3da5ed7228c48ddf1787b89823f50d5550edc38487c365f` | 6210 |

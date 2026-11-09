@@ -1,6 +1,21 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
-## Current S6.3 implementation and review boundary
+## Current S6.3.1 validation and review boundary
+
+S6.3 independent review passed engineering correctness and conditionally accepted the frozen long-term mechanisms, while explicitly withholding S6.4. S6.3.1 diagnoses SD-08 under protocols 44-47. It preserves all 153 inherited tests, adds eight regressions and retains all earlier negative evidence. Its single optional local maternal-maintenance gate does not alter workers, egg costs, food inputs or metabolic rates. See S6_3_1_RESULTS.md and the complete 432-run archive; completion requires independent review and does not authorize S6.4 or Unity.
+
+| ID | S6.3.1 status | Evidence and next review question |
+|---|---|---|
+| SD-08 | PARTIALLY ADDRESSED; queen provisioning and reproductive calibration remain OPEN | Exact maternal accounts expose egg debits leaving less body energy than the next absorption interval. Historical unsafe births fall 21/293 to 0/353 under the primary maintenance hypothesis. The adequate-access 32-worker control sustains actual reproduction through day 180 in 6/6 seeds (old rules 5/6), but every eight-worker positive-control queen still dies; ordinary balanced 32-worker queens all die before day 90. A four-day reserve improves survival while sharply reducing reproduction, so it is not selected after observing outcomes. Study measured queen demand, local recipient selection, absorption/transfer timing, bodily reserves and egg costs. No guaranteed lifespan, global allocator, queen priority or hidden resource is present. |
+| SD-04 | OPEN | Maternal reproduction competes with brood and adult demand. Unmet needs, retained crop nutrients and incomplete offspring development remain factual outcomes. Local demand/recipient rules and recycling need stage-specific biological validation; do not optimize globally for emergence or survival. |
+| SD-06 / SD-07 | OPEN | No nesting or activity mechanism is changed in S6.3.1. Local free-space feedback is not validated functional nest morphology, and task residence/absorption schedules are not calibrated activity rhythms. |
+| SD-01 / SD-02 | OPEN | About two initial continuous following steps and unproven long-range social recruitment remain. S6.3.1 adds no food oracle or directional chemical signal. |
+| TD-01 / TD-08 | S6.3.1 wall-time revalidation NOT PASSED; measurement uncertainty and broader scaling OPEN | Dense contact pooled p50 growth is 6.315x (paired median 5.375x); birth growth is 8.154x (paired 4.422x). Both pooled values exceed the unchanged <=6x target. High host load, broad pooled confidence intervals and much smaller process CPU time prevent attributing the excess solely to Core; cycle ratios do not replace the wall-time gate. All original contact work/state and all funded births remain. No behavioral reduction, algorithm retuning or threshold change is made. A separately reviewed quiet-host qualification/repeat is proposed, not executed to seek a pass. Earlier controlled passes and S6.1's unexplained 24.229x anomaly remain. |
+| TD-03 / TD-06 | OPEN | Full authoritative facts and identity history continue to grow; saves remain synchronous. Archival CSV compression and local duplicate hashes do not implement a Core memory budget or nonblocking save. |
+
+All new biological numbers remain ENGINEERING_FIXTURE. Evidence for possible body-condition regulation does not calibrate a two-day horizon, queen carbohydrate requirements, egg resource content or a realistic colony trajectory. The original S6.3 review record below is retained as historical context.
+
+## S6.3 implementation and review boundary (historical)
 
 S6.2 received CONDITIONAL PASS and explicitly authorized S6.3 only. Documents 41 and 42 froze the long-term matrix and evidence-led correction controls before their respective changes. S6.3 adds funded births, finite source reservoirs, local recovery/space feedback and actual crop recycling. All 137 inherited tests and all negative archives remain. S6.3 completion does not authorize S6.4 or S7-S9. See S6_3_RESULTS.md and document 43 for measured scope and limitations.
 

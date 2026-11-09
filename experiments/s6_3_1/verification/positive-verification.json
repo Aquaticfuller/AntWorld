@@ -1,0 +1,71 @@
+{
+  "model": "baseline",
+  "matrix": "positive",
+  "cross_platform": false,
+  "excluded_summary_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "cases": [
+    {
+      "run": "1_8_balanced_constant_positive_6",
+      "events": 26574,
+      "exact": true
+    },
+    {
+      "run": "1_32_balanced_constant_positive_6",
+      "events": 217124,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_positive_6",
+      "events": 31783,
+      "exact": true
+    },
+    {
+      "run": "2_32_balanced_constant_positive_6",
+      "events": 104116,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_positive_6",
+      "events": 31583,
+      "exact": true
+    },
+    {
+      "run": "3_32_balanced_constant_positive_6",
+      "events": 216591,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_positive_6",
+      "events": 31364,
+      "exact": true
+    },
+    {
+      "run": "4_32_balanced_constant_positive_6",
+      "events": 216517,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_positive_6",
+      "events": 31666,
+      "exact": true
+    },
+    {
+      "run": "5_32_balanced_constant_positive_6",
+      "events": 218961,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_positive_6",
+      "events": 29223,
+      "exact": true
+    },
+    {
+      "run": "6_32_balanced_constant_positive_6",
+      "events": 220790,
+      "exact": true
+    }
+  ]
+}

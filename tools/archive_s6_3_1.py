@@ -32,7 +32,9 @@ def archive(source,target):
                 dest=Path(str(dest)+'.gz')
                 with path.open('rb') as inp,dest.open('wb') as out:
                     with gzip.GzipFile(filename='',fileobj=out,mode='wb',mtime=0) as zipped:shutil.copyfileobj(inp,zipped)
-            else:shutil.copyfile(path,dest)
+            else:
+                dest.write_bytes(path.read_bytes().replace(b'\r\n',b'\n'))
+                row['text_newlines']='LF; original source hash retained separately'
             row.update(archive=dest.relative_to(target).as_posix(),archive_sha256=digest(dest))
         manifest[rel]=row
     (target/'archive.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8',newline='\n')

@@ -1,0 +1,371 @@
+{
+  "model": "baseline",
+  "matrix": "causal",
+  "cross_platform": false,
+  "excluded_summary_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "cases": [
+    {
+      "run": "1_8_balanced_constant_laying_6",
+      "events": 14525,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_suppressed_6",
+      "events": 13209,
+      "exact": true
+    },
+    {
+      "run": "1_8_scarce_constant_laying_6",
+      "events": 14577,
+      "exact": true
+    },
+    {
+      "run": "1_8_scarce_constant_suppressed_6",
+      "events": 13041,
+      "exact": true
+    },
+    {
+      "run": "1_8_empty_constant_laying_6",
+      "events": 84728,
+      "exact": true
+    },
+    {
+      "run": "1_8_empty_constant_suppressed_6",
+      "events": 42713,
+      "exact": true
+    },
+    {
+      "run": "1_32_balanced_constant_laying_6",
+      "events": 58146,
+      "exact": true
+    },
+    {
+      "run": "1_32_balanced_constant_suppressed_6",
+      "events": 52346,
+      "exact": true
+    },
+    {
+      "run": "1_32_scarce_constant_laying_6",
+      "events": 57592,
+      "exact": true
+    },
+    {
+      "run": "1_32_scarce_constant_suppressed_6",
+      "events": 52611,
+      "exact": true
+    },
+    {
+      "run": "1_32_empty_constant_laying_6",
+      "events": 273240,
+      "exact": true
+    },
+    {
+      "run": "1_32_empty_constant_suppressed_6",
+      "events": 168452,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_laying_6",
+      "events": 17180,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_suppressed_6",
+      "events": 13428,
+      "exact": true
+    },
+    {
+      "run": "2_8_scarce_constant_laying_6",
+      "events": 17396,
+      "exact": true
+    },
+    {
+      "run": "2_8_scarce_constant_suppressed_6",
+      "events": 13325,
+      "exact": true
+    },
+    {
+      "run": "2_8_empty_constant_laying_6",
+      "events": 78862,
+      "exact": true
+    },
+    {
+      "run": "2_8_empty_constant_suppressed_6",
+      "events": 38406,
+      "exact": true
+    },
+    {
+      "run": "2_32_balanced_constant_laying_6",
+      "events": 489134,
+      "exact": true
+    },
+    {
+      "run": "2_32_balanced_constant_suppressed_6",
+      "events": 52598,
+      "exact": true
+    },
+    {
+      "run": "2_32_scarce_constant_laying_6",
+      "events": 485680,
+      "exact": true
+    },
+    {
+      "run": "2_32_scarce_constant_suppressed_6",
+      "events": 52528,
+      "exact": true
+    },
+    {
+      "run": "2_32_empty_constant_laying_6",
+      "events": 277727,
+      "exact": true
+    },
+    {
+      "run": "2_32_empty_constant_suppressed_6",
+      "events": 172742,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_laying_6",
+      "events": 15805,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_suppressed_6",
+      "events": 13258,
+      "exact": true
+    },
+    {
+      "run": "3_8_scarce_constant_laying_6",
+      "events": 15623,
+      "exact": true
+    },
+    {
+      "run": "3_8_scarce_constant_suppressed_6",
+      "events": 13194,
+      "exact": true
+    },
+    {
+      "run": "3_8_empty_constant_laying_6",
+      "events": 79203,
+      "exact": true
+    },
+    {
+      "run": "3_8_empty_constant_suppressed_6",
+      "events": 40203,
+      "exact": true
+    },
+    {
+      "run": "3_32_balanced_constant_laying_6",
+      "events": 515557,
+      "exact": true
+    },
+    {
+      "run": "3_32_balanced_constant_suppressed_6",
+      "events": 52112,
+      "exact": true
+    },
+    {
+      "run": "3_32_scarce_constant_laying_6",
+      "events": 76080,
+      "exact": true
+    },
+    {
+      "run": "3_32_scarce_constant_suppressed_6",
+      "events": 51946,
+      "exact": true
+    },
+    {
+      "run": "3_32_empty_constant_laying_6",
+      "events": 273903,
+      "exact": true
+    },
+    {
+      "run": "3_32_empty_constant_suppressed_6",
+      "events": 165325,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_laying_6",
+      "events": 17025,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_suppressed_6",
+      "events": 13737,
+      "exact": true
+    },
+    {
+      "run": "4_8_scarce_constant_laying_6",
+      "events": 17020,
+      "exact": true
+    },
+    {
+      "run": "4_8_scarce_constant_suppressed_6",
+      "events": 13617,
+      "exact": true
+    },
+    {
+      "run": "4_8_empty_constant_laying_6",
+      "events": 78334,
+      "exact": true
+    },
+    {
+      "run": "4_8_empty_constant_suppressed_6",
+      "events": 44050,
+      "exact": true
+    },
+    {
+      "run": "4_32_balanced_constant_laying_6",
+      "events": 492909,
+      "exact": true
+    },
+    {
+      "run": "4_32_balanced_constant_suppressed_6",
+      "events": 52213,
+      "exact": true
+    },
+    {
+      "run": "4_32_scarce_constant_laying_6",
+      "events": 489866,
+      "exact": true
+    },
+    {
+      "run": "4_32_scarce_constant_suppressed_6",
+      "events": 51994,
+      "exact": true
+    },
+    {
+      "run": "4_32_empty_constant_laying_6",
+      "events": 278551,
+      "exact": true
+    },
+    {
+      "run": "4_32_empty_constant_suppressed_6",
+      "events": 159087,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_laying_6",
+      "events": 17113,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_suppressed_6",
+      "events": 13299,
+      "exact": true
+    },
+    {
+      "run": "5_8_scarce_constant_laying_6",
+      "events": 16958,
+      "exact": true
+    },
+    {
+      "run": "5_8_scarce_constant_suppressed_6",
+      "events": 13321,
+      "exact": true
+    },
+    {
+      "run": "5_8_empty_constant_laying_6",
+      "events": 79504,
+      "exact": true
+    },
+    {
+      "run": "5_8_empty_constant_suppressed_6",
+      "events": 43889,
+      "exact": true
+    },
+    {
+      "run": "5_32_balanced_constant_laying_6",
+      "events": 493739,
+      "exact": true
+    },
+    {
+      "run": "5_32_balanced_constant_suppressed_6",
+      "events": 52312,
+      "exact": true
+    },
+    {
+      "run": "5_32_scarce_constant_laying_6",
+      "events": 524924,
+      "exact": true
+    },
+    {
+      "run": "5_32_scarce_constant_suppressed_6",
+      "events": 52097,
+      "exact": true
+    },
+    {
+      "run": "5_32_empty_constant_laying_6",
+      "events": 276051,
+      "exact": true
+    },
+    {
+      "run": "5_32_empty_constant_suppressed_6",
+      "events": 165049,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_laying_6",
+      "events": 15679,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_suppressed_6",
+      "events": 13394,
+      "exact": true
+    },
+    {
+      "run": "6_8_scarce_constant_laying_6",
+      "events": 15808,
+      "exact": true
+    },
+    {
+      "run": "6_8_scarce_constant_suppressed_6",
+      "events": 13224,
+      "exact": true
+    },
+    {
+      "run": "6_8_empty_constant_laying_6",
+      "events": 77740,
+      "exact": true
+    },
+    {
+      "run": "6_8_empty_constant_suppressed_6",
+      "events": 38147,
+      "exact": true
+    },
+    {
+      "run": "6_32_balanced_constant_laying_6",
+      "events": 499432,
+      "exact": true
+    },
+    {
+      "run": "6_32_balanced_constant_suppressed_6",
+      "events": 51694,
+      "exact": true
+    },
+    {
+      "run": "6_32_scarce_constant_laying_6",
+      "events": 470832,
+      "exact": true
+    },
+    {
+      "run": "6_32_scarce_constant_suppressed_6",
+      "events": 51389,
+      "exact": true
+    },
+    {
+      "run": "6_32_empty_constant_laying_6",
+      "events": 292850,
+      "exact": true
+    },
+    {
+      "run": "6_32_empty_constant_suppressed_6",
+      "events": 163317,
+      "exact": true
+    }
+  ]
+}

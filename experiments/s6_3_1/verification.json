@@ -1,0 +1,90 @@
+{
+  "stage": "S6.3.1",
+  "recorded_utc": "2026-11-09T09:55:40.619561+00:00",
+  "reviewed_baseline": "1865a5df2351f482f4f34ae74e3ada7a27be1619",
+  "baseline_harness": "bf61ebf",
+  "protocol_freeze": "f0d38b7",
+  "correction_freeze": "3c5d1d1",
+  "core_implementation": "1add467",
+  "performance_contract": "5b0848b",
+  "compiler": "LLVM-MinGW 20261104 / Clang 23.1.5",
+  "cmake": "3.31.10",
+  "ninja": "1.13.2",
+  "sqlite": "3.54.1",
+  "execution_counts": {
+    "baseline": 192,
+    "corrected": 192,
+    "horizon_sensitivity": 48,
+    "capacity_censored": 0,
+    "exact_observation_accounts": 7222847,
+    "exact_irregular_continuations": 432,
+    "sqlite_checks": 32,
+    "legacy_reproductions": 192,
+    "reviewed_s6_3_original_reproductions": 48
+  },
+  "tests": [
+    {
+      "configuration": "debug",
+      "passed": 161,
+      "total": 161,
+      "log": "verification/debug-ctest.txt",
+      "sha256": "1ed1be801d06c43c81e6998b0edd1e3157729be7f5b30dc8622f1beefffdcf6d"
+    },
+    {
+      "configuration": "release",
+      "passed": 161,
+      "total": 161,
+      "log": "verification/release-ctest.txt",
+      "sha256": "870c7083b146a8065403e7cfa387b45d368d689b4f5d3cde4e33031cae56f1b8"
+    },
+    {
+      "configuration": "sanitized",
+      "passed": 161,
+      "total": 161,
+      "log": "verification/sanitized-ctest.txt",
+      "sha256": "cac4d26b8ba6a00a0a6f594e83149887770e887466f4a1f909dfac2109783f8f"
+    }
+  ],
+  "sanitizer_windows": "ASan+UBSan; detect_leaks=0:halt_on_error=1; halt_on_error=1:print_stacktrace=1",
+  "sanitizer_ci": "Linux ASan+UBSan; detect_leaks=1",
+  "initial_ci": {
+    "commit": "5b0848b9cae1297920d1a5e5d686ced265b65be9",
+    "run": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42590424266",
+    "five_jobs": "success"
+  },
+  "publication_ci": {
+    "branch": "codex/s6.3.1-queen-validation",
+    "runs_url": "https://github.com/Aquaticfuller/AntWorld/actions?query=branch%3Acodex%2Fs6.3.1-queen-validation",
+    "scope": "Publication workflow additionally audits the full archive and reproduces both frozen seed-1 180-day controls. Inspect the run for the published commit."
+  },
+  "experiment_binary_sha256": "6cd10eaad7ce2f4c423c95402f3b0d54f7980a85e561893a39a41cc241612a1e",
+  "baseline_binary_sha256": null,
+  "baseline_binary_note": "Not captured before rebuild in place. Final-source legacy mode matches all native outputs and observations; no historical binary hash is invented.",
+  "science": {
+    "engineering_correctness": "PASS",
+    "bounded_mechanism": "CONDITIONAL PASS",
+    "biological_calibration": "NOT ESTABLISHED",
+    "sd08": "OPEN",
+    "positive32_180_day_sustained": 6,
+    "positive8_180_day_sustained": 0
+  },
+  "performance": {
+    "result": "NOT PASSED; substantial measurement uncertainty",
+    "threshold": 6,
+    "dense_contact_p50_ratio": 6.314992043842793,
+    "birth_p50_ratio": 8.15448317450968,
+    "contact_paired_median": 5.374796704907352,
+    "birth_paired_median": 4.42168382491902,
+    "contact_samples_including_warmup": 336,
+    "birth_samples_including_warmup": 168,
+    "repeated_to_seek_pass": false,
+    "algorithm_retuned": false,
+    "original_anomaly_24_229": "Preserved; cause not resolved"
+  },
+  "analysis_notes": [
+    "Corrected derived final_population/queen final_alive column collision before publication; unchanged raw simulation summary/facts supply the population.",
+    "Plain archived text normalized to UTF-8/LF; original source hashes retained separately.",
+    "Additional pooled-p50/cycle uncertainty diagnostics are post-measurement analysis, not replacement acceptance criteria."
+  ],
+  "next_gate": "STOP for independent review; S6.4 and Unity unauthorized"
+}

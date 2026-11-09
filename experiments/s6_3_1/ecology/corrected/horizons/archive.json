@@ -1,0 +1,3211 @@
+{
+  "1_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "3fd3edbdbc1f7988d87e4687bfe2b40e7cdbae78abfd757ed9c9e34a26d2edca",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "3fd3edbdbc1f7988d87e4687bfe2b40e7cdbae78abfd757ed9c9e34a26d2edca",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28874,
+    "sha256": "213c8f4bee483a52fd1675c7251fb60c2ce5bd9ecd51e0ee0dea7481c91c8b49",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "213c8f4bee483a52fd1675c7251fb60c2ce5bd9ecd51e0ee0dea7481c91c8b49",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2887281,
+    "sha256": "c97a2cd181298fd24b292235f9a5af341bf6c83a8401a568ea02252ebfd88bd0",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "9f164409d208d89e20c68facdc048e0379b7b2d8c9261b88eb2d6aa08bed7bf9"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 79436241,
+    "sha256": "f50447e91d2fd2fddc5813feb7c9e61b484eb043f2dc0340b03a82922d484aaf",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 499599
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 79527229,
+    "sha256": "8c96b84985fa98f0aacf4bf53e99904e3f9b8ac80bfea1e224a04089e1d953e7",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 221264,
+    "sha256": "60bbfe36b7d2dee7d5a70561487d0b5927da227e2c32eb83fd65696ca6f54d06",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "60bbfe36b7d2dee7d5a70561487d0b5927da227e2c32eb83fd65696ca6f54d06",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 722616,
+    "sha256": "226b1288d426595a1d27d15b04aa73af16c2125fa0d127def712e4a504616734",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "226b1288d426595a1d27d15b04aa73af16c2125fa0d127def712e4a504616734",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5562,
+    "sha256": "1b16257fa94263fc9c4bcb0146646c149a11d414116ee0a42685e09faf9a69c6",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "1b16257fa94263fc9c4bcb0146646c149a11d414116ee0a42685e09faf9a69c6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 11011,
+    "sha256": "bbf430d14e103d02ee560d0c1835f74d620f6a035367d05ff4f3d0053ff2daa1",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "bbf430d14e103d02ee560d0c1835f74d620f6a035367d05ff4f3d0053ff2daa1",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 112210,
+    "sha256": "47b1cb1bdfa19a3e0bf42c770522f3e57dbea609333b41b54a49fec986b9dd21",
+    "archive": "1_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "47b1cb1bdfa19a3e0bf42c770522f3e57dbea609333b41b54a49fec986b9dd21",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "fa564db2a7bfe6e27935da6798046aeb2a8f9ae51de5fff49576dec88a4afa0d",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "fa564db2a7bfe6e27935da6798046aeb2a8f9ae51de5fff49576dec88a4afa0d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28198,
+    "sha256": "97e2da89928059beb3aa3f6611050f9f8dcbb32d33cc5862780225c6a2d4388d",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "97e2da89928059beb3aa3f6611050f9f8dcbb32d33cc5862780225c6a2d4388d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2434298,
+    "sha256": "c630ca38522a4b0a918cda4e3d47f8a5bbaaeadea630543f69c46301fda83e24",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "0638b6bad8be1590ba3562de0a7f54ed8838f851bf9e2d6d0e38748195e053df"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8390430,
+    "sha256": "32aefe12730b4e228390d88a4338b6fd19edc709d96443b362d033ff3dc57f78",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 52770
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8461552,
+    "sha256": "c204775d09a3a37770b3c956ab1e47891271898391c3093e7aa9f18da707ab52",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 162201,
+    "sha256": "e747c1fcb10c694b720f6145bb1b0faf82daae56f40eaeb33b8567c9ffa87228",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "e747c1fcb10c694b720f6145bb1b0faf82daae56f40eaeb33b8567c9ffa87228",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 513947,
+    "sha256": "b41e4e9111b05c493cdf333b385d66a842e7f623256f1397fac697eefb1314cd",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "b41e4e9111b05c493cdf333b385d66a842e7f623256f1397fac697eefb1314cd",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5315,
+    "sha256": "9f105ee5cfaf818868a4b61b98ea27eeb5e75051a512854a0ceaa5887739ed0c",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "9f105ee5cfaf818868a4b61b98ea27eeb5e75051a512854a0ceaa5887739ed0c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10479,
+    "sha256": "db295796acea84346623d278900c61c136fe233f89754555066ded7b25457888",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "db295796acea84346623d278900c61c136fe233f89754555066ded7b25457888",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 127522,
+    "sha256": "f39d2b5e409cbe9e4366373835bf862bee94891d9ada5072833a6cba2433eafe",
+    "archive": "1_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "f39d2b5e409cbe9e4366373835bf862bee94891d9ada5072833a6cba2433eafe",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "ce31f61d8ce23cd3829d17e7912150cd9a2600bb6228d367ea00453db40ced9a",
+    "archive": "1_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "ce31f61d8ce23cd3829d17e7912150cd9a2600bb6228d367ea00453db40ced9a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58480,
+    "sha256": "6de3f961ed4ef8bffb11973f7c988f1eefeec6da317699c956a7ceb3ba39428f",
+    "archive": "1_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "6de3f961ed4ef8bffb11973f7c988f1eefeec6da317699c956a7ceb3ba39428f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11560982,
+    "sha256": "50f722244a9d893a394eadbdf3a93249ca7e65768d74ae87dd114e215281d943",
+    "archive": "1_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "0c8a0335b49449e3de97f343b5da77dfd45e2a2ba1c30a8e7202bed0580a6da5"
+  },
+  "1_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 34522716,
+    "sha256": "61e3b04a315c1825cdb079e820c660846e5d1753baa1dfb2151eed09c6758dd1",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 217124
+  },
+  "1_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 34738545,
+    "sha256": "20bbe020a2baa14d1e70e2954197738ceb2d89c17dbea021233bb47d4da7f961",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 817587,
+    "sha256": "40235c60741103fe6f54b734575a7d58937571a9680b97abd4cd04165158d6ea",
+    "archive": "1_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "40235c60741103fe6f54b734575a7d58937571a9680b97abd4cd04165158d6ea",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2669514,
+    "sha256": "a837adad3c27bb6978fe219339617a597786472d572bf7e8882e1a4ad76b77cd",
+    "archive": "1_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "552818d3378fa878c6487e90598e1b80f7401abd6efdcf88fda4cba035aa663f"
+  },
+  "1_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11134,
+    "sha256": "805631f1197715e2ac0970474cb0965488ca88191f8f6750ccfacd70a1b11d8b",
+    "archive": "1_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "805631f1197715e2ac0970474cb0965488ca88191f8f6750ccfacd70a1b11d8b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23137,
+    "sha256": "e64ede61f814020db4d03e6780510ad9eceadd8398d589a4a5ae82face0bd7ec",
+    "archive": "1_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "e64ede61f814020db4d03e6780510ad9eceadd8398d589a4a5ae82face0bd7ec",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 545355,
+    "sha256": "eb5769a4e749b8283846f58aff01ac6c3a9081d8e9b677630881708f6e559db8",
+    "archive": "1_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "eb5769a4e749b8283846f58aff01ac6c3a9081d8e9b677630881708f6e559db8",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "8370adc39c3070ea179d90fdda5b75313ca5c3ff9265642b9bf0628d9ab88577",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "8370adc39c3070ea179d90fdda5b75313ca5c3ff9265642b9bf0628d9ab88577",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 57143,
+    "sha256": "5ad6852b1fafb0263dd76657e660e3b0bdc5d04a1b2f9e2581a45aa62b29b68d",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "5ad6852b1fafb0263dd76657e660e3b0bdc5d04a1b2f9e2581a45aa62b29b68d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 7606203,
+    "sha256": "e2639a78a0ac70f7dd398f32b206f07da7b6f7dc60af683b31c8b935a4ca134b",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "d43df4a696101df341404338e23a9402bbde06e476b23a4494f4d6304d91db17"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 22992672,
+    "sha256": "790f7d5c4d3c9cb76eeff843af88537fe03e3dca6ef7f32d5e1baf419107abbe",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 144608
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 23157556,
+    "sha256": "8b10a7091b77a5b54fc4f08a28d76ec82491372ba03c03c361d27f8807a9d63e",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 523171,
+    "sha256": "47708068b996371402169da66adac5801f7d82aa8616042d2fb18390a6caa965",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "47708068b996371402169da66adac5801f7d82aa8616042d2fb18390a6caa965",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1730315,
+    "sha256": "880ca2025dc51a7016e046e6c9dd0c113273aaef69064722e89bdf3ce7fd9f91",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "cdde5227b111ddd40a2cac09bfa3cbce90211ca9bbb819cbcecc277e4cf8d0c5"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10833,
+    "sha256": "71b252a0e3ad28a7ecc90f02a7ad4f6b0351fd92dcfe090772361cbdb6feb1b7",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "71b252a0e3ad28a7ecc90f02a7ad4f6b0351fd92dcfe090772361cbdb6feb1b7",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 22206,
+    "sha256": "43082f1eb67b3eeac0f7eef971d6c81709234c019a55293678323049189b3685",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "43082f1eb67b3eeac0f7eef971d6c81709234c019a55293678323049189b3685",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 432615,
+    "sha256": "7ba404cce7ac6938bc8d27567bb50cc2a628c6f8c54603ebb8636b1263dbc0b6",
+    "archive": "1_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "7ba404cce7ac6938bc8d27567bb50cc2a628c6f8c54603ebb8636b1263dbc0b6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "f486c54da65ff592f96bb527ad96c64975eb5764942bd7e123acad15bef4f33f",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "f486c54da65ff592f96bb527ad96c64975eb5764942bd7e123acad15bef4f33f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26642,
+    "sha256": "548373ae2bb5039b102a7cbb0baab84207b612395a30826130fe6a01e4be6fbf",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "548373ae2bb5039b102a7cbb0baab84207b612395a30826130fe6a01e4be6fbf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 601330,
+    "sha256": "e545329903f07447e416ae3220d30558d08d6114eb6841f0d4eccec65631128b",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "e545329903f07447e416ae3220d30558d08d6114eb6841f0d4eccec65631128b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2297868,
+    "sha256": "e0bbf85e31e4fb1c71c4fcab2171fb5f9a47498a01764ff7532f2acefeec4d2e",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 14452
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2321276,
+    "sha256": "865c6839b443c26d0371ac603fd311c3e5137bdd2ebc6e0210d167ade8b4a7b0",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 55386,
+    "sha256": "be3e19d8b9ebcb6d2ec147e75de0deb5d3415c032ed0fffbff82fc8bf9399040",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "be3e19d8b9ebcb6d2ec147e75de0deb5d3415c032ed0fffbff82fc8bf9399040",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 142520,
+    "sha256": "cb458e4d0ac1c36faae22dffe46fc52bbeaa02cdfe07359d903fadb57d665a09",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "cb458e4d0ac1c36faae22dffe46fc52bbeaa02cdfe07359d903fadb57d665a09",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 4913,
+    "sha256": "e1e6b5f5a0baf3b48f73497181b60120866c7869d2c621dc63a2aca352b542c6",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "e1e6b5f5a0baf3b48f73497181b60120866c7869d2c621dc63a2aca352b542c6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10459,
+    "sha256": "b3d826aa12fdf9db45a0685304a43c6d4f038e2a082c67a21bd462c223f3318b",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "b3d826aa12fdf9db45a0685304a43c6d4f038e2a082c67a21bd462c223f3318b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 26307,
+    "sha256": "4fcb9d460a7d67a3d867d66d10778bce0a6adf88e7533196cd489f7b45a16426",
+    "archive": "1_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "4fcb9d460a7d67a3d867d66d10778bce0a6adf88e7533196cd489f7b45a16426",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_absorption_6/world.sqlite": {
+    "bytes": 18726912,
+    "sha256": "99c37848e6020f382dc3bd5cdbf9037766a1c770e668ec359a6e5b977d591788",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "e7fa4cba7df25cb9584398105f7c9f1f6783e3f9e01a63b34a3d6047d654c2c9",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "e7fa4cba7df25cb9584398105f7c9f1f6783e3f9e01a63b34a3d6047d654c2c9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26764,
+    "sha256": "8dd6bc65521557730b76908bb6608d812001789f8594f4c1711fee76207cb897",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "8dd6bc65521557730b76908bb6608d812001789f8594f4c1711fee76207cb897",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 924088,
+    "sha256": "9b90630dd7191b529becc9303e7ba3b21881e238171008bdaf4b060ecc4ae4ad",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "9b90630dd7191b529becc9303e7ba3b21881e238171008bdaf4b060ecc4ae4ad",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 9171438,
+    "sha256": "6e2fbe2ffdc0bb296ec0a89621f6eb4e71209f13eec98335e197b30e6edb5302",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 57682
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 9211546,
+    "sha256": "00c28be29c4aabd4cf86bc990c189645b058fa0205dc9260def08b1e85f9c587",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 67944,
+    "sha256": "73c77ef92fc63603295fbb89089d3f452c33d034846e54c9d673541f54a897f0",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "73c77ef92fc63603295fbb89089d3f452c33d034846e54c9d673541f54a897f0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 210193,
+    "sha256": "5f1e707bc7aee52c28543f70df0a401bdd63a657bf56df57b6c66fce9b6ed51a",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "5f1e707bc7aee52c28543f70df0a401bdd63a657bf56df57b6c66fce9b6ed51a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5193,
+    "sha256": "7a3bff0de589bad490eb302d7e8d8be45afae30c65ee1dfc080ded282a3afecf",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "7a3bff0de589bad490eb302d7e8d8be45afae30c65ee1dfc080ded282a3afecf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10727,
+    "sha256": "93fdc0c83ad31597f43bf7370a81a1d1a631f41ae868e058453adbf77147367a",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "93fdc0c83ad31597f43bf7370a81a1d1a631f41ae868e058453adbf77147367a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 157522,
+    "sha256": "6a8d4e4689f0667eacbdceaf4098666bf1a8b8e04d5a275d736923724ce466fb",
+    "archive": "1_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "6a8d4e4689f0667eacbdceaf4098666bf1a8b8e04d5a275d736923724ce466fb",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_ordinary_two_intervals_6/world.sqlite": {
+    "bytes": 83091456,
+    "sha256": "4eefbee33ce968f6fd494744c72b2a483699e5f1906a6e2a3d316c9923f70cf5",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "c313ec714fbfaaaeb1abc36203be566181e7158ad1319b0b876fd50dffebb254",
+    "archive": "1_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "c313ec714fbfaaaeb1abc36203be566181e7158ad1319b0b876fd50dffebb254",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54512,
+    "sha256": "8fbcc0eedecad8e38f90a15959442de19e6c135dc69bed4e2ac60bf315c0784b",
+    "archive": "1_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "8fbcc0eedecad8e38f90a15959442de19e6c135dc69bed4e2ac60bf315c0784b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1221239,
+    "sha256": "d3a6b81e518b06ebf3cacbefd1cca66d9b0c5fd838ac4ba5272c5b1640b1b5b7",
+    "archive": "1_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "1d826e97a826473bccce9bfcddd7e86e81fd15132a281e1874ee39a1586b1dc2"
+  },
+  "1_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 4225266,
+    "sha256": "b97ad77931becf4d99b92662b6b841e3ffe90cebc5b3fc5565933c11b03c7295",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 26574
+  },
+  "1_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 4246074,
+    "sha256": "44b51fb6e7af9c41c98dec6beabb64d78d510cf40f5845aaf45348e91be41ba4",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 111589,
+    "sha256": "b15702414dd5853cb923c0fc3878e3c23e8321535fe01de721f38c35c8ebd1d9",
+    "archive": "1_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "b15702414dd5853cb923c0fc3878e3c23e8321535fe01de721f38c35c8ebd1d9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 289945,
+    "sha256": "9158c5c67c31dd07e145566c37d9fe5d089cf62be4004f8983d62c66c698a734",
+    "archive": "1_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "9158c5c67c31dd07e145566c37d9fe5d089cf62be4004f8983d62c66c698a734",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10172,
+    "sha256": "61e3519d862a2df21dc4325b5b6c7735a48a8051db0bcc34ddb1682e36315470",
+    "archive": "1_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "61e3519d862a2df21dc4325b5b6c7735a48a8051db0bcc34ddb1682e36315470",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 20614,
+    "sha256": "8f5e798f153ee9008c45c34d17a3fb2a0ff822a2ef65881257f06ab1f41feb65",
+    "archive": "1_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "8f5e798f153ee9008c45c34d17a3fb2a0ff822a2ef65881257f06ab1f41feb65",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 27232,
+    "sha256": "fd279df54f66817a09d1d5bfef013856debdb8c51eb8d179e729f3d4c0dc4168",
+    "archive": "1_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "fd279df54f66817a09d1d5bfef013856debdb8c51eb8d179e729f3d4c0dc4168",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_absorption_6/world.sqlite": {
+    "bytes": 33226752,
+    "sha256": "b63df80321165bc758e61f179d11b44d2d7ccace16e8c47725aa5da7affe4733",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "d49087b3178ef96b0e61e544dd3d06a9abc0bf7fcdbc8dea52f6e0ab95ca3197",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "d49087b3178ef96b0e61e544dd3d06a9abc0bf7fcdbc8dea52f6e0ab95ca3197",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54713,
+    "sha256": "78dbfe2e64dc83d2c504364dade38b65115c9fa063f4b16d48af077d91394e4c",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "78dbfe2e64dc83d2c504364dade38b65115c9fa063f4b16d48af077d91394e4c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1916547,
+    "sha256": "0a076e3bdb250d1578c8677119cfd9626732cf9ec7eaaa6e2661b6f5486faa2d",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "9ed68972339073c25c5a7388a871ad58056ec29d4a40f50227fc051c0f4c9007"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 6299898,
+    "sha256": "6d538032fa5a202c4c2073e5cb85e239422e7969d6eb982b01371a8519108fce",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 39622
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 6334545,
+    "sha256": "603516e0cf09c23e32b2dcbc7ca1546d927d3d75fe275c7b502baf82bb6598ad",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 155179,
+    "sha256": "cffa23b3b92e51267bd842941a4732f7c7a865adc64284b1dff72fa40312b8af",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "cffa23b3b92e51267bd842941a4732f7c7a865adc64284b1dff72fa40312b8af",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 459333,
+    "sha256": "e79b0323a3a6ee6ef9ee241fb23d04fce0834ec3ff066541cd1289085bddde4e",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "e79b0323a3a6ee6ef9ee241fb23d04fce0834ec3ff066541cd1289085bddde4e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10480,
+    "sha256": "b1f8b1951866a22941b5c665bf2ecfbedda6c1e4d464f0faefa8d12e0c519184",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "b1f8b1951866a22941b5c665bf2ecfbedda6c1e4d464f0faefa8d12e0c519184",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21672,
+    "sha256": "0ab32847e788566dedb5748d9025c882c1fc39001fd52f70e7e733e77aae9110",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "0ab32847e788566dedb5748d9025c882c1fc39001fd52f70e7e733e77aae9110",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 161406,
+    "sha256": "fd95b6f3d78912dd4a9f97b259f3b14095dd1157b9d6ac6d3db104ace085f321",
+    "archive": "1_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "fd95b6f3d78912dd4a9f97b259f3b14095dd1157b9d6ac6d3db104ace085f321",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "1_8_balanced_constant_positive_two_intervals_6/world.sqlite": {
+    "bytes": 51134464,
+    "sha256": "bb505109b6a5370a6a8f00d4f083d52194b26e439ebc888bbe4b8fe647525ca7",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "dcc13a791b399b188ce72c01469ac68ac6adc55867539c507bc6f7168415094b",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "dcc13a791b399b188ce72c01469ac68ac6adc55867539c507bc6f7168415094b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28876,
+    "sha256": "57af7887c478cb5c6dfc0ccb9f6e251821665796b5b301e868d6831d82ecba85",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "57af7887c478cb5c6dfc0ccb9f6e251821665796b5b301e868d6831d82ecba85",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2904658,
+    "sha256": "51e67c03788db270818035e0038af813cda2b35896c822b78ae122fcbcd5b10d",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "4f6be162c35ff43090f233464f0cca138bdc00ab9bfe4a7303bb5af3850a58cc"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 77772306,
+    "sha256": "f6e916ce73ea78d393bc46c1e37d32061d5f39767d1e939034d30109eb614ec0",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 489134
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 77864393,
+    "sha256": "31990612841533ff266584be5b509cf497c9200c0b16163993f250dbd419d3d6",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 222162,
+    "sha256": "0fdddb49d7dac02530994ae21c3745522540c56ee8e8e2e0397798e49191fe8a",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "0fdddb49d7dac02530994ae21c3745522540c56ee8e8e2e0397798e49191fe8a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 724641,
+    "sha256": "6e28dec0171a6bcc88bea34cae66081802ecd2b369b7d0b1763578d01fb704ae",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "6e28dec0171a6bcc88bea34cae66081802ecd2b369b7d0b1763578d01fb704ae",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5571,
+    "sha256": "0b44aa2965f2ea431db79551ea19bfe8c823ed37779c517c55ca9b9eb1428312",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "0b44aa2965f2ea431db79551ea19bfe8c823ed37779c517c55ca9b9eb1428312",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 11050,
+    "sha256": "e9db54531bfdc22b042d85e0246c71597425295547ea12fed6fcccb5c6cf1454",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "e9db54531bfdc22b042d85e0246c71597425295547ea12fed6fcccb5c6cf1454",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 110648,
+    "sha256": "fa9a3bf89088c6e08c07c57854a175c9d8af6b1a94c5de574d784391650e286e",
+    "archive": "2_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "fa9a3bf89088c6e08c07c57854a175c9d8af6b1a94c5de574d784391650e286e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "3f8c10531ed01e72b7c8864207149dcd035b53506704368f3a5854ec240ce2f8",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "3f8c10531ed01e72b7c8864207149dcd035b53506704368f3a5854ec240ce2f8",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28279,
+    "sha256": "74c51c1f0376eb7004e3525f2e39d14638e0088121d7e1d84552c072d914c314",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "74c51c1f0376eb7004e3525f2e39d14638e0088121d7e1d84552c072d914c314",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2418946,
+    "sha256": "abc93f827adc1ae9d61905e33bb9966adb69cbcf1fa99baa9e42b921ade6fe51",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "9e82f475ef57a4ccadd9454deecb802755f41ea65308318820f28c25bf4e2856"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8498391,
+    "sha256": "0aa2bbfc8d6bcc7e4bdd479a6ffd85de596c8f7abf7830db072effd443f74038",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 53449
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8569283,
+    "sha256": "abcfcb02347705f7531d358df9c26f0eef006f6e4bfc9bc36d6c3f76b328f3d3",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 161124,
+    "sha256": "4b8e2f01462b3789b1c751953d082e9c4980a7cf5af04a9a57965b70b7c16fc1",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "4b8e2f01462b3789b1c751953d082e9c4980a7cf5af04a9a57965b70b7c16fc1",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 488978,
+    "sha256": "f7a7c5b3c62b9d91e350b98248ef3bcf2b897d81e9931dc7709e39a1ccabade9",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "f7a7c5b3c62b9d91e350b98248ef3bcf2b897d81e9931dc7709e39a1ccabade9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5316,
+    "sha256": "dbafa67a77b8c765819a5087e9a59485f4ceb0472887adbe8b1cadaa164ecd08",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "dbafa67a77b8c765819a5087e9a59485f4ceb0472887adbe8b1cadaa164ecd08",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10474,
+    "sha256": "afba16611ded5618e7cdbc3c625803c50e2fbebd6112b3915fab35a6eb7c6faa",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "afba16611ded5618e7cdbc3c625803c50e2fbebd6112b3915fab35a6eb7c6faa",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 128040,
+    "sha256": "0a14c1d354c23b17e43000dc45221414f84f9575a31bb1ebaa77b8bf2a519da9",
+    "archive": "2_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "0a14c1d354c23b17e43000dc45221414f84f9575a31bb1ebaa77b8bf2a519da9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "8f5ba5b915c749e7d653e6ffb1fdb84eb14279232d32661de625bf477cae6284",
+    "archive": "2_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "8f5ba5b915c749e7d653e6ffb1fdb84eb14279232d32661de625bf477cae6284",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58392,
+    "sha256": "110185973150a54484f920c155da652decf3c8a5d70fe3df661f11474c36eb7d",
+    "archive": "2_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "110185973150a54484f920c155da652decf3c8a5d70fe3df661f11474c36eb7d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11154130,
+    "sha256": "a1c29518829ce7beeaf02a18e1c3d6e16923030b313e9fdbe77e076e45db7896",
+    "archive": "2_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "b0cc03fe232f4b8a40e0f2139663fbaac9f8bb847154dc654722db75d179200b"
+  },
+  "2_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 33380937,
+    "sha256": "51960795820bd41829fa3e8de72c07f8bf7c5c0a9ec5b96dfa6f61ee56d637e0",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 209943
+  },
+  "2_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 33598307,
+    "sha256": "ae538c852e04380ae463d3d6414d33f9a8cb21b2bdfc6db3a5623d64bbfae336",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 790045,
+    "sha256": "166a69a17feec325c7e8806407fc339024838f7486155aff088e293cede74be2",
+    "archive": "2_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "166a69a17feec325c7e8806407fc339024838f7486155aff088e293cede74be2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2568758,
+    "sha256": "a1a43815f8e4dbead10a757d403fc5e530ad6225b0029e7b87b545aa58618c4b",
+    "archive": "2_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "663e53186364cd8ae05cafe4ed94aaa28fd9ad24825a2a59caf4f325182c63a3"
+  },
+  "2_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11049,
+    "sha256": "f1661f3ab9af0644b121aabf07fb429e333838dcebeed8eea100f3afb6367099",
+    "archive": "2_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "f1661f3ab9af0644b121aabf07fb429e333838dcebeed8eea100f3afb6367099",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23066,
+    "sha256": "474d20573f08bf52c6ef6a9f08fa0ad8312767860600466f81d2cddbfeaa8658",
+    "archive": "2_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "474d20573f08bf52c6ef6a9f08fa0ad8312767860600466f81d2cddbfeaa8658",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 528903,
+    "sha256": "e7306f4ec78c680dc76794278ee8c04cd412801a43d8fc67b868eac04268438d",
+    "archive": "2_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "e7306f4ec78c680dc76794278ee8c04cd412801a43d8fc67b868eac04268438d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "107b907e53f5ee53c94c0accec0d4708dedc1e4f1d19873f12b0484ad7b0424f",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "107b907e53f5ee53c94c0accec0d4708dedc1e4f1d19873f12b0484ad7b0424f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 56251,
+    "sha256": "98571f49c700bdcd30c374fe27c87926d0fab9d9f992a807e374398d0934d138",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "98571f49c700bdcd30c374fe27c87926d0fab9d9f992a807e374398d0934d138",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 5744061,
+    "sha256": "16d6e9277d7fbfbcc773d84664e5166b8b8e975066ad797e076fa79e9af7155e",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "96199abb16387b133769751914f1271bbef185742564542b93f929937d18701d"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 17746467,
+    "sha256": "ebf238a61790fdec44ac6005e8abc5c529993424d4aeff012aa027eab2bc39d0",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 111613
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 17849622,
+    "sha256": "155aa054cd29cf40b84e9123c04fda0a8acf26e7d8429f13c4b7cecb3906a253",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 383795,
+    "sha256": "aa60b4097f84d3afdc269f7db59a1a645e24e8cfef0a5cdff06336942ab793c1",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "aa60b4097f84d3afdc269f7db59a1a645e24e8cfef0a5cdff06336942ab793c1",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1270045,
+    "sha256": "f1eb261f20721f1263d9dd4cd8b81032937c41685dcbde0f9086ec264fee22a1",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "1fd1274e01854cf9669acd1452669c44fdacb432d41cc1a71ae3b78caddf7c7b"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10738,
+    "sha256": "7188314f791aa1df736160c19f545c376a6e36077f3f073b9d09151e690544a9",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "7188314f791aa1df736160c19f545c376a6e36077f3f073b9d09151e690544a9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21686,
+    "sha256": "d8f3fce852d79c1d178214b9938b00e4bc47745248da05a96dab569bfbe9c721",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "d8f3fce852d79c1d178214b9938b00e4bc47745248da05a96dab569bfbe9c721",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 337096,
+    "sha256": "9776be77ee82dbbe2d19c716ebc225f28967a9e9a5751424a12491ea07d1c957",
+    "archive": "2_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "9776be77ee82dbbe2d19c716ebc225f28967a9e9a5751424a12491ea07d1c957",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "e7c6fa064ee3d30b993ca3eebb5f0c83ec012b99b8651e96b14448af7f038a46",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "e7c6fa064ee3d30b993ca3eebb5f0c83ec012b99b8651e96b14448af7f038a46",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26697,
+    "sha256": "fb0271e4ce268f8aec5a5f8dc512ce6faa0b6b64c2daaf733a7e09da4f0879b7",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "fb0271e4ce268f8aec5a5f8dc512ce6faa0b6b64c2daaf733a7e09da4f0879b7",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 676069,
+    "sha256": "3cdc613d66dfe9880f5b46034fa5bf31c9a11bf96545e4551c082f3e2f2e9d8a",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "3cdc613d66dfe9880f5b46034fa5bf31c9a11bf96545e4551c082f3e2f2e9d8a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2555289,
+    "sha256": "f84f1daf59cefd62be0603be2c04dd1cbcd8d4fc7a89e94ac090cb96021d41f6",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 16071
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2580205,
+    "sha256": "9aac629279f4ef7f963ca5672681de4f889521fd5b745f780e4d29d6010beb15",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 56107,
+    "sha256": "e5572b1953c6650a0f62ad89ad03d806656e89ff4f04bc03cf074ec18e6a70e0",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "e5572b1953c6650a0f62ad89ad03d806656e89ff4f04bc03cf074ec18e6a70e0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 158688,
+    "sha256": "351a1190537688ba8b754c45b1cfcdd394f3afa4d32f3736cb04f1c210b900ee",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "351a1190537688ba8b754c45b1cfcdd394f3afa4d32f3736cb04f1c210b900ee",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5063,
+    "sha256": "3656017614071651a01ea8c58ee08c1c78bb5845ef9cc378c988326e020ebbaf",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "3656017614071651a01ea8c58ee08c1c78bb5845ef9cc378c988326e020ebbaf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10384,
+    "sha256": "919bc5cb4a45b5ce394ea0971b4c076621dea7b036f65f69ae911906e547c968",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "919bc5cb4a45b5ce394ea0971b4c076621dea7b036f65f69ae911906e547c968",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 26792,
+    "sha256": "efadc5b93cd8c2f1c9a0ce113b947b17fb5f25aab9215f114c55779cc735dd5c",
+    "archive": "2_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "efadc5b93cd8c2f1c9a0ce113b947b17fb5f25aab9215f114c55779cc735dd5c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "fd9fd086835d92928bb6df2ae03cfae74acf3f119b6301a97af54b4528d16b05",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "fd9fd086835d92928bb6df2ae03cfae74acf3f119b6301a97af54b4528d16b05",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26688,
+    "sha256": "53773e2a5a3f27bb9115c6fffd77cad050b403e2e9615dcff15930f6b7e1c756",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "53773e2a5a3f27bb9115c6fffd77cad050b403e2e9615dcff15930f6b7e1c756",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 759826,
+    "sha256": "96a42563c926d2aac76876ddf6a639d17849bcaf9a986946ed86dca709b208f9",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "96a42563c926d2aac76876ddf6a639d17849bcaf9a986946ed86dca709b208f9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 2714925,
+    "sha256": "cc3f9e5d65594dfe2ce2ea34f0e872a27340247c163566feeb105b0ae139306c",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 17075
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 2746117,
+    "sha256": "cc099a81d4d6107475d279e847c780912f9543f193f45828874dda347c759a3a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 55263,
+    "sha256": "677004d128cb3bcb0ba09f63185d244da10a5fdce058ef6f0b31318797350d16",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "677004d128cb3bcb0ba09f63185d244da10a5fdce058ef6f0b31318797350d16",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 149535,
+    "sha256": "33f9605f0bc89dbf5a31bc5f128a9b0f8fdb2822cb3adaba9f7b9bb6293880ea",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "33f9605f0bc89dbf5a31bc5f128a9b0f8fdb2822cb3adaba9f7b9bb6293880ea",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5194,
+    "sha256": "f4d061145af47747b6dfa4e523ff950e5382f9ab8abaa0fdff8c67dc803e0a61",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "f4d061145af47747b6dfa4e523ff950e5382f9ab8abaa0fdff8c67dc803e0a61",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10583,
+    "sha256": "304fa6a17632c3b231b797e24627c3c1b40ea1c67a47339d500b60d7d970fc17",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "304fa6a17632c3b231b797e24627c3c1b40ea1c67a47339d500b60d7d970fc17",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 136332,
+    "sha256": "10cd5c7719b7660d267a5517ec7ffbdf69a3f7e49fe9adb209fde43f1c436286",
+    "archive": "2_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "10cd5c7719b7660d267a5517ec7ffbdf69a3f7e49fe9adb209fde43f1c436286",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "e8410a1c4249315ef69ba96b10b1f2f4aef95abe63993b7af32a4641c4a38d09",
+    "archive": "2_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "e8410a1c4249315ef69ba96b10b1f2f4aef95abe63993b7af32a4641c4a38d09",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54640,
+    "sha256": "abd0a7146d6a2e0b7934c59053ad5b0d1a8885efba5ed0aafeb95e6daec5c95a",
+    "archive": "2_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "abd0a7146d6a2e0b7934c59053ad5b0d1a8885efba5ed0aafeb95e6daec5c95a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1376720,
+    "sha256": "99ce94b938545bf6329b474d3d201f84f9b8c745a458d32d293e37c6f479e264",
+    "archive": "2_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "5cf08497b062717f0132c728739eb25ad0f1dc2a8f5af1ab6e78c04d6c4e36c1"
+  },
+  "2_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 4682550,
+    "sha256": "2ce080eb7102bad64a0b6d6f98540992fb7b13008662f9501afcc86d42bbae08",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 29450
+  },
+  "2_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 4705335,
+    "sha256": "a3aed6d3f32c7c9fd9b6cc9b031c62162348a76040c198820d6b207470a615e1",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 121296,
+    "sha256": "049d25672e7d24caa1ec53253369f1a40628087a34e0c824c1df57a46a310e43",
+    "archive": "2_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "049d25672e7d24caa1ec53253369f1a40628087a34e0c824c1df57a46a310e43",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 325166,
+    "sha256": "6b89d05ff802ec301bb045daa9caa30877777277f37409042fc72afac4566bb0",
+    "archive": "2_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "6b89d05ff802ec301bb045daa9caa30877777277f37409042fc72afac4566bb0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10217,
+    "sha256": "ea6927db6166cb5bbc85129cb5b20aff1255278dafce28675fd8c4ae63d84fda",
+    "archive": "2_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "ea6927db6166cb5bbc85129cb5b20aff1255278dafce28675fd8c4ae63d84fda",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 20641,
+    "sha256": "28927af07bd0e24267f7d0ca3c2d04068a7cefea672a834feae248f58270c73a",
+    "archive": "2_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "28927af07bd0e24267f7d0ca3c2d04068a7cefea672a834feae248f58270c73a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 45039,
+    "sha256": "3327b01bb602d4044e2d4a28812017493712c5d6e64a1bedd90dd9a1330e9605",
+    "archive": "2_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "3327b01bb602d4044e2d4a28812017493712c5d6e64a1bedd90dd9a1330e9605",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "6c99619b0ce79e768a5699f903e266d80955a4ad53ec2016c43cd169af25aa3d",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "6c99619b0ce79e768a5699f903e266d80955a4ad53ec2016c43cd169af25aa3d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54318,
+    "sha256": "25ebabc650f17852d4f354c1aa144553a23e8cfd854ac4d2beb50107308b1f5f",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "25ebabc650f17852d4f354c1aa144553a23e8cfd854ac4d2beb50107308b1f5f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1602999,
+    "sha256": "4cbc793ddaaac73be134d8ed610d5efb182ba84bcfeead9e8979740bd5639989",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "5603b35bd482256fcf757db8dcb453be86ceb6635db9130ad41eefc1eab27b95"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 5114871,
+    "sha256": "0f9b81873b999fe6e3a8be8d40601b87b8a3cdee47508f5f058c1c90ad9d05c5",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 32169
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 5144580,
+    "sha256": "f03c29afdc5f8a963ce9a6dcc411f19efc5bc54255c8389aa68b4aaf9d0da5d2",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 116882,
+    "sha256": "4465d087190984b1a0dbd85e92e1675a32d54e5b8bff5798352297ef72f054c9",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "4465d087190984b1a0dbd85e92e1675a32d54e5b8bff5798352297ef72f054c9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 359803,
+    "sha256": "da2084bb4fa96917714a5b21e52223ee8dc139ed56ac2c3849beb39cf2a10014",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "da2084bb4fa96917714a5b21e52223ee8dc139ed56ac2c3849beb39cf2a10014",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10292,
+    "sha256": "2414fb272b7e0114ee77de73fa8b8b84ac4621fa3f21866bb549a2f03bd005a0",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "2414fb272b7e0114ee77de73fa8b8b84ac4621fa3f21866bb549a2f03bd005a0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21498,
+    "sha256": "c1b1b09d22ee53a013450052ca2f08dfa2fbbc66064bc504243b568cd44ddc54",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "c1b1b09d22ee53a013450052ca2f08dfa2fbbc66064bc504243b568cd44ddc54",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "2_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 279139,
+    "sha256": "27b198806e875284b9d6681dce305a956f7bafdbf5b2aa2ffdfb6335c9e1a8de",
+    "archive": "2_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "27b198806e875284b9d6681dce305a956f7bafdbf5b2aa2ffdfb6335c9e1a8de",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "84843eee205139c197605fb58240ef68e4c5a20428d9a990c2a08120cff471d6",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "84843eee205139c197605fb58240ef68e4c5a20428d9a990c2a08120cff471d6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28777,
+    "sha256": "748381ed8822de032bc28455525fbb1f6b72277e47bb45c8f6a101ffeb44ff83",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "748381ed8822de032bc28455525fbb1f6b72277e47bb45c8f6a101ffeb44ff83",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2921979,
+    "sha256": "6b3c7f9afc2a9e5b14f4607e9050c9ed3ff1d9cdf4c57f9d91e558d149adb03f",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "fb108d62a2865d457b71eeb572aa4362adebb8185af97ee8f6270e4e70226238"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 81500061,
+    "sha256": "62fd67fc1c88b81d3c3180d1a3e30cb9a4408af2d0558709d95a13f0d5215e51",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 512579
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 81592493,
+    "sha256": "7f571bef8b528b4dc3f60f3899dcf695b47c7b32e36f0207b6deb7494f5db0fe",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 220845,
+    "sha256": "b20bb804b1aed013f11839e93a1d76abea3a4dc6f777417d2db8bee978615458",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "b20bb804b1aed013f11839e93a1d76abea3a4dc6f777417d2db8bee978615458",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 735007,
+    "sha256": "9d059ec261ac9c1db3d7c8d929a07d632a7f1c4ba1a4880f0bcf43f8fbdb4c57",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "9d059ec261ac9c1db3d7c8d929a07d632a7f1c4ba1a4880f0bcf43f8fbdb4c57",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5537,
+    "sha256": "398173826469da77b813cb135635a11bc03d240c6ad298a5876da1bdf5cbd251",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "398173826469da77b813cb135635a11bc03d240c6ad298a5876da1bdf5cbd251",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 11032,
+    "sha256": "24f62561295cac398d79be373f0e4aa7b826de6a56da68767862f84ef9aea58e",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "24f62561295cac398d79be373f0e4aa7b826de6a56da68767862f84ef9aea58e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 109075,
+    "sha256": "83297386bf9def9306651f6429ec6004a6768145d9ae560d8f9a4aba6a48dca4",
+    "archive": "3_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "83297386bf9def9306651f6429ec6004a6768145d9ae560d8f9a4aba6a48dca4",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "60cfbb1705f0479d685fc8215a2137719934b0ea6774688d28c9592bae86a588",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "60cfbb1705f0479d685fc8215a2137719934b0ea6774688d28c9592bae86a588",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28265,
+    "sha256": "1cf684fbb7787e0cf91f68c7e197c6a76bf1d1fc7303c1600d0ce98f0c61962e",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "1cf684fbb7787e0cf91f68c7e197c6a76bf1d1fc7303c1600d0ce98f0c61962e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2537575,
+    "sha256": "7b5cd6ed6ce461a93177da37e63c0c7e1c577671f03c3576baa364a2cb2f4ec5",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "6582bd58feaefb36d7a56d359c7f197b82823d370be9d89506960395e37915ab"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8739594,
+    "sha256": "7d7686a33c507e5a5841d2305c180ba4b7c2dae509e14b30d2fb0528cc07f2b6",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 54966
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8815745,
+    "sha256": "ff8e7891fc77480eee239cc122936767dfd207a7699fa52ab53f7fa5b26cf735",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 169020,
+    "sha256": "25b066b707b7602bd2d651dff2a0b984f92b5f3599a0df7989e1ea8b1cdd758e",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "25b066b707b7602bd2d651dff2a0b984f92b5f3599a0df7989e1ea8b1cdd758e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 532679,
+    "sha256": "9ceac27f62350746c7053900a18cd89512cc95e6d103ce38117de1f01cfa5dbd",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "9ceac27f62350746c7053900a18cd89512cc95e6d103ce38117de1f01cfa5dbd",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5409,
+    "sha256": "cf3125a2fce3540493dac5f039b0fade9caf957e16593829c110824f443682d0",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "cf3125a2fce3540493dac5f039b0fade9caf957e16593829c110824f443682d0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10523,
+    "sha256": "eac823f88066489784337da83a562362ea3ab23d0b07073b4853dce710e99127",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "eac823f88066489784337da83a562362ea3ab23d0b07073b4853dce710e99127",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 132688,
+    "sha256": "7e4df91c41950e270ee747df92d308704b14a9b9275d5cd63fd9d269bc402c48",
+    "archive": "3_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "7e4df91c41950e270ee747df92d308704b14a9b9275d5cd63fd9d269bc402c48",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "5247878faeded959c7c7435cfc539fb47ca0d4bb8b4f7794c4015ebdf004dca2",
+    "archive": "3_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "5247878faeded959c7c7435cfc539fb47ca0d4bb8b4f7794c4015ebdf004dca2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58491,
+    "sha256": "adca6fe8d40568593ce56a0161f56ead34a4fc3e0dda7d41a99b0c0ea6533002",
+    "archive": "3_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "adca6fe8d40568593ce56a0161f56ead34a4fc3e0dda7d41a99b0c0ea6533002",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11517773,
+    "sha256": "6245b699a58bbaf21988c3af8c0d1a7062cd37f58435b8dfe4fef61cdab94bad",
+    "archive": "3_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "8a615c8a3d8f6751da8f7bbb6efffd127257f24006e06358ca88f09c91e7889d"
+  },
+  "3_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 34437969,
+    "sha256": "1a183596ed2c0ca42e6604e40442e1a67bdc7579ad72aaad92df439349f7edaf",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 216591
+  },
+  "3_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 34659514,
+    "sha256": "5505aa8f189d1400a5f1abb97f6efd0ab38811c4a9f5855b92f295528d26c16a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 814932,
+    "sha256": "9ee60fac600f84069d8d27f6b8bc45307c6866a47fcb2b1b7a519dc5f0aba117",
+    "archive": "3_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "9ee60fac600f84069d8d27f6b8bc45307c6866a47fcb2b1b7a519dc5f0aba117",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2654006,
+    "sha256": "b669757095b1306f4522ac0e797e2364841a2b8afcc1b767f1c399bf7beccedc",
+    "archive": "3_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "209aed01d944aff816d7eabc20207ba0859228578949bfb4e448f7c4ca5e62e3"
+  },
+  "3_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11172,
+    "sha256": "db188f3897c35a7e93bd1f00638805cd792a84a2e05ddd6acced687b5e8dac97",
+    "archive": "3_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "db188f3897c35a7e93bd1f00638805cd792a84a2e05ddd6acced687b5e8dac97",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23129,
+    "sha256": "d97549133cd4be9492f604a71df42e8026bb709a70f26c911c4d9725abeac20b",
+    "archive": "3_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "d97549133cd4be9492f604a71df42e8026bb709a70f26c911c4d9725abeac20b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 536766,
+    "sha256": "b5f19fc7ef22ac9836d92c8217ddb05caeae30c5a85a91041c3fd512c90de65f",
+    "archive": "3_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "b5f19fc7ef22ac9836d92c8217ddb05caeae30c5a85a91041c3fd512c90de65f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "06c3226392ebc144a18dae0e91245d5a6eb96f30b1385518fc18ff70c90518ed",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "06c3226392ebc144a18dae0e91245d5a6eb96f30b1385518fc18ff70c90518ed",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 56255,
+    "sha256": "36a9e0e247885137ac522f52ec355573b1961d085248e0fe52227ddc03d3831a",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "36a9e0e247885137ac522f52ec355573b1961d085248e0fe52227ddc03d3831a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 5404558,
+    "sha256": "bcf04ab39be595a7bce1e853c116d81eaa2b5d9433cbdb86a439005cf241d687",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "01b983f8eec552130966a00d688206b47239a27112f4b7a8fdd9e6303082dd41"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 16830786,
+    "sha256": "09ecaedd65d6cf7d5a4af308d1b1d641269203ebe1d4dffc5fe987b172f2c46a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 105854
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 16920323,
+    "sha256": "e6d894960a6cf1221d2552578ef40884fe5731d40c7aae37c5a336bbd4b2db1a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 361322,
+    "sha256": "42bd0bf57823c8124813a042e1d0d41dd4370af4336dec753ff27cc6731dc359",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "42bd0bf57823c8124813a042e1d0d41dd4370af4336dec753ff27cc6731dc359",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1165077,
+    "sha256": "c6c22afdee6b97b429e0eaf93cb00962da6564cf9b86d3b92dbb48324fed9025",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "efc3ee9e773c5013f87027a969447047623e29f6b34aaa571a447ec0cf73a1c4"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10826,
+    "sha256": "96f1042b5d8f86d5e46978ec5ddce72346982237d8078ce0b0b331092a287980",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "96f1042b5d8f86d5e46978ec5ddce72346982237d8078ce0b0b331092a287980",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21561,
+    "sha256": "20360874ff23c3a5a955e9a3256012ed814976297cf42097c0d40e1b753ad9be",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "20360874ff23c3a5a955e9a3256012ed814976297cf42097c0d40e1b753ad9be",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 313534,
+    "sha256": "a5bb68916a8218266aee4ccfc5c6d60027343fe7464f695472c388c6df4e185c",
+    "archive": "3_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "a5bb68916a8218266aee4ccfc5c6d60027343fe7464f695472c388c6df4e185c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "79df4edb387089bb8faa9dc4e64f2a876a8e0874c4bd9619dd8b2dbc0ff202dd",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "79df4edb387089bb8faa9dc4e64f2a876a8e0874c4bd9619dd8b2dbc0ff202dd",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26672,
+    "sha256": "1449560507962ebbf74d6731cfc275e59f4462b2fe96304c7d90444c9f47840e",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "1449560507962ebbf74d6731cfc275e59f4462b2fe96304c7d90444c9f47840e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 676801,
+    "sha256": "9f2ff0b41b4fc4403f838f14b692b43e46ef733ae3784cb5dddc132db3358230",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "9f2ff0b41b4fc4403f838f14b692b43e46ef733ae3784cb5dddc132db3358230",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2538117,
+    "sha256": "f896ed1a42154fc4a948cbf095164438441ff8c1bb82aaf62d74a4e98e753c99",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 15963
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2563145,
+    "sha256": "b7c86673c803b331d43cc8f67b4130de207a2b24bd7f4be1506333b76871b370",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 56136,
+    "sha256": "c5e1f1c65b8544250cd8ab80fef5353986cdbc28c3da78044d8e40091ed3ce94",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "c5e1f1c65b8544250cd8ab80fef5353986cdbc28c3da78044d8e40091ed3ce94",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 157707,
+    "sha256": "c4b40a15908c7b87c35922219ee4b696e57e34edb0e7b73cf01212ce22534bb6",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "c4b40a15908c7b87c35922219ee4b696e57e34edb0e7b73cf01212ce22534bb6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5162,
+    "sha256": "9224112ce6a02c26d529c8a94da4ab1ac7963efb52afaef0274b113932fde86c",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "9224112ce6a02c26d529c8a94da4ab1ac7963efb52afaef0274b113932fde86c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10463,
+    "sha256": "a73fce12be3017b3dc9c76fe567e08e4a6a4cb9fc3b3cc7104c6219927660592",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "a73fce12be3017b3dc9c76fe567e08e4a6a4cb9fc3b3cc7104c6219927660592",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 30134,
+    "sha256": "02061fc277a7f9edb08483db869396870db281d4fac4f90fe96ef84418e3175e",
+    "archive": "3_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "02061fc277a7f9edb08483db869396870db281d4fac4f90fe96ef84418e3175e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "0636d8ca635681dc4587102c99b78aaebdcd8b3c4f2a965d0a685c7dd6f6fa2e",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "0636d8ca635681dc4587102c99b78aaebdcd8b3c4f2a965d0a685c7dd6f6fa2e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26878,
+    "sha256": "1d0ae049faac618db5395774704fa4df30bb3857571139d177bb12a77236d2a2",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "1d0ae049faac618db5395774704fa4df30bb3857571139d177bb12a77236d2a2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 872280,
+    "sha256": "54176c25892f39a56b1c99b6d38fcb7cf2e554899aa2d8160d58244903dde355",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "54176c25892f39a56b1c99b6d38fcb7cf2e554899aa2d8160d58244903dde355",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 4164210,
+    "sha256": "b869674bf94c67452b70a2ba4363042d0a1e72523145f83085b9d70cee9462e9",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 26190
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 4200437,
+    "sha256": "a26116b6c1ca6f7b5e5fa649afbde00d859b9877161830fc4e39691bda469f54",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 68063,
+    "sha256": "4cf0aab72f7e6b18a68cc78808b7984354ab1b6dc9462398e49c7ac806f96573",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "4cf0aab72f7e6b18a68cc78808b7984354ab1b6dc9462398e49c7ac806f96573",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 203075,
+    "sha256": "dc5267fba6c23af0f7eaf16367d3eebd51296bd0a0f922e6a8bba2fa2bf38bdb",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "dc5267fba6c23af0f7eaf16367d3eebd51296bd0a0f922e6a8bba2fa2bf38bdb",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5204,
+    "sha256": "bc6894b9286aa63b5a39674163e26098e485274fe8b318c466859e139ee5855c",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "bc6894b9286aa63b5a39674163e26098e485274fe8b318c466859e139ee5855c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10716,
+    "sha256": "0613dbf0b2c6c90c524acf95675c90e301a51df2e2ce284456c2469b7db9258d",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "0613dbf0b2c6c90c524acf95675c90e301a51df2e2ce284456c2469b7db9258d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 139605,
+    "sha256": "4e1903ef20670bce6b0c0dc22c97f5187d5a5a699e66f4cb25dbcc44f20fc668",
+    "archive": "3_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "4e1903ef20670bce6b0c0dc22c97f5187d5a5a699e66f4cb25dbcc44f20fc668",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "d363baadc5c3aae5876a5c2c51e6aeaa0cf1920be1445751ea9e42bbc13ba8c0",
+    "archive": "3_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "d363baadc5c3aae5876a5c2c51e6aeaa0cf1920be1445751ea9e42bbc13ba8c0",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54471,
+    "sha256": "f2b619484b5cc69658bb67efdd1904562ef00fdb713353c9c7fe4e9403036d70",
+    "archive": "3_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "f2b619484b5cc69658bb67efdd1904562ef00fdb713353c9c7fe4e9403036d70",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1457871,
+    "sha256": "decc88b67b83243a601025bcd0503648989bc8e4e425e1dcb51e14f4cd329e89",
+    "archive": "3_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "9cf47c7d9ae45631dbb894f357e468fd304b57053e92da935906df069dd907a3"
+  },
+  "3_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 5021697,
+    "sha256": "7440316d78c51b05e69a24091aa45a556ba2295e26dcd26ff856642e915f0b66",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 31583
+  },
+  "3_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 5045926,
+    "sha256": "7135d086924dc7ca139482461da2b616c81f2d2d712e080f0b0bc4cdc9d89d10",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 123131,
+    "sha256": "c63aec811debeb4b85da2e25f7b1c61c80426c67d8b6542b38c02559eefffa68",
+    "archive": "3_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "c63aec811debeb4b85da2e25f7b1c61c80426c67d8b6542b38c02559eefffa68",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 351800,
+    "sha256": "ee0180a95bddd9dd3903f0025989865c2c7d10984290c89c38af848b1a5f481a",
+    "archive": "3_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "ee0180a95bddd9dd3903f0025989865c2c7d10984290c89c38af848b1a5f481a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10425,
+    "sha256": "f744388bc7493e63468b88faabc23705df106f5e965e67a9135d013f47bc1672",
+    "archive": "3_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "f744388bc7493e63468b88faabc23705df106f5e965e67a9135d013f47bc1672",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 20422,
+    "sha256": "bb3efa01ec57b1c17f2b7205cd33d9e59528e7bbbfaf6dcf2f75627eb84a651c",
+    "archive": "3_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "bb3efa01ec57b1c17f2b7205cd33d9e59528e7bbbfaf6dcf2f75627eb84a651c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 18843,
+    "sha256": "6067ccea5dbbe9f8adfcfa55397724df91d7612414cd949f44329ffaa6892de6",
+    "archive": "3_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "6067ccea5dbbe9f8adfcfa55397724df91d7612414cd949f44329ffaa6892de6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "1feddb17edb8c59256ab6ea8f6096ebce795a2601cfd09d4568adba54eb73fcf",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "1feddb17edb8c59256ab6ea8f6096ebce795a2601cfd09d4568adba54eb73fcf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54893,
+    "sha256": "2b0d437070930c9d46d1202fc85fc4518e8c24e8f08c89307c30d5a3bee9c311",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "2b0d437070930c9d46d1202fc85fc4518e8c24e8f08c89307c30d5a3bee9c311",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1786871,
+    "sha256": "7a67b5577daa340a0076724daf6d2d77410dfcbc8098968d8b7a6ecd3af2d6b4",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "9bd66bc9afc558b05093329d0d96900cabab4717c353a8a02b887d9fcff63c84"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 5820354,
+    "sha256": "e117ce3ccabc56bb1624587d4462131f9ba54fdb7c5de96e68892b33ada4fe31",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 36606
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 5850136,
+    "sha256": "6f660a81b0858bb3ace3f62dc383f0de4f8cf352d184946121eeae9b06721155",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 157788,
+    "sha256": "75d513e93ae4a9094a2335782fc034e2270176e20c62e7d01b523a613692fa78",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "75d513e93ae4a9094a2335782fc034e2270176e20c62e7d01b523a613692fa78",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 413555,
+    "sha256": "ff83edd95b301213174b8946fbc01e41c83309445f16f6721915390abe4b562d",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "ff83edd95b301213174b8946fbc01e41c83309445f16f6721915390abe4b562d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10602,
+    "sha256": "20698d65cf8bd10f927f54646a6666858575fe44c728689e6113780d832804e6",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "20698d65cf8bd10f927f54646a6666858575fe44c728689e6113780d832804e6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21647,
+    "sha256": "85793e14c35c330733e5c08393aa99d3486e742e270789daa3484c8b81919ab7",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "85793e14c35c330733e5c08393aa99d3486e742e270789daa3484c8b81919ab7",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "3_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 128178,
+    "sha256": "324d74819d06120e575db71790f763acec71cf2cfb4ac3b8fbd992f150b9f1f2",
+    "archive": "3_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "324d74819d06120e575db71790f763acec71cf2cfb4ac3b8fbd992f150b9f1f2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "fee5cc7fdcad44514a10a44872486e6569fd3a22d2bdaae2eca1fb183131e913",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "fee5cc7fdcad44514a10a44872486e6569fd3a22d2bdaae2eca1fb183131e913",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28871,
+    "sha256": "8956823c1923b62cd4fafa474ea3115053491239c132963d217ecb107ed6ce9a",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "8956823c1923b62cd4fafa474ea3115053491239c132963d217ecb107ed6ce9a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2912963,
+    "sha256": "6c71a5494725671303f8db40e9dd57798744927cd40d21291599855de2b57cdb",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "5928a5d339366bfe3da927d5bd239a986b3bc8199484fbbc2cbaa5d8a25e38b0"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 78372531,
+    "sha256": "e6523b205bb74f4e40dfbcec98d96e27e451a52a4d01cbe7439f3792a6cffed3",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 492909
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 78465529,
+    "sha256": "b5f77714d8593d61038fbdbda314292314349b9c05a13f7b55ba27d5b7516407",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 220639,
+    "sha256": "bd1e8fe345464ec0c2846c1055c1554992b3d79649f70bdd258a9c098d876e57",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "bd1e8fe345464ec0c2846c1055c1554992b3d79649f70bdd258a9c098d876e57",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 736960,
+    "sha256": "f6eb7aed2e53fb7b88ff4652eae5912ebc28c064990a5233dc85cf38a134ff8b",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "f6eb7aed2e53fb7b88ff4652eae5912ebc28c064990a5233dc85cf38a134ff8b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5635,
+    "sha256": "029f097fe09e729c428c92747a9a7d66b2519af94d6169deeeb2e3d662f8b985",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "029f097fe09e729c428c92747a9a7d66b2519af94d6169deeeb2e3d662f8b985",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10945,
+    "sha256": "7c5c335b22d49dde447b3d7d6ba6b0c60a425adb59a1a3f4d74bca7417becbc3",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "7c5c335b22d49dde447b3d7d6ba6b0c60a425adb59a1a3f4d74bca7417becbc3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 101480,
+    "sha256": "82bcf6dd37ba3b120699540422cbc25468d4ebf06b3fa68b86634861d75f2add",
+    "archive": "4_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "82bcf6dd37ba3b120699540422cbc25468d4ebf06b3fa68b86634861d75f2add",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "c6c6f902a8e38bc36e211be15523161165e4b64606bab07fcb71641e0318c2e3",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "c6c6f902a8e38bc36e211be15523161165e4b64606bab07fcb71641e0318c2e3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28238,
+    "sha256": "48db21fe37c7cec687db5ecc2058efb6c9213e44c253a935bae4933616f06175",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "48db21fe37c7cec687db5ecc2058efb6c9213e44c253a935bae4933616f06175",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2447923,
+    "sha256": "f180053797c6e54a6dd7c6d2da0a125695c821072eac8415cee07698ac37c14e",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "20bcd72d859083e018b4976ecb30727351f8c199ad53c13f98519e167dbc0345"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8547045,
+    "sha256": "fd5c55065571af987c24491b2640fdc76c3e11bf2f1159f7353800f69962f0be",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 53755
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8618167,
+    "sha256": "f5bd39c8a83d4b168989ece422009ce1685e5c1143a69f4e3207c2f8e658fdc8",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 163587,
+    "sha256": "177532f7a09558f278c4682f726ffa3b0492642061be3b4b92f0157f4a55688e",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "177532f7a09558f278c4682f726ffa3b0492642061be3b4b92f0157f4a55688e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 519646,
+    "sha256": "a7797bf04396079e9ebd74d27a3ad16064e900ae74d5509c86c1bf1394545a38",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "a7797bf04396079e9ebd74d27a3ad16064e900ae74d5509c86c1bf1394545a38",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5374,
+    "sha256": "283570a53f564ea151c3142ca523bc875faf13759e1926e1aaf7bf5b3453563c",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "283570a53f564ea151c3142ca523bc875faf13759e1926e1aaf7bf5b3453563c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10510,
+    "sha256": "ad25ba09a4163439bcb409a3a42657d0cb64eb5697a2a54909ef07694613b272",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "ad25ba09a4163439bcb409a3a42657d0cb64eb5697a2a54909ef07694613b272",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 127357,
+    "sha256": "645106c431c18e64ddf381ebb3832ac3f96c7dd5f505d3057df70bbe6ea2a25e",
+    "archive": "4_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "645106c431c18e64ddf381ebb3832ac3f96c7dd5f505d3057df70bbe6ea2a25e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "ffec7dc68d7865c3e24703c45c6270828bb901ef5f049672bbb65873ca36c260",
+    "archive": "4_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "ffec7dc68d7865c3e24703c45c6270828bb901ef5f049672bbb65873ca36c260",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58490,
+    "sha256": "fb71906421983dcdf2986c677eee590805848eb129987538f20290a87bb72d45",
+    "archive": "4_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "fb71906421983dcdf2986c677eee590805848eb129987538f20290a87bb72d45",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11526948,
+    "sha256": "840768c2405882fbfa5548c00cfe2b90750e6323b7c19246aa5d01c232a931f1",
+    "archive": "4_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "5aaae9839760bd51060dbf0e5eb92e95fa399f2a7f3bb3e489dc0dcf7fd8bd16"
+  },
+  "4_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 34426203,
+    "sha256": "db3186b30f1ca8dcfa9189520d71e36bed8be4c3b30ee52773e02531303ad69d",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 216517
+  },
+  "4_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 34638759,
+    "sha256": "ae64a1d17fdba5da602eb7154369326eaffc2c5ef6ba903f7cd6ce748d214e26",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 813794,
+    "sha256": "5cd5dc15fa441bef36f1ce1d583885f58d84eabf5109702a183fa32fbaf66983",
+    "archive": "4_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "5cd5dc15fa441bef36f1ce1d583885f58d84eabf5109702a183fa32fbaf66983",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2651877,
+    "sha256": "d5a4d96648aa3477234dd09bd9b202d0ca5ce2c946bff4ff7544b92f1454cce0",
+    "archive": "4_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "b64854361594d47a3741ce16c6042e41efa7728f081d6ebae1599d0a63922237"
+  },
+  "4_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11143,
+    "sha256": "b1bcb95f2384588c201312d6e20ff68251ff46df965a550babdd43bbfa0053ff",
+    "archive": "4_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "b1bcb95f2384588c201312d6e20ff68251ff46df965a550babdd43bbfa0053ff",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23146,
+    "sha256": "837d9dd3c429128d1d13e95c77b96c0abb900455c65fa0404c7e4565af37051b",
+    "archive": "4_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "837d9dd3c429128d1d13e95c77b96c0abb900455c65fa0404c7e4565af37051b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 532417,
+    "sha256": "7702c896f7422b48ff787ad7165c9bb2c519168b72f5b08512faff4cdcfb1be3",
+    "archive": "4_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "7702c896f7422b48ff787ad7165c9bb2c519168b72f5b08512faff4cdcfb1be3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "b27c4f8e6a0b339e7c959f787b60a4e0d8be8ac3282231eb1474ce701ba8e1c8",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "b27c4f8e6a0b339e7c959f787b60a4e0d8be8ac3282231eb1474ce701ba8e1c8",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 55911,
+    "sha256": "3ad83b97dcccb40bc0b81775e347bc947b386befc31b9d8a2a56f31dd0abeb45",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "3ad83b97dcccb40bc0b81775e347bc947b386befc31b9d8a2a56f31dd0abeb45",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 5267487,
+    "sha256": "d981dcfc0ed7c0ddb30665e62e5b2e6e7733301a9c81770e9f9073fdc6a0511d",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "f4e1e3916dd25a720c2822d429301c9334c7e370d1808c13db619f98a9f9c37e"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 16419930,
+    "sha256": "6e6541a690bf61fecdf78073f869cab14478a5ea3193b81b32d12a5c615d1609",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 103270
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 16507941,
+    "sha256": "fc9ee09d6d218f063fb274b02e8627f826de1e4ff64bbadace660715cc106bda",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 350174,
+    "sha256": "aee8026d76c9e2c5689baaf30893d420b4af26e57c96ab10952871b2be50cfcf",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "aee8026d76c9e2c5689baaf30893d420b4af26e57c96ab10952871b2be50cfcf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1135988,
+    "sha256": "a1c854c90de02db93764e4827332860216277642b59a164492f93ae6de24a2a3",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "aa7e3c243704fab3b12bae1877a94357c56967a38d00e652586f191e4f4c2a05"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10671,
+    "sha256": "23cab2315ded95832d1cdd10817e308cbc4630bbbdedb8687a46d2b266cd23b3",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "23cab2315ded95832d1cdd10817e308cbc4630bbbdedb8687a46d2b266cd23b3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21451,
+    "sha256": "e86e9e898e3fc7f71504d11c150e466809bf5c187943f2dc17b5903a9409a90d",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "e86e9e898e3fc7f71504d11c150e466809bf5c187943f2dc17b5903a9409a90d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 307019,
+    "sha256": "cb06148a5bd3c204763f2f0186ed1bc9b855a83c1b0c54353a93fc7f89cc3fa3",
+    "archive": "4_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "cb06148a5bd3c204763f2f0186ed1bc9b855a83c1b0c54353a93fc7f89cc3fa3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "0746e7856e57fc34e48c51c54ca44da75ddc15043e55e7a0cde7f3f4f4103530",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "0746e7856e57fc34e48c51c54ca44da75ddc15043e55e7a0cde7f3f4f4103530",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26660,
+    "sha256": "d6cce90b80e1a3a7b01c309ca2b023079879f27e70ee47bbf451214b1cd53d8a",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "d6cce90b80e1a3a7b01c309ca2b023079879f27e70ee47bbf451214b1cd53d8a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 669738,
+    "sha256": "771bc56be426c81869d4a7a7643ccdd21b5688dcc6394e81ae84a76d4d2b769c",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "771bc56be426c81869d4a7a7643ccdd21b5688dcc6394e81ae84a76d4d2b769c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2546385,
+    "sha256": "af7f508d0494eecc7089e72c589a851d1694aa418f9450cb1a5f8d394ce44ab0",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 16015
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2571365,
+    "sha256": "5131e1f1b2f3a6835bbcafce90c7bc29f55be93b75294a8511697dc536157145",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 55963,
+    "sha256": "d370a2d1c104b56c33257c0d438d293f794970e7571fa1fc0b61aef05366b21f",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "d370a2d1c104b56c33257c0d438d293f794970e7571fa1fc0b61aef05366b21f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 155774,
+    "sha256": "666cd0bf36e5ff759425e18faa09bcce927c14bfbd6f233240a2185a671476e9",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "666cd0bf36e5ff759425e18faa09bcce927c14bfbd6f233240a2185a671476e9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5171,
+    "sha256": "2419d6fbe584734c04e5b07b1f017f22dc7bff96647f28eb0b15e69b62f4c370",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "2419d6fbe584734c04e5b07b1f017f22dc7bff96647f28eb0b15e69b62f4c370",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10374,
+    "sha256": "c1cccd298b69cd36a47095bef19241ba0aaab1d8dee4b5be342c88e118238596",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "c1cccd298b69cd36a47095bef19241ba0aaab1d8dee4b5be342c88e118238596",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 27068,
+    "sha256": "d2bd973e4aba21546b92b263df90a8765059abb124ac99fb0162919561a087cc",
+    "archive": "4_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "d2bd973e4aba21546b92b263df90a8765059abb124ac99fb0162919561a087cc",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "3210760a127ffe53e4f727a6009742343dc874e428d46abc456d605d4f04f295",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "3210760a127ffe53e4f727a6009742343dc874e428d46abc456d605d4f04f295",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26727,
+    "sha256": "f5971ca04da94dd686149f3e9faf92d891881802138a15204132e63999e5adbb",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "f5971ca04da94dd686149f3e9faf92d891881802138a15204132e63999e5adbb",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 751125,
+    "sha256": "d5230e7616279499ae8c1b36619a6e4b4d7b7d55d0133c29b2d89ecf0aa1934d",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "d5230e7616279499ae8c1b36619a6e4b4d7b7d55d0133c29b2d89ecf0aa1934d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 2683602,
+    "sha256": "e7227a31605821cc040eb6b8289de65d0cc8ee13227ac0438e23b0a983626733",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 16878
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 2712454,
+    "sha256": "50aa5c7b2a8a0bd876580b239f658f7eb55bca63cb6415e92d13d6e1e71e3d5a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 54981,
+    "sha256": "cfc3e3b350ff6fdc8b6e94eac95db53492f8c1c256f0391e1424ff421990f76c",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "cfc3e3b350ff6fdc8b6e94eac95db53492f8c1c256f0391e1424ff421990f76c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 166315,
+    "sha256": "8cf9bc943fa42f353c0d1dfe46fd9d3bac0e05a36a8dd6ff37d3c21c7339edb6",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "8cf9bc943fa42f353c0d1dfe46fd9d3bac0e05a36a8dd6ff37d3c21c7339edb6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5196,
+    "sha256": "b49db777f7d2f1fbc0f6f67b86eebe82a7d55264ee7bfc15a6716ef81b0d893e",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "b49db777f7d2f1fbc0f6f67b86eebe82a7d55264ee7bfc15a6716ef81b0d893e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10586,
+    "sha256": "f51911b20b6fcc9045d71949c2435e9b81988edb813bee2b8a407caa6add4407",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "f51911b20b6fcc9045d71949c2435e9b81988edb813bee2b8a407caa6add4407",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 139905,
+    "sha256": "e4f34060d43a2ac042745c085d26adb9e4666b866e54d14087a56c1531cc206d",
+    "archive": "4_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "e4f34060d43a2ac042745c085d26adb9e4666b866e54d14087a56c1531cc206d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "eb0bd3e198fc16854611336ccf07b14104554dcfed394b5e3f1cd695ed08785b",
+    "archive": "4_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "eb0bd3e198fc16854611336ccf07b14104554dcfed394b5e3f1cd695ed08785b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54292,
+    "sha256": "a74c3bf94e84f1bf73987a0918ae5561b9cff2c56cbdc83ac3c6961cd847edff",
+    "archive": "4_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "a74c3bf94e84f1bf73987a0918ae5561b9cff2c56cbdc83ac3c6961cd847edff",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1363296,
+    "sha256": "2ac211e42cf552af7f5c6b6ae781bd70e37a6644735186a974bc0213992e627d",
+    "archive": "4_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "761cb066d69892c262ee70fdc276cf3c3e001ef7b06edfd64b976b1499827d1a"
+  },
+  "4_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 4654566,
+    "sha256": "6470f87e0381466077f300b18b90ea4280bed234ecfd28d2f2a6d05734ad33fc",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 29274
+  },
+  "4_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 4676818,
+    "sha256": "e89b43aa8e20b0e01a66f68d665525a28123a1007a1609dc5cec476369ee07c6",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 112763,
+    "sha256": "549c3b24ae461991176b72d419a854b9f23d2ae5af8f50e796ae896ac60c34de",
+    "archive": "4_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "549c3b24ae461991176b72d419a854b9f23d2ae5af8f50e796ae896ac60c34de",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 320545,
+    "sha256": "c65ca06d550ac02b0d0f99b73dbbe6f1dd5cc845f6196c5a88c9fd693bad7721",
+    "archive": "4_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "c65ca06d550ac02b0d0f99b73dbbe6f1dd5cc845f6196c5a88c9fd693bad7721",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10210,
+    "sha256": "17a09cda13aa0610bffb066f3509d2f791ebfd2957ab51374e90cddad0df0046",
+    "archive": "4_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "17a09cda13aa0610bffb066f3509d2f791ebfd2957ab51374e90cddad0df0046",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 20780,
+    "sha256": "0052aa861f3d9e34e7ea68882d28ac86649a9102ccc5d08088a042af4095b3b9",
+    "archive": "4_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "0052aa861f3d9e34e7ea68882d28ac86649a9102ccc5d08088a042af4095b3b9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 32467,
+    "sha256": "dda93fbdff6adb77dd92510c0b6db5ec001b5dff067b1a9ccd9746a2e4fe3d4d",
+    "archive": "4_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "dda93fbdff6adb77dd92510c0b6db5ec001b5dff067b1a9ccd9746a2e4fe3d4d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "208968d34d637dcbab0b8ec364afa3cb94728916d92a87d1480c1385ed792697",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "208968d34d637dcbab0b8ec364afa3cb94728916d92a87d1480c1385ed792697",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54843,
+    "sha256": "813a085ecae5c61e57d969fb5c398c1e56233b91f1a8dd25634d7e64e9d4b34e",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "813a085ecae5c61e57d969fb5c398c1e56233b91f1a8dd25634d7e64e9d4b34e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1830481,
+    "sha256": "0d7b8856f80a4f2a4964d6f19e7ea1143d367cc11d38560ca21f85d07abb2c53",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "7e5b924daf726ef9bac8655fe1e130b2652e32585f7808fa5cfcaef43a8ca50f"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 6092562,
+    "sha256": "085590a2fe6ee9c6cfd25ac9e9353205b04de5cfac066909df2ebcee34fb23a2",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 38318
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 6123788,
+    "sha256": "f44981b6c4beb1d156d7eb375d491fdc99842c2d954be1aaee173b15d72ced14",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 158500,
+    "sha256": "7f9d245af622e74b029e9a659b3bbaddd1e1ad34fe25fff990722cace94c37d3",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "7f9d245af622e74b029e9a659b3bbaddd1e1ad34fe25fff990722cace94c37d3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 433218,
+    "sha256": "4e8569c86db271f1d8293edf2756274d278a9795f1325be55ab29ecb11108092",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "4e8569c86db271f1d8293edf2756274d278a9795f1325be55ab29ecb11108092",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10524,
+    "sha256": "19df0b15a053b8837cbcfea334044c91a24def18a2849aea684ebdfb6ed81be4",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "19df0b15a053b8837cbcfea334044c91a24def18a2849aea684ebdfb6ed81be4",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21431,
+    "sha256": "a52759a8f70e96bb8ac3d5263d9ddffc27981e695d79b33066fb2cb1dbaae39b",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "a52759a8f70e96bb8ac3d5263d9ddffc27981e695d79b33066fb2cb1dbaae39b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "4_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 116500,
+    "sha256": "d9dc89a81c7e76afaad2698540cb9d288d2fe0a3cabe577e4893eebea0070512",
+    "archive": "4_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "d9dc89a81c7e76afaad2698540cb9d288d2fe0a3cabe577e4893eebea0070512",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "3ffb1cd11e6af8e7a076faff4d851c5d2aa1ecf71733b5f8f3e6834eff28cf75",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "3ffb1cd11e6af8e7a076faff4d851c5d2aa1ecf71733b5f8f3e6834eff28cf75",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28926,
+    "sha256": "ed45c6250a636e158c76e14e30ba321f5816097b00cef1bb14f42a80bf337ecb",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "ed45c6250a636e158c76e14e30ba321f5816097b00cef1bb14f42a80bf337ecb",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2917111,
+    "sha256": "e3891018e12937a2e565275bc83114a15a34eb766c025f8f8a0b14888a312446",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "caa0f183e862ecd07886916db8d072b9c85ba42eaf3c4442b9f0fc9cf62cced3"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 78504501,
+    "sha256": "d591fa3998f5da53bc50066e35beff9379943d7714addf42184b2cf806f53bb5",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 493739
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 78595301,
+    "sha256": "1b7dacb3ed376739e5db02bdb23dd725f5dcb971f42b34528059c0193e46fbbc",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 220514,
+    "sha256": "c7f6f7b9cb21aefbb24d89dcedeaa2c515ac9f4740acde19b8c52c5fd25a879e",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "c7f6f7b9cb21aefbb24d89dcedeaa2c515ac9f4740acde19b8c52c5fd25a879e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 737177,
+    "sha256": "877c6364aafa8c01c587cfb5bf354196534d39a8e15f9ce078881eef336f6f7b",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "877c6364aafa8c01c587cfb5bf354196534d39a8e15f9ce078881eef336f6f7b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5620,
+    "sha256": "9caaf2a57f0db8c4cf0d6c0202e67c49ad26937aed4c8a32c677f46147101b9d",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "9caaf2a57f0db8c4cf0d6c0202e67c49ad26937aed4c8a32c677f46147101b9d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10897,
+    "sha256": "6bad4bf666bb67e0aaaaa1a9f8a46f6760c4e00c3de4f0a88f94e81e4d32fcaa",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "6bad4bf666bb67e0aaaaa1a9f8a46f6760c4e00c3de4f0a88f94e81e4d32fcaa",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 97528,
+    "sha256": "22db8d7d2185dd984ac8d69496cee3dbad20865e5fd54879548900838c50d7bf",
+    "archive": "5_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "22db8d7d2185dd984ac8d69496cee3dbad20865e5fd54879548900838c50d7bf",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "21827a25878054df9bcf2d43a1402f52e8c2015b027babef83999bd9cddbfa3c",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "21827a25878054df9bcf2d43a1402f52e8c2015b027babef83999bd9cddbfa3c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28328,
+    "sha256": "703aa217084c878f8f17738e5d321af30db1d69720b3ff5258e83f538cb318d2",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "703aa217084c878f8f17738e5d321af30db1d69720b3ff5258e83f538cb318d2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2497345,
+    "sha256": "8e42babb08429c3db82adf0df22b5766420c376aa4eb08569e3e46ea44abe3b5",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "8b00ad35bf7465c745dca84dd5098bdadfa92a1fbd4e31eda8386cffb7f5b570"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8763444,
+    "sha256": "48bd7b508e89f5257bd0579ab92939679a5f7b4fc1f2bd110c65a5e78af0ec1d",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 55116
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8837306,
+    "sha256": "c905d1cd9a515b4a24ff839f8593e994f475adb1289a776f640b0a4e947d9043",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 168379,
+    "sha256": "c50ee8b5379e2cc44204caa44581b6497df06c26c09dc62f4de8f4c5eaba2204",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "c50ee8b5379e2cc44204caa44581b6497df06c26c09dc62f4de8f4c5eaba2204",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 530135,
+    "sha256": "924164112d466b9e1a8ae08f50f328fb0649b9cddde801dfd114aab40800bcc1",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "924164112d466b9e1a8ae08f50f328fb0649b9cddde801dfd114aab40800bcc1",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5243,
+    "sha256": "62d6498b4700e2cfbb3a5a7b6e6164be449933821a10b42efe48ed055b5a5288",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "62d6498b4700e2cfbb3a5a7b6e6164be449933821a10b42efe48ed055b5a5288",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10553,
+    "sha256": "030ca9d99131ecc11c6c7134da8380dfb3a9e4a01180ede3bb0ee1a69ae1054d",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "030ca9d99131ecc11c6c7134da8380dfb3a9e4a01180ede3bb0ee1a69ae1054d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 133335,
+    "sha256": "fe4d03d87a9f4f01364205302502ca253c33cb54e8a94c0cb62342dd7e98a2ff",
+    "archive": "5_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "fe4d03d87a9f4f01364205302502ca253c33cb54e8a94c0cb62342dd7e98a2ff",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "b31ce8b51384ac774121110ef953e04b6de2120474778c9b197744eff20ad327",
+    "archive": "5_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "b31ce8b51384ac774121110ef953e04b6de2120474778c9b197744eff20ad327",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58502,
+    "sha256": "6a9c676a48f0ad0a738f215b213bc751f302dbc25c4aea226f81dbc6127bfa21",
+    "archive": "5_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "6a9c676a48f0ad0a738f215b213bc751f302dbc25c4aea226f81dbc6127bfa21",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11643887,
+    "sha256": "f99dd4039281e53ad142f1474144f74a7845a94889ead97bc925c793e158cc3a",
+    "archive": "5_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "7bbe55cb188785f1d5a85df1c6b0fea151c7e90f289f687f82795cb9ef19fbde"
+  },
+  "5_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 34814799,
+    "sha256": "836f28ac3de439562fe2259640647bad04ed4dd38b3bea5a7785eb63ada80791",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 218961
+  },
+  "5_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 35033056,
+    "sha256": "4404a9924fa34f98013a60dadf08daaddeb09c8900db4ad7e69c26e73940f2d3",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 825153,
+    "sha256": "eccb15b75400f7c730449f36c4d06a493bfcb1e4bd503ccea2e1d0938ae9ab7b",
+    "archive": "5_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "eccb15b75400f7c730449f36c4d06a493bfcb1e4bd503ccea2e1d0938ae9ab7b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2687662,
+    "sha256": "9643eb29556ea6bbae63287bc2c3828f61503ae1246d0d184a4945b2338a2591",
+    "archive": "5_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "92b48bbf2c9f124fb78cecd648f87e04afda440ef3e7fe47d7dd991e2a5a28d0"
+  },
+  "5_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11224,
+    "sha256": "b39b753d837ba26903d430cdbd1cf71e7579c59f53af150328c96bee4cabde28",
+    "archive": "5_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "b39b753d837ba26903d430cdbd1cf71e7579c59f53af150328c96bee4cabde28",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23167,
+    "sha256": "9ccfc79523fca7941694e3b5d4f5ceb1121bb51a5b574555e8aa6c6f821efe56",
+    "archive": "5_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "9ccfc79523fca7941694e3b5d4f5ceb1121bb51a5b574555e8aa6c6f821efe56",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 534437,
+    "sha256": "2696106a659caba65a75bc030c29833b4c48fcb471629043becc6e3173965ee9",
+    "archive": "5_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "2696106a659caba65a75bc030c29833b4c48fcb471629043becc6e3173965ee9",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "093611b8375ced67d855b49c42904d45e0d44f50d9255d474a667a54498b493b",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "093611b8375ced67d855b49c42904d45e0d44f50d9255d474a667a54498b493b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 55798,
+    "sha256": "d326415ee22728dc48b81332d65be0f480e6a5d9a3a3489f0baf688bdce1571d",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "d326415ee22728dc48b81332d65be0f480e6a5d9a3a3489f0baf688bdce1571d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 5038889,
+    "sha256": "1ca59ec2b2469baae9fc2dbcf5d91d1ea25f7b86117b2ac784b4c04c1c24df54",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "a3263e174fe9d51033532bd8ab34531ed0830766dd34bc18bc05b88a0a9d2873"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 15906996,
+    "sha256": "4e2c13888fb1e80f4ae955e220087586b47793745701f9d478ab0631e72b9e79",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 100044
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 15979018,
+    "sha256": "9de6ed1697bd54428340c301a4eb4987a77104d56c3b41484ad3b1dd0fbb884d",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 336116,
+    "sha256": "da116ec10c1c5aefc4cc6669d365b0fe580fabbce1351f4bce92c7a60ca125b2",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "da116ec10c1c5aefc4cc6669d365b0fe580fabbce1351f4bce92c7a60ca125b2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1087419,
+    "sha256": "110f213bb1fbed318d1ce913f2241417bdefde7810be3f4a27af972dfc5a3371",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "37eba651ff18ad0554f3a23ae88edbc83ad7654b1e5ea2c15bb3f423a10b1fbb"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10690,
+    "sha256": "485d463adf67e2360678578d37e18ec4081a6116a7def16c1780e6df2768c345",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "485d463adf67e2360678578d37e18ec4081a6116a7def16c1780e6df2768c345",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21359,
+    "sha256": "d34a34f636e462868e82ad159ffd138414e02d575817e568ee2b421000b2063d",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "d34a34f636e462868e82ad159ffd138414e02d575817e568ee2b421000b2063d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 263918,
+    "sha256": "08776ee750c3be2240e58bdb2082a30273e4d72540cdb61fec030f975b02e48c",
+    "archive": "5_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "08776ee750c3be2240e58bdb2082a30273e4d72540cdb61fec030f975b02e48c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "dcf720aaa46a899de356e14c0328d03b328fc2ab7a7e40729093ce05db75b43e",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "dcf720aaa46a899de356e14c0328d03b328fc2ab7a7e40729093ce05db75b43e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26871,
+    "sha256": "3650d5c050301ce2aeb0261c8068d4d78f7d657676ffa3aa0dac87db2e5de2ee",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "3650d5c050301ce2aeb0261c8068d4d78f7d657676ffa3aa0dac87db2e5de2ee",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 738774,
+    "sha256": "040a2427ea6613b6092cecd48157e26d6360a4bf6ea01fb4bca842d94aa40907",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "040a2427ea6613b6092cecd48157e26d6360a4bf6ea01fb4bca842d94aa40907",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2682330,
+    "sha256": "e91a916480e53c507e8cbd712325ab8aa5b987bd3b24ac48a219ba9c05227eb9",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 16870
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2708384,
+    "sha256": "5985869558b10b3f6bba831949842ba1c341a0455a92f27b2df767952b34bcee",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 61353,
+    "sha256": "724d3626a9920ff9ec6c74a617cd9c90b0013d06bcda766672d4262857c2d4d5",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "724d3626a9920ff9ec6c74a617cd9c90b0013d06bcda766672d4262857c2d4d5",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 173757,
+    "sha256": "4e9b21b6fde06d981f34a0b5facd44738ca68f39df9959059968ed2bd32d6ed3",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "4e9b21b6fde06d981f34a0b5facd44738ca68f39df9959059968ed2bd32d6ed3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5207,
+    "sha256": "13a78137d43a286aff387f9bc852c3324ee3d830b01e70fd1b1fc5486c43e9d6",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "13a78137d43a286aff387f9bc852c3324ee3d830b01e70fd1b1fc5486c43e9d6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10683,
+    "sha256": "a43c5e29661da31fdcc8811a11f56dfbdde968879a04b843d00378f99406972c",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "a43c5e29661da31fdcc8811a11f56dfbdde968879a04b843d00378f99406972c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 87338,
+    "sha256": "a0c5c01ed57a0dff33ffd3c31a80e158c28a0716e5eade463eee6d900d84d97d",
+    "archive": "5_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "a0c5c01ed57a0dff33ffd3c31a80e158c28a0716e5eade463eee6d900d84d97d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "d80b0fe19ca5a7078070315eefce4b4b36881bd3a200d43c53651c92bd8893e6",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "d80b0fe19ca5a7078070315eefce4b4b36881bd3a200d43c53651c92bd8893e6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26613,
+    "sha256": "f6bb4ccb59d3a0de92f7e0bc74570d3920839f70132e74f6893108ce9f6bdc5f",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "f6bb4ccb59d3a0de92f7e0bc74570d3920839f70132e74f6893108ce9f6bdc5f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 664505,
+    "sha256": "45f94ba844cefe1435714a317a591661ca5cd07c8fbed23b72c634e1b81f039e",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "45f94ba844cefe1435714a317a591661ca5cd07c8fbed23b72c634e1b81f039e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 2392473,
+    "sha256": "5ad2cbe49188becd0c4b57af9659d15176660f05aaba5cd2dc43fdea4d635cc9",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 15047
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 2416059,
+    "sha256": "164d681477ab926d8ca96453d4fcdedd71783986cafe4a05597be1787e12c261",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 48489,
+    "sha256": "71409c567e8c52f85b07ef50bc28bd590846298db4c505608caad458a30ea431",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "71409c567e8c52f85b07ef50bc28bd590846298db4c505608caad458a30ea431",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 144657,
+    "sha256": "611cf2fd0a638b5524ce6b304f5a263d36cd584ccf186b267a9d60d9707e938b",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "611cf2fd0a638b5524ce6b304f5a263d36cd584ccf186b267a9d60d9707e938b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5101,
+    "sha256": "53b5816dca7af3aef291549445e8817acd3a30f866d11f05239b48d0fbc91a46",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "53b5816dca7af3aef291549445e8817acd3a30f866d11f05239b48d0fbc91a46",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10500,
+    "sha256": "c5c04de0ef3002fcf45c7dfffe9b85ddb87bfbe3cb0a98e7fb445bf16b223c20",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "c5c04de0ef3002fcf45c7dfffe9b85ddb87bfbe3cb0a98e7fb445bf16b223c20",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 126388,
+    "sha256": "e1f0a759be13fd98120a7aafa47c8349cd97c0e028a5d40ccc4ef1e001397933",
+    "archive": "5_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "e1f0a759be13fd98120a7aafa47c8349cd97c0e028a5d40ccc4ef1e001397933",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "85cb9e103e7f3b360a6618bb9bd28fdc64bcd0d8c4ac69dd2bff3dfac465fdae",
+    "archive": "5_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "85cb9e103e7f3b360a6618bb9bd28fdc64bcd0d8c4ac69dd2bff3dfac465fdae",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54779,
+    "sha256": "337c32f3c2f6b78495eba48e1160f33fdfd202bc299cf5d335c329795f20fb1f",
+    "archive": "5_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "337c32f3c2f6b78495eba48e1160f33fdfd202bc299cf5d335c329795f20fb1f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1371596,
+    "sha256": "242e8a8d8431d5d1aaec9bce5a1daaceff59c1ca1d4bfb2dafdefcbbe69333a6",
+    "archive": "5_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "98f2da878ee18f6d1225856cd59a60db2b253e1f344b558bc6e235d9469d7402"
+  },
+  "5_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 4628331,
+    "sha256": "4e99a4776e5eea0d3650f8ae84f2978724b56341c8643500b5373e4bcd94e81c",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 29109
+  },
+  "5_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 4651116,
+    "sha256": "073b85b182c0e4b0ba328530277550fa4584fb1b4f0fa9a7a68f47819316f2ee",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 121779,
+    "sha256": "c767bfbc5d60355a293378fe9076a87f37ccf1db09fe23ab9e6aa2b851843b20",
+    "archive": "5_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "c767bfbc5d60355a293378fe9076a87f37ccf1db09fe23ab9e6aa2b851843b20",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 317012,
+    "sha256": "1f04fd926a12c362e3b1ee5adb97ff5b81076a8452c59d08cc13ba28950fb758",
+    "archive": "5_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "1f04fd926a12c362e3b1ee5adb97ff5b81076a8452c59d08cc13ba28950fb758",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10350,
+    "sha256": "5f22d834faca5541caef19a0666f209538ab6405df76a969fd0a488ab397a33d",
+    "archive": "5_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "5f22d834faca5541caef19a0666f209538ab6405df76a969fd0a488ab397a33d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 21096,
+    "sha256": "b6ee8e08c86a36b4f633929bf0401272d63208ea75ac59b260653d4ba88c9d62",
+    "archive": "5_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "b6ee8e08c86a36b4f633929bf0401272d63208ea75ac59b260653d4ba88c9d62",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 30820,
+    "sha256": "a96fd45cc228a357a8473a2cd241beb198399e6f8d2bbd3ce98b28a7224f0211",
+    "archive": "5_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "a96fd45cc228a357a8473a2cd241beb198399e6f8d2bbd3ce98b28a7224f0211",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "61759e546a4a3566142740916b9362ce2777de713be2dd5e8e7477fe80f7c10c",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "61759e546a4a3566142740916b9362ce2777de713be2dd5e8e7477fe80f7c10c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54371,
+    "sha256": "01af2b10d43e4ca0f98a9a2e92a6cdb796c48ce2da9c646e72c311c4c6ca45d6",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "01af2b10d43e4ca0f98a9a2e92a6cdb796c48ce2da9c646e72c311c4c6ca45d6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1700544,
+    "sha256": "5a49491fba1fd0e0fb72dc55f4a0451c7a7a042215cf5553720944f3a84f8b35",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "b7e6a556bec989c8f52a2708cd6fd0a43b63d25b51033895a73476638295f270"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 5395665,
+    "sha256": "f200d86bc1785db498f5e038289331121f8342069e7adc29208ba6c214ed744e",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 33935
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 5429180,
+    "sha256": "828cc6ffc5dd53bc167de4919d25d72ca1231918d5b0ade5c4f98e561bf16e69",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 130585,
+    "sha256": "95309732860d9fac7061917e203387971f8c63a356daa2097e5648f97cdadd54",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "95309732860d9fac7061917e203387971f8c63a356daa2097e5648f97cdadd54",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 388954,
+    "sha256": "4f5b0b01b1bcfca85293c5d6ed289ca37832ae15b70712e7fbe428ed868198d2",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "4f5b0b01b1bcfca85293c5d6ed289ca37832ae15b70712e7fbe428ed868198d2",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10333,
+    "sha256": "1cce31dc51fad05b6f3cc3d62860e5301800fffc9a6eee082e183979d526aa0e",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "1cce31dc51fad05b6f3cc3d62860e5301800fffc9a6eee082e183979d526aa0e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21605,
+    "sha256": "21a57f9c554e9a7234e931b685e231164d9383b77eb4438598d55e0215fa2c5c",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "21a57f9c554e9a7234e931b685e231164d9383b77eb4438598d55e0215fa2c5c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "5_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 292936,
+    "sha256": "78ae9f1ec8f2e4b098bb6856667f93f68ca33d25b1ab6aaa8024bb02f5906f1c",
+    "archive": "5_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "78ae9f1ec8f2e4b098bb6856667f93f68ca33d25b1ab6aaa8024bb02f5906f1c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "6a887a831507768e87e7686b126ea19bd516fe900b6e9ae871f6cba0c346d780",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "6a887a831507768e87e7686b126ea19bd516fe900b6e9ae871f6cba0c346d780",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 28904,
+    "sha256": "9da8b2dee5c4badb1a033649fb1abf8aa91f2557050296442755519347506ba3",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "9da8b2dee5c4badb1a033649fb1abf8aa91f2557050296442755519347506ba3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 2820968,
+    "sha256": "ec060301391a4f402bf3f3df2d9f9f94cd0764bcf820f9e3561fc805735dc5c0",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/decisions.csv.gz",
+    "archive_sha256": "298bb9861eeff72322dc30aab044df5711a485315810f908e1b16d6d2433d21a"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 79409688,
+    "sha256": "4f1597135ac4f7d30787b878aa656a5ba1235f22d1074cc6668fb3f8f41ac415",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 499432
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 79502874,
+    "sha256": "58f77902775b01a66061f8f8ee927dfa9f429005a457e8432e7307bf68e7f005",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 221880,
+    "sha256": "eb4814107ebf5ded26355dd6fc35c27576c7c975ccaa94ab5d0be8cd13c02806",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "eb4814107ebf5ded26355dd6fc35c27576c7c975ccaa94ab5d0be8cd13c02806",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 724679,
+    "sha256": "29fd8df02e06d73e883f9960a4613e70b51abd96c4be311905847b53e89e3f7f",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "29fd8df02e06d73e883f9960a4613e70b51abd96c4be311905847b53e89e3f7f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5693,
+    "sha256": "977ab122d8d1bea4d2cb0cc6b2b35a65e73d6b52a6c736429d519cac07d48089",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "977ab122d8d1bea4d2cb0cc6b2b35a65e73d6b52a6c736429d519cac07d48089",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10876,
+    "sha256": "08001ef23f69b492598ff6853f2c5f39059705bc7d7180f9b8f67bbcea9f3054",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "08001ef23f69b492598ff6853f2c5f39059705bc7d7180f9b8f67bbcea9f3054",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 98185,
+    "sha256": "f9eae04766a03ee60de61c010d4145be831801b1ee5e7a0b70e885e941b4d9cc",
+    "archive": "6_32_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "f9eae04766a03ee60de61c010d4145be831801b1ee5e7a0b70e885e941b4d9cc",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "5ed8a9571c1bb43679aa8ee340ee301deb7097088dbfe83183a1de4a98aa9f8c",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "5ed8a9571c1bb43679aa8ee340ee301deb7097088dbfe83183a1de4a98aa9f8c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 28176,
+    "sha256": "091e32c190886893468cc5b9732b58a7f06808ed7af806991de027874ec04a2b",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "091e32c190886893468cc5b9732b58a7f06808ed7af806991de027874ec04a2b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 2410981,
+    "sha256": "ebf0603dcac6ab237439ce7b952fb1c6744ad7587f41650bdd233e1c2e2510b1",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "404d52a70b71084f5bd60548ed4c6c02e88323d830a8847f1d1bbe4130686088"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 8311725,
+    "sha256": "baf9ded66f5e0606bc3a1e14634efa1831304a6ed0e8e98d4e8cb2ca494f49b2",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 52275
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 8380870,
+    "sha256": "26555957014b6c55e7bd8e371dbde88223074be8e0eb8698e27724a6deb869aa",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 160539,
+    "sha256": "6bd32cd39b15d1d7441d8a157b7772e5c50a53322e590f30e3339c977cc7ddab",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "6bd32cd39b15d1d7441d8a157b7772e5c50a53322e590f30e3339c977cc7ddab",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 511310,
+    "sha256": "09e0d7c2e20dd120fe2d553c4d83e6edad8d1f7a56c0e460a833c80e947eb959",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "09e0d7c2e20dd120fe2d553c4d83e6edad8d1f7a56c0e460a833c80e947eb959",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5311,
+    "sha256": "e1e3f7c4709889ff8119fe43b69775505fae1c918cfd7537b1a64e402e0c3e64",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "e1e3f7c4709889ff8119fe43b69775505fae1c918cfd7537b1a64e402e0c3e64",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10461,
+    "sha256": "c72347e5b1bf58f9af50569b6d8818ad5bfcc08d5b5c542cb0cd5b647d39b770",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "c72347e5b1bf58f9af50569b6d8818ad5bfcc08d5b5c542cb0cd5b647d39b770",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 124849,
+    "sha256": "1c1275cf45b94e645b2d300112d6fea05d481b9e66ad2099f523f88229ec0e09",
+    "archive": "6_32_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "1c1275cf45b94e645b2d300112d6fea05d481b9e66ad2099f523f88229ec0e09",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 252,
+    "sha256": "bebf63683f230828f303488bdcbef9ee94e907ce7ca341791a6691cd348b2b82",
+    "archive": "6_32_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "bebf63683f230828f303488bdcbef9ee94e907ce7ca341791a6691cd348b2b82",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 58562,
+    "sha256": "ebb50f034c6dc2d9979dc2edda379968a81e0a8d3395a1f4d5e14bcb62d1601e",
+    "archive": "6_32_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "ebb50f034c6dc2d9979dc2edda379968a81e0a8d3395a1f4d5e14bcb62d1601e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 11775023,
+    "sha256": "574187a6ec263eac4cc87e5e14b8fc54cb3aa16b8e75b2bf0150ecb4ca479c58",
+    "archive": "6_32_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "be223e9927eef6b73037ee9fc2977ebc95a8ef460f982c39c40f845e3bc02cef"
+  },
+  "6_32_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 35105610,
+    "sha256": "3cc5d4cd4bb264af29e5607a9a444939a6b48bede94abe1e783b2c0e701713d2",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 220790
+  },
+  "6_32_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 35330888,
+    "sha256": "c8d25e4ca74526580ed9fba1c84d5536ec4cc9365963cec60f0ec86d6f514e18",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_32_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 830924,
+    "sha256": "ca7f3682bcde0c66ef0352df57a3dd72078ad117ab02c3731d1da1d8cea10595",
+    "archive": "6_32_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "ca7f3682bcde0c66ef0352df57a3dd72078ad117ab02c3731d1da1d8cea10595",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 2716438,
+    "sha256": "50ccaedfd7d2b80d20a4ecd23d50037ebc8b21213078b89d167d4c1d59738148",
+    "archive": "6_32_balanced_constant_positive_absorption_6/life_events.csv.gz",
+    "archive_sha256": "4d89ba7ff5cab397fb4017e065dbab2b8fe2e2a2c6a7d6d9f0a794b197d3a7fd"
+  },
+  "6_32_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 11137,
+    "sha256": "603f10c40375e4d471329b5be48c539ac415913ae6551a83d1e165f13994b99c",
+    "archive": "6_32_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "603f10c40375e4d471329b5be48c539ac415913ae6551a83d1e165f13994b99c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 23160,
+    "sha256": "da9b9dc89b98e4755e48af2ed1f6b44774f01925b5b2a30e68b20d75e370fa4f",
+    "archive": "6_32_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "da9b9dc89b98e4755e48af2ed1f6b44774f01925b5b2a30e68b20d75e370fa4f",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 544980,
+    "sha256": "ba2d2856af0a55cff39b3fc1b426b4950053741d5b85bed7d9912fda9893ebbd",
+    "archive": "6_32_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "ba2d2856af0a55cff39b3fc1b426b4950053741d5b85bed7d9912fda9893ebbd",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 256,
+    "sha256": "1ce1ba8823e77cf6005cda714e9144296d782697982926b0c1a4d270fc0173ec",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "1ce1ba8823e77cf6005cda714e9144296d782697982926b0c1a4d270fc0173ec",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 55749,
+    "sha256": "3c031d3144d75ec0d83d48c2c881794aac1feed6dd221bf43e7b57214c0bbd33",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "3c031d3144d75ec0d83d48c2c881794aac1feed6dd221bf43e7b57214c0bbd33",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 5003181,
+    "sha256": "17e12675af1f2a15bc547da72edfbec4d2daf59fe81131eec7cf3d231d9c51f6",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "56781fd2232644fdc2e8f5fa2c9e33a3bf8c032de0cd797795232797a1d1a60a"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 15799035,
+    "sha256": "7ea24c3a0ef5bb5e31484186c4704bcddccd45942bbce6ec2b820a6f1b1ad6e8",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 99365
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 15870409,
+    "sha256": "8d1d3a391ca04937b2fe0e8057001adf6b2a6ffaee518f8af18731d2c4bb6341",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 333500,
+    "sha256": "54f3117115445dac8f405882b1a582ba6373a7cc9a1d7e7c76562a56ac14ee97",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "54f3117115445dac8f405882b1a582ba6373a7cc9a1d7e7c76562a56ac14ee97",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 1068218,
+    "sha256": "788157639e57a02e80e59484af6a6c44e9a9542f8c7f95dd2d727139527ad672",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/life_events.csv.gz",
+    "archive_sha256": "6de7a622934e58637b1f55f184afba6480036614270cc420f121b718167c3d3c"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10719,
+    "sha256": "85bfee074baa3f14d178ff619efe23c2e8a61581ac5132d09a23c11b89e4f22a",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "85bfee074baa3f14d178ff619efe23c2e8a61581ac5132d09a23c11b89e4f22a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21337,
+    "sha256": "47059682a3d8595e392e289c0089e96aeaf30713a00a74f64c09be2df2a07063",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "47059682a3d8595e392e289c0089e96aeaf30713a00a74f64c09be2df2a07063",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_32_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 260509,
+    "sha256": "43b14e6b34127434425d8b188941404167ccbef198452dc04078abf7640e5576",
+    "archive": "6_32_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "43b14e6b34127434425d8b188941404167ccbef198452dc04078abf7640e5576",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/configuration.csv": {
+    "bytes": 250,
+    "sha256": "c60f5a959d7b69e38028e5c621e002426592b3609192c571b29667317c80d5df",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/configuration.csv",
+    "archive_sha256": "c60f5a959d7b69e38028e5c621e002426592b3609192c571b29667317c80d5df",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/daily.csv": {
+    "bytes": 26834,
+    "sha256": "0db7bfa0dbde9746a430bcfe170aef4d21f51deffe5ec16e17c560221138a1de",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/daily.csv",
+    "archive_sha256": "0db7bfa0dbde9746a430bcfe170aef4d21f51deffe5ec16e17c560221138a1de",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/decisions.csv": {
+    "bytes": 667571,
+    "sha256": "a84d0feb26f4cded74ea8227bdf1847c75455f96acd565b4d19e357bcf51a70c",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/decisions.csv",
+    "archive_sha256": "a84d0feb26f4cded74ea8227bdf1847c75455f96acd565b4d19e357bcf51a70c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/events.bin": {
+    "bytes": 2492961,
+    "sha256": "b8b59d4254bd5c04be6fcefc4ef1b6c8cc292c0538a587fb9aa4f4b11bab4c05",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 15679
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/final.aw": {
+    "bytes": 2518434,
+    "sha256": "154af01cc94454c62fdfe0d294386d2e54ab23955e74ab861e5865c7b0a5fda3",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/individuals.csv": {
+    "bytes": 60528,
+    "sha256": "55d7f1d665cbb96ae12c7896e42db8699d8cdf5623b34553e3f5da54ef03239a",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/individuals.csv",
+    "archive_sha256": "55d7f1d665cbb96ae12c7896e42db8699d8cdf5623b34553e3f5da54ef03239a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/life_events.csv": {
+    "bytes": 151578,
+    "sha256": "15201b9e6bd8627ca1c3c9df4e2e7740a66629fd4aded1e481a199409bc941bb",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/life_events.csv",
+    "archive_sha256": "15201b9e6bd8627ca1c3c9df4e2e7740a66629fd4aded1e481a199409bc941bb",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/performance.csv": {
+    "bytes": 5199,
+    "sha256": "f2adfa8e14c1c4bf2e90421d889676fb022eb1807ca3f7fed67edeb918e53891",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/performance.csv",
+    "archive_sha256": "f2adfa8e14c1c4bf2e90421d889676fb022eb1807ca3f7fed67edeb918e53891",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/queen_daily.csv": {
+    "bytes": 10607,
+    "sha256": "a331e7f347158b1e527ecb2324d92123310bf279f957cfc3fc05701e4f46cd0c",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/queen_daily.csv",
+    "archive_sha256": "a331e7f347158b1e527ecb2324d92123310bf279f957cfc3fc05701e4f46cd0c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_absorption_6/queen_events.csv": {
+    "bytes": 21006,
+    "sha256": "6eee4eb24a0459bb22176e21444935befb33ffdf1b2c1f42409e913ed59644fe",
+    "archive": "6_8_balanced_constant_ordinary_absorption_6/queen_events.csv",
+    "archive_sha256": "6eee4eb24a0459bb22176e21444935befb33ffdf1b2c1f42409e913ed59644fe",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/configuration.csv": {
+    "bytes": 254,
+    "sha256": "4ae8a94622524a3ed58eb2d2aef1aad0da330616ec7309ef81a15297d7712cd3",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/configuration.csv",
+    "archive_sha256": "4ae8a94622524a3ed58eb2d2aef1aad0da330616ec7309ef81a15297d7712cd3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/daily.csv": {
+    "bytes": 26661,
+    "sha256": "7a91f09eacfff8d3f3033632a4d48cf586015137a1ddfb9e9e1af71de5abb2c3",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/daily.csv",
+    "archive_sha256": "7a91f09eacfff8d3f3033632a4d48cf586015137a1ddfb9e9e1af71de5abb2c3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/decisions.csv": {
+    "bytes": 714382,
+    "sha256": "f2301f02578928b47bb37e4b4cdc3347e65fe43661af4fce49459715f565404d",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/decisions.csv",
+    "archive_sha256": "f2301f02578928b47bb37e4b4cdc3347e65fe43661af4fce49459715f565404d",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/events.bin": {
+    "bytes": 2542410,
+    "sha256": "3ec007da5ef8a50bee5cf87194c5b240cf49fb8a6223f400ef88c93415665e31",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 15990
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/final.aw": {
+    "bytes": 2568827,
+    "sha256": "03566282046b8f5ed8f535dc7f1b0aedf14daf6db903aa0ed16d2cc74bd8356a",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/individuals.csv": {
+    "bytes": 51840,
+    "sha256": "b4d8abfb0cec4afc161e10c275cb7f9eb01eda05581b3c3b5dd2830db2cfbdf6",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/individuals.csv",
+    "archive_sha256": "b4d8abfb0cec4afc161e10c275cb7f9eb01eda05581b3c3b5dd2830db2cfbdf6",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/life_events.csv": {
+    "bytes": 154051,
+    "sha256": "f198a15a5ca9d66aa2c7aeb1fed206ccd3b2af78472631a344835142c350ac79",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/life_events.csv",
+    "archive_sha256": "f198a15a5ca9d66aa2c7aeb1fed206ccd3b2af78472631a344835142c350ac79",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/performance.csv": {
+    "bytes": 5141,
+    "sha256": "bdfce8119268aaa7d0d449e4534821446f9659b8e8ba1c65bda3a2c1031ac008",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/performance.csv",
+    "archive_sha256": "bdfce8119268aaa7d0d449e4534821446f9659b8e8ba1c65bda3a2c1031ac008",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv": {
+    "bytes": 10519,
+    "sha256": "49673682fd65655b76e25138f8e13f3523ad0b38c897fb024f09989042e7e98e",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "49673682fd65655b76e25138f8e13f3523ad0b38c897fb024f09989042e7e98e",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv": {
+    "bytes": 132212,
+    "sha256": "6fa857aa3ec1def5882085eb74dff797da1c5c622295a90e7550a29b4937aa7a",
+    "archive": "6_8_balanced_constant_ordinary_two_intervals_6/queen_events.csv",
+    "archive_sha256": "6fa857aa3ec1def5882085eb74dff797da1c5c622295a90e7550a29b4937aa7a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/configuration.csv": {
+    "bytes": 251,
+    "sha256": "0ad1c3e4b24aad04583878837f5ea3cef3ba17aefe21673134c67a2e7fca5a07",
+    "archive": "6_8_balanced_constant_positive_absorption_6/configuration.csv",
+    "archive_sha256": "0ad1c3e4b24aad04583878837f5ea3cef3ba17aefe21673134c67a2e7fca5a07",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/daily.csv": {
+    "bytes": 54309,
+    "sha256": "1ac122e107de0809b4a381d90ec52345b89fa355e6f020d6f30eb2dbadc15e61",
+    "archive": "6_8_balanced_constant_positive_absorption_6/daily.csv",
+    "archive_sha256": "1ac122e107de0809b4a381d90ec52345b89fa355e6f020d6f30eb2dbadc15e61",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/decisions.csv": {
+    "bytes": 1354650,
+    "sha256": "3d8d55a93ba63cecba3d5116003602998ce4809406726240bbf1687dc0c09bd2",
+    "archive": "6_8_balanced_constant_positive_absorption_6/decisions.csv.gz",
+    "archive_sha256": "1b3c0ba9f34d6ffe3fc3d4e266aee25ebb74f17809b06dd3cff9f122c5e77e9c"
+  },
+  "6_8_balanced_constant_positive_absorption_6/events.bin": {
+    "bytes": 4646457,
+    "sha256": "2d84982a5137243d72f54c6813fcbe0310b619f1bede135a1d9f4d3966adb3fd",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 29223
+  },
+  "6_8_balanced_constant_positive_absorption_6/final.aw": {
+    "bytes": 4668709,
+    "sha256": "59e4b591ea9af0ea00d30c4ef0626d9688503814bb45c5c24d55a89f4afeff95",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_8_balanced_constant_positive_absorption_6/individuals.csv": {
+    "bytes": 112863,
+    "sha256": "bbfde6522abbb68ae9e500555460ca8a797328cc71d01113d107d1d68f2e575a",
+    "archive": "6_8_balanced_constant_positive_absorption_6/individuals.csv",
+    "archive_sha256": "bbfde6522abbb68ae9e500555460ca8a797328cc71d01113d107d1d68f2e575a",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/life_events.csv": {
+    "bytes": 318998,
+    "sha256": "550f3aaf650f29b5a9bc7ab5e707a64e74c9ac6ef60b8f0b6e2c66ccfc966999",
+    "archive": "6_8_balanced_constant_positive_absorption_6/life_events.csv",
+    "archive_sha256": "550f3aaf650f29b5a9bc7ab5e707a64e74c9ac6ef60b8f0b6e2c66ccfc966999",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/performance.csv": {
+    "bytes": 10227,
+    "sha256": "42a32bbacc98cde8b924278bca54c827fc3c159034f3e1533aca81b2de1bd6f4",
+    "archive": "6_8_balanced_constant_positive_absorption_6/performance.csv",
+    "archive_sha256": "42a32bbacc98cde8b924278bca54c827fc3c159034f3e1533aca81b2de1bd6f4",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/queen_daily.csv": {
+    "bytes": 20783,
+    "sha256": "d66d44be62678726aff00064fd02136cddc96a90412bc92adaaacaa37111490c",
+    "archive": "6_8_balanced_constant_positive_absorption_6/queen_daily.csv",
+    "archive_sha256": "d66d44be62678726aff00064fd02136cddc96a90412bc92adaaacaa37111490c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_absorption_6/queen_events.csv": {
+    "bytes": 31209,
+    "sha256": "7ea945af3a736530cc96b4fbbfdd67d4bb5d9fab221a1b7b8e128088b58e9bc3",
+    "archive": "6_8_balanced_constant_positive_absorption_6/queen_events.csv",
+    "archive_sha256": "7ea945af3a736530cc96b4fbbfdd67d4bb5d9fab221a1b7b8e128088b58e9bc3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/configuration.csv": {
+    "bytes": 255,
+    "sha256": "a17c0570cd27a4cbb7b2e3d0716c943f9ecb841e021f5705f265e3fac02b4921",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/configuration.csv",
+    "archive_sha256": "a17c0570cd27a4cbb7b2e3d0716c943f9ecb841e021f5705f265e3fac02b4921",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/daily.csv": {
+    "bytes": 54556,
+    "sha256": "67135a78ee8a40c9959615c4815589570936243e101bff971b996e8e8dd13a59",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/daily.csv",
+    "archive_sha256": "67135a78ee8a40c9959615c4815589570936243e101bff971b996e8e8dd13a59",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/decisions.csv": {
+    "bytes": 1791093,
+    "sha256": "1a5495c1ba6d06df79afaa323499d1b9dff9cd3aa9277fbbc2848eab8a9cdfe7",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/decisions.csv.gz",
+    "archive_sha256": "f3fe65317e5fdb80c3501ff7685657692a2eb8d1b00e860a9c4df304ce997a7f"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/events.bin": {
+    "bytes": 5669781,
+    "sha256": "c2d2490150e3375396c9dc8331ba8b69c944c9158b998789bf2456e5f88d9d13",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal.",
+    "facts": 35659
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/final.aw": {
+    "bytes": 5703296,
+    "sha256": "8808bb4f0e7430229c2e9b0d28a539bb386a1d2c03e0bc787378125170a22d63",
+    "retention": "Local complete native duplicate; immutable hash and reproduction command retained. CSV is selected evidence, not the entire fact journal."
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/individuals.csv": {
+    "bytes": 137689,
+    "sha256": "e31eed265ed7f1f8f0e8df6adac3fec79c8e4db0b8a2d1a9e705aa45258d1545",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/individuals.csv",
+    "archive_sha256": "e31eed265ed7f1f8f0e8df6adac3fec79c8e4db0b8a2d1a9e705aa45258d1545",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/life_events.csv": {
+    "bytes": 403148,
+    "sha256": "f77f8650143b5bd29ceb297456a865d12bf2e5553ca87bf8898189e891b2006b",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/life_events.csv",
+    "archive_sha256": "f77f8650143b5bd29ceb297456a865d12bf2e5553ca87bf8898189e891b2006b",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/performance.csv": {
+    "bytes": 10429,
+    "sha256": "9b2827a8dcaf358630242890ea5754e5c9fd41c3ff8291b236483c08a9127dbd",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/performance.csv",
+    "archive_sha256": "9b2827a8dcaf358630242890ea5754e5c9fd41c3ff8291b236483c08a9127dbd",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/queen_daily.csv": {
+    "bytes": 21641,
+    "sha256": "8d438ebbeb6ffe8f0ee58b85ee3e851a39e95ba36021b4366271c5168af5420c",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/queen_daily.csv",
+    "archive_sha256": "8d438ebbeb6ffe8f0ee58b85ee3e851a39e95ba36021b4366271c5168af5420c",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "6_8_balanced_constant_positive_two_intervals_6/queen_events.csv": {
+    "bytes": 302111,
+    "sha256": "6de275ea917f1e01c95099988ac43970d46255d18efb573edca4498d225bd653",
+    "archive": "6_8_balanced_constant_positive_two_intervals_6/queen_events.csv",
+    "archive_sha256": "6de275ea917f1e01c95099988ac43970d46255d18efb573edca4498d225bd653",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "audit.json": {
+    "bytes": 94,
+    "sha256": "b9bb108e7591a04afa73f66417d9b0fafa26bd7e6a587232d0993df1a6f2367c",
+    "archive": "audit.json",
+    "archive_sha256": "2e22a99f20d3b6245ddca0a69c82355ef52c06eeed1923df7e17f51074280fd3",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "diagnosis.csv": {
+    "bytes": 18818,
+    "sha256": "47ce3fdfda5f58a3bff9741f471ffb3709c94568576ec0a1be8179e00818ae64",
+    "archive": "diagnosis.csv",
+    "archive_sha256": "47ce3fdfda5f58a3bff9741f471ffb3709c94568576ec0a1be8179e00818ae64",
+    "text_newlines": "LF; original source hash retained separately"
+  },
+  "summary.csv": {
+    "bytes": 10892,
+    "sha256": "419b638d92a3886efc16c126211011f339adecc90b7ef2d3a948cf6fae846bdf",
+    "archive": "summary.csv",
+    "archive_sha256": "419b638d92a3886efc16c126211011f339adecc90b7ef2d3a948cf6fae846bdf",
+    "text_newlines": "LF; original source hash retained separately"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "model": "baseline",
+  "matrix": "sensitivity",
+  "cross_platform": false,
+  "excluded_summary_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "cases": [
+    {
+      "run": "1_8_balanced_constant_absorb_3h_6",
+      "events": 17891,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_absorb_12h_6",
+      "events": 15539,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_behavior_3h_6",
+      "events": 41511,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_behavior_12h_6",
+      "events": 4248,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_lineage_basal_2_6",
+      "events": 14505,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_reproduction_4d_6",
+      "events": 16717,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_absorb_3h_6",
+      "events": 21075,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_absorb_12h_6",
+      "events": 15626,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_behavior_3h_6",
+      "events": 33063,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_behavior_12h_6",
+      "events": 8652,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_lineage_basal_2_6",
+      "events": 14902,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_reproduction_4d_6",
+      "events": 15881,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_absorb_3h_6",
+      "events": 19356,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_absorb_12h_6",
+      "events": 14910,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_behavior_3h_6",
+      "events": 1021978,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_behavior_12h_6",
+      "events": 4657,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_lineage_basal_2_6",
+      "events": 14532,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_reproduction_4d_6",
+      "events": 17335,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_absorb_3h_6",
+      "events": 20891,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_absorb_12h_6",
+      "events": 15661,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_behavior_3h_6",
+      "events": 35087,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_behavior_12h_6",
+      "events": 8699,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_lineage_basal_2_6",
+      "events": 14979,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_reproduction_4d_6",
+      "events": 15626,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_absorb_3h_6",
+      "events": 21042,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_absorb_12h_6",
+      "events": 15388,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_behavior_3h_6",
+      "events": 28846,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_behavior_12h_6",
+      "events": 5743,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_lineage_basal_2_6",
+      "events": 14873,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_reproduction_4d_6",
+      "events": 17105,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_absorb_3h_6",
+      "events": 19370,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_absorb_12h_6",
+      "events": 16373,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_behavior_3h_6",
+      "events": 37411,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_behavior_12h_6",
+      "events": 5051,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_lineage_basal_2_6",
+      "events": 17589,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_reproduction_4d_6",
+      "events": 17018,
+      "exact": true
+    }
+  ]
+}

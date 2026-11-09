@@ -1,0 +1,7 @@
+batch,session,os_samples,hwinfo_samples,maximum_hwinfo_gap_s,temperature_min_c,temperature_max_c,power_min_w,power_max_w,thermal_flag_max,system_busy_p50,ac_values,saver_values
+contacts,session1,2472,127,2.030000128,48.0,66.0,9.065,47.389,0.0,71.1340206185567,1,0
+contacts,session2,1582,82,2.024,48.0,67.0,9.39,46.679,0.0,54.676008745776194,1,0
+contacts,session3,1527,80,2.016,49.0,64.0,6.993,46.873,0.0,55.10204081632652,1,0
+births-reserve,session1,181,12,2.012,57.0,64.0,27.572,47.096,0.0,61.05263157894737,1,0
+births-reserve,session2,202,13,2.025999872,55.0,58.0,29.068,31.388,0.0,59.79958738579428,1,0
+births-reserve,session3,191,13,2.009999872,55.0,58.0,29.131,31.346,0.0,56.25,1,0
