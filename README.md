@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S6 integrated ecology**, awaiting independent review: local nutrient limits/redistribution, bounded encounters, individual program selection, continuous identity/death, real 3D excavation and S5 durable evidence. See [S6 results](S6_RESULTS.md), [frozen protocol](docs/35_S6_Integration_and_Validation_Protocol.md), [implementation and metrics](docs/36_S6_Implementation_and_Metric_Definitions.md) and [raw evidence/reproduction](experiments/s6/README.md). All 108 S0-S5 tests remain, with 16 added registrations. Self-assessment is CONDITIONAL PASS: integrated surplus stranding and a missed contact scaling target remain in [document 08](docs/08_Open_Questions.md). The finite extended colony dies; biological realism and sustainable growth are not established. S7 is not authorized.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S6.1 integrated ecology corrections**, awaiting independent review. Local gift priority and nursing continuation improve the reviewed supplied fixture, but scarcity/density counterexamples remain. Contact selection preserves exact simulation semantics; the frozen latency-growth target still fails. See [S6.1 results](S6_1_RESULTS.md), [frozen protocol](docs/37_S6_1_Corrections_Validation_Protocol.md), [implementation and metrics](docs/38_S6_1_Implementation_and_Metric_Definitions.md), [raw evidence/reproduction](experiments/s6_1/README.md) and [remaining debts](docs/08_Open_Questions.md). All 124 S0-S6 tests and original [S6 evidence](S6_RESULTS.md) remain, with 11 new tests. Engineering correctness passes; the complete frozen acceptance gates **FAIL** because TD-01 remains unmet. All biological mechanisms remain ENGINEERING_FIXTURE. Finite extended colonies die; sustainable growth and calibrated biology are not established. S7 is not authorized.
 
 ## Build and test on Windows x64
 
@@ -48,7 +48,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S6_RESULTS.md](S6_RESULTS.md); earlier reports preserve their historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S6_1_RESULTS.md](S6_1_RESULTS.md); earlier reports preserve their historical baselines.
 
 ## Minimal S5 persistence use
 

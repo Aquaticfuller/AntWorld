@@ -21,6 +21,8 @@ cmake --build build/s6_1-core-only --parallel 4
 ctest --test-dir build/s6_1-core-only --output-on-failure
 ```
 
+These commands use a single-configuration generator (for example Ninja or Unix Makefiles). With Visual Studio or another multi-configuration generator, add the matching `--config Release` / `--config Debug` to builds and `-C Release` / `-C Debug` to CTest; `CMAKE_BUILD_TYPE` alone does not select that generator's configuration.
+
 For clean-source verification, export the measured source with `git archive`, extract to a new directory and configure a separate Release build against that exported `cpp` tree. On Windows, use the pinned `tools/bootstrap_windows.ps1` dependencies and supply the local pinned SQLite archive via `ANTWORLD_SQLITE_ARCHIVE`; append `.exe` to executables below. ASan/UBSan use `halt_on_error=1`; Linux additionally enables leak detection. Keep console and `Testing/Temporary/LastTest.log` evidence. The recorder reads executed tests; it does not manufacture passes.
 
 ## Full frozen ecology grids
