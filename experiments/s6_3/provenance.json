@@ -1,0 +1,22 @@
+{
+  "protocols": {
+    "initial": "5607139",
+    "correction": "0c26f42"
+  },
+  "legacy_stationary_binary_source": "cc9004e",
+  "before_index_birth_source": "fa73289",
+  "final_acceptance_binary_source": "989c1a8",
+  "source_commit_field_note": "Runner configuration source_commit identifies driver checkout; selected older binaries have separate source revisions and immutable SHA-256.",
+  "legacy_stationary_binary_sha256": "e411faa88108643a90611c105e6e6356da391fe785bbda04fceef01d3d5efe6a",
+  "before_index_birth_binary_sha256": "9cfe84589b4dd67ffb3168bc5f18b9f4b53610d15222944b094f521b6e05adb7",
+  "final_contact_binary_sha256": "37373e78c41ea287481f0a0c548aaf41d42e806f3d6ef3d231d945a30370c646",
+  "final_birth_binary_sha256": "b30b55902a2a0f49870889f1eb0d83d23f2281cff13f66c8b908cad06a585399",
+  "prototype_binary_sha256": "50b955973fd5c4554f10b8b672350eaef556e8a4213acf4ad2c0205f7565d030",
+  "archive_policy": "Complete raw CSV and canonical event streams, lossless gzip; original checkpoint/SQLite duplicates retained locally with hashes.",
+  "host_log_policy": "Localized HWiNFO headers/prefix snapshots stay local; English CPU subsets retain every sampled value and source hashes.",
+  "exploratory_notes": [
+    "registration-baseline failed at restricted read-only CIM query; no timing observations.",
+    "registration-baseline-controlled late session 3 overlapped build preparation; retain separately from clean contacts-baseline-final.",
+    "Initial smoke exposed SQLite gauge ordering; fixed before the frozen primary-v1 matrix. No ecological input was changed."
+  ]
+}

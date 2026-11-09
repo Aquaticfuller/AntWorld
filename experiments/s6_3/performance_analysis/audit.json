@@ -1,0 +1,7 @@
+{
+  "raw_rows": 1008,
+  "measured_rows": 936,
+  "exact_work_state_and_trace": true,
+  "fixed_affinity": true,
+  "note": "4096 session/block bootstrap resamples, seed 6303. Host sensor samples bracket sessions, not every millisecond phase. Process peak memory is a process-lifetime high water mark, including warmups."
+}

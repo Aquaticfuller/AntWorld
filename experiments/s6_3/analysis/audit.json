@@ -1,0 +1,10 @@
+{
+  "runs": 150,
+  "daily_snapshots": 8549,
+  "completed": 126,
+  "censored": 24,
+  "primary_v2_complete": 48,
+  "exact_completed_continuations": 126,
+  "durable_checks": 8,
+  "uncertainty": "4096 seed-bootstrap resamples, seed 6303; six or three independent seeds; descriptive, unadjusted multiple endpoints. Censored rows are last observed outcomes, not 90-day outcomes."
+}

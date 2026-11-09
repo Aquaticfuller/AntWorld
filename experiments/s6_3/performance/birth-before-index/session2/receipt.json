@@ -1,0 +1,9 @@
+{
+  "pid": 20848,
+  "exit_code": 0,
+  "started_utc_ns": 1794202399848788300,
+  "ended_utc_ns": 1794202408063322200,
+  "rows": 56,
+  "telemetry_rows": 82,
+  "binary_sha256": "9cfe84589b4dd67ffb3168bc5f18b9f4b53610d15222944b094f521b6e05adb7"
+}

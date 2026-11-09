@@ -1,0 +1,7 @@
+{
+  "kind": "contacts",
+  "binary_sha256": "616339eca172db575eca098046f293d2de14f9df1756a253a92131ea7b640657",
+  "source_commit": "cc9004e",
+  "role": "Instrumented attribution only; excluded from performance acceptance.",
+  "affinity": "1"
+}

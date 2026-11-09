@@ -63,6 +63,11 @@ jobs:
           ./build/ci/antworld_s6_2_nutrition build/ci/s6_2-nutrition 1 1
           python tools/analyze_s6_2_nutrition.py --pilot build/ci/s6_2-nutrition
           ./build/ci/antworld_s6_2_choice build/ci/s6_2-choice 64
+      - name: Reproduce S6.3 funded 90-day ecology and compact geometry (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_3_experiment build/ci/s6_3-review review
+          python tools/verify_s6_3_reproduction.py build/ci/s6_3-review --cross-platform --report build/ci/s6_3-review.json
 
   sanitizers:
     runs-on: ubuntu-24.04

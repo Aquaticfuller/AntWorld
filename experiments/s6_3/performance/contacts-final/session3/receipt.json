@@ -1,0 +1,9 @@
+{
+  "pid": 3304,
+  "exit_code": 0,
+  "started_utc_ns": 1794203870792747700,
+  "ended_utc_ns": 1794203929218923000,
+  "rows": 112,
+  "telemetry_rows": 584,
+  "binary_sha256": "37373e78c41ea287481f0a0c548aaf41d42e806f3d6ef3d231d945a30370c646"
+}

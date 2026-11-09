@@ -1,0 +1,46 @@
+{
+  "cross_platform": false,
+  "excluded_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "coordinate_tolerance_m": 0,
+  "cases": [
+    {
+      "run": "1_8_balanced_constant_full_3",
+      "group": "sensitivity-v2",
+      "events": 5227,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_full_12",
+      "group": "sensitivity-v2",
+      "events": 1159,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_full_3",
+      "group": "sensitivity-v2",
+      "events": 5414,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_full_12",
+      "group": "sensitivity-v2",
+      "events": 1488,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_full_3",
+      "group": "sensitivity-v2",
+      "events": 4725,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_full_12",
+      "group": "sensitivity-v2",
+      "events": 1317,
+      "exact": true
+    }
+  ]
+}

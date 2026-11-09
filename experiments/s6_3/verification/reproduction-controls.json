@@ -1,0 +1,118 @@
+{
+  "cross_platform": false,
+  "excluded_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "coordinate_tolerance_m": 0,
+  "cases": [
+    {
+      "run": "1_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 9146,
+      "exact": true
+    },
+    {
+      "run": "1_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 8538,
+      "exact": true
+    },
+    {
+      "run": "1_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 279552,
+      "exact": true
+    },
+    {
+      "run": "2_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 9982,
+      "exact": true
+    },
+    {
+      "run": "2_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 8819,
+      "exact": true
+    },
+    {
+      "run": "2_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 263977,
+      "exact": true
+    },
+    {
+      "run": "3_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 10400,
+      "exact": true
+    },
+    {
+      "run": "3_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 9210,
+      "exact": true
+    },
+    {
+      "run": "3_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 260946,
+      "exact": true
+    },
+    {
+      "run": "4_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 9339,
+      "exact": true
+    },
+    {
+      "run": "4_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 9015,
+      "exact": true
+    },
+    {
+      "run": "4_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 259765,
+      "exact": true
+    },
+    {
+      "run": "5_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 9109,
+      "exact": true
+    },
+    {
+      "run": "5_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 9789,
+      "exact": true
+    },
+    {
+      "run": "5_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 254727,
+      "exact": true
+    },
+    {
+      "run": "6_32_scarce_constant_full_6",
+      "group": "controls-v2",
+      "events": 10458,
+      "exact": true
+    },
+    {
+      "run": "6_32_scarce_constant_no_recycling_6",
+      "group": "controls-v2",
+      "events": 9793,
+      "exact": true
+    },
+    {
+      "run": "6_32_scarce_constant_no_feedback_6",
+      "group": "controls-v2",
+      "events": 266467,
+      "exact": true
+    }
+  ]
+}

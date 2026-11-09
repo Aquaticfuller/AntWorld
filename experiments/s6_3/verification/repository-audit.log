@@ -1,0 +1,266 @@
+PASS: verified 56 files
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/ablations.png
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/recruitment.png
+BINARY: review language-bearing metadata manually: experiments/s2_1/figures/trail_fields.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/mechanisms.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/sensitivity_and_social.png
+BINARY: review language-bearing metadata manually: experiments/s2_2/figures/trajectories.png
+BINARY: review language-bearing metadata manually: experiments/s3/figures/nutrition_and_development.png
+BINARY: review language-bearing metadata manually: experiments/s4/figures/excavation_outcomes.png
+BINARY: review language-bearing metadata manually: experiments/s4/figures/geometry_sections.png
+BINARY: review language-bearing metadata manually: experiments/s5/figures/geometry_storage.png
+BINARY: review language-bearing metadata manually: experiments/s5/figures/long_history.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/contact_scaling.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/ecology_and_history.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/nutrition_and_surplus.png
+BINARY: review language-bearing metadata manually: experiments/s6/figures/sensitivity_and_continuation.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/behavior_feedback.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/contact_performance.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/integrated_outcomes.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/nutrition_matrix.png
+BINARY: review language-bearing metadata manually: experiments/s6_1/figures/seed7_nutrition.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/balanced_growth.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/equal_demand_choices.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/exclusive_attribution.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/hardware_telemetry.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/recipient_allocation.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/scarcity_controls.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/separate_phases.png
+BINARY: review language-bearing metadata manually: experiments/s6_2/figures/transfer_timeline.png
+PASS: no CJK content in 688 tracked UTF-8 files or commit messages; 28 binaries
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+PASS S2.1 audit: 51712 raw trial rows, 260648 sparse field samples; matched controls, censoring, physics and conservation checked
+PASS S2 CSV audit: 128 balanced runs, 7808 time samples, conserved mass and feature ablations
+s2.1 bend occupancy: delta=0.060872, 95%=[0.046834,0.074870]
+s2.1 bend streak3: delta=0.166992, 95%=[0.107422,0.226562]
+s2.1 lost selected_marked: delta=0.000000, 95%=[0.000000,0.000000]
+s2.1 straight occupancy: delta=0.058919, 95%=[0.043050,0.075033]
+s2.1 straight streak3: delta=0.148438, 95%=[0.083984,0.210938]
+s2.1 y_symmetric selected_marked: delta=0.176758, 95%=[0.155273,0.197266]
+s2.2 bend occupancy: delta=0.087687, 95%=[0.072835,0.102132]
+s2.2 bend streak3: delta=0.212891, 95%=[0.155273,0.269531]
+s2.2 lost selected_marked: delta=0.203125, 95%=[0.181641,0.223633]
+s2.2 straight occupancy: delta=0.083008, 95%=[0.066488,0.099040]
+s2.2 straight streak3: delta=0.201172, 95%=[0.140625,0.259766]
+s2.2 y_symmetric selected_marked: delta=0.176758, 95%=[0.155273,0.197266]
+PASS S2.2 local evidence, controls, trajectories, censoring and clustered analysis
+PASS S3: 1536 runs, 5376 individual rows, complete seeds, ingredient/energy budgets, order and partition checks
+S4 audit passed: 160 runs, 1612 edits, 3872 trajectory rows; all ledgers and paired reversals agree
+PASS S5: 128 exact-continuation runs, 360 performance samples, 365 diagnostic days; complete seeds and zero nutrient/energy residuals
+PASS S6 primary: 256 cases / 768 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 sensitivity: 48 cases / 144 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 long: 16 cases / 48 modes; identity, event, geometry and integer ledger reconciliation
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "primary_cases": 256,
+  "sensitivity_cases": 48,
+  "long_cases": 16,
+  "paired_execution_modes": 960,
+  "nutrition_cases_per_archive": 768,
+  "surplus_cases": 640,
+  "exact_primary_sensitivity_baseline_pairs": 16,
+  "surplus_sensitivity_cases": 96,
+  "independent_primary_seeds": 32,
+  "bootstrap_resamples": 4096,
+  "analysis_seed": 6006,
+  "confidence": "95% percentile bootstrap; mirrors averaged within seed; modes paired",
+  "conservation_identity_history_continuation": "PASS",
+  "contact_acceptance": {
+    "contact_initial": {
+      "bounded_candidates": "PASS",
+      "dense_2048_speedup": 30.010507998137342,
+      "speedup_at_least_4x": "PASS",
+      "dense_512_to_2048_growth": 7.518261741996399,
+      "growth_at_most_6x": "FAIL"
+    },
+    "performance": {
+      "bounded_candidates": "PASS",
+      "dense_2048_speedup": 28.17605623487426,
+      "speedup_at_least_4x": "PASS",
+      "dense_512_to_2048_growth": 6.875887442704614,
+      "growth_at_most_6x": "FAIL"
+    }
+  }
+}
+{
+  "targets": {
+    "performance_baseline": {
+      "dense_2048_speedup": 84.61452731234816,
+      "dense_512_to_2048_growth": 2.445925455275424,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "uninstrumented"
+    },
+    "unprofiled_before": {
+      "dense_2048_speedup": 29.423878988906978,
+      "dense_512_to_2048_growth": 6.4972262145964645,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    },
+    "profile_before": {
+      "dense_2048_speedup": 34.452533287263066,
+      "dense_512_to_2048_growth": 6.060025696560332,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "attribution only"
+    },
+    "profile_after": {
+      "dense_2048_speedup": 49.066083614207564,
+      "dense_512_to_2048_growth": 5.128861082466718,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "attribution only"
+    },
+    "performance_final": {
+      "dense_2048_speedup": 39.682350700126285,
+      "dense_512_to_2048_growth": 24.228682066564414,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    }
+  },
+  "canonical_hash_groups": 12,
+  "semantic_parity": "PASS"
+}
+
+PASS observer matrix: 576 cases, complete row/ledger/identity/geometry reconciliation
+PASS observer sensitivity: 128 cases, complete row/ledger/identity/geometry reconciliation
+PASS observer integrated: 512 cases, complete row/ledger/identity/geometry reconciliation
+PASS S6 primary: 256 cases / 768 modes; identity, event, geometry and integer ledger reconciliation
+PASS S6 long: 16 cases / 48 modes; identity, event, geometry and integer ledger reconciliation
+{
+  "scope": "ENGINEERING_FIXTURE",
+  "matrix_cases": 576,
+  "sensitivity_cases": 128,
+  "integrated_observer_cases": 512,
+  "durable_cases": 272,
+  "durable_execution_modes": 816,
+  "observer_durable_or_original_exact_trace_pairs": 512,
+  "independent_integrated_seeds": 32,
+  "interrupted_execution_prefix_rows_reproduced": {
+    "matrix": 102,
+    "observer_integrated": 64,
+    "integrated": 69
+  },
+  "executed_local_test_rows": 655,
+  "bootstrap_resamples": 4096,
+  "analysis_seed": 6106,
+  "conservation_identity_history_geometry": "PASS",
+  "confidence": "95% paired seed percentile bootstrap; mirrors averaged within seed; modes are verification replicas",
+  "accessible_integral": "Unique reachable recipient demand and adult crop supply; coexistence diagnostic, not maximum feasible flow",
+  "gift_completion_fraction": "Successful plus partial committed transfers / resolved attempts; undefined with zero attempts. Conditional intervals show defined seed counts; every raw case and attempt count is retained."
+}
+
+PASS post-hoc scarcity endpoints and all declared default-cell gift failures; no fitted parameters
+{
+  "paired": [
+    {
+      "layout": "dense",
+      "session": "1",
+      "p50_ratio": 5.376379939455195
+    },
+    {
+      "layout": "dense",
+      "session": "2",
+      "p50_ratio": 5.493349902766203
+    },
+    {
+      "layout": "dense",
+      "session": "3",
+      "p50_ratio": 5.429521958860751
+    },
+    {
+      "layout": "dense",
+      "session": "pooled",
+      "p50_ratio": 5.438312221490987
+    },
+    {
+      "layout": "dense",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.411687490197991,
+      "median_ci_low": 5.327167699343404,
+      "median_ci_high": 5.462464450193707,
+      "geometric_mean": 5.374910882692755,
+      "geometric_ci_low": 5.304546668201305,
+      "geometric_ci_high": 5.443989242757844,
+      "session_max_min": 1.0217562680889813,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    },
+    {
+      "layout": "dispersed",
+      "session": "1",
+      "p50_ratio": 5.22689724748038
+    },
+    {
+      "layout": "dispersed",
+      "session": "2",
+      "p50_ratio": 5.1458029160583205
+    },
+    {
+      "layout": "dispersed",
+      "session": "3",
+      "p50_ratio": 5.0215408461986835
+    },
+    {
+      "layout": "dispersed",
+      "session": "pooled",
+      "p50_ratio": 5.146529103053434
+    },
+    {
+      "layout": "dispersed",
+      "session": "paired",
+      "p50_ratio": "",
+      "n_blocks": 36,
+      "median": 5.114459220029319,
+      "median_ci_low": 5.0077411340985005,
+      "median_ci_high": 5.199882688616282,
+      "geometric_mean": 5.042992764251732,
+      "geometric_ci_low": 4.953600108029236,
+      "geometric_ci_high": 5.127071614273904,
+      "session_max_min": 1.0408950972562838,
+      "original_gate_pass": true,
+      "uncertainty_gate_pass": true
+    }
+  ],
+  "matched_exhaustive_speedup": 42.35658753338925,
+  "matched_speedup_pass": true,
+  "candidate_cap_pass": true,
+  "canonical_parity": true,
+  "restored_continuation": true,
+  "raw_rows": 396,
+  "primary_measured_rows": 288,
+  "source_commit": "cc9004ecd561c453fde8ede435c94eda65426bc7",
+  "hardware_sensor_coverage": true
+}
+PASS 192 exact S6.1 scarcity states/traces; all protein gifts and recipient thresholds reconciled
+PASS 256 equal-demand cases; 16384 committed choices and 262144 inclusion records
+{
+  "runs": 150,
+  "daily_snapshots": 8549,
+  "completed": 126,
+  "censored": 24,
+  "primary_v2_complete": 48,
+  "exact_completed_continuations": 126,
+  "durable_checks": 8,
+  "uncertainty": "4096 seed-bootstrap resamples, seed 6303; six or three independent seeds; descriptive, unadjusted multiple endpoints. Censored rows are last observed outcomes, not 90-day outcomes."
+}
+{
+  "raw_rows": 1008,
+  "measured_rows": 936,
+  "exact_work_state_and_trace": true,
+  "fixed_affinity": true,
+  "note": "4096 session/block bootstrap resamples, seed 6303. Host sensor samples bracket sessions, not every millisecond phase. Process peak memory is a process-lifetime high water mark, including warmups."
+}
+{'batch': 'contacts-baseline-final', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 18.404920045728478, 'paired_median': 18.521920517975417, 'ci_low': 17.63976480939086, 'ci_high': 19.392133757387377}
+{'batch': 'contacts-baseline-final', 'layout': 'dense', 'phase': 'advance', 'p50_growth': 5.445345222614403, 'paired_median': 5.394151011413627, 'ci_low': 5.334385844328457, 'ci_high': 5.449894438779229}
+{'batch': 'contacts-final', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 3.4453396844701194, 'paired_median': 3.11850723216339, 'ci_low': 2.776936411877702, 'ci_high': 3.4002653050099036}
+{'batch': 'contacts-final', 'layout': 'dense', 'phase': 'advance', 'p50_growth': 5.349986039952831, 'paired_median': 5.338093549356362, 'ci_low': 5.224611005658276, 'ci_high': 5.417852403130119}
+{'batch': 'birth-before-index', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 4.3142377275133725, 'paired_median': 4.343104209796055, 'ci_low': 4.287850477248115, 'ci_high': 4.382535167102079}
+{'batch': 'birth-before-index', 'layout': 'dense', 'phase': 'birth_advance', 'p50_growth': 20.82679286314437, 'paired_median': 20.783406116138394, 'ci_low': 20.474086057085433, 'ci_high': 21.054027004562073}
+{'batch': 'birth-after-index', 'layout': 'dense', 'phase': 'setup', 'p50_growth': 4.335459909013363, 'paired_median': 4.3617056391203315, 'ci_low': 4.324036881843503, 'ci_high': 4.389968432180436}
+{'batch': 'birth-after-index', 'layout': 'dense', 'phase': 'birth_advance', 'p50_growth': 4.205383106782985, 'paired_median': 4.244048415873006, 'ci_low': 4.159077868160799, 'ci_high': 4.3235677884513715}

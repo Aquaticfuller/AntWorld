@@ -1,0 +1,70 @@
+{
+  "core_source_commit": "989c1a8",
+  "legacy_export_fix_commit": "d1aa36a",
+  "final_core_semantics": "No Core changes after measured 989c1a8 except GCC statement layout; frozen legacy experiment CSV schema restored at d1aa36a.",
+  "tests": {
+    "release": {
+      "tests": 153,
+      "failed": 0,
+      "elapsed_s": 12.92,
+      "log": "release-tests.log",
+      "sha256": "b3a6cccc70c08338cd0659aa78d5e43d027db5cc0bb3b7671f5454df8a735cc9"
+    },
+    "debug": {
+      "tests": 153,
+      "failed": 0,
+      "elapsed_s": 54.73,
+      "log": "debug-tests.log",
+      "sha256": "e1e29f8dd4a1b3084fc4bd5c531275d6c30ff71bb4c5116dfca705ce892a8019"
+    },
+    "sanitized": {
+      "tests": 153,
+      "failed": 0,
+      "elapsed_s": 207.75,
+      "log": "sanitized-tests.log",
+      "sha256": "0668f36a14714aac08ea5cafbebd2e1229b3659ac118a4ec371c6d0d3d8ac717"
+    },
+    "core-only": {
+      "tests": 132,
+      "failed": 0,
+      "elapsed_s": 9.06,
+      "log": "core-only-tests.log",
+      "sha256": "d08a2ae518a18046d870fab9e3b06a8321d8c4d79a6cf2fc922ce68fa8bc42ae"
+    }
+  },
+  "inherited_tests": 137,
+  "new_tests": 16,
+  "ecology": {
+    "runs": 150,
+    "daily_snapshots": 8549,
+    "completed": 126,
+    "censored": 24,
+    "primary_v2_complete": 48,
+    "exact_completed_continuations": 126,
+    "durable_checks": 8,
+    "uncertainty": "4096 seed-bootstrap resamples, seed 6303; six or three independent seeds; descriptive, unadjusted multiple endpoints. Censored rows are last observed outcomes, not 90-day outcomes."
+  },
+  "same_platform_reproduction_cases": 102,
+  "performance": {
+    "raw_rows": 1008,
+    "measured_rows": 936,
+    "exact_work_state_and_trace": true,
+    "fixed_affinity": true,
+    "note": "4096 session/block bootstrap resamples, seed 6303. Host sensor samples bracket sessions, not every millisecond phase. Process peak memory is a process-lifetime high water mark, including warmups."
+  },
+  "ci": [
+    {
+      "commit": "d1aa36a038c129375cef0dfc67b2e0a14fad9da5",
+      "run": 42571166479,
+      "status": "success",
+      "jobs": 5,
+      "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42571166479"
+    }
+  ],
+  "sanitizer": "Windows Clang ASan+UBSan detect_leaks=0; Linux CI ASan+UBSan detect_leaks=1; halt_on_error=1.",
+  "limitations": [
+    "Three short balanced host sessions per comparison, not independent hardware samples.",
+    "No physical power-cut test, continuous large-population ecology, calibrated reproduction or indefinite storage budget.",
+    "All 48 primary queens die from accounted energy depletion; no forced rescue."
+  ]
+}

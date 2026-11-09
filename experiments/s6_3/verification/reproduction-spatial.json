@@ -1,0 +1,46 @@
+{
+  "cross_platform": false,
+  "excluded_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "coordinate_tolerance_m": 0,
+  "cases": [
+    {
+      "run": "1_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 479281,
+      "exact": true
+    },
+    {
+      "run": "2_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 502506,
+      "exact": true
+    },
+    {
+      "run": "3_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 520259,
+      "exact": true
+    },
+    {
+      "run": "4_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 509441,
+      "exact": true
+    },
+    {
+      "run": "5_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 502093,
+      "exact": true
+    },
+    {
+      "run": "6_32_balanced_constant_compact_6",
+      "group": "spatial-v2",
+      "events": 55207,
+      "exact": true
+    }
+  ]
+}

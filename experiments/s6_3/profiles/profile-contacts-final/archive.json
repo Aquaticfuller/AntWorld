@@ -1,0 +1,37 @@
+{
+  "configuration.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "60734cb3f32f7183ccf5128a7a90880b43a6dee336791e645476447bac6c19d1",
+    "parts": [
+      "configuration.json"
+    ]
+  },
+  "contacts.csv": {
+    "rows": 18,
+    "normalized_lf_sha256": "2c7df537eaf02dbdea63883f4d9001ef759196c61c94d84a9d5301f6d321a7b4",
+    "parts": [
+      "contacts.csv"
+    ]
+  },
+  "phases.csv": {
+    "rows": 72,
+    "normalized_lf_sha256": "eb25e932742ea082d86f1d39690f8058d2e6c569c56736531fe74961272e7722",
+    "parts": [
+      "phases.csv"
+    ]
+  },
+  "profile.csv": {
+    "rows": 648,
+    "normalized_lf_sha256": "f7fa2c4c7693bd28cd5bfa8dc7ac429ae5c896e852ffa0ca8c324784d45abb22",
+    "parts": [
+      "profile.csv"
+    ]
+  },
+  "schedule.csv": {
+    "rows": 18,
+    "normalized_lf_sha256": "a49dfabe1f4e90538723208b4b9ffd2ffabefa0ae80485f742b535d4cac565ae",
+    "parts": [
+      "schedule.csv"
+    ]
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "cross_platform": false,
+  "excluded_fields": [
+    "advance_ms",
+    "setup_ms"
+  ],
+  "coordinate_tolerance_m": 0,
+  "cases": [
+    {
+      "run": "1_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 2037,
+      "exact": true
+    },
+    {
+      "run": "1_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2334,
+      "exact": true
+    },
+    {
+      "run": "1_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 45858,
+      "exact": true
+    },
+    {
+      "run": "1_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 863884,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 2113,
+      "exact": true
+    },
+    {
+      "run": "2_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2456,
+      "exact": true
+    },
+    {
+      "run": "2_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 43063,
+      "exact": true
+    },
+    {
+      "run": "2_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 903119,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 2073,
+      "exact": true
+    },
+    {
+      "run": "3_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2487,
+      "exact": true
+    },
+    {
+      "run": "3_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 43802,
+      "exact": true
+    },
+    {
+      "run": "3_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 785412,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 2011,
+      "exact": true
+    },
+    {
+      "run": "4_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2809,
+      "exact": true
+    },
+    {
+      "run": "4_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 45790,
+      "exact": true
+    },
+    {
+      "run": "4_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 824651,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 2062,
+      "exact": true
+    },
+    {
+      "run": "5_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2451,
+      "exact": true
+    },
+    {
+      "run": "5_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 40808,
+      "exact": true
+    },
+    {
+      "run": "5_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 1648727,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 1949,
+      "exact": true
+    },
+    {
+      "run": "6_8_balanced_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 2356,
+      "exact": true
+    },
+    {
+      "run": "6_8_empty_constant_return_only_6",
+      "group": "factorial-v2",
+      "events": 44711,
+      "exact": true
+    },
+    {
+      "run": "6_8_empty_constant_exchange_only_6",
+      "group": "factorial-v2",
+      "events": 942356,
+      "exact": true
+    }
+  ]
+}

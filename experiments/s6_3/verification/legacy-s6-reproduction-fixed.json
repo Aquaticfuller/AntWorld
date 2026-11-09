@@ -1,0 +1,59 @@
+{
+  "source_commit": "d1aa36a",
+  "first_seed": 1,
+  "seeds": 1,
+  "cases": 8,
+  "cross_platform": true,
+  "excluded_host_fields": [
+    "advance_ms",
+    "database_bytes",
+    "load_ms",
+    "save_ms",
+    "setup_ms"
+  ],
+  "excluded_binary_fields": [
+    "state_hash",
+    "trace_hash"
+  ],
+  "distance_absolute_tolerance_m": 1e-12,
+  "schema_version": 8,
+  "physics_version": 9,
+  "checkpoint_byte_delta": 2,
+  "files": {
+    "summary.csv": {
+      "rows": 24,
+      "semantic_match": true,
+      "normalized_lf_sha256": "c4715ee6bfadf7ffe7947986518529189d41ee7445379c0834f78d26780348a2"
+    },
+    "individuals.csv": {
+      "rows": 360,
+      "semantic_match": true,
+      "normalized_lf_sha256": "4a38318e22ffff0cee9f6aaa6ae8602ffaba18cd6c5ef8bc215233dfe3be5804"
+    },
+    "events.csv": {
+      "rows": 2641,
+      "semantic_match": true,
+      "normalized_lf_sha256": "0422cc59b1b89294cf97e2c17401530956801fae6d70e8fdc54c5dc3b2ea3d4f"
+    },
+    "geometry.csv": {
+      "rows": 660,
+      "semantic_match": true,
+      "normalized_lf_sha256": "b3b5cb448052cd8c0e63505cd1179d725e02e4a8aabd2185201e59a354c4226a"
+    },
+    "foods.csv": {
+      "rows": 12,
+      "semantic_match": true,
+      "normalized_lf_sha256": "b6b2f7aa2e9a2815a2bf40713702a9a7dea4e8ec2859223b132265f65d77d079"
+    },
+    "time_series.csv": {
+      "rows": 488,
+      "semantic_match": true,
+      "normalized_lf_sha256": "9052ecf785fe7d4312ae93b4934bcbb50ed7a2715c3fbf6cf8407919890e96bd"
+    },
+    "event_counts.csv": {
+      "rows": 182,
+      "semantic_match": true,
+      "normalized_lf_sha256": "bd67a2acd9b014e5420fc2962fae71d222f3d22cc0bf8a8f8ef0e56b97850a5b"
+    }
+  }
+}

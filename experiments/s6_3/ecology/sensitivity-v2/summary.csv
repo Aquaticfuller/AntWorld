@@ -1,0 +1,7 @@
+scope,run,seed,workers,supply,cyclic,arm,pulse_hours,requested_days,completed_days,status,reason,alive,births,emerged,deaths,protein_transferred_ug,recycled_protein_ug,events,geometry_edits,setup_ms,advance_ms,exact_continuation,durable_checked,state_hash,trace_hash
+ENGINEERING_FIXTURE,1_8_balanced_constant_full_3,1,8,balanced,0,full,3,14,14,complete,,16,7,3,0,440,800,5227,0,0.11990000000000001,43.16660000000001,1,0,459b0cc46b67c34e,b4a3af70368f640e
+ENGINEERING_FIXTURE,1_8_balanced_constant_full_12,1,8,balanced,0,full,12,14,14,complete,,10,2,0,1,62,804,1159,0,0.097000000000000003,7.999200000000001,1,0,f257c8d6e1a15457,b712f6238bf6e120
+ENGINEERING_FIXTURE,2_8_balanced_constant_full_3,2,8,balanced,0,full,3,14,14,complete,,16,7,2,0,440,800,5414,0,0.0516,44.669199999999996,1,0,dddb4057c058c530,503cd4d9debb67f4
+ENGINEERING_FIXTURE,2_8_balanced_constant_full_12,2,8,balanced,0,full,12,14,14,complete,,10,3,0,2,78,802,1488,0,0.0591,8.9481000000000002,1,0,0477f95384df9b32,038dede1178418f1
+ENGINEERING_FIXTURE,3_8_balanced_constant_full_3,3,8,balanced,0,full,3,14,14,complete,,11,3,2,1,240,800,4725,0,0.056500000000000002,35.294300000000007,1,0,0573f35fe195aa66,df0394e920793c22
+ENGINEERING_FIXTURE,3_8_balanced_constant_full_12,3,8,balanced,0,full,12,14,14,complete,,11,2,0,0,76,800,1317,0,0.058200000000000002,8.4972999999999992,1,0,29276652a3873656,c8010484dc371f39

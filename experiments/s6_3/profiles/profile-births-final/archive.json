@@ -1,0 +1,37 @@
+{
+  "births.csv": {
+    "rows": 9,
+    "normalized_lf_sha256": "25126c5ea661a21f9bf79f1416f42e76118c00c132f8c0c06497ec47128be5ca",
+    "parts": [
+      "births.csv"
+    ]
+  },
+  "configuration.json": {
+    "rows": 0,
+    "normalized_lf_sha256": "ce07888e2f59fd1287d401f85e21d5915987790aa9e4107ec01bd544fbeea2a9",
+    "parts": [
+      "configuration.json"
+    ]
+  },
+  "phases.csv": {
+    "rows": 36,
+    "normalized_lf_sha256": "481623437f05493c60bad154a51bc1462846c8425ed0dd843302330c3f26fdbb",
+    "parts": [
+      "phases.csv"
+    ]
+  },
+  "profile.csv": {
+    "rows": 324,
+    "normalized_lf_sha256": "42e9c6163c95742c5196ce5c36dcb5b987e8e4bec10bd7ba39a93d4e597db6f1",
+    "parts": [
+      "profile.csv"
+    ]
+  },
+  "schedule.csv": {
+    "rows": 9,
+    "normalized_lf_sha256": "3a41c04bed3815fa074bb9ca2d1c2efb7d289003b809637f8fb543552d7f4dfc",
+    "parts": [
+      "schedule.csv"
+    ]
+  }
+}

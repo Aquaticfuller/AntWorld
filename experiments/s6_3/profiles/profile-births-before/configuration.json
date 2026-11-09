@@ -1,0 +1,7 @@
+{
+  "kind": "births",
+  "binary_sha256": "30ede7cec5dff250abd0b99a4f4d9a90d292813223a3f41a7a8b3350a509055c",
+  "source_commit": "fa73289",
+  "role": "Instrumented attribution only; excluded from performance acceptance.",
+  "affinity": "1"
+}
