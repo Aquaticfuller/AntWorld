@@ -151,6 +151,7 @@ private:
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
 public:
     static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 11;
+    static constexpr std::uint32_t allocation_schema_version = 10, allocation_physics_version = 12;
     void configure_long_term(const LongTermConfig& = {});
     [[nodiscard]] std::optional<LongTermConfig> long_term_config() const;
     void enable_reproduction(AntRef, const ReproductionConfig& = {});

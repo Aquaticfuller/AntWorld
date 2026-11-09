@@ -53,6 +53,8 @@ void WorldRuntime::enable_reproduction(AntRef ref,
   tx.reproduction.set(ref.id, r);
   WorldEvent f;
   f.kind = FactKind::ReproductionEnabled;
+  f.payload =
+      static_cast<std::uint64_t>(config.maintenance_horizon.milliseconds);
   f.actor = ref.id;
   f.colony = ant->colony;
   f.stage = ant->stage;
@@ -80,10 +82,10 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   synchronize_physiology(tx, e.actor);
   auto p = s.physiology.at(e.actor);
   const auto &c = r.config;
+  // Only this individual's current body reserves and maintenance rates enter.
+  // A deferred attempt spends nothing; unmet needs can still cause death.
   const bool funded =
-      p.crop.protein_ug >= c.egg_protein_ug &&
-      p.hydration_ug > c.egg_water_ug &&
-      p.body_energy_nj > add(c.egg_energy_nj, c.dissipated_energy_nj) &&
+      reproductive_resources(c, p) &&
       spatially_clear(mother.position, mother.position,
                       s.geometry ? s.geometry->config.body_half_q : 0);
   EntityId child;

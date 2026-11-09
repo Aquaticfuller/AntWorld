@@ -8,6 +8,8 @@ using s6_3_fixture::limits;
 // All quantities and schedules are ENGINEERING_FIXTURE; protocol 44 fixes the
 // arms.
 struct Controls {
+  unsigned
+      reserve_mode{}; // 0 legacy, 1 interval, 2 absorption, 3 twice interval.
   bool laying{true}, exchange{true}, positive{};
   std::int64_t absorption_hours{6}, behavior_hours{6}, reproduction_days{2};
   std::uint64_t lineage_basal{1};
@@ -61,6 +63,14 @@ struct World {
     world.enable_physiology(queen, initial, p);
     ReproductionConfig reproduction;
     reproduction.interval = {controls.reproduction_days * day};
+    if (controls.reserve_mode > 3)
+      throw std::invalid_argument("unknown allocation horizon");
+    reproduction.maintenance_horizon =
+        controls.reserve_mode == 1   ? reproduction.interval
+        : controls.reserve_mode == 2 ? p.absorption_period
+        : controls.reserve_mode == 3
+            ? SimTime{2 * reproduction.interval.milliseconds}
+            : SimTime{};
     if (controls.laying)
       world.enable_reproduction(queen, reproduction);
     p.basal_nj_per_ms = 1;

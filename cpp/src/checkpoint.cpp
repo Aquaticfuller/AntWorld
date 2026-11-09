@@ -51,8 +51,10 @@ std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
 
 std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
     Writer w(byte_limit); const auto& m = s.m;
-    w.put(s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741));
-    w.put(s.long_term ? long_term_schema_version : schema_version, 4); w.put(s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    const bool guarded=has_maternal_reserve(s);
+    w.put(guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741));
+    w.put(guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
     w.put(m.next_entity); w.put(m.next_scheduled); w.put(m.next_event); w.put(m.next_sequence); w.put(m.rng.state());
     w.put(s.queue.size());
@@ -83,7 +85,7 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     write_geometry(w,s);
     write_commands(w,s);
     write_social(w,s);
-    write_long_term(w,s);
+    write_long_term(w,s,guarded);
     w.put(hash_bytes(w.bytes)); return w.bytes;
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
@@ -91,9 +93,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    const auto magic=r.get(); const bool extended=magic==UINT64_C(0x3954504b435741);
+    const auto magic=r.get(); const bool guarded=magic==UINT64_C(0x4154504b435741);
+    const bool extended=guarded || magic==UINT64_C(0x3954504b435741);
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
-    ensure(r.get(4) == (extended ? long_term_schema_version : schema_version) && r.get(4) == (extended ? long_term_physics_version : physics_version) && r.get(4) == 1, "unsupported schema, physics or RNG version");
+    ensure(r.get(4) == (guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version) && r.get(4) == (guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version) && r.get(4) == 1, "unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
     if (extended) s->long_term=std::make_shared<const LongTermConfig>();
@@ -170,7 +173,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_geometry(r,*s,limits,entity_ids);
     read_commands(r,*s,limits);
     read_social(r,*s);
-    read_long_term(r,*s);
+    read_long_term(r,*s,guarded);
+    ensure(has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
     (void)introduced.total_ug();

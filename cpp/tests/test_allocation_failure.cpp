@@ -185,17 +185,20 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
-        if (argc==2 && std::string_view(argv[1])=="S6.3") {
+        if (argc==2 && (std::string_view(argv[1])=="S6.3" || std::string_view(argv[1])=="S6.3.1")) {
             WorldRuntime w({63,9},7); w.configure_long_term(); w.configure_social({});
             const auto colony=w.seed_colony(); const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
             PhysiologyConfig p; p.adult_protein_target_ug=20;
             w.enable_physiology(queen,{{0,100,0,0},1500000000,1600,0},p);
-            ReproductionConfig r; r.interval={1}; w.enable_reproduction(queen,r);
+            ReproductionConfig r; r.interval={1};
+            if (std::string_view(argv[1])=="S6.3.1") r.maintenance_horizon={1};
+            sweep("enable_maternal_allocation",w,[&]{w.enable_reproduction(queen,r);});
+            w.enable_reproduction(queen,r);
             const auto food=w.seed_food({},{1,1,1,0}); ResourceCycleConfig c; c.reserve={10,10,10,0}; c.release_limit={1,1,1,0}; c.interval={1};
             sweep("configure_finite_reserve",w,[&]{w.configure_resource_cycle(food,c);}); w.configure_resource_cycle(food,c);
             sweep("fund_birth_and_release",w,[&]{w.advance_to({1});}); w.advance_to({1});
             const auto saved=w.checkpoint(); sweep("restore_birth_evidence",w,[&]{w.restore(saved);});
-            std::cout<<"PASS S6_3_ALLOCATION_FAILURE\n"; return 0;
+            std::cout<<"PASS "<<argv[1]<<" allocation failure\n"; return 0;
         }
         if (argc == 2 && std::string_view(argv[1]) == "S6") { s6_sweeps(); return 0; }
         if (argc == 2 && std::string_view(argv[1]) == "S6.1") { s6_sweeps(true); return 0; }

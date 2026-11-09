@@ -8,7 +8,7 @@ inline constexpr std::array reproduction_values{
     &ReproductionConfig::egg_energy_nj,
     &ReproductionConfig::dissipated_energy_nj,
     &ReproductionConfig::offspring_carrying_capacity_ug};
-template <class S> void write_long_term(Writer &w, const S &s) {
+template <class S> void write_long_term(Writer &w, const S &s, bool guarded) {
   if (!s.long_term)
     return;
   w.put(s.long_term->demand_feedback, 1);
@@ -22,6 +22,8 @@ template <class S> void write_long_term(Writer &w, const S &s) {
     w.time(r.config.interval);
     for (const auto m : reproduction_values)
       w.put(r.config.*m);
+    if (guarded)
+      w.time(r.config.maintenance_horizon);
     w.put(r.wake.value);
     w.put(r.attempts);
     w.put(r.births);
@@ -41,7 +43,7 @@ template <class S> void write_long_term(Writer &w, const S &s) {
     w.put(r.pulses);
   }
 }
-template <class S> void read_long_term(Reader &r, S &s) {
+template <class S> void read_long_term(Reader &r, S &s, bool guarded) {
   if (!s.long_term)
     return;
   LongTermConfig c{r.flag(), r.flag(), static_cast<std::uint32_t>(r.get(4)),
@@ -55,6 +57,8 @@ template <class S> void read_long_term(Reader &r, S &s) {
     q.config.interval = r.time();
     for (const auto m : reproduction_values)
       q.config.*m = r.get();
+    if (guarded)
+      q.config.maintenance_horizon = r.time();
     q.wake = {r.get()};
     q.attempts = r.get();
     q.births = r.get();
@@ -108,6 +112,9 @@ template <class S> void validate_long_term_evidence(const S &s) {
              "invalid reproduction enrollment");
       ReproductionState q;
       q.config = s.reproduction.at(e.actor).config;
+      ensure(e.payload == static_cast<std::uint64_t>(
+                              q.config.maintenance_horizon.milliseconds),
+             "maternal allocation contract differs from enrollment evidence");
       queens.emplace(e.actor, q);
     } else if (e.kind == FactKind::ReproductionAttempt) {
       ensure(queens.contains(e.actor) && stages[e.actor] == LifeStage::Adult,

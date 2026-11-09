@@ -21,6 +21,7 @@
 using namespace antworld;
 using s3_fixture::require;
 namespace {
+unsigned selected_reserve{};
 using Clock = std::chrono::steady_clock;
 double elapsed(Clock::time_point t) {
   return std::chrono::duration<double, std::milli>(Clock::now() - t).count();
@@ -131,6 +132,7 @@ void run(const std::filesystem::path &root, std::ostream &summary,
          std::uint64_t seed, unsigned workers, std::string_view supply,
          bool cyclic, std::string_view arm, unsigned days,
          std::int64_t pulse = 6, s6_3_1_fixture::Controls controls = {}) {
+  controls.reserve_mode = selected_reserve;
   const auto name = std::to_string(seed) + "_" + std::to_string(workers) + "_" +
                     std::string(supply) + "_" +
                     (cyclic ? "cyclic" : "constant") + "_" + std::string(arm) +
@@ -152,12 +154,18 @@ void run(const std::filesystem::path &root, std::ostream &summary,
   auto config_file = file(dir / "configuration.csv");
   config_file
       << "scope,seed,workers,supply,cyclic,arm,days,laying,exchange,positive,"
-         "absorption_hours,behavior_hours,lineage_basal,reproduction_days\n"
+         "absorption_hours,behavior_hours,lineage_basal,reproduction_days,"
+         "reserve_mode,maintenance_horizon_ms\n"
       << "ENGINEERING_FIXTURE," << seed << ',' << workers << ',' << supply
       << ',' << cyclic << ',' << arm << ',' << days << ',' << controls.laying
       << ',' << controls.exchange << ',' << controls.positive << ','
       << controls.absorption_hours << ',' << controls.behavior_hours << ','
-      << controls.lineage_basal << ',' << controls.reproduction_days << '\n';
+      << controls.lineage_basal << ',' << controls.reproduction_days << ','
+      << selected_reserve << ','
+      << (controls.laying ? w.query_reproduction(fixture.queen)
+                                ->config.maintenance_horizon.milliseconds
+                          : 0)
+      << '\n';
   auto observations = file(dir / "decisions.csv");
   observations
       << "time_ms,source,actor,context,behavior,choice,recipient,candidates,"
@@ -372,12 +380,19 @@ void run(const std::filesystem::path &root, std::ostream &summary,
 } // namespace
 int main(int argc, char **argv) {
   try {
-    if (argc != 3)
+    if (argc != 3 && argc != 4)
       throw std::invalid_argument(
           "usage: antworld_s6_3_1_experiment OUTPUT_DIR "
-          "smoke|historical|causal|restricted|sensitivity|positive|review");
+          "smoke|historical|causal|restricted|sensitivity|positive|review|"
+          "horizons [legacy|reserve]");
     const std::filesystem::path root = argv[1];
     const std::string mode = argv[2];
+    if (argc == 4) {
+      const std::string_view model = argv[3];
+      if (model != "legacy" && model != "reserve")
+        throw std::invalid_argument("unknown allocation model");
+      selected_reserve = model == "reserve" ? 1U : 0U;
+    }
     require(!std::filesystem::exists(root / "summary.csv"),
             "refusing to overwrite experiment");
     std::filesystem::create_directories(root);
@@ -431,6 +446,20 @@ int main(int argc, char **argv) {
             c.reproduction_days = 4;
           run(root, summary, seed, 8, "balanced", false, arm, 90, 6, c);
         }
+    } else if (mode == "horizons") {
+      for (std::uint64_t seed = 1; seed <= 6; ++seed)
+        for (auto workers : {8U, 32U})
+          for (bool positive : {false, true})
+            for (auto horizon : {2U, 3U}) {
+              selected_reserve = horizon;
+              Controls c;
+              c.positive = positive;
+              const std::string arm =
+                  std::string(positive ? "positive_" : "ordinary_") +
+                  (horizon == 2 ? "absorption" : "two_intervals");
+              run(root, summary, seed, workers, "balanced", false, arm,
+                  positive ? 180 : 90, 6, c);
+            }
     } else if (mode == "positive" || mode == "review") {
       for (std::uint64_t seed = 1; seed <= (mode == "review" ? 1U : 6U); ++seed)
         for (auto workers : {8U, 32U}) {

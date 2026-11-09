@@ -15,7 +15,8 @@ inline std::uint64_t long_term_fingerprint(const LongTermConfig &c) {
 }
 inline void validate_reproduction(const ReproductionConfig &c,
                                   const PhysiologyConfig &p) {
-  if (c.interval.milliseconds < 1 ||
+  if (c.interval.milliseconds < 1 || c.maintenance_horizon.milliseconds < 0 ||
+      c.maintenance_horizon.milliseconds > INT64_C(31536000000) ||
       c.interval.milliseconds > INT64_C(31536000000) || !c.egg_protein_ug ||
       c.egg_protein_ug > p.larval_protein_requirement_ug || !c.egg_water_ug ||
       c.egg_water_ug >= p.hydration_capacity_ug || !c.egg_energy_nj ||
@@ -25,6 +26,37 @@ inline void validate_reproduction(const ReproductionConfig &c,
       c.offspring_carrying_capacity_ug > 1000000000)
     throw std::invalid_argument(
         "invalid funded reproduction ENGINEERING_FIXTURE");
+  const auto horizon =
+      static_cast<std::uint64_t>(c.maintenance_horizon.milliseconds);
+  (void)add(add(c.egg_energy_nj, c.dissipated_energy_nj),
+            multiply(p.basal_nj_per_ms, horizon));
+  (void)add(
+      c.egg_water_ug,
+      add(multiply(p.water_loss_ug_per_period, horizon),
+          static_cast<std::uint64_t>(p.water_loss_period.milliseconds) - 1) /
+          static_cast<std::uint64_t>(p.water_loss_period.milliseconds));
+}
+template <class S> bool has_maternal_reserve(const S &s) {
+  for (const auto &[id, r] : s.reproduction) {
+    (void)id;
+    if (r.config.maintenance_horizon.milliseconds)
+      return true;
+  }
+  return false;
+}
+inline bool reproductive_resources(const ReproductionConfig &c,
+                                   const PhysiologyState &p) {
+  const auto horizon =
+      static_cast<std::uint64_t>(c.maintenance_horizon.milliseconds);
+  const auto energy = multiply(p.config.basal_nj_per_ms, horizon);
+  const auto water =
+      add(multiply(p.config.water_loss_ug_per_period, horizon),
+          p.water_loss_remainder) /
+      static_cast<std::uint64_t>(p.config.water_loss_period.milliseconds);
+  return p.crop.protein_ug >= c.egg_protein_ug &&
+         p.hydration_ug > add(c.egg_water_ug, water) &&
+         p.body_energy_nj >
+             add(add(c.egg_energy_nj, c.dissipated_energy_nj), energy);
 }
 inline void validate_cycle(const ResourceCycleConfig &c) {
   (void)multiply(c.release_limit.total_ug(), 1000);

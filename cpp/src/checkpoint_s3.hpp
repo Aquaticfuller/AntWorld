@@ -1,4 +1,5 @@
 #pragma once
+#include "long_term_internal.hpp"
 #include "checkpoint_codec.hpp"
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
@@ -104,7 +105,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
             } else if (e.kind==FactKind::ReproductionAttempt) {
                 ensure(s.reproduction.contains(e.actor),"attempt lacks reproduction configuration");
                 const auto& c=s.reproduction.at(e.actor).config;
-                const bool funded=p.crop.protein_ug>=c.egg_protein_ug && p.hydration_ug>c.egg_water_ug && p.body_energy_nj>add(c.egg_energy_nj,c.dissipated_energy_nj);
+                const bool funded=reproductive_resources(c,p);
                 ensure(funded==(e.payload!=0),"reproduction outcome differs from physiological funding");
             } else if (e.kind == FactKind::StageChanged) {
                 ensure(p.body_energy_nj && p.hydration_ug && developing(p, prior_stage) &&

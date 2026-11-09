@@ -14,6 +14,9 @@ struct ReproductionConfig {
   std::uint64_t egg_protein_ug{20}, egg_water_ug{200};
   std::uint64_t egg_energy_nj{500000000}, dissipated_energy_nj{10000000};
   std::uint64_t offspring_carrying_capacity_ug{4000};
+  // ENGINEERING_FIXTURE local body-condition allocation horizon; zero preserves
+  // S6.3.
+  SimTime maintenance_horizon{};
   bool operator==(const ReproductionConfig &) const = default;
 };
 struct ReproductionState {
