@@ -1,0 +1,13 @@
+{
+  "dataset_doi": "10.1371/journal.pone.0076531.s005",
+  "archive_sha256": "9990d73ea6c08ffeedfef7e332b8f1623ab71936afc62e25d5cf9f4df3520b49",
+  "files": 69,
+  "colonies": [
+    "A",
+    "C",
+    "D"
+  ],
+  "geometry": "Flat exploratory canvas. No caregiver load or nest travel.",
+  "subsampling": "First recorded point at or after each elapsed integer second, plus the final point.",
+  "comparisons": "Separate locomotion component, with no parameter fit or independent brood assay."
+}

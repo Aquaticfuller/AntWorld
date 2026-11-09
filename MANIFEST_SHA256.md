@@ -7,8 +7,8 @@ Files: 70 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `9075d984415b7136bf1945e92b5855dc3f64c2218c45d9572de1dcbc86d5a76e` | 5083 |
-| `CODEX_START_HERE.md` | `498568587e7f8fefd16c498487fde9e1d4bae2b348ff5bee67a555c6f5c93765` | 7663 |
+| `AGENTS.md` | `23c2d9cffc46f8b48e067d0a2bd63f2eb8132d08e19747cfac38b23b8133e28f` | 5083 |
+| `CODEX_START_HERE.md` | `6b8c099d54c49335fa4ec72136f313dd516fc5971099256aa4f978ef63a3808b` | 7698 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 70 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `d540fb2c92ddb26d91d3ed60bb1e3996e284873111303383ea784b77120b0438` | 44361 |
+| `docs/08_Open_Questions.md` | `625c73865d508022fa44b654be53f52588cb66a0564a4ef7ecfde50a6440a71c` | 46565 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |

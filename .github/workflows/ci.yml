@@ -84,6 +84,11 @@ jobs:
         run: |
           ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3-reproduction 0 primary
           python tools/verify_s6_3_3_reproduction.py build/ci/s6_3_3-reproduction
+      - name: Reproduce all S6.3.3.1 exploratory retrieval seeds (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_1-reproduction all retrieval-line local
+          python tools/verify_s6_3_3_reproduction.py build/ci/s6_3_3_1-reproduction --retrieval-profile local
 
   sanitizers:
     runs-on: ubuntu-24.04

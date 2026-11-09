@@ -35,6 +35,11 @@ checks = [
     ['tools/verify_s6_3_3_validation_guard.py', '--check'],
     ['tools/verify_s6_3_3_portable_allocation.py', '--check'],
     ['tools/analyze_s6_3_3_performance.py', '--check'],
+    ['tools/verify_s6_3_3_1_archive.py'],
+    ['tools/analyze_s6_3_3_1.py', '--density-only', '--density', 'experiments/s6_3_3_1/density.csv', '--check'],
+    ['tools/analyze_s6_3_3_1_performance.py', '--check'],
+    ['tools/analyze_s6_3_3_1_performance.py', '--raw', 'experiments/s6_3_3_1/performance_reserve',
+     '--out', 'experiments/s6_3_3_1/performance_reserve/analysis', '--check'],
 ]
 for check in checks:
     result = subprocess.run([sys.executable, *check], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

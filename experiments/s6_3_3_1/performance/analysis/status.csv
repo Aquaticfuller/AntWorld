@@ -1,0 +1,3 @@
+kind,status,qualified_sessions,required_sessions,raw_rows,planned_rows,batch
+contacts,PASS,3,3,336,336,COLLECTION_FINISHED
+births,WORKLOAD_MISMATCH,0,3,168,168,COLLECTION_FINISHED

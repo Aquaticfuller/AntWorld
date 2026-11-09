@@ -74,12 +74,13 @@ void density(std::ostream& out, unsigned caregivers, unsigned per_carer, bool de
     }
     const auto expected=dense?caregivers*(caregivers-1+caregivers*per_carer):caregivers*per_carer;
     require(initial_opportunities==expected,"synchronous opportunity facts were lost");
+    const auto trace=w.snapshot().trace_hash;
     out<<caregivers<<','<<caregivers*per_carer<<','<<per_carer<<','<<(dense?"dense":"dispersed")<<','
        <<(local?"local":"legacy")<<','<<replicate<<','<<(replicate==0)<<",7,60000,"<<std::setprecision(17)
        <<advance_ms<<','<<checkpoint_ms<<','<<restore_ms<<','<<decisions<<','<<decisions*examined<<','<<examined<<','
        <<initial_opportunities<<','<<opportunities<<','<<selected<<','<<started<<','<<completed<<','<<interrupted<<','
        <<handled<<','<<transfer_facts<<','<<history.size()-before<<','<<history.size()<<','<<history_bytes<<','
-       <<checkpoint.size()<<','<<w.summary().trace_hash<<",1\n";
+       <<checkpoint.size()<<','<<trace<<",1\n";
     out.flush();
 }
 }

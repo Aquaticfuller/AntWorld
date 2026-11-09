@@ -1,0 +1,2 @@
+kind,status,qualified_sessions,required_sessions,raw_rows,planned_rows,batch
+births,PASS,3,3,168,168,COLLECTION_FINISHED

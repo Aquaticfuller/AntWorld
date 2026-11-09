@@ -1,5 +1,14 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.3.3.1 retrieval and performance review boundary
+
+- **SD-09 remains OPEN.** Local retrieval episodes improve repeated delivery and contact timing in the exploratory B02 assay. Worker-group delivery remains below the published mean and far-brood retrieval remains weak. The independent flat-worker tracks expose a large movement-clock discrepancy. Future paired trials need loaded and unloaded paths, contact latency and inter-trip observations at matched caste, age and apparatus. B01 still has a positive care-score bias in all three focal conditions. Glass transfer, active callow care, mesh antennation, genuine aging and the source of worker inhibition remain separate uncertainties. No coefficient has been calibrated.
+- **TD-11 remains OPEN and measured.** The 128-caregiver/four-brood dense fixture generates 164,223 opportunities and a 35,053,478-byte checkpoint in 60 simulated seconds. The dispersed fixture still examines 157,440 candidates through the geometry-free scan but emits 984 opportunities. Neighbor enumeration and observation/history growth need separate engineering study. Future work can examine a geometry-free spatial index and lossless fact storage. Preserve deterministic ordering, full opportunities and actual interactions in any optimization.
+- **TD-01 and TD-08 pass this bounded Windows requalification.** The existing dense contact and reserve-birth workloads show pooled advance p50 ratios of 5.4154x and 4.2740x. The 6x gate, semantic identities, all old slow rows and the unknown cause of S6.1's 24.229x result are preserved. TD-08 longer birth histories and dynamic ecological populations remain open. Keep the original S6.3.3 admission failure evidence and the current disqualified ordinary-birth samples.
+- **SD-01/02, SD-04, SD-06/07/08 and TD-03/06 remain OPEN.** The retrieval candidate uses a private pickup-site memory. Brood trail recruitment is an untested hypothesis distinct from food trail following. Nutrition, active/rest calibration, nest organization and long-history storage retain the earlier limits.
+
+The [S6.3.3.1 report](../S6_3_3_1_RESULTS.md) records the quantitative gaps and the exact validation boundary. Stop at independent review.
+
 ## Current S6.3.3 P01/P10 review boundary
 
 P10 adds committed act phases and duration-known/unknown boundaries; P01 adds queen-specific local care. See documents52-53 and S6_3_3_RESULTS.md. The historical evidence atlas remains the scientific reference. Care capability and exact accounting do not establish calibrated probabilities, durations, caste activity costs or whole-colony realism. The user's authorization excludes P02-P04 and every follow-on stage.

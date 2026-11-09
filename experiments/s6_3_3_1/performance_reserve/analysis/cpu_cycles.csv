@@ -1,0 +1,13 @@
+kind,layout,population,phase,cpu_ms_p50,cycles_p50,cpu_wall_fraction
+births,dense,128,setup,0.0,2339798.5,0.0
+births,dense,128,birth_advance,0.0,2554271.0,0.0
+births,dense,128,encode,0.0,3839213.0,1.0662472192272523
+births,dense,128,restore,0.0,5632469.5,0.0
+births,dense,512,setup,0.0,8503490.0,1.0910078608425584
+births,dense,512,birth_advance,0.0,8912885.0,0.9928118155271684
+births,dense,512,encode,0.0,12136546.5,0.5692667182249809
+births,dense,512,restore,0.0,22481440.0,0.7833898699499339
+births,dense,2048,setup,15.625,36267823.0,1.0002293678517846
+births,dense,2048,birth_advance,15.625,37382206.0,0.992727583677366
+births,dense,2048,encode,15.625,45139125.0,0.9295253995267213
+births,dense,2048,restore,31.25,100897730.5,0.908651719984385
