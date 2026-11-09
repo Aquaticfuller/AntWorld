@@ -18,10 +18,11 @@ from run_s6_3_performance import schedule
 from s6_3_3_1_processor_times import Sampler, selected_core
 import s6_2_windows_telemetry as win
 
-BINARIES = {'contacts': 'antworld_s6_2_benchmark.exe', 'births': 'antworld_s6_3_birth_benchmark.exe'}
+BINARIES = {'contacts': 'antworld_s6_2_benchmark.exe', 'births': 'antworld_s6_3_1_birth_benchmark.exe'}
 MAPPING = ROOT/'experiments/s6_2/hwinfo_columns_v2.json'
 CONFIRMATION = 'instrument_v2_confirmation/receipt.json'
 PROTOCOL = ROOT/'docs/55_S6_3_3_1_Performance_Instrument_Protocol.md'
+CORRECTION = ROOT/'docs/57_S6_3_3_1_Reserve_Birth_Benchmark_Correction.md'
 SENSOR_FIELDS = ('package_temperature_c', 'package_power_w', 'p0_t0_effective_clock_mhz')
 
 
@@ -41,25 +42,29 @@ def dependencies():
     return {name: digest(ROOT/'tools'/name) for name in (
         Path(__file__).name, 's6_3_3_1_processor_times.py', 's6_2_windows_telemetry.py',
         'diagnose_s6_3_2_counters.py', 'run_s6_3_2_performance.py',
-        'run_s6_3_performance.py', 'run_s6_2_performance.py', 'extract_s6_2_hwinfo.py')}
+        'run_s6_3_performance.py', 'run_s6_2_performance.py', 'extract_s6_2_hwinfo.py',
+        'verify_s6_3_3_1_reserve_workload.py')}
 
 
 def prepare(args):
     assert not (args.out/'freeze.json').exists()
     assert not git('status', '--porcelain', '--', 'cpp'), 'commit the measured core before freezing'
     revision = git('rev-parse', 'HEAD')
-    confirmation = load(args.out/CONFIRMATION)
+    confirmation_path = args.confirmation or args.out/CONFIRMATION
+    confirmation = load(confirmation_path)
     sources = dependencies()
     assert confirmation['status'] == 'PASS' and confirmation['instrument_version'] == 2
     assert confirmation['probe_sha256'] == sources['s6_3_3_1_processor_times.py']
     compiler = subprocess.check_output([str(args.compiler), '--version'], text=True).splitlines()
     cache = (args.build/'CMakeCache.txt').read_text(encoding='utf-8')
     assert 'CMAKE_BUILD_TYPE:STRING=Release' in cache and 'ANTWORLD_SANITIZERS:BOOL=OFF' in cache
-    for kind in BINARIES:
+    kinds = (args.kind,) if args.kind else tuple(BINARIES)
+    for kind in kinds:
         for number in (1, 2, 3):
             assert not (args.out/kind/f'session{number}').exists()
     records = {}
-    for kind, name in BINARIES.items():
+    for kind in kinds:
+        name = BINARIES[kind]
         schedules = {}
         for number in (1, 2, 3):
             directory = args.out/kind/f'session{number}'
@@ -70,10 +75,11 @@ def prepare(args):
         records[kind] = dict(name=name, sha256=digest(args.build/name), schedule_sha256=schedules)
     save(args.out/'freeze.json', dict(
         source_commit=revision, configuration='Release', compiler=compiler, created_utc_ns=time.time_ns(),
-        instrument_version=2, confirmation_sha256=digest(args.out/CONFIRMATION),
+        instrument_version=2, confirmation=str(confirmation_path.relative_to(ROOT).as_posix()),
+        confirmation_sha256=digest(confirmation_path), correction_sha256=digest(CORRECTION),
         protocol_sha256=digest(PROTOCOL), sensor_mapping_sha256=digest(MAPPING), script_sha256=sources,
-        order=[f'{kind}/session{number}' for kind in BINARIES for number in (1, 2, 3)], executables=records))
-    print(f'Frozen six schedules and both Release executables from {revision}', flush=True)
+        order=[f'{kind}/session{number}' for kind in kinds for number in (1, 2, 3)], executables=records))
+    print(f'Frozen {len(kinds)*3} schedules and {len(kinds)} Release executable hashes from {revision}', flush=True)
 
 
 def finite(value):
@@ -206,7 +212,13 @@ def run(args):
     freeze = load(args.out/'freeze.json')
     assert freeze['script_sha256'] == dependencies() and freeze['protocol_sha256'] == digest(PROTOCOL)
     assert freeze['sensor_mapping_sha256'] == digest(MAPPING)
-    assert freeze['confirmation_sha256'] == digest(args.out/CONFIRMATION)
+    confirmation_path = ROOT/freeze['confirmation']
+    assert freeze['correction_sha256'] == digest(CORRECTION)
+    assert freeze['confirmation_sha256'] == digest(confirmation_path)
+    if 'births' in freeze['executables']:
+        identity = load(args.out/'reserve_identity_receipt.json')
+        assert identity['match'] and identity['rows'] == 3
+        assert identity['executable_sha256'] == freeze['executables']['births']['sha256']
     assert not git('status', '--porcelain', '--', 'cpp')
     assert not git('diff', '--name-only', freeze['source_commit'], 'HEAD', '--', 'cpp')
     assert not (args.out/'batch_result.json').exists(), 'the frozen batch already ended'
@@ -220,7 +232,7 @@ def run(args):
     chosen = selected_core(cores)
     logical = min(chosen['logical'])
     observer = sum(c['mask'] for c in cores) & ~chosen['mask']
-    confirmation = load(args.out/CONFIRMATION)
+    confirmation = load(confirmation_path)
     assert cores == confirmation['topology'] and logical == confirmation['selected_logical']
     assert win.affinity(win.current_process(), observer), 'collector affinity failed'
     started = time.time_ns()
@@ -272,10 +284,12 @@ def main():
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--compiler', type=Path)
     parser.add_argument('--prepare', action='store_true')
+    parser.add_argument('--kind', choices=tuple(BINARIES))
+    parser.add_argument('--confirmation', type=Path)
     parser.add_argument('--archive', type=Path)
     parser.add_argument('--hwinfo-csv', type=Path)
     args = parser.parse_args()
-    for name in ('out', 'build', 'compiler', 'archive', 'hwinfo_csv'):
+    for name in ('out', 'build', 'compiler', 'confirmation', 'archive', 'hwinfo_csv'):
         path = getattr(args, name)
         if path is not None:
             setattr(args, name, path.resolve())
