@@ -91,7 +91,7 @@ def box_cells(bounds):
             for z in range(low[2], high[2])}
 
 
-def audit_integration(root, directory, suite, seeds, duration):
+def audit_integration(root, directory, suite, seeds, duration, *, schema=7, physics=8):
     base = root / directory
     raw = read(base / 'summary.csv')
     configuration = json.loads((base / 'configuration.json').read_text(encoding='utf-8'))
@@ -119,7 +119,7 @@ def audit_integration(root, directory, suite, seeds, duration):
             assert {k: v for k, v in r.items() if k not in ('mode', 'advance_ms')} == {
                 k: v for k, v in replicas[mode].items() if k not in ('mode', 'advance_ms')}
         assert r['scope'] == 'ENGINEERING_FIXTURE' and r['exact_continuation'] == '1'
-        assert number(r, 'schema_version') == 7 and number(r, 'physics_version') == 8
+        assert number(r, 'schema_version') == schema and number(r, 'physics_version') == physics
         assert number(r, 'simulation_ms') == duration
         assert number(r, 'maximum_candidates') <= number(r, 'encounter_budget')
         zero_residuals(r)

@@ -1,0 +1,41 @@
+{
+  "targets": {
+    "performance_baseline": {
+      "dense_2048_speedup": 84.61452731234816,
+      "dense_512_to_2048_growth": 2.445925455275424,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "uninstrumented"
+    },
+    "unprofiled_before": {
+      "dense_2048_speedup": 29.423878988906978,
+      "dense_512_to_2048_growth": 6.4972262145964645,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    },
+    "profile_before": {
+      "dense_2048_speedup": 34.452533287263066,
+      "dense_512_to_2048_growth": 6.060025696560332,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "attribution only"
+    },
+    "profile_after": {
+      "dense_2048_speedup": 49.066083614207564,
+      "dense_512_to_2048_growth": 5.128861082466718,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "PASS",
+      "timing_role": "attribution only"
+    },
+    "performance_final": {
+      "dense_2048_speedup": 39.682350700126285,
+      "dense_512_to_2048_growth": 24.228682066564414,
+      "speedup_at_least_4x": "PASS",
+      "growth_at_most_6x": "FAIL",
+      "timing_role": "uninstrumented"
+    }
+  },
+  "canonical_hash_groups": 12,
+  "semantic_parity": "PASS"
+}

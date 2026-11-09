@@ -12,13 +12,15 @@ using namespace antworld;
 using s3_fixture::require;
 namespace {
 struct Output {
-  std::ofstream summary, series, events, decisions, individuals, counts;
+  std::ofstream summary, series, events, decisions, individuals, counts,
+      geometry;
   explicit Output(const std::filesystem::path &dir)
       : summary(dir / "summary.csv"), series(dir / "time_series.csv"),
         events(dir / "events.csv"), decisions(dir / "decisions.csv"),
-        individuals(dir / "individuals.csv"), counts(dir / "event_counts.csv") {
-    for (auto *f :
-         {&summary, &series, &events, &decisions, &individuals, &counts}) {
+        individuals(dir / "individuals.csv"), counts(dir / "event_counts.csv"),
+        geometry(dir / "geometry.csv") {
+    for (auto *f : {&summary, &series, &events, &decisions, &individuals,
+                    &counts, &geometry}) {
       f->exceptions(std::ios::badbit | std::ios::failbit);
       *f << std::setprecision(17);
     }
@@ -51,10 +53,16 @@ struct Output {
            "carb_accounted_ug,protein_accounted_ug,water_accounted_ug,other_"
            "accounted_ug,"
            "energy_input_nj,body_energy_nj,dissipated_energy_nj,soil_initial_"
-           "q3,soil_remaining_q3,soil_carried_q3,soil_deposited_q3\n";
+           "q3,soil_remaining_q3,soil_carried_q3,soil_deposited_q3,soil_filled_"
+           "q3";
+    for (const auto location : {"available", "stored", "carried", "crop"})
+      for (const auto ingredient : {"carbs", "protein", "water", "other"})
+        series << ',' << location << '_' << ingredient << "_ug";
+    series
+        << ",hydration_ug,tissue_protein_ug,oxidized_carbs_ug,lost_water_ug\n";
     events << key
            << "event_id,source_id,time_ms,kind,actor,payload,stage,outcome,x_m,"
-              "y_m,z_m,carbs_ug,protein_ug,water_ug,other_ug\n";
+              "y_m,z_m,carbs_ug,protein_ug,water_ug,other_ug,scheduled_kind\n";
     decisions
         << key
         << "event_id,time_ms,actor,program_before,program_after,program_age_ms,"
@@ -68,6 +76,9 @@ struct Output {
                    "crop_water_ug,crop_other_ug,tissue_protein_ug,body_energy_"
                    "nj,hydration_ug\n";
     counts << key << "kind,count\n";
+    geometry << key
+             << "edit_id,event_id,source_id,actor_id,parcel_id,time_ms,kind,"
+                "min_x_q,min_y_q,min_z_q,max_x_q,max_y_q,max_z_q,volume_q3\n";
   }
 };
 struct Person {
@@ -152,7 +163,11 @@ struct Monitor {
                    << e.position.x << ',' << e.position.y << ',' << e.position.z
                    << ',' << e.transferred.carbs_ug << ','
                    << e.transferred.protein_ug << ',' << e.transferred.water_ug
-                   << ',' << e.transferred.other_ug << '\n';
+                   << ',' << e.transferred.other_ug << ','
+                   << (due.contains(e.source)
+                           ? static_cast<int>(due.at(e.source).kind)
+                           : -1)
+                   << '\n';
     }
   }
   void advance(SimTime target) {
@@ -376,7 +391,13 @@ struct Monitor {
     out.series << ',' << n.energy_input_nj << ',' << n.body_energy_nj << ','
                << n.dissipated_energy_nj << ',' << g.initial_q3 << ','
                << g.remaining_q3 << ',' << g.carried_q3 << ',' << g.deposited_q3
-               << '\n';
+               << ',' << g.filled_q3;
+    const auto ledger = w.summary().food_ledger;
+    for (auto mass : {ledger.available, ledger.stored, ledger.carried, n.crop})
+      for (auto v : mass.components())
+        out.series << ',' << v;
+    out.series << ',' << n.hydration_ug << ',' << n.tissue_protein_ug << ','
+               << n.oxidized_carbs_ug << ',' << n.lost_water_ug << '\n';
   }
   void finish(std::int64_t duration) {
     const auto meta = w.snapshot();
@@ -400,6 +421,14 @@ struct Monitor {
     for (auto [kind, count] : counts)
       out.counts << prefix << static_cast<unsigned>(kind) << ',' << count
                  << '\n';
+    for (const auto &e : w.geometry_edits())
+      out.geometry << prefix << e.id.value << ',' << e.event.value << ','
+                   << e.source.value << ',' << e.actor.value << ','
+                   << e.parcel.value << ',' << e.time.milliseconds << ','
+                   << static_cast<unsigned>(e.kind) << ',' << e.box.min.x << ','
+                   << e.box.min.y << ',' << e.box.min.z << ',' << e.box.max.x
+                   << ',' << e.box.max.y << ',' << e.box.max.z << ','
+                   << e.volume_q3 << '\n';
     out.summary << prefix << duration << ',' << meta.committed_events << ','
                 << meta.state_hash << ',' << meta.trace_hash << ','
                 << last.living << ',' << emerged << ',' << unemerged << ','
@@ -512,7 +541,7 @@ int main(int argc, char **argv) {
                   "supplied", false);
       } else {
         for (const auto policy : {"legacy", "combined"})
-          for (const auto& setting :
+          for (const auto &setting :
                std::array<std::pair<std::uint32_t, std::int64_t>, 4>{
                    {{8, 10000}, {16, 5000}, {16, 20000}, {32, 10000}}})
             run(out, dir, suite, seed, policy, 32, 2000, setting.first,

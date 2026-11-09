@@ -33,6 +33,8 @@ for name in filter(None, names):
         binaries.append(name)
         continue
     checked += 1
+    if text.isascii():
+        continue
     for number, line in enumerate(text.splitlines(), 1):
         if untranslated(line):
             errors.append(f'Untranslated content: {name}:{number}')
