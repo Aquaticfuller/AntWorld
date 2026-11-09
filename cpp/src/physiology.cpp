@@ -195,6 +195,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
             auto demand = nutrient_demand(p, ant.stage);
             if (p.behavior == IndividualBehavior::Nurse) {
                 const auto sample = sample_contacts({s.world, ant.id}, p.decisions);
+                inspect_decision(e, sample, 2, static_cast<std::uint64_t>(e.kind));
                 if (sample.candidates_examined) {
                     auto& work=s.m.contact_work; bump(work.decisions); f.random_value=sample.candidates_examined;
                     work.candidates_examined=add(work.candidates_examined,sample.candidates_examined);
@@ -290,6 +291,8 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             else if (!gift_priority) choose_gift();
         }
         if (action.kind != ScheduledEvent::Kind::Rest) action.requested_ug = p.config.transfer_limit_ug;
+        inspect_decision(wake, encounters[actions.size()], 0, static_cast<std::uint64_t>(action.kind),
+                         action.kind == ScheduledEvent::Kind::Trophallaxis ? EntityId{action.payload} : EntityId{});
         actions.push_back(action);
     }
     // All choices above observe the same committed boundary, never earlier submissions.

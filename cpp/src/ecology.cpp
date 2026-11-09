@@ -119,6 +119,7 @@ void WorldRuntime::resolve_autonomy_wakes(
             config.minimum_program_time.milliseconds;
     if (can_switch && wake.payload==1 && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
+      inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && ready) {
       const auto sample = sample_contacts(
           {s.world, ant.id}, a.decisions ^ UINT64_C(0x45434f4c4f4759));
@@ -213,6 +214,9 @@ void WorldRuntime::resolve_autonomy_wakes(
           draw -= weight;
         }
       }
+      inspect_decision(wake, sample, 1, static_cast<std::uint64_t>(choice.behavior));
+    } else {
+      inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
     }
     choices.push_back(std::move(choice));
   }

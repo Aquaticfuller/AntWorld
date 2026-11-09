@@ -64,3 +64,4 @@ Files: 56 (excluding the manifest itself).
 | `docs/42_S6_3_Correction_Protocol.md` | `2cc6f8af2383b297686f4aa94546b79e9084a2aa5b1b744a48aa3001d3e4819a` | 5475 |
 | `docs/43_S6_3_Implementation_and_Metrics.md` | `4804e5d80b7eedc38add1e7800b599aae73cc0be350548e3ab68e2609a521fa6` | 9217 |
 | `docs/44_S6_3_1_Frozen_Protocol.md` | `3fe3e0c56b62dc82d3ec499da8eeeb5d0468a6df17d7c8ae854957cfec922168` | 11591 |
+| `docs/45_S6_3_1_Observer_Contracts.md` | `pending` | 0 |
