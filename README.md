@@ -1,6 +1,6 @@
 # AntWorld
 
-An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S5 durable saves, history and analytics**: atomic SQLite generations, validated recovery, factual event and individual histories, exact metric definitions and indexed time-window queries. See [S5 results](S5_RESULTS.md), [frozen protocol](docs/33_S5_Persistence_History_and_Validation.md), [metric definitions](docs/34_S5_Metric_Definitions.md) and [reproduction](experiments/s5/README.md). All 89 S0-S4 tests and historical evidence remain, with 19 added tests. Biological validation and scaling debts remain open in [document 08](docs/08_Open_Questions.md). S6 is not authorized.
+An autonomous ant ecosystem simulation with an authoritative C++ core, a future Unity/C# client and an evidence-based Game Master. The current implementation is **S6 integrated ecology**, awaiting independent review: local nutrient limits/redistribution, bounded encounters, individual program selection, continuous identity/death, real 3D excavation and S5 durable evidence. See [S6 results](S6_RESULTS.md), [frozen protocol](docs/35_S6_Integration_and_Validation_Protocol.md), [implementation and metrics](docs/36_S6_Implementation_and_Metric_Definitions.md) and [raw evidence/reproduction](experiments/s6/README.md). All 108 S0-S5 tests remain, with 16 added registrations. Self-assessment is CONDITIONAL PASS: integrated surplus stranding and a missed contact scaling target remain in [document 08](docs/08_Open_Questions.md). The finite extended colony dies; biological realism and sustainable growth are not established. S7 is not authorized.
 
 ## Build and test on Windows x64
 
@@ -28,6 +28,8 @@ python tools/analyze_s4.py --check
 ./build/release/antworld_s4_benchmark.exe out/s4-performance.csv
 ./build/release/antworld_s5_experiment.exe out/s5-experiments 32
 python tools/analyze_s5.py --check
+./build/release/antworld_s6_experiment.exe out/s6-smoke 1 smoke
+python tools/analyze_s6.py --check
 ./build/release/antworld_archive.exe create out/world.sqlite scenarios/p0_smoke.json
 ./build/release/antworld_archive.exe inspect out/world.sqlite 381b1f47-91b8-4b2d-9d51-967a3e2b2a01
 ```
@@ -46,7 +48,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S5_RESULTS.md](S5_RESULTS.md); earlier reports preserve their historical baselines.
+For multi-configuration generators, select the same configuration when building and testing, for example `--config Debug` and `ctest -C Debug`. Use `-DANTWORLD_SANITIZERS=ON` with Clang/GCC for ASan/UBSan. Current tested platforms/compilers and CI status are recorded in [S6_RESULTS.md](S6_RESULTS.md); earlier reports preserve their historical baselines.
 
 ## Minimal S5 persistence use
 

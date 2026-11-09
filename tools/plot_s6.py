@@ -64,7 +64,7 @@ def nutrition():
             y = np.array([float(r['mean']) for r in data])
             err = np.array([[float(r['mean'])-float(r['ci95_low']) for r in data],
                             [float(r['ci95_high'])-float(r['mean']) for r in data]])
-            ax.errorbar(np.array([0, 100, 400])+dx*70, y, yerr=err, marker='o', capsize=4, color=color, label=label)
+            ax.errorbar([0, 100, 400], y, yerr=err, marker='o' if policy == 'local_demand' else 's', capsize=4, color=color, label=label)
         ax.set(title=f'Initially {stage}: emergence at 180 s', xticks=[0, 100, 400], xticklabels=['0', '100', '400'],
                xlabel='Initial protein per nurse (ug)', ylabel='Adult brood / 4', ylim=(-.15, 4.4))
         ax.legend(fontsize=8)
@@ -110,6 +110,8 @@ def ecology():
             band(ax, series, condition, field, LABELS[condition], COLORS[condition], scale)
         ax.set(title=title, xlabel='Simulated time (s)', ylabel=unit)
     axes[0, 0].legend(fontsize=8)
+    axes[1, 0].text(.97, .08, 'Three open-resource conditions overlap', transform=axes[1, 0].transAxes,
+                     ha='right', fontsize=8)
     for x, condition in enumerate(COLORS):
         data = [r for r in raw if r['condition'] == condition]
         paired = defaultdict(list)
@@ -165,7 +167,7 @@ def contacts():
         ax.grid(alpha=.16)
     fig.suptitle('S6 contact scaling: all ten repetitions, no timing samples discarded\n'
                  'Lines show medians; dots show measured host variation; initial missed target remains evidence', fontsize=12)
-    fig.supxlabel('ENGINEERING_FIXTURE | Candidate cap does not bound total scheduler, allocator or geometry cost', fontsize=9)
+    fig.supxlabel('ENGINEERING_FIXTURE | Points jittered horizontally for visibility\nCandidate cap does not bound total scheduler, allocator or geometry cost', fontsize=9)
     save(fig, 'contact_scaling')
 
 

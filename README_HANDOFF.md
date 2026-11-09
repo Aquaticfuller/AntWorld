@@ -13,7 +13,7 @@ This repository begins with a complete design baseline and engineering specifica
 
 ## Workflow
 
-Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user conditionally accepted S4 and authorized S5 durable saves, history and analytics. Read S5_RESULTS.md and documents 33/34 for evidence, decisions and metric definitions. Preserve every earlier report, raw dataset and the scientific/technical debts in document 08. S5 is implemented for independent review. Stop before S6 until explicitly authorized.
+Keep this baseline in Git, read the instructions and contracts, implement one authorized stage, run its checks and report evidence. The user conditionally accepted S5 and authorized S6 integrated ecology. S6 implementation and its frozen experiments are complete for independent review; read S6_RESULTS.md and documents 35/36 for evidence, definitions, negative outcomes and remaining conditions. Preserve all 124 tests, every earlier report/raw dataset and the scientific/technical debts in document 08. Stop before S7 until explicitly authorized.
 
 ## Unfinished research and implementation
 

@@ -1,0 +1,33 @@
+{
+  "source_commit": "3636f22458d0a6fc0c2c5cb22d776dda98d1d6a9",
+  "build": "Clean_Release",
+  "hardware": {
+    "cpu": {
+      "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+      "NumberOfCores": 10,
+      "NumberOfLogicalProcessors": 16
+    },
+    "memory": {
+      "TotalPhysicalMemory": 16890519552
+    },
+    "os": {
+      "Caption": "Microsoft Windows 11 Home",
+      "Version": "10.0.26200",
+      "BuildNumber": "26200"
+    },
+    "power_plan": "Balanced (85d583c5-cf2e-4197-80fd-3789a227a72c)"
+  },
+  "toolchain": {
+    "clang": "23.1.5",
+    "llvm_mingw": "20261104-ucrt-x86_64",
+    "cmake": "3.31.10",
+    "ninja": "1.13.2",
+    "sqlite": "3.54.1"
+  },
+  "started_utc": "2026-11-08T23:42:46.1578594Z",
+  "ended_utc": "2026-11-08T23:45:09.7462018Z",
+  "isolation": "No concurrent local builds or ecological experiment processes",
+  "samples": 120,
+  "history_policy": "All facts retained",
+  "peak_rss_scope": "Process lifetime; includes preceding cases and live/restored worlds"
+}

@@ -272,6 +272,19 @@ def integration_statistics(data):
             results.append(dict(suite='primary', condition='supplied-minus-'+condition, encounter_budget='16',
                                 comparison='paired_difference', metric=metric,
                                 **interval([x-y for x, y in zip(a, b, strict=True)])))
+    for budget in ('8', '32'):
+        for metric in METRICS+DERIVED_METRICS:
+            a = seed_values[('sensitivity', 'supplied', budget, metric)]
+            b = seed_values[('sensitivity', 'supplied', '16', metric)]
+            results.append(dict(suite='sensitivity', condition='supplied', encounter_budget=budget+'-minus-16',
+                                comparison='paired_difference', metric=metric,
+                                **interval([x-y for x, y in zip(a, b, strict=True)])))
+    for metric in METRICS+DERIVED_METRICS:
+        a = seed_values[('long', 'supplied', '16', metric)]
+        b = seed_values[('long', 'food_absent', '16', metric)]
+        results.append(dict(suite='long', condition='supplied-minus-food_absent', encounter_budget='16',
+                            comparison='paired_difference', metric=metric,
+                            **interval([x-y for x, y in zip(a, b, strict=True)])))
     return results
 
 
@@ -362,9 +375,9 @@ def surplus_statistics(root):
     return result
 
 
-def contact_statistics(root):
+def contact_statistics(root, archives=('contact_initial', 'performance')):
     result, acceptance = [], {}
-    for archive in ('contact_initial', 'performance'):
+    for archive in archives:
         data = read(root/archive/'contacts.csv')
         expected = {(n, layout, policy, rep) for n in (128, 512, 2048) for layout in ('dense', 'dispersed')
                     for policy in ('exhaustive', 'bounded') for rep in range(10)}
@@ -428,6 +441,13 @@ def main():
                                              ('sensitivity', 'sensitivity', 16, 600000), ('long', 'long', 8, 1800000)]:
         rows, _ = audit_integration(root, directory, suite, seeds, duration)
         data.extend(rows)
+    primary_reference = {r['seed']: r for r in data if r['suite'] == 'primary' and r['condition'] == 'supplied' and r['mirror'] == '0'}
+    excluded = {'suite', 'setup_ms', 'advance_ms', 'save_ms', 'load_ms', 'database_bytes'}
+    for row in data:
+        if row['suite'] == 'sensitivity' and row['encounter_budget'] == '16':
+            expected = primary_reference[row['seed']]
+            assert {k: v for k, v in row.items() if k not in excluded} == {
+                k: v for k, v in expected.items() if k not in excluded}, 'default-budget sensitivity changed the primary fixture'
     nutrition_cases = []
     nutrition = nutrition_statistics(root, nutrition_cases)
     surplus = surplus_statistics(root)
@@ -455,6 +475,7 @@ def main():
     hashes = {p.relative_to(root).as_posix(): hashlib.sha256(p.read_text(encoding='utf-8').encode()).hexdigest() for p in paths}
     report = dict(scope='ENGINEERING_FIXTURE', primary_cases=256, sensitivity_cases=48, long_cases=16,
                   paired_execution_modes=960, nutrition_cases_per_archive=768, surplus_cases=640,
+                  exact_primary_sensitivity_baseline_pairs=16,
                   surplus_sensitivity_cases=96, independent_primary_seeds=32, bootstrap_resamples=4096,
                   analysis_seed=6006, confidence='95% percentile bootstrap; mirrors averaged within seed; modes paired',
                   conservation_identity_history_continuation='PASS', contact_acceptance=acceptance,

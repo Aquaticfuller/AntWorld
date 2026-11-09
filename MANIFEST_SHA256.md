@@ -7,8 +7,8 @@ Files: 49 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `017cf04d5d285b9ab7e5199aba621be4ea24f81768c79b80cd751c0485109842` | 4405 |
-| `CODEX_START_HERE.md` | `803585a449cb7dfe544c3d701a24f49234fc0333012b9dbfb77292f966751a6a` | 3595 |
+| `AGENTS.md` | `e9b6a998c5d1946e70f4fff8d2d191f3f6c8609fd47b0c1212e9bc5fdbf186be` | 4468 |
+| `CODEX_START_HERE.md` | `1734971e27a5d710a8ba9fa24917ba9df5e62813b703e5b212e465d10bcf46bc` | 3844 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 49 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `9e5df1e7f9c0a103bed72fb715112fa33cd8a1d81e585681a0f1ef3a490afcdf` | 18396 |
+| `docs/08_Open_Questions.md` | `f4523956e2773870bba658c74ab17e9eca64235d2b474d453054d295a9a7b4d3` | 19198 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -49,9 +49,9 @@ Files: 49 (excluding the manifest itself).
 | `docs/33_S5_Persistence_History_and_Validation.md` | `21e99d1b239c384eb96957667245de9e9837b3a19b254b15221d89f3aaaacc9f` | 9610 |
 | `docs/34_S5_Metric_Definitions.md` | `73419ce0e2d95f11f46c01de2017853f288de535db22ee730f08612afd45ea4d` | 7405 |
 | `docs/35_S6_Integration_and_Validation_Protocol.md` | `516928e70e224076a3545b74bcb93307c9fbc9dee6cf1b7d1ae46af7f0bc9bd7` | 14766 |
-| `docs/36_S6_Implementation_and_Metric_Definitions.md` | `5120eee8e08fdc11e6dbc3cf2ec8d856dd229357fe313ffd9045b7f7d9998ff3` | 13300 |
+| `docs/36_S6_Implementation_and_Metric_Definitions.md` | `4c6c621cd18d2104dc40395e8eb4e90c5ce871003da47e55cc2b469bc36a1904` | 13432 |
 | `docs/CHANGELOG.md` | `bb244da3d51cf87ba46b899e6fbe0dd425d38b77a18a4373c3124ca162d96016` | 8654 |
-| `README_HANDOFF.md` | `e47f888acff47956ceb89b9876de18db27bab6e8c5130f3dcbdbc1a505387727` | 2067 |
+| `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
 | `scenarios/p0_smoke.json` | `38fd29a6571d39a600d8c50068420c8e7df15640aad45a0aee08f1972a0c8313` | 480 |
 | `schemas/p0_scenario.schema.json` | `f2390e9cf016b74418a204d9ae3ac65c64e1082a94ceab5585b2adb119e6a588` | 3470 |

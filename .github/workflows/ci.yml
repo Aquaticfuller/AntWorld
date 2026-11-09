@@ -47,6 +47,11 @@ jobs:
         run: |
           ./build/ci/antworld_s5_experiment build/ci/s5-experiments 32
           python tools/verify_s5_reproduction.py build/ci/s5-experiments --source-commit "$GITHUB_SHA" --checkpoint-byte-delta 1 --report build/ci/s5-reproduction.json
+      - name: Reproduce first complete S6 seed (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_experiment build/ci/s6-reproduction 1 primary
+          python tools/verify_s6_reproduction.py build/ci/s6-reproduction --source-commit "$GITHUB_SHA" --cross-platform --report build/ci/s6-reproduction.json
 
   sanitizers:
     runs-on: ubuntu-24.04

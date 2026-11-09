@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S5 has received CONDITIONAL PASS with explicit S6 authorization. The current batch is S6 integrated ecology; S7 is not authorized.
+This is the v0.8 design and engineering handoff. S5 received CONDITIONAL PASS with explicit S6 authorization. S6 implementation and its frozen experiments are complete, awaiting independent Code Review. Its self-assessment is CONDITIONAL PASS with unresolved nutrition/task coupling and a missed contact scaling target. S7 is not authorized.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ This is the v0.8 design and engineering handoff. S5 has received CONDITIONAL PAS
 
 ## Current implementation gate
 
-The user conditionally accepted S5 and authorized S6. Read S5_RESULTS.md and documents 19/22/33/34 for retained persistence, document 31 for physiology and the seed-43 defect, document 32 for geometry, and document 35 for the frozen S6 protocol. Begin with SD-04 local nutrition redistribution and TD-01 contact baselines/optimization. Preserve TD-03/06 history and storage limits, SD-01/02/06 scientific limits, all historical data and all 108 inherited tests. Stop after S6 for independent review.
+The user conditionally accepted S5 and authorized S6. Read S6_RESULTS.md and documents 35/36 first; retain S5_RESULTS.md and documents 19/22/33/34 for persistence, document 31 for physiology and the original seed-43 defect, and document 32 for geometry. S6 preserves 108 inherited tests and adds 16. Local portion caps and surplus assays pass, but integrated SD-04 redistribution and TD-01's empirical latency goal remain open. Preserve TD-03/06 history/storage limits, SD-01/02/06 scientific limits and all negative evidence. Stop for independent review; do not begin S7 automatically.
 
 P0 is the later integrated vertical slice: foraging, nutrition, brood, excavation, statistics and history. S0 is only its foundation. Species parameters without appropriate evidence remain engineering assumptions. The complete map, 20,000 ants, finished graphics and mature GM personality are long-term targets, not S0 acceptance criteria.
 
