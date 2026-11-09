@@ -1,6 +1,6 @@
 # S6.3.3 verification records
 
-Initial implementation: `35a0df49eebbffd17c97bc3d223476aa8bd92590`; final exception-safe implementation: `769494c18b9fe57b3b48a8ea25a54ff467edc9b3`. All162 inherited tests remain; the18 additions bring the total to180. The old build-directory names were reused, but the executable sources are the current S6.3.3 checkout.
+Initial implementation: `35a0df49eebbffd17c97bc3d223476aa8bd92590`; exception-safe Core: `769494c18b9fe57b3b48a8ea25a54ff467edc9b3`; final experiment-layout revision: `5f4f46cf8acf7bf0d57f15b2687d9a0536709476`. All162 inherited tests remain; the18 additions bring the total to180. The old build-directory names were reused. The final Core passes all local suites; the driver-only line-break correction additionally passes the local smoke test and all final-source CI suites.
 
 - `ctest-debug.txt`, `ctest-release.txt`, `ctest-sanitized.txt`: final review-source suites,180/180 each. Clang23.1.5, pinned LLVM-MinGW20261104, CMake3.31.10, Windows x64. Windows leak detection is unavailable; Linux CI enables it.
 - `pre_guard_ctest-*.txt`: earlier successful suites, retained separately from the final custom-input speed validation.
@@ -12,6 +12,8 @@ Initial implementation: `35a0df49eebbffd17c97bc3d223476aa8bd92590`; final except
 - `ci_initial_failure.json`: first Linux CI failure annotations for host-dependent ZIP re-encoding equality. `portable_archive_check.txt` verifies the replacement check against the unchanged archive digest and exact source payloads; it does not regenerate or relabel historical evidence.
 - `ci_initial.json` and `ci_initial_windows_debug_failure.json`: complete first-run status and the MSVC Debug allocation37 failure. `portable_allocation.json` verifies the limited empty-vector constructor correction against the frozen source hashes; no behavioral coefficient, RNG call or successful action was changed.
 - `ci_gcc_build_failure.json`: GCC's experiment-driver indentation diagnostics. Only three line breaks changed; the portability checker reconstructs and hashes the retained executed driver. No warning suppression or condition/value change is used.
+- `msvc_allocation_ci.json`: the constructor-corrected Windows Debug job passes, closing the original allocation37 failure.
+- `ci_final_source.json`: [final-source CI42695868377](https://github.com/Aquaticfuller/AntWorld/actions/runs/42695868377), all five jobs PASS, including Linux Release reproduction through the complete new primary seed. The subsequent report commit adds only documentation/receipts; it does not modify code, tests, fixtures or analysis.
 
 Actual local regression commands, after prepending the pinned compiler and Ninja directories to PATH:
 

@@ -1,6 +1,6 @@
 # S6.3.3 Biological Observability and Founding Queen Care
 
-Engineering regressions: **PASS locally** (180/180 Debug, Release and ASan+UBSan); final GitHub CI is pending. P01 local maternal capability/plasticity: **CONDITIONAL PASS within the fixtures**. Quantitative B01/B02 species validation: **NOT PASSED**. Final performance qualification: **NOT QUALIFIED** after three rejected admissions. Stage acceptance is left to independent review; this is not a full biological/performance PASS. GitHub CI status is recorded below after the pushed revision runs.
+Engineering correctness: **PASS** (180/180 local Debug, Release and ASan+UBSan; all five GitHub CI jobs pass). P01 local maternal capability/plasticity: **CONDITIONAL PASS within the fixtures**. Quantitative B01/B02 species validation: **NOT PASSED**. Final performance qualification: **NOT QUALIFIED** after three rejected admissions. Stage acceptance is left to independent review; this is not a full biological/performance PASS.
 
 ## Scope and evidence
 
@@ -72,9 +72,11 @@ Figures: [care and retrieval](experiments/s6_3_3/analysis/care_and_retrieval.png
 |Frozen matrix conservation/restore|384/384 PASS|
 |Observation correction comparison|105/105 completed preliminary cases retain biological outputs|
 |Current performance qualification|NOT QUALIFIED: three pre-timing admission rejections; no final timing sample|
-|GitHub CI|Pending submitted revision; Linux leak checking and independent source reproduction are included|
+|GitHub CI|[PASS,5/5 jobs on5f4f46c](https://github.com/Aquaticfuller/AntWorld/actions/runs/42695868377); Windows/Linux Debug/Release and Linux ASan+UBSan with leak checking|
 
 Full local logs are in `experiments/s6_3_3/verification`. History, state and geometry restore, continuous brood identity, actual protein transfer, target/caregiver death, wall closure, simultaneous caregivers, rejected actions and rollback are covered. Development failures/corrections remain documented: new history-kind filter, removal-fixture movement duration, excavation-fixture work duration, and the adult-queen opportunity label. No biological coefficient was retuned in response.
+
+CI revision5f4f46cf8acf7bf0d57f15b2687d9a0536709476 passed the complete inherited evidence audits, all regression suites and the Linux Release reproduction chain through the complete23-case S6.3.3 primary seed. `verification/ci_final_source.json` preserves the exact job/step outcomes. The later evidence-report commit does not change Core, fixtures, analysis, tests or CI definitions.
 
 A final validation-only guard rejects custom arrangement displacement/duration above the world speed limit. Every frozen case has arrangement<=step, and the pre-existing step-speed guard already holds, so this added check is mathematically inert for all384 configurations. `verify_s6_3_3_validation_guard.py` verifies that implication and retains the exact two pre-guard source files in a SHA256-checked project-source archive. Original run manifests are not overwritten. Regression suites and independent CI reproduction are rerun on the stricter review build.
 

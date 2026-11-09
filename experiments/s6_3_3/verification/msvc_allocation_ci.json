@@ -1,0 +1,172 @@
+{
+  "id": 129422658280,
+  "run_id": 42694519510,
+  "workflow_name": "Core CI",
+  "head_branch": "codex/s6.3.3-queen-care-observability",
+  "run_url": "https://api.github.com/repos/Aquaticfuller/AntWorld/actions/runs/42694519510",
+  "run_attempt": 1,
+  "node_id": "CR_kwDOVmtP088AAAAeIjEK6A",
+  "head_sha": "769494c18b9fe57b3b48a8ea25a54ff467edc9b3",
+  "url": "https://api.github.com/repos/Aquaticfuller/AntWorld/actions/jobs/129422658280",
+  "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42694519510/job/129422658280",
+  "status": "completed",
+  "conclusion": "success",
+  "created_at": "2026-11-09T20:36:05Z",
+  "started_at": "2026-11-09T20:36:08Z",
+  "completed_at": "2026-11-09T20:46:54Z",
+  "name": "build (windows-2022, Debug)",
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 1,
+      "started_at": "2026-11-09T20:36:08Z",
+      "completed_at": "2026-11-09T20:36:09Z"
+    },
+    {
+      "name": "Run actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 2,
+      "started_at": "2026-11-09T20:36:09Z",
+      "completed_at": "2026-11-09T20:36:40Z"
+    },
+    {
+      "name": "Verify repository policy and design manifest",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 3,
+      "started_at": "2026-11-09T20:36:40Z",
+      "completed_at": "2026-11-09T20:41:33Z"
+    },
+    {
+      "name": "Configure",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4,
+      "started_at": "2026-11-09T20:41:33Z",
+      "completed_at": "2026-11-09T20:41:50Z"
+    },
+    {
+      "name": "Build",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 5,
+      "started_at": "2026-11-09T20:41:50Z",
+      "completed_at": "2026-11-09T20:44:01Z"
+    },
+    {
+      "name": "Test",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6,
+      "started_at": "2026-11-09T20:44:01Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Release performance fixtures (Linux)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 7,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce all S4 seeds (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 8,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce all S5 seeds (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 9,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce first complete S6 seed (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 10,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Audit first complete S6.1 observer seed (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 11,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce S6.2 ordered scarcity and equal-demand observers (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 12,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce S6.3 funded 90-day ecology and compact geometry (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 13,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce S6.3.1 180-day queen controls (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 14,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce all S6.3.2 unchanged-model diagnostics (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 15,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Reproduce complete S6.3.3 observation seed (Linux Release)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 16,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:51Z"
+    },
+    {
+      "name": "Post Run actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 32,
+      "started_at": "2026-11-09T20:46:51Z",
+      "completed_at": "2026-11-09T20:46:53Z"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 33,
+      "started_at": "2026-11-09T20:46:53Z",
+      "completed_at": "2026-11-09T20:46:53Z"
+    }
+  ],
+  "check_run_url": "https://api.github.com/repos/Aquaticfuller/AntWorld/check-runs/129422658280",
+  "labels": [
+    "windows-2022"
+  ],
+  "runner_id": 1000000296,
+  "runner_name": "GitHub Actions 1000000296",
+  "runner_group_id": 0,
+  "runner_group_name": "GitHub Actions"
+}
