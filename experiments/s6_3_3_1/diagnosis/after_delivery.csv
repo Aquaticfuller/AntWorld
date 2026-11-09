@@ -1,0 +1,10 @@
+run,seed,policy,set,condition,layout,actor,delivered,event_id,time_ms,initially_displaced_still_undelivered,followup_ms,next_search_ms,next_outside_approach_ms,next_displaced_contact_ms,next_delivery_ms
+retrieval_workers_137,137,legacy,historical,three_workers,line,5,6,316,360022,5,239978,,210014,,
+retrieval_workers_19,19,legacy,historical,three_workers,line,4,6,270,310032,5,289968,,2,,
+retrieval_queen_223,223,legacy,historical,queen,line,2,3,110,430026,5,169974,,2,,
+retrieval_workers_223,223,legacy,historical,three_workers,line,5,6,373,470024,5,129976,,,,
+retrieval_workers_313,313,legacy,historical,three_workers,line,4,6,272,310032,5,289968,,2,20006,
+retrieval_queen_367,367,legacy,historical,queen,line,2,3,101,370024,5,229976,,60004,,
+retrieval_workers_43,43,legacy,historical,three_workers,line,3,6,420,520034,5,79966,,60004,,
+retrieval_queen_7,7,legacy,historical,queen,line,2,3,154,580036,5,19964,,2,,
+retrieval_workers_7,7,legacy,historical,three_workers,line,5,6,315,300020,5,299980,,,,
