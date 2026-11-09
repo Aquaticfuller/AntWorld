@@ -1,0 +1,150 @@
+{
+  "status": "INCONCLUSIVE",
+  "native_complete": false,
+  "pulses": [
+    {
+      "phase": "selected_pulse",
+      "own_p50": 100.0,
+      "other_p50": 31.498015873015873
+    },
+    {
+      "phase": "reference_pulse",
+      "own_p50": 100.0,
+      "other_p50": 25.0
+    }
+  ],
+  "native_vs_system_median_abs_pp": 0.0,
+  "pdh_vs_native_median_abs_pp": {
+    "0": 0.04210121501088082,
+    "2": 1.4798167058435445
+  },
+  "invalid_pdh": {
+    "0": {
+      "samples": 8,
+      "statuses": [
+        2147485654
+      ],
+      "idle_delta_exceeds_clock": 8
+    },
+    "2": {
+      "samples": 3,
+      "statuses": [
+        2147485654
+      ],
+      "idle_delta_exceeds_clock": 3
+    }
+  },
+  "selected_logical": 0,
+  "reference_logical": 2,
+  "observer_affinity_mask": 65520,
+  "topology": [
+    {
+      "core": 0,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 3,
+      "logical": [
+        0,
+        1
+      ]
+    },
+    {
+      "core": 1,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 12,
+      "logical": [
+        2,
+        3
+      ]
+    },
+    {
+      "core": 2,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 48,
+      "logical": [
+        4,
+        5
+      ]
+    },
+    {
+      "core": 3,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 192,
+      "logical": [
+        6,
+        7
+      ]
+    },
+    {
+      "core": 4,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 768,
+      "logical": [
+        8,
+        9
+      ]
+    },
+    {
+      "core": 5,
+      "efficiency_class": 1,
+      "smt": true,
+      "group": 0,
+      "mask": 3072,
+      "logical": [
+        10,
+        11
+      ]
+    },
+    {
+      "core": 6,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 4096,
+      "logical": [
+        12
+      ]
+    },
+    {
+      "core": 7,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 8192,
+      "logical": [
+        13
+      ]
+    },
+    {
+      "core": 8,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 16384,
+      "logical": [
+        14
+      ]
+    },
+    {
+      "core": 9,
+      "efficiency_class": 0,
+      "smt": false,
+      "group": 0,
+      "mask": 32768,
+      "logical": [
+        15
+      ]
+    }
+  ],
+  "windows": "10.0.26200",
+  "probe_sha256": "992d82bebac8b2bdecf38712dca658a7bbb71dda7ce069b40f91bd5ac5f86612"
+}
