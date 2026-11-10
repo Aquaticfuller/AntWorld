@@ -44,28 +44,7 @@ void run(const std::filesystem::path& dir,std::ostream& samples,std::ostream& pr
     const auto label=mode+"_"+layout+"_"+std::to_string(n);
     profiling::reset();
     auto clock=Clock::now();
-    WorldRuntime w({6333,7},7,{{-.02,-.02,-.02},{.24,.02,.24},.08,.002,continuous},limits());
-    w.configure_long_term();
-    BehaviorConfig forage;
-    forage.trails_enabled=false;
-    w.configure_surface({{0,0,0},213,213,.001},{},forage);
-    w.configure_social(day_social());
-    w.configure_biology(timed_care(integrated));
-    const auto colony=w.seed_colony();
-    const auto p=day_physiology();
-    for (unsigned i=0;i<n;++i) {
-        const auto worker=w.seed_ant(colony,{});
-        w.enable_physiology(worker,adult,p);
-        if (integrated) w.set_autonomy(worker,true);
-        else w.enable_brood_care(worker,{CareContext::Worker,{}});
-    }
-    for (unsigned i=0;i<2*n;++i) {
-        const auto x=dense?.001:.001+static_cast<double>(i%16)*.014;
-        const auto z=dense?0:static_cast<double>(i/16)*.014;
-        const auto brood=w.seed_ant(colony,{{x,0,z},LifeStage::Larva});
-        w.enable_physiology(brood,larva,p);
-    }
-    balanced_supply(w,n,{.005,0,0});
+    auto w=density_world(n,dense,integrated,continuous);
     const auto setup_ms=ms(clock);
     profile(profiles,sample,"setup");
     const auto end=integrated?2*day:600000;

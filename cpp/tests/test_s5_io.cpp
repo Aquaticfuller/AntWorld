@@ -108,7 +108,7 @@ WorldRuntime fixture() {
             {{static_cast<std::int64_t>(i)}, Phase::Environment, 0, 0, i, DiagnosticAction::DrawRandom});
     return w;
 }
-void sweep(const std::filesystem::path &base, bool sync) {
+void sweep(const std::filesystem::path &base,bool sync,StoreFormat format) {
     for (int n = 0; n < 512; ++n) {
         auto path = base;
         path += (sync ? "-sync-" : "-write-") + std::to_string(n);
@@ -118,7 +118,7 @@ void sweep(const std::filesystem::path &base, bool sync) {
         std::vector<std::uint8_t> next(0);
         bool success = false;
         {
-            Store store(path);
+            Store store(path,{},format);
             const auto token = store.save(w);
             store.checkpoint_wal();
             w.advance_to({30});
@@ -154,18 +154,19 @@ void sweep(const std::filesystem::path &base, bool sync) {
 } // namespace
 int main(int argc, char **argv) {
     try {
-        if (argc != 3)
-            throw std::invalid_argument("usage: antworld_s5_io MODE DATABASE");
+        if (argc!=3 && (argc!=4 || std::string_view(argv[3])!="SEGMENTED"))
+            throw std::invalid_argument("usage: antworld_s5_io MODE DATABASE [SEGMENTED]");
+        const auto format=argc==4?StoreFormat::Segmented:StoreFormat::Legacy;
         initialize();
         const std::string mode = argv[1];
         const std::filesystem::path path = argv[2];
         std::filesystem::create_directories(path.parent_path());
         if (mode == "SWEEP") {
-            sweep(path, false);
-            sweep(path, true);
+            sweep(path,false,format);
+            sweep(path,true,format);
         } else if (mode == "SEED") {
             clean(path);
-            Store store(path);
+            Store store(path,{},format);
             auto w = fixture();
             store.save(w);
             store.checkpoint_wal();

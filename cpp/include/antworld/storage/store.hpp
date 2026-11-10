@@ -14,8 +14,13 @@ struct SaveToken {
     std::uint64_t generation{}, revision{}, cursor{}, checkpoint_hash{};
     bool operator==(const SaveToken &) const = default;
 };
-enum class SaveStage { BeforeTransaction, AfterCheckpoint, AfterHistory, BeforeCommit, AfterCommit };
+enum class SaveStage {
+    BeforeTransaction, AfterCheckpoint, AfterHistory, BeforeCommit, AfterCommit,
+    BeforeBlocks, AfterBlocks, BeforeManifest, AfterManifest
+};
+enum class StoreFormat { Legacy, Segmented };
 struct SaveOptions {
+    // v1 checkpoint retention. Published v2 frames remain available.
     std::size_t retained_generations{2};
     // Fault injection only; production leaves this empty. AfterCommit is already durable.
     std::function<void(SaveStage)> fault_hook;
@@ -55,9 +60,15 @@ struct IndividualRecord {
     bool seeded{true};
     std::uint64_t death_cause_code{};
 };
+struct HistoryStorageStats {
+    std::uint64_t blocks{}, facts{}, raw_bytes{}, packed_bytes{}, frames{}, frame_bytes{};
+};
+struct SaveFrame;
+class LiveHistoryWriter;
 class Store {
   public:
-    explicit Store(const std::filesystem::path &, RuntimeLimits = {});
+    // The format preference applies only to a new file.
+    explicit Store(const std::filesystem::path &,RuntimeLimits = {},StoreFormat = StoreFormat::Legacy);
     ~Store();
     Store(Store &&) noexcept;
     Store &operator=(Store &&) noexcept;
@@ -65,6 +76,10 @@ class Store {
     Store &operator=(const Store &) = delete;
     SaveToken save(const WorldRuntime &, std::optional<SaveToken> expected = {}, const SaveOptions & = {});
     LoadedWorld load(WorldId, std::optional<std::uint64_t> generation = {}) const;
+    LoadedWorld recover(WorldId,std::uint64_t base_generation,std::uint64_t target_generation) const;
+    void rebuild_history_indexes(WorldId);
+    static void migrate_legacy(const std::filesystem::path& source,const std::filesystem::path& shadow,
+                               RuntimeLimits = {});
     CommandReceipt place_food(WorldRuntime &, SaveToken &, const PlaceFoodCommand &,
                               const SaveOptions & = {});
     std::optional<SaveToken> latest(WorldId) const;
@@ -81,9 +96,18 @@ class Store {
     [[nodiscard]] std::uint64_t database_bytes() const;
     [[nodiscard]] std::uint64_t sqlite_memory_bytes() const;
     [[nodiscard]] static const char *sqlite_version();
+    [[nodiscard]] StoreFormat format() const noexcept;
+    [[nodiscard]] HistoryStorageStats history_storage(WorldId) const;
 
   private:
+    friend class LiveHistoryWriter;
     struct Impl;
     std::unique_ptr<Impl> impl_;
+    SaveToken save_segmented(const SaveFrame&,std::optional<SaveToken>,const SaveOptions&);
+    LoadedWorld load_legacy(WorldId,std::optional<std::uint64_t>) const;
+    LoadedWorld load_segmented(WorldId,std::optional<std::uint64_t>,bool validate_indexes) const;
+    std::shared_ptr<const EventPrefix> published_prefix(const SaveToken&) const;
+    std::vector<HistoryRecord> segmented_history(const HistoryFilter&) const;
+    std::uint64_t segmented_flow(WorldId,ColonyId,Metric,SimTime,SimTime) const;
 };
 } // namespace antworld::storage

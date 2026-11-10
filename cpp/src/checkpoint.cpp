@@ -15,6 +15,7 @@ namespace antworld {
 namespace {
 using namespace detail;
 constexpr std::uint64_t spatial_magic=UINT64_C(0x4554504b435741);
+constexpr std::uint64_t frame_magic=UINT64_C(0x3145544154535741); // AWSTATE1
 void write_fact(Writer& w, const WorldEvent& e) {
     w.put(e.id.value); w.put(e.world.high); w.put(e.world.low); w.time(e.time); w.put(e.source.value);
     w.put(static_cast<std::uint8_t>(e.action), 1); w.put(e.revision); w.put(e.payload); w.put(e.random_value);
@@ -52,22 +53,33 @@ WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
 }
 namespace detail {
 std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes) {
-    std::uint64_t result = UINT64_C(14695981039346656037);
-    for (auto b : bytes) result = (result ^ b) * UINT64_C(1099511628211);
+    auto result=fnv_offset;
+    for (const auto b:bytes) result=hash_byte(result,b);
     return result;
 }
-std::uint64_t trace_hash(const std::vector<WorldEvent>& events) {
-    Writer w; for (const auto& e : events) write_fact(w, e); return hash_bytes(w.bytes);
+std::uint64_t trace_hash(const EventJournal& events) {
+    auto result=fnv_offset;
+    Writer w(0,&result);
+    for (const auto& e:events) write_fact(w,e);
+    return result;
 }
 } // namespace detail
 
-std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_limit) {
-    Writer w(byte_limit); const auto& m = s.m;
+std::vector<std::uint8_t> WorldRuntime::encode(const State& s,std::size_t byte_limit,bool frame) {
+    Writer w(byte_limit);
+    write_checkpoint(w,s,frame);
+    w.put(hash_bytes(w.bytes));
+    return w.bytes;
+}
+
+void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
+    const auto& m = s.m;
     const bool guarded=s.care_profile || has_maternal_reserve(s);
     const bool retrieval=s.care_profile && s.care_profile->local_retrieval;
     const bool motion=s.care_profile && s.care_profile->motion;
     const auto base=motion ? UINT64_C(0x4454504b435741) : retrieval ? UINT64_C(0x4354504b435741) : s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741);
     const bool spatial=s.config.continuous_spatial_motion;
+    if (frame) w.put(frame_magic);
     w.put(spatial?spatial_magic:base);
     w.put(spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
     w.put(spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
@@ -81,9 +93,9 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
         w.position(e.destination); w.put(e.requested_ug); w.time(e.issued_at); w.put(e.observed_position_revision);
         w.put(static_cast<std::uint8_t>(e.stage), 1);
     }
-    {
+    w.put(s.journal.size());
+    if (!frame) {
         profiling::Scope profile(profiling::Category::CheckpointHistory);
-        w.put(s.journal.size());
         for (const auto& e : s.journal) write_fact(w, e);
         profiling::record_work(profiling::Category::CheckpointHistory,s.journal.size());
     }
@@ -110,14 +122,17 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     write_long_term(w,s,guarded);
     write_care(w,s);
     write_connectors(w,s);
-    w.put(hash_bytes(w.bytes)); return w.bytes;
 }
-std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
+std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes,const RuntimeLimits& limits,
+                                                        std::shared_ptr<const EventPrefix> prefix) {
     ensure(bytes.size() >= 124 && bytes.size() <= limits.checkpoint_bytes, "invalid checkpoint size or host budget");
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    const auto header=r.get();
+    auto header=r.get();
+    const bool frame=header==frame_magic;
+    ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
+    if (frame) header=r.get();
     const bool spatial=header==spatial_magic;
     const auto encoded_schema=r.get(4),encoded_physics=r.get(4),rng=r.get(4);
     const auto magic=spatial?r.get():header;
@@ -151,11 +166,17 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             (s->queue.empty() || s->queue.rbegin()->first < e.key), "invalid future event");
         s->queue.emplace(e.key, e); s->queue_index.emplace(e.id, e.key);
     }
-    const auto facts = r.count(limits.committed_events, 159);
+    auto facts=std::size_t{};
+    if (frame) {
+        const auto cursor=r.get();
+        ensure(cursor<=limits.committed_events && cursor==prefix->size(),"checkpoint history cursor mismatch");
+        facts=prefix->size();
+        s->journal.attach(std::move(prefix));
+    } else facts=r.count(limits.committed_events,159);
     std::uint64_t previous_revision = 0; SimTime previous_time{};
     std::set<ScheduledId> care_ticks;
     for (std::size_t i = 0; i < facts; ++i) {
-        const auto e = read_fact(r);
+        const auto e=frame?s->journal.at(i):read_fact(r);
         const auto seeded = e.kind == FactKind::ColonySeeded || e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded ||
             e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
             e.kind == FactKind::PhysiologyEnabled || (e.kind == FactKind::BehaviorChanged && !e.source.value) || e.kind==FactKind::GeometryConfigured ||
@@ -172,7 +193,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
-        previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
+        previous_revision=e.revision;
+        previous_time=e.time;
+        if (!frame) s->journal.push_back(e);
     }
     s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
@@ -417,7 +440,26 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     return s;
 }
 std::vector<std::uint8_t> WorldRuntime::checkpoint() const { return encode(*state_, limits_.checkpoint_bytes); }
+std::vector<std::uint8_t> WorldRuntime::checkpoint_frame() const { return encode(*state_,limits_.checkpoint_bytes,true); }
+
+WorldSnapshot WorldRuntime::snapshot() const {
+    auto result=summary();
+    if (state_->journal.has_prefix()) {
+        result.state_hash=fnv_offset;
+        Writer w(0,&result.state_hash);
+        write_checkpoint(w,*state_,false);
+    } else {
+        const auto bytes=checkpoint();
+        result.state_hash=hash_bytes(std::span{bytes}.first(bytes.size()-8));
+    }
+    result.trace_hash=trace_hash(state_->journal);
+    return result;
+}
 void WorldRuntime::restore(std::span<const std::uint8_t> bytes) {
     auto restored = decode(bytes, limits_); state_.swap(restored);
+}
+void WorldRuntime::restore_frame(std::span<const std::uint8_t> bytes,std::shared_ptr<const EventPrefix> prefix) {
+    auto restored=decode(bytes,limits_,std::move(prefix));
+    state_.swap(restored);
 }
 } // namespace antworld

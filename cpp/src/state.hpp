@@ -4,6 +4,7 @@
 #include "surface_internal.hpp"
 #include "geometry_internal.hpp"
 #include "contact_index.hpp"
+#include "event_journal.hpp"
 #include "antworld/core/profiling.hpp"
 #include <algorithm>
 #include <cmath>
@@ -101,7 +102,7 @@ template <typename IdType, typename Row> struct Store {
     }
 };
 std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes);
-std::uint64_t trace_hash(const std::vector<WorldEvent>& events);
+std::uint64_t trace_hash(const EventJournal& events);
 
 // Undo only touched map entries. Reinsert retained nodes without allocating.
 template <typename Map> class MapJournal {
@@ -166,7 +167,7 @@ struct WorldRuntime::State {
     using QueueIndex = std::map<ScheduledId, EventKey>;
     Queue queue;
     QueueIndex queue_index;
-    std::vector<WorldEvent> journal = std::vector<WorldEvent>(0);
+    detail::EventJournal journal;
     detail::AntStore ants;
     detail::Store<ColonyId, Colony> colonies;
     detail::Store<ResourceId, FoodSource> foods;
@@ -386,6 +387,7 @@ public:
     void fact(WorldEvent e) {
         profiling::Scope profile(profiling::Category::History);
         if (s.journal.size() >= limits.committed_events) throw std::length_error("committed event host budget exceeded");
+        s.journal.check_append();
         e.id = {detail::take(s.m.next_event)}; e.world = s.world; e.time = s.m.now;
         detail::bump(s.m.revision); e.revision = s.m.revision; s.journal.push_back(e);
     }

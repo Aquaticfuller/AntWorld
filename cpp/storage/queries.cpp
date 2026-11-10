@@ -15,6 +15,7 @@ std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
     range(filter.begin, filter.end, filter.limit);
     if (filter.kind && *filter.kind > FactKind::BroodMoved)
         throw std::invalid_argument("invalid fact kind");
+    if (format()==StoreFormat::Segmented) return segmented_history(filter);
     std::string sql = "SELECT ";
     sql += history_columns;
     const bool timed =
@@ -47,9 +48,12 @@ std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
     return result;
 }
 std::optional<IndividualRecord> Store::individual(AntRef ref) const {
-    Statement q(impl_->db, "SELECT "
-                           "colony,caste,seed_stage,stage,created_ms,created_event,last_event,death_event,"
-                           "death_ms,death_cause FROM individuals WHERE world=? AND id=?");
+    std::string sql="SELECT colony,caste,seed_stage,stage,created_ms,created_event,last_event,death_event,"
+                    "death_ms,death_cause";
+    const auto segmented=format()==StoreFormat::Segmented;
+    if (segmented) sql+=",seeded";
+    sql+=" FROM individuals WHERE world=? AND id=?";
+    Statement q(impl_->db,sql.c_str());
     q.text(1, ref.world.str());
     q.u64(2, ref.id.value);
     if (!q.row())
@@ -67,6 +71,12 @@ std::optional<IndividualRecord> Store::individual(AntRef ref) const {
     if (q.number(8) >= 0)
         r.died_at = SimTime{q.number(8)};
     r.death_cause_code = q.u64(9);
+    if (segmented) {
+        const auto seeded=q.number(10);
+        require(seeded==0 || seeded==1,"invalid individual origin index");
+        r.seeded=seeded==1;
+        return r;
+    }
     Statement origin(impl_->db,"SELECT kind FROM events WHERE world=? AND id=?");
     origin.text(1,ref.world.str()); origin.u64(2,r.created_event.value);
     require(origin.row(),"identity lacks creation evidence");
@@ -125,6 +135,9 @@ std::uint64_t Store::flow_total(WorldId world, ColonyId owner, Metric metric, Si
                                 SimTime end) const {
     range(begin, end);
     require(metric_definition(metric).kind == MetricKind::Flow, "flow query requires an event metric");
+    const bool segmented=format()==StoreFormat::Segmented;
+    std::optional<Transaction> consistent_read;
+    if (segmented) consistent_read.emplace(impl_->db,false);
     const auto known = coverage(world);
     require(known.has_value(), "no durable history coverage for world");
     require(end.milliseconds == 0 || end.milliseconds - 1 <= known->observed_through.milliseconds,
@@ -150,6 +163,10 @@ std::uint64_t Store::flow_total(WorldId world, ColonyId owner, Metric metric, Si
             total = checked_add(total, q.u64(0));
     }
     auto fragment = [&](std::int64_t a, std::int64_t b) {
+        if (segmented) {
+            total=checked_add(total,segmented_flow(world,owner,metric,{a},{b}));
+            return;
+        }
         Statement q(
             impl_->db,
             "SELECT value FROM flows WHERE world=? AND owner=? AND metric=? AND time_ms>=? AND time_ms<?");
@@ -165,6 +182,7 @@ std::uint64_t Store::flow_total(WorldId world, ColonyId owner, Metric metric, Si
         fragment(begin.milliseconds, full_begin);
         fragment(full_end, end.milliseconds);
     }
+    if (consistent_read) consistent_read->commit();
     return total;
 }
 } // namespace antworld::storage

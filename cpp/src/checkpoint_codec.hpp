@@ -9,11 +9,24 @@
 namespace antworld::detail {
 static_assert(sizeof(double) == 8 && std::numeric_limits<double>::is_iec559, "checkpoint requires IEEE-754 binary64");
 inline void ensure(bool condition, const char* message) { if (!condition) throw std::invalid_argument(message); }
+inline constexpr auto fnv_offset=UINT64_C(14695981039346656037);
+inline std::uint64_t hash_byte(std::uint64_t state,std::uint8_t byte) {
+    return (state^byte)*UINT64_C(1099511628211);
+}
 struct Writer {
     std::vector<std::uint8_t> bytes;
     std::size_t limit;
-    explicit Writer(std::size_t byte_limit = std::numeric_limits<std::size_t>::max()) : bytes(0), limit(byte_limit) {}
+    std::uint64_t* streamed_hash;
+    explicit Writer(std::size_t byte_limit = std::numeric_limits<std::size_t>::max(),std::uint64_t* digest=nullptr)
+        :bytes(0),limit(byte_limit),streamed_hash(digest) {}
     void put(std::uint64_t v, unsigned width = 8) {
+        if (streamed_hash) {
+            for (unsigned i=0;i<width;++i) {
+                *streamed_hash=hash_byte(*streamed_hash,static_cast<std::uint8_t>(v&255));
+                v>>=8;
+            }
+            return;
+        }
         if (width > limit-bytes.size()) throw std::length_error("checkpoint byte host budget exceeded");
         for (unsigned i = 0; i < width; ++i) { bytes.push_back(static_cast<std::uint8_t>(v & 255)); v >>= 8; }
     }

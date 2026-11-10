@@ -9,6 +9,7 @@ struct Store::Impl {
     sqlite3 *db{};
     RuntimeLimits limits;
     std::filesystem::path path;
+    StoreFormat format{StoreFormat::Legacy};
     bool requires_recovery{};
     ~Impl() {
         if (db)

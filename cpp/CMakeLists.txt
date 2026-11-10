@@ -5,7 +5,7 @@ option(ANTWORLD_SANITIZERS "Enable address and undefined behavior sanitizers" OF
 option(ANTWORLD_STORAGE "Build the independent SQLite persistence application library" ON)
 option(ANTWORLD_PROFILE "Instrument host-only exclusive and inclusive core timings" OFF)
 
-add_library(antworld_core src/types.cpp src/world_runtime.cpp src/checkpoint.cpp src/behavior.cpp src/foraging.cpp src/spatial_navigation.cpp src/physiology.cpp src/geometry_kernel.cpp src/geometry.cpp src/excavation.cpp src/commands.cpp src/social.cpp src/ecology.cpp src/long_term.cpp src/inspection.cpp src/care.cpp src/observations.cpp)
+add_library(antworld_core src/types.cpp src/world_runtime.cpp src/checkpoint.cpp src/event_journal.cpp src/behavior.cpp src/foraging.cpp src/spatial_navigation.cpp src/physiology.cpp src/geometry_kernel.cpp src/geometry.cpp src/excavation.cpp src/commands.cpp src/social.cpp src/ecology.cpp src/long_term.cpp src/inspection.cpp src/care.cpp src/observations.cpp)
 target_include_directories(antworld_core PUBLIC include)
 target_compile_features(antworld_core PUBLIC cxx_std_20)
 if(ANTWORLD_PROFILE)
@@ -129,8 +129,12 @@ antworld_checks(antworld_s6_3_2_audit)
 
 if(ANTWORLD_STORAGE)
     include(cmake/sqlite.cmake)
-    add_library(antworld_storage storage/analytics.cpp storage/store.cpp storage/queries.cpp storage/recovery.cpp)
-    target_link_libraries(antworld_storage PUBLIC antworld_core PRIVATE antworld_sqlite)
+    include(cmake/history_codec.cmake)
+    find_package(Threads REQUIRED)
+    add_library(antworld_storage storage/analytics.cpp storage/store.cpp storage/queries.cpp storage/recovery.cpp
+        storage/event_block.cpp storage/history_digest.cpp storage/segmented_archive.cpp
+        storage/segmented_analytics.cpp storage/segmented_store.cpp storage/live_history.cpp storage/history_migration.cpp)
+    target_link_libraries(antworld_storage PUBLIC antworld_core PRIVATE antworld_sqlite ZLIB::ZLIBSTATIC Threads::Threads)
     antworld_checks(antworld_storage)
     target_link_libraries(antworld_s6_3_experiment PRIVATE antworld_storage)
     target_compile_definitions(antworld_s6_3_experiment PRIVATE ANTWORLD_S6_3_STORAGE=1)
@@ -402,7 +406,39 @@ if(ANTWORLD_STORAGE)
     add_executable(antworld_s6_3_3_3_r1 apps/antworld_s6_3_3_3_r1.cpp)
     target_link_libraries(antworld_s6_3_3_3_r1 PRIVATE antworld_storage)
     antworld_checks(antworld_s6_3_3_3_r1)
+    add_executable(antworld_s6_3_4_experiment apps/antworld_s6_3_4_experiment.cpp)
+    target_link_libraries(antworld_s6_3_4_experiment PRIVATE antworld_storage)
+    if(WIN32)
+        target_link_libraries(antworld_s6_3_4_experiment PRIVATE psapi)
+    endif()
+    antworld_checks(antworld_s6_3_4_experiment)
     if(BUILD_TESTING)
+        add_executable(antworld_s6_3_4_tests tests/test_s6_3_4.cpp)
+        target_include_directories(antworld_s6_3_4_tests PRIVATE apps)
+        target_link_libraries(antworld_s6_3_4_tests PRIVATE antworld_storage antworld_sqlite)
+        antworld_checks(antworld_s6_3_4_tests)
+        foreach(mode CODEC LIVE PRESSURE MIGRATION CORRUPT CRASH)
+            add_test(NAME S6_3_4_${mode} COMMAND ${CMAKE_COMMAND}
+                -DCLI=$<TARGET_FILE:antworld_s6_3_4_tests> -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output
+                -DMODE=${mode} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_4.cmake)
+            set_tests_properties(S6_3_4_${mode} PROPERTIES TIMEOUT 180 LABELS S6.3.4)
+        endforeach()
+        foreach(mode custody connectivity)
+            add_test(NAME S6_3_4_${mode} COMMAND ${CMAKE_COMMAND}
+                -DCLI=$<TARGET_FILE:antworld_s6_3_3_3_r1> -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output
+                -DMODE=${mode} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_4.cmake)
+            set_tests_properties(S6_3_4_${mode} PROPERTIES TIMEOUT 180 LABELS S6.3.4)
+        endforeach()
+        add_test(NAME S6_3_4_ECO_SMOKE COMMAND ${CMAKE_COMMAND}
+            -DCLI=$<TARGET_FILE:antworld_s6_3_4_experiment> -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output
+            -DMODE=ECO_SMOKE -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_4.cmake)
+        set_tests_properties(S6_3_4_ECO_SMOKE PROPERTIES TIMEOUT 180 LABELS S6.3.4)
+        add_test(NAME S6_3_4_IO_FAILURE COMMAND antworld_s5_io SWEEP
+            ${CMAKE_CURRENT_BINARY_DIR}/test-output/S6_3_4_IO/world.sqlite SEGMENTED)
+        add_test(NAME S6_3_4_WAL_CRASH COMMAND ${CMAKE_COMMAND} -DTEST=$<TARGET_FILE:antworld_s5_io>
+            -DOUTPUT_DIR=${CMAKE_CURRENT_BINARY_DIR}/test-output/S6_3_4_WAL -DFORMAT=SEGMENTED
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s5_wal_crash.cmake)
+        set_tests_properties(S6_3_4_IO_FAILURE S6_3_4_WAL_CRASH PROPERTIES TIMEOUT 180 LABELS S6.3.4)
         foreach(mode smoke probes)
             add_test(NAME S6_3_3_3_${mode} COMMAND ${CMAKE_COMMAND}
                 -DCLI=$<TARGET_FILE:antworld_s6_3_3_3_ecology>

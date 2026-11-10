@@ -189,7 +189,7 @@ void care_motion_matrix(Output& out) {
     }
 }
 
-void spatial_custody(Output& out) {
+void spatial_custody(Output& out,storage::StoreFormat format) {
     reach_boundary(out);
     for (bool turn:{false,true}) {
         CareWorld f(0,.001,true,turn);
@@ -198,7 +198,7 @@ void spatial_custody(Output& out) {
         const auto grip=w.query_care(f.caregiver)->grip_offset;
         const auto held=w.checkpoint();
         const auto label=std::string(turn?"turn":"diagonal");
-        storage::Store store(out.root/(label+".sqlite"),limits());
+        storage::Store store(out.root/(label+".sqlite"),limits(),format);
         store.save(w);
         auto restored=store.load(w.summary().world);
         require(restored.world.checkpoint()==held && restored.world.query_care(f.caregiver)->grip_offset==grip,
@@ -325,7 +325,7 @@ struct Shaft {
     }
 };
 
-void connection(Output& out,double cell,unsigned width,bool offset,bool closure) {
+void connection(Output& out,double cell,unsigned width,bool offset,bool closure,storage::StoreFormat format) {
     const auto name=std::string(cell<.005?"fine":"coarse")+(width<4?"_narrow":offset?"_offset":closure?"_fill":"_wide");
     WorldRuntime w({63331,7},7,spatial,limits());
     BehaviorConfig behavior;
@@ -376,7 +376,7 @@ void connection(Output& out,double cell,unsigned width,bool offset,bool closure)
         require(w.query_ant(worker)->position==stopped,"loaded worker crossed a closed shaft");
         const SimTime reopen{w.summary().now.milliseconds+100};
         w.submit_soil({digger,reopen,SoilAction::Excavate,wall,{},2});
-        storage::Store store(out.root/(name+".sqlite"),limits());
+        storage::Store store(out.root/(name+".sqlite"),limits(),format);
         store.save(w);
         auto restored=store.load(w.summary().world);
         const SimTime end{reopen.milliseconds+9000};
@@ -427,20 +427,22 @@ void empty_return(Output& out) {
 
 int main(int argc,char** argv) {
     try {
-        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_3_3_r1 OUTPUT_DIR motion|custody|connectivity");
+        if (argc!=3 && (argc!=4 || std::string_view(argv[3])!="SEGMENTED"))
+            throw std::invalid_argument("usage: antworld_s6_3_3_3_r1 OUTPUT_DIR motion|custody|connectivity [SEGMENTED]");
+        const auto format=argc==4?storage::StoreFormat::Segmented:storage::StoreFormat::Legacy;
         const std::filesystem::path path=argv[1];
         if (!std::filesystem::create_directories(path)) throw std::invalid_argument("output already exists");
         Output out(path);
         const std::string_view mode=argv[2];
         if (mode=="motion") care_motion_matrix(out);
-        else if (mode=="custody") { spatial_custody(out); held_wall(out); }
+        else if (mode=="custody") { spatial_custody(out,format); held_wall(out); }
         else if (mode=="connectivity") {
             for (const auto cell:{.001,.010}) {
-                connection(out,cell,4,false,false);
-                connection(out,cell,4,true,false);
-                connection(out,cell,3,false,false);
+                connection(out,cell,4,false,false,format);
+                connection(out,cell,4,true,false,format);
+                connection(out,cell,3,false,false,format);
             }
-            connection(out,.010,4,false,true);
+            connection(out,.010,4,false,true,format);
             empty_return(out);
         } else throw std::invalid_argument("unknown R1 probe mode");
         return 0;

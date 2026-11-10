@@ -41,4 +41,28 @@ CREATE TABLE buckets(world TEXT NOT NULL REFERENCES worlds(world), owner TEXT NO
 PRAGMA application_id=1096234835;
 PRAGMA user_version=1;
 )SQL";
+
+// Installed before any v2 publication. A migration temporarily keeps the v1
+// tables in its separate shadow file until the canonical conversion verifies.
+inline constexpr const char *segmented_tables = R"SQL(
+CREATE TABLE fact_blocks(world TEXT NOT NULL REFERENCES worlds(world) DEFERRABLE INITIALLY DEFERRED,
+ first_id TEXT NOT NULL, last_id TEXT NOT NULL, begin_ms INTEGER NOT NULL, end_ms INTEGER NOT NULL,
+ raw_bytes INTEGER NOT NULL, digest BLOB NOT NULL CHECK(length(digest)=32), envelope BLOB NOT NULL,
+ PRIMARY KEY(world,last_id), UNIQUE(world,first_id)) WITHOUT ROWID;
+CREATE INDEX fact_blocks_time ON fact_blocks(world,end_ms,last_id);
+CREATE TABLE history_anchors(world TEXT NOT NULL, generation TEXT NOT NULL,
+ parent BLOB NOT NULL CHECK(length(parent)=32), tail BLOB NOT NULL CHECK(length(tail)=32),
+ digest BLOB NOT NULL CHECK(length(digest)=32),
+ PRIMARY KEY(world,generation), FOREIGN KEY(world,generation) REFERENCES generations(world,generation)) WITHOUT ROWID;
+CREATE TABLE geometry_evidence(world TEXT NOT NULL REFERENCES worlds(world), event TEXT NOT NULL,
+ edit TEXT NOT NULL, volume TEXT NOT NULL, dry TEXT NOT NULL, water TEXT NOT NULL,
+ PRIMARY KEY(world,event)) WITHOUT ROWID;
+ALTER TABLE individuals ADD COLUMN seeded INTEGER NOT NULL DEFAULT 1 CHECK(seeded IN (0,1));
+)SQL";
+inline constexpr const char *finalize_segmented_schema = R"SQL(
+DROP TABLE participants;
+DROP TABLE events;
+DROP TABLE flows;
+PRAGMA user_version=2;
+)SQL";
 } // namespace antworld::storage::detail

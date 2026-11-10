@@ -161,41 +161,9 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
                     (food?"_balanced":"_empty")+(integrated?"_care":"_control");
     auto clock=Clock::now();
     WorldRuntime w({6333,seed},seed,{{-.04,-.02,-.02},{.04,.02,.02},.08,.002,continuous},limits());
-    w.configure_long_term();
-    const bool fine=space=="fine";
-    const bool underground=space=="underground";
-    const bool mixed=space=="chamber" || underground;
-    const PositionM depot{0,underground?-.004:0,0};
-    const double cell=fine?.001:.01;
-    BehaviorConfig forage;
-    forage.trails_enabled=false;
-    w.configure_surface({{-.03,0,-.01},fine?61U:7U,fine?21U:3U,cell},{},forage);
-    if (mixed) chamber(w);
-    w.configure_social(day_social());
-    auto care=timed_care(integrated);
-    care.perception_radius_m=.012;
-    w.configure_biology(care);
-    const auto colony=w.seed_colony(depot);
-    const auto queen=w.seed_ant(colony,{depot,LifeStage::Adult,Caste::Queen});
+    const auto [queen,target,depot,cell]=prepare_ecology(w,count,space,food,integrated);
     const auto p=day_physiology();
-    auto maternal=p;
-    maternal.adult_protein_target_ug=20;
-    w.enable_physiology(queen,adult,maternal);
-    w.enable_reproduction(queen);
-    if (integrated) w.set_autonomy(queen,true);
-    for (unsigned i=0;i<count;++i) {
-        const auto ref=w.seed_ant(colony,{depot});
-        w.enable_physiology(ref,adult,p);
-        w.set_autonomy(ref,true);
-    }
-    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Egg}),egg,p);
-    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Larva}),larva,p);
-    const PositionM displaced=underground?PositionM{.003,-.004,.0015}:
-        mixed?PositionM{0,-.004,0}:PositionM{.010,0,0};
-    const auto target=w.seed_ant(colony,{displaced,LifeStage::Larva});
-    w.enable_physiology(target,larva,p);
-    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Pupa}),pupa,p);
-    if (food) balanced_supply(w,count,{.010,0,0});
+    const auto care=*w.care_profile();
 
     const auto initial=w.checkpoint();
     storage::Store store(dir/(name+".sqlite"),limits());

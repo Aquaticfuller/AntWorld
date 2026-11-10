@@ -335,19 +335,16 @@ WorldSnapshot WorldRuntime::summary() const {
         m.next_scheduled, m.next_event, m.next_sequence, m.rng.state(), 0, 0,
         s.ants.size(), s.colonies.rows.size(), s.foods.rows.size(), m.living, m.ledger, m.watermark, m.executed};
 }
-WorldSnapshot WorldRuntime::snapshot() const {
-    auto result = summary(); const auto bytes = checkpoint();
-    result.state_hash = hash_bytes(std::span{bytes}.first(bytes.size()-8)); result.trace_hash = trace_hash(state_->journal);
-    return result;
-}
-std::vector<WorldEvent> WorldRuntime::committed_events() const { return state_->journal; }
+std::vector<WorldEvent> WorldRuntime::committed_events() const { return state_->journal.read({},state_->journal.size()); }
 std::vector<WorldEvent> WorldRuntime::events_after(EventId cursor, std::size_t limit) const {
-    const auto& journal = state_->journal;
-    if (cursor.value >= journal.size()) return std::vector<WorldEvent>(0);
-    const auto first = static_cast<std::size_t>(cursor.value);
-    const auto count = std::min(limit, journal.size()-first);
-    return {journal.begin()+static_cast<std::ptrdiff_t>(first), journal.begin()+static_cast<std::ptrdiff_t>(first+count)};
+    return state_->journal.read(cursor,limit);
 }
+HistoryCapture WorldRuntime::capture_history() const { return state_->journal.capture(); }
+void WorldRuntime::acknowledge_history(const HistoryCapture& capture,std::shared_ptr<const EventPrefix> prefix) {
+    state_->journal.acknowledge(capture,std::move(prefix));
+}
+void WorldRuntime::limit_unpublished_history(std::size_t count) { state_->journal.limit(count); }
+std::size_t WorldRuntime::unpublished_history() const noexcept { return state_->journal.unpublished(); }
 std::vector<ScheduledEvent> WorldRuntime::pending_events() const {
     std::vector<ScheduledEvent> result(0); result.reserve(state_->queue.size());
     for (const auto& [key, e] : state_->queue) { (void)key; result.push_back(e); }

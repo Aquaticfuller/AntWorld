@@ -5,6 +5,11 @@ namespace antworld::storage {
 using namespace detail;
 LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) const {
     Transaction tx(impl_->db, false);
+    auto loaded=format()==StoreFormat::Segmented?load_segmented(world,requested,true):load_legacy(world,requested);
+    tx.commit();
+    return loaded;
+}
+LoadedWorld Store::load_legacy(WorldId world,std::optional<std::uint64_t> requested) const {
     const auto newest = latest(world);
     require(newest.has_value(), "no durable world; journal alone cannot recover continuation");
     const auto generation = requested.value_or(newest->generation);
@@ -230,7 +235,6 @@ LoadedWorld Store::load(WorldId world, std::optional<std::uint64_t> requested) c
         }
         require(!stored.row(), "fabricated aggregate bucket");
     }
-    tx.commit();
     return {std::move(runtime), saved};
 }
 } // namespace antworld::storage

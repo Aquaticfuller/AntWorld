@@ -3,6 +3,7 @@
 
 #include "antworld/core/event.hpp"
 #include "antworld/core/command.hpp"
+#include "antworld/core/history.hpp"
 #include "antworld/core/social.hpp"
 
 #include <memory>
@@ -11,7 +12,7 @@
 #include <vector>
 
 namespace antworld {
-namespace detail { struct SurfaceConnector; }
+namespace detail { struct SurfaceConnector; struct Writer; }
 struct WorldSnapshot {
     WorldId world;
     SimTime now;
@@ -107,6 +108,14 @@ public:
     [[nodiscard]] std::vector<WorldEvent> events_after(EventId cursor, std::size_t limit) const;
     [[nodiscard]] std::vector<std::uint8_t> checkpoint() const;
     void restore(std::span<const std::uint8_t> bytes);
+    // Application persistence boundary. Call on the sole runtime thread.
+    // Capture seals buffers without changing ecological state or copying facts.
+    [[nodiscard]] HistoryCapture capture_history() const;
+    [[nodiscard]] std::vector<std::uint8_t> checkpoint_frame() const;
+    void restore_frame(std::span<const std::uint8_t>,std::shared_ptr<const EventPrefix>);
+    void acknowledge_history(const HistoryCapture&,std::shared_ptr<const EventPrefix>);
+    void limit_unpublished_history(std::size_t count);
+    [[nodiscard]] std::size_t unpublished_history() const noexcept;
 
 private:
     struct State;
@@ -151,8 +160,10 @@ private:
     void resolve_autonomy_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
-    static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit);
-    static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&);
+    static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit,bool frame = false);
+    static void write_checkpoint(detail::Writer&,const State&,bool frame);
+    static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&,
+                                         std::shared_ptr<const EventPrefix> prefix = {});
 public:
     static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 11;
     static constexpr std::uint32_t allocation_schema_version = 10, allocation_physics_version = 12;

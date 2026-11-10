@@ -1,0 +1,18 @@
+include(FetchContent)
+set(ANTWORLD_ZLIB_ARCHIVE "" CACHE FILEPATH "Optional verified zlib 1.3.2 source archive")
+set(zlib_url "https://zlib.net/fossils/zlib-1.3.2.tar.gz")
+if(ANTWORLD_ZLIB_ARCHIVE)
+    set(zlib_url "${ANTWORLD_ZLIB_ARCHIVE}")
+elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../.tools/zlib-1.3.2.tar.gz")
+    set(zlib_url "${CMAKE_CURRENT_SOURCE_DIR}/../.tools/zlib-1.3.2.tar.gz")
+endif()
+set(ZLIB_BUILD_SHARED OFF CACHE BOOL "Build zlib shared library")
+set(ZLIB_BUILD_TESTING OFF CACHE BOOL "Build zlib examples")
+set(ZLIB_INSTALL OFF CACHE BOOL "Install upstream zlib")
+FetchContent_Declare(antworld_zlib URL "${zlib_url}"
+    URL_HASH SHA256=bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+FetchContent_MakeAvailable(antworld_zlib)
+if(ANTWORLD_SANITIZERS AND NOT MSVC)
+    target_compile_options(zlibstatic PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
+endif()

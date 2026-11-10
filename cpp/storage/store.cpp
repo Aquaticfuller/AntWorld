@@ -1,11 +1,11 @@
 #include "schema.hpp"
-#include "store_internal.hpp"
+#include "segmented_archive.hpp"
 #include <algorithm>
 
 namespace antworld::storage {
 using namespace detail;
-Store::Store(const std::filesystem::path &path, RuntimeLimits limits) : impl_(std::make_unique<Impl>()) {
-    impl_->path = path;
+Store::Store(const std::filesystem::path &path,RuntimeLimits limits,StoreFormat preference) : impl_(std::make_unique<Impl>()) {
+    impl_->path = std::filesystem::absolute(path);
     impl_->limits = limits;
     const auto filename = path.u8string();
     check(sqlite3_open_v2(reinterpret_cast<const char *>(filename.c_str()), &impl_->db,
@@ -25,14 +25,23 @@ Store::Store(const std::filesystem::path &path, RuntimeLimits limits) : impl_(st
         application = static_cast<int>(q.number(0));
     }
     if (version == 0 && application == 0) {
-        Statement q(db, "SELECT count(*) FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'");
-        require(q.row() && q.number(0) == 0, "refusing to initialize a foreign database");
+        {
+            Statement q(db,"SELECT count(*) FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'");
+            require(q.row() && q.number(0)==0,"refusing to initialize a foreign database");
+        }
         Transaction tx(db);
         exec(db, schema);
+        if (preference==StoreFormat::Segmented) {
+            exec(db,segmented_tables);
+            exec(db,finalize_segmented_schema);
+        }
+        impl_->format=preference;
         tx.commit();
-    } else
-        require(version == 1 && application == 1096234835,
+    } else {
+        require((version==1 || version==2) && application==1096234835,
                 "unsupported AntWorld database version/application");
+        impl_->format=version==2?StoreFormat::Segmented:StoreFormat::Legacy;
+    }
     exec(db, "PRAGMA foreign_keys=ON; PRAGMA trusted_schema=OFF; PRAGMA synchronous=FULL; PRAGMA "
              "cache_size=-4096;");
     {
@@ -49,6 +58,7 @@ Store::~Store() = default;
 Store::Store(Store &&) noexcept = default;
 Store &Store::operator=(Store &&) noexcept = default;
 const char *Store::sqlite_version() { return sqlite3_libversion(); }
+StoreFormat Store::format() const noexcept { return impl_->format; }
 std::optional<SaveToken> Store::latest(WorldId world) const {
     Statement q(impl_->db, "SELECT generation,revision,cursor,checkpoint_hash FROM worlds WHERE world=?");
     q.text(1, world.str());
@@ -57,6 +67,7 @@ std::optional<SaveToken> Store::latest(WorldId world) const {
     return token(q, world);
 }
 SaveToken Store::save(const WorldRuntime &w, std::optional<SaveToken> expected, const SaveOptions &options) {
+    if (format()==StoreFormat::Segmented) return save_segmented(capture_frame(w),expected,options);
     if (impl_->requires_recovery)
         throw RecoveryRequired("reopen and recover after an uncertain database commit");
     if (!options.retained_generations || options.retained_generations > 64)
