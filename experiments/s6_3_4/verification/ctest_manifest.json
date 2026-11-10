@@ -1,0 +1,44 @@
+{
+  "baseline": "1812ff46f8421c263f10deb173a8aee74a78a369",
+  "inherited": 201,
+  "current_cpp_tree": "a12afaad162a5a8c4efe046ccb3946bc3b1a5fae",
+  "test_runs": {
+    "debug": {
+      "passed": 212,
+      "wall_seconds": 37.07,
+      "inherited_present": true,
+      "log_sha256": "993432aac1d96e6cf46eda218bf0aca2a654ab1d241cb9a2f870c3bc90c02546"
+    },
+    "release": {
+      "passed": 212,
+      "wall_seconds": 25.15,
+      "inherited_present": true,
+      "log_sha256": "eeb366d2bb87b07e55d78ec6001f6a577436b430e5cd2e9ee6bbb4e757db3e0d"
+    },
+    "sanitizer": {
+      "passed": 212,
+      "wall_seconds": 114.17,
+      "inherited_present": true,
+      "log_sha256": "67066e9581d19eba0642c30f51572fb96ce025d0eb42e660a0f09ab4c6813fe7"
+    }
+  },
+  "new_names": [
+    "S6_3_4_CODEC",
+    "S6_3_4_CORRUPT",
+    "S6_3_4_CRASH",
+    "S6_3_4_ECO_SMOKE",
+    "S6_3_4_IO_FAILURE",
+    "S6_3_4_LIVE",
+    "S6_3_4_MIGRATION",
+    "S6_3_4_PRESSURE",
+    "S6_3_4_WAL_CRASH",
+    "S6_3_4_connectivity",
+    "S6_3_4_custody"
+  ],
+  "preserved_trees": {
+    "experiments/s6_3_3_3_r1": "16d9a919856cb88c68872e28dcdb3deca87145ad",
+    "research/s6_3_3_3_r1": "ad994d421a3ebb24b790722cb4b1ebf33ef82663"
+  },
+  "earlier_experiment_artifacts_modified": false,
+  "s6_3_4_fault_log_sha256": "15543cf99a2c6297baaa313344350539e8618b1cc911245598b99ff14409b276"
+}

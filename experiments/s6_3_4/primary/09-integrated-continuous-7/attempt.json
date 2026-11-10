@@ -1,0 +1,30 @@
+{
+  "id": "09-integrated-continuous-7",
+  "index": 9,
+  "role": "retained",
+  "repetition": 1,
+  "case": "integrated-continuous",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:56:29.561+00:00",
+  "finished_utc": "2026-11-10T11:56:32.875+00:00",
+  "elapsed_seconds": 3.312999999965541,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50007380468750,
+      52994432500000,
+      3155441718750
+    ],
+    "end_ticks_100ns": [
+      50007738125000,
+      52994845781250,
+      3155555312500
+    ],
+    "busy_percent": 32.11743772241993
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "4fff1b09f165b6ec58d3de40c0b9db3013222072a33cddbf3c7bfd55cd04acc5",
+    "sample.csv": "1ee4b2e339e84c16f24296b782874f64aba8cf60bd90f748f656152a494e0c9a",
+    "console.log": "3a736b185a75a7f619357c54e6686ce4bf1d76762cb179d7df69df708dd2842d"
+  }
+}

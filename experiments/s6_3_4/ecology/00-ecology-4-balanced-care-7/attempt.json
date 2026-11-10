@@ -1,0 +1,30 @@
+{
+  "id": "00-ecology-4-balanced-care-7",
+  "index": 0,
+  "role": "ecology",
+  "repetition": 1,
+  "case": "ecology-4-balanced-care",
+  "seed": 7,
+  "started_utc": "2026-11-10T12:00:12.744+00:00",
+  "finished_utc": "2026-11-10T12:00:12.989+00:00",
+  "elapsed_seconds": 0.25,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50031877343750,
+      53022977187500,
+      3162603906250
+    ],
+    "end_ticks_100ns": [
+      50031895468750,
+      53023000937500,
+      3162610625000
+    ],
+    "busy_percent": 40.51282051282051
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "549706ddbb8cb7d6e261f93303e1a9b5566bb9f0dceb4aec231e6d844187d7c6",
+    "sample.csv": "745d80230bccea5b6528b1358b131f2267134c482b660580b45794c742d67387",
+    "console.log": "15887fef676e0b73e648d41b99dc3798e0e77c78145c118083abb8c9f8faf8e7"
+  }
+}

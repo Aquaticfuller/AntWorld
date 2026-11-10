@@ -1,0 +1,30 @@
+{
+  "id": "06-ecology-4-balanced-control-7",
+  "index": 6,
+  "role": "ecology",
+  "repetition": 1,
+  "case": "ecology-4-balanced-control",
+  "seed": 7,
+  "started_utc": "2026-11-10T12:15:16.474+00:00",
+  "finished_utc": "2026-11-10T12:15:16.713+00:00",
+  "elapsed_seconds": 0.23400000005494803,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50140043593750,
+      53143363593750,
+      3186815937500
+    ],
+    "end_ticks_100ns": [
+      50140067187500,
+      53143390000000,
+      3186819218750
+    ],
+    "busy_percent": 20.526315789473685
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "ed76b05d11ece952e808188bb4091d2d64ed16769a631dcb7fda3cdd516fbc7a",
+    "sample.csv": "0cbdacd102185f6983faa57b325faa7c54bdeeb865cf3ce5b1c843950e5fa749",
+    "console.log": "5d0f4fffbaf7f6af3348e1be3a4880c6f922caa05532b7a2b79fcd48984225e7"
+  }
+}

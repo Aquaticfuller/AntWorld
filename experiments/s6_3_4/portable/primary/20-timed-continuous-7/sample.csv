@@ -1,0 +1,2 @@
+case,seed,workers,continuous,sim_ms,facts,state_hash,trace_hash,opportunities,births,emerged,deaths,birth_days,death_days,living,advance_ms,restore_ms,history_page_ms,scoped_history_ms,online_rss_bytes,online_peak_bytes,explicit_export_peak_bytes,blocks,raw_bytes,packed_bytes,frames,all_frame_bytes,database_bytes,peak_wal_before_flush_bytes,exact
+timed-continuous,7,128,1,600000,499006,15401851006848082847,4676142428576249231,490240,0,0,0,0,0,384,132.70820000000001,3343.7040999999999,1.5886,11.0082,12378112,139874304,345989120,122,106529836,4409841,1,313064,5214208,5187112,1

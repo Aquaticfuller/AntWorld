@@ -1,0 +1,30 @@
+{
+  "id": "08-long-1",
+  "index": 8,
+  "role": "ecology",
+  "repetition": 1,
+  "case": "long",
+  "seed": 1,
+  "started_utc": "2026-11-10T12:15:23.916+00:00",
+  "finished_utc": "2026-11-10T12:15:34.030+00:00",
+  "elapsed_seconds": 10.125,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50140862968750,
+      53144340781250,
+      3187025781250
+    ],
+    "end_ticks_100ns": [
+      50142047812500,
+      53145633593750,
+      3187336875000
+    ],
+    "busy_percent": 26.127618119824646
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "44193882db30dfa3935b780abc7731c876ae77a4b818aa1225f253459d057fe4",
+    "sample.csv": "c1c6fdfd8ef18ed2210d11f8f93b500fc6f752aa64d4184456332a6b0601338d",
+    "console.log": "0d4c907e38bc57a415c2b6adc40ee24aee1cea4624637fcb20e7b949196e2015"
+  }
+}

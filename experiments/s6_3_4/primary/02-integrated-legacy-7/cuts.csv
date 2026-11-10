@@ -1,0 +1,2 @@
+generation,time_ms,new_facts,cursor,checkpoint_ms,capture_ms,foreground_ms,background_ms,ready_wait_ms,ack_ms,wal_flush_ms,restore_ms,frame_bytes,captured_bytes,blocks,raw_bytes,packed_bytes,database_bytes,wal_before_flush_bytes,rss_bytes,process_peak_bytes
+1,172800000,140396,140396,1.2688999999999999,1.3738999999999999,1.4356,219.244,228.19,1.1849000000000001,20.764199999999999,982.98609999999996,394948,65449692,35,28969460,1547404,2441216,2397872,10383360,102043648

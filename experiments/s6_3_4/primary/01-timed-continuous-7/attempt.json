@@ -1,0 +1,30 @@
+{
+  "id": "01-timed-continuous-7",
+  "index": 1,
+  "role": "warmup",
+  "repetition": 0,
+  "case": "timed-continuous",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:55:42.924+00:00",
+  "finished_utc": "2026-11-10T11:55:49.107+00:00",
+  "elapsed_seconds": 6.187000000034459,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50002129062500,
+      52988404218750,
+      3154000468750
+    ],
+    "end_ticks_100ns": [
+      50002810781250,
+      52989192031250,
+      3154193593750
+    ],
+    "busy_percent": 30.503345014335775
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "dc3e88d9bce92ec8e1801f1d8c75e576e6763a6454758f4ee1acda8d25a1e95f",
+    "sample.csv": "f970569ef10dfac1e3808ec47a394a5beaeaec49054493276fc731bdc112870c",
+    "console.log": "10b5297150b730a0debeecb8fb897faddbb8f94fe088f32ed677d54d1bf6bb1f"
+  }
+}

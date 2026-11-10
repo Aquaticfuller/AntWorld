@@ -1,0 +1,30 @@
+{
+  "id": "07-ecology-16-empty-control-7",
+  "index": 7,
+  "role": "ecology",
+  "repetition": 1,
+  "case": "ecology-16-empty-control",
+  "seed": 7,
+  "started_utc": "2026-11-10T12:00:30.322+00:00",
+  "finished_utc": "2026-11-10T12:00:37.018+00:00",
+  "elapsed_seconds": 6.702999999979511,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50033930625000,
+      53025267187500,
+      3163132343750
+    ],
+    "end_ticks_100ns": [
+      50034728125000,
+      53026161406250,
+      3163308906250
+    ],
+    "busy_percent": 25.52166934189406
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "ead6e529af7c42dfab72ab03224f8efef536b4685a81b6baaf76e72ec5a04a0f",
+    "sample.csv": "1df7cbbf873ab99e2fb834ec43958490db6a284eb06a4a64313923cc408bf57e",
+    "console.log": "e806f9b738c7c0b80093fcb5292a3992f6ea3196ed35ede5acf4e6ea34d2bcb2"
+  }
+}

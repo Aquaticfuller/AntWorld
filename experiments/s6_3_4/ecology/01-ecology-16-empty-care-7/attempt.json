@@ -1,0 +1,30 @@
+{
+  "id": "01-ecology-16-empty-care-7",
+  "index": 1,
+  "role": "ecology",
+  "repetition": 1,
+  "case": "ecology-16-empty-care",
+  "seed": 7,
+  "started_utc": "2026-11-10T12:00:12.997+00:00",
+  "finished_utc": "2026-11-10T12:00:18.834+00:00",
+  "elapsed_seconds": 5.844000000040978,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50031911250000,
+      53023017500000,
+      3162611093750
+    ],
+    "end_ticks_100ns": [
+      50032531562500,
+      53023724062500,
+      3162836250000
+    ],
+    "busy_percent": 33.42277377159148
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "6dcbe92b38285392cf85e2dae1848348b5ac3c3e9192ad87b4e63c88ec3f6c44",
+    "sample.csv": "1c41dbaa66b2ab935326775fb4c5d78d616d1ca2041a8074093d30a91a3d2ca0",
+    "console.log": "472ff2a3e29095fc86a126147873ce5fb0e1a313bf282649f967d996ceb93460"
+  }
+}

@@ -1,0 +1,15 @@
+index,role,repetition,case,seed
+0,ecology,1,ecology-4-balanced-care,7
+1,ecology,1,ecology-16-empty-care,7
+2,ecology,1,ecology-4-balanced-care,19
+3,ecology,1,ecology-16-empty-care,19
+4,ecology,1,ecology-4-balanced-care,43
+5,ecology,1,ecology-16-empty-care,43
+6,ecology,1,ecology-4-balanced-control,7
+7,ecology,1,ecology-16-empty-control,7
+8,ecology,1,long,1
+9,ecology,1,long,2
+10,ecology,1,long,3
+11,ecology,1,long-small,1
+12,ecology,1,long-small,2
+13,ecology,1,long-small,3

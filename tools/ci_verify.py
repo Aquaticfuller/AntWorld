@@ -50,6 +50,8 @@ checks = [
     ['tools/analyze_s6_3_3_3_ecology.py', '--verify-only'],
     ['tools/analyze_s6_3_3_3_density.py'],
     ['tools/analyze_s6_3_3_3_r1.py', '--check'],
+    ['tools/analyze_s6_3_4.py', 'experiments/s6_3_4/portable', 'experiments/s6_3_4/portable/summary',
+     '--compare-baseline', 'experiments/s6_3_4', '--check'],
 ]
 for check in checks:
     result = subprocess.run([sys.executable, *check], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

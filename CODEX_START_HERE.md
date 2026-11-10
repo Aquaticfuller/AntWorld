@@ -29,6 +29,8 @@ This is the v0.8 design and engineering handoff. S6.3.4 Live Durable History and
 
 ## Current implementation gate
 
+Review [S6.3.4 durable history results](S6_3_4_RESULTS.md) against document 64 before any later authorization. The bounded storage qualification and published-cut recovery contract are separate from the unresolved biology and scale gates.
+
 S6.3.3 adds an opt-in observation and caste-specific care contract. Current care coefficients remain F/ENGINEERING_FIXTURE; qualitative maternal capability does not validate quantitative species behavior. The historical atlas is retained under research/s6_3_2_1/baseline with a verified project-source archive. Root provenance and SQLite add current-scope records without overwriting old evidence. See document53 for actual motor acts, unknown legacy durations, finite local social cues and limitations. Historical stage statements below are not the current authorization.
 
 S6.3.2.1 delivers an evidence atlas with source-specific reading status, original units, explicit cross-species boundaries and A-F grades. The root parameter file uses the new schema; the old A-D snapshot remains in experiments/s6_3_2/PARAMETER_PROVENANCE_S6_3_2.csv. All current biological coefficients remain F/ENGINEERING_FIXTURE;49 references and direct endpoints do not establish a calibrated state machine. Queen maternal care, caste/stage physiology, thermal development and observation contracts remain foundational gaps. Read CONTRADICTIONS_AND_GAPS.md and the review-only MODEL_CORRECTION_ROADMAP.md before proposing implementation. Historical stage summaries below preserve evidence and are not new authorization.

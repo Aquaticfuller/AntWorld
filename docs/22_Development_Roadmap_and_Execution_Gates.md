@@ -34,7 +34,7 @@ Use the biology fixture and multiple seeds to cover autonomous exploration -> co
 
 Gate: applicable implemented P0 mechanisms and SCH-01-23/25-27/29-30. Defer unimplemented LOD tests SCH-14/15 explicitly; do not report them passed.
 
-Before S6.4 Core Readiness acceptance, implement and qualify the live, versioned, lossless durable history specified in the [TD-11 R1 design](../research/s6_3_3_3_r1/TD_11_R1_DURABLE_HISTORY.md). Acceptance requires canonical fact equivalence, ordered replay, exact analytics, compatible recovery, fault injection and bounded measured storage and memory. The offline experiment archive is evidence for the design. This prerequisite requires separate implementation authorization.
+S6.3.4 implements and measures the versioned, lossless durable history prerequisite from the [TD-11 R1 design](../research/s6_3_3_3_r1/TD_11_R1_DURABLE_HISTORY.md) under a [frozen protocol](64_S6_3_4_Frozen_Durable_History_Protocol.md). Review canonical fact equivalence, recovery at published cuts, exact analytics, shadow migration, fault injection and measured storage and memory budgets. Admission to S6.4 Core Readiness remains a separate review decision.
 
 ## S7: C ABI and Unity read-only integration
 

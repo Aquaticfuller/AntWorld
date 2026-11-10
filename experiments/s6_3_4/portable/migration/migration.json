@@ -1,0 +1,37 @@
+{
+  "exit_code": 0,
+  "migration_seconds": 42.26500000001397,
+  "source_database_bytes": 1072361472,
+  "source_before_sha256": {
+    "database": "cffb779c9b070ae6220855ced19c3c01aab79037cb57e7ef30b5452e26cc841e"
+  },
+  "source_after_sha256": {
+    "database": "cffb779c9b070ae6220855ced19c3c01aab79037cb57e7ef30b5452e26cc841e"
+  },
+  "source_unchanged": true,
+  "archive_executable_sha256": "e3977dcdc1b8d8668f852e1d3a4324aa1364baec42c519abf0172b4bd48081b2",
+  "shadow_database_bytes": 5169152,
+  "worlds": [
+    {
+      "world": "00000000-0000-18bd-0000-000000000007",
+      "facts": 498598,
+      "blocks": 122,
+      "raw_bytes": 106456498,
+      "packed_bytes": 4404518,
+      "canonical_sha256": "edcaad96310fb2d398ead023731838ab5ba9020ad5ce2c277f22ce4bbf54655a",
+      "tail_sha256": "1f6ef051bbdb59c508d615a75b52ed3d1c5cff013e7b5896650f1a91b0ad5e01",
+      "frames": [
+        {
+          "generation": 1,
+          "revision": 502823,
+          "cursor": 498598,
+          "time_ms": 600000,
+          "frame_hash": 12572551024588691716,
+          "frame_sha256": "e6d19e1646edb75cb7996a62f15d87de15b398d87ba15ee7c7b07237221d6f44",
+          "anchor_sha256": "cf4ff3b6c89ef5ca08fbda8b61d6d48806f3118bd9882376a105e6239d470bbe"
+        }
+      ]
+    }
+  ],
+  "canonical_equal": true
+}

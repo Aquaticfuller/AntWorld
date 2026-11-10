@@ -135,7 +135,8 @@ def main():
                 "machine": platform.machine(), "processor": processor(), "logical_cpus": os.cpu_count(),
                 "power_plan": power_plan(), "cpu_frequency": "NOT MEASURED", "temperature": "NOT MEASURED",
                 "package_power": "NOT MEASURED", "cache": "Uncontrolled OS cache; each case is a new process",
-                "cpu_source": "Windows GetSystemTimes (idle, kernel including idle, user)",
+                "cpu_source": ("Windows GetSystemTimes (idle, kernel including idle, user)"
+                               if os.name == "nt" else "NOT AVAILABLE"),
                 "pre_run_windows": [], "admission": "NOT APPLICABLE"}
     if args.mode == "performance":
         for _ in range(2):

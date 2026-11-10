@@ -1,0 +1,30 @@
+{
+  "id": "03-integrated-continuous-7",
+  "index": 3,
+  "role": "warmup",
+  "repetition": 0,
+  "case": "integrated-continuous",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:55:51.355+00:00",
+  "finished_utc": "2026-11-10T11:55:54.613+00:00",
+  "elapsed_seconds": 3.265999999945052,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50003083125000,
+      52989501875000,
+      3154259218750
+    ],
+    "end_ticks_100ns": [
+      50003423906250,
+      52989914375000,
+      3154369687500
+    ],
+    "busy_percent": 34.837167612787574
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "294400407b0cbc47acccdf92b89dc10b04acaefede2dde524846785c13c5a5ef",
+    "sample.csv": "888461b97c720ac1c8fa37fdc4ffae908edd8ffabe6bba4f46b43c66d18a7a3f",
+    "console.log": "3a736b185a75a7f619357c54e6686ce4bf1d76762cb179d7df69df708dd2842d"
+  }
+}

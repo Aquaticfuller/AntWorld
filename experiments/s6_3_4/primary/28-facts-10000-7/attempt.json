@@ -1,0 +1,30 @@
+{
+  "id": "28-facts-10000-7",
+  "index": 28,
+  "role": "retained",
+  "repetition": 4,
+  "case": "facts-10000",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:58:43.476+00:00",
+  "finished_utc": "2026-11-10T11:58:43.762+00:00",
+  "elapsed_seconds": 0.2809999999590218,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50021611093750,
+      53011193750000,
+      3160098437500
+    ],
+    "end_ticks_100ns": [
+      50021641718750,
+      53011234062500,
+      3160106875000
+    ],
+    "busy_percent": 37.17948717948718
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "106f77ea2dc3392e6251735f56a15f8161478ddd2897135567fb53787b4d5d32",
+    "sample.csv": "4a7876204481d860c901bb19856191b364dff221862fe905a626d7c51f466480",
+    "console.log": "eccd1350a49a7f05f99506889c7d67abd5a65acf746122c3d726f0d430b838e3"
+  }
+}

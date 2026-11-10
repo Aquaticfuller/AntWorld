@@ -1,0 +1,451 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-debug
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-debug
+        Start  31: S6_1_PARTITION
+        Start  54: S5_IO_FAILURE
+        Start  64: S5_EQUIVALENCE
+        Start  52: S5_EXPERIMENT_SMOKE
+        Start 122: S2_MULTISEED
+  1/212 Test  #31: S6_1_PARTITION ...................   Passed   14.45 sec
+        Start  24: S6_2_NUTRITION_OBSERVER
+  2/212 Test  #64: S5_EQUIVALENCE ...................   Passed   11.18 sec
+        Start 204: S6_3_4_IO_FAILURE
+  3/212 Test #122: S2_MULTISEED .....................   Passed    7.81 sec
+        Start  25: S6_2_CHOICE_OBSERVER
+  4/212 Test  #24: S6_2_NUTRITION_OBSERVER ..........   Passed    8.02 sec
+        Start  50: S6_1_DURABLE_INTEGRATION
+  5/212 Test  #52: S5_EXPERIMENT_SMOKE ..............   Passed   13.79 sec
+        Start  49: S6_DURABLE_INTEGRATION
+  6/212 Test  #54: S5_IO_FAILURE ....................   Passed   24.01 sec
+        Start 149: S1_BUDGETS
+  7/212 Test #204: S6_3_4_IO_FAILURE ................   Passed    8.53 sec
+        Start 203: S6_3_4_ECO_SMOKE
+  8/212 Test  #25: S6_2_CHOICE_OBSERVER .............   Passed    5.66 sec
+        Start  86: S3_EXPERIMENT_SMOKE
+  9/212 Test  #49: S6_DURABLE_INTEGRATION ...........   Passed    4.97 sec
+        Start 199: S6_3_4_CORRUPT
+ 10/212 Test  #50: S6_1_DURABLE_INTEGRATION .........   Passed    6.74 sec
+        Start  19: S6_3_RETURN_VISIT
+ 11/212 Test #203: S6_3_4_ECO_SMOKE .................   Passed    3.35 sec
+        Start 196: S6_3_4_LIVE
+ 12/212 Test  #86: S3_EXPERIMENT_SMOKE ..............   Passed    2.77 sec
+        Start 206: S6_3_3_3_smoke
+ 13/212 Test #149: S1_BUDGETS .......................   Passed    5.35 sec
+        Start 110: S2_1_SOCIAL
+ 14/212 Test #110: S2_1_SOCIAL ......................   Passed    1.47 sec
+        Start 111: S2_1_EXPERIMENT_SMOKE
+ 15/212 Test  #19: S6_3_RETURN_VISIT ................   Passed    3.96 sec
+        Start 128: S4_ALLOCATION_FAILURE
+ 16/212 Test #111: S2_1_EXPERIMENT_SMOKE ............   Passed    1.09 sec
+        Start 211: S6_3_3_3_R1_integration
+ 17/212 Test #199: S6_3_4_CORRUPT ...................   Passed    4.84 sec
+        Start 109: S2_1_ACTIVATION
+ 18/212 Test #109: S2_1_ACTIVATION ..................   Passed    0.14 sec
+        Start  17: S6_3_MONTH
+ 19/212 Test #196: S6_3_4_LIVE ......................   Passed    4.74 sec
+        Start  42: S6_MIXED_SPACE
+ 20/212 Test #206: S6_3_3_3_smoke ...................   Passed    4.57 sec
+        Start 126: S6_ALLOCATION_FAILURE
+ 21/212 Test #128: S4_ALLOCATION_FAILURE ............   Passed    2.65 sec
+        Start 207: S6_3_3_3_probes
+ 22/212 Test #126: S6_ALLOCATION_FAILURE ............   Passed    1.36 sec
+        Start 200: S6_3_4_CRASH
+ 23/212 Test  #17: S6_3_MONTH .......................   Passed    1.95 sec
+        Start 176: S6_3_3_COMPETITION
+ 24/212 Test #207: S6_3_3_3_probes ..................   Passed    1.94 sec
+ 25/212 Test #211: S6_3_3_3_R1_integration ..........   Passed    4.05 sec
+        Start  69: S4_EXPERIMENT_SMOKE
+        Start  61: S5_CORRUPTION
+ 26/212 Test #200: S6_3_4_CRASH .....................   Passed    1.96 sec
+ 27/212 Test  #42: S6_MIXED_SPACE ...................   Passed    3.50 sec
+        Start  22: S6_3_SPACE_RESPONSE
+        Start 130: S6_1_ALLOCATION_FAILURE
+ 28/212 Test  #61: S5_CORRUPTION ....................   Passed    0.72 sec
+        Start  51: S5_ARCHIVE_CLI
+ 29/212 Test  #69: S4_EXPERIMENT_SMOKE ..............   Passed    0.87 sec
+        Start 112: S2_EXPERIMENT_SMOKE
+ 30/212 Test #130: S6_1_ALLOCATION_FAILURE ..........   Passed    1.20 sec
+        Start 100: S2_2_MODEL
+ 31/212 Test  #22: S6_3_SPACE_RESPONSE ..............   Passed    1.45 sec
+        Start 164: CLI_VALIDATION
+ 32/212 Test #112: S2_EXPERIMENT_SMOKE ..............   Passed    0.79 sec
+        Start  53: S5_HISTORY_STORAGE_SMOKE
+ 33/212 Test #100: S2_2_MODEL .......................   Passed    1.91 sec
+ 34/212 Test  #51: S5_ARCHIVE_CLI ...................   Passed    2.49 sec
+        Start  84: S4_CONNECTIVITY
+        Start  68: S5_CRASH
+ 35/212 Test #176: S6_3_3_COMPETITION ...............   Passed    5.10 sec
+ 36/212 Test #164: CLI_VALIDATION ...................   Passed    1.84 sec
+        Start  85: S4_SURFACE_BARRIER
+        Start   2: S6_3_1_OBSERVER
+ 37/212 Test  #84: S4_CONNECTIVITY ..................   Passed    0.24 sec
+ 38/212 Test  #53: S5_HISTORY_STORAGE_SMOKE .........   Passed    1.86 sec
+        Start 162: T11
+        Start   9: S6_3_DURABLE
+ 39/212 Test  #85: S4_SURFACE_BARRIER ...............   Passed    0.25 sec
+        Start 163: T13
+ 40/212 Test #162: T11 ..............................   Passed    0.22 sec
+        Start 166: S6_3_3_CAPABILITY
+ 41/212 Test   #2: S6_3_1_OBSERVER ..................   Passed    0.41 sec
+        Start 103: S2_2_REPLAY
+ 42/212 Test #163: T13 ..............................   Passed    0.24 sec
+        Start 201: S6_3_4_custody
+ 43/212 Test #166: S6_3_3_CAPABILITY ................   Passed    0.24 sec
+        Start   1: S6_3_2_AUDIT_SMOKE
+ 44/212 Test   #1: S6_3_2_AUDIT_SMOKE ...............   Passed    0.16 sec
+        Start 185: S6_3_3_1_CONFLICT
+ 45/212 Test #201: S6_3_4_custody ...................   Passed    2.82 sec
+        Start 119: S2_REPLAY
+ 46/212 Test  #68: S5_CRASH .........................   Passed    3.42 sec
+ 47/212 Test #103: S2_2_REPLAY ......................   Passed    2.92 sec
+ 48/212 Test   #9: S6_3_DURABLE .....................   Passed    3.19 sec
+        Start 202: S6_3_4_connectivity
+        Start   7: S6_3_1_CONTROLS
+        Start  30: S6_1_CONTROLS
+ 49/212 Test #119: S2_REPLAY ........................   Passed    0.38 sec
+        Start  26: S6_1_GIFT_PRIORITY
+ 50/212 Test  #26: S6_1_GIFT_PRIORITY ...............   Passed    0.06 sec
+        Start 198: S6_3_4_MIGRATION
+ 51/212 Test #202: S6_3_4_connectivity ..............   Passed    0.48 sec
+        Start 102: S2_2_CONTINUOUS
+ 52/212 Test #102: S2_2_CONTINUOUS ..................   Passed    0.18 sec
+        Start 101: S2_2_LOCALITY
+ 53/212 Test  #30: S6_1_CONTROLS ....................   Passed    0.60 sec
+        Start  55: S5_WAL_CRASH
+ 54/212 Test #101: S2_2_LOCALITY ....................   Passed    0.15 sec
+        Start  87: S3_INITIALIZATION
+ 55/212 Test #185: S6_3_3_1_CONFLICT ................   Passed    3.52 sec
+        Start  48: S6_LOCALITY
+ 56/212 Test  #87: S3_INITIALIZATION ................   Passed    0.13 sec
+        Start 104: S2_2_EXPERIMENT_SMOKE
+ 57/212 Test #198: S6_3_4_MIGRATION .................   Passed    0.59 sec
+        Start  56: S5_ATOMIC
+ 58/212 Test #104: S2_2_EXPERIMENT_SMOKE ............   Passed    0.10 sec
+        Start  98: S3_CORRUPTION
+ 59/212 Test  #55: S5_WAL_CRASH .....................   Passed    0.41 sec
+        Start 212: S6_3_3_EXPERIMENT_SMOKE
+ 60/212 Test  #56: S5_ATOMIC ........................   Passed    0.23 sec
+        Start 125: S2_CORRUPTION
+ 61/212 Test   #7: S6_3_1_CONTROLS ..................   Passed    1.19 sec
+        Start 113: S2_SURFACE
+ 62/212 Test  #98: S3_CORRUPTION ....................   Passed    0.25 sec
+        Start 124: S2_COLONIES
+ 63/212 Test #125: S2_CORRUPTION ....................   Passed    0.12 sec
+        Start  70: S4_INITIAL
+ 64/212 Test #212: S6_3_3_EXPERIMENT_SMOKE ..........   Passed    0.25 sec
+ 65/212 Test #113: S2_SURFACE .......................   Passed    0.13 sec
+ 66/212 Test  #48: S6_LOCALITY ......................   Passed    0.49 sec
+        Start  97: S3_LOCALITY
+        Start 137: S2_ALLOCATION_FAILURE
+        Start 195: S6_3_4_CODEC
+ 67/212 Test #124: S2_COLONIES ......................   Passed    0.25 sec
+        Start  99: S3_ALLOCATION_LIMIT
+ 68/212 Test  #70: S4_INITIAL .......................   Passed    0.25 sec
+ 69/212 Test  #97: S3_LOCALITY ......................   Passed    0.19 sec
+        Start 147: S1_PERSISTENCE
+        Start 106: S2_1_RUNTIME_BIAS
+ 70/212 Test #137: S2_ALLOCATION_FAILURE ............   Passed    0.21 sec
+        Start 148: S1_ARITHMETIC
+ 71/212 Test #147: S1_PERSISTENCE ...................   Passed    0.11 sec
+        Start 146: S1_ROLLBACK
+ 72/212 Test  #99: S3_ALLOCATION_LIMIT ..............   Passed    0.20 sec
+        Start 107: S2_1_RESPONSE
+ 73/212 Test #148: S1_ARITHMETIC ....................   Passed    0.15 sec
+ 74/212 Test #195: S6_3_4_CODEC .....................   Passed    0.31 sec
+ 75/212 Test #106: S2_1_RUNTIME_BIAS ................   Passed    0.18 sec
+        Start 105: S2_1_BIAS
+        Start 197: S6_3_4_PRESSURE
+        Start  83: S4_BUDGETS
+ 76/212 Test #146: S1_ROLLBACK ......................   Passed    0.22 sec
+        Start 150: T00
+ 77/212 Test #105: S2_1_BIAS ........................   Passed    0.18 sec
+ 78/212 Test #107: S2_1_RESPONSE ....................   Passed    0.23 sec
+        Start 139: S1_ENTITIES
+        Start 138: S2_1_ALLOCATION_FAILURE
+ 79/212 Test  #83: S4_BUDGETS .......................   Passed    0.16 sec
+        Start 108: S2_1_CONTINUITY
+ 80/212 Test #150: T00 ..............................   Passed    0.18 sec
+ 81/212 Test #139: S1_ENTITIES ......................   Passed    0.11 sec
+ 82/212 Test #197: S6_3_4_PRESSURE ..................   Passed    0.27 sec
+        Start 178: S6_3_3_OBSERVATION_ONLY
+        Start 187: S6_3_3_1_STORAGE
+        Start  34: S6_1_CONTACT_LINKS
+ 83/212 Test #138: S2_1_ALLOCATION_FAILURE ..........   Passed    0.22 sec
+        Start 181: S6_3_3_STORAGE
+ 84/212 Test #108: S2_1_CONTINUITY ..................   Passed    0.24 sec
+ 85/212 Test #178: S6_3_3_OBSERVATION_ONLY ..........   Passed    0.19 sec
+        Start  35: S6_DEMAND
+        Start 188: S6_3_3_2_FOREIGN
+ 86/212 Test #187: S6_3_3_1_STORAGE .................   Passed    1.38 sec
+ 87/212 Test #181: S6_3_3_STORAGE ...................   Passed    1.29 sec
+        Start   6: S6_3_1_CORRUPTION
+        Start  10: S6_3_BIRTH
+ 88/212 Test  #35: S6_DEMAND ........................   Passed    1.29 sec
+ 89/212 Test  #34: S6_1_CONTACT_LINKS ...............   Passed    1.38 sec
+        Start 182: S6_3_3_1_PERSISTENCE
+        Start 180: S6_3_3_GEOMETRY_CLOSURE
+ 90/212 Test #188: S6_3_3_2_FOREIGN .................   Passed    1.33 sec
+ 91/212 Test   #6: S6_3_1_CORRUPTION ................   Passed    0.13 sec
+        Start 186: S6_3_3_1_GEOMETRY
+        Start   8: S6_3_1_VALIDATION
+ 92/212 Test  #10: S6_3_BIRTH .......................   Passed    0.18 sec
+ 93/212 Test #182: S6_3_3_1_PERSISTENCE .............   Passed    0.15 sec
+        Start  45: S6_DETERMINISM
+        Start 134: S6_3_3_1_ALLOCATION_FAILURE
+ 94/212 Test #180: S6_3_3_GEOMETRY_CLOSURE ..........   Passed    0.18 sec
+ 95/212 Test #186: S6_3_3_1_GEOMETRY ................   Passed    0.13 sec
+        Start 135: S6_3_3_2_ALLOCATION_FAILURE
+        Start  28: S6_1_LOCAL_CONTINUATION
+ 96/212 Test   #8: S6_3_1_VALIDATION ................   Passed    0.16 sec
+        Start 209: S6_3_3_3_R1_custody
+ 97/212 Test #135: S6_3_3_2_ALLOCATION_FAILURE ......   Passed    0.37 sec
+        Start  40: S6_SURPLUS
+ 98/212 Test #134: S6_3_3_1_ALLOCATION_FAILURE ......   Passed    0.48 sec
+        Start 210: S6_3_3_3_R1_connectivity
+ 99/212 Test #209: S6_3_3_3_R1_custody ..............   Passed    0.45 sec
+        Start  44: S6_SEALED
+100/212 Test  #28: S6_1_LOCAL_CONTINUATION ..........   Passed    0.54 sec
+        Start  60: S5_WINDOWS
+101/212 Test  #45: S6_DETERMINISM ...................   Passed    0.67 sec
+        Start  62: S5_UINT64
+102/212 Test  #60: S5_WINDOWS .......................   Passed    0.17 sec
+        Start  63: S5_GEOMETRY
+103/212 Test  #62: S5_UINT64 ........................   Passed    0.17 sec
+        Start 205: S6_3_4_WAL_CRASH
+104/212 Test #210: S6_3_3_3_R1_connectivity .........   Passed    0.44 sec
+        Start  59: S5_METRICS
+105/212 Test  #40: S6_SURPLUS .......................   Passed    0.55 sec
+        Start  89: S3_EXCHANGE
+106/212 Test  #63: S5_GEOMETRY ......................   Passed    0.22 sec
+        Start  67: S5_STORAGE_LIMITS
+107/212 Test  #44: S6_SEALED ........................   Passed    0.49 sec
+        Start  78: S4_AUTONOMY
+108/212 Test  #59: S5_METRICS .......................   Passed    0.18 sec
+        Start  93: S3_LIFECYCLE
+109/212 Test #205: S6_3_4_WAL_CRASH .................   Passed    0.33 sec
+        Start  65: S5_HISTORY
+110/212 Test  #67: S5_STORAGE_LIMITS ................   Passed    0.20 sec
+        Start 208: S6_3_3_3_R1_motion
+111/212 Test  #89: S3_EXCHANGE ......................   Passed    0.30 sec
+        Start  66: S5_BEHAVIORS
+112/212 Test  #78: S4_AUTONOMY ......................   Passed    0.28 sec
+        Start  95: S3_REPLAY
+113/212 Test  #65: S5_HISTORY .......................   Passed    0.22 sec
+        Start 194: S6_3_3_2_MOTION
+114/212 Test  #93: S3_LIFECYCLE .....................   Passed    0.34 sec
+        Start 116: S2_ORDER
+115/212 Test #208: S6_3_3_3_R1_motion ...............   Passed    0.28 sec
+        Start 175: S6_3_3_TRANSPORT
+116/212 Test  #66: S5_BEHAVIORS .....................   Passed    0.26 sec
+        Start  58: S5_ISOLATION
+117/212 Test  #95: S3_REPLAY ........................   Passed    0.26 sec
+        Start 192: S6_3_3_2_AUTONOMY
+118/212 Test #194: S6_3_3_2_MOTION ..................   Passed    0.26 sec
+        Start 160: T10
+119/212 Test #116: S2_ORDER .........................   Passed    0.23 sec
+120/212 Test #175: S6_3_3_TRANSPORT .................   Passed    0.18 sec
+        Start 172: S6_3_3_WORKER
+        Start  57: S5_COMMANDS
+121/212 Test #192: S6_3_3_2_AUTONOMY ................   Passed    0.17 sec
+        Start 171: S6_3_3_INTERRUPTION
+122/212 Test #160: T10 ..............................   Passed    0.17 sec
+123/212 Test  #58: S5_ISOLATION .....................   Passed    0.27 sec
+        Start  37: S6_CONTACTS
+        Start 168: S6_3_3_REVERSIBILITY
+124/212 Test #171: S6_3_3_INTERRUPTION ..............   Passed    0.14 sec
+125/212 Test  #57: S5_COMMANDS ......................   Passed    0.18 sec
+        Start 142: S1_FAILURES
+        Start 133: S6_3_3_ALLOCATION_FAILURE
+126/212 Test #172: S6_3_3_WORKER ....................   Passed    0.32 sec
+        Start 143: S1_FAIRNESS
+127/212 Test #168: S6_3_3_REVERSIBILITY .............   Passed    0.19 sec
+128/212 Test #142: S1_FAILURES ......................   Passed    0.14 sec
+129/212 Test  #37: S6_CONTACTS ......................   Passed    0.23 sec
+        Start 127: S5_ALLOCATION_FAILURE
+        Start 144: S1_LIFECYCLE
+        Start 183: S6_3_3_1_LOCALITY
+130/212 Test #143: S1_FAIRNESS ......................   Passed    0.16 sec
+131/212 Test #133: S6_3_3_ALLOCATION_FAILURE ........   Passed    0.21 sec
+132/212 Test #127: S5_ALLOCATION_FAILURE ............   Passed    0.12 sec
+        Start 120: S2_ROLLBACK
+        Start 167: S6_3_3_LOCALITY
+        Start 136: S1_ALLOCATION_FAILURE
+133/212 Test #144: S1_LIFECYCLE .....................   Passed    0.19 sec
+        Start  88: S3_INTEGRATION
+134/212 Test #183: S6_3_3_1_LOCALITY ................   Passed    0.17 sec
+135/212 Test #120: S2_ROLLBACK ......................   Passed    0.14 sec
+        Start 115: S2_LOOP
+        Start  11: S6_3_SHORTFALL
+136/212 Test  #88: S3_INTEGRATION ...................   Passed    0.13 sec
+137/212 Test #167: S6_3_3_LOCALITY ..................   Passed    0.21 sec
+138/212 Test #136: S1_ALLOCATION_FAILURE ............   Passed    0.17 sec
+        Start  91: S3_INGESTION
+        Start 114: S2_LOCALITY
+        Start 117: S2_MEMORY
+139/212 Test #115: S2_LOOP ..........................   Passed    0.25 sec
+        Start  74: S4_SDF
+140/212 Test  #11: S6_3_SHORTFALL ...................   Passed    0.26 sec
+141/212 Test  #91: S3_INGESTION .....................   Passed    0.20 sec
+142/212 Test #114: S2_LOCALITY ......................   Passed    0.15 sec
+        Start 161: T12
+        Start  76: S4_CLEARANCE
+        Start 151: T01
+143/212 Test #117: S2_MEMORY ........................   Passed    0.22 sec
+        Start 129: S3_ALLOCATION_FAILURE
+144/212 Test  #74: S4_SDF ...........................   Passed    0.22 sec
+145/212 Test #161: T12 ..............................   Passed    0.17 sec
+146/212 Test  #76: S4_CLEARANCE .....................   Passed    0.13 sec
+        Start 184: S6_3_3_1_CONTACT
+        Start 121: S2_SCHEDULING
+        Start 177: S6_3_3_CORRUPTION
+147/212 Test #151: T01 ..............................   Passed    0.22 sec
+        Start 140: S1_MOVEMENT
+148/212 Test #184: S6_3_3_1_CONTACT .................   Passed    0.18 sec
+149/212 Test #129: S3_ALLOCATION_FAILURE ............   Passed    0.24 sec
+150/212 Test #121: S2_SCHEDULING ....................   Passed    0.14 sec
+        Start 118: S2_TRAILS
+        Start 169: S6_3_3_STAGES
+        Start 157: T07
+151/212 Test #177: S6_3_3_CORRUPTION ................   Passed    0.21 sec
+        Start 190: S6_3_3_2_GEOMETRY
+152/212 Test #140: S1_MOVEMENT ......................   Passed    0.20 sec
+153/212 Test #118: S2_TRAILS ........................   Passed    0.15 sec
+154/212 Test #169: S6_3_3_STAGES ....................   Passed    0.11 sec
+        Start  77: S4_CONTACT
+        Start 173: S6_3_3_QUERY
+        Start 155: T05
+155/212 Test #157: T07 ..............................   Passed    0.17 sec
+        Start 132: S6_3_1_ALLOCATION_FAILURE
+156/212 Test #190: S6_3_3_2_GEOMETRY ................   Passed    0.18 sec
+157/212 Test  #77: S4_CONTACT .......................   Passed    0.14 sec
+158/212 Test #173: S6_3_3_QUERY .....................   Passed    0.11 sec
+        Start  80: S4_FILL_NAVIGATION
+        Start  90: S3_CONSTRAINTS
+        Start 193: S6_3_3_2_REPRODUCTION
+159/212 Test #155: T05 ..............................   Passed    0.20 sec
+        Start 154: T04
+160/212 Test  #80: S4_FILL_NAVIGATION ...............   Passed    0.17 sec
+161/212 Test #132: S6_3_1_ALLOCATION_FAILURE ........   Passed    0.22 sec
+162/212 Test  #90: S3_CONSTRAINTS ...................   Passed    0.13 sec
+        Start  15: S6_3_RECYCLE
+        Start  73: S4_CONSTRAINTS
+        Start 123: S2_MODEL
+163/212 Test #193: S6_3_3_2_REPRODUCTION ............   Passed    0.20 sec
+        Start  71: S4_MATERIAL
+164/212 Test #154: T04 ..............................   Passed    0.18 sec
+165/212 Test  #15: S6_3_RECYCLE .....................   Passed    0.13 sec
+166/212 Test  #73: S4_CONSTRAINTS ...................   Passed    0.10 sec
+        Start  72: S4_OVERLAP
+        Start  12: S6_3_QUEEN_DEATH
+        Start 141: S1_COMPETITION
+167/212 Test #123: S2_MODEL .........................   Passed    0.16 sec
+        Start 131: S6_3_ALLOCATION_FAILURE
+168/212 Test  #71: S4_MATERIAL ......................   Passed    0.16 sec
+169/212 Test  #72: S4_OVERLAP .......................   Passed    0.12 sec
+170/212 Test  #12: S6_3_QUEEN_DEATH .................   Passed    0.10 sec
+        Start 170: S6_3_3_DURATION
+        Start 152: T02
+        Start 159: T09
+171/212 Test #141: S1_COMPETITION ...................   Passed    0.16 sec
+        Start 153: T03
+172/212 Test #170: S6_3_3_DURATION ..................   Passed    0.12 sec
+173/212 Test #131: S6_3_ALLOCATION_FAILURE ..........   Passed    0.15 sec
+174/212 Test #152: T02 ..............................   Passed    0.09 sec
+        Start  75: S4_NAVIGATION
+        Start 191: S6_3_3_2_LIFECYCLE
+        Start  21: S6_3_NO_RECIPIENT
+175/212 Test #159: T09 ..............................   Passed    0.18 sec
+        Start 174: S6_3_3_ROLLBACK
+176/212 Test #153: T03 ..............................   Passed    0.18 sec
+177/212 Test  #75: S4_NAVIGATION ....................   Passed    0.15 sec
+178/212 Test #191: S6_3_3_2_LIFECYCLE ...............   Passed    0.12 sec
+        Start  18: S6_3_CORRUPTION
+        Start  92: S3_THRESHOLDS
+        Start 145: S1_PHASES
+179/212 Test  #21: S6_3_NO_RECIPIENT ................   Passed    0.17 sec
+        Start  94: S3_BEHAVIOR
+180/212 Test #174: S6_3_3_ROLLBACK ..................   Passed    0.15 sec
+181/212 Test  #18: S6_3_CORRUPTION ..................   Passed    0.12 sec
+182/212 Test  #92: S3_THRESHOLDS ....................   Passed    0.09 sec
+        Start 156: T06
+        Start  14: S6_3_REMAINDER
+        Start  16: S6_3_ROLLBACK
+183/212 Test #145: S1_PHASES ........................   Passed    0.14 sec
+        Start  79: S4_ROLLBACK
+184/212 Test  #94: S3_BEHAVIOR ......................   Passed    0.14 sec
+185/212 Test #156: T06 ..............................   Passed    0.11 sec
+186/212 Test  #14: S6_3_REMAINDER ...................   Passed    0.09 sec
+        Start 158: T08
+        Start  20: S6_3_CONTACT_SEQUENCE
+        Start   3: S6_3_1_FUNDING
+187/212 Test  #16: S6_3_ROLLBACK ....................   Passed    0.15 sec
+        Start  81: S4_NEIGHBORHOOD
+188/212 Test  #79: S4_ROLLBACK ......................   Passed    0.15 sec
+189/212 Test #158: T08 ..............................   Passed    0.12 sec
+190/212 Test  #20: S6_3_CONTACT_SEQUENCE ............   Passed    0.09 sec
+        Start  39: S6_CONTACT_WALL
+        Start  38: S6_CONTACT_INDEX
+        Start   5: S6_3_1_BARRIER
+191/212 Test   #3: S6_3_1_FUNDING ...................   Passed    0.15 sec
+        Start  41: S6_AUTONOMY_CONTROL
+192/212 Test  #81: S4_NEIGHBORHOOD ..................   Passed    0.15 sec
+193/212 Test  #39: S6_CONTACT_WALL ..................   Passed    0.11 sec
+194/212 Test  #38: S6_CONTACT_INDEX .................   Passed    0.08 sec
+        Start  29: S6_1_RELEASE_CUE
+        Start 179: S6_3_3_TARGET_LIFECYCLE
+        Start  96: S3_ROLLBACK
+195/212 Test   #5: S6_3_1_BARRIER ...................   Passed    0.14 sec
+        Start  82: S4_CORRUPTION
+196/212 Test  #41: S6_AUTONOMY_CONTROL ..............   Passed    0.14 sec
+197/212 Test  #29: S6_1_RELEASE_CUE .................   Passed    0.11 sec
+198/212 Test #179: S6_3_3_TARGET_LIFECYCLE ..........   Passed    0.09 sec
+        Start   4: S6_3_1_PULSE
+        Start  23: S6_3_PENDING_INDEX
+        Start 189: S6_3_3_2_COMPETING
+199/212 Test  #96: S3_ROLLBACK ......................   Passed    0.17 sec
+        Start  36: S6_CONCURRENT
+200/212 Test  #82: S4_CORRUPTION ....................   Passed    0.18 sec
+201/212 Test   #4: S6_3_1_PULSE .....................   Passed    0.15 sec
+202/212 Test  #23: S6_3_PENDING_INDEX ...............   Passed    0.12 sec
+        Start  27: S6_1_SELF_MAINTENANCE
+        Start  33: S6_1_CORRUPTION
+        Start  13: S6_3_RESERVE
+203/212 Test #189: S6_3_3_2_COMPETING ...............   Passed    0.21 sec
+        Start  46: S6_LIMITS
+204/212 Test  #36: S6_CONCURRENT ....................   Passed    0.21 sec
+205/212 Test  #27: S6_1_SELF_MAINTENANCE ............   Passed    0.17 sec
+206/212 Test  #33: S6_1_CORRUPTION ..................   Passed    0.12 sec
+        Start  32: S6_1_LOCALITY
+        Start 165: CORE_EDGE_CASES
+        Start  43: S6_OFF_PLANE
+207/212 Test  #13: S6_3_RESERVE .....................   Passed    0.20 sec
+        Start  47: S6_CORRUPTION
+208/212 Test  #46: S6_LIMITS ........................   Passed    0.19 sec
+209/212 Test  #32: S6_1_LOCALITY ....................   Passed    0.15 sec
+210/212 Test #165: CORE_EDGE_CASES ..................   Passed    0.12 sec
+211/212 Test  #43: S6_OFF_PLANE .....................   Passed    0.08 sec
+212/212 Test  #47: S6_CORRUPTION ....................   Passed    0.04 sec
+
+100% tests passed, 0 tests failed out of 212
+
+Label Time Summary:
+S1             =   7.10 sec*proc (12 tests)
+S2             =  11.15 sec*proc (15 tests)
+S2.1           =   3.76 sec*proc (8 tests)
+S2.2           =   5.26 sec*proc (5 tests)
+S3             =   5.56 sec*proc (15 tests)
+S4             =   6.38 sec*proc (18 tests)
+S5             =  60.13 sec*proc (19 tests)
+S6             =  14.41 sec*proc (16 tests)
+S6.1           =  25.52 sec*proc (11 tests)
+S6.2           =  13.68 sec*proc (2 tests)
+S6.3           =  12.30 sec*proc (16 tests)
+S6.3.1         =   2.54 sec*proc (8 tests)
+S6.3.2         =   0.16 sec*proc (1 test)
+S6.3.3         =   8.01 sec*proc (17 tests)
+S6.3.3.1       =   6.02 sec*proc (7 tests)
+S6.3.3.2       =   2.83 sec*proc (8 tests)
+S6.3.3.3       =   6.51 sec*proc (2 tests)
+S6.3.3.3-R1    =   5.22 sec*proc (4 tests)
+S6.3.4         =  28.23 sec*proc (11 tests)
+
+Total Test time (real) =  54.10 sec

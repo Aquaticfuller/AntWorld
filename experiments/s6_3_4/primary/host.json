@@ -1,0 +1,52 @@
+{
+  "mode": "performance",
+  "started_utc": "2026-11-10T11:55:26.324+00:00",
+  "executable_sha256": "32bb0b9cf3fd747825b702931fa0e88b679594fdd53b6f90ffe721d00c70e29a",
+  "compiler": "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+  "source_commit": "94eb523f7b9f79b39103496ec66474fc11e82fed",
+  "cpp_tree": "a12afaad162a5a8c4efe046ccb3946bc3b1a5fae",
+  "cpp_matches_commit": true,
+  "os": "Windows",
+  "os_release": "11",
+  "os_version": "10.0.26200",
+  "machine": "AMD64",
+  "processor": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "logical_cpus": 16,
+  "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+  "cpu_frequency": "NOT MEASURED",
+  "temperature": "NOT MEASURED",
+  "package_power": "NOT MEASURED",
+  "cache": "Uncontrolled OS cache; each case is a new process",
+  "cpu_source": "Windows GetSystemTimes (idle, kernel including idle, user)",
+  "pre_run_windows": [
+    {
+      "start_ticks_100ns": [
+        50000105156250,
+        52986197031250,
+        3153636562500
+      ],
+      "end_ticks_100ns": [
+        50000719218750,
+        52986875312500,
+        3153742500000
+      ],
+      "busy_percent": 21.697549312612075,
+      "seconds": 5.016000000061467
+    },
+    {
+      "start_ticks_100ns": [
+        50000719218750,
+        52986875312500,
+        3153742500000
+      ],
+      "end_ticks_100ns": [
+        50001369687500,
+        52987575156250,
+        3153855937500
+      ],
+      "busy_percent": 20.019212295869355,
+      "seconds": 5.0
+    }
+  ],
+  "admission": "ADMITTED"
+}

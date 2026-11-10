@@ -1,0 +1,2 @@
+case,seed,workers,continuous,sim_ms,facts,state_hash,trace_hash,opportunities,births,emerged,deaths,birth_days,death_days,living,advance_ms,restore_ms,history_page_ms,scoped_history_ms,online_rss_bytes,online_peak_bytes,explicit_export_peak_bytes,blocks,raw_bytes,packed_bytes,frames,all_frame_bytes,database_bytes,peak_wal_before_flush_bytes,exact
+ecology-16-empty-care,7,16,1,1814400000,224498,11525368632145178173,8210081249039600677,10673,2,3,23,2,6,0,401.8109,2586.8762000000002,2.2138,49.9343,14958592,76886016,285863936,55,43472870,3671614,2,83819,6750208,4527912,1

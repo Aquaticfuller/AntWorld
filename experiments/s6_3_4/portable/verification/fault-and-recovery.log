@@ -1,0 +1,125 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+UpdateCTestConfiguration  from :D:/Codex_workspace/AntWorld/build/s6_3_4-release/DartConfiguration.tcl
+Parse Config file:D:/Codex_workspace/AntWorld/build/s6_3_4-release/DartConfiguration.tcl
+UpdateCTestConfiguration  from :D:/Codex_workspace/AntWorld/build/s6_3_4-release/DartConfiguration.tcl
+Parse Config file:D:/Codex_workspace/AntWorld/build/s6_3_4-release/DartConfiguration.tcl
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-release
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 195
+      Start 195: S6_3_4_CODEC
+
+195: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=CODEC" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+195: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+195: Test timeout computed to be: 180
+195: codec_blocks=2, canonical_records=4102
+ 1/11 Test #195: S6_3_4_CODEC .....................   Passed    0.11 sec
+test 196
+      Start 196: S6_3_4_LIVE
+
+196: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=LIVE" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+196: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+196: Test timeout computed to be: 180
+196: initial, staged visibility, post-cut facts, rollback, idempotency, same-time frame and isolation verified
+ 2/11 Test #196: S6_3_4_LIVE ......................   Passed    0.44 sec
+test 197
+      Start 197: S6_3_4_PRESSURE
+
+197: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=PRESSURE" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+197: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+197: Test timeout computed to be: 180
+197: hot fact limit, queue byte limit and exact retry verified
+ 3/11 Test #197: S6_3_4_PRESSURE ..................   Passed    0.13 sec
+test 198
+      Start 198: S6_3_4_MIGRATION
+
+198: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=MIGRATION" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+198: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+198: Test timeout computed to be: 180
+198: legacy source, retained cuts, soil, queued work, metrics and rebuilt indexes verified
+ 4/11 Test #198: S6_3_4_MIGRATION .................   Passed    0.29 sec
+test 199
+      Start 199: S6_3_4_CORRUPT
+
+199: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=CORRUPT" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+199: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+199: Test timeout computed to be: 180
+199: rejected_corruption_case=0
+199: rejected_corruption_case=1
+199: rejected_corruption_case=2
+199: rejected_corruption_case=3
+199: rejected_corruption_case=4
+199: rejected_corruption_case=5
+199: rejected_corruption_case=6
+ 5/11 Test #199: S6_3_4_CORRUPT ...................   Passed    0.93 sec
+test 200
+      Start 200: S6_3_4_CRASH
+
+200: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_tests.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=CRASH" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+200: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+200: Test timeout computed to be: 180
+200: -- Process terminated at save boundary 5, expected OLD
+200: process_recovery=OLD, cursor=2
+200: -- Process terminated at save boundary 6, expected OLD
+200: process_recovery=OLD, cursor=2
+200: -- Process terminated at save boundary 7, expected OLD
+200: process_recovery=OLD, cursor=2
+200: -- Process terminated at save boundary 8, expected OLD
+200: process_recovery=OLD, cursor=2
+200: -- Process terminated at save boundary 3, expected OLD
+200: process_recovery=OLD, cursor=2
+200: -- Process terminated at save boundary 4, expected NEW
+200: process_recovery=NEW, cursor=32
+ 6/11 Test #200: S6_3_4_CRASH .....................   Passed    0.92 sec
+test 201
+      Start 201: S6_3_4_custody
+
+201: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_3_3_r1.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=custody" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+201: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+201: Test timeout computed to be: 180
+ 7/11 Test #201: S6_3_4_custody ...................   Passed    0.23 sec
+test 202
+      Start 202: S6_3_4_connectivity
+
+202: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_3_3_r1.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=connectivity" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+202: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+202: Test timeout computed to be: 180
+ 8/11 Test #202: S6_3_4_connectivity ..............   Passed    0.16 sec
+test 203
+      Start 203: S6_3_4_ECO_SMOKE
+
+203: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DCLI=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s6_3_4_experiment.exe" "-DROOT=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output" "-DMODE=ECO_SMOKE" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake"
+203: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+203: Test timeout computed to be: 180
+203: PASS ecology-4-balanced-care 7
+ 9/11 Test #203: S6_3_4_ECO_SMOKE .................   Passed    0.32 sec
+test 204
+      Start 204: S6_3_4_IO_FAILURE
+
+204: Test command: D:\Codex_workspace\AntWorld\build\s6_3_4-release\antworld_s5_io.exe "SWEEP" "D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output/S6_3_4_IO/world.sqlite" "SEGMENTED"
+204: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+204: Test timeout computed to be: 180
+204: write_failure_positions=67
+204: sync_failure_positions=2
+204: PASS S5_IO_SWEEP
+10/11 Test #204: S6_3_4_IO_FAILURE ................   Passed    4.74 sec
+test 205
+      Start 205: S6_3_4_WAL_CRASH
+
+205: Test command: D:\Codex_workspace\AntWorld\.tools\cmake-3.31.10-windows-x86_64\bin\cmake.exe "-DTEST=D:/Codex_workspace/AntWorld/build/s6_3_4-release/antworld_s5_io.exe" "-DOUTPUT_DIR=D:/Codex_workspace/AntWorld/build/s6_3_4-release/test-output/S6_3_4_WAL" "-DFORMAT=SEGMENTED" "-P" "D:/Codex_workspace/AntWorld/cpp/tests/test_s5_wal_crash.cmake"
+205: Working Directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+205: Test timeout computed to be: 180
+205: PASS S5_IO_SEED
+205: PASS S5_IO_VERIFY
+11/11 Test #205: S6_3_4_WAL_CRASH .................   Passed    0.30 sec
+
+100% tests passed, 0 tests failed out of 11
+
+Label Time Summary:
+S6.3.4    =   8.59 sec*proc (11 tests)
+
+Total Test time (real) =   8.62 sec

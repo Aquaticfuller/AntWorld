@@ -1,0 +1,30 @@
+{
+  "id": "04-facts-10000-7",
+  "index": 4,
+  "role": "warmup",
+  "repetition": 0,
+  "case": "facts-10000",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:55:54.625+00:00",
+  "finished_utc": "2026-11-10T11:55:54.891+00:00",
+  "elapsed_seconds": 0.26500000001396984,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50003425468750,
+      52989916250000,
+      3154370156250
+    ],
+    "end_ticks_100ns": [
+      50003444843750,
+      52989939218750,
+      3154378750000
+    ],
+    "busy_percent": 38.613861386138616
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "0285af176548a37d230bd0e7523cbb7e2564621c9c9234c45bfe6dc6c8154eb0",
+    "sample.csv": "a6f79fc4ac10b75a6b1df0f11edc3147cdbaa18a5c8d0797ee7754dfead74f2a",
+    "console.log": "eccd1350a49a7f05f99506889c7d67abd5a65acf746122c3d726f0d430b838e3"
+  }
+}

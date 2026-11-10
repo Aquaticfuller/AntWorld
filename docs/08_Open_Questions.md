@@ -1,5 +1,15 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.3.4 live durable history
+
+- **TD-11, storage subgate qualified for the frozen workloads.** New headless archives use lossless canonical blocks and a bounded background writer. Preserve the legacy 490,240 opportunities, 498,598 facts, 1,074,458,624-byte SQLite size and 51.62554 s save median. Candidate overlap and the true volume of opportunity facts still grow in crowded worlds. Denser and longer assay scale remains OPEN.
+- **TD-03/06 remain OPEN beyond the qualified cuts.** Cold history is paged, but each retained state frame includes authoritative geometry and ordered edits. Multi-million-fact restore, long geometry frame growth, cold participant queries, application save cadence and tiered lossless archival need dedicated budgets. Keep every canonical fact and every evidence link.
+- **TD-07 remains OPEN beyond local WAL.** Preserve fault-injection evidence and old-reader/shadow migration. Physical power cuts, faulty device caches, remote filesystems, authentication, replication and disaster recovery need separate qualification. Recovery targets are published continuation frames. An observational fact stream leaves some pending-state fields unspecified between frames.
+- **TD-04 and navigation limits remain OPEN.** Continuous spatial motion is a new-world opt-in. The terrain assumes a flat datum and bodies use conservative cubic clearance. Arbitrary internal routing and finding another route after permanent blockage remain unimplemented. Body rotation and loaded posture remain unmodeled. The bounded familiar local connector is an ENGINEERING_FIXTURE with no species-level validation.
+- **SD-01/02, SD-04, SD-06, SD-07, SD-08 and SD-09 remain OPEN.** Short trail-following sequences, weak social recruitment, scarce-resource allocation, queen provisioning, brood retrieval and suppression, colony-demand shaping and activity rhythms retain their original evidence and negative results. The new storage qualification does not change the P02–P04 status.
+
+[S6.3.4 review evidence](../S6_3_4_RESULTS.md) · [Biology readiness matrix](../research/s6_3_4/BIOLOGY_MODEL_READINESS_MATRIX.md)
+
 ## S6.3.3.3-R1 spatial corrections
 
 - **The three P0 spatial defects are addressed in the versioned continuous contract.** The native cases cover 1 and 10 mm terrain with matched physical movement, bounded reach and rigid custody, and real loaded and empty returns through discovered 3D openings. Historical saves retain their existing motor. Continuous endpoint movement still uses conservative cubic clearance, a flat surface datum and bounded route knowledge. Alternate-route discovery after permanent closure, full substrate locomotion and navigation inside arbitrary cavities remain open.

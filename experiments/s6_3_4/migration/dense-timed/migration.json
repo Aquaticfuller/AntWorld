@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "migration_seconds": 34.15600000007544,
+  "source_database_bytes": 1072361472,
+  "source_sha256": {
+    "database": "cffb779c9b070ae6220855ced19c3c01aab79037cb57e7ef30b5452e26cc841e"
+  },
+  "source_unchanged": false,
+  "archive_executable_sha256": "3d30ceef87509304e54460da17fe5bc8c8476725cc1be8979265916c487b2d4f"
+}

@@ -1,0 +1,33 @@
+{
+  "worlds": [
+    {
+      "world": "00000000-0000-18bd-0000-000000000007",
+      "facts": 5033,
+      "blocks": 2,
+      "raw_bytes": 953438,
+      "packed_bytes": 75026,
+      "canonical_sha256": "c9c30db8a5c2e50b23e33a55e066728f3b40f2413ea8d8bc6a6a0fc7cf12389c",
+      "tail_sha256": "8edaa68e477f479b4219d6d70178a5827202ee2ccbe954e93cd6ea0e1d2e50f6",
+      "frames": [
+        {
+          "generation": 1,
+          "revision": 4949,
+          "cursor": 3529,
+          "time_ms": 864000000,
+          "frame_hash": 4047952143004116880,
+          "frame_sha256": "bd041d9f2ff81124e822ab0d4a3c4319d721b4ae674d10d6985a1e9bf1595401",
+          "anchor_sha256": "cb1ea137c1d092d62cef518d16f0cac0fbfe929c05abcea3c8a23ba942c0ac15"
+        },
+        {
+          "generation": 2,
+          "revision": 7357,
+          "cursor": 5033,
+          "time_ms": 1814400000,
+          "frame_hash": 1335819601575875154,
+          "frame_sha256": "6b38514a2ea89e54a2710dfcd497d049cf4f136abb971cd75975247a31e35d24",
+          "anchor_sha256": "6ed5bbc77fcc1ea943a81be80aa365bcd819087ebb7d6faafd146ce484f4fee3"
+        }
+      ]
+    }
+  ]
+}

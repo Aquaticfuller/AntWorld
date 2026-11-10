@@ -1,0 +1,24 @@
+{
+  "worlds": [
+    {
+      "world": "00000000-0000-18bd-0000-000000000007",
+      "facts": 499006,
+      "blocks": 122,
+      "raw_bytes": 106529836,
+      "packed_bytes": 4409841,
+      "canonical_sha256": "02145ceb0a9bbf3be7332ee1ff4771dd36058102f46c786dc18cdcefb4454916",
+      "tail_sha256": "36f65d9f18ddabcfae619c4fe81ca64ab58a02ec0da40a4dd8abe597692c2746",
+      "frames": [
+        {
+          "generation": 1,
+          "revision": 503365,
+          "cursor": 499006,
+          "time_ms": 600000,
+          "frame_hash": 11950328096183038210,
+          "frame_sha256": "b7fc20cd93e78e199ce189f975e52ea60386ac5b743f85ad21bcf3741778174a",
+          "anchor_sha256": "e0c3ab455836b7005b0e8f381ff23885e2182d92287b412b157eac22342908d2"
+        }
+      ]
+    }
+  ]
+}

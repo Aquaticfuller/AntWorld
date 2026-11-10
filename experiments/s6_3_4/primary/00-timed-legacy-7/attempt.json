@@ -1,0 +1,30 @@
+{
+  "id": "00-timed-legacy-7",
+  "index": 0,
+  "role": "warmup",
+  "repetition": 0,
+  "case": "timed-legacy",
+  "seed": 7,
+  "started_utc": "2026-11-10T11:55:36.828+00:00",
+  "finished_utc": "2026-11-10T11:55:42.912+00:00",
+  "elapsed_seconds": 6.093999999924563,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      50001370312500,
+      52987576093750,
+      3153856093750
+    ],
+    "end_ticks_100ns": [
+      50002122968750,
+      52988397812500,
+      3154000312500
+    ],
+    "busy_percent": 22.080232934325462
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "4829df415e2f633240d59b4f151d7f491b264131dc0b0b19c6f510aa73925140",
+    "sample.csv": "6a02151cc87a901b2e3aedf78d1e3892917073c444a3171bb46331a8dd8c0ff7",
+    "console.log": "48527763534c29f65885ef13bd1e98e3bdb5d1430ae97fde818cb435e772a713"
+  }
+}

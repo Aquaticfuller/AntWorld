@@ -8,7 +8,7 @@ Files: 77 (excluding the manifest itself).
 | Path | SHA-256 | Bytes |
 |---|---|---:|
 | `AGENTS.md` | `e153e47bb97faa14a7a79b45f823e5a78e990a76900a22894b6fb985ddebc1e9` | 4674 |
-| `CODEX_START_HERE.md` | `5ff1c6814de4df24d1964492633f15b4f36f81585d16cafb8562d70102ae2dda` | 7560 |
+| `CODEX_START_HERE.md` | `56258dafc07ba3e7ed71f455ba73fd70dad7e85f9b85f514b0d7791f950f6ec5` | 7800 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 77 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `56ecfac8d45d2bad06eb7b9a0bd0251ab6daedde64d8fea2faa59b5c63b4c78c` | 53122 |
+| `docs/08_Open_Questions.md` | `332ec765dddd0fc26e6180cc2c7faa9b9cff87f1969153a3f084977eb046cc81` | 55241 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |
@@ -35,7 +35,7 @@ Files: 77 (excluding the manifest itself).
 | `docs/19_Persistence_Analytics_and_Recovery.md` | `7dd97468ad868c0ba39bae2eea64746f4953da4e8c69eb177f4f13fd5fda14eb` | 5831 |
 | `docs/20_World_API_C_ABI_and_GameMaster_Tools.md` | `375e1f5e5fc7844f40f41f821d0c1056be7de95ff6edd2803953fbfb0ca06c51` | 4017 |
 | `docs/21_P0_Behavior_Scenarios_and_Biological_Assumptions.md` | `c9255d057e3e31e8423d0424b71a6f27c4b52fc836e7d4672cac3a7f8dbf200b` | 5069 |
-| `docs/22_Development_Roadmap_and_Execution_Gates.md` | `8d50e5bb5f4a4f2e6d875bf3b82ec7135eda67a7c60d85a8e47e0d9d226570f1` | 5105 |
+| `docs/22_Development_Roadmap_and_Execution_Gates.md` | `060cb9dcdbb742c5b5fc8ca396ef306498a0e7ebe990fdeec40e23a03e2c14a0` | 5086 |
 | `docs/23_S0_Exact_Tasks_and_Test_Cases.md` | `6a1ea9ab63575c27b1f728c90d8d984a30d26c6d6e24e4d949d08b9b9dbb502c` | 3919 |
 | `docs/24_Traceability_and_Quality_Gates.md` | `e6d085c4bd3d709925c4671886e5dd983cac8608660a687d73c80482253fa201` | 8016 |
 | `docs/25_S0_Implementation_Decisions.md` | `95fa1432f4d5a634ed5a48f12704e1abd7d55e674a9f023b0b7b30d3c943405c` | 7556 |
