@@ -1,0 +1,1 @@
+run,seed,assay,condition,context_age_days,variant,window_h,begin_ms,end_ms,alive,scans51,positive51,positive50,active_ms,inactive_ms,unknown_ms,program_ms,opportunities,contacts,protein_ug,carbs_ug,water_ug,inspect,arrange,clean,transport,feed,worker_contact,body_energy_nj,hydration_ug,last_worker_contact_ms

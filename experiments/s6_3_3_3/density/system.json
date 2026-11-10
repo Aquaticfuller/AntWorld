@@ -1,0 +1,12 @@
+{
+  "start_utc": "2026-11-10T02:05:00.4577775Z",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "nominal_mhz": 2918,
+  "logical_processors": 16,
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "compiler": "LLVM-MinGW Clang 23.1.5 x86_64 Release",
+  "scope": "Exploratory care profiling. Host telemetry and formal quiet-load admission are outside the TD-11 protocol.",
+  "power_scheme_guid": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+  "native_executable_sha256": "4d66ea0db2ebc14323c113c9d739381a6b35880627279d3f1b1876088a0e3246",
+  "profile_executable_sha256": "19a2655fbc58cf139b9b9cfaffc6f6d19e6b8417cf8cd7e6f24b1ff654502c79"
+}

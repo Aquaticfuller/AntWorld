@@ -1,0 +1,41 @@
+{
+  "executable_sha256": "bdca16a252a564025743165ac944d09bbe62c6783a905058b9562915b4ea0d11",
+  "cases": [
+    {
+      "arm": "b02",
+      "runs": 72,
+      "match": true,
+      "events": 129738
+    },
+    {
+      "arm": "robustness",
+      "runs": 144,
+      "match": true,
+      "events": 174890
+    },
+    {
+      "arm": "sensitivity",
+      "runs": 180,
+      "match": true,
+      "events": 320607
+    },
+    {
+      "arm": "b01",
+      "runs": 40,
+      "match": true,
+      "events": 3814421
+    },
+    {
+      "arm": "b01-sensitivity",
+      "runs": 36,
+      "match": true,
+      "events": 3181718
+    },
+    {
+      "arm": "integration",
+      "runs": 12,
+      "match": true,
+      "events": 53440
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "reviewed_base": "e5ded6e56061e9aa8c344b0ae3087068f8687e47",
+  "protocol_freeze": "11b2a36efc3abb4e1869c4e65a11303a78da9664",
+  "identical_trees": {
+    "cpp/src": "b6e17dbb69f1d588c1249459a3a63bd74a0eb0c9",
+    "cpp/include": "9157956a17db82c8b9743802d8adb1df6cb5a8fe",
+    "cpp/storage": "f5abb7e824cfbbeca43c9936be6fe2b93bb336f5",
+    "experiments/s6_3_3_2": "a2dfce1da3c12b3a1c61a5cbcbe0525cf649af5b",
+    "research/s6_3_3_2": "281203d422646d57fd7ae9b4e89b985640dd7fb3"
+  },
+  "compiler": "LLVM-MinGW Clang 23.1.5 x86_64",
+  "sanitizer_scope": "AddressSanitizer and UndefinedBehaviorSanitizer. Leak detection disabled on this local Windows runner.",
+  "local_ctest": {
+    "release": {
+      "passed": 197,
+      "inherited": 195,
+      "added": [
+        "S6_3_3_3_probes",
+        "S6_3_3_3_smoke"
+      ],
+      "wall_s": 10.75
+    },
+    "debug": {
+      "passed": 197,
+      "inherited": 195,
+      "added": [
+        "S6_3_3_3_probes",
+        "S6_3_3_3_smoke"
+      ],
+      "wall_s": 55.7
+    },
+    "sanitizer": {
+      "passed": 197,
+      "inherited": 195,
+      "added": [
+        "S6_3_3_3_probes",
+        "S6_3_3_3_smoke"
+      ],
+      "wall_s": 169.69
+    }
+  },
+  "source_milestone": "d7e5a2aca215e5e460f5d2a3f665ac471ffd474c",
+  "tested_ecology_harness_sha256": "5d3ff81618a1d562ec2aca0615fb1ad07531eff8a0ea160c5c967b870e2b7e42"
+}

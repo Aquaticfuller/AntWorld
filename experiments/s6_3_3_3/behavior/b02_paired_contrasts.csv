@@ -1,0 +1,1063 @@
+group,origin,layout,radius_mm,metric,baseline,n,mean,ci_low,ci_high
+queen,foreign,line,3.0,retrieved,6 mm,6,-4.5,-5.666666666666667,-3.1666666666666665
+queen,foreign,line,3.0,retrieved,own,6,1.0,0.16666666666666666,2.0
+queen,foreign,line,3.0,handling_capped_s,6 mm,6,411.71683333333334,252.0005,571.3768333333334
+queen,foreign,line,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,placement_capped_s,6 mm,6,410.71183333333335,251.66549999999998,569.7018333333334
+queen,foreign,line,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,no_handling,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,line,3.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,no_placement,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,line,3.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,cue_at_first_wake,6 mm,6,-1.0,-1.0,-1.0
+queen,foreign,line,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,line,3.0,repeated_trips,6 mm,6,-4.0,-4.833333333333333,-3.0
+queen,foreign,line,3.0,repeated_trips,own,6,0.6666666666666666,0.16666666666666666,1.3333333333333333
+queen,foreign,line,3.0,search_mm,6 mm,6,-40.5,-57.0,-28.0
+queen,foreign,line,3.0,search_mm,own,6,14.666666666666666,2.0,33.0
+queen,foreign,line,6.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,line,6.0,search_mm,own,6,13.666666666666666,0.0,32.0
+queen,foreign,line,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,handling_capped_s,6 mm,6,0.16899999999999896,0.05633333333333231,0.2816666666666667
+queen,foreign,line,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,placement_capped_s,6 mm,6,0.5049999999999996,0.168333333333333,0.8416666666666665
+queen,foreign,line,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,foreign,line,9.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,line,9.0,search_mm,6 mm,6,-13.0,-13.0,-13.0
+queen,foreign,line,9.0,search_mm,own,6,37.333333333333336,20.125,52.5
+queen,foreign,offset,3.0,retrieved,6 mm,6,-1.0,-3.0,0.0
+queen,foreign,offset,3.0,retrieved,line,6,-1.5,-2.8333333333333335,-0.3333333333333333
+queen,foreign,offset,3.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,handling_capped_s,6 mm,6,48.733000000000004,0.0,146.199
+queen,foreign,offset,3.0,handling_capped_s,line,6,177.77383333333333,18.113833333333332,337.5465
+queen,foreign,offset,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,placement_capped_s,6 mm,6,47.894,0.0,143.682
+queen,foreign,offset,3.0,placement_capped_s,line,6,176.76883333333333,17.778833333333335,335.8715
+queen,foreign,offset,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,no_handling,6 mm,6,0.16666666666666666,0.0,0.5
+queen,foreign,offset,3.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,offset,3.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,no_placement,6 mm,6,0.16666666666666666,0.0,0.5
+queen,foreign,offset,3.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,offset,3.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,repeated_trips,6 mm,6,-0.8333333333333334,-2.5,0.0
+queen,foreign,offset,3.0,repeated_trips,line,6,-1.0,-2.0,-0.16666666666666666
+queen,foreign,offset,3.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,offset,3.0,search_mm,6 mm,6,-12.833333333333334,-38.5,0.0
+queen,foreign,offset,3.0,search_mm,line,6,10.833333333333337,-0.3333333333333262,27.166666666666668
+queen,foreign,offset,3.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,retrieved,line,6,-5.0,-6.0,-3.0
+queen,foreign,offset,6.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,handling_capped_s,line,6,540.7576666666666,443.2916666666667,599.491
+queen,foreign,offset,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,placement_capped_s,line,6,539.5866666666667,443.79866666666663,597.481
+queen,foreign,offset,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,no_handling,line,6,0.8333333333333334,0.5,1.0
+queen,foreign,offset,6.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,no_placement,line,6,0.8333333333333334,0.5,1.0
+queen,foreign,offset,6.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,offset,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,repeated_trips,line,6,-4.166666666666667,-5.0,-2.5
+queen,foreign,offset,6.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,offset,6.0,search_mm,line,6,-16.83333333333333,-30.999999999999996,8.833333333333336
+queen,foreign,offset,6.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,retrieved,6 mm,6,1.0,0.0,3.0
+queen,foreign,offset,9.0,retrieved,line,6,-4.0,-6.0,-2.0
+queen,foreign,offset,9.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,handling_capped_s,6 mm,6,-39.06916666666666,-79.91249999999998,0.0
+queen,foreign,offset,9.0,handling_capped_s,line,6,501.51950000000005,366.4880625,589.378
+queen,foreign,offset,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,placement_capped_s,6 mm,6,-38.23016666666667,-79.07350000000001,0.0
+queen,foreign,offset,9.0,placement_capped_s,line,6,500.8515,367.2534375,587.144
+queen,foreign,offset,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,no_handling,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,foreign,offset,9.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,offset,9.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,no_placement,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,foreign,offset,9.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,offset,9.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,offset,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,repeated_trips,6 mm,6,0.8333333333333334,0.0,2.5
+queen,foreign,offset,9.0,repeated_trips,line,6,-3.3333333333333335,-5.0,-1.6666666666666667
+queen,foreign,offset,9.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,offset,9.0,search_mm,6 mm,6,3.5,-8.5,19.0
+queen,foreign,offset,9.0,search_mm,line,6,-0.3333333333333286,-16.66666666666666,19.666666666666668
+queen,foreign,offset,9.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,retrieved,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+queen,foreign,ring,3.0,retrieved,line,6,-1.3333333333333333,-2.8333333333333335,0.0
+queen,foreign,ring,3.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,handling_capped_s,6 mm,6,114.22616666666669,57.07083333333335,163.66133333333335
+queen,foreign,ring,3.0,handling_capped_s,line,6,129.04083333333332,-97.29737500000002,337.525375
+queen,foreign,ring,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,placement_capped_s,6 mm,6,110.53416666666668,55.22483333333334,159.13033333333334
+queen,foreign,ring,3.0,placement_capped_s,line,6,128.98683333333335,-94.93337500000001,335.85037500000004
+queen,foreign,ring,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,no_handling,6 mm,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,ring,3.0,no_handling,line,6,0.3333333333333333,-0.3333333333333333,0.8333333333333334
+queen,foreign,ring,3.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,no_placement,6 mm,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,ring,3.0,no_placement,line,6,0.3333333333333333,-0.3333333333333333,0.8333333333333334
+queen,foreign,ring,3.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,repeated_trips,line,6,-1.0,-2.0,-0.16666666666666666
+queen,foreign,ring,3.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,ring,3.0,search_mm,6 mm,6,2.3333333333333335,-3.0,6.666666666666667
+queen,foreign,ring,3.0,search_mm,line,6,12.166666666666666,0.6666666666666666,27.166666666666668
+queen,foreign,ring,3.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,retrieved,line,6,-5.166666666666667,-5.5,-5.0
+queen,foreign,ring,6.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,handling_capped_s,line,6,426.5315,316.50333333333333,526.6433333333333
+queen,foreign,ring,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,placement_capped_s,line,6,429.16450000000003,320.1433333333333,528.3253333333333
+queen,foreign,ring,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,no_handling,line,6,0.16666666666666666,0.0,0.5
+queen,foreign,ring,6.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,no_placement,line,6,0.16666666666666666,0.0,0.5
+queen,foreign,ring,6.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,ring,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,foreign,ring,6.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,ring,6.0,search_mm,line,6,-30.666666666666668,-35.0,-26.333333333333332
+queen,foreign,ring,6.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,retrieved,6 mm,6,0.6666666666666666,0.16666666666666666,1.3333333333333333
+queen,foreign,ring,9.0,retrieved,line,6,-4.5,-4.833333333333333,-4.166666666666667
+queen,foreign,ring,9.0,retrieved,own,6,0.3333333333333333,0.0,0.6666666666666666
+queen,foreign,ring,9.0,handling_capped_s,6 mm,6,-180.84383333333332,-288.2254791666667,-91.57533333333333
+queen,foreign,ring,9.0,handling_capped_s,line,6,245.5186666666667,174.50847916666666,316.1668333333334
+queen,foreign,ring,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,placement_capped_s,6 mm,6,-179.89283333333333,-285.42816666666664,-91.54716666666667
+queen,foreign,ring,9.0,placement_capped_s,line,6,248.76666666666665,178.06116666666665,319.13483333333335
+queen,foreign,ring,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,no_handling,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,foreign,ring,9.0,no_handling,line,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,no_placement,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,foreign,ring,9.0,no_placement,line,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,ring,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,ring,9.0,repeated_trips,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,ring,9.0,repeated_trips,line,6,-4.5,-4.833333333333333,-4.166666666666667
+queen,foreign,ring,9.0,repeated_trips,own,6,0.3333333333333333,0.0,0.6666666666666666
+queen,foreign,ring,9.0,search_mm,6 mm,6,5.333333333333333,1.1666666666666667,9.833333333333334
+queen,foreign,ring,9.0,search_mm,line,6,-12.333333333333334,-17.9375,-7.0
+queen,foreign,ring,9.0,search_mm,own,6,16.333333333333332,1.5,33.166666666666664
+queen,foreign,split,3.0,retrieved,6 mm,6,-2.6666666666666665,-4.333333333333333,-1.3333333333333333
+queen,foreign,split,3.0,retrieved,line,6,0.8333333333333334,-0.16666666666666666,2.0
+queen,foreign,split,3.0,retrieved,own,6,1.5,0.8333333333333334,2.0
+queen,foreign,split,3.0,handling_capped_s,6 mm,6,231.38166666666666,130.286,371.041
+queen,foreign,split,3.0,handling_capped_s,line,6,-180.33516666666665,-340.16416666666663,-30.562833333333334
+queen,foreign,split,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,placement_capped_s,6 mm,6,231.04666666666665,130.28599999999997,370.036
+queen,foreign,split,3.0,placement_capped_s,line,6,-179.66516666666666,-338.82416666666666,-30.562833333333334
+queen,foreign,split,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,no_handling,6 mm,6,0.16666666666666666,0.0,0.5
+queen,foreign,split,3.0,no_handling,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,foreign,split,3.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,no_placement,6 mm,6,0.16666666666666666,0.0,0.5
+queen,foreign,split,3.0,no_placement,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,foreign,split,3.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,cue_at_first_wake,6 mm,6,-1.0,-1.0,-1.0
+queen,foreign,split,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,split,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,split,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,split,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,split,3.0,repeated_trips,6 mm,6,-2.5,-3.8333333333333335,-1.3333333333333333
+queen,foreign,split,3.0,repeated_trips,line,6,0.5,-0.16666666666666666,1.3333333333333333
+queen,foreign,split,3.0,repeated_trips,own,6,1.0,0.3333333333333333,1.6666666666666667
+queen,foreign,split,3.0,search_mm,6 mm,6,-25.0,-41.979166666666664,-7.333333333333333
+queen,foreign,split,3.0,search_mm,line,6,-10.5,-25.833333333333332,2.6666666666666665
+queen,foreign,split,3.0,search_mm,own,6,32.0,16.833333333333332,45.833333333333336
+queen,foreign,split,6.0,retrieved,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+queen,foreign,split,6.0,retrieved,own,6,1.0,0.3333333333333333,1.6666666666666667
+queen,foreign,split,6.0,handling_capped_s,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,placement_capped_s,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,no_handling,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,no_placement,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,split,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,split,6.0,repeated_trips,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+queen,foreign,split,6.0,repeated_trips,own,6,1.0,0.3333333333333333,1.6666666666666667
+queen,foreign,split,6.0,search_mm,line,6,-26.0,-27.0,-24.333333333333332
+queen,foreign,split,6.0,search_mm,own,6,71.66666666666667,70.5,72.5
+queen,foreign,split,9.0,retrieved,6 mm,6,0.6666666666666666,-0.5,1.6666666666666667
+queen,foreign,split,9.0,retrieved,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,foreign,split,9.0,retrieved,own,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,split,9.0,handling_capped_s,6 mm,6,0.16899999999999896,0.05633333333333231,0.2816666666666667
+queen,foreign,split,9.0,handling_capped_s,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,placement_capped_s,6 mm,6,0.5049999999999996,0.168333333333333,0.8416666666666665
+queen,foreign,split,9.0,placement_capped_s,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_handling,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_placement,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,split,9.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,split,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,split,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,split,9.0,repeated_trips,6 mm,6,0.6666666666666666,-0.5,1.6666666666666667
+queen,foreign,split,9.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,foreign,split,9.0,repeated_trips,own,6,0.6666666666666666,0.3333333333333333,1.0
+queen,foreign,split,9.0,search_mm,6 mm,6,-15.333333333333334,-26.333333333333332,-6.5
+queen,foreign,split,9.0,search_mm,line,6,-28.333333333333332,-40.333333333333336,-19.333333333333332
+queen,foreign,split,9.0,search_mm,own,6,60.333333333333336,49.333333333333336,69.33333333333333
+queen,foreign,wall,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,retrieved,line,6,-1.5,-2.8333333333333335,-0.3333333333333333
+queen,foreign,wall,3.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,handling_capped_s,line,6,177.77383333333333,18.113833333333332,337.5465
+queen,foreign,wall,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,placement_capped_s,line,6,176.76883333333333,17.778833333333335,335.8715
+queen,foreign,wall,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,wall,3.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,foreign,wall,3.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,repeated_trips,line,6,-1.0,-2.0,-0.16666666666666666
+queen,foreign,wall,3.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,search_mm,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,3.0,search_mm,line,6,-7.0,-17.0,-0.16666666666666666
+queen,foreign,wall,3.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+queen,foreign,wall,6.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,handling_capped_s,line,6,589.4906666666667,569.49,599.491
+queen,foreign,wall,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,placement_capped_s,line,6,587.4806666666667,567.48,597.481
+queen,foreign,wall,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,no_handling,line,6,1.0,1.0,1.0
+queen,foreign,wall,6.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,no_placement,line,6,1.0,1.0,1.0
+queen,foreign,wall,6.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,wall,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,foreign,wall,6.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,wall,6.0,search_mm,line,6,-47.5,-65.5,-30.0
+queen,foreign,wall,6.0,search_mm,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,retrieved,line,6,-6.0,-6.0,-6.0
+queen,foreign,wall,9.0,retrieved,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,handling_capped_s,line,6,589.3216666666666,569.2083333333334,599.4346666666667
+queen,foreign,wall,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,placement_capped_s,line,6,586.9756666666667,566.6383333333333,597.3126666666667
+queen,foreign,wall,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,no_handling,line,6,1.0,1.0,1.0
+queen,foreign,wall,9.0,no_handling,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,no_placement,line,6,1.0,1.0,1.0
+queen,foreign,wall,9.0,no_placement,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,foreign,wall,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,foreign,wall,9.0,repeated_trips,own,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,search_mm,6 mm,6,0.0,0.0,0.0
+queen,foreign,wall,9.0,search_mm,line,6,-34.5,-52.5,-17.0
+queen,foreign,wall,9.0,search_mm,own,6,0.0,0.0,0.0
+queen,own,line,3.0,retrieved,6 mm,6,-5.5,-5.833333333333333,-5.166666666666667
+queen,own,line,3.0,handling_capped_s,6 mm,6,411.71683333333334,252.0005,571.3768333333334
+queen,own,line,3.0,placement_capped_s,6 mm,6,410.71183333333335,251.66549999999998,569.7018333333334
+queen,own,line,3.0,no_handling,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,line,3.0,no_placement,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,line,3.0,cue_at_first_wake,6 mm,6,-1.0,-1.0,-1.0
+queen,own,line,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,line,3.0,repeated_trips,6 mm,6,-4.666666666666667,-5.0,-4.333333333333333
+queen,own,line,3.0,search_mm,6 mm,6,-41.5,-77.0,-6.0
+queen,own,line,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,handling_capped_s,6 mm,6,0.16899999999999896,0.05633333333333231,0.2816666666666667
+queen,own,line,9.0,placement_capped_s,6 mm,6,0.5049999999999996,0.168333333333333,0.8416666666666665
+queen,own,line,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,own,line,9.0,search_mm,6 mm,6,-36.666666666666664,-52.166666666666664,-22.5
+queen,own,offset,3.0,retrieved,6 mm,6,-1.0,-3.0,0.0
+queen,own,offset,3.0,retrieved,line,6,-0.5,-0.8333333333333334,-0.16666666666666666
+queen,own,offset,3.0,handling_capped_s,6 mm,6,48.733000000000004,0.0,146.199
+queen,own,offset,3.0,handling_capped_s,line,6,177.77383333333333,18.113833333333332,337.5465
+queen,own,offset,3.0,placement_capped_s,6 mm,6,47.894,0.0,143.682
+queen,own,offset,3.0,placement_capped_s,line,6,176.76883333333333,17.778833333333335,335.8715
+queen,own,offset,3.0,no_handling,6 mm,6,0.16666666666666666,0.0,0.5
+queen,own,offset,3.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,offset,3.0,no_placement,6 mm,6,0.16666666666666666,0.0,0.5
+queen,own,offset,3.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,offset,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,offset,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,offset,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,offset,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,offset,3.0,repeated_trips,6 mm,6,-0.8333333333333334,-2.5,0.0
+queen,own,offset,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,own,offset,3.0,search_mm,6 mm,6,-12.833333333333334,-38.5,0.0
+queen,own,offset,3.0,search_mm,line,6,25.500000000000004,1.8333333333333404,49.833333333333336
+queen,own,offset,6.0,retrieved,line,6,-5.0,-6.0,-3.0
+queen,own,offset,6.0,handling_capped_s,line,6,540.7576666666666,443.2916666666667,599.491
+queen,own,offset,6.0,placement_capped_s,line,6,539.5866666666667,443.79866666666663,597.481
+queen,own,offset,6.0,no_handling,line,6,0.8333333333333334,0.5,1.0
+queen,own,offset,6.0,no_placement,line,6,0.8333333333333334,0.5,1.0
+queen,own,offset,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,offset,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,offset,6.0,repeated_trips,line,6,-4.166666666666667,-5.0,-2.5
+queen,own,offset,6.0,search_mm,line,6,-3.166666666666662,-25.16666666666666,22.000000000000004
+queen,own,offset,9.0,retrieved,6 mm,6,1.0,0.0,3.0
+queen,own,offset,9.0,retrieved,line,6,-4.0,-6.0,-2.0
+queen,own,offset,9.0,handling_capped_s,6 mm,6,-39.06916666666666,-79.91249999999998,0.0
+queen,own,offset,9.0,handling_capped_s,line,6,501.51950000000005,366.4880625,589.378
+queen,own,offset,9.0,placement_capped_s,6 mm,6,-38.23016666666667,-79.07350000000001,0.0
+queen,own,offset,9.0,placement_capped_s,line,6,500.8515,367.2534375,587.144
+queen,own,offset,9.0,no_handling,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,own,offset,9.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+queen,own,offset,9.0,no_placement,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,own,offset,9.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+queen,own,offset,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,offset,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,offset,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,offset,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,offset,9.0,repeated_trips,6 mm,6,0.8333333333333334,0.0,2.5
+queen,own,offset,9.0,repeated_trips,line,6,-3.3333333333333335,-5.0,-1.6666666666666667
+queen,own,offset,9.0,search_mm,6 mm,6,3.5,-8.5,19.0
+queen,own,offset,9.0,search_mm,line,6,37.00000000000001,23.666666666666675,52.0
+queen,own,ring,3.0,retrieved,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+queen,own,ring,3.0,retrieved,line,6,-0.3333333333333333,-0.8333333333333334,0.3333333333333333
+queen,own,ring,3.0,handling_capped_s,6 mm,6,114.22616666666669,57.07083333333335,163.66133333333335
+queen,own,ring,3.0,handling_capped_s,line,6,129.04083333333332,-97.29737500000002,337.525375
+queen,own,ring,3.0,placement_capped_s,6 mm,6,110.53416666666668,55.22483333333334,159.13033333333334
+queen,own,ring,3.0,placement_capped_s,line,6,128.98683333333335,-94.93337500000001,335.85037500000004
+queen,own,ring,3.0,no_handling,6 mm,6,0.6666666666666666,0.3333333333333333,1.0
+queen,own,ring,3.0,no_handling,line,6,0.3333333333333333,-0.3333333333333333,0.8333333333333334
+queen,own,ring,3.0,no_placement,6 mm,6,0.6666666666666666,0.3333333333333333,1.0
+queen,own,ring,3.0,no_placement,line,6,0.3333333333333333,-0.3333333333333333,0.8333333333333334
+queen,own,ring,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,ring,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,ring,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,ring,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,ring,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,own,ring,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,own,ring,3.0,search_mm,6 mm,6,2.3333333333333335,-3.0,6.666666666666667
+queen,own,ring,3.0,search_mm,line,6,26.833333333333332,3.0,51.0
+queen,own,ring,6.0,retrieved,line,6,-5.166666666666667,-5.5,-5.0
+queen,own,ring,6.0,handling_capped_s,line,6,426.5315,316.50333333333333,526.6433333333333
+queen,own,ring,6.0,placement_capped_s,line,6,429.16450000000003,320.1433333333333,528.3253333333333
+queen,own,ring,6.0,no_handling,line,6,0.16666666666666666,0.0,0.5
+queen,own,ring,6.0,no_placement,line,6,0.16666666666666666,0.0,0.5
+queen,own,ring,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,ring,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,ring,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,own,ring,6.0,search_mm,line,6,-17.0,-34.0,4.0
+queen,own,ring,9.0,retrieved,6 mm,6,0.3333333333333333,0.0,0.6666666666666666
+queen,own,ring,9.0,retrieved,line,6,-4.833333333333333,-5.0,-4.5
+queen,own,ring,9.0,handling_capped_s,6 mm,6,-180.84383333333332,-288.2254791666667,-91.57533333333333
+queen,own,ring,9.0,handling_capped_s,line,6,245.5186666666667,174.50847916666666,316.1668333333334
+queen,own,ring,9.0,placement_capped_s,6 mm,6,-179.89283333333333,-285.42816666666664,-91.54716666666667
+queen,own,ring,9.0,placement_capped_s,line,6,248.76666666666665,178.06116666666665,319.13483333333335
+queen,own,ring,9.0,no_handling,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,own,ring,9.0,no_handling,line,6,0.0,0.0,0.0
+queen,own,ring,9.0,no_placement,6 mm,6,-0.16666666666666666,-0.5,0.0
+queen,own,ring,9.0,no_placement,line,6,0.0,0.0,0.0
+queen,own,ring,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,ring,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,ring,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,ring,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,ring,9.0,repeated_trips,6 mm,6,0.16666666666666666,0.0,0.5
+queen,own,ring,9.0,repeated_trips,line,6,-4.833333333333333,-5.0,-4.5
+queen,own,ring,9.0,search_mm,6 mm,6,-11.0,-28.166666666666668,3.6666666666666665
+queen,own,ring,9.0,search_mm,line,6,8.666666666666666,-19.166666666666668,36.479166666666664
+queen,own,split,3.0,retrieved,6 mm,6,-3.1666666666666665,-3.5,-3.0
+queen,own,split,3.0,retrieved,line,6,0.3333333333333333,0.0,0.6666666666666666
+queen,own,split,3.0,handling_capped_s,6 mm,6,231.38166666666666,130.286,371.041
+queen,own,split,3.0,handling_capped_s,line,6,-180.33516666666665,-340.16416666666663,-30.562833333333334
+queen,own,split,3.0,placement_capped_s,6 mm,6,231.04666666666665,130.28599999999997,370.036
+queen,own,split,3.0,placement_capped_s,line,6,-179.66516666666666,-338.82416666666666,-30.562833333333334
+queen,own,split,3.0,no_handling,6 mm,6,0.16666666666666666,0.0,0.5
+queen,own,split,3.0,no_handling,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,own,split,3.0,no_placement,6 mm,6,0.16666666666666666,0.0,0.5
+queen,own,split,3.0,no_placement,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,own,split,3.0,cue_at_first_wake,6 mm,6,-1.0,-1.0,-1.0
+queen,own,split,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,split,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,split,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,split,3.0,repeated_trips,6 mm,6,-2.5,-2.8333333333333335,-2.1666666666666665
+queen,own,split,3.0,repeated_trips,line,6,0.16666666666666666,0.0,0.5
+queen,own,split,3.0,search_mm,6 mm,6,14.666666666666666,-4.666666666666667,39.166666666666664
+queen,own,split,3.0,search_mm,line,6,-27.833333333333332,-52.5,-3.3333333333333335
+queen,own,split,6.0,retrieved,line,6,-2.0,-2.0,-2.0
+queen,own,split,6.0,handling_capped_s,line,6,0.0,0.0,0.0
+queen,own,split,6.0,placement_capped_s,line,6,0.0,0.0,0.0
+queen,own,split,6.0,no_handling,line,6,0.0,0.0,0.0
+queen,own,split,6.0,no_placement,line,6,0.0,0.0,0.0
+queen,own,split,6.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,split,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,split,6.0,repeated_trips,line,6,-2.0,-2.0,-2.0
+queen,own,split,6.0,search_mm,line,6,-84.0,-97.66666666666667,-67.0
+queen,own,split,9.0,retrieved,6 mm,6,1.0,1.0,1.0
+queen,own,split,9.0,retrieved,line,6,-1.0,-1.0,-1.0
+queen,own,split,9.0,handling_capped_s,6 mm,6,0.16899999999999896,0.05633333333333231,0.2816666666666667
+queen,own,split,9.0,handling_capped_s,line,6,0.0,0.0,0.0
+queen,own,split,9.0,placement_capped_s,6 mm,6,0.5049999999999996,0.168333333333333,0.8416666666666665
+queen,own,split,9.0,placement_capped_s,line,6,0.0,0.0,0.0
+queen,own,split,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,own,split,9.0,no_handling,line,6,0.0,0.0,0.0
+queen,own,split,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,own,split,9.0,no_placement,line,6,0.0,0.0,0.0
+queen,own,split,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,split,9.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,split,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,split,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,split,9.0,repeated_trips,6 mm,6,1.0,1.0,1.0
+queen,own,split,9.0,repeated_trips,line,6,-1.0,-1.0,-1.0
+queen,own,split,9.0,search_mm,6 mm,6,-4.0,-4.0,-4.0
+queen,own,split,9.0,search_mm,line,6,-51.333333333333336,-69.33333333333333,-34.833333333333336
+queen,own,wall,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,retrieved,line,6,-0.5,-0.8333333333333334,-0.16666666666666666
+queen,own,wall,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,handling_capped_s,line,6,177.77383333333333,18.113833333333332,337.5465
+queen,own,wall,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,placement_capped_s,line,6,176.76883333333333,17.778833333333335,335.8715
+queen,own,wall,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,wall,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+queen,own,wall,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+queen,own,wall,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,wall,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+queen,own,wall,3.0,search_mm,6 mm,6,0.0,0.0,0.0
+queen,own,wall,3.0,search_mm,line,6,7.666666666666667,0.16666666666666666,16.166666666666668
+queen,own,wall,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+queen,own,wall,6.0,handling_capped_s,line,6,589.4906666666667,569.49,599.491
+queen,own,wall,6.0,placement_capped_s,line,6,587.4806666666667,567.48,597.481
+queen,own,wall,6.0,no_handling,line,6,1.0,1.0,1.0
+queen,own,wall,6.0,no_placement,line,6,1.0,1.0,1.0
+queen,own,wall,6.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,wall,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,wall,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,own,wall,6.0,search_mm,line,6,-33.833333333333336,-62.0,-5.666666666666667
+queen,own,wall,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,retrieved,line,6,-6.0,-6.0,-6.0
+queen,own,wall,9.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,handling_capped_s,line,6,589.3216666666666,569.2083333333334,599.4346666666667
+queen,own,wall,9.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,placement_capped_s,line,6,586.9756666666667,566.6383333333333,597.3126666666667
+queen,own,wall,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,no_handling,line,6,1.0,1.0,1.0
+queen,own,wall,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,no_placement,line,6,1.0,1.0,1.0
+queen,own,wall,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,cue_at_first_wake,line,6,-1.0,-1.0,-1.0
+queen,own,wall,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+queen,own,wall,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+queen,own,wall,9.0,search_mm,6 mm,6,0.0,0.0,0.0
+queen,own,wall,9.0,search_mm,line,6,2.8333333333333335,-31.0,34.666666666666664
+three_workers,foreign,line,3.0,retrieved,6 mm,6,-5.0,-5.666666666666667,-4.333333333333333
+three_workers,foreign,line,3.0,retrieved,own,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,foreign,line,3.0,handling_capped_s,6 mm,6,370.63349999999997,180.44949999999997,530.4073333333333
+three_workers,foreign,line,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,placement_capped_s,6 mm,6,370.04750000000007,180.15650000000002,529.2353333333334
+three_workers,foreign,line,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,no_handling,6 mm,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,foreign,line,3.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,no_placement,6 mm,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,foreign,line,3.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,cue_at_first_wake,6 mm,6,-3.0,-3.0,-3.0
+three_workers,foreign,line,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,line,3.0,repeated_trips,6 mm,6,-4.666666666666667,-5.0,-4.333333333333333
+three_workers,foreign,line,3.0,repeated_trips,own,6,0.0,-0.5,0.5
+three_workers,foreign,line,3.0,search_mm,6 mm,6,-23.5,-40.166666666666664,-7.666666666666667
+three_workers,foreign,line,3.0,search_mm,own,6,39.833333333333336,6.166666666666667,83.16666666666667
+three_workers,foreign,line,6.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,line,6.0,repeated_trips,own,6,-0.16666666666666666,-0.5,0.0
+three_workers,foreign,line,6.0,search_mm,own,6,140.83333333333334,135.16666666666666,144.0
+three_workers,foreign,line,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,handling_capped_s,6 mm,6,0.0173333333333332,0.0,0.0519999999999996
+three_workers,foreign,line,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,placement_capped_s,6 mm,6,0.10133333333333401,0.0,0.30400000000000205
+three_workers,foreign,line,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,line,9.0,repeated_trips,own,6,-0.16666666666666666,-0.5,0.0
+three_workers,foreign,line,9.0,search_mm,6 mm,6,-13.0,-13.0,-13.0
+three_workers,foreign,line,9.0,search_mm,own,6,158.33333333333334,143.33333333333334,174.33333333333334
+three_workers,foreign,offset,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,retrieved,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+three_workers,foreign,offset,3.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,foreign,offset,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,foreign,offset,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,offset,3.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,offset,3.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,foreign,offset,3.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,3.0,search_mm,6 mm,6,2.3333333333333335,0.0,7.0
+three_workers,foreign,offset,3.0,search_mm,line,6,16.5,1.3333333333333333,33.5
+three_workers,foreign,offset,3.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,foreign,offset,6.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,handling_capped_s,line,6,589.7896666666667,569.789,599.79
+three_workers,foreign,offset,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,placement_capped_s,line,6,588.0316666666666,568.0310000000001,598.032
+three_workers,foreign,offset,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,foreign,offset,6.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,foreign,offset,6.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,offset,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+three_workers,foreign,offset,6.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,6.0,search_mm,line,6,-9.333333333333334,-14.0,-3.3333333333333335
+three_workers,foreign,offset,6.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,retrieved,6 mm,6,4.0,2.0,6.0
+three_workers,foreign,offset,9.0,retrieved,line,6,-2.0,-4.0,0.0
+three_workers,foreign,offset,9.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,handling_capped_s,6 mm,6,-158.15116666666668,-267.4816666666667,-49.6775
+three_workers,foreign,offset,9.0,handling_capped_s,line,6,431.6211666666666,322.29066666666665,540.9516666666667
+three_workers,foreign,offset,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,placement_capped_s,6 mm,6,-155.46583333333334,-263.45366666666666,-49.006166666666665
+three_workers,foreign,offset,9.0,placement_capped_s,line,6,432.46450000000004,324.4766666666667,540.4523333333333
+three_workers,foreign,offset,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,no_handling,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,foreign,offset,9.0,no_handling,line,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,foreign,offset,9.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,no_placement,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,foreign,offset,9.0,no_placement,line,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,foreign,offset,9.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,offset,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,repeated_trips,6 mm,6,3.3333333333333335,1.6666666666666667,5.0
+three_workers,foreign,offset,9.0,repeated_trips,line,6,-1.6666666666666667,-3.3333333333333335,0.0
+three_workers,foreign,offset,9.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,offset,9.0,search_mm,6 mm,6,44.0,12.666666666666666,72.83333333333333
+three_workers,foreign,offset,9.0,search_mm,line,6,47.666666666666664,13.5,79.16666666666667
+three_workers,foreign,offset,9.0,search_mm,own,6,27.833333333333332,8.0,51.833333333333336
+three_workers,foreign,ring,3.0,retrieved,6 mm,6,-0.6666666666666666,-1.3333333333333333,-0.16666666666666666
+three_workers,foreign,ring,3.0,retrieved,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+three_workers,foreign,ring,3.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,handling_capped_s,6 mm,6,98.69066666666667,9.53983333333334,218.067
+three_workers,foreign,ring,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,foreign,ring,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,placement_capped_s,6 mm,6,96.50766666666668,8.826000000000002,214.37333333333333
+three_workers,foreign,ring,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,foreign,ring,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,no_handling,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,foreign,ring,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,ring,3.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,no_placement,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,foreign,ring,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,ring,3.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,repeated_trips,6 mm,6,-0.16666666666666666,-0.5,0.0
+three_workers,foreign,ring,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,foreign,ring,3.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,3.0,search_mm,6 mm,6,-1.5,-10.5,8.0
+three_workers,foreign,ring,3.0,search_mm,line,6,15.5,-0.3333333333333333,33.5
+three_workers,foreign,ring,3.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,retrieved,line,6,-5.333333333333333,-5.833333333333333,-4.666666666666667
+three_workers,foreign,ring,6.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,handling_capped_s,line,6,491.099,381.2625,580.2498333333333
+three_workers,foreign,ring,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,placement_capped_s,line,6,491.52400000000006,382.4843333333333,579.2056666666667
+three_workers,foreign,ring,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,foreign,ring,6.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,foreign,ring,6.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,ring,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,repeated_trips,line,6,-4.833333333333333,-5.0,-4.5
+three_workers,foreign,ring,6.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,6.0,search_mm,line,6,-6.5,-13.0,1.5
+three_workers,foreign,ring,6.0,search_mm,own,6,16.0,0.0,41.0
+three_workers,foreign,ring,9.0,retrieved,6 mm,6,2.1666666666666665,1.3333333333333333,3.0
+three_workers,foreign,ring,9.0,retrieved,line,6,-3.1666666666666665,-4.0,-2.3333333333333335
+three_workers,foreign,ring,9.0,retrieved,own,6,1.1666666666666667,0.3333333333333333,2.0
+three_workers,foreign,ring,9.0,handling_capped_s,6 mm,6,-319.5203333333333,-398.14933333333335,-229.62683333333334
+three_workers,foreign,ring,9.0,handling_capped_s,line,6,171.56133333333332,111.14710416666667,232.12183333333337
+three_workers,foreign,ring,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,placement_capped_s,6 mm,6,-317.2538333333333,-393.72599999999994,-228.1543333333333
+three_workers,foreign,ring,9.0,placement_capped_s,line,6,174.1688333333333,113.77666666666666,234.64616666666666
+three_workers,foreign,ring,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,no_handling,6 mm,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,foreign,ring,9.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,no_placement,6 mm,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,foreign,ring,9.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,ring,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,ring,9.0,repeated_trips,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,foreign,ring,9.0,repeated_trips,line,6,-4.333333333333333,-4.666666666666667,-4.0
+three_workers,foreign,ring,9.0,repeated_trips,own,6,0.16666666666666666,-0.3333333333333333,0.6666666666666666
+three_workers,foreign,ring,9.0,search_mm,6 mm,6,12.0,-3.5,26.666666666666668
+three_workers,foreign,ring,9.0,search_mm,line,6,18.5,9.666666666666666,27.333333333333332
+three_workers,foreign,ring,9.0,search_mm,own,6,102.66666666666667,74.66666666666667,133.33333333333334
+three_workers,foreign,split,3.0,retrieved,6 mm,6,-3.1666666666666665,-3.6666666666666665,-2.6666666666666665
+three_workers,foreign,split,3.0,retrieved,line,6,1.8333333333333333,1.3333333333333333,2.3333333333333335
+three_workers,foreign,split,3.0,retrieved,own,6,1.0,0.0,2.0
+three_workers,foreign,split,3.0,handling_capped_s,6 mm,6,30.139499999999998,-30.000500000000002,120.43533333333333
+three_workers,foreign,split,3.0,handling_capped_s,line,6,-340.5025,-486.6663958333333,-200.09041666666667
+three_workers,foreign,split,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,placement_capped_s,6 mm,6,30.1395,-30.0005,120.43533333333333
+three_workers,foreign,split,3.0,placement_capped_s,line,6,-339.9165,-485.7141458333333,-199.61429166666665
+three_workers,foreign,split,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,no_handling,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,foreign,split,3.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,no_placement,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,foreign,split,3.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,cue_at_first_wake,6 mm,6,-3.0,-3.0,-3.0
+three_workers,foreign,split,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,split,3.0,repeated_trips,6 mm,6,-2.5,-2.8333333333333335,-2.1666666666666665
+three_workers,foreign,split,3.0,repeated_trips,line,6,1.0,0.5,1.5
+three_workers,foreign,split,3.0,repeated_trips,own,6,0.3333333333333333,-0.6666666666666666,1.3333333333333333
+three_workers,foreign,split,3.0,search_mm,6 mm,6,-9.333333333333334,-24.166666666666668,8.166666666666666
+three_workers,foreign,split,3.0,search_mm,line,6,-15.333333333333334,-31.333333333333332,0.16666666666666666
+three_workers,foreign,split,3.0,search_mm,own,6,131.0,80.83333333333333,170.5
+three_workers,foreign,split,6.0,retrieved,line,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,retrieved,own,6,1.0,0.3333333333333333,1.6666666666666667
+three_workers,foreign,split,6.0,handling_capped_s,line,6,-0.008500000000000322,-0.025500000000000966,0.0
+three_workers,foreign,split,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,placement_capped_s,line,6,-0.008500000000000322,-0.025500000000000966,0.0
+three_workers,foreign,split,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,split,6.0,repeated_trips,line,6,-1.1666666666666667,-1.5,-1.0
+three_workers,foreign,split,6.0,repeated_trips,own,6,0.3333333333333333,-0.3333333333333333,0.8333333333333334
+three_workers,foreign,split,6.0,search_mm,line,6,-29.5,-43.166666666666664,-20.5
+three_workers,foreign,split,6.0,search_mm,own,6,202.83333333333334,187.5,216.83333333333334
+three_workers,foreign,split,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,retrieved,line,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,handling_capped_s,6 mm,6,0.026833333333333338,-0.04249999999999999,0.09616666666666666
+three_workers,foreign,split,9.0,handling_capped_s,line,6,0.000999999999999816,-0.08566666666666704,0.08766666666666667
+three_workers,foreign,split,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,placement_capped_s,6 mm,6,0.3628333333333334,-0.04249999999999995,0.7681666666666667
+three_workers,foreign,split,9.0,placement_capped_s,line,6,0.25299999999999906,-0.25366666666666865,0.7596666666666666
+three_workers,foreign,split,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,split,9.0,repeated_trips,6 mm,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,split,9.0,repeated_trips,line,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,foreign,split,9.0,repeated_trips,own,6,-0.16666666666666666,-0.5,0.0
+three_workers,foreign,split,9.0,search_mm,6 mm,6,-4.333333333333333,-21.0,13.0
+three_workers,foreign,split,9.0,search_mm,line,6,-20.833333333333332,-32.666666666666664,-10.0625
+three_workers,foreign,split,9.0,search_mm,own,6,203.0,192.5,212.33333333333334
+three_workers,foreign,wall,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,retrieved,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+three_workers,foreign,wall,3.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,foreign,wall,3.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,foreign,wall,3.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,wall,3.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,foreign,wall,3.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,foreign,wall,3.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,search_mm,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,3.0,search_mm,line,6,-36.5,-57.333333333333336,-18.833333333333332
+three_workers,foreign,wall,3.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,foreign,wall,6.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,handling_capped_s,line,6,589.7896666666667,569.789,599.79
+three_workers,foreign,wall,6.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,placement_capped_s,line,6,588.0316666666666,568.0310000000001,598.032
+three_workers,foreign,wall,6.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,foreign,wall,6.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,foreign,wall,6.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,wall,6.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+three_workers,foreign,wall,6.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,6.0,search_mm,line,6,-60.0,-77.33333333333333,-42.833333333333336
+three_workers,foreign,wall,6.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,foreign,wall,9.0,retrieved,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,handling_capped_s,line,6,589.7723333333333,569.737,599.79
+three_workers,foreign,wall,9.0,handling_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,placement_capped_s,line,6,587.9303333333334,567.727,598.032
+three_workers,foreign,wall,9.0,placement_capped_s,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,foreign,wall,9.0,no_handling,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,foreign,wall,9.0,no_placement,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,foreign,wall,9.0,cue_at_first_wake,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,interrupted_loads,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,repeated_trips,line,6,-5.0,-5.0,-5.0
+three_workers,foreign,wall,9.0,repeated_trips,own,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,search_mm,6 mm,6,0.0,0.0,0.0
+three_workers,foreign,wall,9.0,search_mm,line,6,-47.0,-64.33333333333333,-29.833333333333332
+three_workers,foreign,wall,9.0,search_mm,own,6,0.0,0.0,0.0
+three_workers,own,line,3.0,retrieved,6 mm,6,-5.333333333333333,-5.666666666666667,-5.0
+three_workers,own,line,3.0,handling_capped_s,6 mm,6,370.63349999999997,180.44949999999997,530.4073333333333
+three_workers,own,line,3.0,placement_capped_s,6 mm,6,370.04750000000007,180.15650000000002,529.2353333333334
+three_workers,own,line,3.0,no_handling,6 mm,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,own,line,3.0,no_placement,6 mm,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,own,line,3.0,cue_at_first_wake,6 mm,6,-3.0,-3.0,-3.0
+three_workers,own,line,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,3.0,repeated_trips,6 mm,6,-4.833333333333333,-5.333333333333333,-4.333333333333333
+three_workers,own,line,3.0,search_mm,6 mm,6,77.5,42.666666666666664,111.33333333333333
+three_workers,own,line,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,handling_capped_s,6 mm,6,0.0173333333333332,0.0,0.0519999999999996
+three_workers,own,line,9.0,placement_capped_s,6 mm,6,0.10133333333333401,0.0,0.30400000000000205
+three_workers,own,line,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,own,line,9.0,search_mm,6 mm,6,-30.5,-49.833333333333336,-13.0
+three_workers,own,offset,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,retrieved,line,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,own,offset,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,own,offset,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,own,offset,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,offset,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,offset,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,own,offset,3.0,search_mm,6 mm,6,2.3333333333333335,0.0,7.0
+three_workers,own,offset,3.0,search_mm,line,6,56.333333333333336,19.5,93.83333333333333
+three_workers,own,offset,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,own,offset,6.0,handling_capped_s,line,6,589.7896666666667,569.789,599.79
+three_workers,own,offset,6.0,placement_capped_s,line,6,588.0316666666666,568.0310000000001,598.032
+three_workers,own,offset,6.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,own,offset,6.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,own,offset,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,offset,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,offset,6.0,repeated_trips,line,6,-5.166666666666667,-5.5,-5.0
+three_workers,own,offset,6.0,search_mm,line,6,131.5,126.5,138.66666666666666
+three_workers,own,offset,9.0,retrieved,6 mm,6,4.0,2.0,6.0
+three_workers,own,offset,9.0,retrieved,line,6,-2.0,-4.0,0.0
+three_workers,own,offset,9.0,handling_capped_s,6 mm,6,-158.15116666666668,-267.4816666666667,-49.6775
+three_workers,own,offset,9.0,handling_capped_s,line,6,431.6211666666666,322.29066666666665,540.9516666666667
+three_workers,own,offset,9.0,placement_capped_s,6 mm,6,-155.46583333333334,-263.45366666666666,-49.006166666666665
+three_workers,own,offset,9.0,placement_capped_s,line,6,432.46450000000004,324.4766666666667,540.4523333333333
+three_workers,own,offset,9.0,no_handling,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,own,offset,9.0,no_handling,line,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,own,offset,9.0,no_placement,6 mm,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,own,offset,9.0,no_placement,line,6,0.3333333333333333,0.0,0.6666666666666666
+three_workers,own,offset,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,offset,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,offset,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,offset,9.0,repeated_trips,6 mm,6,3.3333333333333335,1.6666666666666667,5.0
+three_workers,own,offset,9.0,repeated_trips,line,6,-1.8333333333333333,-4.0,0.0
+three_workers,own,offset,9.0,search_mm,6 mm,6,16.166666666666668,-5.5,37.9375
+three_workers,own,offset,9.0,search_mm,line,6,178.16666666666666,146.66666666666666,210.83333333333334
+three_workers,own,ring,3.0,retrieved,6 mm,6,-0.6666666666666666,-1.3333333333333333,-0.16666666666666666
+three_workers,own,ring,3.0,retrieved,line,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,own,ring,3.0,handling_capped_s,6 mm,6,98.69066666666667,9.53983333333334,218.067
+three_workers,own,ring,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,own,ring,3.0,placement_capped_s,6 mm,6,96.50766666666668,8.826000000000002,214.37333333333333
+three_workers,own,ring,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,own,ring,3.0,no_handling,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,own,ring,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,ring,3.0,no_placement,6 mm,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,own,ring,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,ring,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,ring,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,ring,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,ring,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,ring,3.0,repeated_trips,6 mm,6,-0.16666666666666666,-0.5,0.0
+three_workers,own,ring,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,own,ring,3.0,search_mm,6 mm,6,14.5,0.0,37.5
+three_workers,own,ring,3.0,search_mm,line,6,55.333333333333336,17.333333333333332,93.83333333333333
+three_workers,own,ring,6.0,retrieved,line,6,-5.333333333333333,-5.833333333333333,-4.666666666666667
+three_workers,own,ring,6.0,handling_capped_s,line,6,491.099,381.2625,580.2498333333333
+three_workers,own,ring,6.0,placement_capped_s,line,6,491.52400000000006,382.4843333333333,579.2056666666667
+three_workers,own,ring,6.0,no_handling,line,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,own,ring,6.0,no_placement,line,6,0.5,0.16666666666666666,0.8333333333333334
+three_workers,own,ring,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,ring,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,ring,6.0,repeated_trips,line,6,-5.0,-5.5,-4.5
+three_workers,own,ring,6.0,search_mm,line,6,118.33333333333333,94.5,132.33333333333334
+three_workers,own,ring,9.0,retrieved,6 mm,6,1.0,0.0,2.0
+three_workers,own,ring,9.0,retrieved,line,6,-4.333333333333333,-4.833333333333333,-3.6666666666666665
+three_workers,own,ring,9.0,handling_capped_s,6 mm,6,-319.5203333333333,-398.14933333333335,-229.62683333333334
+three_workers,own,ring,9.0,handling_capped_s,line,6,171.56133333333332,111.14710416666667,232.12183333333337
+three_workers,own,ring,9.0,placement_capped_s,6 mm,6,-317.2538333333333,-393.72599999999994,-228.1543333333333
+three_workers,own,ring,9.0,placement_capped_s,line,6,174.1688333333333,113.77666666666666,234.64616666666666
+three_workers,own,ring,9.0,no_handling,6 mm,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,own,ring,9.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,own,ring,9.0,no_placement,6 mm,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,own,ring,9.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,own,ring,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,ring,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,ring,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,ring,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,ring,9.0,repeated_trips,6 mm,6,0.3333333333333333,-0.3333333333333333,1.1666666666666667
+three_workers,own,ring,9.0,repeated_trips,line,6,-4.666666666666667,-5.0,-4.333333333333333
+three_workers,own,ring,9.0,search_mm,6 mm,6,-74.66666666666667,-112.54166666666667,-42.333333333333336
+three_workers,own,ring,9.0,search_mm,line,6,74.16666666666667,49.0,97.16666666666667
+three_workers,own,split,3.0,retrieved,6 mm,6,-3.1666666666666665,-4.0,-2.3333333333333335
+three_workers,own,split,3.0,retrieved,line,6,1.1666666666666667,0.3333333333333333,2.0
+three_workers,own,split,3.0,handling_capped_s,6 mm,6,30.139499999999998,-30.000500000000002,120.43533333333333
+three_workers,own,split,3.0,handling_capped_s,line,6,-340.5025,-486.6663958333333,-200.09041666666667
+three_workers,own,split,3.0,placement_capped_s,6 mm,6,30.1395,-30.0005,120.43533333333333
+three_workers,own,split,3.0,placement_capped_s,line,6,-339.9165,-485.7141458333333,-199.61429166666665
+three_workers,own,split,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,3.0,no_handling,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,own,split,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,3.0,no_placement,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,own,split,3.0,cue_at_first_wake,6 mm,6,-3.0,-3.0,-3.0
+three_workers,own,split,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,split,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,split,3.0,repeated_trips,6 mm,6,-2.5,-3.0,-1.8333333333333333
+three_workers,own,split,3.0,repeated_trips,line,6,0.6666666666666666,0.16666666666666666,1.3333333333333333
+three_workers,own,split,3.0,search_mm,6 mm,6,62.5,22.0,107.16666666666667
+three_workers,own,split,3.0,search_mm,line,6,-106.5,-144.16666666666666,-72.0
+three_workers,own,split,6.0,retrieved,line,6,-1.0,-1.6666666666666667,-0.3333333333333333
+three_workers,own,split,6.0,handling_capped_s,line,6,-0.008500000000000322,-0.025500000000000966,0.0
+three_workers,own,split,6.0,placement_capped_s,line,6,-0.008500000000000322,-0.025500000000000966,0.0
+three_workers,own,split,6.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,own,split,6.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,own,split,6.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,split,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,split,6.0,repeated_trips,line,6,-1.6666666666666667,-2.0,-1.3333333333333333
+three_workers,own,split,6.0,search_mm,line,6,-91.5,-96.66666666666667,-86.33333333333333
+three_workers,own,split,9.0,retrieved,6 mm,6,1.0,0.3333333333333333,1.6666666666666667
+three_workers,own,split,9.0,retrieved,line,6,0.0,0.0,0.0
+three_workers,own,split,9.0,handling_capped_s,6 mm,6,0.026833333333333338,-0.04249999999999999,0.09616666666666666
+three_workers,own,split,9.0,handling_capped_s,line,6,0.000999999999999816,-0.08566666666666704,0.08766666666666667
+three_workers,own,split,9.0,placement_capped_s,6 mm,6,0.3628333333333334,-0.04249999999999995,0.7681666666666667
+three_workers,own,split,9.0,placement_capped_s,line,6,0.25299999999999906,-0.25366666666666865,0.7596666666666666
+three_workers,own,split,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,9.0,no_handling,line,6,0.0,0.0,0.0
+three_workers,own,split,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,9.0,no_placement,line,6,0.0,0.0,0.0
+three_workers,own,split,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,9.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,split,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,split,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,split,9.0,repeated_trips,6 mm,6,1.1666666666666667,0.6666666666666666,1.6666666666666667
+three_workers,own,split,9.0,repeated_trips,line,6,-0.5,-0.8333333333333334,-0.16666666666666666
+three_workers,own,split,9.0,search_mm,6 mm,6,-4.5,-9.166666666666666,0.0
+three_workers,own,split,9.0,search_mm,line,6,-65.5,-84.5,-43.833333333333336
+three_workers,own,wall,3.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,retrieved,line,6,-0.6666666666666666,-1.0,-0.3333333333333333
+three_workers,own,wall,3.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,handling_capped_s,line,6,219.15616666666665,69.38266666666667,389.3395
+three_workers,own,wall,3.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,placement_capped_s,line,6,217.98416666666665,68.79666666666667,387.87450000000007
+three_workers,own,wall,3.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,no_handling,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,wall,3.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,no_placement,line,6,0.6666666666666666,0.3333333333333333,1.0
+three_workers,own,wall,3.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,cue_at_first_wake,line,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,repeated_trips,line,6,-0.3333333333333333,-0.6666666666666666,0.0
+three_workers,own,wall,3.0,search_mm,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,3.0,search_mm,line,6,3.3333333333333335,-27.5,39.3125
+three_workers,own,wall,6.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,own,wall,6.0,handling_capped_s,line,6,589.7896666666667,569.789,599.79
+three_workers,own,wall,6.0,placement_capped_s,line,6,588.0316666666666,568.0310000000001,598.032
+three_workers,own,wall,6.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,own,wall,6.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,own,wall,6.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,wall,6.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,wall,6.0,repeated_trips,line,6,-5.166666666666667,-5.5,-5.0
+three_workers,own,wall,6.0,search_mm,line,6,80.83333333333333,65.33333333333333,97.54166666666667
+three_workers,own,wall,9.0,retrieved,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,retrieved,line,6,-6.0,-6.0,-6.0
+three_workers,own,wall,9.0,handling_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,handling_capped_s,line,6,589.7723333333333,569.737,599.79
+three_workers,own,wall,9.0,placement_capped_s,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,placement_capped_s,line,6,587.9303333333334,567.727,598.032
+three_workers,own,wall,9.0,no_handling,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,no_handling,line,6,1.0,1.0,1.0
+three_workers,own,wall,9.0,no_placement,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,no_placement,line,6,1.0,1.0,1.0
+three_workers,own,wall,9.0,cue_at_first_wake,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,cue_at_first_wake,line,6,-3.0,-3.0,-3.0
+three_workers,own,wall,9.0,interrupted_loads,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,interrupted_loads,line,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,repeated_trips,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,repeated_trips,line,6,-5.166666666666667,-5.5,-5.0
+three_workers,own,wall,9.0,search_mm,6 mm,6,0.0,0.0,0.0
+three_workers,own,wall,9.0,search_mm,line,6,111.33333333333333,80.16666666666667,145.5

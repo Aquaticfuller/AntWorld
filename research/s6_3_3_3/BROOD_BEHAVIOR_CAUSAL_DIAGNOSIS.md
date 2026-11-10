@@ -1,0 +1,55 @@
+# Brood behavior causal diagnosis
+
+The [frozen protocol](../../docs/61_S6_3_3_3_Frozen_Validation_Protocol.md) predates the new runs. The [reviewed traces](../../experiments/s6_3_3_2/raw) retain their original scoring. The [closure tables](../../experiments/s6_3_3_3/behavior) add a secondary reconstruction from selected, started, completed and interrupted facts. Cue exposure is reconstructed at actual decision positions from the fixture geometry and range. It does not represent a measured sensory event. A handling start is a validated action at contact range. A completed pickup establishes custody, and a completed placement releases custody. Search restarts are actual starts of a search move, approach, revisit or next pickup after a release. Counts of unique delivered brood and of placement episodes are separate.
+
+## B02 timing and repeat retrieval
+
+All 24 reviewed line trials per group, pooling the paired neutral origins over 12 seeds, put six unique items into the shelter proxy. Every caregiver had an eligible geometric cue at the first 1 ms wake. Only the first item needed to be visible. The first successful approach selected a target 5 mm from the shelter and then closed to the 2 mm touch range. The brood in the remaining line is close to the remembered pickup point and to the route already traversed.
+
+| Reviewed line endpoint | Queen | Three workers |
+| --- | ---: | ---: |
+| Mean first validated handling after release, s | 65.511 | 10.210 |
+| Mean first committed placement after release, s | 67.521 | 11.968 |
+| Group first handling to first placement, s | 2.010 | 1.758 |
+| Moving approach in the first successful episode, s | 0.501 | 0.200 |
+| Pickup handling duration, s | 0.500 | 0.500 |
+| Loaded body path in the first successful episode, mm | 3.000 | 3.000 |
+| Committed loaded movement time, s | 1.002 | 0.750 |
+| Total gaps from pickup through placement excluding motion and placement, s | 0.008 | 0.008 |
+| Placement handling duration, s | 0.500 | 0.500 |
+| Successful placement episodes / pickups | 144 / 144 | 155 / 155 |
+| Unique items delivered across all trials | 144 | 144 |
+
+The queen waits for a successful initiation draw even with a cue present. Inactivity can defer the next decision by exactly 60 s. The three-worker group takes the earliest successful member's action and often starts almost immediately. After selection, pursuit keeps the target as long as it is seen and eligible. Further initiation draws are bypassed during approach, custody and the one remembered-site revisit. Near neighbors are preferred over any extended search once a displaced target is locally visible. The single loaded trip uses a direct vector to the known shelter, then releases at the range boundary. There is no orientation sampling at pickup, inspection requirement before pickup, accumulated acclimation experience, entrance recognition or tube entry. Once holding, the state machine uses immediate segment continuation at the next scheduler tick. Another actor can lose a reservation before pickup. The reviewed three-worker line had 25 interrupted actions before or outside active loads and zero interrupted loads. Eleven placement episodes revisit an already counted identity. Those episodes stay in the raw trip table, separate from the six-item endpoint.
+
+The animal data include 123 ordered complete queen trials and 127 ordered complete first-worker trials. The mean interval between recorded first contact and first retrieving marker was 59.497 s and 49.171 s respectively on those trials. Unrecorded contact or retrieving markers are censored at 600 s in the all-trial comparison. The source does not define the exact frame of the retrieving marker or split that interval into inspection, pickup, travel and release. The simulated 2.010/1.758 s interval exposes a near-automatic transition after contact under the line fixture. The difference cannot estimate any one of the missing empirical subintervals. [Walsh Methods 2.2, pp. 10411–10412](https://doi.org/10.1002/ece3.4475), [Dryad trial table](https://doi.org/10.5061/dryad.qm114cj).
+
+### What the counterfactuals isolate
+
+- The 6 mm line reproduces the ceiling. Lowering perception to 3 mm removes the release cue while preserving all motion and handling constants. For queens, pooled unique delivery drops from 6.00 to 1.00 with 6/12 trials failing to handle brood. For worker trios it drops from 6.00 to 0.83 with 4/12 failing. This contrast changes discovery and later re-acquisition together.
+- The 6 mm split preserves the near cue and first placement time while separating the second cluster. Delivery averages 4.50 and 5.50. Thus repeated acquisition contributes independently of the initial clock. The ring gives delayed, sparse discovery and 0.83/0.67 deliveries at 6 mm. At 9 mm the ring yields 1.33/2.25. Faster contact alone would leave the separated remainder largely unresolved.
+- The offset translates both the starting position and known shelter relative to the same fixed line. It changes cue exposure, return path length, and the reachable set together. No trio handles brood at 6 mm. At 9 mm trios place 4.00 items on average with 4/12 trials never placing. It cannot independently estimate a return-path coefficient.
+- The opaque slab prevents contact and retrieval for all 72 tested layout/radius/origin/seed trials across castes. This validates a physical counterfactual. It does not describe the animal dish.
+
+Current far-search uses short cardinal choices with bounded bouts and no persistent direction or location distribution. Two nearby clusters, repeated routes to a prior pickup point, known shelter direction and a pheromone trail represent different information. Carthy supports experience- and light-dependent return orientation under the trained-worker apparatus. Lenoir supports repeated retrieval and heterogeneous participation. His suggested chemical recruitment mechanism remains a hypothesis. Neither identifies directional sensing or trail use in the Walsh dish. [Carthy, pp. 276–291](https://doi.org/10.1163/156853951X00304), [Lenoir, pp. 154–157](https://www.dictionnaire-amoureux-des-fourmis.fr/Publications/1981-Lenoir-Sociobiol.pdf).
+
+## B01 contact, memory and the observer
+
+The primary outcome is the first 10 s of each minute scored for active manipulation. It counts overlapping inspection, arrangement, cleaning, successful feeding and actual placement. Pure transport, occupancy, contact and selected-only bouts contribute zero. Both the 50-scan deposited denominator and the 51-scan methods sensitivity are retained. Offset windows diagnose aliasing only. The run-level decisions table records phase within the minute and the previous committed contact time, including pre-window contact history. Opportunity, selected contact, started contact and completed contact remain separate.
+
+The reviewed six matching seeds give 4.33%, 1.00% and 7.00% for absent, added and removed. The full reviewed 12-seed values are 2.833%, 1.000% and 6.667%. The six-seed absent difference illustrates the effect of seed count on this sparse scan measure. With workers added, queens make 15.67 completed contacts per observation hour on average. Removing the contact branch increases the scan fraction by 9.67 percentage points (paired 95% interval 7.00–11.67). Keeping contacts while zeroing inhibition increases it by 6.00 points (3.33–7.67) with 16.00 contacts per hour. These interventions identify two simulator pathways. Contact bouts occupy time and precede the care lottery. A completed contact also starts a decaying inhibitory term. Changing either pathway can change subsequent RNG indices, positions and clock phase, so the contrasts cannot be subtracted to isolate a pure biological effect.
+
+Shortening the decision interval to 15 s increases care in all three conditions. The absent and removed arms rise by 19.67 and 16.67 points and reach 24.00% and 23.67%. The added arm reaches 4.00% despite 59.17 contacts per hour. At 120 s it makes 9.00 contacts per hour and its scan fraction is 0.67%. Contact memory horizons of 1 h and 24 h yield 2.33% and 0.33% with added workers. The removed-arm contrasts for both horizons span zero. The 48 h window falls after even the 24 h modeled memory has expired. Its score still depends on earlier decisions and subsequent phase. No memory horizon is identified by these data. See the [paired contrasts](../../experiments/s6_3_3_3/behavior/b01_contrasts.csv) and [observer windows](../../experiments/s6_3_3_3/behavior/b01_scans.csv).
+
+The window phase also changes the estimate on an identical trace. In the added-worker arm with inhibition disabled, the original minute starts give 7.00% positive windows. The six diagnostic offsets span 2.67–7.00%, and actual scored manipulation time is 0.806% of the hour. In the absent-worker 15 s arm the offsets span 20.67–28.00%, with 4.148% actual manipulation time. The phase-sensitive scan measures whether a bout overlaps the sample window. Durations and decisions affect it together. All reported animal comparisons use the original first 10 s.
+
+Majidifar et al. show that live-worker interaction can reduce queen care. The mesh permits antennation and restricts closer interactions. Mesh-separated queens resemble isolated queens under that treatment, and CHC beads, used containers and frozen workers did not replicate the live-worker suppression. This supports a difference between live, close interaction and a broad proximity cue. It leaves the active interaction, endocrine mediation and effective memory unspecified. Worker additions here create reachable adult profiles. Worker removal and isolation use spatial interventions, and age is a label without endogenous development of task preferences. [Majidifar Methods 2.1.4, 2.2 and Results 3.6–3.7](https://doi.org/10.1111/1365-2435.14536).
+
+## Mechanism priorities
+
+1. Separately establish a contact-to-pickup ethogram, exposure-to-contact latency and retry behavior using video with actor and brood identities. Require measurements for both successful and unresolved trials. Gate any revised handling policy on distinct stage distributions.
+2. Measure shelter entry and repeat routes with light, tube familiarity and pickup configuration controlled separately. A bounded orientation state and familiar entrance representation could be tested against directional errors and return paths. The data available here leave their parameters open.
+3. Test live interaction type and deprivation duration in B01 before selecting a memory mechanism. Align the observer windows, experimental age and actual interaction opportunities before fitting a decision clock.
+4. Address coarse cell and held-contact arithmetic before generalizing ecology transport. These are representation problems with engineering tests independent of the animal counts.
+
+No new behavior rule or biological coefficient was selected from these counterfactuals. The quantitative B02 count error persists under the original comparison, and a matching independent trial cohort is still required.

@@ -1,0 +1,14 @@
+{
+  "worlds": 72,
+  "game_days": 21,
+  "regular_partition_ms": 21600000,
+  "original_partition_ms": 86400000,
+  "single_advance_equal": true,
+  "irregular_sqlite_recovery_equal": true,
+  "identical_csv_sha256": {
+    "runs.csv": "ea947b13c63a01498145fa847d99ec19d3c0eb7364f75d8117f359c8fcc972aa",
+    "days.csv": "b98a9cef34d8d685d18a54eb8bea37e8079055e471aa4938533b25ce419b94ae",
+    "individuals.csv": "60c1d9b1b036a5bdb24c649d6a48b39fc9be639f53f0d43ec6de9dd5608d3a5e",
+    "events.csv": "05a849500203b4e5175c3db89f26802d92348d2e2ba6877a905a6ab1045280ea"
+  }
+}

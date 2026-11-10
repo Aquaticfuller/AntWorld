@@ -209,6 +209,22 @@ def analyze(dest):
     write(dest.parent/'ecology_cases.csv',cases)
     write(dest.parent/'ecology_sequences.csv',sequences)
     print('Verified 72 ecological histories and five representation/interruption controls.')
+    return cases
+
+
+def verify_workload(raw, timings, cases):
+    expected = {r['run']:r for r in cases if r['food']=='balanced' and r['space'] in ('fine','chamber')}
+    measured = read(timings)
+    assert len(measured)==len(expected)==24
+    assert {r['run'] for r in measured}==set(expected)
+    rows = []
+    for r in measured:
+        case = expected[r['run']]
+        assert all(r[k]==case[k] for k in ('events','state_hash','trace_hash'))
+        endpoints = ('transfers','transfers_to_brood','timed_feed_observations','placements','food_deliveries','emerged')
+        rows.append(dict(**r, **{k:case.get(k,0) for k in endpoints}))
+    write(raw.parent/'ecology_workload.csv',rows)
+    print('Matched all 24 day-scale workload timing samples to the primary ecological identities.')
 
 
 def main():
@@ -216,6 +232,7 @@ def main():
     p.add_argument('--raw',type=Path,default=BASE/'ecology')
     p.add_argument('--matrix',type=Path)
     p.add_argument('--probes',type=Path)
+    p.add_argument('--workload',type=Path)
     p.add_argument('--verify-only',action='store_true')
     a = p.parse_args()
     if a.matrix:
@@ -223,7 +240,9 @@ def main():
         archive(a.matrix,a.probes,a.raw)
     verify(a.raw)
     if not a.verify_only:
-        analyze(a.raw)
+        cases = analyze(a.raw)
+        if a.workload:
+            verify_workload(a.raw,a.workload,cases)
 
 
 if __name__=='__main__':

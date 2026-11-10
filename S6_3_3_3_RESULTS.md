@@ -1,0 +1,35 @@
+# S6.3.3.3 Brood Care Validation Closure
+
+Reviewed baseline `e5ded6e56061e9aa8c344b0ae3087068f8687e47`. The [protocol](docs/61_S6_3_3_3_Frozen_Validation_Protocol.md) was committed at `11b2a36` before the new experiments. The runtime, public Core contracts and SQLite implementation match their reviewed Git trees. Changes are limited to assay and benchmark harnesses, evidence extraction, regressions, CI and documentation. The model uses the same biological rules and parameters, including the existing Species, Individual and Environment profiles.
+
+| Gate | Result | Evidence |
+| --- | --- | --- |
+| Engineering correctness | **CONDITIONAL PASS** | All 195 inherited tests and two new day-scale tests pass. Conservation, identity, ordered history and exact recovery hold in the full matrix. Coarse-surface movement and a reproducible held-contact rounding failure constrain the supported representation |
+| Qualitative biological fidelity | **CONDITIONAL PASS** | The model supports local retrieval, repeated transport, transfer and reversible live-worker effects. Short straight returns, weak far search and the single contact category are important approximations |
+| Species-level quantitative validation | **FAIL** | B02 still contradicts the observed 600 s counts under the reviewed line fixture. The first-retrieving marker and model placement lack frame-level alignment. B01 treatment levels and the missing close-interaction ethogram prevent calibration. There is no matched independent biological cohort |
+| Long ecological integration | **CONDITIONAL PASS** | Real relocation, feeding, returns, oviposition, development and death coexist on 21-day clocks. The coarse surface cannot carry across cells. The mixed shaft relocates brood and exchanges nutrients while the coarse rim prevents foraging access |
+| TD-11 | **OPEN** | Density affects the number of committed opportunity facts. History and checkpoint costs are measured separately. The reversible archive is an offline experiment |
+
+**Stage closure is FAIL.** The evidence establishes the scoped engineering capability and narrows the missing mechanisms. It leaves species-level quantitative validation and general spatial integration open.
+
+## Behavioral findings
+
+The 360 B02 counterfactuals separate geometric cue availability and repeat acquisition from motor speed. The reviewed line produces 6.000 delivered items in both groups against 3.772 for queens and 4.850 for first-generation worker trios. The mean count errors are +2.228 [1.791, 2.684] and +1.150 [0.757, 1.564] under the reviewed colony/seed bootstrap. In the reviewed line, each caregiver had an eligible cue at the first wake and the first load moved 3 mm along a direct return. The contact-to-placement step is 2.010 s for queens and 1.758 s for trios. In the animal data the interval between the recorded first contact and retrieving marker averages 59.497 s and 49.171 s among the ordered complete cases. Unknown observation boundaries, tube cues and handling intervals prevent identifying a speed or failure coefficient. Narrowing the cue radius or separating later brood clusters changes delivery at unchanged speed. [Walsh](https://doi.org/10.1002/ece3.4475), [causal diagnosis](research/s6_3_3_3/BROOD_BEHAVIOR_CAUSAL_DIAGNOSIS.md).
+
+B01 keeps active manipulation or placement within each minute's first 10 s. The 108 model interventions distinguish branch occupancy from recency-based inhibition. The reviewed six-seed added-worker score increases by 9.67 percentage points with the contact branch disabled, and by 6.00 points when retaining contact while setting inhibition gain to zero. Faster decision clocks increase both activity and the number of worker contacts. The original mesh permits antennation, which is less restrictive than the model's separation control. Exact age, tube manipulation and physiological differences remain unresolved. [Majidifar](https://doi.org/10.1111/1365-2435.14536), [experimental comparison](research/s6_3_3_3/BIOLOGICAL_VALIDATION_AND_UNCERTAINTY.md).
+
+Carthy's trained-worker orientation trials, Khuong's unladen trajectories, Lenoir's repeated retrieval and the independent Lenoir–Ataya and Pamminger studies bound distinct behaviors. The observed apparatus, age, stimuli and endpoint differ from B02. Their source pages and quantitative scopes are recorded in the validation report. The updated [state audit](research/s6_3_3_3/STATE_MACHINE_EVIDENCE_AUDIT.md) and [parameter table](research/s6_3_3_3/PARAMETER_PROVENANCE.csv) keep all uncalibrated coefficients under ENGINEERING_FIXTURE.
+
+## Integrated and performance findings
+
+The 72 21-day worlds commit 5,064 positive nutritional transfers, 175 in-world births and 218 emergences, including 44 individuals observed from birth to adulthood. Twelve fine-grid and twelve mixed-chamber care-enabled worlds relocate the displaced brood. All 72 worlds preserve complete committed history and checkpoint identity across single-step, partitioned and SQLite-restored continuations. The [integrated results](research/s6_3_3_3/INTEGRATED_ECOLOGY_CARE_RESULTS.md) trace a single worker's placement, feeding and food return, a maternal birth/care sequence, negative outcomes, and the deliberate 3D fill interruption.
+
+The [TD-11 report](research/s6_3_3_3/TD_11_INTEGRATED_PERFORMANCE.md) uses the new timed and ordinary-integrated care workloads, real day-scale companion workloads, and the original exact order of all facts. The 128-worker dense timed case produces 490,240 opportunities and 498,598 total facts. The protected TD-01 contact and TD-08 reserve-birth workloads match the archived event counts, state, trace and exact continuation in the current Release build. Their latest admitted growth ratios remain 5.5163× and 4.3147× against the original 6× ceiling. The current identity checks have no formal timing admission. The unexplained S6.1 24.229× measurement and all historical samples remain intact.
+
+## Verification and review
+
+- Windows LLVM-MinGW Release, Debug and ASan/UBSan CTest each pass 197 tests, with 195 inherited names. Local Windows leak detection is disabled. The [source milestone CI](https://github.com/Aquaticfuller/AntWorld/actions/runs/42741665887) passes all five jobs, including Linux Clang ASan/UBSan with leak detection. The [branch workflow](https://github.com/Aquaticfuller/AntWorld/actions/workflows/ci.yml?query=branch%3Acodex%2Fs6.3.3.3-brood-validation-closure) tracks the complete evidence commit.
+- The 416 legacy/local and 484 reviewed fidelity replays match all archived experiment observables and ordered exported facts. Historical source and evidence trees remain verifiable through the [local receipts](experiments/s6_3_3_3/verification).
+- [Raw data and reproduction](experiments/s6_3_3_3/README.md) document all frozen arms, observations, scopes, source comparisons, archive extraction and commands. [Open Questions](docs/08_Open_Questions.md) records the surviving engineering and scientific debt.
+
+The independent review boundary is S6.3.3.3. S6.3.4, S6.4 and Unity require separate authorization.

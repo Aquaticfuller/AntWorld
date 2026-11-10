@@ -2,6 +2,7 @@
 #include "antworld/storage/store.hpp"
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -12,6 +13,11 @@ using namespace antworld;
 using namespace antworld::closure;
 
 namespace {
+using Clock=std::chrono::steady_clock;
+double ms(Clock::time_point start) {
+    return std::chrono::duration<double,std::milli>(Clock::now()-start).count();
+}
+
 std::ofstream file(const std::filesystem::path& path) {
     std::ofstream stream(path,std::ios::binary);
     stream.exceptions(std::ios::badbit|std::ios::failbit);
@@ -26,15 +32,16 @@ void mass(std::ostream& out,FoodMass m) {
 void position(std::ostream& out,PositionM p) { out<<','<<p.x<<','<<p.y<<','<<p.z; }
 
 struct Output {
-    std::ofstream runs, days, individuals, events, probes;
+    std::ofstream runs, days, individuals, events, probes, timings;
     explicit Output(const std::filesystem::path& dir)
         :runs(file(dir/"runs.csv")),days(file(dir/"days.csv")),individuals(file(dir/"individuals.csv")),
-         events(file(dir/"events.csv")),probes(file(dir/"probes.csv")) {
+         events(file(dir/"events.csv")),probes(file(dir/"probes.csv")),timings(file(dir/"timings.csv")) {
         runs<<"run,seed,workers,space,food,integrated,queen,displaced_brood,cell_m,perception_m,stride_m,decision_ms,absorption_ms,egg_ms,larva_ms,pupa_ms,reproduction_ms,end_ms,events,checkpoint_bytes,sqlite_bytes,state_hash,trace_hash,direct_equal,restored_equal,sql_fact_count,all_ledgers_equal\n";
         days<<"run,day,events,egg,larva,pupa,adult,dead,adult_worker_ms,introduced_carbs_ug,introduced_protein_ug,introduced_water_ug,introduced_other_ug,accounted_carbs_ug,accounted_protein_ug,accounted_water_ug,accounted_other_ug,available_carbs_ug,available_protein_ug,available_water_ug,available_other_ug,nest_carbs_ug,nest_protein_ug,nest_water_ug,nest_other_ug,crop_carbs_ug,crop_protein_ug,crop_water_ug,crop_other_ug,energy_input_nj,body_energy_nj,dissipated_energy_nj,soil_initial_q3,soil_remaining_q3,soil_carried_q3,soil_deposited_q3,geometry_edits\n";
         individuals<<"run,day,id,mother,stage,caste,x_m,y_m,z_m,program,care_enabled,carrying_brood,autonomous,progress_ms,energy_nj,hydration_ug,tissue_protein_ug,death_cause,crop_carbs_ug,crop_protein_ug,crop_water_ug,crop_other_ug\n";
         events<<"run,event,time_ms,kind,actor,colony,stage,source,related,phase,act,bout,began_ms,duration_known,outcome,x_m,y_m,z_m,carbs_ug,protein_ug,water_ug,other_ug\n";
         probes<<"run,space,cell_m,perception_m,stride_m,initial_geometric_cue,approach_starts,blocked,loaded_out_of_reach,pickups,carried_moves,placements,fill,load_released,unchanged_target,restore_equal\n";
+        timings<<"run,setup_ms,advance_ms,observer_ms,checkpoint_ms,sqlite_day10_ms,sqlite_day21_ms,events,state_hash,trace_hash\n";
     }
     void fact(std::string_view run,const WorldEvent& e) {
         const auto& o=e.observation;
@@ -140,6 +147,7 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
              std::string_view space,bool food,bool integrated,bool smoke=false) {
     const auto name=std::to_string(seed)+"_"+std::to_string(count)+"_"+std::string(space)+
                     (food?"_balanced":"_empty")+(integrated?"_care":"_control");
+    auto clock=Clock::now();
     WorldRuntime w({6333,seed},seed,{{-.04,-.02,-.02},{.04,.02,.02},.08,.002},limits());
     w.configure_long_term();
     const bool fine=space=="fine";
@@ -176,14 +184,27 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
 
     const auto initial=w.checkpoint();
     storage::Store store(dir/(name+".sqlite"),limits());
+    const double setup_ms=ms(clock);
+    double advance_ms=0,observer_ms=0,mid_save_ms=0;
     storage::SaveToken middle;
     History history;
     for (unsigned d=0;d<=21;++d) {
-        w.advance_to({static_cast<std::int64_t>(d)*day});
+        clock=Clock::now();
+        if (d==0) w.advance_to({0});
+        else for (auto t=(d-1)*day+6*hour;t<=d*day;t+=6*hour) w.advance_to({t});
+        advance_ms+=ms(clock);
+        clock=Clock::now();
         record_day(w,out,name,d,history);
-        if (d==10) middle=store.save(w);
+        observer_ms+=ms(clock);
+        if (d==10) {
+            clock=Clock::now();
+            middle=store.save(w);
+            mid_save_ms=ms(clock);
+        }
     }
+    clock=Clock::now();
     const auto bytes=w.checkpoint();
+    const double checkpoint_ms=ms(clock);
     {
         WorldRuntime direct({1,1},0,{},limits());
         direct.restore(initial);
@@ -196,8 +217,10 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
         restored.world.advance_to({21*day});
         require(restored.world.checkpoint()==bytes,"restored ecology differs");
     }
+    clock=Clock::now();
     const auto end=store.save(w,middle);
     store.checkpoint_wal();
+    const double end_save_ms=ms(clock);
     const auto facts=compare_history(store,w);
     for (const auto& a:w.ant_states()) {
         const auto id=store.individual({w.summary().world,a.id});
@@ -225,6 +248,9 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
             <<','<<store.database_bytes()<<','<<s.state_hash<<','<<s.trace_hash<<",1,1,"<<facts<<",1\n";
     out.runs.flush();
     out.events.flush();
+    out.timings<<name<<','<<setup_ms<<','<<advance_ms<<','<<observer_ms<<','<<checkpoint_ms<<','<<mid_save_ms<<','
+               <<end_save_ms<<','<<facts<<','<<s.state_hash<<','<<s.trace_hash<<'\n';
+    out.timings.flush();
     std::cout<<name<<" committed "<<facts<<" facts\n";
 }
 
@@ -339,7 +365,7 @@ void closed_tunnel(Output& out) {
 
 int main(int argc,char** argv) {
     try {
-        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|probes|smoke");
+        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|workload|probes|smoke");
         const std::filesystem::path dir=argv[1];
         if (!std::filesystem::create_directories(dir)) throw std::invalid_argument("ecology output already exists");
         Output out(dir);
@@ -350,6 +376,11 @@ int main(int argc,char** argv) {
                     for (const std::string_view space:{"coarse","fine","chamber"})
                         for (const bool food:{true,false})
                             for (const bool integrated:{false,true}) ecology(out,dir,seed,count,space,food,integrated);
+        } else if (mode=="workload") {
+            for (const std::uint64_t seed:{7U,19U,43U})
+                for (const unsigned count:{4U,16U})
+                    for (const std::string_view space:{"fine","chamber"})
+                        for (const bool integrated:{false,true}) ecology(out,dir,seed,count,space,true,integrated);
         } else if (mode=="probes") {
             for (const bool fine:{false,true})
                 for (const double radius:{.006,.012}) representation(out,fine,radius);

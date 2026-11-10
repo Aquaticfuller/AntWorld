@@ -1,5 +1,15 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.3.3.3 brood validation closure
+
+- **SD-09 remains OPEN.** The reviewed B02 line gives the first cue at the first wake and near-immediate completion after handling. The spatial counterfactuals distinguish poor distant search from repeated acquisition on a dense line. Matched pose, tube entrance, contact, grip, release and inter-trip data are unavailable. Treat the animal first-retrieving marker and simulated placement as proxies with uncertain alignment. B02 remains development evidence. B01 distinguishes reachable-worker contact opportunity from contact recency and suppression. The actual signal, deprivation clock and age response remain unknown.
+- **Spatial care readiness remains conditional.** The 10 mm surface cells exceed the 1 mm care stride. A controlled 1 mm trial also exposes a floating-point reach error after custody. The mixed shaft moves brood at depth and responds to real soil fill. The fixture's coarse surface neighbor across its rim prevents autonomous forage departure. Review a subcell/portal representation and held-custody boundary contract separately from biological parameter work.
+- **TD-11 remains OPEN.** The 128-worker timed dense case generates 490,240 opportunities in 600 s. The integrated same-colony arm also shows expensive history even over two game days. Keep exact opportunities and outcome facts. The offline lossless archive study supports investigating ordered, durable history segmentation and a separately reviewable live-storage migration. TD-03 and TD-06 remain open.
+- **TD-01 and TD-08 retain the reviewed controlled passes.** The current protected contact and birth workload identities are unchanged. The 6× gates, previous admissions and unexplained 24.229× S6.1 result remain preserved. Large dynamic population growth remains open.
+- **SD-01/02, SD-04, SD-06/07/08 and uncalibrated P02–P04 remain OPEN.** The day-scale scenarios exhibit real transfer and development, and retain food-access, maternal death and nutrition tradeoffs. Local brood-site recall does not test social trail recruitment.
+
+The [closure report](../S6_3_3_3_RESULTS.md) distinguishes engineering capability, biological validation and ecological integration. The [current Atlas supplement](../research/s6_3_3_3) adds source provenance and preserves the earlier evidence.
+
 ## S6.3.3.2 brood care fidelity review boundary
 
 - **SD-09 remains OPEN.** Caste- and load-specific segment clocks, physical pickup and release, and local autonomy arbitration are implemented engineering capabilities. The frozen B02 line cohort exceeds the measured retrieval count and contacts occur too early. Far-layout discovery, B01 scan behavior, matched active callows and age, sensing, loaded and unloaded queen tracks, and true tube geometry need further evidence. The Carthy tables provide trained-worker path/time observations from two individuals and expose a unit inconsistency. No adopted speed or handling duration has been biologically calibrated. B02 informed model revision and remains exploratory.
