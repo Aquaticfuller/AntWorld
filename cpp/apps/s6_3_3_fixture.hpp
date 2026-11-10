@@ -27,8 +27,9 @@ struct Fixture {
     AntRef queen;
     std::vector<AntRef> brood,workers;
     Fixture(std::uint64_t seed=7,SpeciesCareProfile profile={},std::size_t larvae=5,std::size_t worker_count=0,
-            bool barrier=false,CareContext context=CareContext::FoundingQueen,SimTime age={4752000000LL},bool contract=true,bool remote_workers=false)
-        :w({633,seed},seed,{{-.025,-.01,-.025},{.025,.01,.025},.01,.002},limits()) {
+            bool barrier=false,CareContext context=CareContext::FoundingQueen,SimTime age={4752000000LL},bool contract=true,
+            bool remote_workers=false,EnvironmentCareProfile environment={},double speed_cap=.01)
+        :w({633,seed},seed,{{-.025,-.01,-.025},{.025,.01,.025},speed_cap,.002},limits()) {
         w.configure_long_term(); w.configure_social();
         if(barrier) {
             GeometryConfig g; g.origin_m={-.025,-.009,-.025}; g.quantum_m=.00025;
@@ -36,7 +37,7 @@ struct Fixture {
             const std::array<BoxQ,2> voids{{{{0,0,0},{102,72,200}},{{103,0,0},{200,72,200}}}};
             w.configure_geometry(g,voids);
         }
-        if(contract) w.configure_biology(profile);
+        if(contract) w.configure_biology(profile,environment);
         colony=w.seed_colony(); queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
         auto p=physiology(); w.enable_physiology(queen,{{0,500,0,0},p.energy_capacity_nj,p.hydration_capacity_ug,0},p);
         for(std::size_t i=0;i<larvae;++i) {

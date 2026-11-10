@@ -5,3 +5,4 @@
 # Preserve original evidence bytes used by the S6.3.3 SHA-256 receipts.
 experiments/s6_3_3/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_3_3_1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/s6_3_3_2/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
