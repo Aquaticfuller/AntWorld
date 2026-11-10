@@ -185,6 +185,32 @@ int main(int argc, char** argv) {
         std::_Exit(86);
     });
     try {
+        if (argc==2 && std::string_view(argv[1])=="S6.3.3.2") {
+            WorldRuntime w({6332,1},7); w.configure_long_term(); w.configure_social();
+            SpeciesCareProfile cfg; cfg.local_retrieval=true; cfg.care_probability=1; cfg.motion.emplace();
+            w.configure_biology(cfg);
+            const auto colony=w.seed_colony();
+            const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
+            w.seed_ant(colony,{{.004,0,0},LifeStage::Larva});
+            w.enable_physiology(queen);
+            w.enable_brood_care(queen);
+            for (auto act:{CareAct::PickUpBrood,CareAct::TransportBrood,CareAct::PlaceBrood}) {
+                SimTime finish{};
+                for (unsigned i=0;i<64 && !finish.milliseconds;++i) {
+                    const auto care=w.query_care(queen);
+                    const auto queue=w.pending_events();
+                    if (care->active && care->act==act) {
+                        for (const auto& e:queue) if (e.id==care->pending) finish=e.key.time;
+                    } else w.advance_to(queue.front().key.time);
+                }
+                if (!finish.milliseconds) throw std::runtime_error("missing physical operation");
+                const auto bytes=w.checkpoint();
+                sweep("active_care_motion_restore",w,[&]{w.restore(bytes);});
+                sweep("active_care_motion_commit",w,[&]{w.advance_to(finish);});
+                w.advance_to(finish);
+            }
+            std::cout<<"PASS S6.3.3.2 allocation failure\n"; return 0;
+        }
         if (argc==2 && std::string_view(argv[1])=="S6.3.3.1") {
             WorldRuntime w({6331,1},7); w.configure_long_term(); w.configure_social();
             SpeciesCareProfile cfg; cfg.local_retrieval=true; cfg.care_probability=1;

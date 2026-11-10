@@ -46,7 +46,8 @@ BehaviorWindow WorldRuntime::behavior_window(AntRef ref, SimTime begin, SimTime 
                     ++out.completed[i]; out.transferred=detail::sum(out.transferred,e.transferred);
                     if (!o.duration_known) ++out.unknown_duration_completions;
                     if (o.target.value && ((o.act>=CareAct::InspectBrood && o.act<=CareAct::CloseWorkerContact) ||
-                        o.act==CareAct::TransferNutrition)) ++out.successful_contacts;
+                        o.act==CareAct::TransferNutrition || o.act==CareAct::PickUpBrood ||
+                        o.act==CareAct::PlaceBrood)) ++out.successful_contacts;
                 } else ++out.interrupted[i];
             }
         }

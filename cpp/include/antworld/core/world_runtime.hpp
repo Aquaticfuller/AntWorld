@@ -140,7 +140,7 @@ private:
     void activate_excavator(Transaction&, EntityId);
     void index_position(Transaction&, EntityId, PositionM from, PositionM to);
     void index_contact(Transaction&, EntityId, std::optional<PositionM>);
-    void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {});
+    void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {}, bool care_motor = false);
     void change_autonomy(Transaction&, AntRef, bool);
     void schedule_autonomy(Transaction&, EntityId);
     void stop_autonomy(Transaction&, EntityId);
@@ -161,6 +161,7 @@ public:
     [[nodiscard]] FoodMass resource_reserves() const;
     static constexpr std::uint32_t care_schema_version = 11, care_physics_version = 13;
     static constexpr std::uint32_t retrieval_schema_version = 12, retrieval_physics_version = 14;
+    static constexpr std::uint32_t care_motion_schema_version = 13, care_motion_physics_version = 15;
     void configure_biology(const SpeciesCareProfile& = {}, const EnvironmentCareProfile& = {});
     void enable_brood_care(AntRef, const IndividualCareProfile& = {});
     void pause_brood_care(AntRef);
@@ -169,7 +170,10 @@ public:
     [[nodiscard]] BehaviorWindow behavior_window(AntRef, SimTime begin, SimTime end) const;
 private:
     void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    [[nodiscard]] bool local_care_available(AntRef) const;
+    void start_autonomous_care(Transaction&, AntRef, ScheduledId);
     [[nodiscard]] Neighborhood care_neighborhood(AntRef, double radius) const;
+    [[nodiscard]] bool clear_care_segment(PositionM from, PositionM to, std::int32_t half) const;
     void execute_care_action(Transaction&, const ScheduledEvent&);
     void interrupt_care(Transaction&, EntityId, Outcome, bool disable = false);
     void validate_active_care(Transaction&);

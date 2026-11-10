@@ -306,6 +306,8 @@ if(BUILD_TESTING)
     add_test(NAME S6_3_1_ALLOCATION_FAILURE COMMAND antworld_allocation_tests S6.3.1)
     add_test(NAME S6_3_3_ALLOCATION_FAILURE COMMAND antworld_allocation_tests S6.3.3)
     add_test(NAME S6_3_3_1_ALLOCATION_FAILURE COMMAND antworld_allocation_tests S6.3.3.1)
+    add_test(NAME S6_3_3_2_ALLOCATION_FAILURE COMMAND antworld_allocation_tests S6.3.3.2)
+    set_tests_properties(S6_3_3_2_ALLOCATION_FAILURE PROPERTIES TIMEOUT 180 LABELS S6.3.3.2)
     set_tests_properties(S6_3_3_1_ALLOCATION_FAILURE PROPERTIES TIMEOUT 600 LABELS S6.3.3.1)
     set_tests_properties(S6_3_3_ALLOCATION_FAILURE PROPERTIES TIMEOUT 600 LABELS S6.3.3)
     set_tests_properties(S6_3_1_ALLOCATION_FAILURE PROPERTIES TIMEOUT 600 LABELS S6.3.1)
@@ -365,6 +367,19 @@ if(BUILD_TESTING AND ANTWORLD_STORAGE)
     add_test(NAME S6_3_3_1_STORAGE COMMAND ${CMAKE_COMMAND} -DCLI=$<TARGET_FILE:antworld_s6_3_3_1_tests>
         -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/test-output/s6_3_3_1-storage.sqlite -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_3_storage.cmake)
     set_tests_properties(S6_3_3_1_STORAGE PROPERTIES TIMEOUT 180 LABELS S6.3.3.1)
+
+    add_executable(antworld_s6_3_3_2_tests tests/test_s6_3_3_2.cpp)
+    target_include_directories(antworld_s6_3_3_2_tests PRIVATE apps)
+    target_link_libraries(antworld_s6_3_3_2_tests PRIVATE antworld_storage)
+    antworld_checks(antworld_s6_3_3_2_tests)
+    foreach(id FOREIGN COMPETING GEOMETRY LIFECYCLE AUTONOMY REPRODUCTION)
+        add_test(NAME S6_3_3_2_${id} COMMAND antworld_s6_3_3_2_tests ${id})
+        set_tests_properties(S6_3_3_2_${id} PROPERTIES TIMEOUT 180 LABELS S6.3.3.2)
+    endforeach()
+    add_test(NAME S6_3_3_2_MOTION COMMAND ${CMAKE_COMMAND} -DCLI=$<TARGET_FILE:antworld_s6_3_3_2_tests>
+        -DCASE=MOTION -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/test-output/s6_3_3_2-motion.sqlite
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_3_storage.cmake)
+    set_tests_properties(S6_3_3_2_MOTION PROPERTIES TIMEOUT 180 LABELS S6.3.3.2)
 endif()
 
 add_executable(antworld_s6_3_3_experiment apps/antworld_s6_3_3_experiment.cpp)

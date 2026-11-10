@@ -1,4 +1,5 @@
 #include "long_term_internal.hpp"
+#include "care_internal.hpp"
 #include <set>
 
 namespace antworld {
@@ -90,6 +91,10 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
                       s.geometry ? s.geometry->config.body_half_q : 0);
   EntityId child;
   if (funded) {
+    if (integrated_care(s) && care_owned(s,mother.id)) {
+      interrupt_care(tx,mother.id,Outcome::InvalidTransition,true);
+      p=s.physiology.at(e.actor);
+    }
     tx.entity_budget();
     child = {take(s.m.next_entity)};
     p.crop.protein_ug -= c.egg_protein_ug;

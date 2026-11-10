@@ -92,7 +92,7 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     if (state_->autonomy.contains(ref.id) && state_->autonomy.at(ref.id).enabled) change_autonomy(tx,ref,false);
     tx.commit();
 }
-void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source) {
+void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source, bool care_motor) {
     auto& s = *state_; const auto ant = query_ant(ref);
     if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Excavate ||
         (behavior != IndividualBehavior::Paused && (ant->stage != LifeStage::Adult || ant->caste != Caste::Worker)))
@@ -134,7 +134,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         f.wake = tx.insert(e); tx.foragers.set(ref.id, f);
     } else if (behavior == IndividualBehavior::Excavate) {
         activate_excavator(tx,ref.id);
-    } else if (behavior != IndividualBehavior::Paused) {
+    } else if (behavior != IndividualBehavior::Paused && !care_motor) {
         ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
         e.key = {after(s.m.now, p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
         p.behavior_event = tx.insert(e); tx.physiology.set(ref.id, p);

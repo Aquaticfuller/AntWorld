@@ -1,9 +1,19 @@
 #pragma once
 #include "antworld/core/entities.hpp"
 #include <array>
+#include <optional>
 #include <vector>
 
 namespace antworld {
+// ENGINEERING_FIXTURE preferred speeds and separate handling clocks.
+struct CareMotionProfile {
+    double worker_unloaded_m_per_s{.020}, queen_unloaded_m_per_s{.006};
+    double worker_loaded_m_per_s{.004}, queen_loaded_m_per_s{.003};
+    SimTime pickup_duration{500}, placement_duration{500}, manipulation_duration{2000}, search_pause{1000};
+    std::uint8_t search_steps{8};
+    bool integrate_autonomy{};
+    bool operator==(const CareMotionProfile&) const = default;
+};
 // B01/B02 support the capability and qualitative plasticity, not these coefficients.
 // All numeric defaults are ENGINEERING_FIXTURE; no metabolic parameter is changed.
 struct SpeciesCareProfile {
@@ -13,6 +23,7 @@ struct SpeciesCareProfile {
     double perception_radius_m{0.006}, step_m{0.001}, arrangement_m{0.00025};
     // ENGINEERING_FIXTURE opt-in local persistence and one return to a visited pickup site.
     bool local_retrieval{};
+    std::optional<CareMotionProfile> motion;
     bool operator==(const SpeciesCareProfile&) const = default;
 };
 enum class CareContext : std::uint8_t { FoundingQueen, EstablishedQueen, Worker };
@@ -23,12 +34,15 @@ struct IndividualCareProfile {
 };
 struct EnvironmentCareProfile {
     double temperature_c{21}, relative_humidity{0.8}; // Assay metadata only; P04 is excluded.
+    bool neutral_displacement_assay{};
+    double arena_radius_m{}; // Optional care-only disc centered at the test origin.
     bool operator==(const EnvironmentCareProfile&) const = default;
 };
 enum class CareAct : std::uint8_t {
     Inactive, Walk, ApproachBrood, InspectBrood, ArrangeBrood, CleanBrood,
     TransportBrood, FeedBrood, CloseWorkerContact, CollectFood, DeliverFood,
-    IngestFood, TransferNutrition, Excavate, HandleSoil, RevisitBroodSite, Count
+    IngestFood, TransferNutrition, Excavate, HandleSoil, RevisitBroodSite,
+    PickUpBrood, PlaceBrood, ReturnToCareShelter, Count
 };
 enum class ObservationPhase : std::uint8_t { Opportunity, Selected, Started, Completed, Interrupted };
 struct BehaviorObservation {
@@ -58,6 +72,8 @@ struct CareState {
     PositionM destination;
     ScheduledId pending, bout;
     RetrievalMemory retrieval;
+    bool carrying_brood{}, returning{};
+    std::uint8_t search_remaining{};
     bool operator==(const CareState&) const = default;
 };
 struct BehaviorWindow {

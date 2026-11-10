@@ -158,7 +158,8 @@ template <typename S> void validate_surface_evidence(const S& s) {
         const bool active=s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled;
         if (!mixed || active) ensure(surface.locate(ant.position).has_value(),"ant outside walkable surface");
     }
-    for (const auto& [id,f]:s.foragers) if (!mixed || f.enabled) {
+    for (const auto& [id,f]:s.foragers) if (f.enabled || (!mixed &&
+        !(s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy && s.care.contains(id)))) {
         const auto cell=surface.locate(s.ants.get(s.ants.index.at(id)).position);
         ensure(cell && f.path[f.path_size-1]==*cell,"invalid individual route endpoint");
     }
@@ -197,6 +198,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 audit_discoveries.try_emplace(e.resource, Discovery{e.time, e.actor});
             }
         }
+        if (e.kind==FactKind::BroodMoved) positions[e.actor]=e.position;
         if (e.kind == FactKind::Moved) {
             const auto old = surface.locate(positions[e.actor]), to = surface.locate(e.position);
             const bool active=audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled;

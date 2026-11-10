@@ -1,4 +1,5 @@
 #include "behavior_rng.hpp"
+#include "care_internal.hpp"
 #include "social_internal.hpp"
 
 namespace antworld {
@@ -9,15 +10,17 @@ void WorldRuntime::set_autonomy(AntRef ref, bool enabled) {
   tx.commit();
 }
 void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
-  if (enabled && state_->care.contains(ref.id) && state_->care.at(ref.id).enabled)
+  auto &s = *state_;
+  const bool integrated=integrated_care(s);
+  if (enabled && !integrated && care_owned(s,ref.id))
     throw std::invalid_argument("pause dedicated care before worker autonomy");
   profiling::Scope profile(profiling::Category::Policy);
-  auto &s = *state_;
   const auto ant = query_ant(ref);
-  if (!s.social || !ant || !ant->alive() || ant->caste != Caste::Worker ||
+  if (!s.social || !ant || !ant->alive() ||
+      (ant->caste != Caste::Worker && !(integrated && ant->caste==Caste::Queen && ant->stage==LifeStage::Adult)) ||
       !s.physiology.contains(ref.id))
     throw std::invalid_argument(
-        "autonomy requires a living physiological worker and social policy");
+        "autonomy requires a living physiological caste admitted by the social policy");
   if (enabled && s.long_term && s.external_resolution(ref.id))
     throw std::invalid_argument("resolve external actions before enrolling autonomy");
   if (enabled && !s.long_term && s.m.resolution_commands)
@@ -31,6 +34,8 @@ void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
         throw std::invalid_argument(
             "resolve external actions before enrolling autonomy");
     }
+  if (!enabled && integrated && care_owned(s,ref.id))
+    interrupt_care(tx,ref.id,Outcome::InvalidTransition,true);
   auto a = s.autonomy.contains(ref.id)
                ? s.autonomy.at(ref.id)
                : AutonomyState{false, 0, s.m.now, s.m.now, {}};
@@ -95,6 +100,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     ScheduledEvent event;
     IndividualBehavior behavior;
     ContactWork sample;
+    bool care{};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -119,7 +125,16 @@ void WorldRuntime::resolve_autonomy_wakes(
         p.behavior == IndividualBehavior::Paused ||
         s.m.now.milliseconds - a.last_program_change.milliseconds >=
             config.minimum_program_time.milliseconds;
-    if (can_switch && wake.payload==1 && s.long_term) {
+    const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
+                        p.hydration_ug < p.config.hydration_capacity_ug / 4;
+    if (integrated_care(s) && care_owned(s,ant.id)) {
+      // The ordinary wake stays alive while the finite care lease owns motion.
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (ant.caste==Caste::Queen) {
+      choice.care=can_switch && !urgent && s.m.now>a.last_program_change &&
+                  local_care_available({s.world,ant.id});
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (can_switch && wake.payload==1 && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
       inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && ready) {
@@ -176,8 +191,6 @@ void WorldRuntime::resolve_autonomy_wakes(
               break; // Rock occludes soil behind it.
           }
       }
-      const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
-                          p.hydration_ug < p.config.hydration_capacity_ug / 4;
       if (s.long_term && s.long_term->demand_feedback) {
         const auto self=signaled_need(p,ant.stage);
         forage=forage && (unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
@@ -193,7 +206,8 @@ void WorldRuntime::resolve_autonomy_wakes(
         // global deficit or promised transfer survives a later failed contact.
         choice.behavior = IndividualBehavior::Nurse;
       else {
-        const std::array<std::pair<IndividualBehavior, std::uint64_t>, 4>
+        const bool care=integrated_care(s) && !urgent && local_care_available({s.world,ant.id});
+        const std::array<std::pair<IndividualBehavior, std::uint64_t>, 5>
             options{
                 {{IndividualBehavior::Rest, config.rest_weight},
                  {IndividualBehavior::Forage,
@@ -201,16 +215,19 @@ void WorldRuntime::resolve_autonomy_wakes(
                  {IndividualBehavior::Nurse,
                   need && config.exchange_enabled ? config.nurse_weight : 0U},
                  {IndividualBehavior::Excavate,
-                  soil ? config.excavate_weight : 0U}}};
+                  soil ? config.excavate_weight : 0U},
+                 {IndividualBehavior::Nurse, care ? config.nurse_weight : 0U}}};
         std::uint64_t total = 0;
         for (const auto &option : options)
           total += option.second;
         auto rng = individual_rng(s.seed ^ UINT64_C(0x533645434f4c4f47), ant.id,
                                   a.decisions);
         auto draw = bounded_draw(rng, total);
-        for (const auto &[program, weight] : options) {
+        for (std::size_t i=0;i<options.size();++i) {
+          const auto [program,weight]=options[i];
           if (draw < weight) {
             choice.behavior = program;
+            choice.care=i==options.size()-1;
             break;
           }
           draw -= weight;
@@ -233,7 +250,9 @@ void WorldRuntime::resolve_autonomy_wakes(
     a.wake = {};
     bump(a.decisions);
     tx.autonomy.set(id, a);
-    if (choice.behavior != s.physiology.at(id).behavior)
+    if (choice.care)
+      start_autonomous_care(tx,{s.world,id},choice.event.id);
+    else if (choice.behavior != s.physiology.at(id).behavior)
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
     const auto &sample = choice.sample;
     auto &work = s.m.contact_work;

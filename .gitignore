@@ -4,6 +4,7 @@
 /out/
 /.tools/
 /handoff/
+/.codex-remote-attachments/
 CMakeUserPresets.json
 
 # Local editor state

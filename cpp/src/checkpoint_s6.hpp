@@ -36,7 +36,7 @@ template <class S> void write_social(Writer &w, const S &s) {
     }
   }
 }
-template <class S> void read_social(Reader &r, S &s) {
+template <class S> void read_social(Reader &r, S &s,bool care_motion) {
   if (r.flag()) {
     auto c = std::make_shared<SocialConfig>();
     c->demand_sensitive = r.flag();
@@ -60,7 +60,8 @@ template <class S> void read_social(Reader &r, S &s) {
       const EntityId id{r.get()};
       AutonomyState a{r.flag(), r.get(), r.time(), r.time(), {r.get()}};
       ensure(s.ants.index.contains(id) && s.physiology.contains(id) &&
-                 s.ants.get(s.ants.index.at(id)).caste == Caste::Worker &&
+                 (s.ants.get(s.ants.index.at(id)).caste == Caste::Worker ||
+                  (care_motion && s.ants.get(s.ants.index.at(id)).caste == Caste::Queen)) &&
                  a.enrolled_at <= s.m.now &&
                  a.last_program_change >= a.enrolled_at &&
                  a.last_program_change <= s.m.now &&
@@ -172,6 +173,8 @@ template <class S> void validate_autonomy_evidence(const S &s) {
     expected.wake = a.wake;
     ensure(expected == a, "autonomy state disagrees with history");
     const auto ant = s.ants.get(s.ants.index.at(id));
+    ensure(ant.caste==Caste::Worker || (ant.caste==Caste::Queen && s.care_profile &&
+           s.care_profile->motion && s.care_profile->motion->integrate_autonomy),"invalid autonomous caste");
     const bool scheduled = a.enabled && ant.stage == LifeStage::Adult;
     ensure(scheduled == (a.wake.value != 0) && (ant.alive() || !a.enabled),
            "autonomy lifecycle ownership mismatch");
