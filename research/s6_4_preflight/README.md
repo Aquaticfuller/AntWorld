@@ -27,6 +27,19 @@ Join on `MechanismId`, `ParameterKey` and `AnchorId`. Semicolon-delimited fields
 
 The fixture and candidate indexes are lexical. They preserve source expressions and explicitly report uncertain owner resolution. They neither perform C++ name resolution nor execute fixture call chains. Runtime values derived from a seed, branch, command-line argument, build flag or input population require the applicable frozen protocol and raw experiment. Runners and prior interpretation are linked in the report.
 
+## Step 2 full-text review
+
+The evidence review joins to the frozen inventory without overwriting it. Batch 1 covers brood care, provisioning, reproduction, physiology, development and the interfaces those mechanisms use. Further batches await review of this checkpoint.
+
+| File | Contents |
+|---|---|
+| [Full-text review progress](FULLTEXT_REVIEW_PROGRESS.md) | Batch coverage, originals read, quantitative comparisons, gaps and pending domains |
+| [Source register](SOURCE_FULLTEXT_REGISTER.csv) | Primary papers by experimental context, measured endpoints, conditions, units and scope of reading |
+| [Access and reading log](SOURCE_ACCESS_AND_READING_LOG.csv) | Opened article and supplement records, hashes, and unsuccessful access attempts |
+| [Mechanism and transition evidence](MECHANISM_EVIDENCE_REVIEW.csv) | Individually reviewed current rules linked to verified anchors, study locators and limits |
+| [Parameter evidence review](PARAMETER_EVIDENCE_REVIEW.csv) | Source values, units, conditional comparisons and current calibration status |
+| [Evidence conflicts](EVIDENCE_CONFLICTS.md) | Quantitative disagreements, incompatible endpoints, unsupported rules and missing measurements |
+
 ## Reproduce the checks
 
 Run from the repository root with Python 3.10 or later and both commits in local Git history.
@@ -34,6 +47,7 @@ Run from the repository root with Python 3.10 or later and both commits in local
 ```sh
 python tools/audit_s6_4_preflight.py --check
 python tools/test_s6_4_preflight.py
+python research/s6_4_preflight/verify_batch1.py
 git diff --exit-code b35b988ecf1b92f7bac3c00af393b88ab8330d67 -- cpp scenarios experiments docs
 ```
 
