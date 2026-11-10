@@ -89,6 +89,11 @@ jobs:
         run: |
           ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_1-reproduction all retrieval-line local
           python tools/verify_s6_3_3_reproduction.py build/ci/s6_3_3_1-reproduction --retrieval-profile local
+      - name: Replay timed care and normal autonomy fixtures (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_2-b02 0 fidelity-b02 fidelity
+          ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_2-autonomy 0 fidelity-integration fidelity
 
   sanitizers:
     runs-on: ubuntu-24.04

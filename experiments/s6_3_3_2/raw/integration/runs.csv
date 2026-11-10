@@ -1,0 +1,1 @@
+run,seed,assay,condition,age_days,variant,decision_ms,bout_ms,memory_ms,inhibition,care_probability,worker_contact_probability,perception_m,step_m,arrangement_m,end_ms,events,checkpoint_bytes,advance_ms,checkpoint_ms,restore_ms,continuation_equal,conserved,first_contact_ms,first_retrieval_ms,retrieved,task_end_ms,path_m

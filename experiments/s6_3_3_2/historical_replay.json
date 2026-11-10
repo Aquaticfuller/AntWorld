@@ -1,0 +1,117 @@
+{
+  "executable_sha256": "e1dbced51a05f6a3470ebff8f8a3859aa541942e53dc7dc8a8e9c5727861281f",
+  "cases": [
+    {
+      "policy": "legacy",
+      "mode": "retrieval-line",
+      "runs": 24,
+      "match": true,
+      "events": 4618
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-line",
+      "runs": 24,
+      "match": true,
+      "events": 4324
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-mirror",
+      "runs": 24,
+      "match": true,
+      "events": 4324
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-split",
+      "runs": 24,
+      "match": true,
+      "events": 4127
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-far",
+      "runs": 24,
+      "match": true,
+      "events": 9749
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-empty",
+      "runs": 24,
+      "match": true,
+      "events": 12222
+    },
+    {
+      "policy": "legacy",
+      "mode": "holdout-sheltered",
+      "runs": 24,
+      "match": true,
+      "events": 9122
+    },
+    {
+      "policy": "legacy",
+      "mode": "b01",
+      "runs": 40,
+      "match": true,
+      "events": 4444505
+    },
+    {
+      "policy": "local",
+      "mode": "retrieval-line",
+      "runs": 24,
+      "match": true,
+      "events": 12136
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-line",
+      "runs": 24,
+      "match": true,
+      "events": 11791
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-mirror",
+      "runs": 24,
+      "match": true,
+      "events": 11889
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-split",
+      "runs": 24,
+      "match": true,
+      "events": 10432
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-far",
+      "runs": 24,
+      "match": true,
+      "events": 11352
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-empty",
+      "runs": 24,
+      "match": true,
+      "events": 12222
+    },
+    {
+      "policy": "local",
+      "mode": "holdout-sheltered",
+      "runs": 24,
+      "match": true,
+      "events": 9122
+    },
+    {
+      "policy": "local",
+      "mode": "b01",
+      "runs": 40,
+      "match": true,
+      "events": 4444505
+    }
+  ]
+}

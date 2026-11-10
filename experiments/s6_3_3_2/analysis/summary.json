@@ -1,0 +1,16 @@
+{
+  "retrieval_runs": 396,
+  "b01_runs": 76,
+  "b01_windows": 228,
+  "b01_scans": 11628,
+  "ecological_runs": 12,
+  "complete_placements": 1720,
+  "loaded_episodes": 1807,
+  "retrospective_B01_B02": true,
+  "biological_parameters_fitted": 0,
+  "bootstrap_draws": 4096,
+  "bootstrap_seed": 63302,
+  "source_bootstrap_unit": "queen or group/colony, origins paired",
+  "model_bootstrap_unit": "simulator seed",
+  "censored_latency_s": 600.0
+}

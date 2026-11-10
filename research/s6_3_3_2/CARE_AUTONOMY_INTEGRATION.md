@@ -1,0 +1,24 @@
+# Local care inside normal Core autonomy
+
+The opt-in contract is `SpeciesCareProfile::motion` with `integrate_autonomy=true`, after ordinary long-term and social configuration. The existing `WorldRuntime::set_autonomy` enrolls the eligible adult. Dedicated assay enrollment remains available in the isolated profile. Default worlds and historical behavior retain their existing serialized contract.
+
+| Owner | Responsibilities |
+| --- | --- |
+| Species profile | Motor clocks, perception radius, finite search and recognition eligibility. All numerical additions remain F / `ENGINEERING_FIXTURE`. |
+| Individual profile and state | Caste, recorded age context, local familiar shelter, worker-contact memory, last pickup site, actual custody and one pending motor event. |
+| Environment profile and authoritative world | Arena geometry for a declared assay. World speed, clear cells, 3D solid/void, stage and nutrition remain authoritative. |
+| Autonomy wake | Regular local worker program choice or queen care consideration. It remains scheduled through a care lease. An actor with carried food or soil does not hand it off to enter care. |
+| Care motor lease | One local handling episode and physical return. It uses the ordinary physiology behavior event slot and schedules no parallel nursing motor. A worker can forage, feed, rest or excavate on subsequent ordinary decisions when those actions are locally available. |
+| Existing reproduction | Funded queen laying uses the unchanged inherited schedule and ledgers. It releases any overlapping care act in the same transaction before birth. A same-time autonomy wake cannot immediately reclaim the lease. |
+
+The software split keeps control with each ant. At an eligible normal wake, a worker can select local care alongside the existing weighted options. Current transferable need can retain its existing nurse priority. A queen retains her caste and no worker task options are added to her branch. Worker contact can change later care propensity without a global population threshold. The age context does not yet implement actual aging or nurse maturation.
+
+When loaded, the lease keeps one exclusive target reservation and revalidates stage, contact, swept clearance and speed. Death or a new wall can end custody with an interruption at the last committed positions. The ordinary wake can resume when the actor is free. Failed shelter return releases the motor and preserves a previously witnessed shelter. A future wake can attempt another feasible local step. Neither a route reset nor a position reset is required for normal work to resume.
+
+`checkpoint.cpp` uses schema 13 and physics 15 only for the motion profile. `checkpoint_care.hpp` validates profile, pending events, start/completion evidence and load ownership before reconstructing locks. `checkpoint_s2.hpp` replays brood moves and allows a dormant route endpoint to reflect the last actual foraging endpoint. The route has to be valid when reactivated. SQLite uses the existing checkpoint and canonical event path.
+
+The engineering cases cover timed action and SQLite recovery, neutral recognition, competing pickups, a new geometric obstruction, target death, worker task resumption, funded queen preemption and journal allocation faults. The short assay compares six fixed streams with and without the lease. It uses a 21 by 5 surface with 1 mm centers, three workers, three local larvae and one queen, a defined food deposit, and the existing funded-attempt contract at 20 s intervals inside 90 s. Checkpoint continuation at 45 s compares to a partitioned 90 s advance. This is a task arbitration probe, separate from B01/B02 and from long-term colony fitness.
+
+Every integrated worker in the six streams executed a foraging decision after releasing care. The paired arms each recorded 18 funded births, 12 food collections and 12 deliveries. The lease arm recorded 15 worker and three queen placement completions. Neither arm realized a nutrient transfer in this short fixture. Inherited transaction tests cover nutrition and a geometric obstruction test covers actual loaded clearance. The high rate of ordinary program changes in this short-interval fixture is visible in the [fact-derived table](../../experiments/s6_3_3_2/analysis/integration_diagnostics.csv). It is a scheduling result and remains unsuitable as an estimate of biological task-switching rates.
+
+Spatial scope is conservative. Surface-only locomotion can use adjacent walkable centers within the spatial stride. A coarse center lattice can therefore support contact care without nonzero brood translation at a 1 mm stride. In real 3D, paths use local swept moves and can get stuck around corners or during return. Nonlocal navigation, general nest-boundary sensing, chemically recognized locations, structural traffic and independently measured motor energetics remain outside this implementation.

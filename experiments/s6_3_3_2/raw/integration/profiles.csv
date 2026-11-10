@@ -1,0 +1,13 @@
+run,scenario,layout,variant,origin,neutral_assay,arena_radius_m,speed_cap_m_s,worker_unloaded_m_s,queen_unloaded_m_s,worker_loaded_m_s,queen_loaded_m_s,pickup_ms,placement_ms,manipulation_ms,search_pause_ms,search_steps,integrated
+ecology_7_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_7_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1
+ecology_19_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_19_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1
+ecology_43_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_43_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1
+ecology_71_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_71_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1
+ecology_101_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_101_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1
+ecology_137_control,integration,,control,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,0
+ecology_137_lease,integration,,lease,own,0,0,0.08,0.02,0.006,0.004,0.003,500,500,2000,1000,8,1

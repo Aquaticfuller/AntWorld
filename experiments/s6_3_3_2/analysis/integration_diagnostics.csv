@@ -1,0 +1,13 @@
+run,seed,integrated,end_ms,events,checkpoint_bytes,exact_restore,conserved,births,larvae_at_start,worker_program_changes,worker_foraged_after_care,forage_decisions,food_collections,food_deliveries,nutrition_transfers,autonomy_decisions,queen_3_completed,queen_4_completed,queen_5_completed,queen_6_completed,queen_7_completed,queen_16_completed,queen_17_completed,queen_18_completed,worker_3_completed,worker_4_completed,worker_5_completed,worker_6_completed,worker_7_completed,worker_16_completed,worker_17_completed,worker_18_completed
+ecology_7_control,7,0,90000,2375,441915,1,1,3,3,119,0,352,2,2,0,550,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_7_lease,7,1,90000,6330,1193086,1,1,3,3,425,3,450,2,2,0,733,3,0,5,2,0,1,1,0,18,0,15,7,0,2,2,0
+ecology_19_control,19,0,90000,2352,438203,1,1,3,3,103,0,351,2,2,0,551,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_19_lease,19,1,90000,7421,1401639,1,1,3,3,433,3,587,2,2,0,731,2,0,1,4,0,1,1,0,20,0,13,5,0,2,2,4
+ecology_43_control,43,0,90000,2093,389170,1,1,3,3,95,0,297,2,2,0,549,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_43_lease,43,1,90000,6629,1253058,1,1,3,3,384,3,469,2,2,0,726,8,0,0,2,0,1,1,0,18,0,23,7,0,2,2,0
+ecology_71_control,71,0,90000,2195,408837,1,1,3,3,101,0,316,2,2,0,547,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_71_lease,71,1,90000,6916,1301981,1,1,3,3,423,3,593,2,2,0,734,4,0,1,0,0,0,0,0,14,0,14,9,0,3,3,0
+ecology_101_control,101,0,90000,2234,416547,1,1,3,3,91,0,324,2,2,0,545,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_101_lease,101,1,90000,6770,1275437,1,1,3,3,414,3,568,2,2,0,732,5,0,2,0,0,0,0,1,17,0,15,9,0,3,3,0
+ecology_137_control,137,0,90000,2091,388921,1,1,3,3,97,0,295,2,2,0,547,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ecology_137_lease,137,1,90000,6686,1261290,1,1,3,3,431,3,418,2,2,0,730,1,0,0,0,0,0,0,3,17,0,17,9,0,3,3,4

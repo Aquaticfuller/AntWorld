@@ -3,6 +3,7 @@ import argparse
 from collections import defaultdict
 import json
 from pathlib import Path
+import subprocess
 
 from analyze_s6_3_2_performance import describe
 from analyze_s6_3_3_1_performance import digest, emit, read
@@ -33,11 +34,24 @@ def arm(root):
     return rows,by_sample
 
 
+def collect(root, binaries):
+    root.mkdir(parents=True)
+    for mode, binary in zip(('reference','indexed'),binaries):
+        folder=root/mode
+        subprocess.run([binary.resolve(),folder.resolve()], check=True)
+        receipt=dict(mode='Release ANTWORLD_PROFILE=ON', executable_sha256=digest(binary), samples=64,
+                     profile_rows=2304, files={name:digest(folder/name) for name in ('samples.csv','profile.csv')})
+        (folder/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8',newline='\n')
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,default=ROOT)
     parser.add_argument('--check',action='store_true')
+    parser.add_argument('--collect',type=Path,nargs=2,metavar=('REFERENCE','INDEXED'))
     args=parser.parse_args()
+    if args.collect:
+        collect(args.root,args.collect)
     roots={mode:arm(args.root/mode) for mode in ('reference','indexed')}
     before,after=(rows for rows,_ in roots.values())
     for a,b in zip(before,after):

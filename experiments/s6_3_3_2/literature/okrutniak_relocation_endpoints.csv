@@ -1,0 +1,6 @@
+doi,page,figure,measurement,threshold_min,count,total,conditions,notes
+10.1111/ens.12549,4,3,first_transfer_below,1,38,46,lit-to-dark after disturbance,reported cumulative count below 1 minute
+10.1111/ens.12549,4,3,first_transfer_below,6,45,46,lit-to-dark after disturbance,adds seven colonies to the first bin
+10.1111/ens.12549,4,3,first_transfer_slowest,77,1,46,lit-to-dark after disturbance,reported slowest retained colony
+10.1111/ens.12549,4,3,first_to_last_below,20,43,46,lit-to-dark after disturbance,25 pupae per colony
+10.1111/ens.12549,3,1,excluded_relocation_over,120,1,58,lit-to-dark after disturbance,other exclusions were six high-mortality and five overabundant-worker trials

@@ -1,5 +1,14 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.3.3.2 brood care fidelity review boundary
+
+- **SD-09 remains OPEN.** Caste- and load-specific segment clocks, physical pickup and release, and local autonomy arbitration are implemented engineering capabilities. The frozen B02 line cohort exceeds the measured retrieval count and contacts occur too early. Far-layout discovery, B01 scan behavior, matched active callows and age, sensing, loaded and unloaded queen tracks, and true tube geometry need further evidence. The Carthy tables provide trained-worker path/time observations from two individuals and expose a unit inconsistency. No adopted speed or handling duration has been biologically calibrated. B02 informed model revision and remains exploratory.
+- **TD-11 remains OPEN.** The same-colony comparison retains all 64 state and trace identities. The indexed 128/512 dispersed case reduces candidates from 281,600 to 2,419 with identical opportunities and completed acts. The dense case still emits 164,223 opportunities and retains a 35,208,788-byte checkpoint. Measure dense timed/autonomous care and investigate lossless history representation and long-horizon storage separately. Preserve the original opportunity and action facts.
+- **TD-01 and TD-08 pass the frozen bounded workloads in the current build.** Contact and reserve-birth advance p50 ratios are 5.4338x and 4.2285x. All six sessions qualify with identical work. The unexplained S6.1 24.229x observation remains archived. Long-lived dynamic population expansion remains open under TD-08.
+- **SD-01/02, SD-04, SD-06/07/08 and TD-03/06 remain OPEN.** Visual loaded orientation and limited revisits are distinct from brood-trail recruitment. Nutritional allocation and provisioning, activity costs and rest, functional nest behavior, and long-history retention still have their prior limits.
+
+The [S6.3.3.2 report](../S6_3_3_2_RESULTS.md) records the engineering scope and experimental limits. The [Evidence Atlas supplement](../research/s6_3_3_2/BROOD_MOTION_EVIDENCE_AND_PARAMETERS.md) records the new evidence without replacing historical data. Independent review remains required for S6.3.4, S6.4, Unity and later stages.
+
 ## S6.3.3.1 retrieval and performance review boundary
 
 - **SD-09 remains OPEN.** Local retrieval episodes improve repeated delivery and contact timing in the exploratory B02 assay. Worker-group delivery remains below the published mean and far-brood retrieval remains weak. The independent flat-worker tracks expose a large movement-clock discrepancy. Future paired trials need loaded and unloaded paths, contact latency and inter-trip observations at matched caste, age and apparatus. B01 still has a positive care-score bias in all three focal conditions. Glass transfer, active callow care, mesh antennation, genuine aging and the source of worker inhibition remain separate uncertainties. No coefficient has been calibrated.

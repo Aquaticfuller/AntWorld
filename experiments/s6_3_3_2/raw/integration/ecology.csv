@@ -1,0 +1,13 @@
+run,seed,integrated,end_ms,events,checkpoint_bytes,exact_restore,conserved,births,larvae_at_start
+ecology_7_control,7,0,90000,2375,441915,1,1,3,3
+ecology_7_lease,7,1,90000,6330,1193086,1,1,3,3
+ecology_19_control,19,0,90000,2352,438203,1,1,3,3
+ecology_19_lease,19,1,90000,7421,1401639,1,1,3,3
+ecology_43_control,43,0,90000,2093,389170,1,1,3,3
+ecology_43_lease,43,1,90000,6629,1253058,1,1,3,3
+ecology_71_control,71,0,90000,2195,408837,1,1,3,3
+ecology_71_lease,71,1,90000,6916,1301981,1,1,3,3
+ecology_101_control,101,0,90000,2234,416547,1,1,3,3
+ecology_101_lease,101,1,90000,6770,1275437,1,1,3,3
+ecology_137_control,137,0,90000,2091,388921,1,1,3,3
+ecology_137_lease,137,1,90000,6686,1261290,1,1,3,3

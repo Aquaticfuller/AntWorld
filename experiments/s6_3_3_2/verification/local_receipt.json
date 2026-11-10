@@ -1,0 +1,33 @@
+{
+  "source_commit": "2ba77bb2fb5e1b87aa539f54929868de2ac65830",
+  "platform": "Windows x64",
+  "compiler": "LLVM MinGW Clang 23.1.5",
+  "ctest_parallel": 4,
+  "ctest": [
+    {
+      "mode": "debug",
+      "total": 195,
+      "passed": 195,
+      "wall_s": 81.2,
+      "raw_local_log_sha256": "1e1a97f3b9ce3b1acd0d3bdd47fb4c4778234ab143f132e58c88efe46c167033"
+    },
+    {
+      "mode": "release",
+      "total": 195,
+      "passed": 195,
+      "wall_s": 33.52,
+      "raw_local_log_sha256": "b137ebf9e602cacebeacc8fe485ee4853ab5d53c26fecd96c2f172a4e19c2407"
+    },
+    {
+      "mode": "sanitizer",
+      "total": 195,
+      "passed": 195,
+      "wall_s": 152.71,
+      "raw_local_log_sha256": "211f33632798cef34aa2b1d8fea88d6d911e56b95f87704bf62699cbf9c6a37f"
+    }
+  ],
+  "sanitizer_options": {
+    "address": "detect_leaks=0:halt_on_error=1",
+    "undefined": "halt_on_error=1:print_stacktrace=1"
+  }
+}
