@@ -172,7 +172,7 @@ private:
     void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] bool local_care_available(AntRef) const;
     void start_autonomous_care(Transaction&, AntRef, ScheduledId);
-    [[nodiscard]] Neighborhood care_neighborhood(AntRef, double radius) const;
+    void collect_care_neighbors(AntRef, double radius, std::vector<AntRef>&) const;
     [[nodiscard]] bool clear_care_segment(PositionM from, PositionM to, std::int32_t half) const;
     void execute_care_action(Transaction&, const ScheduledEvent&);
     void interrupt_care(Transaction&, EntityId, Outcome, bool disable = false);

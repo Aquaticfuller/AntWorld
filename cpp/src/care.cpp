@@ -89,8 +89,9 @@ bool WorldRuntime::local_care_available(AntRef ref) const {
         const auto next=care_toward(s,a.position,shelter,s.care_profile->step_m);
         return next!=a.position && clear_care_segment(a.position,next,body_half(a.id));
     }
-    const auto local=care_neighborhood(ref,s.care_profile->perception_radius_m);
-    return std::any_of(local.ants.begin(),local.ants.end(),[&](AntRef neighbor) {
+    std::vector<AntRef> local(0);
+    collect_care_neighbors(ref,s.care_profile->perception_radius_m,local);
+    return std::any_of(local.begin(),local.end(),[&](AntRef neighbor) {
         const auto b=*query_ant(neighbor);
         return b.alive() && b.colony==a.colony && surface_care_clear(s,a.position,b.position) &&
             ((brood(b.stage) && !s.care_locks.contains(b.id)) ||
@@ -179,9 +180,11 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         auto rng=individual_rng(s.seed ^ UINT64_C(0x51434152454d4f44),a.id,c.decisions);
         auto draw=[&](double probability) { return static_cast<double>(bounded_draw(rng,1000000))/1000000<probability; };
         c.act=CareAct::Inactive; c.target={}; c.destination=a.position; c.bout={};
-        const auto local=care_neighborhood({s.world,a.id},cfg.perception_radius_m);
+        // MSVC Debug iterator proxies can allocate even during a noexcept vector move.
+        std::vector<AntRef> local(0);
+        collect_care_neighbors({s.world,a.id},cfg.perception_radius_m,local);
         std::vector<AntRef> brood_candidates(0),workers(0);
-        for (auto ref:local.ants) {
+        for (auto ref:local) {
             const auto other=*query_ant(ref);
             if (!other.alive() || !surface_care_clear(s,a.position,other.position)) continue;
             const bool foreign=other.colony!=a.colony;

@@ -1,0 +1,21 @@
+{
+  "source_commit": "c69ba2c3faa5116f6b698946eb0683ea3b814073",
+  "run": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42728522511",
+  "job": "https://github.com/Aquaticfuller/AntWorld/actions/runs/42728522511/job/129540289229",
+  "status": "FAIL",
+  "platform": "windows-2022, MSVC Debug",
+  "failures": [
+    {
+      "test": "S6_3_3_ALLOCATION_FAILURE",
+      "scenario": "care_select",
+      "allocation": 45,
+      "observed": "Unexpected terminate"
+    },
+    {
+      "test": "S6_3_3_1_ALLOCATION_FAILURE",
+      "scenario": "retrieval_select",
+      "allocation": 45,
+      "observed": "Unexpected terminate"
+    }
+  ]
+}

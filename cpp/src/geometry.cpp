@@ -100,11 +100,14 @@ void WorldRuntime::index_position(Transaction &tx, EntityId id, PositionM from, 
         tx.parcels.set(parcel.id, parcel);
     }
 }
-Neighborhood WorldRuntime::care_neighborhood(AntRef ref,double radius) const {
+void WorldRuntime::collect_care_neighbors(AntRef ref,double radius,std::vector<AntRef>& neighbors) const {
     const auto& s=*state_;
     const auto width=s.config.contact_distance_m;
-    if (s.geometry || !s.social->bounded_contacts || radius/width>=INT32_MAX)
-        return query_neighborhood(ref,radius);
+    if (s.geometry || !s.social->bounded_contacts || radius/width>=INT32_MAX) {
+        auto general=query_neighborhood(ref,radius);
+        neighbors.swap(general.ants);
+        return;
+    }
     profiling::Scope profile(profiling::Category::Neighborhood);
     const auto ant=*query_ant(ref);
     const auto key=contact_key(ant.position,width);
@@ -115,13 +118,13 @@ Neighborhood WorldRuntime::care_neighborhood(AntRef ref,double radius) const {
     };
     const PointQ lo{limit(key.x,-pad),limit(key.y,-pad),limit(key.z,-pad)};
     const PointQ hi{limit(key.x,pad),limit(key.y,pad),limit(key.z,pad)};
-    Neighborhood result;
+    std::uint64_t examined{};
     const auto visit=[&](const auto& self,EntityId id,const ContactNode* node) -> void {
         if (!node) return;
         self(self,node->left,node->left_node);
-        ++result.candidates_examined;
+        ++examined;
         if (id!=ref.id && distance(ant.position,s.ants.get(s.ants.index.at(id)).position)<=radius)
-            result.ants.push_back({s.world,id});
+            neighbors.push_back({s.world,id});
         self(self,node->right,node->right_node);
     };
     for (auto it=s.contact_roots.lower_bound({lo.x,INT32_MIN,INT32_MIN});
@@ -131,10 +134,9 @@ Neighborhood WorldRuntime::care_neighborhood(AntRef ref,double radius) const {
             visit(visit,it->second,&s.contact_nodes.at(it->second));
     }
     const auto by_id=[](AntRef a,AntRef b) { return a.id<b.id; };
-    if (!std::is_sorted(result.ants.begin(),result.ants.end(),by_id))
-        std::sort(result.ants.begin(),result.ants.end(),by_id);
-    profiling::record_work(profiling::Category::Neighborhood,result.candidates_examined);
-    return result;
+    if (!std::is_sorted(neighbors.begin(),neighbors.end(),by_id))
+        std::sort(neighbors.begin(),neighbors.end(),by_id);
+    profiling::record_work(profiling::Category::Neighborhood,examined);
 }
 Neighborhood WorldRuntime::query_neighborhood(AntRef ref, double radius) const {
     profiling::Scope profile(profiling::Category::Neighborhood);
