@@ -1,0 +1,35 @@
+# Batch 2 validation gaps
+
+These are research comparisons and evidence requirements for independent review. The measured endpoints refer to the primary studies in the [source register](BATCH2_SOURCE_FULLTEXT_REGISTER.csv). They separate observed animal behavior, statistical fits to those observations and engineering regression evidence.
+
+| Scientific question | Direct evidence and comparison unit | Gap and informative control | Status |
+| --- | --- | --- | --- |
+| A. Perception and food discovery | F04 scores antennal contact and subsequent acceptance per group at a provided feeder. F02 and P07 manipulate directional cues. | Track first orientation, first true encounter, failed contacts and intake separately. Vary occlusion, substrate, illumination and distance in an initially unfamiliar geometry. Include an unreachable source behind a barrier and a reachable one behind a bend. Exact stock lookup, perception and geometric reach must be distinguishable. | Bounded information flow checked in source. Biological detection distance and false negatives unknown. |
+| B. Exploration and path choice | F01 and F03 sample individual trajectories. F10 observes colony-level departure and route use without food. F09 tests surface texture. P01 conditions the next turn on incoming angle and marks. | Match continuous angles, sampling cadence, occupancy boundaries and worker/colony grouping. Compare no food, displaced worker, changed light and changed slope or texture. Separate path-speed, chord-speed and heading autocorrelation. Compare a missed, blocked or physically available alternative under a controlled layout. | Direct movement structure established under assay conditions. Grid weights, step count limits and contact-range assumptions uncalibrated. |
+| C. Finding, accepting, transporting and returning | F04 uses food contacts and drinking. F05 observes two drops along the outbound/return sequence. F08 separates food type, brood and return. P09 observes recipient interactions in the nest. | Factor source placement independently from taste. Record discovery, contact, feeding onset, cessation, repeated uptake, travel, recipient transfer and actual mass as distinct outcomes. Follow load state and compare realized speed to independently measured body load. A depot credit must remain distinguishable from delivery to workers. | Stages present in the biological sequence. Exact nearest choice, external capacity, depot guard and one clock unvalidated. |
+| D. Trail chemistry and spatial dynamics | P10 identifies a compound and synthetic test dose. P16 fits behavioral detection and discrimination in extract units per length. P15 estimates aging through a choice model. P07 measures loss of excess following after a known paper exposure. | Independently measure amounts from individual natural marks and spatial/temporal concentration profiles by substrate, temperature and humidity, including blank solvent, defined standards and mass recovery. Separate age, dose, geometry and learning effects in the bioassay. Record natural rates and line profile before defining diffusion or a concentration-response conversion. | Source compound and conditional response supported. Abstract-unit dose, cap, cutoff, half-life and any spatial spreading lack calibration. Core has no diffusion term. |
+| E. Recruitment and colony path formation | P08 and P15 count acts and passages by worker/trial. P09 scores exits and relays after a scout. P11 measures feeder occupancy over time by colony. P12 controls directional contact. | Distinguish mobilization, joining a trail, choosing an arm, completing it, returning and recruiting a subsequent cohort. Compare matched scout exposure, fresh/aged mark, same/other-colony donor and solvent/blind arms. Vary colony size, food access/quality and depletion before testing large-field or mixed-habitat claims. | Local cue response is measured in ants and demonstrated in Core fixtures. Colony benefit and uninterrupted following remain open in Core. |
+| F. Experience and route retention | F06 measures T-junction choices across visit counts. F07 and P03 compare learning at multiple forks. P02 isolates gap correction. P13 retests cue use. | Cross number of visits with retention interval, competing cues, rotated scenery and geometrically closed successor. Hold colonies and apparatus contexts out of any future fit. Model imperfect acquisition, recall and route conflict separately from pruning or TTL. | Strong direct short-term task evidence. Memory capacity, five-minute expiry and perfect replay lack parameter evidence. Long-duration generalization unresolved. |
+
+## Measurement rules for a future comparison
+
+- Preserve the assignment unit. Repeated passages, frames or forks are nested in a worker, route/trial and often a colony. Resample or model the assignment unit, keeping unsuccessful and censored runs. A simulation seed cannot substitute for a biological replicate.
+- Align the observable before comparing values. A food cue is weaker evidence than an encounter followed by ingestion. A committed collection is different from sustained drinking. An edge with a scalar mark is different from a choice caused by that cue. Feeder occupancy is different from material delivered or a new recruit leaving the nest.
+- Separate fitting and validation. F01 and the reused tracks within F03 are one dataset. F03's paired light experiment supplies new observations, but it tests the light intervention rather than a repeat of field foraging. The paper's simulated trajectories and P15's simulated colony rows do not enter the evidence set.
+- Preserve negative controls and mismatches. P03's final unmarked learning null, P04's speed and travel-direction nulls, P06's incorrect-first-turn result, P12's controlled contact null and the S2.2 social comparison remain explicitly scoped. A failure to detect an effect does not estimate zero under all conditions.
+- Treat currently absent quantities as absent. There is no fitted receptor noise, food discovery probability, loaded gait distribution, calibrated recruitment threshold, diffusion coefficient or within-world cue-to-dose mapping in the frozen parameter scope. Reading a paper about one of those processes does not create a parameter record or change an existing value.
+
+## Verification and review boundary
+
+The frozen source check, source-anchor tests, Batch 1 evidence check and repository policy check can be run from the repository root.
+
+```text
+python tools/audit_s6_4_preflight.py --check
+python tools/test_s6_4_preflight.py
+python research/s6_4_preflight/verify_batch1.py
+python tools/ci_verify.py
+git diff --check
+git diff --name-status 35b577152668f8312ac85ec001216b4f0aa2402b
+```
+
+The last command should show only added Batch 2 artifacts. The previous scientific gaps in the frozen Batch 1 reports remain available for review. Activity, rest, task allocation, nest construction, environment and the unreviewed population rules remain outside this batch's completed scope. This batch ends at an independent evidence review gate. Neither a calibration nor a Core Readiness decision follows from this audit.
