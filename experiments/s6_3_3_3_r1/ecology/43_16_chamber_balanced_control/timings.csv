@@ -1,0 +1,2 @@
+run,setup_ms,advance_ms,observer_ms,checkpoint_ms,sqlite_day10_ms,sqlite_day21_ms,events,state_hash,trace_hash
+43_16_chamber_balanced_control,114.852,100.7051,174.18799999999999,21.161799999999999,1503.7982,1609.0522000000001,20205,2841558513307971307,233632920668186693

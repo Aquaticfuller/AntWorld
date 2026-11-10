@@ -1,0 +1,6 @@
+run,space,cell_m,perception_m,stride_m,initial_geometric_cue,approach_starts,blocked,loaded_out_of_reach,pickups,carried_moves,placements,fill,load_released,unchanged_target,restore_equal
+representation_coarse_6mm,coarse,0.01,0.0060000000000000001,0.001,0,0,0,0,0,0,0,0,0,1,1
+representation_coarse_12mm,coarse,0.01,0.012,0.001,1,0,1,0,0,0,0,0,0,1,1
+representation_fine_6mm,fine,0.001,0.0060000000000000001,0.001,0,0,0,0,0,0,0,0,0,1,1
+representation_fine_12mm,fine,0.001,0.012,0.001,1,8,0,1,1,1,0,0,0,0,1
+tunnel_fill,chamber,0,0.006,0.001,1,2,1,0,1,0,0,1,1,1,1

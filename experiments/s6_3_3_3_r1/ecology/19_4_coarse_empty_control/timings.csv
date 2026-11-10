@@ -1,0 +1,2 @@
+run,setup_ms,advance_ms,observer_ms,checkpoint_ms,sqlite_day10_ms,sqlite_day21_ms,events,state_hash,trace_hash
+19_4_coarse_empty_control,28.1814,76.225800000000007,276.88920000000002,37.079799999999999,1621.9003,2345.9157,52718,11971769939553998579,16520272168675822261

@@ -1,0 +1,2 @@
+run,seed,workers,space,food,integrated,queen,displaced_brood,cell_m,perception_m,stride_m,decision_ms,absorption_ms,egg_ms,larva_ms,pupa_ms,reproduction_ms,end_ms,events,checkpoint_bytes,sqlite_bytes,state_hash,trace_hash,direct_equal,restored_equal,sql_fact_count,all_ledgers_equal
+19_4_underground_balanced_care,19,4,underground,balanced,1,2,9,0.01,0.012,0.001,21600000,21600000,172800000,259200000,172800000,172800000,1814400000,5324,1004380,10604544,10195237808905290521,13632004649938805194,1,1,5324,1

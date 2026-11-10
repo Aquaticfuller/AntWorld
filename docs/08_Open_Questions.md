@@ -1,5 +1,14 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.3.3.3-R1 spatial corrections
+
+- **The three P0 spatial defects are addressed in the versioned continuous contract.** The native cases cover 1 and 10 mm terrain with matched physical movement, bounded reach and rigid custody, and real loaded and empty returns through discovered 3D openings. Historical saves retain their existing motor. Continuous endpoint movement still uses conservative cubic clearance, a flat surface datum and bounded route knowledge. Alternate-route discovery after permanent closure, full substrate locomotion and navigation inside arbitrary cavities remain open.
+- **TD-11, TD-03 and TD-06 remain OPEN.** The historical 1.07 GB SQLite and 51.6 s save remain baseline evidence. The live lossless segmented history and recovery contract is a mandatory implementation and acceptance task before the S6.4 Core Readiness Gate. The [R1 history design](../research/s6_3_3_3_r1/TD_11_R1_DURABLE_HISTORY.md) specifies bytewise equivalence, migration, crash injection, exact analytics and memory/storage qualification. Preserve every actual opportunity, action fact and ordered historical record.
+- **SD-09 and the biological validation gate remain OPEN.** The B01 observer, B02 development data and original failures are preserved. The R1 correction leaves perception, load and handling constants as ENGINEERING_FIXTURE. Existing studies constrain individual directions, trajectories, brood recognition and colony organization under different conditions. Matching loaded trajectories and behavior timing for both castes remain unavailable.
+- **TD-01 and TD-08 keep the existing admitted bounded passes and ≤6× threshold.** Current workload identity checks are separate from formal timing. SD-01/02, SD-04, SD-06/07/08 and P02–P04 keep their prior limits. Natural decline and maternal provisioning differences remain visible in the raw ecological arms.
+
+See the [R1 spatial and ecology report](../S6_3_3_3_R1_RESULTS.md). Independent review remains required before S6.3.4, S6.4 or Unity.
+
 ## S6.3.3.3 brood validation closure
 
 - **SD-09 remains OPEN.** The reviewed B02 line gives the first cue at the first wake and near-immediate completion after handling. The spatial counterfactuals distinguish poor distant search from repeated acquisition on a dense line. Matched pose, tube entrance, contact, grip, release and inter-trip data are unavailable. Treat the animal first-retrieving marker and simulated placement as proxies with uncertain alignment. B02 remains development evidence. B01 distinguishes reachable-worker contact opportunity from contact recency and suppression. The actual signal, deprivation clock and age response remain unknown.

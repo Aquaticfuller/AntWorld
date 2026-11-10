@@ -1,0 +1,25 @@
+{
+  "status": "COMPLETE",
+  "origin": "ecology-r1",
+  "facts": {
+    "csv_sha256": "6daf3a26b51409ea32c34755dbccb1f644d304e10e4c65efe7a542ad4f673652",
+    "sha256": "66db087759eb8858c16eb875da3929a8e7249d29ce10e411f06648aa2f4d44df",
+    "rows": 299360,
+    "bytes": 3940591
+  },
+  "canonical": {
+    "raw_sha256": "ab1e3a2ecbe17a65d79d9b69baa0834bf9eb6c28c646e3afd8dc2687be0c5f5d",
+    "sha256": "29e3ac97996be4707b97de30aabe36e4003b6dce8edfbd3f761a7c387f962cf3",
+    "rows": 299360,
+    "bytes": 5073848
+  },
+  "run": "7_16_fine_empty_care",
+  "files": {
+    "days.csv": "f3b139a347e70c1955c40e2ef82981c8edb6041be441b2d1ce12dafa424a51c9",
+    "events.csv.gz": "66db087759eb8858c16eb875da3929a8e7249d29ce10e411f06648aa2f4d44df",
+    "events.facts.gz": "29e3ac97996be4707b97de30aabe36e4003b6dce8edfbd3f761a7c387f962cf3",
+    "individuals.csv": "00c73b965a7686d2819a0c99246bf0b7fd09af840833b20aa63d7119330a3d22",
+    "runs.csv": "ecc3b2acc7cbee007ffd6eb4eaf8b6e5019c02a1062c2712b6d16f8fb7a14777",
+    "timings.csv": "5f2fb7d065017bff5c18f989aa3cdab6f1c6154f8645b8e82a3dc98c8353a739"
+  }
+}

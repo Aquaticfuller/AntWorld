@@ -1,0 +1,11 @@
+Internal ctest changing into directory: build/s6_3_3_3_r1-debug
+Test project build/s6_3_3_3_r1-debug
+    Start 200: S6_3_3_3_R1_integration
+1/1 Test #200: S6_3_3_3_R1_integration ..........   Passed    3.71 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+S6.3.3.3-R1    =   3.71 sec*proc (1 test)
+
+Total Test time (real) =   3.74 sec

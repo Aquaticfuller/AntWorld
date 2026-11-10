@@ -1,0 +1,2 @@
+run,seed,workers,space,food,integrated,queen,displaced_brood,cell_m,perception_m,stride_m,decision_ms,absorption_ms,egg_ms,larva_ms,pupa_ms,reproduction_ms,end_ms,events,checkpoint_bytes,sqlite_bytes,state_hash,trace_hash,direct_equal,restored_equal,sql_fact_count,all_ledgers_equal
+19_16_coarse_empty_care,19,16,coarse,empty,1,2,21,0.01,0.012,0.001,21600000,21600000,172800000,259200000,172800000,172800000,1814400000,175055,33222434,326082560,2501564728672781923,497849830067614017,1,1,175055,1

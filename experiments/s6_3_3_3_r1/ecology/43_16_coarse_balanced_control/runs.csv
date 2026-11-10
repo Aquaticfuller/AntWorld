@@ -1,0 +1,2 @@
+run,seed,workers,space,food,integrated,queen,displaced_brood,cell_m,perception_m,stride_m,decision_ms,absorption_ms,egg_ms,larva_ms,pupa_ms,reproduction_ms,end_ms,events,checkpoint_bytes,sqlite_bytes,state_hash,trace_hash,direct_equal,restored_equal,sql_fact_count,all_ledgers_equal
+43_16_coarse_balanced_control,43,16,coarse,balanced,0,2,21,0.01,0.012,0.001,21600000,21600000,172800000,259200000,172800000,172800000,1814400000,20704,4003287,40624128,5458881309219967663,4172832133679917600,1,1,20704,1

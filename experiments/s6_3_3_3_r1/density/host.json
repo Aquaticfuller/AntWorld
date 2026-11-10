@@ -1,0 +1,15 @@
+{
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "logical_cpu": 16,
+  "os_build": "26200",
+  "os_patch": 9711,
+  "build_type": "Release",
+  "compiler": "llvm-mingw Clang 23.1.5",
+  "binary_sha256": "89cbf5c6873a7a20cd7d011acdedb53873cda1db6b09324e2cb15c972bcb7408",
+  "started_utc": "2026-11-10T09:35:26.7812921Z",
+  "order": [
+    "legacy-memory",
+    "continuous-memory"
+  ],
+  "measurement_scope": "Exploratory. Separate processes. Concurrent R1 ecology and host activity were not excluded. No hardware admission."
+}

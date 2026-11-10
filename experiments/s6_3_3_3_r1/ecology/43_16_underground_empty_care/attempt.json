@@ -1,0 +1,30 @@
+{
+  "status": "COMPLETE",
+  "origin": "isolated",
+  "exit_code": 0,
+  "elapsed_s": 24.391,
+  "executable_sha256": "99aa5a6129787e9db0bff48d10918184f65ae063b43ce8b1d118eddb3f167ece",
+  "facts": {
+    "csv_sha256": "e5980c7b60ba5dbf7371557d1f96d8f608e2495314de73dd4acc0880b8418a63",
+    "sha256": "0c69d85b406e578325933463f2145e65a6509a0ed8d7472b47a5b429ca4f0159",
+    "rows": 230344,
+    "bytes": 3029493
+  },
+  "canonical": {
+    "raw_sha256": "abb146f43eacaddd224019682606ac79d7a12ff463caa028d881fd610614a0b2",
+    "sha256": "c8729d9fb28f764ab46dd6ae3d6676e003db36957acd4c439eda6061d4e7383d",
+    "rows": 230344,
+    "bytes": 3903316
+  },
+  "run": "43_16_underground_empty_care",
+  "files": {
+    "abort.csv": "8d1a22635b2d54a839acb086e3cb1fc6ea785f74243ab48101270d7a5fd1a36e",
+    "console.log": "8208ac43808248a8dfaa64a817c9dd7e0b8b8b35c0d2612c3670f2731c6f1836",
+    "days.csv": "56bef3e348531da4769d921f4e64f04706ef432f47b26bed20f64427a62344de",
+    "events.csv.gz": "0c69d85b406e578325933463f2145e65a6509a0ed8d7472b47a5b429ca4f0159",
+    "events.facts.gz": "c8729d9fb28f764ab46dd6ae3d6676e003db36957acd4c439eda6061d4e7383d",
+    "individuals.csv": "f974e8d4f4d2d7e7303d0cb0aae176860403b16e4b6aa82a261beac8307a5d34",
+    "runs.csv": "7c344e6a651ed467464bd2381ad7a3c8a794b7b8d111432f5efd83adf0a3de5a",
+    "timings.csv": "655989972d5ef8751d0011e907eb5df6e18a10eeb134961d914720d5045ff65d"
+  }
+}

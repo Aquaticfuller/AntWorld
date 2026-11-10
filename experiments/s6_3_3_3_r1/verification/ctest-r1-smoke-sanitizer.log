@@ -1,0 +1,11 @@
+Internal ctest changing into directory: build/s6_3_3_3_r1-sanitizer
+Test project build/s6_3_3_3_r1-sanitizer
+    Start 200: S6_3_3_3_R1_integration
+1/1 Test #200: S6_3_3_3_R1_integration ..........   Passed   11.02 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+S6.3.3.3-R1    =  11.02 sec*proc (1 test)
+
+Total Test time (real) =  11.05 sec

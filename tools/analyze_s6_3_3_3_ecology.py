@@ -74,7 +74,7 @@ def facts(path):
             yield line.rstrip().split(',')
 
 
-def case(dest, run, end, individuals, sequences):
+def case(dest, run, end, individuals, sequences, *, event_path=None):
     name = run['run']
     queen = int(run['queen'])
     displaced = int(run['displaced_brood'])
@@ -83,7 +83,7 @@ def case(dest, run, end, individuals, sequences):
     transfer_sources, care_feed_bouts = {}, set()
     depths = []
     timeline, development = [], {}
-    for f in facts(dest/'events'/f'{name}.csv.gz'):
+    for f in facts(event_path if event_path is not None else dest/'events'/f'{name}.csv.gz'):
         fact, now, kind, actor = map(int,f[1:5])
         if kind==8:
             counts['deaths'] += 1
