@@ -3,12 +3,12 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 73 (excluding the manifest itself).
+Files: 74 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `1cc62e2312721d275308ac6da9ebe6e7dd2001db9323691e58c417f4830e8b5c` | 4771 |
-| `CODEX_START_HERE.md` | `93293a7d889fa3ae2d03735363dfe9ebcff00d2184d3b1a709c85277cf43567b` | 7641 |
+| `AGENTS.md` | `a95c175a862a2fc713b8a67787ba33c4c566d1469911abf12512c701eee44e47` | 4707 |
+| `CODEX_START_HERE.md` | `52bcc1ca227ea521856152b48c9cc658648037006a91407e8edde5a2aef40ab6` | 7630 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -74,6 +74,7 @@ Files: 73 (excluding the manifest itself).
 | `docs/58_S6_3_3_2_Frozen_Baseline_and_Protocol.md` | `0124da5251143d96b43109912acd4933c4bfb0d5423709ba28cd4ec1216a8a27` | 9266 |
 | `docs/59_S6_3_3_2_Care_Design_Audit.md` | `f211e6db97e8d228ab7e59adee84a0f8d1f97c70fa540e82bd605381b06cf9eb` | 8529 |
 | `docs/60_S6_3_3_2_Portability_Requalification.md` | `235a578a1235f5bde5f16c05d9c77cdd174631bd9e18536d473285a507f6b207` | 1699 |
+| `docs/61_S6_3_3_3_Frozen_Validation_Protocol.md` | `03b6c0d15922a242e16a45fcf9d65719f6a5258e45a40c6894aa0fe4d8be05a3` | 9590 |
 | `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |
