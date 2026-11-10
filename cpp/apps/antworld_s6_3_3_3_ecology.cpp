@@ -271,6 +271,15 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
             require(returned!=journal.end() && std::any_of(journal.begin(),returned,[&](const WorldEvent& e) {
                 return e.kind==FactKind::FoodCollected && e.actor==returned->actor && e.position.y>0;
             }),"day-scale smoke lost actual surface collection or underground delivery");
+            const auto after_return=[&](const WorldEvent& e,CareAct act) {
+                return e.actor==returned->actor && e.kind==FactKind::BiologicalObservation &&
+                    e.observation.phase==ObservationPhase::Completed && e.observation.act==act;
+            };
+            require(std::any_of(returned,journal.end(),[&](const WorldEvent& e) {
+                return after_return(e,CareAct::CleanBrood) && e.observation.duration_known;
+            }) && std::any_of(returned,journal.end(),[&](const WorldEvent& e) {
+                return after_return(e,CareAct::FeedBrood) && e.transferred.protein_ug;
+            }),"returning worker did not later complete physical care and brood feeding");
         }
     }
     out.runs<<name<<','<<seed<<','<<count<<','<<space<<','<<(food?"balanced":"empty")<<','<<integrated

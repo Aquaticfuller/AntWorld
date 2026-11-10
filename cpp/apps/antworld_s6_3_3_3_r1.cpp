@@ -399,6 +399,30 @@ void connection(Output& out,double cell,unsigned width,bool offset,bool closure)
     exact(w);
     out.dump(name,w,cell,0,collected,delivered->position);
 }
+
+void empty_return(Output& out) {
+    WorldRuntime w({63331,7},7,spatial,limits());
+    BehaviorConfig behavior;
+    behavior.trails_enabled=false;
+    w.configure_surface({{},3,1,.010},{},behavior);
+    const Shaft layout(4,true);
+    const std::array voids{layout.chamber,layout.shaft};
+    w.configure_geometry(layout.geometry,voids);
+    const auto colony=w.seed_colony(layout.depot);
+    const auto worker=w.seed_ant(colony,{layout.depot});
+    w.start_foraging(worker);
+    until(w,{90000},[&]{return w.query_ant(worker)->position.x>=.005;});
+    const auto exterior=w.summary().now;
+    const auto bytes=w.checkpoint();
+    WorldRuntime restored({1,1},0,{},limits());
+    restored.restore(bytes);
+    until(w,{90000},[&]{return w.query_ant(worker)->position==layout.depot;});
+    restored.advance_to(w.summary().now);
+    require(w.checkpoint()==restored.checkpoint() && !find(w,FactKind::FoodCollected,worker.id) &&
+            !find(w,FactKind::FoodDelivered,worker.id),"empty familiar return lost exact continuation");
+    exact(w);
+    out.dump("coarse_empty_return",w,.010,0,exterior,layout.depot);
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -417,6 +441,7 @@ int main(int argc,char** argv) {
                 connection(out,cell,3,false,false);
             }
             connection(out,.010,4,false,true);
+            empty_return(out);
         } else throw std::invalid_argument("unknown R1 probe mode");
         return 0;
     } catch (const std::exception& e) {

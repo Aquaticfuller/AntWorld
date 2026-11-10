@@ -275,7 +275,9 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
             f.path[f.path_size++] = to;
         }
         if (to==f.path[0] && !ant.carried_food.total_ug()) {
-            if (connector!=s.connectors.end() && connector->second.size>1 && f.mode==BehaviorMode::Return) {
+            // Entering the remembered home cell used to reach the nest on the
+            // planar motor. Complete that encounter through the physical link.
+            if (connector!=s.connectors.end() && connector->second.size>1) {
                 auto link=connector->second;
                 link.returning=true;
                 tx.connectors.set(ant.id,link);

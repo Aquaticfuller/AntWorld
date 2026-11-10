@@ -85,9 +85,10 @@ def record_attempt(folder, name, state):
     save(folder / 'attempt.json', state)
 
 
-def import_batch(source, target):
+def import_batch(source, target, spaces):
     """Reuse only the completed prefix of a frozen batch."""
-    finished = {r['run']: r for r in read(source / 'runs.csv') if not (target / r['run']).exists()}
+    finished = {r['run']: r for r in read(source / 'runs.csv')
+                if r['space'] in spaces and not (target / r['run']).exists()}
     if not finished:
         return
     staging = target / ('import-' + source.name)
@@ -166,16 +167,20 @@ def main():
     parser.add_argument('archive', type=Path)
     parser.add_argument('--import-batch', type=Path, action='append', default=[])
     parser.add_argument('--select', choices=('all', 'import-only', 'balanced', 'planar-empty', 'mixed-empty'), default='all')
+    parser.add_argument('--spaces', choices=SPACES, nargs='+', default=SPACES)
+    parser.add_argument('--workers', type=int, choices=POPULATIONS, nargs='+', default=POPULATIONS)
     parser.add_argument('--min-free-gib', type=float, default=9)
     parser.add_argument('--remove-verified-duplicate', action='store_true')
     args = parser.parse_args()
     args.scratch.mkdir(parents=True, exist_ok=True)
     args.archive.mkdir(parents=True, exist_ok=True)
     for folder in args.import_batch:
-        import_batch(folder, args.archive)
+        import_batch(folder, args.archive, args.spaces)
     if args.select == 'import-only':
         return
     for name, space in planned():
+        if space not in args.spaces or int(name.split('_')[1]) not in args.workers:
+            continue
         if args.select == 'balanced' and '_balanced_' not in name:
             continue
         if args.select == 'planar-empty' and (space not in ('coarse', 'fine') or '_empty_' not in name):
