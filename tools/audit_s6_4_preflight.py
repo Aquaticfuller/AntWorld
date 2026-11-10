@@ -21,6 +21,11 @@ CORE_TREE = "277cc8e78cc1acd1cf4a74bf39d08dfdb6a99c69"
 ATLAS_COMMIT = "2e1a5fa129821176954f26a88f56791635bc8cda"
 HEADER = "cpp/include/antworld/core/"
 PENDING = "PENDING_FULL_TEXT_REVIEW"
+STEP_1 = "e16ccabaf7ad458dd77f35f3f4f1f247e19bd2f5"
+NUMERIC_CLASSES = {
+    "BIOLOGICAL_PARAMETER", "ENGINEERING_CONSTANT", "FIXTURE_OR_TEST_VALUE",
+    "STRUCTURAL_OR_ALGORITHMIC_CONSTANT", "UNIT_CONVERSION", "UNRESOLVED",
+}
 
 OWNERS = {
     "PositionM": "SEN-01;FOR-08;CAR-07;NST-02",
@@ -154,6 +159,7 @@ class Source:
         self.code = mask(self.raw)
         self.lines = self.raw.splitlines()
         self.breaks = [m.start() for m in re.finditer("\n", self.raw)]
+        self.sha256 = digest(self.raw)
 
     def line(self, offset):
         return bisect.bisect_left(self.breaks, offset) + 1
@@ -197,6 +203,58 @@ def trim(text, start, stop):
     while stop > start and text[stop - 1].isspace():
         stop -= 1
     return start, stop
+
+
+@dataclass(frozen=True)
+class Region:
+    kind: str
+    symbol: str
+    first: int
+    last: int
+
+
+def symbol_regions(source):
+    """Index explicit lexical definitions in the frozen sources.
+
+    This checks declaration containment. It does not resolve overloads, virtual
+    calls, preprocessing branches or call graphs.
+    """
+    code = source.code
+    types = []
+    type_pattern = r"^[ \t]*(?:template[^\n]*>\s+)?(?P<kind>enum\s+class|struct|class)\s+(?P<name>[\w:]+)[^;{}\n]*\{"
+    for match in re.finditer(type_pattern, code, re.M):
+        types.append(Region("ENUM" if match["kind"].startswith("enum") else "TYPE",
+                            match["name"], source.line(match.start()), source.line(group_end(code, match.end() - 1) - 1)))
+    functions = []
+    fn_pattern = (
+        r"^[ \t]*(?:template[^\n]*>\s+)?(?:\[\[[^\n]*?\]\]\s*)?"
+        r"(?:(?:[\w:<>,*&]+[ \t]+)+)?(?P<name>(?:\w+::)*~?\w+)\s*\("
+    )
+    suffix = r"\s*(?:(?:const|noexcept|override|final)\s*)*(?:->\s*[\w:<>,*& \t]+\s*)?\{"
+    for match in re.finditer(fn_pattern, code, re.M):
+        name = match["name"]
+        if name in {"if", "for", "while", "switch", "catch", "requires", "return", "static_assert"}:
+            continue
+        first = source.line(match.start())
+        if "::" not in name and not code[match.start():match.start("name")].strip():
+            continue
+        end = group_end(code, match.end() - 1)
+        body = re.match(suffix, code[end:])
+        if body is None:
+            continue
+        last = source.line(group_end(code, end + body.end() - 1) - 1)
+        parents = [region for region in types if region.kind == "TYPE" and region.first < first and last <= region.last]
+        if "::" not in name and parents:
+            name = max(parents, key=lambda region: region.first).symbol + "::" + name
+        functions.append(Region("FUNCTION", name, first, last))
+    constants = []
+    variable = r"^[ \t]*(?:(?:inline|static)\s+)*constexpr\s+[\w:<>,*& \t]+?\s+(\w+)\s*([={])"
+    for match in re.finditer(variable, code, re.M):
+        first = source.line(match.start())
+        statement_end = next((last for _, last in parts(code, match.end() - 1, len(code), ";")), match.end())
+        last = source.line(statement_end)
+        constants.append(Region("CONSTANT", match[1], first, last))
+    return types + functions + constants
 
 
 @dataclass(frozen=True)
@@ -429,7 +487,7 @@ def parameter_rows(definitions, constants, sources):
                 SourceExpression=compact(field.initializer), CurrentSourceValue=source_value(field, field.initializer),
                 Unit=unit, Role=role, Scope="Explicit fixture controls" if field.source.startswith("cpp/apps/") else "Declared default when the owning object or policy is used",
                 Caste=caste, LifeStage=stage, Species="Lasius niger target or engineering context",
-                ParameterEvidenceClass="ENGINEERING_FIXTURE", AtlasGrade="F", **PAPER_FIELDS,
+                ParameterEvidenceClass="ENGINEERING_FIXTURE", AtlasGrade="F", SourceAnchorIds="", **PAPER_FIELDS,
             ))
     for row in constants:
         result.append(dict(
@@ -440,7 +498,7 @@ def parameter_rows(definitions, constants, sources):
             Declaration=row["Function"], SourceExpression=row["Expression"], CurrentSourceValue=row["Expression"],
             Unit=row["Unit"], Role=row["Role"], Scope=row["RuntimeScope"], Caste=row["Caste"],
             LifeStage=row["LifeStage"], Species="Lasius niger target or engineering context",
-            ParameterEvidenceClass="ENGINEERING_FIXTURE", AtlasGrade="F", **PAPER_FIELDS,
+            ParameterEvidenceClass="ENGINEERING_FIXTURE", AtlasGrade="F", SourceAnchorIds=row["SourceAnchorIds"], **PAPER_FIELDS,
         ))
     for row in result:
         src = sources[row["SourceFile"]]
@@ -592,7 +650,10 @@ def state_symbols(sources):
     return sorted(result, key=lambda row: (row["SourceFile"], row["StartLine"]))
 
 
-def review_candidates(sources, covered):
+def review_candidates(sources, covered, fixture_keys, reviews, keys):
+    old = csv.DictReader(io.StringIO(git("show", f"{STEP_1}:research/s6_4_preflight/SOURCE_NUMERIC_CANDIDATES.csv")))
+    previous = {(row["SourceFile"], int(row["StartLine"])): row for row in old}
+    seen_reviews = set()
     for src in sources:
         is_fixture = src.path.startswith(("cpp/apps/", "cpp/tests/"))
         if src.path.endswith((".json", ".cmake")) or not (is_fixture or Path(src.path).name in LITERAL_FILES):
@@ -601,28 +662,89 @@ def review_candidates(sources, covered):
             literals = [match[0] for match in NUMBER.finditer(code)]
             if not literals:
                 continue
-            linked = covered.get((src.path, line), [])
+            key = (src.path, line)
+            prior = previous.pop(key, None)
+            require(prior is not None and prior["SourceLine"] == raw.strip() and prior["NumericTokens"] == " ".join(literals),
+                    f"Frozen numeric candidate drift at {src.path}:{line}")
+            linked = sorted(covered.get(key, set()))
+            if is_fixture:
+                classification = "FIXTURE_OR_TEST_VALUE"
+                basis = "Application or test literal in a scenario, assertion, experiment runner or measurement. Runtime settings require their fixture call context."
+                params = ";".join(sorted(fixture_keys.get(key, set())))
+            else:
+                review = reviews.get(key)
+                require(review is not None and review["SourceLineSha256"] == digest(raw),
+                        f"Missing or stale numeric review at {src.path}:{line}")
+                seen_reviews.add(key)
+                classification, basis, params = (review[name] for name in ("Classification", "Basis", "ParameterMatrixKeys"))
+                require(classification in NUMERIC_CLASSES and classification != "FIXTURE_OR_TEST_VALUE" and basis,
+                        f"Invalid numeric review at {src.path}:{line}")
+            parameter_keys = set(filter(None, params.split(";")))
+            require(parameter_keys <= keys, f"Unknown numeric parameter at {src.path}:{line}")
+            if classification == "BIOLOGICAL_PARAMETER":
+                require(parameter_keys and parameter_keys <= set(linked),
+                        f"Biological candidate lacks a verified parameter span at {src.path}:{line}")
             yield dict(SourceFile=src.path, StartLine=line, EndLine=line,
                        Scope="FIXTURE_OR_TEST" if is_fixture else "CORE_EXECUTION",
                        NumericTokens=" ".join(literals), ReviewedAnchorCandidates=";".join(linked),
-                       Status="WITH_REVIEWED_SOURCE_SPAN" if linked else "LEXICAL_REVIEW_CANDIDATE",
+                       Step1Status=prior["Status"], Classification=classification, ClassificationBasis=basis,
+                       ParameterMatrixKeys=params,
                        SourceLine=raw.strip())
+    require(not previous, f"Missing original numeric candidates: {len(previous)}")
+    require(seen_reviews == set(reviews), f"Orphan core numeric reviews: {set(reviews) - seen_reviews}")
 
 
-def verify_span(row, sources):
-    src = sources[row["SourceFile"]]
+def verify_span(row, source, regions):
+    anchor = row["AnchorId"]
     first, last = int(row["StartLine"]), int(row["EndLine"])
-    require(1 <= first <= last <= len(src.lines), f"Invalid source range: {src.path}:{first}-{last}")
-    expected = digest("\n".join(src.lines[first - 1:last]))
-    require(row["SourceSpanSha256"] == expected, f"Source span drift: {src.path}:{first}-{last}")
-    symbols = [item.rsplit("::", 1)[-1] for item in row["Function"].split(" / ")]
-    require(any(re.search(rf"\b{re.escape(symbol)}\b", src.code) for symbol in symbols),
-            f"Function or declared symbol absent from {src.path}: {row['Function']}")
+    require(1 <= first <= last <= len(source.lines), f"{anchor}: invalid range in {source.path}:{first}-{last}")
+    require(row["SourceFileSha256"] == source.sha256, f"{anchor}: file hash drift in {source.path}")
+    require(row["SourceSpanSha256"] == digest("\n".join(source.lines[first - 1:last])),
+            f"{anchor}: span hash drift in {source.path}:{first}-{last}")
+    matches = [region for region in regions if (region.kind, region.symbol) == (row["SymbolKind"], row["Symbol"])]
+    require(len(matches) == 1, f"{anchor}: expected one {row['SymbolKind']} {row['Symbol']} in {source.path}, found {matches}")
+    region = matches[0]
+    require((int(row["DeclarationLine"]), int(row["DefinitionEndLine"])) == (region.first, region.last),
+            f"{anchor}: stored declaration range does not match {region}")
+    require(region.first <= first <= last <= region.last, f"{anchor}: {first}-{last} is outside {region}")
+    require(any(line.strip() for line in source.code.splitlines()[first - 1:last]),
+            f"{anchor}: range contains no source code")
 
 
-def verify_supporting_span(anchor, sources):
-    file, first, last = re.fullmatch(r"(.+):(\d+)(?:-(\d+))?", anchor).groups()
-    require(1 <= int(first) <= int(last or first) <= len(sources[file].lines), f"Invalid support anchor {anchor}")
+def verify_record_anchors(tables, sources, anchors):
+    by_id = {}
+    regions = {}
+    for row in anchors:
+        aid, path = row["AnchorId"], row["SourceFile"]
+        require(aid not in by_id, f"Duplicate source anchor {aid}")
+        by_id[aid] = row
+        if path not in regions:
+            regions[path] = symbol_regions(sources[path])
+        verify_span(row, sources[path], regions[path])
+        require(row["Role"] in {"PRIMARY", "SUPPORTING"} and row["ScopeVerification"] == "LEXICAL_DECLARATION_CONTAINMENT"
+                and row["RelationVerification"] == "MANUAL_REVIEW",
+                f"{aid}: lexical membership cannot certify a behavioral or call relationship")
+    used = set()
+    for record_kind, id_key, rows in tables:
+        for row in rows:
+            rid = row[id_key]
+            linked = [by_id[aid] for aid in row["SourceAnchorIds"].split(";")]
+            require(linked and linked[0]["Role"] == "PRIMARY"
+                    and all(anchor["Role"] == "SUPPORTING" for anchor in linked[1:]),
+                    f"{rid}: expected one primary anchor followed by supporting anchors")
+            for anchor in linked:
+                aid = anchor["AnchorId"]
+                require(aid not in used and (anchor["RecordKind"], anchor["RecordId"]) == (record_kind, rid),
+                        f"{rid}: invalid or repeated anchor {aid}")
+                used.add(aid)
+            primary = linked[0]
+            source_keys = ("SourceFile", "StartLine", "EndLine", "SourceSpanSha256")
+            require(all(primary[key] == row[key] for key in source_keys) and primary["Symbol"] == row["Function"],
+                    f"{rid}: primary anchor projection differs from the verified declaration")
+            if "SupportingAnchors" in row:
+                require(row["SupportingAnchors"] == ";".join(anchor["AnchorId"] for anchor in linked[1:]),
+                        f"{rid}: supporting anchor references differ from the verified declarations")
+    require(used == set(by_id), f"Unlinked source anchors: {set(by_id) - used}")
 
 
 def verify_history(crosswalk, mechanism_ids):
@@ -687,7 +809,7 @@ def verify_scope():
     changes = set(git("diff", "--name-only", BASELINE).splitlines())
     changes.update(git("ls-files", "--others", "--exclude-standard").splitlines())
     outside = sorted(path for path in changes if not path.startswith("research/s6_4_preflight/")
-                     and path != "tools/audit_s6_4_preflight.py")
+                     and path not in {"tools/audit_s6_4_preflight.py", "tools/test_s6_4_preflight.py"})
     require(not outside, f"Out-of-scope repository changes: {outside}")
 
 
@@ -699,14 +821,15 @@ def audit_tables():
     transitions = read_csv("STATE_MACHINE_TRANSITION_EVIDENCE.csv")
     constants = read_csv("REVIEWED_CORE_CONSTANTS.csv")
     crosswalk = read_csv("HISTORICAL_RULE_CROSSWALK.csv")
+    anchors = read_csv("SOURCE_ANCHORS.csv")
     ids = {row["MechanismId"] for row in mechanisms}
     require(len(ids) == len(mechanisms), "Duplicate mechanism")
     require(len({row["TransitionId"] for row in transitions}) == len(transitions), "Duplicate transition")
-    for row in mechanisms:
-        for anchor in filter(None, row["SupportingAnchors"].split(";")):
-            verify_supporting_span(anchor, sources)
+    verify_record_anchors((
+        ("MECHANISM", "MechanismId", mechanisms), ("TRANSITION", "TransitionId", transitions),
+        ("CORE_RULE", "ParameterKey", constants),
+    ), sources, anchors)
     for row in mechanisms + transitions + constants:
-        verify_span(row, sources)
         linked = (row.get("MechanismIds") or row["MechanismId"]).split(";")
         require(set(linked) <= ids, f"Unknown mechanisms: {linked}")
     for row in mechanisms + transitions:
@@ -729,11 +852,23 @@ def audit_tables():
                 f"Unknown fixture parameter at {row['SourceFile']}:{row['StartLine']}")
     for row in parameters + states:
         require(set(row["MechanismIds"].split(";")) <= ids, f"Unknown mechanism at {row['SourceFile']}:{row['StartLine']}")
-    covered = defaultdict(list)
+    covered = defaultdict(set)
     for row in parameters:
+        if row["RecordKind"] == "DECLARED_SOURCE":
+            for line in range(row["StartLine"], row["EndLine"] + 1):
+                covered[row["SourceFile"], line].add(row["ParameterKey"])
+    for anchor in anchors:
+        if anchor["RecordKind"] == "CORE_RULE":
+            for line in range(int(anchor["StartLine"]), int(anchor["EndLine"]) + 1):
+                covered[anchor["SourceFile"], line].add(anchor["RecordId"])
+    fixture_keys = defaultdict(set)
+    for row in fixtures:
         for line in range(row["StartLine"], row["EndLine"] + 1):
-            covered[row["SourceFile"], line].append(row["ParameterKey"])
-    candidates = list(review_candidates(sources.values(), covered))
+            fixture_keys[row["SourceFile"], line].update(filter(None, row["ParameterCandidates"].split(";")))
+    core_reviews = read_csv("CORE_NUMERIC_REVIEW.csv")
+    reviews = {(row["SourceFile"], int(row["Line"])): row for row in core_reviews}
+    require(len(core_reviews) == len(reviews), "Duplicate numeric review")
+    candidates = list(review_candidates(sources.values(), covered, fixture_keys, reviews, keys))
 
     cmake = sources["cpp/CMakeLists.txt"].raw
     core = {"cpp/" + path for path in re.search(r"add_library\(antworld_core\s+([^)]*)\)", cmake)[1].split()}
@@ -751,7 +886,7 @@ def audit_tables():
             role = "FIXTURE_OR_TEST_SOURCE"
         else:
             role = "BUILD_OR_PERSISTENCE_BOUNDARY"
-        coverage.append(dict(SourceFile=path, Role=role, LineCount=len(src.lines), SourceSha256=digest(src.raw),
+        coverage.append(dict(SourceFile=path, Role=role, LineCount=len(src.lines), SourceSha256=src.sha256,
                              Mechanisms=counts[0][path], Transitions=counts[1][path], ParameterRows=counts[2][path],
                              FixtureRows=counts[3][path], StateSymbols=counts[4][path], NumericCandidateLines=counts[5][path]))
     tables = {
@@ -772,6 +907,10 @@ def audit_tables():
                    fixture_ambiguous_owners=sum(row["Resolution"] == "AMBIGUOUS_OWNER_CANDIDATES" for row in fixtures),
                    historical_anchors=len(tables["HISTORICAL_ANCHOR_RELOCATION.csv"]),
                    historical_moved_declarations=sum(row["DeclarationLineDelta"] != 0 for row in tables["HISTORICAL_ANCHOR_RELOCATION.csv"]),
+                   verified_source_anchors=len(anchors),
+                   source_anchors_by_role=dict(sorted(Counter(row["Role"] for row in anchors).items())),
+                   numeric_classifications=dict(sorted(Counter(row["Classification"] for row in candidates).items())),
+                   formerly_linked_candidates=sum(row["Step1Status"] == "WITH_REVIEWED_SOURCE_SPAN" for row in candidates),
                    lexical_candidates=len(candidates), mechanism_domains=dict(sorted(Counter(row["Domain"] for row in mechanisms).items())))
     return tables, summary
 
