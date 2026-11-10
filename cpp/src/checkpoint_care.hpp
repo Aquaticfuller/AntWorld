@@ -35,6 +35,7 @@ template<class S> void write_care(Writer& w,const S& s) {
         }
         if (s.care_profile->motion) {
             w.put(c.carrying_brood,1); w.put(c.returning,1); w.put(c.search_remaining,1);
+            if (s.config.continuous_spatial_motion && c.carrying_brood) w.position(c.grip_offset);
         }
     }
 }
@@ -64,6 +65,7 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
         }
         if (motion) {
             c.carrying_brood=r.flag(); c.returning=r.flag(); c.search_remaining=static_cast<std::uint8_t>(r.get(1));
+            if (s.config.continuous_spatial_motion && c.carrying_brood) c.grip_offset=r.position();
         }
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && c.profile.context<=CareContext::Worker &&
             (c.act<=CareAct::CloseWorkerContact || (retrieval && c.act==CareAct::RevisitBroodSite) ||
@@ -71,6 +73,11 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");
         const auto a=s.ants.get(s.ants.index.at(id));
+        if (s.config.continuous_spatial_motion && c.carrying_brood) {
+            ensure(finite(c.grip_offset) && s.ants.index.contains(c.retrieval.target),"invalid grip offset target");
+            const auto b=s.ants.get(s.ants.index.at(c.retrieval.target));
+            ensure(valid_grip(a.position,b.position,c.grip_offset,s.config),"held brood disagrees with acquisition offset");
+        }
         ensure(a.caste!=Caste::Male && (a.caste==Caste::Worker)==(c.profile.context==CareContext::Worker) &&
             (a.stage==LifeStage::Adult || (!a.alive() && !c.enabled)) &&
             c.familiar_shelter==s.colonies.rows[s.colonies.index.at(a.colony)].nest_position &&
@@ -126,18 +133,23 @@ template<class S> void validate_care_evidence(const S& s) {
         SimTime last;
         std::uint64_t decisions{};
         EntityId held;
+        PositionM grip;
         std::optional<BehaviorObservation> selected,started;
     };
     std::map<EntityId,Audit> audit;
     std::size_t configured=0;
     std::map<ScheduledId,BehaviorObservation> starts;
     std::map<ScheduledId,EntityId> owners;
+    std::map<EntityId,PositionM> positions;
+    const auto spatial=s.config.continuous_spatial_motion;
     for (const auto& e:s.journal) {
+        if (spatial && (e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn ||
+            e.kind==FactKind::Moved || e.kind==FactKind::BroodMoved)) positions[e.actor]=e.position;
         if (e.kind==FactKind::BiologyConfigured) { ++configured; ensure(e.time==SimTime{},"late biology configuration"); }
         if (e.kind==FactKind::CareProgramChanged) {
             ensure(s.care.contains(e.actor) && e.payload<=1,"unknown care enrollment");
             auto& a=audit[e.actor]; a.enabled=e.payload!=0;
-            if (!a.enabled) { a.selected.reset(); a.started.reset(); a.held={}; }
+            if (!a.enabled) { a.selected.reset(); a.started.reset(); a.held={}; a.grip={}; }
         }
         if (e.kind==FactKind::CareTick && e.payload==static_cast<std::uint64_t>(ScheduledEvent::Kind::CareWake)) {
             ensure(audit.contains(e.actor) && audit.at(e.actor).enabled,"care decision without enrollment"); ++audit.at(e.actor).decisions;
@@ -188,10 +200,23 @@ template<class S> void validate_care_evidence(const S& s) {
                 if (o.act==CareAct::PickUpBrood && o.phase==ObservationPhase::Completed) {
                     ensure(!a.held.value && o.target.value && o.duration_known,"invalid observed brood pickup");
                     a.held=o.target;
+                    if (spatial) {
+                        ensure(e.position==positions.at(e.actor) && within_contact(e.position,positions.at(o.target),s.config),
+                               "pickup outside physical contact");
+                        a.grip=displacement(positions.at(o.target),e.position);
+                    }
+                } else if (spatial && o.act==CareAct::TransportBrood && o.phase==ObservationPhase::Completed) {
+                    ensure(a.held==o.target && e.position==positions.at(e.actor) &&
+                        valid_grip(e.position,positions.at(o.target),a.grip,s.config),"transport altered the acquired grip");
                 } else if (o.act==CareAct::PlaceBrood || o.phase==ObservationPhase::Interrupted) {
-                    if (o.act==CareAct::PlaceBrood && o.phase==ObservationPhase::Completed)
+                    if (o.act==CareAct::PlaceBrood && o.phase==ObservationPhase::Completed) {
                         ensure(a.held.value && a.held==o.target && o.duration_known,"placement without a real pickup");
+                        if (spatial) ensure(valid_grip(e.position,positions.at(o.target),a.grip,s.config) &&
+                            within_contact(positions.at(o.target),s.care.at(e.actor).familiar_shelter,s.config),
+                            "placement lacks physical grip or shelter contact");
+                    }
                     a.held={};
+                    a.grip={};
                 }
             }
             if (audit.contains(e.actor)) audit.at(e.actor).selected.reset();
@@ -209,6 +234,7 @@ template<class S> void validate_care_evidence(const S& s) {
         ensure((!c.retrieval.target.value || a.focus_seen) && (!c.retrieval.pickup_bout.value || a.pickup_completed),
             "retrieval memory lacks committed evidence");
         ensure(a.held==(c.carrying_brood?c.retrieval.target:EntityId{}),"held brood disagrees with observations");
+        if (spatial) ensure(a.grip==c.grip_offset,"saved grip differs from the recorded acquisition");
         if (c.active || (c.enabled && s.queue.at(s.queue_index.at(c.pending)).kind==ScheduledEvent::Kind::CareBegin)) {
             ensure(c.active?a.started.has_value():a.selected.has_value(),"missing care plan evidence");
             const auto& o=c.active?*a.started:*a.selected;

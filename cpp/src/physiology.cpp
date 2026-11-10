@@ -1,6 +1,7 @@
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
+#include "spatial_navigation.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -97,7 +98,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
     if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Excavate ||
         (behavior != IndividualBehavior::Paused && (ant->stage != LifeStage::Adult || ant->caste != Caste::Worker)))
         throw std::invalid_argument("invalid individual behavior activation");
-    if (behavior == IndividualBehavior::Forage && (!s.surface || !s.surface->locate(ant->position))) throw std::invalid_argument("foraging requires a surface position");
+    if (behavior==IndividualBehavior::Forage && !s.surface) throw std::invalid_argument("foraging requires a surface");
     if (behavior == IndividualBehavior::Excavate && !s.geometry) throw std::invalid_argument("excavation requires geometry");
     // External pending actions must be explicitly resolved/cancelled, never silently commandeered.
     if (!source.value && s.long_term && s.external_resolution(ref.id))
@@ -118,17 +119,9 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
     if (behavior == IndividualBehavior::Forage) {
         ForagerState f;
         if (s.foragers.contains(ref.id)) f = s.foragers.at(ref.id);
-        else {
-            const auto& nest = s.colonies.rows[s.colonies.index.at(ant->colony)].nest_position;
-            if (ant->position != nest || ant->carried_food.total_ug() || !ant->carrying_capacity_ug)
-                throw std::invalid_argument("first foraging activation requires an unloaded worker at its nest");
-            f.path[0] = *s.surface->locate(ant->position); f.path_size = 1; f.heading = initial_heading(s.seed, ref.id);
-            if (!s.visits.contains(f.path[0])) tx.visits.set(f.path[0], 0);
-            WorldEvent initial; initial.kind = FactKind::ForagingStarted; initial.actor = ref.id; initial.colony = ant->colony;
-            initial.position = ant->position; initial.stage = ant->stage; tx.fact(initial);
-        }
-        if (f.path[f.path_size-1]!=*s.surface->locate(ant->position))
-            throw std::invalid_argument("foraging memory no longer ends at worker position");
+        const bool first=!f.path_size;
+        prepare_forager(tx,*ant,f);
+        if (first) tx.fact(forager_started(*ant,f.path[0],mixed_navigation(s)));
         f.enabled = true; ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::Wake; e.issued_at = s.m.now;
         e.key = {after(s.m.now, s.surface->behavior.decision_delay.milliseconds), Phase::Perception, 0, 0, 0};
         f.wake = tx.insert(e); tx.foragers.set(ref.id, f);
@@ -181,8 +174,10 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
     } else if (e.kind == ScheduledEvent::Kind::IngestCargo) supply = ant.carried_food;
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
-        if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
-            (s.surface && !(s.social && s.geometry) && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) { f.outcome = Outcome::NotAtNest; return; }
+        if (!within_contact(ant.position,colony.nest_position,s.config) ||
+            (s.surface && !s.config.continuous_spatial_motion && !(s.social && s.geometry) &&
+             s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)) ||
+            !spatially_clear(ant.position,colony.nest_position)) { f.outcome=Outcome::NotAtNest; return; }
         supply = colony.nest_food;
         if (e.kind == ScheduledEvent::Kind::ReturnProtein) {
             const auto amount = std::min(p.crop.protein_ug, e.requested_ug);
@@ -284,14 +279,16 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         if (gift_priority && !urgent_self) choose_gift();
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (s.long_term && s.long_term->protein_recycling && p.behavior == IndividualBehavior::Rest &&
-                p.crop.protein_ug && distance(ant.position,colony.nest_position) <= s.config.contact_distance_m &&
+                p.crop.protein_ug && within_contact(ant.position,colony.nest_position,s.config) &&
                 spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::ReturnProtein;
         }
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
             else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
-                distance(ant.position, colony.nest_position) <= s.config.contact_distance_m &&
-                (!s.surface || (s.social && s.geometry) || s.surface->locate(ant.position) == s.surface->locate(colony.nest_position)) && spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::WithdrawNest;
+                within_contact(ant.position,colony.nest_position,s.config) &&
+                (!s.surface || s.config.continuous_spatial_motion || (s.social && s.geometry) ||
+                 s.surface->locate(ant.position)==s.surface->locate(colony.nest_position)) &&
+                spatially_clear(ant.position,colony.nest_position)) action.kind=ScheduledEvent::Kind::WithdrawNest;
             else if (!gift_priority) choose_gift();
         }
         if (action.kind != ScheduledEvent::Kind::Rest) action.requested_ug = p.config.transfer_limit_ug;

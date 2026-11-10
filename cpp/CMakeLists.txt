@@ -5,7 +5,7 @@ option(ANTWORLD_SANITIZERS "Enable address and undefined behavior sanitizers" OF
 option(ANTWORLD_STORAGE "Build the independent SQLite persistence application library" ON)
 option(ANTWORLD_PROFILE "Instrument host-only exclusive and inclusive core timings" OFF)
 
-add_library(antworld_core src/types.cpp src/world_runtime.cpp src/checkpoint.cpp src/behavior.cpp src/foraging.cpp src/physiology.cpp src/geometry_kernel.cpp src/geometry.cpp src/excavation.cpp src/commands.cpp src/social.cpp src/ecology.cpp src/long_term.cpp src/inspection.cpp src/care.cpp src/observations.cpp)
+add_library(antworld_core src/types.cpp src/world_runtime.cpp src/checkpoint.cpp src/behavior.cpp src/foraging.cpp src/spatial_navigation.cpp src/physiology.cpp src/geometry_kernel.cpp src/geometry.cpp src/excavation.cpp src/commands.cpp src/social.cpp src/ecology.cpp src/long_term.cpp src/inspection.cpp src/care.cpp src/observations.cpp)
 target_include_directories(antworld_core PUBLIC include)
 target_compile_features(antworld_core PUBLIC cxx_std_20)
 if(ANTWORLD_PROFILE)
@@ -399,6 +399,9 @@ if(ANTWORLD_STORAGE)
     add_executable(antworld_s6_3_3_3_density apps/antworld_s6_3_3_3_density.cpp)
     target_link_libraries(antworld_s6_3_3_3_density PRIVATE antworld_storage)
     antworld_checks(antworld_s6_3_3_3_density)
+    add_executable(antworld_s6_3_3_3_r1 apps/antworld_s6_3_3_3_r1.cpp)
+    target_link_libraries(antworld_s6_3_3_3_r1 PRIVATE antworld_storage)
+    antworld_checks(antworld_s6_3_3_3_r1)
     if(BUILD_TESTING)
         foreach(mode smoke probes)
             add_test(NAME S6_3_3_3_${mode} COMMAND ${CMAKE_COMMAND}
@@ -407,6 +410,18 @@ if(ANTWORLD_STORAGE)
                 -DMODE=${mode} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_3_3_ecology.cmake)
             set_tests_properties(S6_3_3_3_${mode} PROPERTIES TIMEOUT 180 LABELS S6.3.3.3)
         endforeach()
+        foreach(mode motion custody connectivity)
+            add_test(NAME S6_3_3_3_R1_${mode} COMMAND ${CMAKE_COMMAND}
+                -DCLI=$<TARGET_FILE:antworld_s6_3_3_3_r1>
+                -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output
+                -DMODE=${mode} -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_3_3_ecology.cmake)
+            set_tests_properties(S6_3_3_3_R1_${mode} PROPERTIES TIMEOUT 180 LABELS S6.3.3.3-R1)
+        endforeach()
+        add_test(NAME S6_3_3_3_R1_integration COMMAND ${CMAKE_COMMAND}
+            -DCLI=$<TARGET_FILE:antworld_s6_3_3_3_ecology>
+            -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output
+            -DMODE=r1-smoke -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_3_3_3_ecology.cmake)
+        set_tests_properties(S6_3_3_3_R1_integration PROPERTIES TIMEOUT 180 LABELS S6.3.3.3-R1)
     endif()
 endif()
 if(BUILD_TESTING)

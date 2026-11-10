@@ -60,7 +60,7 @@ inline bool foreign_assay_act(CareAct act,ObservationPhase phase=ObservationPhas
            (phase==ObservationPhase::Opportunity && act==CareAct::InspectBrood);
 }
 inline bool surface_care_clear(const auto& s,PositionM from,PositionM to) {
-    if (!s.care_profile->motion || !s.surface || s.geometry) return true;
+    if (s.config.continuous_spatial_motion || !s.care_profile->motion || !s.surface || s.geometry) return true;
     const auto a=s.surface->locate(from),b=s.surface->locate(to);
     if (!a || !b) return false;
     // Cell centers are authoritative for surface-only worlds. Reject corner cutting.
@@ -70,7 +70,7 @@ inline bool surface_care_clear(const auto& s,PositionM from,PositionM to) {
     return true;
 }
 inline PositionM care_toward(const auto& s,PositionM a,PositionM b,double step) {
-    if (!s.care_profile->motion || !s.surface || s.geometry) return toward(a,b,step);
+    if (s.config.continuous_spatial_motion || !s.care_profile->motion || !s.surface || s.geometry) return toward(a,b,step);
     const auto cell=s.surface->locate(a);
     if (!cell || s.surface->config.cell_size_m>step) return a;
     auto best=a;
@@ -83,6 +83,11 @@ inline PositionM care_toward(const auto& s,PositionM a,PositionM b,double step) 
         if (d<remaining) { best=p; remaining=d; }
     }
     return best;
+}
+inline bool valid_grip(PositionM carrier,PositionM brood_position,PositionM offset,const WorldConfig& world) {
+    const auto expected=translated(carrier,offset);
+    return within_contact(carrier,brood_position,world) &&
+        distance(expected,brood_position)<=arithmetic_margin(position_scale(expected,brood_position),world.contact_distance_m);
 }
 inline SimTime care_duration(const SpeciesCareProfile& cfg,const WorldConfig& world,Caste caste,
                              CareAct act,PositionM from,PositionM to) {

@@ -38,13 +38,13 @@ void encode_record(std::vector<std::uint8_t>& stream,const WorldEvent& event) {
 }
 
 void run(const std::filesystem::path& dir,std::ostream& samples,std::ostream& profiles,
-         unsigned sample,unsigned n,bool dense,bool integrated,unsigned replicate) {
+         unsigned sample,unsigned n,bool dense,bool integrated,unsigned replicate,bool continuous,bool durable_save) {
     const std::string mode=integrated?"integrated":"timed";
     const std::string layout=dense?"dense":"spread";
     const auto label=mode+"_"+layout+"_"+std::to_string(n);
     profiling::reset();
     auto clock=Clock::now();
-    WorldRuntime w({6333,7},7,{{-.02,-.02,-.02},{.24,.02,.24},.08,.002},limits());
+    WorldRuntime w({6333,7},7,{{-.02,-.02,-.02},{.24,.02,.24},.08,.002,continuous},limits());
     w.configure_long_term();
     BehaviorConfig forage;
     forage.trails_enabled=false;
@@ -85,20 +85,23 @@ void run(const std::filesystem::path& dir,std::ostream& samples,std::ostream& pr
         profile(profiles,sample,"restore");
         require(restored.checkpoint()==checkpoint,"in-memory density restore differs");
         profiling::reset();
-        storage::Store store(dir/(label+"_"+std::to_string(replicate)+".sqlite"),limits());
-        clock=Clock::now();
-        const auto token=store.save(w);
-        store.checkpoint_wal();
-        const auto save_ms=ms(clock);
-        profile(profiles,sample,"sqlite_save");
-        clock=Clock::now();
-        auto durable=store.load(w.summary().world);
-        const auto load_ms=ms(clock);
-        profile(profiles,sample,"sqlite_load");
-        require(durable.token==token && durable.world.checkpoint()==checkpoint,"durable density restore differs");
-        const auto db_bytes=store.database_bytes();
+        double save_ms=-1,load_ms=-1;
+        std::uint64_t db_bytes=0;
+        if (durable_save) {
+            storage::Store store(dir/(label+"_"+std::to_string(replicate)+".sqlite"),limits());
+            clock=Clock::now();
+            const auto token=store.save(w);
+            store.checkpoint_wal();
+            save_ms=ms(clock);
+            profile(profiles,sample,"sqlite_save");
+            clock=Clock::now();
+            const auto durable=store.load(w.summary().world);
+            load_ms=ms(clock);
+            profile(profiles,sample,"sqlite_load");
+            require(durable.token==token && durable.world.checkpoint()==checkpoint,"durable density restore differs");
+            db_bytes=store.database_bytes();
+        }
         restored=WorldRuntime({1,1},0,{},limits());
-        durable.world=WorldRuntime({1,1},0,{},limits());
         profiling::reset();
         s6_3_fixture::conserved(w);
         const auto facts=w.committed_events();
@@ -121,7 +124,7 @@ void run(const std::filesystem::path& dir,std::ostream& samples,std::ostream& pr
             }
         }
         const auto journal_ms=ms(clock);
-        if (replicate==1) {
+        if (replicate==1 && durable_save) {
             std::ofstream archive(dir/(label+".facts"),std::ios::binary);
             archive.exceptions(std::ios::badbit|std::ios::failbit);
             archive.write(reinterpret_cast<const char*>(stream.data()),static_cast<std::streamsize>(stream.size()));
@@ -183,8 +186,11 @@ void persistence_replay(const std::filesystem::path& output,const std::filesyste
 int main(int argc,char** argv) {
     try {
         const bool replay=argc==4 && std::string_view(argv[2])=="--sqlite-replay";
-        if (argc!=2 && !replay)
-            throw std::invalid_argument("usage: antworld_s6_3_3_3_density OUTPUT_DIR [--sqlite-replay REFERENCE_DIR]");
+        const auto mode=argc==3?std::string_view(argv[2]):std::string_view{};
+        const bool continuous=mode=="--continuous-memory", memory=continuous || mode=="--legacy-memory";
+        if (argc!=2 && !replay && !memory)
+            throw std::invalid_argument(
+                "usage: antworld_s6_3_3_3_density OUTPUT_DIR [--sqlite-replay REFERENCE_DIR|--legacy-memory|--continuous-memory]");
         const std::filesystem::path dir=argv[1];
         if (!std::filesystem::create_directories(dir)) throw std::invalid_argument("density output already exists");
         if (replay) { persistence_replay(dir,argv[3]); return 0; }
@@ -198,7 +204,7 @@ int main(int argc,char** argv) {
             for (unsigned n:{8U,32U,128U})
                 for (bool dense:{true,false})
                     for (unsigned replicate=0;replicate<4;++replicate)
-                        run(dir,samples,profiles,sample++,n,dense,integrated,replicate);
+                        run(dir,samples,profiles,sample++,n,dense,integrated,replicate,continuous,!memory);
         return 0;
     } catch (const std::exception& e) {
         std::cerr<<e.what()<<'\n';

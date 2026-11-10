@@ -64,6 +64,7 @@ struct LocalObservation {
     std::uint32_t step_count{};
     std::array<FoodCue, perception_storage_capacity> food{};
     std::uint32_t food_count{}, sampled_cells{};
+    Direction previous_step{Direction::None}; // Actual previous neighbor when physical traversal supplies it.
     bool operator==(const LocalObservation&) const = default;
 };
 struct BehaviorDecision {

@@ -75,7 +75,8 @@ bool WorldRuntime::cancel(ScheduledId id) {
 }
 ColonyRef WorldRuntime::seed_colony(PositionM nest) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
-    if (!inside(nest, s.config) || (s.surface && !s.surface->locate(nest)) || !spatially_clear(nest,nest)) throw std::invalid_argument("invalid physical nest position");
+    if (!inside(nest,s.config) || (s.surface && !s.config.continuous_spatial_motion && !s.surface->locate(nest)) ||
+        !spatially_clear(nest,nest)) throw std::invalid_argument("invalid physical nest position");
     Transaction tx(s, limits_); tx.entity_budget(); const ColonyId id{take(s.m.next_entity)};
     s.colonies.append({id, Species::LasiusNigerEngineeringFixture, s.m.now, nest, {}});
     WorldEvent e; e.kind = FactKind::ColonySeeded; e.colony = id; e.position = nest; tx.fact(e);
@@ -85,7 +86,8 @@ AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
     if (colony.world != s.world || !s.colonies.index.contains(colony.id) ||
         !valid(seed.stage) || seed.stage == LifeStage::Dead || seed.caste > Caste::Male ||
-        !inside(seed.position, s.config) || (s.surface && !(s.social && s.geometry) && !s.surface->locate(seed.position)) ||
+        !inside(seed.position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
+            !(s.social && s.geometry) && !s.surface->locate(seed.position)) ||
         !spatially_clear(seed.position,seed.position,s.geometry ? s.geometry->config.body_half_q : 0))
         throw std::invalid_argument("invalid ant seed or colony reference");
     Transaction tx(s, limits_); tx.entity_budget(); const EntityId id{take(s.m.next_entity)};
@@ -101,7 +103,7 @@ FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
     if (!inside(position, s.config) || mass.total_ug() == 0 || !spatially_clear(position,position)) throw std::invalid_argument("invalid food seed");
     std::optional<Cell> cell;
     if (s.surface) {
-        cell = s.surface->locate(position);
+        cell = ground_cell(*s.surface,position,s.config.continuous_spatial_motion);
         if (!cell || s.food_cells.contains(*cell)) throw std::invalid_argument("surface food requires a unique walkable cell");
     }
     Transaction tx(s, limits_); tx.entity_budget(); const ResourceId id{take(s.m.next_entity)};
@@ -203,14 +205,18 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         } else if ((e.kind >= ScheduledEvent::Kind::IngestCargo && e.kind <= ScheduledEvent::Kind::Trophallaxis) || e.kind==ScheduledEvent::Kind::ReturnProtein) {
             resolve_nutrition_action(tx, e, f);
         } else if (e.kind == ScheduledEvent::Kind::Move) {
-            const bool planar=s.surface && (!(s.social && s.geometry) || (s.foragers.contains(e.actor) && s.foragers.at(e.actor).enabled));
+            const bool planar=!s.config.continuous_spatial_motion && s.surface &&
+                (!(s.social && s.geometry) || (s.foragers.contains(e.actor) && s.foragers.at(e.actor).enabled));
             const auto seconds = static_cast<double>(e.key.time.milliseconds - e.issued_at.milliseconds) / 1000.0;
             const auto length = distance(ant.position, e.destination);
             if (!inside(e.destination, s.config)) f.outcome = Outcome::OutOfBounds;
             else if (!spatially_clear(ant.position,e.destination,body_half(e.actor))) f.outcome = Outcome::Blocked;
             else if (planar && (!s.surface->locate(ant.position) || !s.surface->locate(e.destination))) f.outcome = Outcome::Blocked;
             else if (planar && !adjacent(*s.surface->locate(ant.position), *s.surface->locate(e.destination))) f.outcome = Outcome::NonLocalMove;
-            else if (!std::isfinite(length) || (length > 0 && (seconds <= 0 || length / seconds > s.config.max_speed_m_per_s)))
+            else if (!std::isfinite(length) || (length>0 && (seconds<=0 ||
+                (s.config.continuous_spatial_motion?
+                    !within_distance(ant.position,e.destination,seconds*s.config.max_speed_m_per_s,true):
+                    length/seconds>s.config.max_speed_m_per_s))))
                 f.outcome = Outcome::TooFast;
             else {
                 index_position(tx,ant.id,ant.position,e.destination);
@@ -221,8 +227,9 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];
             const auto available = food.remaining.total_ug();
             const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug() - carried_soil_ug(ant.id);
-            if (distance(ant.position, food.position) > s.config.contact_distance_m ||
-                (s.surface && s.surface->locate(ant.position) != s.surface->locate(food.position)) || !spatially_clear(ant.position,food.position)) f.outcome = Outcome::OutOfReach;
+            if (!within_contact(ant.position,food.position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
+                s.surface->locate(ant.position)!=s.surface->locate(food.position)) || !spatially_clear(ant.position,food.position))
+                f.outcome=Outcome::OutOfReach;
             else if (available == 0) f.outcome = Outcome::Depleted;
             else if (room == 0) f.outcome = Outcome::Capacity;
             else if (s.geometry && !spatially_clear(ant.position,ant.position,s.geometry->config.loaded_half_q)) f.outcome = Outcome::Blocked;
@@ -237,8 +244,9 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             }
         } else if (e.kind == ScheduledEvent::Kind::DeliverFood) {
             const auto j = s.colonies.index.at(ant.colony); auto& colony = s.colonies.rows[j];
-            if (distance(ant.position, colony.nest_position) > s.config.contact_distance_m ||
-                (s.surface && s.surface->locate(ant.position) != s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position)) f.outcome = Outcome::NotAtNest;
+            if (!within_contact(ant.position,colony.nest_position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
+                s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position))
+                f.outcome=Outcome::NotAtNest;
             else if (ant.carried_food.total_ug() == 0) f.outcome = Outcome::EmptyInventory;
             else {
                 tx.touch_ant(i); tx.touch_colony(j); f.transferred = ant.carried_food;

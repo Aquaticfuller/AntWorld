@@ -265,7 +265,9 @@ bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
     return false;
   const auto ant = query_ant(ref);
   const auto &g = s.geometry->config;
-  const auto origin = *quantized(ant->position, g);
+  const auto waypoint=quantized(ant->position,g);
+  if (!waypoint) return false;
+  const auto origin=*waypoint;
   constexpr std::array<PointQ, 6> directions{
       {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
   // Bounded reachable free-space proxy, not packing volume or a nest blueprint.

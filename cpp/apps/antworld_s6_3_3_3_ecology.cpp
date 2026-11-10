@@ -144,14 +144,16 @@ std::uint64_t compare_history(storage::Store& store,const WorldRuntime& w) {
 }
 
 void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,unsigned count,
-             std::string_view space,bool food,bool integrated,bool smoke=false) {
+             std::string_view space,bool food,bool integrated,bool smoke=false,bool continuous=false) {
     const auto name=std::to_string(seed)+"_"+std::to_string(count)+"_"+std::string(space)+
                     (food?"_balanced":"_empty")+(integrated?"_care":"_control");
     auto clock=Clock::now();
-    WorldRuntime w({6333,seed},seed,{{-.04,-.02,-.02},{.04,.02,.02},.08,.002},limits());
+    WorldRuntime w({6333,seed},seed,{{-.04,-.02,-.02},{.04,.02,.02},.08,.002,continuous},limits());
     w.configure_long_term();
     const bool fine=space=="fine";
-    const bool mixed=space=="chamber";
+    const bool underground=space=="underground";
+    const bool mixed=space=="chamber" || underground;
+    const PositionM depot{0,underground?-.004:0,0};
     const double cell=fine?.001:.01;
     BehaviorConfig forage;
     forage.trails_enabled=false;
@@ -161,8 +163,8 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
     auto care=timed_care(integrated);
     care.perception_radius_m=.012;
     w.configure_biology(care);
-    const auto colony=w.seed_colony();
-    const auto queen=w.seed_ant(colony,{{},LifeStage::Adult,Caste::Queen});
+    const auto colony=w.seed_colony(depot);
+    const auto queen=w.seed_ant(colony,{depot,LifeStage::Adult,Caste::Queen});
     const auto p=day_physiology();
     auto maternal=p;
     maternal.adult_protein_target_ug=20;
@@ -170,16 +172,17 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
     w.enable_reproduction(queen);
     if (integrated) w.set_autonomy(queen,true);
     for (unsigned i=0;i<count;++i) {
-        const auto ref=w.seed_ant(colony,{});
+        const auto ref=w.seed_ant(colony,{depot});
         w.enable_physiology(ref,adult,p);
         w.set_autonomy(ref,true);
     }
-    w.enable_physiology(w.seed_ant(colony,{{},LifeStage::Egg}),egg,p);
-    w.enable_physiology(w.seed_ant(colony,{{},LifeStage::Larva}),larva,p);
-    const PositionM displaced=mixed?PositionM{0,-.004,0}:PositionM{.010,0,0};
+    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Egg}),egg,p);
+    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Larva}),larva,p);
+    const PositionM displaced=underground?PositionM{.003,-.004,.0015}:
+        mixed?PositionM{0,-.004,0}:PositionM{.010,0,0};
     const auto target=w.seed_ant(colony,{displaced,LifeStage::Larva});
     w.enable_physiology(target,larva,p);
-    w.enable_physiology(w.seed_ant(colony,{{},LifeStage::Pupa}),pupa,p);
+    w.enable_physiology(w.seed_ant(colony,{depot,LifeStage::Pupa}),pupa,p);
     if (food) balanced_supply(w,count,{.010,0,0});
 
     const auto initial=w.checkpoint();
@@ -239,6 +242,14 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
                 has([&](const WorldEvent& e) { return e.kind==FactKind::AntBorn && e.payload==queen.id.value; }) &&
                 has([](const WorldEvent& e) { return e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult; }),
                 "day-scale smoke lost a committed ecology capability");
+        if (continuous) {
+            const auto returned=std::find_if(journal.begin(),journal.end(),[&](const WorldEvent& e) {
+                return e.kind==FactKind::FoodDelivered && e.position==depot && e.position.y<0 && e.transferred.total_ug();
+            });
+            require(returned!=journal.end() && std::any_of(journal.begin(),returned,[&](const WorldEvent& e) {
+                return e.kind==FactKind::FoodCollected && e.actor==returned->actor && e.position.y>0;
+            }),"day-scale smoke lost actual surface collection or underground delivery");
+        }
     }
     out.runs<<name<<','<<seed<<','<<count<<','<<space<<','<<(food?"balanced":"empty")<<','<<integrated
             <<','<<queen.id.value<<','<<target.id.value<<','<<cell<<','<<care.perception_radius_m<<','<<care.step_m
@@ -365,17 +376,25 @@ void closed_tunnel(Output& out) {
 
 int main(int argc,char** argv) {
     try {
-        if (argc!=3) throw std::invalid_argument("usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|workload|probes|smoke");
+        if (argc!=3) throw std::invalid_argument(
+            "usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|workload|probes|smoke|r1-matrix|r1-depot|r1-smoke");
         const std::filesystem::path dir=argv[1];
         if (!std::filesystem::create_directories(dir)) throw std::invalid_argument("ecology output already exists");
         Output out(dir);
         const std::string_view mode=argv[2];
-        if (mode=="matrix") {
+        if (mode=="matrix" || mode=="r1-matrix") {
             for (const std::uint64_t seed:{7U,19U,43U})
                 for (const unsigned count:{4U,16U})
                     for (const std::string_view space:{"coarse","fine","chamber"})
                         for (const bool food:{true,false})
-                            for (const bool integrated:{false,true}) ecology(out,dir,seed,count,space,food,integrated);
+                            for (const bool integrated:{false,true}) ecology(out,dir,seed,count,space,food,integrated,false,mode=="r1-matrix");
+        } else if (mode=="r1-depot") {
+            for (const std::uint64_t seed:{7U,19U,43U})
+                for (const unsigned count:{4U,16U})
+                    for (const bool food:{true,false})
+                        for (const bool integrated:{false,true}) ecology(out,dir,seed,count,"underground",food,integrated,false,true);
+        } else if (mode=="r1-smoke") {
+            ecology(out,dir,7,4,"underground",true,true,true,true);
         } else if (mode=="workload") {
             for (const std::uint64_t seed:{7U,19U,43U})
                 for (const unsigned count:{4U,16U})

@@ -17,7 +17,8 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
     if (!actor.value || !state.path_size || config.sensing_radius_cells < 1 || config.sensing_radius_cells > 3 ||
         config.route_capacity < 2 || config.route_capacity > route_storage_capacity ||
         state.path_size > config.route_capacity || state.memory_size > config.route_capacity ||
-        local.step_count > 4 || local.food_count > perception_storage_capacity || local.time.milliseconds < 0 ||
+        local.step_count > 4 || local.food_count > perception_storage_capacity || local.previous_step>Direction::None ||
+        local.time.milliseconds < 0 ||
         state.learned_at.milliseconds < 0 || state.learned_at > local.time || config.memory_lifetime.milliseconds < 0 ||
         state.path[state.path_size-1] != local.current || state.mode > BehaviorMode::Rest || state.heading > Direction::None ||
         config.max_trip_moves < config.route_capacity || !config.explore_weight || config.explore_weight > 1000000 ||
@@ -94,28 +95,33 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
     if (!local.step_count) return choice;
     // A bounded local correction: do not veto the only visible signal merely
     // because it is on the experienced predecessor. No direction-to-food cue.
+    const auto predecessor=[&](const LocalStep& step) {
+        if (state.path_size<=1) return false;
+        return local.previous_step==Direction::None?step.cell==state.path[state.path_size-2]:
+            step.direction==local.previous_step;
+    };
     std::uint32_t visible_signals = 0; bool predecessor_signal = false;
     if (config.trails_enabled && config.trail_weight && state.path_size > 1) {
         for (std::uint32_t i = 0; i < local.step_count; ++i) if (local.steps[i].trail_units >= config.trail_cutoff_units) {
             ++visible_signals;
-            if (local.steps[i].cell == state.path[state.path_size-2]) predecessor_signal = true;
+            if (predecessor(local.steps[i])) predecessor_signal=true;
         }
     }
     const bool allow_correction = predecessor_signal && visible_signals == 1;
-    const auto excluded = [&](Cell cell) {
-        return !allow_correction && local.step_count > 1 && state.path_size > 1 && cell == state.path[state.path_size-2];
+    const auto excluded = [&](const LocalStep& step) {
+        return !allow_correction && local.step_count>1 && predecessor(step);
     };
     // Numerical precision, not a stronger biological coefficient. Keep the old
     // integer draw when no eligible signal contributes, including the blind control.
     std::uint64_t scale = 1;
     if (config.trails_enabled && config.trail_weight) for (std::uint32_t i = 0; i < local.step_count; ++i) {
-        if (excluded(local.steps[i].cell)) continue;
+        if (excluded(local.steps[i])) continue;
         if (local.steps[i].trail_units >= config.trail_cutoff_units) scale = UINT64_C(1) << 20;
     }
     std::array<std::uint64_t, 4> weights{}; std::uint64_t total = 0;
     for (std::uint32_t i = 0; i < local.step_count; ++i) {
         const auto& step = local.steps[i];
-        if (excluded(step.cell)) continue;
+        if (excluded(step)) continue;
         bool visited = false;
         for (std::uint32_t j = 0; j < state.path_size; ++j) if (state.path[j] == step.cell) visited = true;
         auto weight = (visited ? std::uint64_t{1} : config.explore_weight)*scale;

@@ -66,6 +66,11 @@ bool WorldRuntime::spatially_clear(PositionM a, PositionM b, std::int32_t half) 
     const auto &s = *state_;
     if (!finite(a) || !finite(b))
         return false;
+    if (s.config.continuous_spatial_motion) {
+        if (!inside(a,s.config) || !inside(b,s.config) ||
+            (s.surface && !surface_allows(*s.surface,s.geometry!=nullptr,a,b))) return false;
+        return !s.geometry || continuous_clear(geometry_view(s,limits_),a,b,half);
+    }
     return !s.geometry ||
            historical_clear(*s.geometry, s.geometry_edits, s.edit_index, a, b, half, limits_.geometry_partition_cells);
 }
@@ -123,7 +128,8 @@ void WorldRuntime::collect_care_neighbors(AntRef ref,double radius,std::vector<A
         if (!node) return;
         self(self,node->left,node->left_node);
         ++examined;
-        if (id!=ref.id && distance(ant.position,s.ants.get(s.ants.index.at(id)).position)<=radius)
+        if (id!=ref.id && within_distance(ant.position,s.ants.get(s.ants.index.at(id)).position,radius,
+                                          s.config.continuous_spatial_motion))
             neighbors.push_back({s.world,id});
         self(self,node->right,node->right_node);
     };
@@ -149,7 +155,8 @@ Neighborhood WorldRuntime::query_neighborhood(AntRef ref, double radius) const {
         ++result.candidates_examined;
         const auto p = kind == 1 ? s.ants.get(s.ants.index.at(EntityId{id})).position
                                  : s.foods.rows[s.foods.index.at(ResourceId{id})].position;
-        if (distance(ant->position, p) > radius || (p != ant->position && !spatially_clear(ant->position, p)))
+        if (!within_distance(ant->position,p,radius,s.config.continuous_spatial_motion) ||
+            (p != ant->position && !spatially_clear(ant->position, p)))
             return;
         if (kind == 1 && id != ref.id.value)
             result.ants.push_back({s.world, {id}});
@@ -222,6 +229,8 @@ Route3D WorldRuntime::query_route(AntRef ref, PositionM destination) const {
             break;
         }
         for (auto q : portal_neighbors(geometry_view(s, limits_), p, route.half_extent_q, s.config)) {
+            if (s.config.continuous_spatial_motion && s.surface &&
+                !surface_allows(*s.surface,true,physical(p,c),physical(q,c))) continue;
             if (closed.contains(q))
                 continue;
             const auto cost = parents.at(p).second + 1;
@@ -243,11 +252,14 @@ std::vector<Portal3D> WorldRuntime::query_portals(AntRef ref) const {
     const auto ant = query_ant(ref);
     if (!ant || !s.geometry)
         throw std::invalid_argument("local portals require a geometry actor");
-    const auto p = *quantized(ant->position, s.geometry->config);
+    const auto p = quantized(ant->position, s.geometry->config);
     const auto half = body_half(ref.id);
     std::vector<Portal3D> result(0);
-    for (auto q : portal_neighbors(geometry_view(s, limits_), p, half, s.config))
-        result.push_back({s.world, s.m.geometry_revision, p, q, half});
+    if (p) for (auto q:portal_neighbors(geometry_view(s,limits_),*p,half,s.config)) {
+        if (s.config.continuous_spatial_motion && s.surface &&
+            !surface_allows(*s.surface,true,physical(*p,s.geometry->config),physical(q,s.geometry->config))) continue;
+        result.push_back({s.world,s.m.geometry_revision,*p,q,half});
+    }
     return result;
 }
 bool WorldRuntime::validate_route(AntRef ref, const Route3D &route) const {
@@ -263,6 +275,8 @@ bool WorldRuntime::validate_route(AntRef ref, const Route3D &route) const {
                             std::abs(static_cast<std::int64_t>(point.y) - previous.y) +
                             std::abs(static_cast<std::int64_t>(point.z) - previous.z);
         if (length > 1 || !inside(physical(point, s.geometry->config), s.config) ||
+            (s.config.continuous_spatial_motion && s.surface && !surface_allows(*s.surface,true,
+                 physical(previous,s.geometry->config),physical(point,s.geometry->config))) ||
             !clear_sweep(geometry_view(s, limits_), previous, point, route.half_extent_q))
             return false;
         previous = point;

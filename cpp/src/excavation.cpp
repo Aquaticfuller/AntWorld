@@ -60,7 +60,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
     auto request = s.soil_requests.at(e.id);
     const auto &c = s.geometry->config;
     const auto ant = s.ants.get(s.ants.index.at(e.actor));
-    const auto q = *quantized(ant.position, c);
+    const auto q = quantized(ant.position,c);
     const auto view = geometry_view(s, limits_);
     if (e.key.time.milliseconds - e.issued_at.milliseconds < c.work_duration.milliseconds) {
         f.outcome = Outcome::TooFast;
@@ -73,7 +73,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
     const auto unit_mass = c.dry_ug_per_q3 + c.water_ug_per_q3;
     const auto carrying = s.carriers.find(e.actor);
     if (request.kind == SoilAction::Excavate || request.kind == SoilAction::Fill) {
-        if (!local_patch(view, q, request.box)) {
+        if (!q || !local_patch(view,*q,request.box)) {
             f.outcome = Outcome::OutOfReach;
             return;
         }
@@ -94,7 +94,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
                 return;
             }
             // The larger loaded envelope must already fit at the worker's stationary position.
-            if (!clear_sweep(view, q, q, c.loaded_half_q)) {
+            if (!clear_sweep(view,*q,*q,c.loaded_half_q)) {
                 f.outcome = Outcome::Blocked;
                 return;
             }
@@ -114,19 +114,22 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
             // Filling cannot embed an individual (including a dead body), food or a nest anchor.
             for (const auto &row : s.ants.identities) {
                 const auto other = s.ants.get(s.ants.index.at(row.id));
-                const auto p = *quantized(other.position, c);
-                if (box_valid(intersection(around(p, body_half(row.id)), request.box))) {
+                if (s.config.continuous_spatial_motion?
+                    intersects_body(request.box,other.position,body_half(row.id),c):
+                    box_valid(intersection(around(*quantized(other.position,c),body_half(row.id)),request.box))) {
                     f.outcome = Outcome::Blocked;
                     return;
                 }
             }
             for (const auto &food : s.foods.rows)
-                if (contains(request.box, *quantized(food.position, c))) {
+                if (s.config.continuous_spatial_motion?intersects_body(request.box,food.position,0,c):
+                    contains(request.box,*quantized(food.position,c))) {
                     f.outcome = Outcome::Blocked;
                     return;
                 }
             for (const auto &colony : s.colonies.rows)
-                if (contains(request.box, *quantized(colony.nest_position, c))) {
+                if (s.config.continuous_spatial_motion?intersects_body(request.box,colony.nest_position,0,c):
+                    contains(request.box,*quantized(colony.nest_position,c))) {
                     f.outcome = Outcome::Blocked;
                     return;
                 }
@@ -209,7 +212,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
             f.outcome = Outcome::Depleted;
             return;
         }
-        if (distance(ant.position, parcel.position) > s.config.contact_distance_m ||
+        if (!within_contact(ant.position,parcel.position,s.config) ||
             !spatially_clear(ant.position, parcel.position)) {
             f.outcome = Outcome::OutOfReach;
             return;
@@ -219,7 +222,8 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
             f.outcome = Outcome::Capacity;
             return;
         }
-        if (!clear_sweep(view, q, q, c.loaded_half_q)) {
+        if (s.config.continuous_spatial_motion?
+            !spatially_clear(ant.position,ant.position,c.loaded_half_q):!clear_sweep(view,*q,*q,c.loaded_half_q)) {
             f.outcome = Outcome::Blocked;
             return;
         }
@@ -243,7 +247,9 @@ std::vector<BoxQ> WorldRuntime::local_frontiers(AntRef ref) const {
     if (!s.geometry || !ant || !ant->alive())
         return result;
     const auto &c = s.geometry->config;
-    const auto p = *quantized(ant->position, c);
+    const auto origin=quantized(ant->position,c);
+    if (!origin) return result;
+    const auto p=*origin;
     const auto half = c.loaded_half_q;
     if (2 * half > c.max_patch_extent_q)
         return result;
@@ -272,7 +278,9 @@ void WorldRuntime::activate_excavator(Transaction &tx, EntityId id) {
     auto &s = *state_;
     auto worker = s.excavators.contains(id) ? s.excavators.at(id) : ExcavatorState{};
     const auto ant = s.ants.get(s.ants.index.at(id));
-    const auto p = *quantized(ant.position, s.geometry->config);
+    const auto origin=quantized(ant.position,s.geometry->config);
+    if (!origin) throw std::invalid_argument("excavation requires a geometry waypoint");
+    const auto p=*origin;
     if (!worker.path_size) {
         if (ant.position != s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position)
             throw std::invalid_argument("first excavation activation requires the known depot");

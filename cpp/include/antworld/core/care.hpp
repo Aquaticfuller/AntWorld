@@ -72,6 +72,7 @@ struct CareState {
     PositionM destination;
     ScheduledId pending, bout;
     RetrievalMemory retrieval;
+    PositionM grip_offset; // Continuous-contract translation from carrier to held brood.
     bool carrying_brood{}, returning{};
     std::uint8_t search_remaining{};
     bool operator==(const CareState&) const = default;

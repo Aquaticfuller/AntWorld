@@ -19,7 +19,7 @@ CommandReceipt WorldRuntime::place_food(const PlaceFoodCommand &command) {
         throw std::invalid_argument("invalid placed food position or mass");
     std::optional<Cell> cell;
     if (s.surface) {
-        cell = s.surface->locate(command.position);
+        cell = ground_cell(*s.surface,command.position,s.config.continuous_spatial_motion);
         if (!cell || s.food_cells.contains(*cell))
             throw std::invalid_argument("food needs a unique walkable cell");
     }

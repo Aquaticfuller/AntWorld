@@ -92,7 +92,7 @@ inline SimTime next_physiology(const PhysiologyState& p, LifeStage stage) {
     return after(p.updated_at, dt);
 }
 inline bool contact(const AntState& a, const AntState& b, const WorldConfig& c, const SurfaceDefinition* surface) {
-    return a.colony == b.colony && distance(a.position, b.position) <= c.contact_distance_m &&
-        (!surface || surface->locate(a.position) == surface->locate(b.position));
+    return a.colony==b.colony && within_contact(a.position,b.position,c) &&
+        (!surface || c.continuous_spatial_motion || surface->locate(a.position)==surface->locate(b.position));
 }
 } // namespace antworld::detail

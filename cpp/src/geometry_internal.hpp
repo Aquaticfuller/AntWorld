@@ -1,5 +1,6 @@
 #pragma once
 #include "antworld/core/geometry.hpp"
+#include "motion_numeric.hpp"
 #include <algorithm>
 #include <cmath>
 #include <map>
@@ -87,6 +88,8 @@ Material material_at(const GeometryView &, PointQ);
 std::uint64_t material_volume(const GeometryView &, BoxQ, Material);
 double signed_distance(const GeometryView &, PointQ);
 bool clear_sweep(const GeometryView &, PointQ from, PointQ to, std::int32_t half);
+bool continuous_clear(const GeometryView &,PositionM from,PositionM to,std::int32_t half);
+bool intersects_body(BoxQ,PositionM center,std::int32_t half,const GeometryConfig&);
 PointQ spatial_key(PositionM);
 inline GeometryView geometry_view(const auto &s, const RuntimeLimits &limits) {
     return {*s.geometry, s.geometry_edits, s.edit_index, limits.geometry_partition_cells};

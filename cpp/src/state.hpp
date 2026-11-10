@@ -46,7 +46,6 @@ inline void validate_config(const WorldConfig& c) {
         !std::isfinite(c.contact_distance_m) || c.contact_distance_m < 0)
         throw std::invalid_argument("invalid ENGINEERING_FIXTURE world configuration");
 }
-inline double distance(PositionM a, PositionM b) { return std::hypot(a.x-b.x, a.y-b.y, a.z-b.z); }
 inline bool valid(Phase p) { return p <= Phase::Reschedule; }
 inline bool valid(DiagnosticAction a) { return a <= DiagnosticAction::RepeatSameTime; }
 inline bool valid(LifeStage a) { return a <= LifeStage::Dead; }
@@ -173,12 +172,14 @@ struct WorldRuntime::State {
     detail::Store<ResourceId, FoodSource> foods;
     std::shared_ptr<const detail::SurfaceDefinition> surface;
     using Foragers = std::map<EntityId, ForagerState>;
+    using Connectors = std::map<EntityId,detail::SurfaceConnector>;
     using Trails = std::map<detail::TrailKey, detail::Trail>;
     using Visits = std::map<Cell, std::uint64_t>;
     using Edges = std::map<detail::EdgeKey, std::uint64_t>;
     using Discoveries = std::map<ResourceId, detail::Discovery>;
     using FoodCells = std::map<Cell, ResourceId>;
     Foragers foragers;
+    Connectors connectors;
     Trails trails;
     Visits visits;
     Edges edges;
@@ -267,6 +268,7 @@ class WorldRuntime::Transaction {
     bool committed{};
 public:
     detail::MapJournal<State::Foragers> foragers;
+    detail::MapJournal<State::Connectors> connectors;
     detail::MapJournal<State::Trails> trails;
     detail::MapJournal<State::Visits> visits;
     detail::MapJournal<State::Edges> edges;
@@ -295,7 +297,7 @@ public:
         geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term),
         care_profile_before(state.care_profile), care_environment_before(state.care_environment),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
-        foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), trails(s.trails),
+        foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), connectors(s.connectors), trails(s.trails),
         visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
         contact_nodes(s.contact_nodes), contact_roots(s.contact_roots), autonomy(s.autonomy),
         geometry_edits(s.geometry_edits), edit_index(s.edit_index), spatial_index(s.spatial_index), parcels(s.parcels), carriers(s.carriers),
@@ -324,7 +326,7 @@ public:
     }
     void commit() noexcept {
         profiling::Scope profile(profiling::Category::Transaction);
-        committed = true; foragers.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
+        committed = true; foragers.commit(); connectors.commit(); trails.commit(); visits.commit(); edges.commit(); discoveries.commit(); food_cells.commit(); physiology.commit();
         contact_nodes.commit(); contact_roots.commit(); autonomy.commit();
         geometry_edits.commit(); edit_index.commit(); spatial_index.commit(); parcels.commit(); carriers.commit();
         soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();

@@ -11,6 +11,7 @@
 #include <vector>
 
 namespace antworld {
+namespace detail { struct SurfaceConnector; }
 struct WorldSnapshot {
     WorldId world;
     SimTime now;
@@ -115,6 +116,9 @@ private:
     void resolve_actions(Transaction&, const std::vector<ScheduledEvent>&);
     void execute(Transaction&, const ScheduledEvent&);
     void resolve_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    [[nodiscard]] detail::SurfaceConnector discover_connector(PositionM depot) const;
+    [[nodiscard]] bool can_forage(const AntState&) const;
+    void prepare_forager(Transaction&,const AntState&,ForagerState&);
     void after_action(Transaction&, const ScheduledEvent&, WorldEvent&, const AntState& before);
     void stop_dead_forager(Transaction&, EntityId);
     void maintain_trails(Transaction&, const ScheduledEvent&);
@@ -162,6 +166,7 @@ public:
     static constexpr std::uint32_t care_schema_version = 11, care_physics_version = 13;
     static constexpr std::uint32_t retrieval_schema_version = 12, retrieval_physics_version = 14;
     static constexpr std::uint32_t care_motion_schema_version = 13, care_motion_physics_version = 15;
+    static constexpr std::uint32_t spatial_schema_version = 14, spatial_physics_version = 16;
     void configure_biology(const SpeciesCareProfile& = {}, const EnvironmentCareProfile& = {});
     void enable_brood_care(AntRef, const IndividualCareProfile& = {});
     void pause_brood_care(AntRef);
@@ -177,6 +182,8 @@ private:
     void execute_care_action(Transaction&, const ScheduledEvent&);
     void interrupt_care(Transaction&, EntityId, Outcome, bool disable = false);
     void validate_active_care(Transaction&);
+    [[nodiscard]] PositionM care_destination(const CareState&,const AntState&,PositionM goal,
+                                             std::optional<PositionM> load={}) const;
     void schedule_care(Transaction&, EntityId, SimTime);
     void observe(Transaction&, EntityId, ScheduledId, const BehaviorObservation&, FoodMass = {}, Outcome = Outcome::Success);
     void observe_legacy_action(Transaction&, const ScheduledEvent&, const WorldEvent&);

@@ -74,8 +74,7 @@ ContactSample WorldRuntime::sample_contacts(AntRef ref,
     ++result.candidates_examined;
     const auto other = s.ants.get(s.ants.index.at(id));
     if (id != ref.id && other.alive() && other.colony == ant->colony &&
-        distance(ant->position, other.position) <=
-            s.config.contact_distance_m &&
+        within_contact(ant->position,other.position,s.config) &&
         spatially_clear(ant->position, other.position))
       result.ants.push_back({s.world, id});
   };

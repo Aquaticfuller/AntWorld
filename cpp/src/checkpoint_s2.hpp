@@ -1,6 +1,7 @@
 #pragma once
 #include "checkpoint_codec.hpp"
 #include "surface_internal.hpp"
+#include "spatial_navigation.hpp"
 #include "behavior_rng.hpp"
 #include <algorithm>
 #include <map>
@@ -97,9 +98,10 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         ensure(s.foods.index.contains(resource) && s.foragers.contains(d.actor) && d.time <= s.m.now &&
             s.discoveries.emplace(resource, d).second, "invalid discovery record");
     }
-    for (const auto& colony : s.colonies.rows) ensure(surface->locate(colony.nest_position).has_value(), "nest outside walkable surface");
+    if (!s.config.continuous_spatial_motion) for (const auto& colony:s.colonies.rows)
+        ensure(surface->locate(colony.nest_position).has_value(),"nest outside walkable surface");
     for (const auto& food : s.foods.rows) {
-        const auto cell = surface->locate(food.position);
+        const auto cell=ground_cell(*surface,food.position,s.config.continuous_spatial_motion);
         ensure(cell && s.food_cells.emplace(*cell, food.id).second, "invalid surface food placement");
     }
     ensure(p.trails_enabled == (s.m.maintenance.value != 0), "field schedule flag mismatch");
@@ -109,9 +111,10 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
     }
     for (const auto& [id, f] : s.foragers) {
         const auto ant = s.ants.get(s.ants.index.at(id));
-        const auto home = surface->locate(s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position);
+        const auto home=s.config.continuous_spatial_motion?std::optional{f.path[0]}:
+            surface->locate(s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position);
         ensure(ant.caste == Caste::Worker && (ant.stage == LifeStage::Adult || ant.stage == LifeStage::Dead) &&
-            (!f.enabled || ant.alive()) && f.path[0] == *home, "invalid individual route origin");
+            (!f.enabled || ant.alive()) && home && f.path[0]==*home, "invalid individual route origin");
         auto check_route = [&](const auto& route, std::uint32_t size) {
             for (std::size_t i = 0; i < route.size(); ++i) {
                 if (i >= size) { ensure(route[i] == Cell{}, "noncanonical unused memory slot"); continue; }
@@ -121,7 +124,8 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         };
         check_route(f.path, f.path_size); check_route(f.memory, f.memory_size);
         if (f.memory_size) ensure(f.memory[0] == *home && f.last_collected.value &&
-            f.memory[f.memory_size-1] == *surface->locate(s.foods.rows[s.foods.index.at(f.last_collected)].position), "memory has no experienced food endpoint");
+            ground_cell(*surface,s.foods.rows[s.foods.index.at(f.last_collected)].position,s.config.continuous_spatial_motion)==f.memory[f.memory_size-1],
+            "memory has no experienced food endpoint");
         ensure(f.enabled ? ((f.wake.value != 0) != (f.action.value != 0)) : (!f.wake.value && !f.action.value), "invalid individual wake/action ownership");
         for (const auto pending : {f.wake, f.action}) if (pending.value) {
             ensure(s.queue_index.contains(pending), "missing individual pending event");
@@ -152,21 +156,28 @@ template <typename S> void validate_surface_evidence(const S& s) {
     const auto& surface = *s.surface; const auto& p = surface.behavior;
     // Social/geometry sections follow the surface section in the codec. Validate
     // mixed-space endpoints only after all authoritative configuration is read.
+    const bool spatial=s.config.continuous_spatial_motion;
     const bool mixed=s.social && s.geometry;
+    const bool connector=mixed_navigation(s);
+    if (spatial) for (const auto& c:s.colonies.rows)
+        ensure(surface_allows(surface,s.geometry!=nullptr,c.nest_position,c.nest_position),"nest outside terrain");
     for (std::size_t i=0;i<s.ants.size();++i) {
         const auto ant=s.ants.get(i);
         const bool active=s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled;
-        if (!mixed || active) ensure(surface.locate(ant.position).has_value(),"ant outside walkable surface");
+        if (spatial) ensure(surface_allows(surface,s.geometry!=nullptr,ant.position,ant.position),"ant outside terrain");
+        else if (!mixed || active) ensure(surface.locate(ant.position).has_value(),"ant outside walkable surface");
     }
     for (const auto& [id,f]:s.foragers) if (f.enabled || (!mixed &&
         !(s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy && s.care.contains(id)))) {
-        const auto cell=surface.locate(s.ants.get(s.ants.index.at(id)).position);
+        if (connector && s.connectors.at(id).cursor+1<s.connectors.at(id).size) continue;
+        const auto cell=navigation_cell(s,s.ants.get(s.ants.index.at(id)).position);
         ensure(cell && f.path[f.path_size-1]==*cell,"invalid individual route endpoint");
     }
     typename S::Foragers audit_agents; typename S::Trails audit_trails; typename S::Visits audit_visits;
     typename S::Edges audit_edges; typename S::Discoveries audit_discoveries;
     std::map<EntityId, PositionM> positions; std::map<EntityId, FoodMass> cargo;
     std::map<ResourceId, FoodMass> remaining;
+    std::map<EntityId,std::uint32_t> connector_cursors;
     ForagingCounters counts; bool configured = false;
     for (const auto& e : s.journal) {
         if (e.kind == FactKind::SurfaceConfigured) {
@@ -181,7 +192,14 @@ template <typename S> void validate_surface_evidence(const S& s) {
         if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
         if (e.kind == FactKind::ForagingStarted) {
             ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
-            auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *surface.locate(e.position); f.path_size = 1;
+            const auto home=connector?std::optional{connector_cell(e.payload)}:navigation_cell(s,e.position);
+            ensure(home && surface.open(*home) && (connector || !e.payload),"invalid forager home cell");
+            if (connector) {
+                const auto& link=s.connectors.at(e.actor);
+                ensure(link.points[0]==e.position && navigation_cell(s,link.entrance())==home,"connector lacks depot evidence");
+                connector_cursors[e.actor]=0;
+            }
+            auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *home; f.path_size = 1;
             f.heading = initial_heading(s.seed, e.actor); audit_visits.try_emplace(f.path[0], 0);
         }
         if (e.kind == FactKind::ForagingDecision) {
@@ -192,18 +210,37 @@ template <typename S> void validate_surface_evidence(const S& s) {
             if (e.forgot_memory) { f.memory = {}; f.memory_size = 0; ++counts.memory_failures; }
             if (e.mode == BehaviorMode::Collect) ++counts.collection_attempts;
             if (e.resource.value) {
-                ensure(remaining.contains(e.resource) && remaining[e.resource].total_ug() &&
-                    locally_reachable(surface, *surface.locate(e.position), *surface.locate(s.foods.rows[s.foods.index.at(e.resource)].position)),
+                const auto from=navigation_cell(s,e.position);
+                ensure(remaining.contains(e.resource) && remaining[e.resource].total_ug() && from &&
+                    locally_reachable(surface,*from,*ground_cell(surface,s.foods.rows[s.foods.index.at(e.resource)].position,spatial)),
                     "discovery has no local reachable food evidence");
                 audit_discoveries.try_emplace(e.resource, Discovery{e.time, e.actor});
             }
         }
-        if (e.kind==FactKind::BroodMoved) positions[e.actor]=e.position;
+        if (e.kind==FactKind::BroodMoved) {
+            if (spatial) ensure(surface_allows(surface,s.geometry!=nullptr,positions.at(e.actor),e.position),
+                                "carried brood crossed the terrain mask");
+            positions[e.actor]=e.position;
+        }
         if (e.kind == FactKind::Moved) {
-            const auto old = surface.locate(positions[e.actor]), to = surface.locate(e.position);
+            const auto old=navigation_cell(s,positions[e.actor]),to=navigation_cell(s,e.position);
             const bool active=audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled;
-            if (!mixed || active) ensure(old && to && adjacent(*old, *to), "movement history crosses blocked/nonlocal surface");
-            if (active) {
+            const bool on_connector=connector && active && e.payload==connector_move_fact;
+            if (spatial) {
+                ensure(surface_allows(surface,s.geometry!=nullptr,positions[e.actor],e.position) &&
+                    (on_connector || !e.payload),"continuous movement history crosses the terrain mask");
+                if (active && !on_connector) ensure(old && to && (*old==*to || adjacent(*old,*to)),"invalid foraging surface segment");
+            } else if (!mixed || active) ensure(old && to && adjacent(*old,*to),"movement history crosses blocked/nonlocal surface");
+            if (on_connector) {
+                const auto& path=s.connectors.at(e.actor);
+                auto& cursor=connector_cursors.at(e.actor);
+                ensure((e.mode==BehaviorMode::Return && cursor>0) ||
+                    (e.mode==BehaviorMode::Explore && cursor+1<path.size),"connector history has no next waypoint");
+                const auto next=e.mode==BehaviorMode::Return?cursor-1:cursor+1;
+                ensure(path.points[cursor]==positions[e.actor] && path.points[next]==e.position &&
+                    audit_agents.at(e.actor).mode==e.mode && e.deposited_units==0,"connector history skips a physical segment");
+                cursor=next;
+            } else if (active && (!spatial || old!=to)) {
                 auto& f = audit_agents.at(e.actor); ensure(f.enabled && e.mode == f.mode, "movement behavior evidence mismatch");
                 f.heading = direction(*old, *to); ++f.trip_moves; ++counts.moves;
                 if (e.mode == BehaviorMode::Return) ++counts.return_moves;
@@ -238,6 +275,11 @@ template <typename S> void validate_surface_evidence(const S& s) {
             positions[e.actor] = e.position;
         }
         if (e.kind == FactKind::FoodCollected) {
+            if (spatial) {
+                const auto& food=s.foods.rows[s.foods.index.at(e.resource)];
+                ensure(within_contact(e.position,food.position,s.config) &&
+                    surface_allows(surface,s.geometry!=nullptr,e.position,food.position),"collection crosses physical surface reach");
+            }
             remaining[e.resource] = subtract(remaining[e.resource], e.transferred);
             if (audit_agents.contains(e.actor)) {
                 auto& f = audit_agents.at(e.actor); ensure(f.enabled, "dead forager collected");
@@ -249,7 +291,8 @@ template <typename S> void validate_surface_evidence(const S& s) {
             cargo[e.actor] = sum(cargo[e.actor], e.transferred);
         }
         if (e.kind == FactKind::FoodDelivered) {
-            ensure(surface.locate(e.position) == surface.locate(s.colonies.rows[s.colonies.index.at(e.colony)].nest_position), "delivery crosses surface cells");
+            if (!spatial) ensure(surface.locate(e.position)==surface.locate(s.colonies.rows[s.colonies.index.at(e.colony)].nest_position),
+                                 "delivery crosses surface cells");
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
             if (audit_agents.contains(e.actor)) { auto& f = audit_agents.at(e.actor); ++counts.deliveries; f.mode = BehaviorMode::Explore; f.trip_moves = 0; }
         }
@@ -277,6 +320,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
     for (const auto& [id, f] : s.foragers) {
         auto expected = audit_agents.at(id); expected.wake = f.wake; expected.action = f.action;
         ensure(f == expected, "individual memory/path disagrees with experienced history");
+        if (connector) ensure(connector_cursors.at(id)==s.connectors.at(id).cursor,"connector cursor differs from committed motion");
     }
 }
 } // namespace antworld::detail

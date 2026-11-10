@@ -7,12 +7,14 @@
 #include "checkpoint_s6.hpp"
 #include "checkpoint_s6_3.hpp"
 #include "checkpoint_care.hpp"
+#include "checkpoint_spatial.hpp"
 #include <bit>
 #include <set>
 
 namespace antworld {
 namespace {
 using namespace detail;
+constexpr std::uint64_t spatial_magic=UINT64_C(0x4554504b435741);
 void write_fact(Writer& w, const WorldEvent& e) {
     w.put(e.id.value); w.put(e.world.high); w.put(e.world.low); w.time(e.time); w.put(e.source.value);
     w.put(static_cast<std::uint8_t>(e.action), 1); w.put(e.revision); w.put(e.payload); w.put(e.random_value);
@@ -64,9 +66,12 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     const bool guarded=s.care_profile || has_maternal_reserve(s);
     const bool retrieval=s.care_profile && s.care_profile->local_retrieval;
     const bool motion=s.care_profile && s.care_profile->motion;
-    w.put(motion ? UINT64_C(0x4454504b435741) : retrieval ? UINT64_C(0x4354504b435741) : s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741));
-    w.put(motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    const auto base=motion ? UINT64_C(0x4454504b435741) : retrieval ? UINT64_C(0x4354504b435741) : s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741);
+    const bool spatial=s.config.continuous_spatial_motion;
+    w.put(spatial?spatial_magic:base);
+    w.put(spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    if (spatial) w.put(base);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
     w.put(m.next_entity); w.put(m.next_scheduled); w.put(m.next_event); w.put(m.next_sequence); w.put(m.rng.state());
     w.put(s.queue.size());
@@ -104,6 +109,7 @@ std::vector<std::uint8_t> WorldRuntime::encode(const State& s, std::size_t byte_
     write_social(w,s);
     write_long_term(w,s,guarded);
     write_care(w,s);
+    write_connectors(w,s);
     w.put(hash_bytes(w.bytes)); return w.bytes;
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes, const RuntimeLimits& limits) {
@@ -111,7 +117,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
-    const auto magic=r.get(); const bool motion=magic==UINT64_C(0x4454504b435741);
+    const auto header=r.get();
+    const bool spatial=header==spatial_magic;
+    const auto encoded_schema=r.get(4),encoded_physics=r.get(4),rng=r.get(4);
+    const auto magic=spatial?r.get():header;
+    const bool motion=magic==UINT64_C(0x4454504b435741);
     const bool retrieval=motion || magic==UINT64_C(0x4354504b435741);
     const bool care_contract=retrieval || magic==UINT64_C(0x4254504b435741);
     const bool guarded=care_contract || magic==UINT64_C(0x4154504b435741);
@@ -119,7 +129,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
     const auto schema=motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version;
     const auto physics=motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version;
-    ensure(r.get(4)==schema && r.get(4)==physics && r.get(4)==1,"unsupported schema, physics or RNG version");
+    ensure(encoded_schema==(spatial?spatial_schema_version:schema) &&
+        encoded_physics==(spatial?spatial_physics_version:physics) && rng==1,"unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
     if (extended) s->long_term=std::make_shared<const LongTermConfig>();
@@ -163,7 +174,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         previous_revision = e.revision; previous_time = e.time; s->journal.push_back(e);
     }
-    s->config = {r.position(), r.position(), r.real(), r.real()}; validate_config(s->config);
+    s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();
     m.executed = r.get(); m.living = r.get(); m.ledger = {r.mass(), r.mass(), r.mass(), r.mass()};
@@ -201,6 +212,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_social(r,*s,motion);
     read_long_term(r,*s,guarded);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
+    read_connectors(r,*s,limits);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
@@ -338,7 +350,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(seeded_ants.contains(e.actor) && e.outcome > Outcome::Partial && e.transferred == FoodMass{}, "invalid rejected action fact"); break;
         case FactKind::FoodDelivered:
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult && e.transferred.total_ug() &&
-                distance(e.position, s->colonies.rows[s->colonies.index.at(e.colony)].nest_position) <= s->config.contact_distance_m,
+                within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
                 "invalid physical delivery fact");
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred); break;
         case FactKind::Rested:
@@ -346,11 +358,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::CargoIngested:
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); break;
         case FactKind::NestIngested:
-            ensure(distance(e.position, s->colonies.rows[s->colonies.index.at(e.colony)].nest_position) <= s->config.contact_distance_m,
+            ensure(within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
                 "nest ingestion has no physical contact");
             delivered[e.colony] = subtract(delivered[e.colony], e.transferred); break;
         case FactKind::ProteinRecycled:
-            ensure(distance(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position)<=s->config.contact_distance_m &&
+            ensure(within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config) &&
                 e.transferred.protein_ug && e.transferred.total_ug()==e.transferred.protein_ug && e.outcome<=Outcome::Partial,"invalid physical recycling");
             delivered[e.colony]=sum(delivered[e.colony],e.transferred); break;
         case FactKind::LongTermConfigured:

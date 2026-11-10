@@ -144,9 +144,8 @@ void WorldRuntime::resolve_autonomy_wakes(
                        sample.tree_visits, 0};
       bool need = false, crop_work = false, unmet = false;
       const bool nest_contact =
-          distance(ant.position, colony.nest_position) <=
-              s.config.contact_distance_m &&
-          (!s.surface || s.geometry ||
+          within_contact(ant.position,colony.nest_position,s.config) &&
+          (!s.surface || s.geometry || s.config.continuous_spatial_motion ||
            s.surface->locate(ant.position) ==
                s.surface->locate(colony.nest_position)) &&
           spatially_clear(ant.position, colony.nest_position);
@@ -166,11 +165,9 @@ void WorldRuntime::resolve_autonomy_wakes(
             ingredient_min(p.crop, signaled_need(*q, stage,s.long_term!=nullptr)).total_ug())
           crop_work = true;
       }
-      bool forage = at_depot && s.surface &&
-                          s.surface->locate(ant.position) &&
-                          sense({s.world, ant.id}).step_count;
+      bool forage = at_depot && can_forage(ant);
       bool soil = false;
-      if (at_depot && s.geometry && sample.ants.size() >= 2) {
+      if (at_depot && s.geometry && sample.ants.size()>=2 && quantized(ant.position,s.geometry->config)) {
         const auto &g = s.geometry->config;
         const auto origin = *quantized(ant.position, g);
         constexpr std::array<PointQ, 6> directions{{{1, 0, 0},

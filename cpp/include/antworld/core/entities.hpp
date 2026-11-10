@@ -56,6 +56,9 @@ struct FoodSource {
 struct WorldConfig {
     PositionM min_m{-1, -1, -1}, max_m{1, 1, 1};
     double max_speed_m_per_s{0.01}, contact_distance_m{0.002};
+    // Select the continuous spatial contract for a newly created world.
+    // Historical checkpoints retain their original movement rules.
+    bool continuous_spatial_motion{};
     bool operator==(const WorldConfig&) const = default;
 };
 // Temporary host resource policies, not ecological constants or save-format maxima.

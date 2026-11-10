@@ -164,7 +164,8 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
         ensure(entity_ids.size() < limits.entities && p.id.value && p.id.value < s.m.next_entity &&
                    entity_ids.insert(p.id.value).second && p.initial_q3 && p.remaining_q3 <= p.initial_q3 &&
                    p.state <= ParcelState::Exhausted && inside(p.position, s.config) &&
-                   quantized(p.position, c).has_value() && s.geometry_edits.contains(p.origin_edit),
+                   (s.config.continuous_spatial_motion || quantized(p.position,c).has_value()) &&
+                   s.geometry_edits.contains(p.origin_edit),
                "invalid soil parcel");
         if (p.state == ParcelState::Carried)
             ensure(s.ants.index.contains(p.carrier) && s.carriers.emplace(p.carrier, p.id).second,
@@ -212,11 +213,11 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
     }
     for (const auto &row : s.ants.identities) {
         const auto ant = s.ants.get(s.ants.index.at(row.id));
-        ensure(quantized(ant.position, c).has_value(), "nonquantized geometry actor");
+        ensure(s.config.continuous_spatial_motion || quantized(ant.position,c).has_value(),"nonquantized geometry actor");
         s.spatial_index.emplace(std::pair{spatial_key(ant.position), row.id.value}, std::uint8_t{1});
     }
     for (const auto &food : s.foods.rows) {
-        ensure(quantized(food.position, c).has_value(), "nonquantized geometry food");
+        ensure(s.config.continuous_spatial_motion || quantized(food.position,c).has_value(),"nonquantized geometry food");
         s.spatial_index.emplace(std::pair{spatial_key(food.position), food.id.value}, std::uint8_t{2});
     }
 }
@@ -247,10 +248,26 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     auto half = [&](EntityId id) {
         return carriers.contains(id) || cargo[id].total_ug() ? c.loaded_half_q : c.body_half_q;
     };
+    const auto spatial=s.config.continuous_spatial_motion;
+    const auto contact_half=spatial?0:1;
+    std::map<EntityId,EntityId> held_brood;
     auto clear = [&](PositionM a, PositionM b, std::int32_t radius) {
-        return historical_clear(*s.geometry, edits, index, a, b, radius, limits.geometry_partition_cells);
+        return spatial?continuous_clear(view(),a,b,radius):
+            historical_clear(*s.geometry,edits,index,a,b,radius,limits.geometry_partition_cells);
+    };
+    const auto embedded=[&](BoxQ box,PositionM p,std::int32_t extent) {
+        if (spatial) return intersects_body(box,p,extent,c);
+        const auto q=*quantized(p,c);
+        return extent?box_valid(intersection(around(q,extent),box)):contains(box,q);
     };
     for (const auto &e : s.journal) {
+        if (spatial && e.kind==FactKind::BiologicalObservation) {
+            const auto& o=e.observation;
+            if (o.act==CareAct::PickUpBrood && o.phase==ObservationPhase::Completed) held_brood[e.actor]=o.target;
+            if (o.phase==ObservationPhase::Interrupted || (o.act==CareAct::PlaceBrood && o.phase==ObservationPhase::Completed))
+                held_brood.erase(e.actor);
+        }
+        if (spatial && e.kind==FactKind::CareProgramChanged && !e.payload) held_brood.erase(e.actor);
         if (e.kind == FactKind::GeometryConfigured) {
             ensure(!configured && positions.empty() && e.time == SimTime{} && !e.actor.value,
                    "invalid geometry configuration history");
@@ -259,7 +276,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ledger.remaining_q3 = ledger.initial_q3;
         }
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
-            ensure(configured && clear(e.position, e.position, e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn ? c.body_half_q : 1),
+            ensure(configured && clear(e.position,e.position,e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn?c.body_half_q:contact_half),
                    "seed embedded in material");
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
             positions[e.actor] = e.position;
@@ -267,7 +284,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         }
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) present_food.insert(e.resource);
         if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) {
-            ensure(clear(positions.at(e.actor), e.position, half(e.actor)),
+            const auto carrier=e.kind==FactKind::BroodMoved?EntityId{e.payload}:e.actor;
+            const auto held=held_brood.find(carrier);
+            const bool loaded_care=held!=held_brood.end() && (carrier==e.actor || held->second==e.actor);
+            ensure(clear(positions.at(e.actor),e.position,loaded_care?c.loaded_half_q:half(e.actor)),
                    "historical movement crosses solid material");
             positions[e.actor] = e.position;
             if (carriers.contains(e.actor))
@@ -287,18 +307,18 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         }
         if (e.kind == FactKind::FoodCollected) {
             const auto &food = s.foods.rows[s.foods.index.at(e.resource)];
-            ensure(clear(positions.at(e.actor), food.position, 1) &&
+            ensure(clear(positions.at(e.actor),food.position,contact_half) &&
                        clear(positions.at(e.actor), positions.at(e.actor), c.loaded_half_q),
                    "food crosses solid material");
             cargo[e.actor] = sum(cargo[e.actor], e.transferred);
         }
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::NestIngested || e.kind==FactKind::ProteinRecycled)
-            ensure(clear(positions.at(e.actor), s.colonies.rows[s.colonies.index.at(e.colony)].nest_position, 1),
+            ensure(clear(positions.at(e.actor),s.colonies.rows[s.colonies.index.at(e.colony)].nest_position,contact_half),
                    "nest inventory crosses solid material");
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::CargoIngested)
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::NutritionTransferred)
-            ensure(clear(positions.at(e.actor), positions.at(EntityId{e.payload}), 1),
+            ensure(clear(positions.at(e.actor),positions.at(EntityId{e.payload}),contact_half),
                    "trophallaxis crosses solid material");
         if (e.kind == FactKind::BehaviorChanged) {
             if (e.payload == static_cast<std::uint64_t>(IndividualBehavior::Excavate)) {
@@ -330,10 +350,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                        request.observed_revision <= edits.size() && request.actual_q3 &&
                        completed.insert(e.source).second,
                    "invalid soil action evidence");
-            const auto q = *quantized(e.position, c);
             if (e.kind == FactKind::SoilExcavated || e.kind == FactKind::SoilFilled) {
+                const auto q=quantized(e.position,c);
                 const auto action = e.kind == FactKind::SoilExcavated ? SoilAction::Excavate : SoilAction::Fill;
-                ensure(request.kind == action && local_patch(view(), q, request.box) &&
+                ensure(q && request.kind==action && local_patch(view(),*q,request.box) &&
                            !material_volume(view(), request.box, Material::Rock),
                        "invalid reachable soil patch");
                 const auto amount = material_volume(view(), request.box,
@@ -363,12 +383,12 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                     ensure(carriers.contains(e.actor) && carriers.at(e.actor) == request.parcel,
                            "fill lacks physical soil carrier");
                     for (const auto &[id, p] : positions)
-                        ensure(!box_valid(intersection(around(*quantized(p, c), half(id)), request.box)),
+                        ensure(!embedded(request.box,p,half(id)),
                                "fill embeds an individual");
                     for (auto id : present_food)
-                        ensure(!contains(request.box, *quantized(s.foods.rows[s.foods.index.at(id)].position, c)), "fill embeds food");
+                        ensure(!embedded(request.box,s.foods.rows[s.foods.index.at(id)].position,0),"fill embeds food");
                     for (const auto &colony : s.colonies.rows)
-                        ensure(!contains(request.box, *quantized(colony.nest_position, c)), "fill embeds nest anchor");
+                        ensure(!embedded(request.box,colony.nest_position,0),"fill embeds nest anchor");
                     auto &parcel = parcels.at(request.parcel);
                     ensure(parcel.remaining_q3 >= amount, "fill creates material");
                     parcel.remaining_q3 -= amount;
@@ -402,8 +422,8 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 } else {
                     ensure(request.kind == SoilAction::Pickup && parcel.state == ParcelState::Deposited &&
                                !carriers.contains(e.actor) &&
-                               distance(e.position, parcel.position) <= s.config.contact_distance_m &&
-                               clear(e.position, parcel.position, 1) && clear(e.position, e.position, c.loaded_half_q),
+                               within_contact(e.position,parcel.position,s.config) &&
+                               clear(e.position,parcel.position,contact_half) && clear(e.position,e.position,c.loaded_half_q),
                            "pickup lacks local physical parcel");
                     carriers.emplace(e.actor, parcel.id);
                     parcel.carrier = e.actor;
