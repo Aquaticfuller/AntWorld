@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Verify the first full-text review and reproduce its archived reference summaries."""
 
+import argparse
 import csv
+import io
 import math
 import re
 from collections import Counter, defaultdict
+from hashlib import sha256
 from pathlib import Path
 from statistics import fmean, stdev
 from urllib.parse import unquote, urlsplit
+from zipfile import ZipFile
 
 
 REVIEW = Path(__file__).resolve().parent
@@ -68,7 +72,7 @@ def verify_sources():
 
     require(body_reads == sources.keys(), "Source register has an article without a current body-reading entry")
     paper_ids = {source["PaperId"] for source in sources.values()}
-    require(len(sources) == 14 and len(paper_ids) == 13, "First-batch source count changed")
+    require(len(sources) == 15 and len(paper_ids) == 13, "First-batch source count changed")
     doi_to_paper = {}
     for sid, source in sources.items():
         require(all(source.values()), f"{sid}: required source metadata is blank")
@@ -79,10 +83,11 @@ def verify_sources():
         require(source["EvidenceClassification"] in CLASSES and source["AtlasGrade"] in set("ABCDEF"),
                 f"{sid}: invalid evidence tags")
         require(source["FullTextActuallyRead"] == "YES_SELECTED_SECTIONS", f"{sid}: reading scope drift")
-    congener = sources["B07-X"]
-    require(congener["ActualExperimentalSpecies"] == "Lasius neoniger" and congener["AtlasGrade"] == "C"
-            and congener["EvidenceClassification"] == "CROSS_SPECIES_EXTRAPOLATION", "Congener tracer evidence conflated with L. niger")
-    return sources, len(log)
+    for sid, species, grade in (("B07-X", "Lasius neoniger", "C"), ("FT01-X", "Pachycondyla crassinoda", "D")):
+        source = sources[sid]
+        require((source["ActualExperimentalSpecies"], source["AtlasGrade"], source["EvidenceClassification"])
+                == (species, grade, "CROSS_SPECIES_EXTRAPOLATION"), f"{sid}: non-target evidence conflated with L. niger")
+    return sources, log
 
 
 def verify_citations(record, identity, sources, conflicts):
@@ -216,6 +221,124 @@ def verify_carthy():
     return f"{limits[0]:.2f}–{limits[1]:.2f} mm/s"
 
 
+def tab_rows(archive, name):
+    return csv.DictReader(io.StringIO(archive.read(name).decode("utf-8-sig"), newline=""), delimiter="\t")
+
+
+def verify_b01_supplement(path):
+    with ZipFile(path) as archive:
+        design = index(tab_rows(archive, "Effect_of_worker_cues_wire_mesh_design_info.txt"), "Box_label")
+        observations = {(row["Observation"], row["Box_label"]) for row in
+                        tab_rows(archive, "Effect_of_worker_cues_wire_mesh_BORIS_output.txt") if row["Behavior"] == "0"}
+        first_worker = {}
+        for row in tab_rows(archive, "Brood_production.txt"):
+            if row["Brood_type"] == "Workers" and int(row["Quantity"]) > 0:
+                queen, day = row["Queen"], int(row["Day"])
+                first_worker[queen] = min(day, first_worker.get(queen, day))
+
+    # Appendix S1 joins on windows with at least one non-care scan, then applies its exclusions.
+    require((len(design), len(observations)) == (60, 175), "B01 raw mesh design drift")
+    excluded_boxes = {f"E4-20-{number}" for number in ("41", "22", "08", "66", "23")}
+    excluded_windows = {"36-24h", "39-6h", "39-24h", "09-6h", "09-24h", "59-24h"}
+    remaining = {(window, queen) for window, queen in observations
+                 if queen not in excluded_boxes and window not in excluded_windows}
+    order = ("Callows_separated", "Callows_with_Q", "No_callows")
+
+    def arm_counts(windows):
+        counts = Counter(design[queen]["Treatment"] for queen in {queen for _, queen in windows})
+        return tuple(counts[arm] for arm in order)
+
+    require(arm_counts(remaining) == (21, 14, 20), "B01 mesh counts before tray exclusion drifted")
+    retained = {(window, queen) for window, queen in remaining if design[queen]["Tray"] != "0"}
+    require(arm_counts(retained) == (13, 14, 16) and len(retained) == 127, "B01 mesh analysis counts drifted")
+    days = first_worker.values()
+    require((len(days), round(fmean(days), 2), round(stdev(days), 2)) == (17, 62.88, 2.52),
+            "B01 Fig. S4 first-worker days drifted")
+    print("PASS: B01 mesh exclusions 60 -> 55 -> 43 queens and 127 windows; Fig. S4 onset 62.88 ± 2.52 d (17 queens)")
+
+
+def verify_b03_supplement(path):
+    from openpyxl import load_workbook
+
+    workbook = load_workbook(path, data_only=True, read_only=True)
+    try:
+        data = {code: (pupae, workers, comment) for code, _, pupae, workers, comment in
+                workbook["Supporting Information 1"].iter_rows(min_row=2, values_only=True)
+                if isinstance(code, str) and re.fullmatch(r"[A-H]\d{2}", code)}
+    finally:
+        workbook.close()
+    require(len(data) == 240 and sum(note == "queen died" for _, _, note in data.values()) == 4,
+            "B03 queen endpoint or death annotation counts changed")
+    for arm, mean, sd in (("A", 18.73, 4.74), ("B", 17.90, 5.20), ("D", 18.23, 3.95), ("F", 21.77, 5.04)):
+        counts = [pupae + workers for code, (pupae, workers, _) in data.items() if code.startswith(arm)]
+        require((len(counts), round(fmean(counts), 2), round(stdev(counts), 2)) == (30, mean, sd),
+                f"B03 all-row day-49 summary changed for arm {arm}")
+    print("PASS: B03 all 240 queen endpoints, four death annotations and four day-49 summaries")
+
+
+def verify_b07_supplement(path):
+    paired = defaultdict(dict)
+    with ZipFile(path) as archive:
+        for row in tab_rows(archive, "DATA_combined.txt"):
+            paired[row["species"], row["colony"]][row["census_number"]] = row
+        pulse = [row for row in tab_rows(archive, "Lasius_pulseisotopedata.txt") if row["Sample ID"]]
+
+    def centered_sum_squares(values):
+        center = fmean(values)
+        return sum((value - center) ** 2 for value in values)
+
+    for species, expected in (("niger", (89, 86, 80, 4.363743)), ("neoniger", (96, 96, 47, 0.596697))):
+        colonies = [data for (identity, _), data in paired.items() if identity == species]
+        first_census = sum(colony["1"]["num_workers"].isdecimal() for colony in colonies)
+        diets, cells = defaultdict(list), defaultdict(list)
+        for colony in colonies:
+            before, after = colony["2"], colony["8"]
+            if before["num_workers"].isdecimal() and after["num_workers"].isdecimal():
+                change = int(after["num_workers"]) - int(before["num_workers"])
+                diets[after["diet"]].append(change)
+                cells[after["diet"], after["freq"]].append(change)
+        values = [change for changes in diets.values() for change in changes]
+        # The sequential ANOVA tests diet first and uses diet-by-frequency cell residuals.
+        diet_ss = centered_sum_squares(values) - sum(map(centered_sum_squares, diets.values()))
+        residual_mean_square = sum(map(centered_sum_squares, cells.values())) / (len(values) - len(cells))
+        diet_f = diet_ss / (len(diets) - 1) / residual_mean_square
+        require((len(colonies), first_census, len(values), round(diet_f, 6)) == expected,
+                f"B07 Table S3 diet result or census coverage changed for {species}")
+        if species == "niger":
+            for diet, n, mean, sd in (("16", 21, 23.57, 6.82), ("8", 22, 34.68, 12.01)):
+                changes = diets[diet]
+                require((len(changes), round(fmean(changes), 2), round(stdev(changes), 2)) == (n, mean, sd),
+                        f"B07 niger diet 1:{diet} complete-pair summary changed")
+
+    require(len(pulse) == 32 and all(row["Sample ID"].startswith("Lneo-") for row in pulse),
+            "B07 isotope samples lost the species boundary")
+    groups = defaultdict(set)
+    for row in pulse:
+        groups[row["Enriched"], row["Time"], row["Caste"]].add(row["Colony"])
+    require({key: len(ids) for key, ids in groups.items()} == {
+        (label, time, caste): count for label, count in (("Yes", 5), ("No", 3))
+        for time in ("24", "96") for caste in ("W", "L")}, "B07 isotope colony strata changed")
+    for time, caste, expected in (("24", "W", (16.38, 194.29)), ("96", "L", (9.41, 25.40))):
+        selected = [row for row in pulse if (row["Enriched"], row["Time"], row["Caste"]) == ("Yes", time, caste)]
+        means = tuple(round(100 * fmean(float(row[key]) for row in selected), 2) for key in ("C_APE2", "N_APE2"))
+        require(means == expected, f"B07 isotope enrichment changed for {time}/{caste}")
+    print("PASS: B07 census coverage, diet F=4.363743/0.596697 and 32 congener isotope aliquots")
+
+
+def verify_downloads(log, download_dir, b01_dryad):
+    local_paths = {}
+    for rid, row in log.items():
+        if row["AccessRoute"] == "User-supplied source file":
+            path = download_dir / Path(row["Location"]).name
+            require(sha256(path.read_bytes()).hexdigest() == row["SourceSha256"], f"{rid}: supplied file hash changed")
+            local_paths[rid] = path
+    require(sha256(b01_dryad.read_bytes()).hexdigest() == log["ACC-016"]["SourceSha256"], "B01 Dryad hash changed")
+    print(f"PASS: {len(set(local_paths.values()))} recovered files and the B01 Dryad archive match recorded SHA-256 hashes")
+    verify_b01_supplement(b01_dryad)
+    verify_b03_supplement(local_paths["ACC-034"])
+    verify_b07_supplement(local_paths["ACC-038"])
+
+
 def verify_links():
     for name in ("README.md", "FULLTEXT_REVIEW_PROGRESS.md", "EVIDENCE_CONFLICTS.md"):
         document = REVIEW / name
@@ -233,16 +356,24 @@ def verify_links():
 
 
 def main():
-    sources, access_count = verify_sources()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--download-dir", type=Path, help="directory containing the supplied supplements")
+    parser.add_argument("--b01-dryad", type=Path, help="original B01 Dryad ZIP used by the recovered analysis script")
+    args = parser.parse_args()
+    if bool(args.download_dir) != bool(args.b01_dryad):
+        parser.error("--download-dir and --b01-dryad must be supplied together")
+    sources, log = verify_sources()
     conflicts = set(re.findall(r"^## (B1-C\d{2})\b", (REVIEW / "EVIDENCE_CONFLICTS.md").read_text(encoding="utf-8"), re.MULTILINE))
     require(len(conflicts) == 11, "First-batch conflict register changed")
     mechanisms, transitions, parameters = verify_review(sources, conflicts)
     verify_links()
-    print(f"PASS: {len(sources)} source contexts, {access_count} access records, {len(conflicts)} conflicts and document links")
+    print(f"PASS: {len(sources)} source contexts, {len(log)} access records, {len(conflicts)} conflicts and document links")
     print(f"PASS: {mechanisms} mechanisms, {transitions} transitions, {parameters} parameters linked to the frozen inventory")
     print(f"PASS: B01 per-queen focal means: {verify_b01()}")
     print(f"PASS: B02 unit means (count, contact s, marker s), queen / first-worker trio: {verify_b02()}")
     print(f"PASS: Carthy retained path range {verify_carthy()}; oxygen and combustion conversions")
+    if args.download_dir:
+        verify_downloads(log, args.download_dir, args.b01_dryad)
 
 
 if __name__ == "__main__":
