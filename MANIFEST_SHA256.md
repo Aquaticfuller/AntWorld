@@ -3,7 +3,7 @@
 This manifest covers maintained English design files, contracts and fixtures.
 It does not describe the original untranslated archive. Regenerate after design changes.
 
-Files: 75 (excluding the manifest itself).
+Files: 76 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
@@ -76,6 +76,7 @@ Files: 75 (excluding the manifest itself).
 | `docs/60_S6_3_3_2_Portability_Requalification.md` | `235a578a1235f5bde5f16c05d9c77cdd174631bd9e18536d473285a507f6b207` | 1699 |
 | `docs/61_S6_3_3_3_Frozen_Validation_Protocol.md` | `03b6c0d15922a242e16a45fcf9d65719f6a5258e45a40c6894aa0fe4d8be05a3` | 9590 |
 | `docs/62_S6_3_3_3_R1_Frozen_Protocol.md` | `a6c59577bf1473986c47a6a99447cd9cd557e913787c7cfe9eff1e84318ca1e3` | 5711 |
+| `docs/63_R1_Isolated_Execution_Addendum.md` | `a58779a01a9463a7088032cef9990c53ad12c2f191c21154494ac28e20825134` | 1775 |
 | `docs/CHANGELOG.md` | `873800c53d892b9541d3874a88997ea3ab1b05d2adca0a060cbb9850e7a82363` | 9747 |
 | `README_HANDOFF.md` | `ccef1e92a0043cb282e3c9e0ce7b3372d304f1bfae3093bd52e979abdc8a6ffe` | 2126 |
 | `scenarios/p0_biology_fixture.json` | `6540a6f671900f91bc234defcc0980f20c5eb77df56b43f14c091b2c143a5b28` | 1386 |

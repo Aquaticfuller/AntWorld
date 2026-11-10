@@ -33,9 +33,15 @@ void position(std::ostream& out,PositionM p) { out<<','<<p.x<<','<<p.y<<','<<p.z
 
 struct Output {
     std::ofstream runs, days, individuals, events, probes, timings;
-    explicit Output(const std::filesystem::path& dir)
+    std::ofstream canonical, abort;
+    explicit Output(const std::filesystem::path& dir,bool isolated=false)
         :runs(file(dir/"runs.csv")),days(file(dir/"days.csv")),individuals(file(dir/"individuals.csv")),
          events(file(dir/"events.csv")),probes(file(dir/"probes.csv")),timings(file(dir/"timings.csv")) {
+        if (isolated) {
+            canonical=file(dir/"events.facts");
+            abort=file(dir/"abort.csv");
+            abort<<"run,stage,last_full_day,failed_at_ms,committed_events,state_hash,trace_hash\n";
+        }
         runs<<"run,seed,workers,space,food,integrated,queen,displaced_brood,cell_m,perception_m,stride_m,decision_ms,absorption_ms,egg_ms,larva_ms,pupa_ms,reproduction_ms,end_ms,events,checkpoint_bytes,sqlite_bytes,state_hash,trace_hash,direct_equal,restored_equal,sql_fact_count,all_ledgers_equal\n";
         days<<"run,day,events,egg,larva,pupa,adult,dead,adult_worker_ms,introduced_carbs_ug,introduced_protein_ug,introduced_water_ug,introduced_other_ug,accounted_carbs_ug,accounted_protein_ug,accounted_water_ug,accounted_other_ug,available_carbs_ug,available_protein_ug,available_water_ug,available_other_ug,nest_carbs_ug,nest_protein_ug,nest_water_ug,nest_other_ug,crop_carbs_ug,crop_protein_ug,crop_water_ug,crop_other_ug,energy_input_nj,body_energy_nj,dissipated_energy_nj,soil_initial_q3,soil_remaining_q3,soil_carried_q3,soil_deposited_q3,geometry_edits\n";
         individuals<<"run,day,id,mother,stage,caste,x_m,y_m,z_m,program,care_enabled,carrying_brood,autonomous,progress_ms,energy_nj,hydration_ug,tissue_protein_ug,death_cause,crop_carbs_ug,crop_protein_ug,crop_water_ug,crop_other_ug\n";
@@ -53,6 +59,12 @@ struct Output {
         position(events,e.position);
         mass(events,e.transferred);
         events<<'\n';
+        if (canonical.is_open()) {
+            const auto record=encode_event(e);
+            const auto size=static_cast<std::uint32_t>(record.size());
+            for (unsigned shift:{0U,8U,16U,24U}) canonical.put(static_cast<char>((size>>shift)&255U));
+            canonical.write(reinterpret_cast<const char*>(record.data()),static_cast<std::streamsize>(record.size()));
+        }
     }
 };
 
@@ -193,8 +205,18 @@ void ecology(Output& out,const std::filesystem::path& dir,std::uint64_t seed,uns
     History history;
     for (unsigned d=0;d<=21;++d) {
         clock=Clock::now();
-        if (d==0) w.advance_to({0});
-        else for (auto t=(d-1)*day+6*hour;t<=d*day;t+=6*hour) w.advance_to({t});
+        try {
+            if (d==0) w.advance_to({0});
+            else for (auto t=(d-1)*day+6*hour;t<=d*day;t+=6*hour) w.advance_to({t});
+        } catch (const std::length_error&) {
+            if (out.abort.is_open()) {
+                history.record(w,out,name);
+                const auto last=w.snapshot();
+                out.abort<<name<<",advance,"<<static_cast<int>(d)-1<<','<<last.now.milliseconds<<','
+                         <<last.committed_events<<','<<last.state_hash<<','<<last.trace_hash<<'\n';
+            }
+            throw;
+        }
         advance_ms+=ms(clock);
         clock=Clock::now();
         record_day(w,out,name,d,history);
@@ -376,23 +398,35 @@ void closed_tunnel(Output& out) {
 
 int main(int argc,char** argv) {
     try {
-        if (argc!=3) throw std::invalid_argument(
-            "usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|workload|probes|smoke|r1-matrix|r1-depot|r1-smoke");
+        if (argc!=3 && argc!=4) throw std::invalid_argument(
+            "usage: antworld_s6_3_3_3_ecology OUTPUT_DIR matrix|workload|probes|smoke|r1-matrix|r1-depot|r1-smoke [R1_CASE]");
+        const std::string_view mode=argv[2];
+        const std::string_view selected=argc==4?argv[3]:"";
+        if (argc==4 && (selected.empty() || (mode!="r1-matrix" && mode!="r1-depot")))
+            throw std::invalid_argument("case selection requires r1-matrix or r1-depot");
         const std::filesystem::path dir=argv[1];
         if (!std::filesystem::create_directories(dir)) throw std::invalid_argument("ecology output already exists");
-        Output out(dir);
-        const std::string_view mode=argv[2];
+        Output out(dir,!selected.empty());
+        bool matched=selected.empty();
+        const auto run=[&](std::uint64_t seed,unsigned count,std::string_view space,bool food,bool integrated) {
+            const auto name=std::to_string(seed)+"_"+std::to_string(count)+"_"+std::string(space)+
+                            (food?"_balanced":"_empty")+(integrated?"_care":"_control");
+            if (selected.empty() || selected==name) {
+                ecology(out,dir,seed,count,space,food,integrated,false,mode!="matrix");
+                matched=true;
+            }
+        };
         if (mode=="matrix" || mode=="r1-matrix") {
             for (const std::uint64_t seed:{7U,19U,43U})
                 for (const unsigned count:{4U,16U})
                     for (const std::string_view space:{"coarse","fine","chamber"})
                         for (const bool food:{true,false})
-                            for (const bool integrated:{false,true}) ecology(out,dir,seed,count,space,food,integrated,false,mode=="r1-matrix");
+                            for (const bool integrated:{false,true}) run(seed,count,space,food,integrated);
         } else if (mode=="r1-depot") {
             for (const std::uint64_t seed:{7U,19U,43U})
                 for (const unsigned count:{4U,16U})
                     for (const bool food:{true,false})
-                        for (const bool integrated:{false,true}) ecology(out,dir,seed,count,"underground",food,integrated,false,true);
+                        for (const bool integrated:{false,true}) run(seed,count,"underground",food,integrated);
         } else if (mode=="r1-smoke") {
             ecology(out,dir,7,4,"underground",true,true,true,true);
         } else if (mode=="workload") {
@@ -407,6 +441,7 @@ int main(int argc,char** argv) {
         } else if (mode=="smoke") {
             ecology(out,dir,7,4,"chamber",true,true,true);
         } else throw std::invalid_argument("unknown ecology mode");
+        if (!matched) throw std::invalid_argument("unknown frozen ecology case");
         return 0;
     } catch (const std::exception& e) {
         std::cerr<<e.what()<<'\n';
