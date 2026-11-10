@@ -21,6 +21,7 @@ SCIENCE = tuple((case, seed) for seed in (7, 19, 43)
                 for case in ("ecology-4-balanced-care", "ecology-16-empty-care"))
 SCIENCE += (("ecology-4-balanced-control", 7), ("ecology-16-empty-control", 7))
 SCIENCE += tuple(("long", seed) for seed in (1, 2, 3))
+SCIENCE += tuple(("long-small", seed) for seed in (1, 2, 3))
 ROOT = Path(__file__).resolve().parents[1]
 
 

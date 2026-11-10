@@ -50,7 +50,7 @@ struct Runner {
               "ready_wait_ms,ack_ms,wal_flush_ms,restore_ms,frame_bytes,captured_bytes,blocks,raw_bytes,"
               "packed_bytes,database_bytes,wal_before_flush_bytes,rss_bytes,process_peak_bytes\n";
         summary<<"case,seed,workers,continuous,sim_ms,facts,state_hash,trace_hash,opportunities,births,emerged,"
-                 "deaths,birth_days,death_days,advance_ms,restore_ms,history_page_ms,scoped_history_ms,"
+                 "deaths,birth_days,death_days,living,advance_ms,restore_ms,history_page_ms,scoped_history_ms,"
                  "online_rss_bytes,online_peak_bytes,explicit_export_peak_bytes,blocks,raw_bytes,packed_bytes,"
                  "frames,all_frame_bytes,database_bytes,peak_wal_before_flush_bytes,exact\n";
     }
@@ -148,7 +148,7 @@ void record(Runner& runner,std::string_view label,std::uint64_t seed,unsigned wo
     const auto exported_peak=performance::memory().second;
     runner.summary<<label<<','<<seed<<','<<workers<<','<<continuous<<','<<snapshot.now.milliseconds<<','
         <<snapshot.committed_events<<','<<snapshot.state_hash<<','<<snapshot.trace_hash<<','<<opportunities<<','
-        <<births<<','<<emerged<<','<<deaths<<','<<birth_days.size()<<','<<death_days.size()<<','
+        <<births<<','<<emerged<<','<<deaths<<','<<birth_days.size()<<','<<death_days.size()<<','<<snapshot.living_ants<<','
         <<runner.advance_ms<<','<<runner.restore_ms<<','<<runner.query_ms<<','<<runner.scoped_ms<<','<<rss<<','<<peak<<','
         <<exported_peak<<','<<stats.blocks<<','<<stats.raw_bytes<<','<<stats.packed_bytes<<','<<stats.frames<<','
         <<stats.frame_bytes<<','<<runner.store.database_bytes()<<','<<runner.wal_peak<<",1\n";
@@ -225,7 +225,7 @@ void ecology(Runner& runner,std::string_view label,std::uint64_t seed,unsigned w
     });
 }
 
-void long_ecology(Runner& runner,std::uint64_t seed) {
+void long_ecology(Runner& runner,std::string_view label,std::uint64_t seed,unsigned workers) {
     auto create=[&] {
         s6_3_1_fixture::Controls controls;
         controls.positive=true;
@@ -235,7 +235,7 @@ void long_ecology(Runner& runner,std::uint64_t seed) {
         policy.demand_feedback=true;
         policy.post_intake_contact=true;
         policy.complete_depot_visits=true;
-        s6_3_1_fixture::World fixture(seed,32,"balanced",false,policy,6,false,controls);
+        s6_3_1_fixture::World fixture(seed,workers,"balanced",false,policy,6,false,controls);
         return std::move(fixture.world);
     };
     auto w=create();
@@ -244,7 +244,7 @@ void long_ecology(Runner& runner,std::uint64_t seed) {
         runner.advance(w,{t});
         if (t%(10*day)==0) runner.publish(w,t==90*day || t==180*day);
     }
-    complete(runner,"long",seed,32,false,w,[&] {
+    complete(runner,label,seed,workers,false,w,[&] {
         auto direct=create();
         direct.advance_to({180*day});
         return direct;
@@ -267,9 +267,9 @@ int main(int argc,char** argv) {
         } else if (label=="facts-10000" || label=="facts-100000" || label=="facts-1000000") {
             require(seed==7,"diagnostic seed differs from protocol");
             diagnostic(runner,label,std::stoull(std::string(label.substr(6))));
-        } else if (label=="long") {
+        } else if (label=="long" || label=="long-small") {
             require(seed>=1 && seed<=3,"long ecological seed differs from protocol");
-            long_ecology(runner,seed);
+            long_ecology(runner,label,seed,label=="long"?32U:8U);
         } else if (label=="ecology-4-balanced-care" || label=="ecology-16-empty-care" ||
                    label=="ecology-4-balanced-control" || label=="ecology-16-empty-control") {
             require(seed==7 || seed==19 || seed==43,"R1 ecological seed differs from protocol");

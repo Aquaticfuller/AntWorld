@@ -97,6 +97,11 @@ jobs:
       - name: Run the complete first B02 uncertainty seed (Linux Release)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_3-b02 0 fidelity-closure-b02 fidelity
+      - name: Verify v2 history independently (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_3_4_experiment build/ci/s6_3_4-history facts-10000 7
+          python tools/verify_s6_3_4_archive.py build/ci/s6_3_4-history/world.sqlite build/ci/s6_3_4-history-verification.json
 
   sanitizers:
     runs-on: ubuntu-24.04
