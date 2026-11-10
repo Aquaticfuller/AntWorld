@@ -131,7 +131,9 @@ void assay(Outputs& out,std::uint64_t seed,const std::string& condition,int age,
 void retrieval(Outputs& out,std::uint64_t seed,bool group,SpeciesCareProfile profile={},std::string_view layout="line",
                std::string_view scenario={},std::string_view variant="base",bool neutral=false,bool foreign=false) {
     const auto environment=EnvironmentCareProfile{21,.8,neutral,profile.motion?.025:0};
-    Fixture f(seed,profile,0,group?3:0,false,CareContext::FoundingQueen,{4752000000LL},true,false,environment,profile.motion?.08:.01);
+    const PositionM nest=layout=="offset"?PositionM{-.008,0,-.004}:PositionM{};
+    Fixture f(seed,profile,0,group?3:0,layout=="wall",CareContext::FoundingQueen,{4752000000LL},
+              true,false,environment,profile.motion?.08:.01,nest,false);
     const auto donor=profile.motion?f.w.seed_colony({.02,0,0}):f.colony;
     f.w.pause_brood_care(f.queen);
     if(group) { auto p=physiology();
@@ -139,6 +141,11 @@ void retrieval(Outputs& out,std::uint64_t seed,bool group,SpeciesCareProfile pro
     }
     for(unsigned i=0;layout!="empty" && i<6;++i) {
         PositionM place{.005+static_cast<double>(i)*.002,0,0};
+        if (layout=="ring") {
+            constexpr std::array<PositionM,6> ring{{{.015,0,0},{.010,0,.012},{-.005,0,.015},
+                                                    {-.015,0,0},{-.010,0,-.012},{.005,0,-.015}}};
+            place=ring[i];
+        }
         if (layout=="mirror") place.x=-place.x;
         if (layout=="far") place.x=.009+static_cast<double>(i)*.002;
         if (layout=="split" && i>=3) place={0,0,-(.005+static_cast<double>(i-3)*.002)};
@@ -153,6 +160,8 @@ void retrieval(Outputs& out,std::uint64_t seed,bool group,SpeciesCareProfile pro
         if (group) record_initial(out,name,"worker",f.w,f.workers);
         else record_initial(out,name,"queen",f.w,std::span{&f.queen,1});
         record_initial(out,name,"brood",f.w,f.brood);
+        if (scenario=="B02_uncertainty")
+            out.initial<<name<<",shelter,0,"<<f.colony.id.value<<",0,"<<nest.x<<','<<nest.y<<','<<nest.z<<'\n';
     }
     const auto start=std::chrono::steady_clock::now(); advance(f.w,180000);
     if(group) for(auto worker:f.workers) f.w.enable_brood_care(worker,{CareContext::Worker,{30*day}});
@@ -160,7 +169,9 @@ void retrieval(Outputs& out,std::uint64_t seed,bool group,SpeciesCareProfile pro
     const auto baseline=f.w.committed_events().size();
     advance(f.w,780000); const auto advance_ms=elapsed(start); const auto events=f.w.committed_events();
     std::set<EntityId> retrieved; std::int64_t first_contact=-1,first_retrieval=-1,task_end=-1; double path=0;
-    std::map<EntityId,PositionM> positions; for(auto actor:group?f.workers:std::vector<AntRef>{f.queen}) positions[actor.id]={};
+    std::map<EntityId,PositionM> positions;
+    for(auto actor:group?f.workers:std::vector<AntRef>{f.queen})
+        positions[actor.id]=scenario=="B02_uncertainty"?f.w.query_ant(actor)->position:PositionM{};
     for(std::size_t i=0;i<events.size();++i) {
         const auto& e=events[i];
         if(e.kind==FactKind::Moved && positions.contains(e.actor)) {
@@ -224,6 +235,31 @@ void fidelity_b02(Outputs& out,std::uint64_t seed,const std::string& mode,Specie
                     retrieval(out,seed,group,profile,layout,"B02_sensitivity",variant,true,false);
             }
         }
+    }
+}
+
+void closure_b02(Outputs& out,std::uint64_t seed,SpeciesCareProfile base) {
+    for (const int radius:{3,6,9}) {
+        base.perception_radius_m=static_cast<double>(radius)/1000;
+        const auto variant="radius"+std::to_string(radius)+"mm";
+        for (const std::string_view layout:{"line","split","ring","offset","wall"})
+            for (const bool group:{false,true})
+                for (const bool foreign:{false,true})
+                    retrieval(out,seed,group,base,layout,"B02_uncertainty",variant,true,foreign);
+    }
+}
+
+void closure_b01(Outputs& out,std::uint64_t seed,const SpeciesCareProfile& base) {
+    for (const std::string variant:{"contact0","inhibition0","memory1h","memory24h","decision15s","decision120s"}) {
+        auto profile=base;
+        if (variant=="contact0") profile.worker_contact_probability=0;
+        if (variant=="inhibition0") profile.maximum_inhibition=0;
+        if (variant=="memory1h") profile.social_memory_horizon={hour};
+        if (variant=="memory24h") profile.social_memory_horizon={day};
+        if (variant=="decision15s") profile.decision_interval={15000};
+        if (variant=="decision120s") profile.decision_interval={120000};
+        for (const std::string condition:{"absent","added","removed"})
+            assay(out,seed,condition,55,variant,profile);
     }
 }
 
@@ -295,7 +331,12 @@ int main(int argc,char** argv) {
             const auto seed=selected[index];
             if(mode=="smoke") { assay(out,seed,"absent",55,"base",{},false,true); retrieval(out,seed,false); break; }
             if (fidelity) {
-                if (mode=="fidelity-b02" || mode=="fidelity-robustness" || (mode=="fidelity-sensitivity" && index<6))
+                if (mode=="fidelity-closure-b01" || mode=="fidelity-closure-b02") {
+                    if (index<6) {
+                        if (mode=="fidelity-closure-b01") closure_b01(out,seed,study);
+                        else closure_b02(out,seed,study);
+                    }
+                } else if (mode=="fidelity-b02" || mode=="fidelity-robustness" || (mode=="fidelity-sensitivity" && index<6))
                     fidelity_b02(out,seed,mode,study);
                 else if (mode=="fidelity-b01") b01(out,seed,index,study);
                 else if (mode=="fidelity-b01-sensitivity" && index<6) {

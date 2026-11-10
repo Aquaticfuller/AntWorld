@@ -94,6 +94,9 @@ jobs:
         run: |
           ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_2-b02 0 fidelity-b02 fidelity
           ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_2-autonomy 0 fidelity-integration fidelity
+      - name: Run the complete first B02 uncertainty seed (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: ./build/ci/antworld_s6_3_3_experiment build/ci/s6_3_3_3-b02 0 fidelity-closure-b02 fidelity
 
   sanitizers:
     runs-on: ubuntu-24.04
