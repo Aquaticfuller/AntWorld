@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.3.3.3 Brood Care Validation Closure starts from reviewed `e5ded6e` on `codex/s6.3.3.3-brood-validation-closure`. Read document 61, S6_3_3_2_RESULTS.md and the Evidence Atlas supplements. The local retrieval engineering and bounded Windows timing are separately evaluated. Species-level quantitative validation and TD-11 remain open. Preserve all 195 inherited tests and the historical biological, performance and recovery evidence. P02 metabolism, P03 reproductive allocation, P04 thermal development and later stages remain review-gated.
+This is the v0.8 design and engineering handoff. S6.3.3.3-R1 Spatial Care Correctness and Integration Fix starts from reviewed `9f85714` on `codex/s6.3.3.3-r1-spatial-care-fixes`. Read documents 61 and 62, S6_3_3_3_RESULTS.md and the Evidence Atlas supplements. Correct the three spatial issues while preserving all 197 inherited tests and the historical biological, performance and recovery evidence. Species-level quantitative validation and TD-11 remain open. P02 metabolism, P03 reproductive allocation, P04 thermal development and later stages remain review-gated.
 
 ## Architecture
 
