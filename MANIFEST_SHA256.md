@@ -8,7 +8,7 @@ Files: 73 (excluding the manifest itself).
 | Path | SHA-256 | Bytes |
 |---|---|---:|
 | `AGENTS.md` | `1cc62e2312721d275308ac6da9ebe6e7dd2001db9323691e58c417f4830e8b5c` | 4771 |
-| `CODEX_START_HERE.md` | `04e698680853de768b814b92c5328073deba5878937beb8ab41f00d9041dbcf0` | 7627 |
+| `CODEX_START_HERE.md` | `93293a7d889fa3ae2d03735363dfe9ebcff00d2184d3b1a709c85277cf43567b` | 7641 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |
 | `codex_tasks/S2_FUTURE_STAGE_PROMPT.md` | `a422ebaed328572007fc798fd48c45a7551c09f4fb7e2a94f2f2c68e19d18a53` | 577 |
@@ -21,7 +21,7 @@ Files: 73 (excluding the manifest itself).
 | `docs/05_Game_Master.md` | `d73062713d9af4ed1ad44ac2e29b2b8779259dc1979accd01c5ff40ebcd399f4` | 3882 |
 | `docs/06_Roadmap_and_Acceptance.md` | `d4f6b2fea1667521d17b4ecb67ebe2f42e3e4d3294008dd39f5a98e78729ef1c` | 4215 |
 | `docs/07_References.md` | `ea1ea8c42e87395b94b9ddf217ece8e71eaeae9e4b171d94d39283126e17aec2` | 6883 |
-| `docs/08_Open_Questions.md` | `ce785bb4ab19fd6994b479f9aaff3245434bedba9cf4d582ebd6a9da8595f5d4` | 48722 |
+| `docs/08_Open_Questions.md` | `5708402f4e024ed242e951dadf410a0b7f55678e38d6f18adda528f5eaaac34f` | 48794 |
 | `docs/09_3D_Nest_and_Subsurface_Model.md` | `3aaec18298306549027086b1a0e25f01c8dded155e467b9e4d82c52b344ab136` | 10770 |
 | `docs/10_Parametric_Geometry_Implementation.md` | `4ecb3e401a76143fc8eaa0db0a2e03dc1877d43b3137b21db04a7cb35bbf554c` | 7325 |
 | `docs/11_Cpp_Unity_Geometry_Interface.md` | `f097717983805562856b660cacca9a855b49ba2b0f30322e5787f7c57a3bf3d5` | 4579 |

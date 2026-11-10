@@ -5,14 +5,16 @@
 | Engineering correctness and opt-in integration | PASS in the frozen engineering scope. All 195 local tests pass in Debug, Release and ASan/UBSan. Actual care uses the ordinary Core scheduler with a single motor owner. |
 | Direct biological support | Both castes retrieve displaced brood. The B01 reversible worker effect and the B02 acute own/foreign context have direct support. Local persistence and physical loaded motion are plausible abstractions. The detailed sensing and task rules remain hypotheses. |
 | Species-level quantitative validation | NOT PASSED. All line trials hit the six-item ceiling, early placement and worker first contact are too fast, and far-layout queen discovery still often fails. B01 added-worker care remains above the measured frequency. |
-| TD-01 and protected TD-08 | PASS under the unchanged 6x dense advance gates. Current contact and reserve-birth p50 growth are 5.4338x and 4.2285x with all six sessions qualified. |
+| TD-01 and protected TD-08 | PASS under the unchanged 6x dense advance gates. Final contact and reserve-birth p50 growth are 5.5163x and 4.3147x with all six sessions qualified. |
 | TD-11 | OPEN. Exact spatial filtering improves dispersed candidate work. Dense opportunity production and history growth remain. |
 
 The stage is ready for independent review in this scope. The ecological, scientific and engine gates for S6.3.4, S6.4 and Unity remain separate.
 
 ## Frozen baseline
 
-The [protocol](docs/58_S6_3_3_2_Frozen_Baseline_and_Protocol.md) and [pre-implementation design audit](docs/59_S6_3_3_2_Care_Design_Audit.md) were committed as `de9107b`, before behavior changes. Reviewed base `05a6847` and its source, experiment and research trees remain in history. The 384 S6.3.3 experiments and 416 S6.3.3.1 experiments are preserved. All 416 latter runs were rebuilt in the current Release executable. Comparisons matched the windows, scans, non-timing endpoints and 9,016,440 exported facts, with the inherited 1e-12 m allowance for coordinate serialization. [Replay receipt](experiments/s6_3_3_2/historical_replay.json).
+The [protocol](docs/58_S6_3_3_2_Frozen_Baseline_and_Protocol.md) and [pre-implementation design audit](docs/59_S6_3_3_2_Care_Design_Audit.md) were committed as `de9107b`, before behavior changes. Reviewed base `05a6847` and its source, experiment and research trees remain in history. The 384 S6.3.3 experiments and 416 S6.3.3.1 experiments are preserved. All 416 latter runs were rebuilt in the first fidelity Release executable. Comparisons matched the windows, scans, non-timing endpoints and 9,016,440 exported facts, with the inherited 1e-12 m allowance for coordinate serialization. [Replay receipt](experiments/s6_3_3_2/historical_replay.json).
+
+The initial Windows MSVC Debug CI found two terminating allocation sweeps in the indexed query's return path. The [portability correction](docs/60_S6_3_3_2_Portability_Requalification.md) passes a caller-owned buffer into the private collector so a failed allocation can unwind the journal. The corrected build reproduced all 416 historical and 484 fidelity runs, including their physical endpoints and 16,691,254 exported facts under the same comparison rules. The original CI failure and qualified timing batch remain archived. [Initial failure](experiments/s6_3_3_2/verification/msvc_debug_initial.json), [historical requalification](experiments/s6_3_3_2/verification/historical_portable_replay.json), [fidelity requalification](experiments/s6_3_3_2/verification/fidelity_portable_replay.json).
 
 ## Code changes
 
@@ -37,13 +39,13 @@ The [B01/B02 report](research/s6_3_3_2/B01_B02_VALIDATION.md) includes all endpo
 
 | Local Windows x64, Clang 23.1.5 | Executed | Outcome |
 | --- | --- | --- |
-| Release | `ctest --test-dir build/s6_3_3_2-release --parallel 4 --output-on-failure` | 195/195, 33.52 s |
-| Debug | `ctest --test-dir build/s6_3_3_2-debug --parallel 4 --output-on-failure` | 195/195, 81.20 s |
-| ASan and UBSan | `ctest --test-dir build/s6_3_3_2-sanitizer --parallel 4 --output-on-failure` | 195/195, 152.71 s |
+| Release | `ctest --test-dir build/s6_3_3_2-release --parallel 4 --output-on-failure` | 195/195, 33.08 s |
+| Debug | `ctest --test-dir build/s6_3_3_2-debug --parallel 4 --output-on-failure` | 195/195, 67.58 s |
+| ASan and UBSan | `ctest --test-dir build/s6_3_3_2-sanitizer --parallel 4 --output-on-failure` | 195/195, 148.99 s |
 
-Local Windows ASan uses `detect_leaks=0`. Linux CI enables leak detection. Eight new tests cover independent clocks and exact SQLite continuation, ownership and corruption, controlled conspecific origin, pickup competition, a geometry closure, death while loaded, ordinary task resumption, and funded queen preemption. The allocation test sweeps failures in pickup, loaded motion, release and their checkpoints. All older tests remain registered. [Per-test outcomes](experiments/s6_3_3_2/verification), [cross-platform CI runs](https://github.com/Aquaticfuller/AntWorld/actions/workflows/ci.yml?query=branch%3Acodex%2Fs6.3.3.2-brood-care-fidelity).
+Local Windows ASan uses `detect_leaks=0`. Linux CI enables leak detection. Eight new tests cover independent clocks and exact SQLite continuation, ownership and corruption, controlled conspecific origin, pickup competition, a geometry closure, death while loaded, ordinary task resumption, and funded queen preemption. The allocation test sweeps failures in pickup, loaded motion, release and their checkpoints. All older tests remain registered. All five jobs passed the portability-corrected source. [Per-test outcomes](experiments/s6_3_3_2/verification/portable), [cross-platform source CI](https://github.com/Aquaticfuller/AntWorld/actions/runs/42730836597).
 
-The [performance report](research/s6_3_3_2/TD_11_PERFORMANCE_RESULTS.md) separates the profiled same-colony experiment from protected timing. At 128 caregivers and four brood each, the dispersed candidate count fell from 281,600 to 2,419. Dense runs still wrote 164,223 opportunity records and a 35.21 MB checkpoint over 60 simulated seconds. All original fact and state hashes matched. The current protected run retained 504 raw timing rows and every telemetry sample. This is a bounded gate result.
+The [performance report](research/s6_3_3_2/TD_11_PERFORMANCE_RESULTS.md) separates the profiled same-colony experiment from protected timing. At 128 caregivers and four brood each, the dispersed candidate count fell from 281,600 to 2,419. Dense runs still wrote 164,223 opportunity records and a 35.21 MB checkpoint over 60 simulated seconds. All original fact and state hashes matched. Each protected batch retained 504 raw timing rows and every telemetry sample. The final batch also retains its one admission rejection. This is a bounded gate result.
 
 The [experiment index](experiments/s6_3_3_2/README.md) lists the raw CSVs, extraction and plotting commands, exact scripts and profiled reproduction. The tracked source register has DOI, conditions, locator and scope. Full texts remain local.
 

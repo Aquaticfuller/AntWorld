@@ -10,8 +10,9 @@
 | [figures](figures) | Scientific comparisons derived from the tracked data. |
 | [historical replay](historical_replay.json) | Rebuilt comparisons for the 416 previous runs. |
 | [td11](td11) | Same-colony indexed/reference sample and profiler files with exact trace identity checks. |
-| [performance](performance) | Formal protected Release batch. Native rows, phase/cycle data, English sensor exports, checks, manifest and bootstrap analysis. The original localized HWiNFO source remains local. |
-| [local verification](verification) | Per-test local CTest outcomes and build configurations. |
+| [performance](performance) | First qualified protected Release batch. Native rows, phase/cycle data, English sensor exports, checks, manifest and bootstrap analysis. The original localized HWiNFO source remains local. |
+| [performance_portable](performance_portable) | Separate protected batch for the correction from [protocol 60](../../docs/60_S6_3_3_2_Portability_Requalification.md). |
+| [verification](verification) | Original CI failure receipt, portable replays, and per-test outcomes from both builds. |
 
 Use Python 3.11+ and a C++20 CMake build. The commands below show a Windows shell and the single-configuration CMake layout. On Linux, omit the `.exe` suffix. The build pins SQLite 3.54.1 and verifies its archive. These commands use unused scratch directories for new runs.
 
@@ -28,6 +29,7 @@ ctest --test-dir build/fidelity-san --output-on-failure
 python tools/run_s6_3_3_2_assays.py build/fidelity-release/antworld_s6_3_3_experiment.exe out/fidelity-raw
 python tools/analyze_s6_3_3_2.py --raw out/fidelity-raw --out out/fidelity-analysis --deep
 python tools/run_s6_3_3_2_assays.py build/fidelity-release/antworld_s6_3_3_experiment.exe out/fidelity-old --replay-report out/fidelity-old-receipt.json
+python tools/run_s6_3_3_2_assays.py build/fidelity-release/antworld_s6_3_3_experiment.exe out/fidelity-portable --fidelity-report out/fidelity-portable-receipt.json
 python tools/analyze_s6_3_3_2.py --verify-only --deep
 python tools/ci_verify.py
 ```
@@ -46,7 +48,7 @@ cmake -S ../antworld-td11-indexed/cpp -B build/td11-indexed -G Ninja -DCMAKE_BUI
 cmake --build build/td11-reference --target antworld_s6_3_3_2_density
 cmake --build build/td11-indexed --target antworld_s6_3_3_2_density
 python tools/analyze_s6_3_3_2_density.py --root out/td11-replay --collect build/td11-reference/antworld_s6_3_3_2_density.exe build/td11-indexed/antworld_s6_3_3_2_density.exe
-python tools/analyze_s6_3_3_2_density.py --check
+python tools/analyze_s6_3_3_2_density.py --check --portable experiments/s6_3_3_2/td11/portable
 ```
 
 ## Protected performance
@@ -55,6 +57,7 @@ Replay the archived measurements with the first command below. To collect a new 
 
 ```powershell
 python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_3_3_2/performance --out experiments/s6_3_3_2/performance/analysis --check
+python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_3_3_2/performance_portable --out experiments/s6_3_3_2/performance_portable/analysis --check
 cmake --build build/fidelity-release --target antworld_s6_2_benchmark antworld_s6_3_1_birth_benchmark
 python tools/run_s6_3_3_1_performance.py --prepare --build build/fidelity-release --out out/fidelity-perf --compiler $Compiler --confirmation experiments/s6_3_3_1/performance/instrument_v2_confirmation/receipt.json
 python tools/verify_s6_3_3_1_reserve_workload.py --binary build/fidelity-release/antworld_s6_3_1_birth_benchmark.exe --scratch out/fidelity-reserve --receipt out/fidelity-perf/reserve_identity_receipt.json

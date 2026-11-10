@@ -69,14 +69,41 @@ def replay(binary, scratch, report):
     assert all(c['match'] for c in receipt['cases']), 'see replay receipt'
 
 
+def replay_fidelity(binary, scratch, report):
+    original = ROOT/'experiments/s6_3_3_2/raw'
+    receipt = dict(executable_sha256=sha(binary), cases=[])
+    for arm, count in ARMS.items():
+        case = dict(arm=arm, runs=count)
+        folder = scratch/arm
+        try:
+            execute(binary, folder, 'fidelity-'+arm, 'fidelity')
+            reference = original/arm
+            for name in ('profiles.csv', 'initial.csv', 'ecology.csv'):
+                assert read(folder/name)==read(reference/name), name
+            events = verify(folder,reference,0 if arm=='integration' else count)
+            case.update(match=True,events=events)
+            (folder/'events.csv').unlink()
+        except (AssertionError,subprocess.CalledProcessError) as exc:
+            case.update(match=False,first_mismatch=str(exc))
+        receipt['cases'].append(case)
+        save(report,receipt)
+        print(case,flush=True)
+    assert sum(c['runs'] for c in receipt['cases'])==484
+    assert all(c['match'] for c in receipt['cases']), 'see replay receipt'
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('binary', type=Path)
     p.add_argument('output', type=Path)
-    p.add_argument('--replay-report', type=Path)
+    mode = p.add_mutually_exclusive_group()
+    mode.add_argument('--replay-report', type=Path)
+    mode.add_argument('--fidelity-report', type=Path)
     args = p.parse_args()
     if args.replay_report:
         replay(args.binary.resolve(), args.output.resolve(), args.replay_report)
+    elif args.fidelity_report:
+        replay_fidelity(args.binary.resolve(), args.output.resolve(), args.fidelity_report)
     else:
         collect(args.binary.resolve(), args.output.resolve())
 

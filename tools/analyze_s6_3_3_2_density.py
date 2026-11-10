@@ -49,6 +49,7 @@ def main():
     parser.add_argument('--root',type=Path,default=ROOT)
     parser.add_argument('--check',action='store_true')
     parser.add_argument('--collect',type=Path,nargs=2,metavar=('REFERENCE','INDEXED'))
+    parser.add_argument('--portable',type=Path)
     args=parser.parse_args()
     if args.collect:
         collect(args.root,args.collect)
@@ -56,6 +57,13 @@ def main():
     before,after=(rows for rows,_ in roots.values())
     for a,b in zip(before,after):
         assert all(a[k]==b[k] for k in a if k not in TIMES), (a['sample'],a['layout'])
+    if args.portable:
+        corrected, profiles=arm(args.portable)
+        for previous,current in zip(after,corrected):
+            assert all(previous[k]==current[k] for k in previous if k not in TIMES), current['sample']
+            key=('advance','neighborhood')
+            assert profiles[current['sample']][key]['work']==roots['indexed'][1][previous['sample']][key]['work']
+        print('PASS: corrected care query preserves all 64 indexed cases and candidate counts')
     metrics=[]
     for mode,(rows,profile) in roots.items():
         cells=defaultdict(list)

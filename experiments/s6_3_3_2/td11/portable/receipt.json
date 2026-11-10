@@ -1,0 +1,12 @@
+{
+  "mode": "Release ANTWORLD_PROFILE=ON",
+  "executable_sha256": "439fe1c2c0bbe2b545d45d47da9ac5573de0caaebcad9437f2db49f3d5b2b639",
+  "samples": 64,
+  "profile_rows": 2304,
+  "files": {
+    "samples.csv": "b31b5078fe71e235734c0e1591ac63276eb245dde8be3a4d869a2837ef6e6022",
+    "profile.csv": "117d4f8a55b7d6bd704bdcc96d00366d3d529d3e32755d8f53032e74db2cbc7e"
+  },
+  "source_commit": "73804757460ba82202b9327633b1d66f3b167ebd",
+  "role": "Candidate work, state and trace identity only. Local compilation overlapped the incidental phase times."
+}
