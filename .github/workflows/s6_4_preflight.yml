@@ -1,0 +1,29 @@
+name: S6.4 Preflight Evidence CI
+on:
+  push:
+    branches: [codex/s6.4-scientific-evidence-audit]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-audit:
+    if: github.event_name == 'push' || github.head_ref == 'codex/s6.4-scientific-evidence-audit'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0, Node.js 24
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Fetch the three frozen audit references
+        run: |
+          git fetch --no-tags --depth=1 origin \
+            b35b988ecf1b92f7bac3c00af393b88ab8330d67 \
+            e16ccabaf7ad458dd77f35f3f4f1f247e19bd2f5 \
+            2e1a5fa129821176954f26a88f56791635bc8cda
+      - name: Verify the source inventory
+        run: python tools/audit_s6_4_preflight.py --check
+      - name: Run source anchor regression tests
+        run: python tools/test_s6_4_preflight.py
+      - name: Verify the tracked Batch 1 evidence
+        run: python research/s6_4_preflight/verify_batch1.py

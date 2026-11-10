@@ -808,8 +808,13 @@ def verify_scope():
     require(git("rev-parse", f"{BASELINE}:cpp") == CORE_TREE, "Frozen Core tree mismatch")
     changes = set(git("diff", "--name-only", BASELINE).splitlines())
     changes.update(git("ls-files", "--others", "--exclude-standard").splitlines())
+    audit_files = {
+        ".github/workflows/s6_4_preflight.yml",
+        "tools/audit_s6_4_preflight.py",
+        "tools/test_s6_4_preflight.py",
+    }
     outside = sorted(path for path in changes if not path.startswith("research/s6_4_preflight/")
-                     and path not in {"tools/audit_s6_4_preflight.py", "tools/test_s6_4_preflight.py"})
+                     and path not in audit_files)
     require(not outside, f"Out-of-scope repository changes: {outside}")
 
 

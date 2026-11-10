@@ -36,13 +36,14 @@ The evidence review joins to the frozen inventory without overwriting it. Batch 
 | [Full-text review progress](FULLTEXT_REVIEW_PROGRESS.md) | Batch coverage, originals read, quantitative comparisons, gaps and pending domains |
 | [Source register](SOURCE_FULLTEXT_REGISTER.csv) | Primary papers by experimental context, measured endpoints, conditions, units and scope of reading |
 | [Access and reading log](SOURCE_ACCESS_AND_READING_LOG.csv) | Opened article and supplement records, hashes, and unsuccessful access attempts |
+| [Batch 1-R1 source verification receipt](BATCH1_SOURCE_VERIFICATION_RECEIPT.md) | Local input hashes, commands, recalculated endpoints and limits of verification |
 | [Mechanism and transition evidence](MECHANISM_EVIDENCE_REVIEW.csv) | Individually reviewed current rules linked to verified anchors, study locators and limits |
 | [Parameter evidence review](PARAMETER_EVIDENCE_REVIEW.csv) | Source values, units, conditional comparisons and current calibration status |
 | [Evidence conflicts](EVIDENCE_CONFLICTS.md) | Quantitative disagreements, incompatible endpoints, unsupported rules and missing measurements |
 
 ## Reproduce the checks
 
-Run from the repository root with Python 3.10 or later and both commits in local Git history.
+Run from the repository root with Python 3.10 or later and the S6.3.4, Step 1 and Atlas reference commits available. The audit-branch GitHub workflow fetches the frozen revisions explicitly. Use the receipt command for the separate local-only verification of downloaded sources.
 
 ```sh
 python tools/audit_s6_4_preflight.py --check
