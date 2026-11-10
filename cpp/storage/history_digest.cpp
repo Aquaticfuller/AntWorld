@@ -72,11 +72,11 @@ public:
         const auto bits=bytes_*8;
         tail_[used_++]=0x80;
         if (used_>56) {
-            std::fill(tail_.begin()+static_cast<std::ptrdiff_t>(used_),tail_.end(),0);
+            std::fill(tail_.begin()+static_cast<std::ptrdiff_t>(used_),tail_.end(),std::uint8_t{});
             process(tail_);
             used_=0;
         }
-        std::fill(tail_.begin()+static_cast<std::ptrdiff_t>(used_),tail_.end(),0);
+        std::fill(tail_.begin()+static_cast<std::ptrdiff_t>(used_),tail_.end(),std::uint8_t{});
         for (std::size_t i=0;i<8;++i) tail_[63-i]=static_cast<std::uint8_t>(bits>>(i*8));
         process(tail_);
         Digest result{};
