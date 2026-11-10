@@ -1,0 +1,44 @@
+# S6.3.4 frozen durable history protocol
+
+Reviewed source `1812ff46f8421c263f10deb173a8aee74a78a369` and C++ tree `9938426525c51bb6552a2da44852c07c48b31857`. Preserve the 201 tests and R1 experiment and research trees `16d9a919856cb88c68872e28dcdb3deca87145ad` and `ad994d421a3ebb24b790722cb4b1ebf33ef82663`. Keep all 96 cases, 8,288,521 facts, rejected pilots, scientific measurements and negative outcomes. The selected branch is `codex/s6.3.4-durable-history`. This stage ends at independent review.
+
+## Design review before implementation
+
+1. The v1 writer serializes the full journal in every checkpoint, then writes the same facts again. Dense observations generate participant and metric rows for each fact, and per-event rollup writes further amplify the work. Keep v1 reading, token semantics and fixtures intact. Add a v2 online store to the same headless entry point with a legacy format option for established callers. An existing database is opened according to its recorded format.
+2. Use one local SQLite WAL database with synchronous FULL. Seal length-prefixed canonical bytes in immutable, independently readable blocks of at most 4,096 records, including a partial block at a publication boundary. Bind schema, codec, WorldId, EventIds, times, byte lengths and the previous hash in the SHA-256 integrity digest. Pin zlib 1.3.2. A block and its manifest/checkpoint references share the same SQLite transaction. A private insert precedes manifest publication. A successful durable COMMIT is the point at which readers may see both together. A COMMIT I/O error requires reopening and verification.
+3. Persist an authoritative state frame at each published v2 cut and link it to the previous published frame and the exact journal prefix. The frame stores the continuation fields of the existing Core checkpoint without the duplicate journal body. Preserve queue, RNG, timers, commands, IDs, geometry and reservations. Retain the frames of all published v2 cuts. Recovery from a historical cut verifies the following blocks and applies the target cut's authoritative state frame. Existing observational facts alone cannot infer unrecorded pending work or RNG. Historical v1 cuts pruned before migration and unpublished sub-cut states have no frame. Keep the full legacy Core codec for explicit export and validation.
+4. One application-owned background save may be outstanding per writer. Capture state plus immutable committed history on the single writer thread. The background owner cannot mutate the runtime. Acknowledge and retire a published hot prefix only after success, preserving access through a bounded read-only prefix source. Backpressure rejects new save admissions while occupied. Limit pending facts to 600,000 and captured storage to 256 MiB in this fixture policy. A transaction that would exceed the hot allowance rejects without dropping any fact. Failed saves retain in-memory data for retry. Repeated publication of the exact same cut with the same predecessor is idempotent, including after a lost acknowledgement. A conflicting timeline is refused.
+5. History queries derive participants and per-event flows from decoded canonical facts and actual geometry evidence. Keep exact gauge observations and derived minute buckets, identity and geometry indexes. Batch rollup and identity updates. Validate and rebuild derived data from factual bytes, real edits and retained gauge evidence. Never use a rebuilt index to invent a historical gauge sample. Preserve world-local exact integer keys and event-order ties.
+6. Shadow migration uses a consistent SQLite backup and a separately named v2 copy. Verify all retained v1 generations, canonical streams, query results and observations. Preserve WorldId, revision, cursor, generation numbers and exported Core bytes. Persistence-specific hashes can differ across formats. Verify the converted shadow before use and keep the source intact.
+7. R1 continuous movement remains explicit. Flat datum, cubic clearance, bounded familiar connector, permanent-blockage route discovery, arbitrary internal routing and loaded body orientation retain their documented limits. The connector and all uncalibrated values remain ENGINEERING_FIXTURE. Storage does not choose ant behavior.
+
+[SQLite WAL and synchronization](https://sqlite.org/wal.html) · [SQLite online backup](https://sqlite.org/c3ref/backup_finish.html) · [zlib release archives](https://zlib.net/fossils/) · [NIST SHA-256 standard](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
+
+## Frozen correctness matrix
+
+- Block codec round trip, independent known digest, bounded lengths and decompression, type/world/order/time/chain checks, zero-fact and shared-time cut boundaries, multiple worlds, block and later-anchor corruption, missing and rearranged blocks.
+- Process exit before/after block insertion, before manifest COMMIT, after durable COMMIT and during actual WAL writes. Inject SQLite VFS write and sync failures. Reopen to either the complete old or complete new cut as dictated by the fault boundary. A successfully acknowledged cut must survive. Preserve the pending runtime on failure and retry the same cut.
+- Recover held brood, carried soil, a pending action and the filled/reopened R1 route. Compare canonical fact bytes, full checkpoint, queue, RNG, ledger, positions, identities, event filters, individual history, metric points, flows, minute buckets and evidence cursors. Exercise gauge, flow and index rebuilding with original bytes intact.
+- Shadow-migrate retained history across multiple cuts, including an old reader continuing to use the source. Compare every retained generation and all metric families. Keep original archival evidence and the prior TD-01/08 6x gate and timing receipts.
+
+## Frozen workload and host budgets
+
+| Workload | Definition |
+|---|---|
+| Dense timed care | R1 128 caregivers with two larvae each for 600 s. Include reviewed planar contract with 490,240 opportunities and 498,598 facts and the continuous counterpart |
+| Dense integrated care | The R1 same-colony 128-worker balanced dense fixture for two game days, both motion contracts |
+| Integrated ecology | R1 underground balanced care at 4 workers and underground empty care at 16 workers, each for seeds 7, 19 and 43. Include seed 7 matched controls. Use unchanged 21-day world inputs and a durable cut at day 10 |
+| Long ecology | Existing S6.3.1 funded 32-worker 180-day reserve arm, seeds 1, 2 and 3. Track multiple birth and death cohorts under existing reproduction, rather than invent daughter-queen reproduction |
+| Fact stress | 10,000, 100,000 and 1,000,000 deterministic diagnostic facts with 10,000-fact publication intervals. Generate actual committed facts, keep event identity and include one empty subsequent cut |
+
+Use one warm-up and five retained independent samples per dense and diagnostic scale. Use the specified seeds for ecology and report every measured phase. Use steady-clock time and exact work identities. Record build, CPU, OS, power plan where available, pre-run system load, process memory and DB/WAL bytes. The primary Windows run uses no parallel experiment/build, with two five-second pre-run system CPU windows each at or below 25% for wall-clock qualification. Retain any failed admission or slow result. Temperatures, cache state and absence of unrelated user programs are separate recorded conditions. CI is a correctness check. Report empirical interpolated P50/P95/P99 without treating a five-sample tail estimate as a reliability guarantee.
+
+| Budget | Frozen acceptance limit |
+|---|---|
+| Foreground capture plus submission | P95 at most 25 ms and observed maximum at most 100 ms in the dense timed and integrated arms |
+| Durable publication | P95 at most 12 s for the dense timed case. Record background throughput and acknowledgement separately. Checkpoint WAL flush separately |
+| Validated restore | P95 at most 8 s at dense timed scale and at most 15 s for 1,000,000 diagnostic facts. Preserve old/corrupt controls |
+| Peak process resident memory | At most 512 MiB for a dense publication and recovery sample and at most 768 MiB for the million-fact sample. Measure explicit legacy exports separately from online operation |
+| Durable storage and history query | Dense timed store at most 128 MiB including sidecars after explicit WAL checkpoint. Indexed 256-fact and scoped history query P95 at most 2 s on the dense and million-fact runs |
+
+Record advance, compact frame generation, foreground stalls, background commit, WAL checkpoint, recovery, query timings, peak memory, block counts, raw and stored bytes, compression ratio and on-disk growth per cut. Keep the historical 1,074,458,624-byte SQLite and 51,625.54 ms median save unchanged. State separate PASS, FAIL or INCONCLUSIVE outcomes against these fixed budgets. S6.4 and Unity remain review-gated.

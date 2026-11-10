@@ -1,6 +1,6 @@
 # AntWorld: read before implementation
 
-This is the v0.8 design and engineering handoff. S6.3.3.3-R1 Spatial Care Correctness and Integration Fix starts from reviewed `9f85714` on `codex/s6.3.3.3-r1-spatial-care-fixes`. Read documents 61, 62 and 63, S6_3_3_3_R1_RESULTS.md and the Evidence Atlas supplements. The R1 contract corrects the spatial defects while preserving all 197 inherited tests and the historical biological, performance and recovery evidence. Species-level quantitative validation and TD-11 remain open. Live lossless history implementation and qualification precede S6.4. P02 metabolism, P03 reproductive allocation, P04 thermal development and later stages remain review-gated.
+This is the v0.8 design and engineering handoff. S6.3.4 Live Durable History and Long-Term Persistence starts from reviewed `1812ff4` on `codex/s6.3.4-durable-history`. Read documents 33, 34 and 64, S6_3_3_3_R1_RESULTS.md, the R1 durability proposal and the Evidence Atlas supplements. The R1 motor remains opt-in. Preserve its 201 tests, 96 ecological runs, 8,288,521 facts and historical evidence. Implement and independently qualify live lossless history. S6.4, Unity and biological model changes remain review-gated.
 
 ## Architecture
 
