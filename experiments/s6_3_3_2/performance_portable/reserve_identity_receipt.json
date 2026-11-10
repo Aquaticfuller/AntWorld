@@ -1,0 +1,48 @@
+{
+  "match": true,
+  "rows": 3,
+  "executable_sha256": "7cbccea53d6f1b272039e46e9e85d13af942358c104d3e6c5c0ca0653dd83eae",
+  "reference_sha256": "253196a244b2bbda5cad6aa7c852be41f0a68b989cac6e59cebf9f02838888ee",
+  "scope": "Untimed-for-acceptance workload identity smoke. Incidental native phase times stay local.",
+  "identities": [
+    {
+      "layout": "dense",
+      "population": "128",
+      "births": "128",
+      "events": "899",
+      "pending": "512",
+      "checkpoint_bytes": "357423",
+      "state_hash": "fd745176737dd270",
+      "trace_hash": "4d76819cc6821185",
+      "exact_restore": "1",
+      "mass_balanced": "1",
+      "energy_balanced": "1"
+    },
+    {
+      "layout": "dense",
+      "population": "512",
+      "births": "512",
+      "events": "3587",
+      "pending": "2048",
+      "checkpoint_bytes": "1426479",
+      "state_hash": "c8f916b35613f335",
+      "trace_hash": "f315707f67541176",
+      "exact_restore": "1",
+      "mass_balanced": "1",
+      "energy_balanced": "1"
+    },
+    {
+      "layout": "dense",
+      "population": "2048",
+      "births": "2048",
+      "events": "14339",
+      "pending": "8192",
+      "checkpoint_bytes": "5702703",
+      "state_hash": "8a9a248d800cec6d",
+      "trace_hash": "5183d3134f1db85c",
+      "exact_restore": "1",
+      "mass_balanced": "1",
+      "energy_balanced": "1"
+    }
+  ]
+}
