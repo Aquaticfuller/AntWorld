@@ -1,0 +1,181 @@
+Enum,Symbol,SourceFile,StartLine,EndLine,SourceExpression,Role,MechanismIds
+Direction,North,cpp/include/antworld/core/behavior.hpp,11,11,North,Surface direction or unset marker,SEN-01;FOR-04
+Direction,East,cpp/include/antworld/core/behavior.hpp,11,11,East,Surface direction or unset marker,SEN-01;FOR-04
+Direction,South,cpp/include/antworld/core/behavior.hpp,11,11,South,Surface direction or unset marker,SEN-01;FOR-04
+Direction,West,cpp/include/antworld/core/behavior.hpp,11,11,West,Surface direction or unset marker,SEN-01;FOR-04
+Direction,None,cpp/include/antworld/core/behavior.hpp,11,11,None,Surface direction or unset marker,SEN-01;FOR-04
+BehaviorMode,Explore,cpp/include/antworld/core/behavior.hpp,12,12,Explore,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,FollowTrail,cpp/include/antworld/core/behavior.hpp,12,12,FollowTrail,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,FollowMemory,cpp/include/antworld/core/behavior.hpp,12,12,FollowMemory,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,Collect,cpp/include/antworld/core/behavior.hpp,12,12,Collect,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,Return,cpp/include/antworld/core/behavior.hpp,12,12,Return,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,Deliver,cpp/include/antworld/core/behavior.hpp,12,12,Deliver,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+BehaviorMode,Rest,cpp/include/antworld/core/behavior.hpp,12,12,Rest,Foraging program state or decision label,FOR-02;FOR-05;FOR-07;PHE-03
+DecisionReason,None,cpp/include/antworld/core/behavior.hpp,13,13,None,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,Search,cpp/include/antworld/core/behavior.hpp,13,13,Search,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,LocalFood,cpp/include/antworld/core/behavior.hpp,13,13,LocalFood,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,Trail,cpp/include/antworld/core/behavior.hpp,13,13,Trail,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,Memory,cpp/include/antworld/core/behavior.hpp,13,13,Memory,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,HomeTrace,cpp/include/antworld/core/behavior.hpp,13,13,HomeTrace,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,NestContact,cpp/include/antworld/core/behavior.hpp,13,13,NestContact,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+DecisionReason,NoLegalStep,cpp/include/antworld/core/behavior.hpp,13,13,NoLegalStep,Foraging decision annotation,FOR-02;FOR-05;PHE-03
+CareContext,FoundingQueen,cpp/include/antworld/core/care.hpp,29,29,FoundingQueen,Individual enrollment metadata,CAR-01;CAR-02
+CareContext,EstablishedQueen,cpp/include/antworld/core/care.hpp,29,29,EstablishedQueen,Individual enrollment metadata,CAR-01;CAR-02
+CareContext,Worker,cpp/include/antworld/core/care.hpp,29,29,Worker,Individual enrollment metadata,CAR-01;CAR-02
+CareAct,Inactive,cpp/include/antworld/core/care.hpp,42,42,Inactive,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,Walk,cpp/include/antworld/core/care.hpp,42,42,Walk,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,ApproachBrood,cpp/include/antworld/core/care.hpp,42,42,ApproachBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,InspectBrood,cpp/include/antworld/core/care.hpp,42,42,InspectBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,ArrangeBrood,cpp/include/antworld/core/care.hpp,42,42,ArrangeBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,CleanBrood,cpp/include/antworld/core/care.hpp,42,42,CleanBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,TransportBrood,cpp/include/antworld/core/care.hpp,43,43,TransportBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,FeedBrood,cpp/include/antworld/core/care.hpp,43,43,FeedBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,CloseWorkerContact,cpp/include/antworld/core/care.hpp,43,43,CloseWorkerContact,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,CollectFood,cpp/include/antworld/core/care.hpp,43,43,CollectFood,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,DeliverFood,cpp/include/antworld/core/care.hpp,43,43,DeliverFood,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,IngestFood,cpp/include/antworld/core/care.hpp,44,44,IngestFood,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,TransferNutrition,cpp/include/antworld/core/care.hpp,44,44,TransferNutrition,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,Excavate,cpp/include/antworld/core/care.hpp,44,44,Excavate,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,HandleSoil,cpp/include/antworld/core/care.hpp,44,44,HandleSoil,"Observer alias for a committed ordinary action, not a care motor state",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,RevisitBroodSite,cpp/include/antworld/core/care.hpp,44,44,RevisitBroodSite,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,PickUpBrood,cpp/include/antworld/core/care.hpp,45,45,PickUpBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,PlaceBrood,cpp/include/antworld/core/care.hpp,45,45,PlaceBrood,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,ReturnToCareShelter,cpp/include/antworld/core/care.hpp,45,45,ReturnToCareShelter,Care motor state or observation label,CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+CareAct,Count,cpp/include/antworld/core/care.hpp,45,45,Count,"Array extent sentinel, not a behavior",CAR-03;CAR-04;CAR-05;CAR-06;CAR-08;CAR-11
+ObservationPhase,Opportunity,cpp/include/antworld/core/care.hpp,47,47,Opportunity,Committed observation label,SYS-04;CAR-11
+ObservationPhase,Selected,cpp/include/antworld/core/care.hpp,47,47,Selected,Committed observation label,SYS-04;CAR-11
+ObservationPhase,Started,cpp/include/antworld/core/care.hpp,47,47,Started,Committed observation label,SYS-04;CAR-11
+ObservationPhase,Completed,cpp/include/antworld/core/care.hpp,47,47,Completed,Committed observation label,SYS-04;CAR-11
+ObservationPhase,Interrupted,cpp/include/antworld/core/care.hpp,47,47,Interrupted,Committed observation label,SYS-04;CAR-11
+LifeStage,Egg,cpp/include/antworld/core/entities.hpp,19,19,Egg,Persisted life stage,DEV-01;POP-01;POP-02;POP-04
+LifeStage,Larva,cpp/include/antworld/core/entities.hpp,19,19,Larva,Persisted life stage,DEV-01;POP-01;POP-02;POP-04
+LifeStage,Pupa,cpp/include/antworld/core/entities.hpp,19,19,Pupa,Persisted life stage,DEV-01;POP-01;POP-02;POP-04
+LifeStage,Adult,cpp/include/antworld/core/entities.hpp,19,19,Adult,Persisted life stage,DEV-01;POP-01;POP-02;POP-04
+LifeStage,Dead,cpp/include/antworld/core/entities.hpp,19,19,Dead,Persisted life stage,DEV-01;POP-01;POP-02;POP-04
+Caste,Worker,cpp/include/antworld/core/entities.hpp,20,20,Worker,Persisted caste label,DEV-02;POP-01;CAR-01
+Caste,Queen,cpp/include/antworld/core/entities.hpp,20,20,Queen,Persisted caste label,DEV-02;POP-01;CAR-01
+Caste,Male,cpp/include/antworld/core/entities.hpp,20,20,Male,Persisted caste label,DEV-02;POP-01;CAR-01
+Species,LasiusNigerEngineeringFixture,cpp/include/antworld/core/entities.hpp,21,21,LasiusNigerEngineeringFixture,Fixture species label,POP-01;PHY-05
+ActionKind,Move,cpp/include/antworld/core/entities.hpp,72,72,Move,Ordinary requested action,SYS-02;FOR-06;FOR-07;FOR-08;TSK-04
+ActionKind,CollectFood,cpp/include/antworld/core/entities.hpp,72,72,CollectFood,Ordinary requested action,SYS-02;FOR-06;FOR-07;FOR-08;TSK-04
+ActionKind,DeliverFood,cpp/include/antworld/core/entities.hpp,72,72,DeliverFood,Ordinary requested action,SYS-02;FOR-06;FOR-07;FOR-08;TSK-04
+ActionKind,Rest,cpp/include/antworld/core/entities.hpp,72,72,Rest,Ordinary requested action,SYS-02;FOR-06;FOR-07;FOR-08;TSK-04
+Outcome,Success,cpp/include/antworld/core/entities.hpp,82,82,Success,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,Partial,cpp/include/antworld/core/entities.hpp,82,82,Partial,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,MissingEntity,cpp/include/antworld/core/entities.hpp,82,82,MissingEntity,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,DeadActor,cpp/include/antworld/core/entities.hpp,82,82,DeadActor,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,InvalidStage,cpp/include/antworld/core/entities.hpp,82,82,InvalidStage,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,OutOfBounds,cpp/include/antworld/core/entities.hpp,82,82,OutOfBounds,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,TooFast,cpp/include/antworld/core/entities.hpp,83,83,TooFast,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,StalePosition,cpp/include/antworld/core/entities.hpp,83,83,StalePosition,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,OutOfReach,cpp/include/antworld/core/entities.hpp,83,83,OutOfReach,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,Depleted,cpp/include/antworld/core/entities.hpp,83,83,Depleted,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,Capacity,cpp/include/antworld/core/entities.hpp,83,83,Capacity,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,DuplicateAction,cpp/include/antworld/core/entities.hpp,83,83,DuplicateAction,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,InvalidTransition,cpp/include/antworld/core/entities.hpp,84,84,InvalidTransition,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,AlreadyDead,cpp/include/antworld/core/entities.hpp,84,84,AlreadyDead,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,Blocked,cpp/include/antworld/core/entities.hpp,84,84,Blocked,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,NonLocalMove,cpp/include/antworld/core/entities.hpp,84,84,NonLocalMove,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,NotAtNest,cpp/include/antworld/core/entities.hpp,84,84,NotAtNest,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,EmptyInventory,cpp/include/antworld/core/entities.hpp,84,84,EmptyInventory,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,StaleGeometry,cpp/include/antworld/core/entities.hpp,85,85,StaleGeometry,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,NonDiggable,cpp/include/antworld/core/entities.hpp,85,85,NonDiggable,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,InvalidGeometry,cpp/include/antworld/core/entities.hpp,85,85,InvalidGeometry,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Outcome,InsufficientEnergy,cpp/include/antworld/core/entities.hpp,85,85,InsufficientEnergy,"Resolution outcome, not a behavior state",SYS-02;CAR-11
+Phase,Input,cpp/include/antworld/core/event.hpp,12,12,Input,Event-order phase,SYS-01;SYS-02
+Phase,Environment,cpp/include/antworld/core/event.hpp,12,12,Environment,Event-order phase,SYS-01;SYS-02
+Phase,Perception,cpp/include/antworld/core/event.hpp,12,12,Perception,Event-order phase,SYS-01;SYS-02
+Phase,Proposals,cpp/include/antworld/core/event.hpp,12,12,Proposals,Event-order phase,SYS-01;SYS-02
+Phase,Resolution,cpp/include/antworld/core/event.hpp,12,12,Resolution,Event-order phase,SYS-01;SYS-02
+Phase,Commit,cpp/include/antworld/core/event.hpp,12,12,Commit,Event-order phase,SYS-01;SYS-02
+Phase,Publish,cpp/include/antworld/core/event.hpp,12,12,Publish,Event-order phase,SYS-01;SYS-02
+Phase,Reschedule,cpp/include/antworld/core/event.hpp,12,12,Reschedule,Event-order phase,SYS-01;SYS-02
+Kind,Diagnostic,cpp/include/antworld/core/event.hpp,37,37,Diagnostic,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Move,cpp/include/antworld/core/event.hpp,37,37,Move,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,CollectFood,cpp/include/antworld/core/event.hpp,37,37,CollectFood,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Lifecycle,cpp/include/antworld/core/event.hpp,37,37,Lifecycle,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Wake,cpp/include/antworld/core/event.hpp,37,37,Wake,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,DeliverFood,cpp/include/antworld/core/event.hpp,37,37,DeliverFood,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Rest,cpp/include/antworld/core/event.hpp,37,37,Rest,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,TrailMaintenance,cpp/include/antworld/core/event.hpp,37,37,TrailMaintenance,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Physiology,cpp/include/antworld/core/event.hpp,38,38,Physiology,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,NutritionWake,cpp/include/antworld/core/event.hpp,38,38,NutritionWake,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,IngestCargo,cpp/include/antworld/core/event.hpp,38,38,IngestCargo,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,WithdrawNest,cpp/include/antworld/core/event.hpp,38,38,WithdrawNest,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Trophallaxis,cpp/include/antworld/core/event.hpp,38,38,Trophallaxis,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,SoilAction,cpp/include/antworld/core/event.hpp,38,38,SoilAction,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,ExcavationWake,cpp/include/antworld/core/event.hpp,38,38,ExcavationWake,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,AutonomyWake,cpp/include/antworld/core/event.hpp,38,38,AutonomyWake,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,Reproduction,cpp/include/antworld/core/event.hpp,39,39,Reproduction,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,ResourceRelease,cpp/include/antworld/core/event.hpp,39,39,ResourceRelease,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,ReturnProtein,cpp/include/antworld/core/event.hpp,39,39,ReturnProtein,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,CareWake,cpp/include/antworld/core/event.hpp,39,39,CareWake,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,CareBegin,cpp/include/antworld/core/event.hpp,39,39,CareBegin,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+Kind,CareEnd,cpp/include/antworld/core/event.hpp,39,39,CareEnd,"ScheduledEvent::Kind, queued dispatch",SYS-01;SYS-02
+FactKind,Diagnostic,cpp/include/antworld/core/event.hpp,50,50,Diagnostic,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ColonySeeded,cpp/include/antworld/core/event.hpp,50,50,ColonySeeded,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,AntSeeded,cpp/include/antworld/core/event.hpp,50,50,AntSeeded,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,FoodSeeded,cpp/include/antworld/core/event.hpp,50,50,FoodSeeded,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,Moved,cpp/include/antworld/core/event.hpp,50,50,Moved,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,FoodCollected,cpp/include/antworld/core/event.hpp,50,50,FoodCollected,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ActionRejected,cpp/include/antworld/core/event.hpp,51,51,ActionRejected,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,StageChanged,cpp/include/antworld/core/event.hpp,51,51,StageChanged,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,AntDied,cpp/include/antworld/core/event.hpp,51,51,AntDied,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SurfaceConfigured,cpp/include/antworld/core/event.hpp,51,51,SurfaceConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ForagingStarted,cpp/include/antworld/core/event.hpp,51,51,ForagingStarted,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ForagingDecision,cpp/include/antworld/core/event.hpp,52,52,ForagingDecision,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,FoodDelivered,cpp/include/antworld/core/event.hpp,52,52,FoodDelivered,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,Rested,cpp/include/antworld/core/event.hpp,52,52,Rested,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,TrailMaintenance,cpp/include/antworld/core/event.hpp,52,52,TrailMaintenance,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,PhysiologyEnabled,cpp/include/antworld/core/event.hpp,53,53,PhysiologyEnabled,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,PhysiologyUpdated,cpp/include/antworld/core/event.hpp,53,53,PhysiologyUpdated,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,BehaviorChanged,cpp/include/antworld/core/event.hpp,53,53,BehaviorChanged,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,NutritionDecision,cpp/include/antworld/core/event.hpp,53,53,NutritionDecision,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,CargoIngested,cpp/include/antworld/core/event.hpp,53,53,CargoIngested,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,NestIngested,cpp/include/antworld/core/event.hpp,53,53,NestIngested,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,NutritionTransferred,cpp/include/antworld/core/event.hpp,53,53,NutritionTransferred,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,GeometryConfigured,cpp/include/antworld/core/event.hpp,54,54,GeometryConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SoilExcavated,cpp/include/antworld/core/event.hpp,54,54,SoilExcavated,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SoilDropped,cpp/include/antworld/core/event.hpp,54,54,SoilDropped,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SoilPickedUp,cpp/include/antworld/core/event.hpp,54,54,SoilPickedUp,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SoilFilled,cpp/include/antworld/core/event.hpp,54,54,SoilFilled,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ExcavationDecision,cpp/include/antworld/core/event.hpp,54,54,ExcavationDecision,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,FoodPlaced,cpp/include/antworld/core/event.hpp,54,54,FoodPlaced,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,SocialConfigured,cpp/include/antworld/core/event.hpp,55,55,SocialConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,AutonomyChanged,cpp/include/antworld/core/event.hpp,55,55,AutonomyChanged,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,AutonomyDecision,cpp/include/antworld/core/event.hpp,55,55,AutonomyDecision,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,LongTermConfigured,cpp/include/antworld/core/event.hpp,55,55,LongTermConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ReproductionEnabled,cpp/include/antworld/core/event.hpp,55,55,ReproductionEnabled,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ReproductionAttempt,cpp/include/antworld/core/event.hpp,56,56,ReproductionAttempt,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,AntBorn,cpp/include/antworld/core/event.hpp,56,56,AntBorn,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ResourceCycleConfigured,cpp/include/antworld/core/event.hpp,56,56,ResourceCycleConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ResourceReleased,cpp/include/antworld/core/event.hpp,56,56,ResourceReleased,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,ProteinRecycled,cpp/include/antworld/core/event.hpp,56,56,ProteinRecycled,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,BiologyConfigured,cpp/include/antworld/core/event.hpp,57,57,BiologyConfigured,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,CareProgramChanged,cpp/include/antworld/core/event.hpp,57,57,CareProgramChanged,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,CareTick,cpp/include/antworld/core/event.hpp,57,57,CareTick,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,BiologicalObservation,cpp/include/antworld/core/event.hpp,57,57,BiologicalObservation,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+FactKind,BroodMoved,cpp/include/antworld/core/event.hpp,57,57,BroodMoved,"Canonical fact label, not a behavior state",SYS-03;SYS-04
+Material,Void,cpp/include/antworld/core/geometry.hpp,19,19,Void,Material authority result,NST-01;NST-02
+Material,Soil,cpp/include/antworld/core/geometry.hpp,19,19,Soil,Material authority result,NST-01;NST-02
+Material,Rock,cpp/include/antworld/core/geometry.hpp,19,19,Rock,Material authority result,NST-01;NST-02
+SoilAction,Excavate,cpp/include/antworld/core/geometry.hpp,20,20,Excavate,Requested soil action,NST-03;NST-04;NST-05
+SoilAction,Drop,cpp/include/antworld/core/geometry.hpp,20,20,Drop,Requested soil action,NST-03;NST-04;NST-05
+SoilAction,Pickup,cpp/include/antworld/core/geometry.hpp,20,20,Pickup,Requested soil action,NST-03;NST-04;NST-05
+SoilAction,Fill,cpp/include/antworld/core/geometry.hpp,20,20,Fill,Requested soil action,NST-03;NST-04;NST-05
+ParcelState,Carried,cpp/include/antworld/core/geometry.hpp,21,21,Carried,Persisted soil custody,NST-03;NST-04
+ParcelState,Deposited,cpp/include/antworld/core/geometry.hpp,21,21,Deposited,Persisted soil custody,NST-03;NST-04
+ParcelState,Exhausted,cpp/include/antworld/core/geometry.hpp,21,21,Exhausted,Persisted soil custody,NST-03;NST-04
+IndividualBehavior,Paused,cpp/include/antworld/core/physiology.hpp,6,6,Paused,Ordinary task program,TSK-02;TSK-03;TSK-04;PHY-02
+IndividualBehavior,Rest,cpp/include/antworld/core/physiology.hpp,6,6,Rest,Ordinary task program,TSK-02;TSK-03;TSK-04;PHY-02
+IndividualBehavior,Nurse,cpp/include/antworld/core/physiology.hpp,6,6,Nurse,Ordinary task program,TSK-02;TSK-03;TSK-04;PHY-02
+IndividualBehavior,Forage,cpp/include/antworld/core/physiology.hpp,6,6,Forage,Ordinary task program,TSK-02;TSK-03;TSK-04;PHY-02
+IndividualBehavior,Excavate,cpp/include/antworld/core/physiology.hpp,6,6,Excavate,Ordinary task program,TSK-02;TSK-03;TSK-04;PHY-02
+DeathCause,None,cpp/include/antworld/core/physiology.hpp,7,7,None,Physiology terminal cause or unset marker,POP-02;POP-04
+DeathCause,EnergyDepleted,cpp/include/antworld/core/physiology.hpp,7,7,EnergyDepleted,Physiology terminal cause or unset marker,POP-02;POP-04
+DeathCause,Dehydrated,cpp/include/antworld/core/physiology.hpp,7,7,Dehydrated,Physiology terminal cause or unset marker,POP-02;POP-04
+DeathCause,Fixture,cpp/include/antworld/core/physiology.hpp,7,7,Fixture,Physiology terminal cause or unset marker,POP-02;POP-04
+NutritionAction,IngestCargo,cpp/include/antworld/core/physiology.hpp,43,43,IngestCargo,Requested nutrition action,NUT-05;NUT-06;NUT-07
+NutritionAction,WithdrawNest,cpp/include/antworld/core/physiology.hpp,43,43,WithdrawNest,Requested nutrition action,NUT-05;NUT-06;NUT-07
+NutritionAction,Trophallaxis,cpp/include/antworld/core/physiology.hpp,43,43,Trophallaxis,Requested nutrition action,NUT-05;NUT-06;NUT-07
+NutritionAction,ReturnProtein,cpp/include/antworld/core/physiology.hpp,43,43,ReturnProtein,Requested nutrition action,NUT-05;NUT-06;NUT-07
