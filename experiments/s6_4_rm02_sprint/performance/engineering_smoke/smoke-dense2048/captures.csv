@@ -1,0 +1,2 @@
+sim_ms,capture_ms,publish_ms,cursor,examined,selected,records,dropped,payload_bytes
+10000,3.8631000000000002,5.984,63490,63490,1408,1473,0,248917

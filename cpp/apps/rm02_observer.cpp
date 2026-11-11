@@ -334,6 +334,7 @@ std::unique_ptr<sqlite3, CloseDb> open_db(const std::filesystem::path& path, boo
         throw std::runtime_error(raw ? sqlite3_errmsg(raw) : "observer sidecar open failed");
     sqlite3_limit(raw, SQLITE_LIMIT_LENGTH, static_cast<int>(cut_limit + 32768));
     exec(raw, "PRAGMA page_size=4096; PRAGMA max_page_count=16384; PRAGMA cache_size=-768;"
+              "PRAGMA locking_mode=EXCLUSIVE;"
               "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA wal_autocheckpoint=256;"
               "PRAGMA journal_size_limit=4194304; PRAGMA foreign_keys=ON;");
     Statement journal(raw, "PRAGMA journal_mode");
@@ -516,11 +517,11 @@ Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMod
             "observer cut exceeds capacity or order");
     constexpr std::size_t batch_limit = 1024 * 1024;
     constexpr std::uint64_t batch_cuts = 16;
-    if (a.batch && a.batch_bytes + cut.payload.size() > batch_limit)
-        a.flush();
-    const auto seq = previous + 1;
     const auto packed = a.sparse_codec ? pack_cut(cut.payload) : std::vector<std::uint8_t>{};
     const auto stored = packed.empty() ? Bytes(cut.payload) : Bytes(packed);
+    if (a.batch && a.batch_bytes + stored.size() > batch_limit)
+        a.flush();
+    const auto seq = previous + 1;
     const auto digest = cut_digest(cut, seq, prior, stored);
     if (!a.batch)
         a.batch = std::make_unique<Transaction>(a.db.get());
@@ -550,7 +551,7 @@ Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMod
         throw;
     }
     a.written = {seq, cut.end.cursor, cut.end, digest};
-    a.batch_bytes += cut.payload.size();
+    a.batch_bytes += stored.size();
     if (mode == PublicationMode::Immediate || a.batch_bytes >= batch_limit || seq - a.durable.seq >= batch_cuts) {
         a.flush();
         return Publish::Committed;

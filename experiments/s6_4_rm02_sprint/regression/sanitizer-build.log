@@ -1,0 +1,5 @@
+[1/5] Building CXX object CMakeFiles/antworld_rm02_observer.dir/apps/rm02_observer.cpp.obj
+[2/5] Linking CXX static library libantworld_rm02_observer.a
+[3/5] Linking CXX executable antworld_s6_4_rm02_benchmark.exe
+[4/5] Linking CXX executable antworld_s6_4_rm02.exe
+[5/5] Linking CXX executable antworld_s6_4_rm02_tests.exe

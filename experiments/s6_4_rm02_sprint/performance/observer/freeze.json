@@ -1,0 +1,36 @@
+{
+  "source_commit": "2fb4179fcdaad73d50c7a7e1e2369f94eb95db11",
+  "cpp_tree": "33f5ed95c55124ea957dac479a889d2968b2fcbc",
+  "protocol_sha256": "65305e8ecd6a9be692bff532fd67244880e3d4190c2369a75f27f35cf36ce638",
+  "sensor_mapping_sha256": "53d9707776e7f72bd37d3f0cef6b2691b4f79791ae15d387fe4de4bef20c0353",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "executable": "antworld_s6_4_rm02_benchmark.exe",
+  "binary_sha256": "7c19c5e81fb75de99ac246b7267bbdd7995f4afdc28af3c76ee90401a8f181f9",
+  "schedules": {
+    "session1": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "session2": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "session3": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e"
+  },
+  "confirmation_sha256": "ae98ebc30aa513a2e10b8b3b04004e62ef8d3450082564b0a857c3ca2ecc449f",
+  "sources": {
+    "run_s6_3_3_1_performance.py": "df4f3034c3401ef8eff61c2070e47125181ba837357663623bec8c143290b94c",
+    "s6_3_3_1_processor_times.py": "b430327c4fb4f571ade6a14513597f78d17dd2e0bdd9d0681df3c9243d4bfbdc",
+    "s6_2_windows_telemetry.py": "4e32167b03dc83676fafb158b3ac202ebfe1a70b0d98556f7a694ae90a700540",
+    "diagnose_s6_3_2_counters.py": "fa19e9b0c1f2b114afc4402fa6cc9aec58da02fdac634e286c1f5ae2bb2d8fb5",
+    "run_s6_3_2_performance.py": "73232a32a61e21eb44b74e563fefd901eb4c58aa934be8ae2472e025aaf0e74c",
+    "run_s6_3_performance.py": "9cd91a64a6dcc02f7b76022799d0c29e06e0d5cf03dc1c43a3e157a447124907",
+    "run_s6_2_performance.py": "9a97adda7db340faf087ebbee1051fbd3610bff55230a3895eb9536e467d1594",
+    "extract_s6_2_hwinfo.py": "2ec10b56b4db41d55d4a23eab7780a475ce825b86e846129ac6cbfaf875e7157",
+    "verify_s6_3_3_1_reserve_workload.py": "e1c836c93687ada118f0b4e01782f96f3e84df9ece56f875e28e1c74c97532e0",
+    "run_s6_4_rm02_performance.py": "3d919b7b6d22d497f32a05844e00fa2236c9ab37b816cab2cc5d2ebe3ea3f934"
+  },
+  "created_utc_ns": 1794427843806518900
+}
