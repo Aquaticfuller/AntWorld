@@ -107,6 +107,11 @@ jobs:
         run: |
           ./build/ci/antworld_s6_4_rm02 build/ci/rm02-depot ecology depot 32 1
           python tools/verify_s6_4_rm02_sidecar.py build/ci/rm02-depot
+      - name: Reconcile the archived RM-02 performance gates (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          python tools/test_s6_4_rm02_performance_reconciliation.py
+          python tools/reconcile_s6_4_rm02_performance.py --check
 
   sanitizers:
     runs-on: ubuntu-24.04
