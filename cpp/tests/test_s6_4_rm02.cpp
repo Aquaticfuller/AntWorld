@@ -71,7 +71,12 @@ Decoded decode(const Cut& cut) {
         require(length <= bytes.size(), "truncated observer payload");
         const auto row = bytes.first(length);
         switch (kind) {
-        case Record::Fact: result.facts.push_back(decode_event(row)); break;
+        case Record::Fact: {
+            auto event = decode_event(row);
+            require(std::ranges::equal(row, encode_event(event)), "observer fact bytes differ from the Core codec");
+            result.facts.push_back(event);
+            break;
+        }
         case Record::State: ++result.states; break;
         case Record::Ledger: ++result.ledgers; break;
         case Record::Pending: result.pending.push_back({number(row.first<8>())}); break;
@@ -118,6 +123,11 @@ void transfers(const Path& dir) {
     f.world.advance_to({10});
     const auto gifts = observer.capture();
     const auto rows = decode(gifts);
+    const auto canonical = f.world.events_after({gifts.from}, static_cast<std::size_t>(gifts.examined));
+    for (const auto& e : rows.facts) {
+        const auto i = static_cast<std::size_t>(e.id.value - gifts.from - 1);
+        require(i < canonical.size() && e == canonical[i], "retained fact differs from the actual history");
+    }
     const auto& w = fact(rows, ws, FactKind::NutritionTransferred);
     const auto& q = fact(rows, qs, FactKind::NutritionTransferred);
     const auto& l = fact(rows, ls, FactKind::NutritionTransferred);
@@ -269,10 +279,15 @@ void recovery(const Path& dir) {
     require(checkpoint == f.world.checkpoint(), "authoritative recovery differs");
     Observer reopened(sidecar, restored.world, plan, checkpoint);
     require(reopened.publish(reopened.capture()) == Publish::Duplicate, "restored cut duplicated");
+    reopened.start_background();
     restored.world.advance_to({1000});
-    reopened.publish(reopened.capture());
+    reopened.submit(reopened.capture());
     restored.world.advance_to({2500});
-    reopened.publish(reopened.capture());
+    reopened.submit(reopened.capture());
+    reopened.flush();
+    require(reopened.committed_cuts() == 4 && reopened.background_stats().peak_payload_bytes > 0,
+            "background drain lost a queued cut");
+    reopened.anchor(restored.world.checkpoint());
     WorldRuntime off({1, 1}, 9);
     off.restore(initial);
     off.advance_to({2500});
@@ -350,6 +365,21 @@ void fault_cases(const Path& dir) {
     require(grouped.committed_cuts() == 2 && grouped.cursor() == f.world.summary().committed_events,
             "group retry did not publish the recovered interval");
     grouped.anchor(f.world.checkpoint());
+
+    Observer background(dir / "background.sqlite", f.world, plan);
+    background.publish(background.capture());
+    const auto old_cursor = background.cursor();
+    background.start_background();
+    f.world.advance_to({3500});
+    background.submit(background.capture());
+    f.world.advance_to({4000});
+    const auto at_failure = f.world.checkpoint();
+    background.submit(background.capture(), PublicationFault::BeforeCommit);
+    rejects([&] { background.flush(); });
+    require(background.committed_cuts() == 1 && background.cursor() == old_cursor &&
+                f.world.checkpoint() == at_failure, "queued publication failure changed durable or authoritative state");
+    background.publish(background.capture());
+    background.anchor(at_failure);
 
     RuntimeLimits limits;
     limits.events_per_timestamp = 1;

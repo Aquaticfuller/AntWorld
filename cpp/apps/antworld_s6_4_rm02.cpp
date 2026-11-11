@@ -73,6 +73,7 @@ int run(const std::filesystem::path& dir, std::string_view mode, std::string_vie
     bool complete = true;
     try {
         observer = std::make_unique<Observer>(dir / "observer.sqlite", world, plan);
+        observer->start_background();
     } catch (const std::exception& e) {
         complete = false;
         errors << "open " << e.what() << '\n';
@@ -83,17 +84,18 @@ int run(const std::filesystem::path& dir, std::string_view mode, std::string_vie
             if (!observer)
                 throw std::runtime_error("observer unavailable");
             const auto begin = Clock::now();
-            const auto cut = observer->capture();
+            auto cut = observer->capture();
             const auto capture_ms = ms(begin);
+            const auto size = cut.payload.size();
             const auto write_start = Clock::now();
-            const auto publication = observer->publish(cut, PublicationFault::None, PublicationMode::Buffered);
+            observer->submit(std::move(cut));
             const auto publish_ms = ms(write_start);
             complete = complete && !cut.dropped;
             trace << current.now.milliseconds << ',' << cut.end.cursor << ',' << cut.end.revision << ','
                   << cut.examined << ',' << cut.selected << ',' << cut.records << ',' << cut.dropped << ','
                   << static_cast<unsigned>(cut.pending) << ',' << static_cast<unsigned>(cut.neighbors) << ','
-                  << cut.payload.size() << ',' << capture_ms << ',' << publish_ms << ','
-                  << (cut.dropped ? "OVERFLOW" : publication == Publish::Staged ? "STAGED" : "COMMITTED") << '\n';
+                  << size << ',' << capture_ms << ',' << publish_ms << ','
+                  << (cut.dropped ? "OVERFLOW" : "QUEUED") << '\n';
         } catch (const std::exception& e) {
             complete = false;
             trace << current.now.milliseconds << ',' << current.committed_events << ',' << current.revision

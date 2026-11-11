@@ -46,6 +46,8 @@ def analyse_cell(samples, cuts, complete):
     measured_cuts = [r for r in cuts if int(r["block"]) > 0]
     metrics = ("setup_ms", "observer_init_ms", "advance_ms", "total_ms", "checkpoint_ms", "restore_ms",
                "peak_rss_bytes", "sqlite_bytes", "wal_bytes_at_cut", "flush_ms")
+    if measure and "background_write_ms" in measure[0]:
+        metrics += ("background_write_ms", "peak_queue_bytes")
     for arm in ("off", "on"):
         arm_rows = [r for r in measure if r["arm"] == arm]
         if arm_rows:

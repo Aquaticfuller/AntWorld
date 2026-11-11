@@ -45,3 +45,17 @@ The version measured at `2fb4179fcdaad73d50c7a7e1e2369f94eb95db11` produced 504 
 ### Publication correction for the next frozen batch
 
 The second candidate bounds the 16-cut group by one MiB of encoded input and retains the one-cut memory budget and SQLite page cache. The v2 payload, digest, authoritative comparison, terminal flush, sync mode and automatic WAL checkpoint interval are identical. An uncompressed cut larger than the group limit still uses its own transaction. The observer is the only live owner and takes an exclusive SQLite lock. Closed exports use the same independently decoded database. The second run repeats all three observer cells and complete admission and analysis rules. The native executables and tested Core work are identical to the earlier qualified gates.
+
+The second candidate produced 504 rows with three qualified sessions. The depot median was still above the frozen ceiling and the first session recorded a 310.89 ms cut, of which 310.22 ms was synchronous publication. The final flush maximum was 22.10 ms. Both dense cases again passed. All rows, including the stalls, remain in the archive. [Second raw batch](../../experiments/s6_4_rm02_sprint/performance/observer_encoded/) [Second analysis](../../experiments/s6_4_rm02_sprint/performance/observer_encoded_analysis.json)
+
+| Workload | P50 ratio | P95 ratio | P99 ratio | Off/off P50 | Verdict |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Dense-512 | 1.0453× | 0.9914× | 0.9035× | 1.0030× | PASS |
+| Dense-2,048 | 1.0283× | 1.0261× | 1.0076× | 1.0029× | PASS |
+| Depot-32, day 90 | 1.1026× | 1.1123× | 1.3714× | 0.9928× | FAIL |
+
+### Bounded background publication and canonical encoding
+
+The third candidate uses one sidecar writer thread that never queries the runtime. The owner thread captures at the original cuts, encodes and submits to a bounded queue. Foreground preflight waits for room before allocating a cut. At most 64 work items can be outstanding, including the current write. Packed queue capacity is limited to 2,500 KiB, with a single larger raw cut admitted alone. Capturing waits until the queue and the next raw reservation fit in 3 MiB. One further MiB covers packing scratch and bounded public-query staging. SQLite's cache and working set remain measured separately. File ownership, FULL synchronization and grouped commit remain unchanged. The writer drains before an anchor. A failure preserves the last durable prefix and wakes the producer with a retained observation error. Both worker and owner remain on the same benchmark CPU.
+
+The capture path writes the Core's canonical event wire fields into a stack row rather than allocating a new vector per fact. The wire format is checked against `encode_event` and actual `events_after` history in CTest. The independent Python reader also decodes the bytes and reconciles them against the detached state and anchor. Raw scopes, cut locations, ordering and facts remain the same. Timing continues through real writer drain. The foreground budget includes capture and submission. Final drain, overlapping writer wall time and peak queued bytes are recorded separately.

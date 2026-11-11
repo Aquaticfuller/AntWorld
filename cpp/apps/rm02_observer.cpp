@@ -6,7 +6,13 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <chrono>
+#include <condition_variable>
+#include <deque>
+#include <exception>
+#include <mutex>
 #include <stdexcept>
+#include <thread>
 #include <utility>
 
 namespace antworld::rm02 {
@@ -36,19 +42,20 @@ constexpr auto schema = R"sql(
 struct Row {
     std::array<std::uint8_t, 512> bytes{};
     std::size_t size{};
-    void put(std::uint64_t value) {
-        require(size + 8 <= bytes.size(), "observer row exceeds fixed capacity");
-        for (unsigned shift = 0; shift < 64; shift += 8)
+    void put(std::uint64_t value, unsigned width = 8) {
+        require(size + width <= bytes.size(), "observer row exceeds fixed capacity");
+        for (unsigned shift = 0; shift < 8 * width; shift += 8)
             bytes[size++] = static_cast<std::uint8_t>(value >> shift);
     }
+    void real(double value) { put(std::bit_cast<std::uint64_t>(value)); }
     void mass(FoodMass value) {
         for (auto component : value.components())
             put(component);
     }
     void position(PositionM value) {
-        put(std::bit_cast<std::uint64_t>(value.x));
-        put(std::bit_cast<std::uint64_t>(value.y));
-        put(std::bit_cast<std::uint64_t>(value.z));
+        real(value.x);
+        real(value.y);
+        real(value.z);
     }
     [[nodiscard]] Bytes view() const { return Bytes(bytes).first(size); }
 };
@@ -165,6 +172,43 @@ void append(Cut& cut, Record type, Bytes record, std::size_t cap) {
         cut.payload.push_back(static_cast<std::uint8_t>(record.size() >> shift));
     cut.payload.insert(cut.payload.end(), record.begin(), record.end());
     ++cut.records;
+}
+
+// The public fact wire format, encoded into the observer's bounded row buffer.
+// Tests compare every retained fact byte with the authoritative encode_event.
+void capture_fact(Cut& cut, const WorldEvent& e, std::size_t cap) {
+    Row row;
+    row.put(e.id.value);
+    row.put(e.world.high);
+    row.put(e.world.low);
+    row.put(static_cast<std::uint64_t>(e.time.milliseconds));
+    row.put(e.source.value);
+    row.put(static_cast<unsigned>(e.action), 1);
+    row.put(e.revision);
+    row.put(e.payload);
+    row.put(e.random_value);
+    row.put(static_cast<unsigned>(e.kind), 1);
+    row.put(e.actor.value);
+    row.put(e.colony.value);
+    row.put(e.resource.value);
+    row.position(e.position);
+    row.mass(e.transferred);
+    row.put(static_cast<unsigned>(e.stage), 1);
+    row.put(static_cast<unsigned>(e.outcome), 1);
+    row.put(static_cast<unsigned>(e.mode), 1);
+    row.put(static_cast<unsigned>(e.reason), 1);
+    row.real(e.deposited_units);
+    row.put(e.forgot_memory, 1);
+    if (e.kind == FactKind::BiologicalObservation) {
+        row.put(static_cast<unsigned>(e.observation.phase), 1);
+        row.put(static_cast<unsigned>(e.observation.act), 1);
+        row.put(e.observation.target.value);
+        row.put(e.observation.bout.value);
+        row.put(static_cast<std::uint64_t>(e.observation.began_at.milliseconds));
+        row.put(e.observation.duration_known, 1);
+        row.position(e.observation.destination);
+    }
+    append(cut, Record::Fact, row.view(), cap);
 }
 
 bool relevant(const WorldEvent& fact) {
@@ -365,6 +409,106 @@ struct Observer::Impl {
     std::size_t batch_bytes{};
     bool sparse_codec{true};
 
+    struct Background {
+        struct Item { Cut cut; PublicationFault fault; };
+        Impl& owner;
+        Tail captured;
+        std::mutex mutex;
+        std::condition_variable ready;
+        std::deque<Item> queue;
+        std::size_t outstanding{}, entries{};
+        BackgroundStats stats;
+        bool closing{};
+        std::exception_ptr failure;
+        std::thread thread;
+
+        explicit Background(Impl& observer)
+            : owner(observer), captured(observer.written), thread([this] { run(); }) {}
+        ~Background() { close(); }
+
+        void close() {
+            {
+                const std::scoped_lock lock(mutex);
+                closing = true;
+            }
+            ready.notify_all();
+            if (thread.joinable())
+                thread.join();
+        }
+        void room(std::size_t maximum_pending) {
+            std::unique_lock lock(mutex);
+            ready.wait(lock, [&] { return failure || (outstanding <= maximum_pending && entries < 64); });
+            if (failure)
+                std::rethrow_exception(failure);
+        }
+        void submit(Cut&& cut, PublicationFault fault) {
+            constexpr std::size_t pending_budget = 2500 * 1024;
+            const auto bytes = cut.payload.capacity();
+            room(bytes < pending_budget ? pending_budget - bytes : 0);
+            {
+                const std::scoped_lock lock(mutex);
+                if (failure)
+                    std::rethrow_exception(failure);
+                const auto next = cut.end;
+                queue.push_back({std::move(cut), fault});
+                outstanding += bytes;
+                ++entries;
+                stats.peak_payload_bytes = std::max(stats.peak_payload_bytes, outstanding);
+                captured = {captured.seq + 1, next.cursor, next, {}};
+            }
+            ready.notify_one();
+        }
+        void run() noexcept {
+            try {
+                using Clock = std::chrono::steady_clock;
+                const auto record = [&](Clock::time_point start) {
+                    stats.write_ms += std::chrono::duration<double, std::milli>(Clock::now() - start).count();
+                };
+                for (;;) {
+                    std::size_t bytes{};
+                    {
+                        Item item;
+                        {
+                            std::unique_lock lock(mutex);
+                            ready.wait(lock, [&] { return closing || !queue.empty(); });
+                            if (queue.empty())
+                                break;
+                            item = std::move(queue.front());
+                            queue.pop_front();
+                        }
+                        bytes = item.cut.payload.capacity();
+                        const auto started = Clock::now();
+                        owner.append_cut(item.cut, item.cut.payload, item.fault, PublicationMode::Buffered);
+                        record(started);
+                    }
+                    {
+                        const std::scoped_lock lock(mutex);
+                        outstanding -= bytes;
+                        --entries;
+                    }
+                    ready.notify_all();
+                }
+                const auto started = Clock::now();
+                owner.flush();
+                record(started);
+            } catch (...) {
+                owner.discard();
+                {
+                    const std::scoped_lock lock(mutex);
+                    failure = std::current_exception();
+                    queue.clear();
+                    outstanding = 0;
+                    entries = 0;
+                }
+                ready.notify_all();
+            }
+        }
+    };
+    std::unique_ptr<Background> background;
+    BackgroundStats last_background;
+
+    Publish append_cut(const Cut& cut, Bytes stored, PublicationFault fault, PublicationMode mode);
+
     void discard() noexcept {
         batch.reset();
         written = durable;
@@ -469,7 +613,7 @@ Observer::~Observer() = default;
 
 Cut Observer::capture() const {
     const auto& a = *impl_;
-    const auto& [seq, origin, last, prior] = a.written;
+    const auto& [seq, origin, last, prior] = a.background ? a.background->captured : a.written;
     const auto state = a.world.summary();
     Cut cut{};
     cut.world = state.world;
@@ -480,7 +624,15 @@ Cut Observer::capture() const {
             "observer cannot read a foreign or rewound runtime");
     if (seq && cut.end == last)
         return cut;
-    cut.payload.reserve(a.plan.payload_limit);
+    constexpr std::size_t max_fact_record = 215;
+    constexpr std::size_t max_state_record = 277;
+    const auto event_count = std::min<std::uint64_t>(cut.end.cursor - origin, a.plan.payload_limit);
+    const auto estimate = std::min(a.plan.payload_limit, static_cast<std::size_t>(event_count) * max_fact_record +
+        (a.plan.focal.size() + 1) * max_state_record + (a.plan.pending ? pending_limit * 61 : 0) +
+        (a.plan.neighbor_actor.value ? focal_limit * 37 : 0));
+    if (a.background)
+        a.background->room(3 * 1024 * 1024 - estimate);
+    cut.payload.reserve(estimate);
     for (auto cursor = cut.from; cursor < cut.end.cursor;) {
         const auto limit = static_cast<std::size_t>(std::min<std::uint64_t>(fact_page, cut.end.cursor - cursor));
         const auto page = a.world.events_after({cursor}, limit);
@@ -491,7 +643,7 @@ Cut Observer::capture() const {
             ++cut.examined;
             if (projected(a.plan, fact)) {
                 ++cut.selected;
-                append(cut, Record::Fact, encode_event(fact), a.plan.payload_limit);
+                capture_fact(cut, fact, a.plan.payload_limit);
             }
         }
     }
@@ -503,12 +655,10 @@ Cut Observer::capture() const {
     return cut;
 }
 
-Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMode mode) {
-    auto& a = *impl_;
+Publish Observer::Impl::append_cut(const Cut& cut, Bytes stored, PublicationFault fault, PublicationMode mode) {
+    auto& a = *this;
     auto& [previous, cursor, last, prior] = a.written;
-    const auto current = a.world.summary();
-    require(cut.world == a.world_id && cut.world == current.world && cut.end == boundary(current),
-            "observer cannot publish a stale or foreign cut");
+    require(cut.world == a.world_id, "observer cannot publish a foreign cut");
     if (previous && cut.end == last)
         return Publish::Duplicate;
     check_header(cut, cursor);
@@ -517,8 +667,6 @@ Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMod
             "observer cut exceeds capacity or order");
     constexpr std::size_t batch_limit = 1024 * 1024;
     constexpr std::uint64_t batch_cuts = 16;
-    const auto packed = a.sparse_codec ? pack_cut(cut.payload) : std::vector<std::uint8_t>{};
-    const auto stored = packed.empty() ? Bytes(cut.payload) : Bytes(packed);
     if (a.batch && a.batch_bytes + stored.size() > batch_limit)
         a.flush();
     const auto seq = previous + 1;
@@ -559,11 +707,57 @@ Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMod
     return Publish::Staged;
 }
 
-void Observer::flush() { impl_->flush(); }
+Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMode mode) {
+    auto& a = *impl_;
+    const auto current = a.world.summary();
+    require(!a.background && cut.world == current.world && cut.end == boundary(current),
+            "observer cannot publish a stale, foreign or background-owned cut");
+    const auto packed = a.sparse_codec ? pack_cut(cut.payload) : std::vector<std::uint8_t>{};
+    return a.append_cut(cut, packed.empty() ? Bytes(cut.payload) : Bytes(packed), fault, mode);
+}
 
+void Observer::start_background() {
+    auto& a = *impl_;
+    require(!a.background && !a.batch, "observer already owns an open publication");
+    a.background = std::make_unique<Impl::Background>(a);
+}
+
+void Observer::submit(Cut&& cut, PublicationFault fault) {
+    auto& a = *impl_;
+    const auto current = a.world.summary();
+    require(a.background && cut.world == current.world && cut.end == boundary(current),
+            "observer cannot submit a stale or foreign cut");
+    const auto& tail = a.background->captured;
+    require(!tail.seq || tail.last != cut.end, "duplicate queued cut");
+    check_header(cut, tail.cursor);
+    require(cut.payload.size() <= a.plan.payload_limit, "queued cut exceeds capacity");
+    const auto packed = a.sparse_codec ? pack_cut(cut.payload) : std::vector<std::uint8_t>{};
+    if (!packed.empty())
+        cut.payload = std::vector<std::uint8_t>(packed.begin(), packed.end());
+    a.background->submit(std::move(cut), fault);
+}
+
+void Observer::flush() {
+    auto& a = *impl_;
+    if (a.background) {
+        a.background->close();
+        const auto failure = a.background->failure;
+        a.last_background = a.background->stats;
+        a.background.reset();
+        if (failure)
+            std::rethrow_exception(failure);
+        return;
+    }
+    a.flush();
+}
+
+BackgroundStats Observer::background_stats() const {
+    require(!impl_->background, "join the observer before querying its publication statistics");
+    return impl_->last_background;
+}
 void Observer::anchor(Bytes checkpoint) {
     auto& a = *impl_;
-    require(!a.batch && a.durable.seq && !checkpoint.empty() && a.world.summary().world == a.world_id &&
+    require(!a.background && !a.batch && a.durable.seq && !checkpoint.empty() && a.world.summary().world == a.world_id &&
             a.durable.last == boundary(a.world.summary()), "observer anchor requires the current durable cut");
     const auto digest = sha256(checkpoint);
     Transaction tx(a.db.get());
@@ -580,6 +774,12 @@ void Observer::anchor(Bytes checkpoint) {
     tx.commit();
 }
 
-std::uint64_t Observer::committed_cuts() const { return impl_->durable.seq; }
-std::uint64_t Observer::cursor() const { return impl_->durable.cursor; }
+std::uint64_t Observer::committed_cuts() const {
+    require(!impl_->background, "join the observer before querying its durable count");
+    return impl_->durable.seq;
+}
+std::uint64_t Observer::cursor() const {
+    require(!impl_->background, "join the observer before querying its durable cursor");
+    return impl_->durable.cursor;
+}
 } // namespace antworld::rm02

@@ -40,6 +40,10 @@ struct Cut {
 enum class Publish { Committed, Staged, Duplicate };
 enum class PublicationMode { Immediate, Buffered };
 enum class PublicationFault { None, BeforeCommit };
+struct BackgroundStats {
+    double write_ms{};
+    std::size_t peak_payload_bytes{};
+};
 
 // A live instance is bound to one owner-thread continuation. After restoring
 // the runtime, reopen against the exact paired checkpoint on a new instance.
@@ -56,7 +60,10 @@ public:
     [[nodiscard]] Cut capture() const;
     Publish publish(const Cut&, PublicationFault = PublicationFault::None,
                     PublicationMode = PublicationMode::Immediate);
+    void start_background();
+    void submit(Cut&&, PublicationFault = PublicationFault::None);
     void flush();
+    [[nodiscard]] BackgroundStats background_stats() const;
     void anchor(std::span<const std::uint8_t> checkpoint);
     [[nodiscard]] std::uint64_t committed_cuts() const;
     [[nodiscard]] std::uint64_t cursor() const;

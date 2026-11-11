@@ -26,8 +26,10 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     const auto database = folder / "observer.sqlite";
     const auto init_begin = Clock::now();
     std::unique_ptr<Observer> observer;
-    if (on)
+    if (on) {
         observer = std::make_unique<Observer>(database, world, Plan{"performance", std::move(focal), {}, !dense});
+        observer->start_background();
+    }
     const auto init = elapsed(init_begin);
     struct Captured {
         double read_ms, write_ms;
@@ -38,13 +40,13 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     cuts.reserve(dense ? 1 : 91);
     const auto observe = [&] {
         const auto begin = Clock::now();
-        const auto cut = observer->capture();
+        auto cut = observer->capture();
+        const auto payload = cut.payload.size();
         const auto middle = Clock::now();
-        const auto status = observer->publish(cut, PublicationFault::None, PublicationMode::Buffered);
+        observer->submit(std::move(cut));
         const auto finish = Clock::now();
-        require(status != Publish::Duplicate, "duplicate benchmark cut");
         cuts.push_back({elapsed(begin, middle), elapsed(middle, finish), cut.end.time.milliseconds,
-                        cut.end.cursor, cut.examined, cut.selected, cut.records, cut.dropped, cut.payload.size()});
+                        cut.end.cursor, cut.examined, cut.selected, cut.records, cut.dropped, payload});
     };
     double advance{};
     const Stamp begin;
@@ -64,6 +66,7 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     }
     const auto flush_ms = elapsed(flush_begin);
     const Stamp finish;
+    const auto background = on ? observer->background_stats() : BackgroundStats{};
     const auto [rss, peak] = performance::memory();
     const auto state = world.snapshot();
     const auto work = world.contact_work();
@@ -94,14 +97,15 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     };
     auto summary = open("sample.csv");
     summary << "setup_ms,observer_init_ms,advance_ms,total_ms,start_utc_ns,end_utc_ns,cpu_ns,cycles,"
-               "start_processor,end_processor,checkpoint_ms,restore_ms,rss_bytes,peak_rss_bytes,sqlite_bytes,wal_bytes_at_cut,flush_ms,"
+               "start_processor,end_processor,checkpoint_ms,restore_ms,rss_bytes,peak_rss_bytes,sqlite_bytes,wal_bytes_at_cut,"
+               "flush_ms,background_write_ms,peak_queue_bytes,"
                "sim_ms,events,pending,decisions,candidates,bucket_queries,tree_visits,maximum_candidates,"
                "state_hash,trace_hash,checkpoint_bytes,checkpoint_sha256,exact_restore,conserved\n"
             << setup << ',' << init << ',' << advance << ',' << elapsed(begin.wall, finish.wall)
             << ',' << begin.utc << ',' << finish.utc << ',' << finish.cpu - begin.cpu
             << ',' << finish.cycles - begin.cycles << ',' << begin.processor << ',' << finish.processor
             << ',' << checkpoint_ms << ',' << restore_ms << ',' << rss << ',' << peak << ',' << disk
-            << ',' << wal_bytes << ',' << flush_ms << ','
+            << ',' << wal_bytes << ',' << flush_ms << ',' << background.write_ms << ',' << background.peak_payload_bytes << ','
             << end << ',' << state.committed_events << ',' << state.pending_events << ',' << work.decisions
             << ',' << work.candidates_examined << ',' << work.bucket_queries << ',' << work.tree_visits
             << ',' << work.maximum_candidates << ',' << state.state_hash << ',' << state.trace_hash
