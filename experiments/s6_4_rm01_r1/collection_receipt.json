@@ -1,0 +1,145 @@
+{
+  "collection_revision": "5d836c1b2711540bc6570e304a2c0aa51a1128c4",
+  "protocol_revision": "9b31879732e7bc9466b043736dd252210ab89613",
+  "core_tree": "2b9d475fdb0d657dc87e46755d6511779da0c8b4",
+  "python": "3.12.14",
+  "working_directory": "repository root",
+  "hwinfo_csv_argument": "D:/Codex_workspace/whinfo_log/hwinfo_log.CSV",
+  "collection": {
+    "argv": [
+      "python",
+      "tools/run_s6_3_3_1_performance.py",
+      "--out",
+      "out/s6_4_rm01_r1/controlled",
+      "--build",
+      "build/s6_3_4-release",
+      "--archive",
+      "out/s6_4_rm01_r1/sensors",
+      "--hwinfo-csv",
+      "D:/Codex_workspace/whinfo_log/hwinfo_log.CSV"
+    ],
+    "exit_code": 0,
+    "batch_result_sha256": "f07032ea9e917e512a11ea44b55c4eb7fd383e5ce5a1093ed3f665168ab83c2f",
+    "stdout_stderr_log_sha256": "a104a3f7bff2e31cb52c7f631c489c0e9c0631e8f9bf1de24c0e5f4c16b6c325",
+    "outcome": "COLLECTION_FINISHED",
+    "completed": [
+      "contacts/session1",
+      "contacts/session2",
+      "contacts/session3",
+      "births/session1",
+      "births/session2",
+      "births/session3"
+    ],
+    "started_utc_ns": 1794417433197143700,
+    "ended_utc_ns": 1794418058313605700
+  },
+  "analysis": {
+    "argv": [
+      "python",
+      "tools/analyze_s6_3_3_1_performance.py",
+      "--raw",
+      "out/s6_4_rm01_r1/controlled",
+      "--out",
+      "out/s6_4_rm01_r1/analysis"
+    ],
+    "exit_code": 0,
+    "status_sha256": "bc75e4c6f94a494545e4207bcddb284244456420268fbf50496543af64b93697",
+    "growth_sha256": "5bcb520165c849ceab57b6df3fa68ec6eaecf4483bebc5b89af9e1cb3f4ec5b9",
+    "outcomes": [
+      {
+        "kind": "contacts",
+        "status": "PASS",
+        "qualified_sessions": "3",
+        "required_sessions": "3",
+        "raw_rows": "336",
+        "planned_rows": "336",
+        "batch": "COLLECTION_FINISHED"
+      },
+      {
+        "kind": "births",
+        "status": "PASS",
+        "qualified_sessions": "3",
+        "required_sessions": "3",
+        "raw_rows": "168",
+        "planned_rows": "168",
+        "batch": "COLLECTION_FINISHED"
+      }
+    ]
+  },
+  "local_only": {
+    "hwinfo": "Localized source snapshots retained at out/s6_4_rm01_r1/sensors.",
+    "host_metadata": "Unrelated host process inventories retained in the local JSON originals.",
+    "host_metadata_omissions": [
+      {
+        "path": "controlled/births/configuration.json",
+        "local_original_sha256": "4f40b6de45787e4313fbf6d06fe6c0697f239a33302b7510edfbcf5978c88542",
+        "published_sha256": "8b997ec0618bde14d45b053f808f9c49adc48304e6f89380e4ae54c7448322c4"
+      },
+      {
+        "path": "controlled/births/session1/admission1_receipt.json",
+        "local_original_sha256": "dcbc425bc9e13ef61032280bc8e9f18040812e857d000fcd4cf07e93f48e9f74",
+        "published_sha256": "d45a80d2f1c161ca4afe3124b5004b83474920045da7be6a1ffaedb3e4461479"
+      },
+      {
+        "path": "controlled/births/session1/receipt.json",
+        "local_original_sha256": "4386541e33cb7110b9fa3dbf6198b81d41058a5d1c0d3efbf6cb940756544f40",
+        "published_sha256": "d80d6ffe23a78c129cf7455b983e36d22831d2040878de8567a74d027f98c867"
+      },
+      {
+        "path": "controlled/births/session2/admission1_receipt.json",
+        "local_original_sha256": "75a4d282d73df64cbd0dbfd1100095fa26fffcae852f310747e9a63f72d26289",
+        "published_sha256": "3c0c82e698a7a01649b317af36c95527e54f110febc25c8a65b1124bfce9c8c1"
+      },
+      {
+        "path": "controlled/births/session2/receipt.json",
+        "local_original_sha256": "c31505fe931c57e93f01be8789bbe10279ac32b3b2d4c2d3c48bb1759d458ecd",
+        "published_sha256": "0ff2307fb206a34700643ad6156f7c3b2f6a49373dbcf149ddc40106fc37a5a7"
+      },
+      {
+        "path": "controlled/births/session3/admission1_receipt.json",
+        "local_original_sha256": "e912cf7e228b1a8a2ad1f7d9f34e1e880cfeb50f2bd7ece41cfa13dbc24a66f8",
+        "published_sha256": "e4a568762329a0c524597201ac01c1820969245d0da0a785b7a6831aef8a711f"
+      },
+      {
+        "path": "controlled/births/session3/receipt.json",
+        "local_original_sha256": "c2fe6a0713897435771f03f756ad8b51d59cab29a97e3233f492d26602d39e45",
+        "published_sha256": "c3ed6ede9d0c307d9ca3e6acea7cd8df375906440c10d7bd8e8965ac183821e3"
+      },
+      {
+        "path": "controlled/contacts/configuration.json",
+        "local_original_sha256": "b98e6ca5ed667afe0bd65720004cb76c46c85c7e92d44a3626dec01f8a495639",
+        "published_sha256": "ffec29834b5e432975639928de6c15bdb93c581e45015c4bdc9cc83fa0ef2448"
+      },
+      {
+        "path": "controlled/contacts/session1/admission1_receipt.json",
+        "local_original_sha256": "6d15f0a373c8db45411b3a0ef1042ea45259e3c760cc1b70427ff240d222b9e7",
+        "published_sha256": "7705b95ec32c48b44d2edfd151165c72689c2f8fb9bd18b1c58f71146a41dc14"
+      },
+      {
+        "path": "controlled/contacts/session1/receipt.json",
+        "local_original_sha256": "e7d3c7ecace4671987be59488555f693121fc4e01447bebdcadcaa60f88c4a8c",
+        "published_sha256": "a5727a0f1f170023be1f4c886d188ad0014435ffe126ef3f84cfbbc42aee12cd"
+      },
+      {
+        "path": "controlled/contacts/session2/admission1_receipt.json",
+        "local_original_sha256": "24b573f82a639627f32c362c053c794252045fcc37d4482963c27b558e59e5d5",
+        "published_sha256": "b9922daa7cbc1c6b06d245445229a7dfe3bf32d733a5ea2682e86a4f622fabfe"
+      },
+      {
+        "path": "controlled/contacts/session2/receipt.json",
+        "local_original_sha256": "0f07d93603b96d093496cd5ff88380a5c58da97125d0e01fc4abc77724e22d0a",
+        "published_sha256": "17fb62ef647b3b854d29fde836b7dd12e053113d717803a22502ba3c6af55cd0"
+      },
+      {
+        "path": "controlled/contacts/session3/admission1_receipt.json",
+        "local_original_sha256": "bbd3e84a648449e57968c655e51335dcc3b6931d858a886b77c8a48dfaa860e8",
+        "published_sha256": "a6ac02ede13003c978b6b89a82a820faf3c86d40f2e85c5ccb9f68cc1dd01c46"
+      },
+      {
+        "path": "controlled/contacts/session3/receipt.json",
+        "local_original_sha256": "b6350200ee18cfc32703e254c2b494524e62b33ef762f057d9fe7b70590c8e85",
+        "published_sha256": "bfea1de43d222802801809b421dbc7a75dfc507e89713c79c6827fab7ad4fb4b"
+      }
+    ]
+  }
+}

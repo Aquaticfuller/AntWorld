@@ -2,13 +2,14 @@
 
 The [frozen R1 protocol](../../research/s6_4_rm01/RM01_R1_PERFORMANCE_PROTOCOL.md) defines the eligible Windows host, workload identities, admissions, estimators and stop rules. The [qualification report](../../research/s6_4_rm01/RM01_R1_PERFORMANCE_QUALIFICATION.md) records the actual outcome. The [original RM-01 evidence](../s6_4_rm01/README.md) remains at its reviewed paths.
 
-The [payload digest index](payload_sha256.json) covers the freeze, six schedules, workload identity, host preflight and reproduction receipt. The schedules contain planned rows. The host preflight records the absence of current sensor readings before any new admission or formal timing.
+The [payload digest index](payload_sha256.json) covers the freeze, schedules, workload identity, initial preflight, six session archives and analysis. The preflight records stale telemetry before admission. The later [collection receipt](collection_receipt.json) records the completed batch and identifies the local-only process metadata. Each session directory contains the complete admission and timed records, phase intervals, compressed native telemetry and mapped HWiNFO observations. The six schedules include warm-ups and diagnostics and match the 504 actual timing rows.
 
 ## Verify the accepted evidence
 
 ```powershell
 python tools/verify_s6_4_rm01_results.py experiments/s6_4_rm01/assay --observer experiments/s6_4_rm01/observer
 python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_rm01/controlled --out experiments/s6_4_rm01/controlled/analysis --check
+python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_rm01_r1/controlled --out experiments/s6_4_rm01_r1/analysis --check
 ```
 
 ## Reproduce the controlled batch

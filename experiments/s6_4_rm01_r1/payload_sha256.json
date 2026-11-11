@@ -1,27 +1,327 @@
 {
+  "analysis/admissions.csv": {
+    "bytes": 872,
+    "sha256": "687a6a7ea0f77afbbcd77736bd2d3a84fd1a7d83065c11d0f220e62d4fa12042"
+  },
+  "analysis/cpu_cycles.csv": {
+    "bytes": 2237,
+    "sha256": "4652f3e30766488d6f8344dcb17ea321c8e4ad356036df97062c8fc76e4e6e40"
+  },
+  "analysis/growth.csv": {
+    "bytes": 1848,
+    "sha256": "5bcb520165c849ceab57b6df3fa68ec6eaecf4483bebc5b89af9e1cb3f4ec5b9"
+  },
+  "analysis/latency.csv": {
+    "bytes": 12002,
+    "sha256": "5da31bf164cf58163181700656b89ff26d7b8ee2e9a7b67db04a0f1405b380ee"
+  },
+  "analysis/paired_ratios.csv": {
+    "bytes": 19848,
+    "sha256": "88e597967a0778e58290214a3d5aa10b26f4e967b7b8f9a3e77011b8bbe7c334"
+  },
+  "analysis/profile.csv": {
+    "bytes": 25104,
+    "sha256": "d67aa7f1e747d6ea5a8c71742b0cfd5b1f9cdcbfe9dc7f0a52f87b7d16979a23"
+  },
+  "analysis/sessions.csv": {
+    "bytes": 335,
+    "sha256": "e140502763ac4a3e13c9b6a43dcea990ada9896b17821385f0771ab6d100710d"
+  },
+  "analysis/status.csv": {
+    "bytes": 167,
+    "sha256": "bc75e4c6f94a494545e4207bcddb284244456420268fbf50496543af64b93697"
+  },
+  "analysis/telemetry.csv": {
+    "bytes": 4047,
+    "sha256": "e868293a4d9680baac01e351128936ba21db5f66082aad62129d925efaa190ff"
+  },
+  "analysis/work.csv": {
+    "bytes": 6360,
+    "sha256": "965e11cbb38bd435c02b2a8d4abd23aa6e65c03bf154fcb15f5ad5fd6556caf3"
+  },
+  "collection_receipt.json": {
+    "bytes": 6204,
+    "sha256": "0c0b51d7d4a8795359c038974f78bb3dc62dbb2b45281955e134ece9329eec4f"
+  },
+  "controlled/batch_result.json": {
+    "bytes": 284,
+    "sha256": "f07032ea9e917e512a11ea44b55c4eb7fd383e5ce5a1093ed3f665168ab83c2f"
+  },
+  "controlled/batch_start.json": {
+    "bytes": 135,
+    "sha256": "8bfc3d16a765351d52f2c9abacb377e706c1e833b86baab53a3549e69b0b1061"
+  },
+  "controlled/births/configuration.json": {
+    "bytes": 2342,
+    "sha256": "8b997ec0618bde14d45b053f808f9c49adc48304e6f89380e4ae54c7448322c4"
+  },
+  "controlled/births/session1/admission1.csv": {
+    "bytes": 108867,
+    "sha256": "c446fdd15e0affc8da70e5c4a75a9af0503ff6ac7e26a9ccfea433641a570539"
+  },
+  "controlled/births/session1/admission1_receipt.json": {
+    "bytes": 1003,
+    "sha256": "d45a80d2f1c161ca4afe3124b5004b83474920045da7be6a1ffaedb3e4461479"
+  },
+  "controlled/births/session1/births.csv": {
+    "bytes": 9934,
+    "sha256": "bcf65b840efd291e963d0c7155ba3a5414bf54ee868b6dac0543b79a809aca3f"
+  },
+  "controlled/births/session1/hwinfo.csv": {
+    "bytes": 1421,
+    "sha256": "5ee68ac28c6f921a1ea2d9eb6a088b8321180ad8cf2093edadbb8fb47bfcbcde"
+  },
+  "controlled/births/session1/hwinfo_provenance.json": {
+    "bytes": 504,
+    "sha256": "314d206625065fc3bec6c5abf6d5e1076084a5ec0f849012b1df60120d0124d4"
+  },
+  "controlled/births/session1/native.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controlled/births/session1/phases.csv": {
+    "bytes": 19404,
+    "sha256": "6ff9c5a06c3262e93dad67ba15cdcc5f928a3b96b438d2326bd53e2f91c844a7"
+  },
+  "controlled/births/session1/profile.csv": {
+    "bytes": 92535,
+    "sha256": "d9e37ce64cb3eaff2215b54a80c4033c3cf3c736c6fdc0b9a0013f5009e1e36b"
+  },
+  "controlled/births/session1/receipt.json": {
+    "bytes": 1025,
+    "sha256": "d80d6ffe23a78c129cf7455b983e36d22831d2040878de8567a74d027f98c867"
+  },
   "controlled/births/session1/schedule.csv": {
     "bytes": 1715,
     "sha256": "3b93dce86585d453187501a212f257debc1f87d16325ab0ef3d65cf3e6513923"
+  },
+  "controlled/births/session1/telemetry.csv.gz": {
+    "bytes": 11961,
+    "sha256": "3499a3459c4095b46fd76031ee298216e6a943374bd9f5f7637890151dcaa5f2"
+  },
+  "controlled/births/session2/admission1.csv": {
+    "bytes": 108726,
+    "sha256": "38e1aacfe41d499c7cae79688e9051e9f25a24ecc2a9a987ad01bcc157db54f9"
+  },
+  "controlled/births/session2/admission1_receipt.json": {
+    "bytes": 1020,
+    "sha256": "3c0c82e698a7a01649b317af36c95527e54f110febc25c8a65b1124bfce9c8c1"
+  },
+  "controlled/births/session2/births.csv": {
+    "bytes": 9964,
+    "sha256": "29a7a9e4d60c34e08d7300e1affd1ebecf88fc8c5d9383e7aa39bc749256a5ba"
+  },
+  "controlled/births/session2/hwinfo.csv": {
+    "bytes": 1419,
+    "sha256": "8ed4100b91edec5318e7a0b27ad40aeab0f9b16487e2b6c7fd194d0f87c33d1f"
+  },
+  "controlled/births/session2/hwinfo_provenance.json": {
+    "bytes": 504,
+    "sha256": "aae84d702a41e3b768e2aa196d1c38c15991b78b590e404d58473dcd9eee5fe8"
+  },
+  "controlled/births/session2/native.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controlled/births/session2/phases.csv": {
+    "bytes": 19433,
+    "sha256": "86c4248a99565c1dbcc4d4a09f2c3c59dee5ecc1449389ce3a8e115285e8243e"
+  },
+  "controlled/births/session2/profile.csv": {
+    "bytes": 92535,
+    "sha256": "d9e37ce64cb3eaff2215b54a80c4033c3cf3c736c6fdc0b9a0013f5009e1e36b"
+  },
+  "controlled/births/session2/receipt.json": {
+    "bytes": 1025,
+    "sha256": "0ff2307fb206a34700643ad6156f7c3b2f6a49373dbcf149ddc40106fc37a5a7"
   },
   "controlled/births/session2/schedule.csv": {
     "bytes": 1715,
     "sha256": "5fbfde4553c538d8cc0a13c1aa46ec35fb1a0f33b5aca7a83af24af7d0dc2592"
   },
+  "controlled/births/session2/telemetry.csv.gz": {
+    "bytes": 12321,
+    "sha256": "bc44e2ab1d5391c0497ba10044add4936ab5fd04abb8025c1c519436162b2db2"
+  },
+  "controlled/births/session3/admission1.csv": {
+    "bytes": 108850,
+    "sha256": "03eee4238b6bf5c850a25dde4c697be811e5e27de9b6f8184d4ad1d83ccde42a"
+  },
+  "controlled/births/session3/admission1_receipt.json": {
+    "bytes": 1018,
+    "sha256": "e4a568762329a0c524597201ac01c1820969245d0da0a785b7a6831aef8a711f"
+  },
+  "controlled/births/session3/births.csv": {
+    "bytes": 9969,
+    "sha256": "3b8a45b79e0410849e24ada5c0f588c24962e5cc66504dd2c706f798d0e34566"
+  },
+  "controlled/births/session3/hwinfo.csv": {
+    "bytes": 1426,
+    "sha256": "9c4d8bbc3c378162a860b4253ed1e7ff237191abe953afd74d0f9f601e4233f0"
+  },
+  "controlled/births/session3/hwinfo_provenance.json": {
+    "bytes": 504,
+    "sha256": "ec87a4b4f5964bc0d64d4458b70b227269231a0a4a52d1ac891c40be494ad435"
+  },
+  "controlled/births/session3/native.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controlled/births/session3/phases.csv": {
+    "bytes": 19383,
+    "sha256": "4b7f8329cce280cce369945f0386b11f6fb6965e876f98fbbdbbd221e7c807ea"
+  },
+  "controlled/births/session3/profile.csv": {
+    "bytes": 92535,
+    "sha256": "d9e37ce64cb3eaff2215b54a80c4033c3cf3c736c6fdc0b9a0013f5009e1e36b"
+  },
+  "controlled/births/session3/receipt.json": {
+    "bytes": 1026,
+    "sha256": "c3ed6ede9d0c307d9ca3e6acea7cd8df375906440c10d7bd8e8965ac183821e3"
+  },
   "controlled/births/session3/schedule.csv": {
     "bytes": 1715,
     "sha256": "398bc32891dad2e1bb0df8130de7171a72e9ab0a09635d492e69a14444d7989b"
+  },
+  "controlled/births/session3/telemetry.csv.gz": {
+    "bytes": 12104,
+    "sha256": "5c659b2d4eaac9a91b7f03f8cee49e87de458f11e30784aa1652fc7bfbda20c9"
+  },
+  "controlled/contacts/configuration.json": {
+    "bytes": 2344,
+    "sha256": "ffec29834b5e432975639928de6c15bdb93c581e45015c4bdc9cc83fa0ef2448"
+  },
+  "controlled/contacts/session1/admission1.csv": {
+    "bytes": 113669,
+    "sha256": "bca30e7e8bd38401d093e6243145a7057f95903d6b0b014493662972f40d9676"
+  },
+  "controlled/contacts/session1/admission1_receipt.json": {
+    "bytes": 1018,
+    "sha256": "7705b95ec32c48b44d2edfd151165c72689c2f8fb9bd18b1c58f71146a41dc14"
+  },
+  "controlled/contacts/session1/contacts.csv": {
+    "bytes": 24873,
+    "sha256": "56c06b7e2d79a117b9f1b0a588835da3205747ac2ff22b9eede580fc306a38d7"
+  },
+  "controlled/contacts/session1/hwinfo.csv": {
+    "bytes": 5775,
+    "sha256": "5286d30f01465ce77844df5b53fc43001c51f731ed761bbe3100549e7cfc54e6"
+  },
+  "controlled/contacts/session1/hwinfo_provenance.json": {
+    "bytes": 505,
+    "sha256": "1db0c34971187c1b210ad8cb6e26e93fd4b897b019639f3f3db9f1b295fe9052"
+  },
+  "controlled/contacts/session1/native.log": {
+    "bytes": 75,
+    "sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf"
+  },
+  "controlled/contacts/session1/phases.csv": {
+    "bytes": 38593,
+    "sha256": "d3c46c30fe30e673a4c9b20034345f09fb47b898084f024c8c9528f973074564"
+  },
+  "controlled/contacts/session1/profile.csv": {
+    "bytes": 172631,
+    "sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2"
+  },
+  "controlled/contacts/session1/receipt.json": {
+    "bytes": 1028,
+    "sha256": "a5727a0f1f170023be1f4c886d188ad0014435ffe126ef3f84cfbbc42aee12cd"
   },
   "controlled/contacts/session1/schedule.csv": {
     "bytes": 3618,
     "sha256": "f7d9d58db993eb65b2049443630b88680598c355a7e1a5193aa2eaa5ead25aac"
   },
+  "controlled/contacts/session1/telemetry.csv.gz": {
+    "bytes": 163763,
+    "sha256": "8ef6ed02b0501bc93ce8f39c8408e9ae9483a0407309c16c32f97b4f512be1b1"
+  },
+  "controlled/contacts/session2/admission1.csv": {
+    "bytes": 109512,
+    "sha256": "e7fc6e5a3e5b54f1da1722352afd729315afe30910df14d0834c071ce0a506a0"
+  },
+  "controlled/contacts/session2/admission1_receipt.json": {
+    "bytes": 1019,
+    "sha256": "b9922daa7cbc1c6b06d245445229a7dfe3bf32d733a5ea2682e86a4f622fabfe"
+  },
+  "controlled/contacts/session2/contacts.csv": {
+    "bytes": 24960,
+    "sha256": "c8be24903a6919217f1da9da2af5e720c6a439c5229db7e7258f7b7e6248f890"
+  },
+  "controlled/contacts/session2/hwinfo.csv": {
+    "bytes": 5815,
+    "sha256": "13b3aa10627ec4afca90decd4fa9ce7c6fe7db622301623f84336ec26e03c579"
+  },
+  "controlled/contacts/session2/hwinfo_provenance.json": {
+    "bytes": 505,
+    "sha256": "a0a176f695daac593b11591f921cad2b6e785268498dc7e20f285f420b1cd4f5"
+  },
+  "controlled/contacts/session2/native.log": {
+    "bytes": 75,
+    "sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf"
+  },
+  "controlled/contacts/session2/phases.csv": {
+    "bytes": 38672,
+    "sha256": "7a03d408b6efd848c276b2ded7f6aef6f274edd1697ff479e2c644f670fbc039"
+  },
+  "controlled/contacts/session2/profile.csv": {
+    "bytes": 172631,
+    "sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2"
+  },
+  "controlled/contacts/session2/receipt.json": {
+    "bytes": 1028,
+    "sha256": "17fb62ef647b3b854d29fde836b7dd12e053113d717803a22502ba3c6af55cd0"
+  },
   "controlled/contacts/session2/schedule.csv": {
     "bytes": 3618,
     "sha256": "e742c85c7f615c7060235c17b61e730f0442ef8053d266750b448fb6eed786f6"
   },
+  "controlled/contacts/session2/telemetry.csv.gz": {
+    "bytes": 167789,
+    "sha256": "332bd6a02d565864ff0e88e82f1ccd9482267bb82d3bb8b19b6886ef7ad76897"
+  },
+  "controlled/contacts/session3/admission1.csv": {
+    "bytes": 110813,
+    "sha256": "c6dc59c0f2649c1c64ed90c7f55572098fb54f27f7d7b1545752ef8ce2c62377"
+  },
+  "controlled/contacts/session3/admission1_receipt.json": {
+    "bytes": 1018,
+    "sha256": "a6ac02ede13003c978b6b89a82a820faf3c86d40f2e85c5ccb9f68cc1dd01c46"
+  },
+  "controlled/contacts/session3/contacts.csv": {
+    "bytes": 24783,
+    "sha256": "81274d2a24a3056e273513d9ac300ec36e2ba6f49cfc3a24460d179cef524327"
+  },
+  "controlled/contacts/session3/hwinfo.csv": {
+    "bytes": 5798,
+    "sha256": "cab61d2adfbbf445f9a7946fd4bf4949ab2a8582da77314823a5ec0f05c97b8d"
+  },
+  "controlled/contacts/session3/hwinfo_provenance.json": {
+    "bytes": 505,
+    "sha256": "abd5499705582991e7eaf6c48f1ea4a3f9ba7eaaea75d58464f73ccb8a811d58"
+  },
+  "controlled/contacts/session3/native.log": {
+    "bytes": 75,
+    "sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf"
+  },
+  "controlled/contacts/session3/phases.csv": {
+    "bytes": 38490,
+    "sha256": "d7953bb9971a9ba79496e293f0aed4c9f6f7da3bdf1feadac0f41290c02d782b"
+  },
+  "controlled/contacts/session3/profile.csv": {
+    "bytes": 172631,
+    "sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2"
+  },
+  "controlled/contacts/session3/receipt.json": {
+    "bytes": 1027,
+    "sha256": "bfea1de43d222802801809b421dbc7a75dfc507e89713c79c6827fab7ad4fb4b"
+  },
   "controlled/contacts/session3/schedule.csv": {
     "bytes": 3618,
     "sha256": "28e80966427d8c9bba88d1902e63977712f5bb5fe0c3f92a05e2434b4ecf0e9f"
+  },
+  "controlled/contacts/session3/telemetry.csv.gz": {
+    "bytes": 162611,
+    "sha256": "8798a29cbb34775dad861a39b1a6fa6d0876b744789cd25310eb4ab81abebcd7"
   },
   "controlled/freeze.json": {
     "bytes": 3077,
@@ -38,5 +338,9 @@
   "reproduction_receipt.json": {
     "bytes": 1960,
     "sha256": "f6630b6f15824e6e84e9b82771cba099e2157beaeab5778ea6e0383b44abeed4"
+  },
+  "runner_console.log": {
+    "bytes": 2925,
+    "sha256": "a104a3f7bff2e31cb52c7f631c489c0e9c0631e8f9bf1de24c0e5f4c16b6c325"
   }
 }
