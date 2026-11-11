@@ -1,0 +1,143 @@
+{
+  "B08": {
+    "workbook_sha256": "6c9f0705d4e8969404e90667cc1d48ab861597f5aa6eda53b79a4b9e325cfb98",
+    "pdf_supplement_sha256": "c0c2df92320315ed58fc0ae49382eb55d4fb7972515c0556f4384f032654dc4d",
+    "workbook_headers_per_block": [
+      "Time (min)",
+      "Id of the donor",
+      "Id of the receiver"
+    ],
+    "workbook_blocks": [
+      {
+        "workbook_colony_column": 1,
+        "scan_rows": 240,
+        "duplicate_scan_rows": 1,
+        "directed_run_starts_unique_tuples": 103,
+        "directed_run_start_rows_retaining_duplicates": 104
+      },
+      {
+        "workbook_colony_column": 2,
+        "scan_rows": 249,
+        "duplicate_scan_rows": 0,
+        "directed_run_starts_unique_tuples": 90,
+        "directed_run_start_rows_retaining_duplicates": 90
+      },
+      {
+        "workbook_colony_column": 3,
+        "scan_rows": 254,
+        "duplicate_scan_rows": 2,
+        "directed_run_starts_unique_tuples": 75,
+        "directed_run_start_rows_retaining_duplicates": 75
+      },
+      {
+        "workbook_colony_column": 4,
+        "scan_rows": 327,
+        "duplicate_scan_rows": 0,
+        "directed_run_starts_unique_tuples": 129,
+        "directed_run_start_rows_retaining_duplicates": 129
+      },
+      {
+        "workbook_colony_column": 5,
+        "scan_rows": 254,
+        "duplicate_scan_rows": 0,
+        "directed_run_starts_unique_tuples": 95,
+        "directed_run_start_rows_retaining_duplicates": 95
+      }
+    ],
+    "total_scan_rows": 1324,
+    "total_directed_run_starts_unique_tuples": 492,
+    "total_directed_run_start_rows_retaining_duplicates": 493,
+    "published_table_s1_events_in_pdf_order": [
+      129,
+      104,
+      90,
+      77,
+      95
+    ]
+  },
+  "B07": {
+    "dryad_archive_sha256": "fa359ee2bfddb20d46cf9e1b1a8354c33be72b2487a4e2797679bd41e96d181e",
+    "archive_members": [
+      "02_Survival_development_and_growth.R",
+      "03_Workers_phenotype.R",
+      "04_Diet_preference.R",
+      "DATA_combined.txt",
+      "LasiusFieldDietPrefData.txt",
+      "LasiusTimeLapseCarb.txt",
+      "LasiusTimeLapseDiet.txt",
+      "LasiusTimeLapseProtein.txt",
+      "Lasius_Wild_Data(day1_2).txt",
+      "Lasius_pulse_analysis.R",
+      "Lasius_pulseisotopedata.txt",
+      "Lniger_preference.txt",
+      "fat_content.txt",
+      "head_size.txt",
+      "neonig_average_field.txt",
+      "nig_average_field.txt"
+    ],
+    "focal_growth_rows": 712,
+    "focal_growth_colony_labels": 89,
+    "focal_complete_census_2_and_8_pairs": 80,
+    "pulse_species": "Lasius neoniger",
+    "pulse_nonblank_sample_ids": 32,
+    "pulse_blank_sample_id_rows": 1960,
+    "pulse_colonies_by_enriched_diet": {
+      "Yes": 5,
+      "No": 3
+    },
+    "pulse_rows_by_enriched_diet_caste_hour": [
+      [
+        "No",
+        "L",
+        24,
+        3
+      ],
+      [
+        "No",
+        "L",
+        96,
+        3
+      ],
+      [
+        "No",
+        "W",
+        24,
+        3
+      ],
+      [
+        "No",
+        "W",
+        96,
+        3
+      ],
+      [
+        "Yes",
+        "L",
+        24,
+        5
+      ],
+      [
+        "Yes",
+        "L",
+        96,
+        5
+      ],
+      [
+        "Yes",
+        "W",
+        24,
+        5
+      ],
+      [
+        "Yes",
+        "W",
+        96,
+        5
+      ]
+    ]
+  },
+  "N01": {
+    "verified_pdf_sha256": "b1da7d29b5a7673eba8ccf2f9b0b9270c4024d5db7aadd1f60bf27406c8f0070",
+    "event_level_data": "NOT_AVAILABLE_IN_REVIEWED_ASSETS"
+  }
+}
