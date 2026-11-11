@@ -1,0 +1,65 @@
+[
+  {
+    "path": "debug-build.log",
+    "source_sha256": "828fe3ae986e642bd6bfd8671e13572c02926431b9f9748d178f8157dfb56659",
+    "public_sha256": "828fe3ae986e642bd6bfd8671e13572c02926431b9f9748d178f8157dfb56659",
+    "bytes": 329,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "debug-ctest.log",
+    "source_sha256": "cf108fc3f5d2de7cea78d113d35751471a211a59c5e73caaa167a1b2176b0c7d",
+    "public_sha256": "cf108fc3f5d2de7cea78d113d35751471a211a59c5e73caaa167a1b2176b0c7d",
+    "bytes": 25902,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "debug-status.txt",
+    "source_sha256": "5db50a4c357eda5c4f4fe92e8e72e58c2705bab9c983d23e085e3cd4b800252f",
+    "public_sha256": "5db50a4c357eda5c4f4fe92e8e72e58c2705bab9c983d23e085e3cd4b800252f",
+    "bytes": 23,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "release-build.log",
+    "source_sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+    "public_sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+    "bytes": 23,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "release-ctest.log",
+    "source_sha256": "4b146f01828a1ddc151bd2cfa3b4c55adc0b988fe5027081b86a77eedfc45c1b",
+    "public_sha256": "4b146f01828a1ddc151bd2cfa3b4c55adc0b988fe5027081b86a77eedfc45c1b",
+    "bytes": 25906,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "release-status.txt",
+    "source_sha256": "2b4de47dc3543f068ad117662c82851ab69799aa24cf674bf7e420d3c980bf1b",
+    "public_sha256": "2b4de47dc3543f068ad117662c82851ab69799aa24cf674bf7e420d3c980bf1b",
+    "bytes": 25,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "sanitizer-build.log",
+    "source_sha256": "828fe3ae986e642bd6bfd8671e13572c02926431b9f9748d178f8157dfb56659",
+    "public_sha256": "828fe3ae986e642bd6bfd8671e13572c02926431b9f9748d178f8157dfb56659",
+    "bytes": 329,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "sanitizer-ctest.log",
+    "source_sha256": "18d6056f1792cbffcdde31d892d5bac1d4be7f033d82cd40129d56b53c129aa9",
+    "public_sha256": "18d6056f1792cbffcdde31d892d5bac1d4be7f033d82cd40129d56b53c129aa9",
+    "bytes": 25910,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "sanitizer-status.txt",
+    "source_sha256": "466b9316dcb30d56dafe0fba7dfd4a0ba8ea43e52432e36bc2a6c478a09460ae",
+    "public_sha256": "466b9316dcb30d56dafe0fba7dfd4a0ba8ea43e52432e36bc2a6c478a09460ae",
+    "bytes": 27,
+    "process_inventory_removed": false
+  }
+]
