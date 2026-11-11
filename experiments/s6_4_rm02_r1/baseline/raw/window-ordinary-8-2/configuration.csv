@@ -1,0 +1,2 @@
+mode,arm,workers,seed,horizon_ms,world_id,lineage,fixture_status,initial_sha256
+window,ordinary,8,2,172800000,00000000-0000-003f-0000-000000000001,window-ordinary-8-2,ENGINEERING_FIXTURE,9a40b6fafd8e8d9d580f244a0379f12960b0c25016a2748e9d0bb09183c4cc73

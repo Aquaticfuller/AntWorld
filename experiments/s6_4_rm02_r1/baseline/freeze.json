@@ -1,0 +1,530 @@
+{
+  "phase0_commit": "6f6a69f45b0fff0ba3227039de36158b0994cbc4",
+  "source_commit": "97370d8b841f9c9f9a0798e29be486cf6862ff01",
+  "cpp_tree": "a95539621cdf682cb1e0427e1e9f0896aa0bfbb1",
+  "configuration": "Release",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "executable": "antworld_s6_4_rm02.exe",
+  "binary_sha256": "1c329a595bc6cbc141ba8e5e70cf7e9f9a85689f00b1d8f35737f29c3284d0ef",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "protocol_sha256": "65305e8ecd6a9be692bff532fd67244880e3d4190c2369a75f27f35cf36ce638",
+  "runner_sha256": "0302a513710c73a76ced8ba3f59a167b5b5b401220c3a22c552e6e66ac565a77",
+  "host": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "jobs": 1,
+  "started_utc_ns": 1794435528545227700,
+  "assay_args": "OUTPUT MODE ARM WORKERS SEED",
+  "fixture_status": "ENGINEERING_FIXTURE",
+  "cases": [
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 1,
+      "case": "ecology-depot-8-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 2,
+      "case": "ecology-depot-8-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 3,
+      "case": "ecology-depot-8-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 4,
+      "case": "ecology-depot-8-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 5,
+      "case": "ecology-depot-8-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 6,
+      "case": "ecology-depot-8-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 1,
+      "case": "ecology-depot-32-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 2,
+      "case": "ecology-depot-32-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 3,
+      "case": "ecology-depot-32-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 4,
+      "case": "ecology-depot-32-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 5,
+      "case": "ecology-depot-32-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 6,
+      "case": "ecology-depot-32-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 1,
+      "case": "ecology-ordinary-8-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 2,
+      "case": "ecology-ordinary-8-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 3,
+      "case": "ecology-ordinary-8-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 4,
+      "case": "ecology-ordinary-8-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 5,
+      "case": "ecology-ordinary-8-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 6,
+      "case": "ecology-ordinary-8-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 1,
+      "case": "ecology-ordinary-32-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 2,
+      "case": "ecology-ordinary-32-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 3,
+      "case": "ecology-ordinary-32-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 4,
+      "case": "ecology-ordinary-32-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 5,
+      "case": "ecology-ordinary-32-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 6,
+      "case": "ecology-ordinary-32-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 1,
+      "case": "ecology-scarce-8-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 2,
+      "case": "ecology-scarce-8-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 3,
+      "case": "ecology-scarce-8-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 4,
+      "case": "ecology-scarce-8-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 5,
+      "case": "ecology-scarce-8-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 6,
+      "case": "ecology-scarce-8-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 1,
+      "case": "ecology-scarce-32-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 2,
+      "case": "ecology-scarce-32-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 3,
+      "case": "ecology-scarce-32-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 4,
+      "case": "ecology-scarce-32-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 5,
+      "case": "ecology-scarce-32-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 6,
+      "case": "ecology-scarce-32-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 1,
+      "case": "ecology-empty-8-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 2,
+      "case": "ecology-empty-8-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 3,
+      "case": "ecology-empty-8-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 4,
+      "case": "ecology-empty-8-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 5,
+      "case": "ecology-empty-8-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 6,
+      "case": "ecology-empty-8-6"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 1,
+      "case": "ecology-empty-32-1"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 2,
+      "case": "ecology-empty-32-2"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 3,
+      "case": "ecology-empty-32-3"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 4,
+      "case": "ecology-empty-32-4"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 5,
+      "case": "ecology-empty-32-5"
+    },
+    {
+      "mode": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 6,
+      "case": "ecology-empty-32-6"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 1,
+      "case": "window-ordinary-8-1"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 2,
+      "case": "window-ordinary-8-2"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 3,
+      "case": "window-ordinary-8-3"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 4,
+      "case": "window-ordinary-8-4"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 5,
+      "case": "window-ordinary-8-5"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 6,
+      "case": "window-ordinary-8-6"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 1,
+      "case": "window-ordinary-32-1"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 2,
+      "case": "window-ordinary-32-2"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 3,
+      "case": "window-ordinary-32-3"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 4,
+      "case": "window-ordinary-32-4"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 5,
+      "case": "window-ordinary-32-5"
+    },
+    {
+      "mode": "window",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 6,
+      "case": "window-ordinary-32-6"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 1,
+      "case": "dense-dense-512-1"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 2,
+      "case": "dense-dense-512-2"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 3,
+      "case": "dense-dense-512-3"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 4,
+      "case": "dense-dense-512-4"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 5,
+      "case": "dense-dense-512-5"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 512,
+      "seed": 6,
+      "case": "dense-dense-512-6"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 1,
+      "case": "dense-dense-2048-1"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 2,
+      "case": "dense-dense-2048-2"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 3,
+      "case": "dense-dense-2048-3"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 4,
+      "case": "dense-dense-2048-4"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 5,
+      "case": "dense-dense-2048-5"
+    },
+    {
+      "mode": "dense",
+      "arm": "dense",
+      "workers": 2048,
+      "seed": 6,
+      "case": "dense-dense-2048-6"
+    }
+  ]
+}

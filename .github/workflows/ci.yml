@@ -112,6 +112,9 @@ jobs:
         run: |
           python tools/test_s6_4_rm02_performance_reconciliation.py
           python tools/reconcile_s6_4_rm02_performance.py --check
+      - name: Verify the frozen RM-02 R1 baseline (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: python tools/verify_s6_4_rm02_r1_baseline.py
 
   sanitizers:
     runs-on: ubuntu-24.04

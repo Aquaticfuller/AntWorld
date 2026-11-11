@@ -1,0 +1,19 @@
+{
+  "cases": 72,
+  "exact_accepted_cases": 72,
+  "incomplete_cases": [],
+  "analysis_rows": {
+    "runs": 72,
+    "horizons": 60,
+    "body_cuts": 120216,
+    "queen_timeseries": 5688,
+    "gifts": 56636,
+    "uptake": 600540,
+    "requests": 0,
+    "opportunity_coverage": 240,
+    "queen_death_stocks": 37,
+    "queen_gift_followup": 27983,
+    "paired_contrasts": 120
+  },
+  "source_freeze_sha256": "6f4968b6331fdf99a1ced130bca48e02bf53fefd2bf975146ed33020299aff5e"
+}

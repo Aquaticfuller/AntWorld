@@ -1,0 +1,2 @@
+sim_ms,cursor,revision,examined,selected,records,dropped,pending_coverage,neighbor_coverage,payload_bytes,capture_ms,publish_ms,status
+10000,15874,31746,15874,1408,1473,0,0,0,248917,0.96389999999999998,0.27439999999999998,QUEUED

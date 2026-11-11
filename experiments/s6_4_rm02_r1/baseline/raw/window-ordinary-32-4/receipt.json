@@ -1,0 +1,87 @@
+{
+  "mode": "window",
+  "arm": "ordinary",
+  "workers": 32,
+  "seed": 4,
+  "case": "window-ordinary-32-4",
+  "exit_code": 0,
+  "artifacts": {
+    "initial.chk": {
+      "path": "initial.chk.gz",
+      "bytes": 43665,
+      "sha256": "b254160bbd5c339f5d2a7a75cd5c0f0a6ef2c3443be964d8493b39060fa1a4b1",
+      "archived_sha256": "63a5a59ba51f956b410d024f4e376a738b18caf85eea0f8b6600df81e23a12bc",
+      "archived_bytes": 3299
+    },
+    "final.chk": {
+      "path": "final.chk.gz",
+      "bytes": 197644,
+      "sha256": "ee44914aa2e2489a8b9a4e89ff0788a3c1710fa79af0379e2f5fcebc23781ed3",
+      "archived_sha256": "ea3b81274f20c3d6e44a59c7880f387f2672cb08325bd3d8fa9ed9fcc8259581",
+      "archived_bytes": 15060
+    },
+    "observer.sqlite": {
+      "path": "observer.sqlite.gz",
+      "bytes": 131072,
+      "sha256": "d3946b5ab2379dca44c220658937a505e130e1884c23da28b72d72c3a9ed6823",
+      "archived_sha256": "613d5a0f93d84bf93ac6c745b03ec5715ad3fe626495d3048f01162f859443ea",
+      "archived_bytes": 22595
+    },
+    "configuration.csv": {
+      "path": "configuration.csv",
+      "bytes": 254,
+      "sha256": "a756d1869e720162e172afb0469cfb3c4a618b9d37eef57d255be9fbaf073499",
+      "archived_sha256": "a756d1869e720162e172afb0469cfb3c4a618b9d37eef57d255be9fbaf073499",
+      "archived_bytes": 254
+    },
+    "summary.csv": {
+      "path": "summary.csv",
+      "bytes": 424,
+      "sha256": "d6d5d482d0aa8cd5297ec3e1f454552e46aa95781fbaa433d94cde924fa851c0",
+      "archived_sha256": "d6d5d482d0aa8cd5297ec3e1f454552e46aa95781fbaa433d94cde924fa851c0",
+      "archived_bytes": 424
+    },
+    "cuts.csv": {
+      "path": "cuts.csv",
+      "bytes": 1776,
+      "sha256": "61e371f115a0922a2f63735ca5a2344ec61d8204bbc7ef489c34a389ab71f777",
+      "archived_sha256": "61e371f115a0922a2f63735ca5a2344ec61d8204bbc7ef489c34a389ab71f777",
+      "archived_bytes": 1776
+    },
+    "errors.log": {
+      "path": "errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_bytes": 0
+    },
+    "program.log": {
+      "path": "program.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived_bytes": 0
+    }
+  },
+  "summary": {
+    "status": "ENGINEERING_PASS",
+    "sim_ms": "172800000",
+    "events": "1047",
+    "pending": "100",
+    "individuals": "34",
+    "living": "34",
+    "state_hash": "afe7bd178aeb0711",
+    "trace_hash": "83605864f500c877",
+    "checkpoint_bytes": "197644",
+    "checkpoint_sha256": "ee44914aa2e2489a8b9a4e89ff0788a3c1710fa79af0379e2f5fcebc23781ed3",
+    "advance_ms": "17.344100000000001",
+    "observer_complete": "1",
+    "rejoined": "1",
+    "exact_off": "1",
+    "contact_decisions": "448",
+    "candidates": "4096",
+    "bucket_queries": "6912",
+    "tree_visits": "20848",
+    "maximum_candidates": "16"
+  }
+}

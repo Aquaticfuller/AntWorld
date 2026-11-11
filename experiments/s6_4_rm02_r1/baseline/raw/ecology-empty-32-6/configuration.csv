@@ -1,0 +1,2 @@
+mode,arm,workers,seed,horizon_ms,world_id,lineage,fixture_status,initial_sha256
+ecology,empty,32,6,7776000000,00000000-0000-003f-0000-000000000001,ecology-empty-32-6,ENGINEERING_FIXTURE,177c65b0aa38f312ef19680527058fe0856ac3ecdc161fe1b104acd8642909c2

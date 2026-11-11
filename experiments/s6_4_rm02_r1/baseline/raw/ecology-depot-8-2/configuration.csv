@@ -1,0 +1,2 @@
+mode,arm,workers,seed,horizon_ms,world_id,lineage,fixture_status,initial_sha256
+ecology,depot,8,2,15552000000,00000000-0000-003f-0000-000000000001,ecology-depot-8-2,ENGINEERING_FIXTURE,976b3221753d4f99085f1ac138df05abcc423560c360b085b682cdd33f9345b9

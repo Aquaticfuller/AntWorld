@@ -1,0 +1,2 @@
+mode,arm,workers,seed,horizon_ms,world_id,lineage,fixture_status,initial_sha256
+dense,dense,512,5,10000,00000000-0000-0006-0000-000000000006,dense-dense-512-5,ENGINEERING_FIXTURE,55697c6f7641579433e0043ead608022e215895191d0a72c23f073b9fd1e3e2d

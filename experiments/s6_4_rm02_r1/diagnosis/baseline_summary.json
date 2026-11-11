@@ -1,0 +1,865 @@
+{
+  "accepted_cases": 72,
+  "total": {
+    "events": 8383077,
+    "cuts": 5700,
+    "examined": 8383077,
+    "scoped_facts": 2359508,
+    "lost": 0,
+    "crop_checks": 120216,
+    "NutritionTransferred": 56636,
+    "positive_pulses": 304231,
+    "zero_pulses": 296309,
+    "ActionRejected": 29574,
+    "raw_bytes": 422016088,
+    "stored_bytes": 108286612
+  },
+  "by_mode": {
+    "dense": {
+      "events": 476184,
+      "cuts": 12,
+      "examined": 476184,
+      "scoped_facts": 16896,
+      "lost": 0,
+      "crop_checks": 768,
+      "NutritionTransferred": 0,
+      "positive_pulses": 7680,
+      "zero_pulses": 0,
+      "ActionRejected": 0,
+      "raw_bytes": 2987004,
+      "stored_bytes": 690188
+    },
+    "ecology": {
+      "events": 7898937,
+      "cuts": 5448,
+      "examined": 7898937,
+      "scoped_facts": 2334716,
+      "lost": 0,
+      "crop_checks": 114408,
+      "NutritionTransferred": 56636,
+      "positive_pulses": 296299,
+      "zero_pulses": 294545,
+      "ActionRejected": 28374,
+      "raw_bytes": 416093536,
+      "stored_bytes": 106905566
+    },
+    "window": {
+      "events": 7956,
+      "cuts": 240,
+      "examined": 7956,
+      "scoped_facts": 7896,
+      "lost": 0,
+      "crop_checks": 5040,
+      "NutritionTransferred": 0,
+      "positive_pulses": 252,
+      "zero_pulses": 1764,
+      "ActionRejected": 1200,
+      "raw_bytes": 2935548,
+      "stored_bytes": 690858
+    }
+  },
+  "ecology": [
+    {
+      "day": 180,
+      "arm": "depot",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 6,
+        "eggs": 472,
+        "hatches": 466,
+        "eclosed": 435,
+        "larval_deaths": 0,
+        "nutrition_decisions": 257363,
+        "nutrition_examined": 818944,
+        "nutrition_zero_examined": 206179,
+        "partial_gifts": 5021,
+        "nurse_switches": 55027,
+        "foraging_switches": 3679,
+        "worker_to_worker_gifts": 36,
+        "worker_to_queen_gifts": 5493,
+        "worker_to_larva_gifts": 21081
+      },
+      "means": {
+        "queen_days_alive": 180.0,
+        "queen_energy_nj": 1349833333.3333333,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 55521.833333333336,
+        "queen_uptake_water_ug": 20225.333333333332,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 55321.833333333336,
+        "worker_to_queen_water_ug": 20025.333333333332,
+        "worker_to_queen_protein_ug": 1473.3333333333333,
+        "worker_to_larva_protein_ug": 6056.0
+      },
+      "death_or_censor": {
+        "RIGHT_CENSORED": 6
+      }
+    },
+    {
+      "day": 180,
+      "arm": "depot",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 0,
+        "eggs": 33,
+        "hatches": 33,
+        "eclosed": 20,
+        "larval_deaths": 13,
+        "nutrition_decisions": 43588,
+        "nutrition_examined": 78734,
+        "nutrition_zero_examined": 37157,
+        "partial_gifts": 2001,
+        "nurse_switches": 6583,
+        "foraging_switches": 524,
+        "worker_to_worker_gifts": 3372,
+        "worker_to_queen_gifts": 643,
+        "worker_to_larva_gifts": 1894
+      },
+      "means": {
+        "queen_days_alive": 62.55594135802469,
+        "queen_energy_nj": 0.0,
+        "queen_crop_carb_ug": 14.0,
+        "queen_uptake_carb_ug": 6709.833333333333,
+        "queen_uptake_water_ug": 2670.3333333333335,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 6523.833333333333,
+        "worker_to_queen_water_ug": 2473.0,
+        "worker_to_queen_protein_ug": 40.166666666666664,
+        "worker_to_larva_protein_ug": 353.0
+      },
+      "death_or_censor": {
+        "energy_depleted": 6
+      }
+    },
+    {
+      "day": 90,
+      "arm": "depot",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 6,
+        "eggs": 211,
+        "hatches": 205,
+        "eclosed": 176,
+        "larval_deaths": 0,
+        "nutrition_decisions": 90389,
+        "nutrition_examined": 335168,
+        "nutrition_zero_examined": 69441,
+        "partial_gifts": 2711,
+        "nurse_switches": 17959,
+        "foraging_switches": 1315,
+        "worker_to_worker_gifts": 36,
+        "worker_to_queen_gifts": 2584,
+        "worker_to_larva_gifts": 9202
+      },
+      "means": {
+        "queen_days_alive": 90.0,
+        "queen_energy_nj": 1374000000.0,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 25585.0,
+        "queen_uptake_water_ug": 9363.333333333334,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 25385.0,
+        "worker_to_queen_water_ug": 9163.333333333334,
+        "worker_to_queen_protein_ug": 603.3333333333334,
+        "worker_to_larva_protein_ug": 2604.0
+      },
+      "death_or_censor": {
+        "RIGHT_CENSORED": 6
+      }
+    },
+    {
+      "day": 90,
+      "arm": "depot",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 2,
+        "eggs": 29,
+        "hatches": 28,
+        "eclosed": 18,
+        "larval_deaths": 8,
+        "nutrition_decisions": 20667,
+        "nutrition_examined": 53648,
+        "nutrition_zero_examined": 16238,
+        "partial_gifts": 1560,
+        "nurse_switches": 3921,
+        "foraging_switches": 272,
+        "worker_to_worker_gifts": 1833,
+        "worker_to_queen_gifts": 539,
+        "worker_to_larva_gifts": 1673
+      },
+      "means": {
+        "queen_days_alive": 54.19753086419753,
+        "queen_energy_nj": 180333333.33333334,
+        "queen_crop_carb_ug": 14.0,
+        "queen_uptake_carb_ug": 5828.0,
+        "queen_uptake_water_ug": 2425.3333333333335,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 5642.0,
+        "worker_to_queen_water_ug": 2228.0,
+        "worker_to_queen_protein_ug": 25.166666666666668,
+        "worker_to_larva_protein_ug": 314.3333333333333
+      },
+      "death_or_censor": {
+        "energy_depleted": 4,
+        "RIGHT_CENSORED": 2
+      }
+    },
+    {
+      "day": 90,
+      "arm": "empty",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 0,
+        "eggs": 12,
+        "hatches": 12,
+        "eclosed": 0,
+        "larval_deaths": 0,
+        "nutrition_decisions": 12419,
+        "nutrition_examined": 208,
+        "nutrition_zero_examined": 12406,
+        "partial_gifts": 12,
+        "nurse_switches": 148,
+        "foraging_switches": 5133,
+        "worker_to_worker_gifts": 0,
+        "worker_to_queen_gifts": 0,
+        "worker_to_larva_gifts": 12
+      },
+      "means": {
+        "queen_days_alive": 7.87037037037037,
+        "queen_energy_nj": 0.0,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 200.0,
+        "queen_uptake_water_ug": 200.0,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 0.0,
+        "worker_to_queen_water_ug": 0.0,
+        "worker_to_queen_protein_ug": 0.0,
+        "worker_to_larva_protein_ug": 160.0
+      },
+      "death_or_censor": {
+        "energy_depleted": 6
+      }
+    },
+    {
+      "day": 90,
+      "arm": "empty",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 0,
+        "eggs": 12,
+        "hatches": 12,
+        "eclosed": 0,
+        "larval_deaths": 0,
+        "nutrition_decisions": 3099,
+        "nutrition_examined": 250,
+        "nutrition_zero_examined": 3076,
+        "partial_gifts": 12,
+        "nurse_switches": 61,
+        "foraging_switches": 1485,
+        "worker_to_worker_gifts": 0,
+        "worker_to_queen_gifts": 0,
+        "worker_to_larva_gifts": 12
+      },
+      "means": {
+        "queen_days_alive": 7.87037037037037,
+        "queen_energy_nj": 0.0,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 200.0,
+        "queen_uptake_water_ug": 200.0,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 0.0,
+        "worker_to_queen_water_ug": 0.0,
+        "worker_to_queen_protein_ug": 0.0,
+        "worker_to_larva_protein_ug": 160.0
+      },
+      "death_or_censor": {
+        "energy_depleted": 6
+      }
+    },
+    {
+      "day": 90,
+      "arm": "ordinary",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 0,
+        "eggs": 108,
+        "hatches": 108,
+        "eclosed": 96,
+        "larval_deaths": 12,
+        "nutrition_decisions": 77018,
+        "nutrition_examined": 184640,
+        "nutrition_zero_examined": 65478,
+        "partial_gifts": 2865,
+        "nurse_switches": 13646,
+        "foraging_switches": 6656,
+        "worker_to_worker_gifts": 2179,
+        "worker_to_queen_gifts": 1404,
+        "worker_to_larva_gifts": 4334
+      },
+      "means": {
+        "queen_days_alive": 72.30131172839506,
+        "queen_energy_nj": 0.0,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 13926.833333333334,
+        "queen_uptake_water_ug": 5578.0,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 13726.833333333334,
+        "worker_to_queen_water_ug": 5378.166666666667,
+        "worker_to_queen_protein_ug": 275.8333333333333,
+        "worker_to_larva_protein_ug": 1353.8333333333333
+      },
+      "death_or_censor": {
+        "energy_depleted": 6
+      }
+    },
+    {
+      "day": 90,
+      "arm": "ordinary",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 1,
+        "eggs": 27,
+        "hatches": 27,
+        "eclosed": 20,
+        "larval_deaths": 6,
+        "nutrition_decisions": 21354,
+        "nutrition_examined": 51289,
+        "nutrition_zero_examined": 17073,
+        "partial_gifts": 1297,
+        "nurse_switches": 3665,
+        "foraging_switches": 239,
+        "worker_to_worker_gifts": 1799,
+        "worker_to_queen_gifts": 457,
+        "worker_to_larva_gifts": 1677
+      },
+      "means": {
+        "queen_days_alive": 49.97878086419753,
+        "queen_energy_nj": 86000000.0,
+        "queen_crop_carb_ug": 9.333333333333334,
+        "queen_uptake_carb_ug": 5199.166666666667,
+        "queen_uptake_water_ug": 2293.3333333333335,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 5008.5,
+        "worker_to_queen_water_ug": 2100.5,
+        "worker_to_queen_protein_ug": 20.0,
+        "worker_to_larva_protein_ug": 331.0
+      },
+      "death_or_censor": {
+        "RIGHT_CENSORED": 1,
+        "energy_depleted": 5
+      }
+    },
+    {
+      "day": 90,
+      "arm": "scarce",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 1,
+        "eggs": 100,
+        "hatches": 99,
+        "eclosed": 83,
+        "larval_deaths": 11,
+        "nutrition_decisions": 74478,
+        "nutrition_examined": 175040,
+        "nutrition_zero_examined": 63538,
+        "partial_gifts": 2937,
+        "nurse_switches": 13345,
+        "foraging_switches": 6229,
+        "worker_to_worker_gifts": 2301,
+        "worker_to_queen_gifts": 1310,
+        "worker_to_larva_gifts": 3965
+      },
+      "means": {
+        "queen_days_alive": 69.69714506172839,
+        "queen_energy_nj": 229666666.66666666,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 13251.5,
+        "queen_uptake_water_ug": 5319.333333333333,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 13051.5,
+        "worker_to_queen_water_ug": 5119.333333333333,
+        "worker_to_queen_protein_ug": 250.0,
+        "worker_to_larva_protein_ug": 1249.0
+      },
+      "death_or_censor": {
+        "energy_depleted": 5,
+        "RIGHT_CENSORED": 1
+      }
+    },
+    {
+      "day": 90,
+      "arm": "scarce",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "queen_alive": 3,
+        "eggs": 45,
+        "hatches": 43,
+        "eclosed": 24,
+        "larval_deaths": 15,
+        "nutrition_decisions": 22247,
+        "nutrition_examined": 66941,
+        "nutrition_zero_examined": 17073,
+        "partial_gifts": 1698,
+        "nurse_switches": 4163,
+        "foraging_switches": 268,
+        "worker_to_worker_gifts": 1913,
+        "worker_to_queen_gifts": 840,
+        "worker_to_larva_gifts": 1914
+      },
+      "means": {
+        "queen_days_alive": 68.14814814814815,
+        "queen_energy_nj": 426833333.3333333,
+        "queen_crop_carb_ug": 0.0,
+        "queen_uptake_carb_ug": 8639.833333333334,
+        "queen_uptake_water_ug": 3338.8333333333335,
+        "queen_uptake_protein_ug": 0.0,
+        "worker_to_queen_carb_ug": 8439.833333333334,
+        "worker_to_queen_water_ug": 3138.8333333333335,
+        "worker_to_queen_protein_ug": 70.0,
+        "worker_to_larva_protein_ug": 426.0
+      },
+      "death_or_censor": {
+        "energy_depleted": 3,
+        "RIGHT_CENSORED": 3
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "mode": "dense",
+      "workers": 2048,
+      "cases": 6,
+      "totals": {
+        "cuts": 6,
+        "examined": 380940,
+        "scoped_facts": 8448,
+        "lost": 0,
+        "crop_checks": 384,
+        "pending_status_1": 0,
+        "neighbor_status_1": 0,
+        "NutritionDecision": 3456,
+        "NutritionDecision_candidates_examined": 55296,
+        "NutritionDecision_zero_examined": 0,
+        "typed_opportunities": 0,
+        "typed_gift_choices": 0,
+        "typed_inactive_choices": 0,
+        "NutritionTransferred": 0,
+        "positive_pulses": 3840,
+        "zero_pulses": 0,
+        "request_POSITIVE": 0,
+        "request_ZERO_COMMITTED_REJECTION": 0,
+        "request_RIGHT_CENSORED": 0,
+        "request_UNOBSERVED": 0,
+        "ActionRejected": 0
+      },
+      "event_range": [
+        63490,
+        63490
+      ],
+      "cut_payload_bytes": 1493502,
+      "stored_payload_bytes": 347023,
+      "geometry_cuts_with_workers": 0,
+      "geometry_worker_cut_occurrences": 0,
+      "geometry_cuts_with_larvae": 0,
+      "window_worker_program_cuts": {},
+      "pending_request_cut_occurrences": 0
+    },
+    {
+      "mode": "dense",
+      "workers": 512,
+      "cases": 6,
+      "totals": {
+        "cuts": 6,
+        "examined": 95244,
+        "scoped_facts": 8448,
+        "lost": 0,
+        "crop_checks": 384,
+        "pending_status_1": 0,
+        "neighbor_status_1": 0,
+        "NutritionDecision": 3456,
+        "NutritionDecision_candidates_examined": 55296,
+        "NutritionDecision_zero_examined": 0,
+        "typed_opportunities": 0,
+        "typed_gift_choices": 0,
+        "typed_inactive_choices": 0,
+        "NutritionTransferred": 0,
+        "positive_pulses": 3840,
+        "zero_pulses": 0,
+        "request_POSITIVE": 0,
+        "request_ZERO_COMMITTED_REJECTION": 0,
+        "request_RIGHT_CENSORED": 0,
+        "request_UNOBSERVED": 0,
+        "ActionRejected": 0
+      },
+      "event_range": [
+        15874,
+        15874
+      ],
+      "cut_payload_bytes": 1493502,
+      "stored_payload_bytes": 343165,
+      "geometry_cuts_with_workers": 0,
+      "geometry_worker_cut_occurrences": 0,
+      "geometry_cuts_with_larvae": 0,
+      "window_worker_program_cuts": {},
+      "pending_request_cut_occurrences": 0
+    },
+    {
+      "mode": "window",
+      "workers": 32,
+      "cases": 6,
+      "totals": {
+        "cuts": 120,
+        "examined": 6282,
+        "scoped_facts": 6252,
+        "lost": 0,
+        "crop_checks": 3960,
+        "pending_status_1": 120,
+        "neighbor_status_1": 120,
+        "NutritionDecision": 1152,
+        "NutritionDecision_candidates_examined": 0,
+        "NutritionDecision_zero_examined": 1152,
+        "typed_opportunities": 0,
+        "typed_gift_choices": 0,
+        "typed_inactive_choices": 0,
+        "NutritionTransferred": 0,
+        "positive_pulses": 198,
+        "zero_pulses": 1386,
+        "request_POSITIVE": 0,
+        "request_ZERO_COMMITTED_REJECTION": 0,
+        "request_RIGHT_CENSORED": 0,
+        "request_UNOBSERVED": 0,
+        "ActionRejected": 960
+      },
+      "event_range": [
+        1047,
+        1047
+      ],
+      "cut_payload_bytes": 2297790,
+      "stored_payload_bytes": 542772,
+      "geometry_cuts_with_workers": 120,
+      "geometry_worker_cut_occurrences": 3840,
+      "geometry_cuts_with_larvae": 0,
+      "window_worker_program_cuts": {
+        "Paused": 192,
+        "Rest": 3648
+      },
+      "pending_request_cut_occurrences": 0
+    },
+    {
+      "mode": "window",
+      "workers": 8,
+      "cases": 6,
+      "totals": {
+        "cuts": 120,
+        "examined": 1674,
+        "scoped_facts": 1644,
+        "lost": 0,
+        "crop_checks": 1080,
+        "pending_status_1": 120,
+        "neighbor_status_1": 120,
+        "NutritionDecision": 288,
+        "NutritionDecision_candidates_examined": 0,
+        "NutritionDecision_zero_examined": 288,
+        "typed_opportunities": 0,
+        "typed_gift_choices": 0,
+        "typed_inactive_choices": 0,
+        "NutritionTransferred": 0,
+        "positive_pulses": 54,
+        "zero_pulses": 378,
+        "request_POSITIVE": 0,
+        "request_ZERO_COMMITTED_REJECTION": 0,
+        "request_RIGHT_CENSORED": 0,
+        "request_UNOBSERVED": 0,
+        "ActionRejected": 240
+      },
+      "event_range": [
+        279,
+        279
+      ],
+      "cut_payload_bytes": 637758,
+      "stored_payload_bytes": 148086,
+      "geometry_cuts_with_workers": 120,
+      "geometry_worker_cut_occurrences": 960,
+      "geometry_cuts_with_larvae": 0,
+      "window_worker_program_cuts": {
+        "Paused": 48,
+        "Rest": 912
+      },
+      "pending_request_cut_occurrences": 0
+    }
+  ],
+  "queen_gift_followup": [
+    {
+      "arm": "depot",
+      "workers": 32,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 5492,
+        "RIGHT_CENSORED": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21562546,
+        "p50": 21593388.0,
+        "p95": 21599997.0,
+        "maximum": 151195588
+      }
+    },
+    {
+      "arm": "depot",
+      "workers": 32,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 4793
+      },
+      "observed_lag_ms": {
+        "minimum": 21562546,
+        "p50": 21593388,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "depot",
+      "workers": 32,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 4921
+      },
+      "observed_lag_ms": {
+        "minimum": 21562546,
+        "p50": 21593388,
+        "p95": 21599997.0,
+        "maximum": 21599999
+      }
+    },
+    {
+      "arm": "depot",
+      "workers": 8,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 638,
+        "COMPETING_DEATH": 5
+      },
+      "observed_lag_ms": {
+        "minimum": 21580161,
+        "p50": 21595591.0,
+        "p95": 64780499.45,
+        "maximum": 431999989
+      }
+    },
+    {
+      "arm": "depot",
+      "workers": 8,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 559,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21580161,
+        "p50": 21595591,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "depot",
+      "workers": 8,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 552,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21580161,
+        "p50": 21595591.0,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 32,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1401,
+        "COMPETING_DEATH": 3
+      },
+      "observed_lag_ms": {
+        "minimum": 16729147,
+        "p50": 21454657,
+        "p95": 21599997.0,
+        "maximum": 128860117
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 32,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1138
+      },
+      "observed_lag_ms": {
+        "minimum": 17671599,
+        "p50": 21494296.0,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 32,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1248,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 16729147,
+        "p50": 21485484.5,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 8,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 456,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21439243,
+        "p50": 21579077.0,
+        "p95": 21599997.0,
+        "maximum": 86285486
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 8,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 448,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21439243,
+        "p50": 21580178.0,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "ordinary",
+      "workers": 8,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 431,
+        "COMPETING_DEATH": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21439243,
+        "p50": 21582363,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 32,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1310
+      },
+      "observed_lag_ms": {
+        "minimum": 16845850,
+        "p50": 21370988.0,
+        "p95": 21599997.0,
+        "maximum": 63954408
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 32,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1074
+      },
+      "observed_lag_ms": {
+        "minimum": 16845850,
+        "p50": 21439245.5,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 32,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 1176
+      },
+      "observed_lag_ms": {
+        "minimum": 16845850,
+        "p50": 21409516.0,
+        "p95": 21599995.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 8,
+      "component": "any",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 839,
+        "RIGHT_CENSORED": 1
+      },
+      "observed_lag_ms": {
+        "minimum": 21426036,
+        "p50": 21558157,
+        "p95": 21599997.0,
+        "maximum": 280791187
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 8,
+      "component": "carb",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 744
+      },
+      "observed_lag_ms": {
+        "minimum": 21426036,
+        "p50": 21560359.0,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    },
+    {
+      "arm": "scarce",
+      "workers": 8,
+      "component": "water",
+      "statuses": {
+        "NEXT_POSITIVE_PULSE": 747
+      },
+      "observed_lag_ms": {
+        "minimum": 21426036,
+        "p50": 21560359,
+        "p95": 21599997.0,
+        "maximum": 21599997
+      }
+    }
+  ]
+}
