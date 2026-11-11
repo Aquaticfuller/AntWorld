@@ -37,7 +37,8 @@ struct Cut {
     std::vector<std::uint8_t> payload;
 };
 
-enum class Publish { Committed, Duplicate };
+enum class Publish { Committed, Staged, Duplicate };
+enum class PublicationMode { Immediate, Buffered };
 enum class PublicationFault { None, BeforeCommit };
 
 // A live instance is bound to one owner-thread continuation. After restoring
@@ -53,7 +54,9 @@ public:
     Observer& operator=(const Observer&) = delete;
 
     [[nodiscard]] Cut capture() const;
-    Publish publish(const Cut&, PublicationFault = PublicationFault::None);
+    Publish publish(const Cut&, PublicationFault = PublicationFault::None,
+                    PublicationMode = PublicationMode::Immediate);
+    void flush();
     void anchor(std::span<const std::uint8_t> checkpoint);
     [[nodiscard]] std::uint64_t committed_cuts() const;
     [[nodiscard]] std::uint64_t cursor() const;

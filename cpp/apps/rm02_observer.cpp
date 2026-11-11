@@ -22,7 +22,7 @@ using Bytes = std::span<const std::uint8_t>;
 
 constexpr auto schema = R"sql(
     PRAGMA application_id = 1096241714;
-    PRAGMA user_version = 1;
+    PRAGMA user_version = 2;
     CREATE TABLE manifest(id INTEGER PRIMARY KEY CHECK(id=1), identity TEXT NOT NULL, origin INTEGER NOT NULL);
     CREATE TABLE cuts(
         seq INTEGER PRIMARY KEY, sim_ms INTEGER NOT NULL, revision INTEGER NOT NULL, cursor INTEGER NOT NULL,
@@ -106,7 +106,7 @@ Digest first_digest(const std::string& identity, std::uint64_t origin) {
     return sha256(string_bytes(identity), row.view());
 }
 
-Digest cut_digest(const Cut& cut, std::uint64_t seq, const Digest& prior) {
+Digest cut_digest(const Cut& cut, std::uint64_t seq, const Digest& prior, Bytes stored) {
     Row header;
     for (const auto byte : prior)
         header.bytes[header.size++] = byte;
@@ -115,7 +115,42 @@ Digest cut_digest(const Cut& cut, std::uint64_t seq, const Digest& prior) {
             cut.end.rng, cut.from, cut.examined, cut.selected, cut.records, cut.dropped,
             static_cast<std::uint64_t>(cut.pending), static_cast<std::uint64_t>(cut.neighbors)})
         header.put(value);
-    return sha256(header.view(), cut.payload);
+    return sha256(header.view(), stored);
+}
+
+// A zero prefix reserves the sparse encoding outside the raw record-tag space.
+// Each following group has a presence mask and the original nonzero bytes.
+std::vector<std::uint8_t> pack_cut(Bytes raw) {
+    constexpr std::size_t maximum_compressed_input = 400 * 1024;
+    if (raw.empty() || raw.size() > maximum_compressed_input)
+        return {};
+    const auto original = raw.size();
+    std::vector<std::uint8_t> packed(5 + original + (original + 7) / 8);
+    for (unsigned i = 0; i < 4; ++i)
+        packed[i + 1] = static_cast<std::uint8_t>(raw.size() >> (8 * i));
+    auto* to = packed.data() + 5;
+    const auto group = [&to](Bytes bytes) {
+        auto* mask_at = to++;
+        unsigned mask{};
+        for (std::size_t i = 0; i < bytes.size(); ++i) {
+            const unsigned present = bytes[i] != 0;
+            *to = bytes[i];
+            to += present;
+            mask |= present << i;
+        }
+        *mask_at = static_cast<std::uint8_t>(mask);
+    };
+    while (raw.size() >= 8) {
+        group(raw.first<8>());
+        raw = raw.subspan(8);
+    }
+    if (!raw.empty())
+        group(raw);
+    const auto size = static_cast<std::size_t>(to - packed.data());
+    if (size >= original)
+        return {};
+    packed.resize(size);
+    return packed;
 }
 
 void append(Cut& cut, Record type, Bytes record, std::size_t cap) {
@@ -299,7 +334,10 @@ std::unique_ptr<sqlite3, CloseDb> open_db(const std::filesystem::path& path, boo
         throw std::runtime_error(raw ? sqlite3_errmsg(raw) : "observer sidecar open failed");
     sqlite3_limit(raw, SQLITE_LIMIT_LENGTH, static_cast<int>(cut_limit + 32768));
     exec(raw, "PRAGMA page_size=4096; PRAGMA max_page_count=16384; PRAGMA cache_size=-768;"
-              "PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON;");
+              "PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA wal_autocheckpoint=256;"
+              "PRAGMA journal_size_limit=4194304; PRAGMA foreign_keys=ON;");
+    Statement journal(raw, "PRAGMA journal_mode");
+    require(journal.row() && journal.text(0) == "wal", "observer cannot establish WAL mode");
     return db;
 }
 
@@ -317,9 +355,33 @@ struct Observer::Impl {
     WorldId world_id;
     std::unique_ptr<sqlite3, CloseDb> db;
     std::string identity;
-    std::uint64_t seq{}, cursor{};
-    Boundary last;
-    Digest prior;
+    struct Tail {
+        std::uint64_t seq{}, cursor{};
+        Boundary last;
+        Digest prior{};
+    } written, durable;
+    std::unique_ptr<Transaction> batch;
+    std::size_t batch_bytes{};
+    bool sparse_codec{true};
+
+    void discard() noexcept {
+        batch.reset();
+        written = durable;
+        batch_bytes = 0;
+    }
+
+    void flush() {
+        if (!batch)
+            return;
+        try {
+            batch->commit();
+            durable = written;
+        } catch (...) {
+            discard();
+            throw;
+        }
+        discard();
+    }
 
     Impl(const std::filesystem::path& path, const WorldRuntime& owner, Plan requested,
          bool resume, Bytes checkpoint)
@@ -331,15 +393,16 @@ struct Observer::Impl {
             restore(checkpoint);
             return;
         }
-        cursor = plan.start_at_current ? boundary(world.summary()).cursor : 0;
-        prior = first_digest(identity, cursor);
+        written.cursor = plan.start_at_current ? boundary(world.summary()).cursor : 0;
+        written.prior = first_digest(identity, written.cursor);
         Transaction tx(db.get());
         exec(db.get(), schema);
         Statement m(db.get(), "INSERT INTO manifest VALUES(1,?,?)");
         m.text(1, identity);
-        m.number(2, signed_sql(cursor));
+        m.number(2, signed_sql(written.cursor));
         m.done();
         tx.commit();
+        durable = written;
     }
 
     void restore(Bytes checkpoint) {
@@ -347,9 +410,12 @@ struct Observer::Impl {
         Statement application(db.get(), "PRAGMA application_id");
         require(application.row() && application.number(0) == 1096241714, "foreign observer database");
         Statement version(db.get(), "PRAGMA user_version");
-        require(version.row() && version.number(0) == 1, "unsupported observer sidecar version");
+        require(version.row() && (version.number(0) == 1 || version.number(0) == 2),
+                "unsupported observer sidecar version");
+        sparse_codec = version.number(0) == 2;
         Statement m(db.get(), "SELECT identity,origin FROM manifest WHERE id=1");
         require(m.row() && m.text(0) == identity, "observer lineage, world or scope differs");
+        auto& [seq, cursor, last, prior] = written;
         cursor = positive_sql(m, 1);
         prior = first_digest(identity, cursor);
         Statement q(db.get(), "SELECT seq,sim_ms,revision,cursor,rng,from_cursor,examined,selected,"
@@ -375,7 +441,7 @@ struct Observer::Impl {
             check_header(cut, cursor);
             require(!seq || (last.time <= cut.end.time && last.revision <= cut.end.revision && last != cut.end),
                     "reordered observer cuts");
-            const auto digest = cut_digest(cut, next, prior);
+            const auto digest = cut_digest(cut, next, prior, cut.payload);
             require(std::ranges::equal(digest, q.blob(13, digest.size())), "observer cut digest mismatch");
             prior = digest;
             seq = next;
@@ -388,6 +454,7 @@ struct Observer::Impl {
         const auto expected = sha256(checkpoint);
         require(a.row() && std::ranges::equal(expected, a.blob(0, expected.size())),
                 "observer checkpoint anchor absent or different");
+        durable = written;
     }
 };
 
@@ -401,15 +468,16 @@ Observer::~Observer() = default;
 
 Cut Observer::capture() const {
     const auto& a = *impl_;
+    const auto& [seq, origin, last, prior] = a.written;
     const auto state = a.world.summary();
     Cut cut{};
     cut.world = state.world;
     cut.end = boundary(state);
-    cut.from = a.cursor;
-    require(cut.world == a.world_id && cut.end.cursor >= a.cursor &&
-            (!a.seq || (cut.end.time >= a.last.time && cut.end.revision >= a.last.revision)),
+    cut.from = origin;
+    require(cut.world == a.world_id && cut.end.cursor >= origin &&
+            (!seq || (cut.end.time >= last.time && cut.end.revision >= last.revision)),
             "observer cannot read a foreign or rewound runtime");
-    if (a.seq && cut.end == a.last)
+    if (seq && cut.end == last)
         return cut;
     cut.payload.reserve(a.plan.payload_limit);
     for (auto cursor = cut.from; cursor < cut.end.cursor;) {
@@ -434,21 +502,29 @@ Cut Observer::capture() const {
     return cut;
 }
 
-Publish Observer::publish(const Cut& cut, PublicationFault fault) {
+Publish Observer::publish(const Cut& cut, PublicationFault fault, PublicationMode mode) {
     auto& a = *impl_;
+    auto& [previous, cursor, last, prior] = a.written;
     const auto current = a.world.summary();
     require(cut.world == a.world_id && cut.world == current.world && cut.end == boundary(current),
             "observer cannot publish a stale or foreign cut");
-    if (a.seq && cut.end == a.last)
+    if (previous && cut.end == last)
         return Publish::Duplicate;
-    check_header(cut, a.cursor);
+    check_header(cut, cursor);
     require(cut.payload.size() <= a.plan.payload_limit &&
-            (!a.seq || (cut.end.time >= a.last.time && cut.end.revision >= a.last.revision)),
+            (!previous || (cut.end.time >= last.time && cut.end.revision >= last.revision)),
             "observer cut exceeds capacity or order");
-    const auto seq = a.seq + 1;
-    const auto digest = cut_digest(cut, seq, a.prior);
-    Transaction tx(a.db.get());
-    {
+    constexpr std::size_t batch_limit = 1024 * 1024;
+    constexpr std::uint64_t batch_cuts = 16;
+    if (a.batch && a.batch_bytes + cut.payload.size() > batch_limit)
+        a.flush();
+    const auto seq = previous + 1;
+    const auto packed = a.sparse_codec ? pack_cut(cut.payload) : std::vector<std::uint8_t>{};
+    const auto stored = packed.empty() ? Bytes(cut.payload) : Bytes(packed);
+    const auto digest = cut_digest(cut, seq, prior, stored);
+    if (!a.batch)
+        a.batch = std::make_unique<Transaction>(a.db.get());
+    try {
         const std::uint8_t empty{};
         Statement q(a.db.get(), "INSERT INTO cuts VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         q.number(1, signed_sql(seq));
@@ -463,40 +539,46 @@ Publish Observer::publish(const Cut& cut, PublicationFault fault) {
         q.number(10, signed_sql(cut.dropped));
         q.number(11, static_cast<std::int64_t>(cut.pending));
         q.number(12, static_cast<std::int64_t>(cut.neighbors));
-        check(sqlite3_bind_blob64(q.p, 13, cut.payload.empty() ? &empty : cut.payload.data(),
-                                  cut.payload.size(), SQLITE_STATIC), a.db.get());
+        check(sqlite3_bind_blob64(q.p, 13, stored.empty() ? &empty : stored.data(), stored.size(), SQLITE_STATIC),
+              a.db.get());
         q.blob(14, digest);
         q.done();
+        if (fault == PublicationFault::BeforeCommit)
+            throw std::runtime_error("injected observer publication failure");
+    } catch (...) {
+        a.discard();
+        throw;
     }
-    if (fault == PublicationFault::BeforeCommit)
-        throw std::runtime_error("injected observer publication failure");
-    tx.commit();
-    a.seq = seq;
-    a.prior = digest;
-    a.last = cut.end;
-    a.cursor = cut.end.cursor;
-    return Publish::Committed;
+    a.written = {seq, cut.end.cursor, cut.end, digest};
+    a.batch_bytes += cut.payload.size();
+    if (mode == PublicationMode::Immediate || a.batch_bytes >= batch_limit || seq - a.durable.seq >= batch_cuts) {
+        a.flush();
+        return Publish::Committed;
+    }
+    return Publish::Staged;
 }
+
+void Observer::flush() { impl_->flush(); }
 
 void Observer::anchor(Bytes checkpoint) {
     auto& a = *impl_;
-    require(a.seq && !checkpoint.empty() && a.world.summary().world == a.world_id &&
-            a.last == boundary(a.world.summary()), "observer anchor requires the current captured cut");
+    require(!a.batch && a.durable.seq && !checkpoint.empty() && a.world.summary().world == a.world_id &&
+            a.durable.last == boundary(a.world.summary()), "observer anchor requires the current durable cut");
     const auto digest = sha256(checkpoint);
     Transaction tx(a.db.get());
     Statement existing(a.db.get(), "SELECT checkpoint_sha256 FROM anchors WHERE seq=?");
-    existing.number(1, signed_sql(a.seq));
+    existing.number(1, signed_sql(a.durable.seq));
     if (existing.row()) {
         require(std::ranges::equal(digest, existing.blob(0, digest.size())), "observer anchor already differs");
     } else {
         Statement put(a.db.get(), "INSERT INTO anchors VALUES(?,?)");
-        put.number(1, signed_sql(a.seq));
+        put.number(1, signed_sql(a.durable.seq));
         put.blob(2, digest);
         put.done();
     }
     tx.commit();
 }
 
-std::uint64_t Observer::committed_cuts() const { return impl_->seq; }
-std::uint64_t Observer::cursor() const { return impl_->cursor; }
+std::uint64_t Observer::committed_cuts() const { return impl_->durable.seq; }
+std::uint64_t Observer::cursor() const { return impl_->durable.cursor; }
 } // namespace antworld::rm02

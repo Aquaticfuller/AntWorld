@@ -335,6 +335,22 @@ void fault_cases(const Path& dir) {
     off.advance_to({2000});
     require(f.world.checkpoint() == off.checkpoint(), "sidecar errors changed later simulation");
 
+    Observer grouped(dir / "grouped.sqlite", f.world, plan);
+    grouped.publish(grouped.capture());
+    const auto durable = grouped.cursor();
+    f.world.advance_to({2500});
+    require(grouped.publish(grouped.capture(), PublicationFault::None, PublicationMode::Buffered) == Publish::Staged &&
+            grouped.committed_cuts() == 1, "staged cut appeared durable");
+    rejects([&] { grouped.anchor(f.world.checkpoint()); });
+    f.world.advance_to({3000});
+    rejects([&] { grouped.publish(grouped.capture(), PublicationFault::BeforeCommit, PublicationMode::Buffered); });
+    require(grouped.committed_cuts() == 1 && grouped.capture().from == durable, "group fault lost the durable tail");
+    grouped.publish(grouped.capture(), PublicationFault::None, PublicationMode::Buffered);
+    grouped.flush();
+    require(grouped.committed_cuts() == 2 && grouped.cursor() == f.world.summary().committed_events,
+            "group retry did not publish the recovered interval");
+    grouped.anchor(f.world.checkpoint());
+
     RuntimeLimits limits;
     limits.events_per_timestamp = 1;
     WorldRuntime faulted({7, 8}, 8, {}, limits);
