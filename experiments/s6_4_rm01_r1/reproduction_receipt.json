@@ -1,0 +1,56 @@
+{
+  "approved_head": "84decb6dc23bd03af2562214ab92c8b6847ec668",
+  "protocol_commit": "9b31879732e7bc9466b043736dd252210ab89613",
+  "core_tree": "2b9d475fdb0d657dc87e46755d6511779da0c8b4",
+  "python": "3.12.14",
+  "system": "Windows",
+  "commands": [
+    {
+      "argv": [
+        "python",
+        "tools/verify_s6_4_rm01_results.py",
+        "experiments/s6_4_rm01/assay",
+        "--observer",
+        "experiments/s6_4_rm01/observer"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "04557bb0b28ed057692bc832f769a9387f18b62e6f7262a91ffd65f2bf8cc68e",
+      "accepted_result_sha256": "04557bb0b28ed057692bc832f769a9387f18b62e6f7262a91ffd65f2bf8cc68e",
+      "short_runs": 13,
+      "ecology_runs": 18,
+      "observer_pairs_checked": 12,
+      "observer": "ENGINEERING_PASS",
+      "assay": "ENGINEERING_PASS",
+      "biology": "BIOLOGICAL_NOT_VALIDATED"
+    },
+    {
+      "argv": [
+        "python",
+        "tools/analyze_s6_3_3_1_performance.py",
+        "--raw",
+        "experiments/s6_4_rm01/controlled",
+        "--out",
+        "experiments/s6_4_rm01/controlled/analysis",
+        "--check"
+      ],
+      "exit_code": 0,
+      "old_status_sha256": "33c876f89a83d1932874b853e245983c8df5987f664907b76ded2086b8f5a174",
+      "old_admission_attempts": 3,
+      "old_planned_contact_rows": 336,
+      "old_planned_birth_rows": 168,
+      "old_timed_rows": 0,
+      "old_verdict": "INCONCLUSIVE"
+    }
+  ],
+  "preparation": {
+    "old_freeze_sha256": "8cd0414bbcd534e3584ca17444e30cfd15fc3a79e23d96a6b55755e8b8d69a93",
+    "r1_freeze_sha256": "671f2966cb34ef4aeca1eff438409535f4ac72366df82f8c8297e7a4812985dc",
+    "excluded_manifest_comparison_fields": [
+      "source_commit",
+      "created_utc_ns"
+    ],
+    "exact_manifest_match_excluding_provenance_fields": true,
+    "reserve_workload_identity_sha256": "b0a1a07721bebdf122a7fd43fd3ce3a024a49591f584b5725d93cb664e82ee46",
+    "reserve_workload_identity_matches_approved_receipt": true
+  }
+}

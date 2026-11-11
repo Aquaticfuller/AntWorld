@@ -1,0 +1,47 @@
+{
+  "status": "BLOCKED_BEFORE_ADMISSION",
+  "recorded_utc": "2026-11-11T17:01:59.722849+00:00",
+  "formal_batch_started": false,
+  "formal_admission_attempts": 0,
+  "collector_status": "NOT_RUN",
+  "host_log_basename": "hwinfo_log.CSV",
+  "logger_process_running": false,
+  "log_bytes": 8089659,
+  "log_last_write_utc": "2026-11-11T10:50:17.696145+00:00",
+  "mapped_source_header_sha256": "bba41bc1bf8c38100c181e6eb7a18fd26cf398e29fbd2f250712729774ad1334",
+  "source_header_matches_frozen_mapping": true,
+  "last_sensor_row_utc": "2026-11-11T10:50:16.057000+00:00",
+  "last_sensor_row_age_seconds": 22303.679016828537,
+  "sensor_age_limit_seconds": [
+    -2,
+    10
+  ],
+  "finite_required_fields_in_stale_row": true,
+  "recovery_attempts": [
+    {
+      "method": "installed app launch and window discovery",
+      "outcome": "launch request timed out, no sensor window returned"
+    },
+    {
+      "method": "native Start-Process of installed executable",
+      "outcome": "process started and exited without renewed CSV writes"
+    }
+  ],
+  "reason": "No current sensor reading for the unchanged temperature, power and frequency admission check.",
+  "workloads": {
+    "contacts": {
+      "status": "NOT_RUN",
+      "qualified_sessions": 0,
+      "required_sessions": 3,
+      "timed_rows": 0,
+      "planned_rows": 336
+    },
+    "births": {
+      "status": "NOT_RUN",
+      "qualified_sessions": 0,
+      "required_sessions": 3,
+      "timed_rows": 0,
+      "planned_rows": 168
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "source_commit": "9b31879732e7bc9466b043736dd252210ab89613",
+  "configuration": "Release",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "created_utc_ns": 1794415935573879700,
+  "instrument_version": 2,
+  "confirmation": "experiments/s6_3_3_1/performance/instrument_v2_confirmation/receipt.json",
+  "confirmation_sha256": "ae98ebc30aa513a2e10b8b3b04004e62ef8d3450082564b0a857c3ca2ecc449f",
+  "correction_sha256": "f2deeb7de9223b89897c2738f3300aedaa27d528990b494cc2229ef0c64af4f6",
+  "protocol_sha256": "ba7b1b9ac5e0dc48587a08f2dae859ab1ab0246ce32bd3cc84623cb96db9c4f8",
+  "sensor_mapping_sha256": "53d9707776e7f72bd37d3f0cef6b2691b4f79791ae15d387fe4de4bef20c0353",
+  "script_sha256": {
+    "run_s6_3_3_1_performance.py": "df4f3034c3401ef8eff61c2070e47125181ba837357663623bec8c143290b94c",
+    "s6_3_3_1_processor_times.py": "b430327c4fb4f571ade6a14513597f78d17dd2e0bdd9d0681df3c9243d4bfbdc",
+    "s6_2_windows_telemetry.py": "4e32167b03dc83676fafb158b3ac202ebfe1a70b0d98556f7a694ae90a700540",
+    "diagnose_s6_3_2_counters.py": "fa19e9b0c1f2b114afc4402fa6cc9aec58da02fdac634e286c1f5ae2bb2d8fb5",
+    "run_s6_3_2_performance.py": "73232a32a61e21eb44b74e563fefd901eb4c58aa934be8ae2472e025aaf0e74c",
+    "run_s6_3_performance.py": "9cd91a64a6dcc02f7b76022799d0c29e06e0d5cf03dc1c43a3e157a447124907",
+    "run_s6_2_performance.py": "9a97adda7db340faf087ebbee1051fbd3610bff55230a3895eb9536e467d1594",
+    "extract_s6_2_hwinfo.py": "2ec10b56b4db41d55d4a23eab7780a475ce825b86e846129ac6cbfaf875e7157",
+    "verify_s6_3_3_1_reserve_workload.py": "e1c836c93687ada118f0b4e01782f96f3e84df9ece56f875e28e1c74c97532e0"
+  },
+  "order": [
+    "contacts/session1",
+    "contacts/session2",
+    "contacts/session3",
+    "births/session1",
+    "births/session2",
+    "births/session3"
+  ],
+  "executables": {
+    "contacts": {
+      "name": "antworld_s6_2_benchmark.exe",
+      "sha256": "bf859f935958b93991024172470659d447b47efc8eb10f72a577106d7516b492",
+      "schedule_sha256": {
+        "session1": "f7d9d58db993eb65b2049443630b88680598c355a7e1a5193aa2eaa5ead25aac",
+        "session2": "e742c85c7f615c7060235c17b61e730f0442ef8053d266750b448fb6eed786f6",
+        "session3": "28e80966427d8c9bba88d1902e63977712f5bb5fe0c3f92a05e2434b4ecf0e9f"
+      }
+    },
+    "births": {
+      "name": "antworld_s6_3_1_birth_benchmark.exe",
+      "sha256": "e22ba6f43a39011afdf3922da3ecd2cc0a39650b438c9e6d82c9a5ceb2131de3",
+      "schedule_sha256": {
+        "session1": "3b93dce86585d453187501a212f257debc1f87d16325ab0ef3d65cf3e6513923",
+        "session2": "5fbfde4553c538d8cc0a13c1aa46ec35fb1a0f33b5aca7a83af24af7d0dc2592",
+        "session3": "398bc32891dad2e1bb0df8130de7171a72e9ab0a09635d492e69a14444d7989b"
+      }
+    }
+  }
+}
