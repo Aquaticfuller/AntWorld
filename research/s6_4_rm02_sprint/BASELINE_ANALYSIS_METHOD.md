@@ -1,0 +1,21 @@
+# Baseline analysis method
+
+The exact frozen case index has 48 ecological runs, 12 early queued-timestamp windows and 12 dense terminal cuts. Each case uses an explicit arm, initial worker count and seed. The whole simulation and its paired observer-off replay use the same unmodified Core. Units are simulated milliseconds, mass in ug, energy in nJ and position in m. In the ordinary and scarce arms a food source away from the nest has an initial stock and releases material from a finite resource-cycle reserve. In the depot arm the finite food starts at the nest. The empty arm starts with the existing individual stores. The fixture uses 6 h absorption and behavior decision intervals and 2 d reproduction and reserve horizons. These values are `ENGINEERING_FIXTURE`. [Fixture and actual inputs](../../cpp/apps/s6_3_1_fixture.hpp) [Frozen design](FROZEN_ENGINEERING_PROTOCOL.md#stage-c-frozen-simulated-comparisons)
+
+## Endpoints and inference
+
+- **Fact coverage.** Verify the ordered sidecar SHA-256 chain and the checkpoint anchor. Scan counts are the cursor interval. Retained facts are the declared nutrition, action, behavior and life-stage projection. For dense runs, the projection keeps the first 64 worker identities and gifts involving them. Exact byte identity of the full checkpoint and continuation is tested separately by the C++ assay. Coverage, loss and all case exit codes are retained.
+- **Opportunity and choice.** Legacy candidate counts describe computation and can include ineligible alternatives. A queen geometric neighbor row is a detached same-colony near-cut sample. A Trophallaxis pending request gives the resolved target and time of the planned action. The deterministic fact join uses its exact schedule ID. A matched rejected request proves zero committed mass. An unresolved observed request still pending beyond the end is right-censored. Other unlinked choices, rejections or disappearances remain unobserved.
+- **Dose and timing.** Count only positive committed `NutritionTransferred` masses. Use the target life stage at the event. Separate carbohydrate, protein, water and other mass. With a complete observed crop-flow prefix, reconstruct crop before/after using initial crop, cargo/depot withdrawal, gift credit/debit, actual absorbed mass, protein recycling and maternal egg protein debit. Reconcile to each observed cut. Body energy, hydration, tissue protein and cumulative losses come from settled detached snapshots. A pulse is a committed event. Precise pre/post body states are absent between the cuts. A later positive pulse is only temporally linked to a previous gift, with death as a competing outcome and the observed terminal boundary as the censor. Several gifts can precede the same pulse.
+- **Development and death.** Count eggs, hatches, pupae, eclosions and larval deaths by persistent identity and ordered facts. Preceding and following inventory snapshots bound the recorded stock near death. Stock elsewhere in the world or held in worker crops and dead individuals gives no guarantee of local access. Explicit cut lags prevent false attribution to the death timestamp.
+- **Treatment contrasts.** Compare four diet arms at common day 90 and summarize depot day 180 separately. Keep every seed and outcome. Report paired seed-level mean differences with 4,096 percentile bootstrap draws, seed 63101. Missing pairs are identified in the table. Six software seeds measure conditional fixture variability. They do not supply independent biological samples.
+
+## Reproduce the simulation and audit its data
+
+```powershell
+$build = 'build/s6_3_4-release'
+python tools/run_s6_4_rm02.py --binary "$build/antworld_s6_4_rm02.exe" --cache "$build/CMakeCache.txt" --compiler $compiler --out out/rm02-reproduction --scratch out/rm02-reproduction-local --jobs 2
+python tools/analyze_s6_4_rm02.py out/rm02-reproduction out/rm02-reproduction-analysis
+```
+
+The case receipts give input/output hashes, archived original bytes, actual cut scope, model state and trace identities. Raw sidecars and checkpoint files are gzip containers with deterministic headers. Incidental case execution times belong to the run receipts and are outside controlled performance analysis. The record schema and the separate read-only verifier are available for inspection without running the Core.
