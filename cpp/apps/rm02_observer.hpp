@@ -21,6 +21,7 @@ struct Plan {
     EntityId neighbor_actor;
     bool all_relevant{}, pending{}, start_at_current{};
     std::size_t payload_limit{cut_limit};
+    bool activity_care{};
 };
 
 struct Boundary {

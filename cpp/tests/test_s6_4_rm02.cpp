@@ -1,4 +1,5 @@
 #include "rm02_observer.hpp"
+#include "s6_3_3_fixture.hpp"
 
 #include "antworld/storage/store.hpp"
 #include "sqlite_internal.hpp"
@@ -393,6 +394,53 @@ void fault_cases(const Path& dir) {
     require(faulted.checkpoint() == before && boundary_reader.publish(boundary_reader.capture()) == Publish::Duplicate,
             "rolled-back world output became new observer data");
 }
+
+void wp2_scope(const Path& dir) {
+    SpeciesCareProfile profile;
+    profile.care_probability = 1;
+    profile.motion.emplace();
+    profile.local_retrieval = true;
+    s6_3_3_fixture::Fixture f(7, profile, 1);
+    Plan plan{"scope", {f.queen.id, f.brood[0].id}, {}, true};
+    Plan expanded = plan;
+    expanded.activity_care = true;
+    const auto initial = f.w.checkpoint();
+    f.w.advance_to({300000});
+    const auto before = f.w.checkpoint();
+    const auto path = dir / "wp2.sqlite";
+    {
+        Observer wp2(path, f.w, expanded);
+        Observer legacy(dir / "legacy.sqlite", f.w, plan);
+        const auto broad = wp2.capture();
+        const auto narrow = legacy.capture();
+        const auto facts = decode(broad);
+        require(broad.selected > narrow.selected && has(facts, [](const auto& e) {
+            return e.kind == FactKind::BiologicalObservation &&
+                   e.observation.phase == ObservationPhase::Started && e.observation.duration_known;
+        }), "WP-2 omitted typed timed care");
+        require(has(facts, [](const auto& e) {
+            return e.kind == FactKind::BiologicalObservation &&
+                   e.observation.phase == ObservationPhase::Completed && e.observation.duration_known;
+        }), "WP-2 omitted timed terminal care");
+        rejects([&] { wp2.publish(broad, PublicationFault::BeforeCommit); });
+        require(wp2.committed_cuts() == 0 && f.w.checkpoint() == before, "failed WP-2 publish changed the world");
+        require(wp2.publish(wp2.capture()) == Publish::Committed, "WP-2 retry failed");
+        wp2.anchor(before);
+    }
+    WorldRuntime restored({1, 1}, 1, {}, s6_3_3_fixture::limits());
+    restored.restore(before);
+    rejects([&] { Observer wrong(path, restored, plan, before); });
+    Observer reopened(path, restored, expanded, before);
+    require(reopened.publish(reopened.capture()) == Publish::Duplicate, "WP-2 duplicate after restart");
+    restored.advance_to({600000});
+    const auto later = restored.checkpoint();
+    require(reopened.publish(reopened.capture()) == Publish::Committed && restored.checkpoint() == later,
+            "WP-2 continuation altered its checkpoint");
+    WorldRuntime off({1, 2}, 1, {}, s6_3_3_fixture::limits());
+    off.restore(initial);
+    off.advance_to({600000});
+    require(off.checkpoint() == later, "WP-2 observed continuation differs from direct off replay");
+}
 } // namespace
 
 int main(int argc, char** argv) {
@@ -408,6 +456,7 @@ int main(int argc, char** argv) {
         else if (mode == "opportunities") opportunities(dir);
         else if (mode == "recovery") recovery(dir);
         else if (mode == "faults") fault_cases(dir);
+        else if (mode == "wp2_scope") wp2_scope(dir);
         else throw std::invalid_argument("unknown RM-02 test mode");
         std::cout << "PASS RM-02 " << mode << '\n';
         return 0;

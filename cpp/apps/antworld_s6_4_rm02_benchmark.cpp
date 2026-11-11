@@ -2,6 +2,9 @@
 #include "s6_3_benchmark_clock.hpp"
 #include "process_memory.hpp"
 #include "history_digest.hpp"
+#ifdef ANTWORLD_WP2_BENCHMARK
+#include "s6_3_3_3_fixture.hpp"
+#endif
 
 #include <fstream>
 #include <iomanip>
@@ -19,15 +22,19 @@ double elapsed(Clock::time_point begin, Clock::time_point end = Clock::now()) {
 }
 
 void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<EntityId> focal,
-         RuntimeLimits limits, bool on, bool dense, Clock::time_point started) {
+         RuntimeLimits limits, bool on, bool dense, Clock::time_point started, bool care = false) {
     const auto setup = elapsed(started);
-    const auto step = dense ? 1000 : s6_3_1_fixture::day;
-    const auto end = dense ? 10000 : 90 * s6_3_1_fixture::day;
+    const auto step = dense || care ? 1000 : s6_3_1_fixture::day;
+    const auto end = care ? 60000 : dense ? 10000 : 90 * s6_3_1_fixture::day;
     const auto database = folder / "observer.sqlite";
     const auto init_begin = Clock::now();
     std::unique_ptr<Observer> observer;
     if (on) {
-        observer = std::make_unique<Observer>(database, world, Plan{"performance", std::move(focal), {}, !dense});
+        Plan plan{"performance", std::move(focal), {}, !dense};
+#ifdef ANTWORLD_WP2_BENCHMARK
+        plan.activity_care = true;
+#endif
+        observer = std::make_unique<Observer>(database, world, std::move(plan));
         observer->start_background();
     }
     const auto init = elapsed(init_begin);
@@ -56,7 +63,7 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
         const auto start = Clock::now();
         world.advance_to({t});
         advance += elapsed(start);
-        if (on && (!dense || t == end))
+        if (on && (care ? t % 10000 == 0 : !dense || t == end))
             observe();
     }
     const auto flush_begin = Clock::now();
@@ -137,6 +144,16 @@ int main(int argc, char** argv) {
 #endif
         require(std::filesystem::create_directories(folder), "new performance sample folder required");
         const auto begin = Clock::now();
+#ifdef ANTWORLD_WP2_BENCHMARK
+        if (cell == "care8") {
+            auto world = antworld::closure::density_world(8, true, false, true);
+            std::vector<EntityId> focal;
+            for (const auto& ant : world.ant_states())
+                focal.push_back(ant.id);
+            run(folder, world, std::move(focal), antworld::closure::limits(), arm == "on", false, begin, true);
+            return 0;
+        }
+#endif
         if (cell == "depot32") {
             auto fixture = ecology_fixture(1, 32, "depot");
             run(folder, fixture.world, ecology_focal(fixture), s6_3_1_fixture::limits(), arm == "on", false, begin);
