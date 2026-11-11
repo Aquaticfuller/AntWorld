@@ -102,6 +102,11 @@ jobs:
         run: |
           ./build/ci/antworld_s6_3_4_experiment build/ci/s6_3_4-history facts-10000 7
           python tools/verify_s6_3_4_archive.py build/ci/s6_3_4-history/world.sqlite build/ci/s6_3_4-history-verification.json
+      - name: Decode and reconcile the RM-02 sidecar independently (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          ./build/ci/antworld_s6_4_rm02 build/ci/rm02-depot ecology depot 32 1
+          python tools/verify_s6_4_rm02_sidecar.py build/ci/rm02-depot
 
   sanitizers:
     runs-on: ubuntu-24.04
