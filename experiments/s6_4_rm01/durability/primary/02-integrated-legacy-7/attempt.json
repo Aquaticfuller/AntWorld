@@ -1,0 +1,30 @@
+{
+  "id": "02-integrated-legacy-7",
+  "index": 2,
+  "role": "warmup",
+  "repetition": 0,
+  "case": "integrated-legacy",
+  "seed": 7,
+  "started_utc": "2026-11-11T08:52:22.442+00:00",
+  "finished_utc": "2026-11-11T08:52:24.320+00:00",
+  "elapsed_seconds": 1.8910000000614673,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      60528382343750,
+      64030892343750,
+      3598512812500
+    ],
+    "end_ticks_100ns": [
+      60528587812500,
+      64031147031250,
+      3598529843750
+    ],
+    "busy_percent": 24.381828637147787
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "6234cee0ae43c75be5b85b182f5d2d2d4d61c0bd7bd9a1963c2a59fef58867e4",
+    "sample.csv": "9cf05daa4bd6c4a8bd2b25015630c307f07a21389a09aaf728321795d97496aa",
+    "console.log": "88400ca37ae27dae7b087bd3cabdcbfa00612f6fa28384cd9177850610950325"
+  }
+}

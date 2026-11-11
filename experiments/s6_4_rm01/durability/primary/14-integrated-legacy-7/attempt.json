@@ -1,0 +1,30 @@
+{
+  "id": "14-integrated-legacy-7",
+  "index": 14,
+  "role": "retained",
+  "repetition": 2,
+  "case": "integrated-legacy",
+  "seed": 7,
+  "started_utc": "2026-11-11T08:53:24.383+00:00",
+  "finished_utc": "2026-11-11T08:53:26.263+00:00",
+  "elapsed_seconds": 1.8900000000139698,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      60536416406250,
+      64040297187500,
+      3598996875000
+    ],
+    "end_ticks_100ns": [
+      60536657968750,
+      64040593750000,
+      3599017968750
+    ],
+    "busy_percent": 23.95474667978357
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "7cd3cfc7b2b1aee9624cd8af3919bb72a723af6dc6eb97f5b50fa0b400e49890",
+    "sample.csv": "3077c84321addf6287ffd8dfb70c406bf1b1dac68ad5e6941941b84faf7e2c25",
+    "console.log": "88400ca37ae27dae7b087bd3cabdcbfa00612f6fa28384cd9177850610950325"
+  }
+}

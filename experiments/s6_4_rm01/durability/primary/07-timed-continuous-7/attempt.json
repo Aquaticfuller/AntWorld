@@ -1,0 +1,30 @@
+{
+  "id": "07-timed-continuous-7",
+  "index": 7,
+  "role": "retained",
+  "repetition": 1,
+  "case": "timed-continuous",
+  "seed": 7,
+  "started_utc": "2026-11-11T08:52:47.944+00:00",
+  "finished_utc": "2026-11-11T08:52:53.468+00:00",
+  "elapsed_seconds": 5.532000000006519,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      60531671093750,
+      64034772031250,
+      3598709843750
+    ],
+    "end_ticks_100ns": [
+      60532387031250,
+      64035610468750,
+      3598759531250
+    ],
+    "busy_percent": 19.387755102040817
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "0bd71ec3b0cc04aa914216ed52ba7601e5f67a6c9317c7bf9209e388007184fe",
+    "sample.csv": "213fcf941ffa36df8addecc48266332649e080bfaa8f16f1a93cf1c866e979e3",
+    "console.log": "10b5297150b730a0debeecb8fb897faddbb8f94fe088f32ed677d54d1bf6bb1f"
+  }
+}

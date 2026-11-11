@@ -1,0 +1,6 @@
+{
+  "exit_code": 1,
+  "detail": "The sandboxed Windows CIM query was denied before any admission window or timed workload.",
+  "timed_rows": 0,
+  "retry": "Native read access in a separately frozen batch"
+}

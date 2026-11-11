@@ -1,0 +1,515 @@
+{
+  "assay": "ENGINEERING_PASS",
+  "biology": "BIOLOGICAL_NOT_VALIDATED",
+  "source_commit": "2b7ca57bbc5a887527a9cf5f69066b7df0daa5ed",
+  "short": [
+    {
+      "profile": "legacy",
+      "arm": "seed",
+      "elapsed_ms": 172800000,
+      "death_cause_code": 0,
+      "remaining_energy_nj": 327200000,
+      "remaining_water_ug": 152
+    },
+    {
+      "profile": "legacy",
+      "arm": "funded",
+      "elapsed_ms": 172800000,
+      "death_cause_code": 0,
+      "remaining_energy_nj": 327200000,
+      "remaining_water_ug": 152
+    },
+    {
+      "profile": "legacy",
+      "arm": "sentinel",
+      "elapsed_ms": 172800000,
+      "death_cause_code": 0,
+      "remaining_energy_nj": 4,
+      "remaining_water_ug": 1
+    },
+    {
+      "profile": "borisovka",
+      "arm": "seed",
+      "elapsed_ms": 500000000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 62
+    },
+    {
+      "profile": "borisovka",
+      "arm": "funded",
+      "elapsed_ms": 500000000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 62
+    },
+    {
+      "profile": "borisovka",
+      "arm": "sentinel",
+      "elapsed_ms": 1442880000,
+      "death_cause_code": 0,
+      "remaining_energy_nj": 4,
+      "remaining_water_ug": 1
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "seed",
+      "elapsed_ms": 500000000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 62
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "funded",
+      "elapsed_ms": 500000000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 62
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "sentinel",
+      "elapsed_ms": 1356480000,
+      "death_cause_code": 0,
+      "remaining_energy_nj": 4,
+      "remaining_water_ug": 1
+    },
+    {
+      "profile": "borisovka",
+      "arm": "energy-tie",
+      "elapsed_ms": 1442880000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 1
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "energy-tie",
+      "elapsed_ms": 1356480000,
+      "death_cause_code": 1,
+      "remaining_energy_nj": 0,
+      "remaining_water_ug": 1
+    },
+    {
+      "profile": "legacy",
+      "arm": "water-tie",
+      "elapsed_ms": 172800000,
+      "death_cause_code": 2,
+      "remaining_energy_nj": 4,
+      "remaining_water_ug": 0
+    },
+    {
+      "profile": "legacy",
+      "arm": "interrupted",
+      "elapsed_ms": 172799999,
+      "death_cause_code": 3,
+      "remaining_energy_nj": 5,
+      "remaining_water_ug": 2
+    }
+  ],
+  "ecology": [
+    {
+      "profile": "legacy",
+      "arm": "ordinary-8",
+      "births": 4,
+      "hatches": 4,
+      "egg_deaths": 0,
+      "censored": 0,
+      "facts": 17069,
+      "queen_alive": true,
+      "living": 13,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/historical/1_8_balanced_constant_full_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "ordinary-8",
+      "births": 40,
+      "hatches": 0,
+      "egg_deaths": 37,
+      "censored": 3,
+      "facts": 15166,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "ordinary-8",
+      "births": 40,
+      "hatches": 0,
+      "egg_deaths": 37,
+      "censored": 3,
+      "facts": 15166,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "legacy",
+      "arm": "scarce-8",
+      "births": 2,
+      "hatches": 2,
+      "egg_deaths": 0,
+      "censored": 0,
+      "facts": 15408,
+      "queen_alive": false,
+      "living": 10,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/historical/1_8_scarce_constant_full_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "scarce-8",
+      "births": 40,
+      "hatches": 0,
+      "egg_deaths": 37,
+      "censored": 3,
+      "facts": 15180,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "scarce-8",
+      "births": 40,
+      "hatches": 0,
+      "egg_deaths": 37,
+      "censored": 3,
+      "facts": 15180,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "legacy",
+      "arm": "depot-8",
+      "births": 2,
+      "hatches": 2,
+      "egg_deaths": 0,
+      "censored": 0,
+      "facts": 28624,
+      "queen_alive": false,
+      "living": 10,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/positive/1_8_balanced_constant_positive_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "depot-8",
+      "births": 82,
+      "hatches": 0,
+      "egg_deaths": 79,
+      "censored": 3,
+      "facts": 28146,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "depot-8",
+      "births": 82,
+      "hatches": 0,
+      "egg_deaths": 79,
+      "censored": 3,
+      "facts": 28146,
+      "queen_alive": true,
+      "living": 12
+    },
+    {
+      "profile": "legacy",
+      "arm": "ordinary-32",
+      "births": 15,
+      "hatches": 15,
+      "egg_deaths": 0,
+      "censored": 0,
+      "facts": 467852,
+      "queen_alive": false,
+      "living": 37,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/historical/1_32_balanced_constant_full_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "ordinary-32",
+      "births": 36,
+      "hatches": 0,
+      "egg_deaths": 33,
+      "censored": 3,
+      "facts": 53407,
+      "queen_alive": true,
+      "living": 36
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "ordinary-32",
+      "births": 36,
+      "hatches": 0,
+      "egg_deaths": 33,
+      "censored": 3,
+      "facts": 53407,
+      "queen_alive": true,
+      "living": 36
+    },
+    {
+      "profile": "legacy",
+      "arm": "scarce-32",
+      "births": 18,
+      "hatches": 18,
+      "egg_deaths": 0,
+      "censored": 0,
+      "facts": 388133,
+      "queen_alive": false,
+      "living": 36,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/historical/1_32_scarce_constant_full_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "scarce-32",
+      "births": 36,
+      "hatches": 0,
+      "egg_deaths": 33,
+      "censored": 3,
+      "facts": 53292,
+      "queen_alive": true,
+      "living": 36
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "scarce-32",
+      "births": 36,
+      "hatches": 0,
+      "egg_deaths": 33,
+      "censored": 3,
+      "facts": 53292,
+      "queen_alive": true,
+      "living": 36
+    },
+    {
+      "profile": "legacy",
+      "arm": "depot-32",
+      "births": 78,
+      "hatches": 77,
+      "egg_deaths": 0,
+      "censored": 1,
+      "facts": 191461,
+      "queen_alive": true,
+      "living": 111,
+      "historical_exact": "experiments/s6_3_1/ecology/corrected/positive/1_32_balanced_constant_positive_6"
+    },
+    {
+      "profile": "borisovka",
+      "arm": "depot-32",
+      "births": 76,
+      "hatches": 0,
+      "egg_deaths": 73,
+      "censored": 3,
+      "facts": 96454,
+      "queen_alive": true,
+      "living": 36
+    },
+    {
+      "profile": "st-petersburg",
+      "arm": "depot-32",
+      "births": 76,
+      "hatches": 0,
+      "egg_deaths": 73,
+      "censored": 3,
+      "facts": 96454,
+      "queen_alive": true,
+      "living": 36
+    }
+  ],
+  "observer": {
+    "status": "ENGINEERING_PASS",
+    "baseline_envelope": {
+      "recorded_before_observer_pairs_utc": "2026-11-11T09:13:40.137+00:00",
+      "retained_pairs": 5,
+      "min_ratio": 0.989883851196829,
+      "max_ratio": 1.0044737560377945,
+      "work": "advance_ms plus observer_ms on the legacy depot-32 horizon"
+    },
+    "observer_pair_ratios": [
+      0.989205644779166,
+      1.0071438204077539,
+      0.9936124784198617,
+      0.9917390077145674,
+      0.9886533996292115
+    ],
+    "median_on_off": 0.9917390077145674,
+    "run_percentiles": {
+      "off": {
+        "advance_ms": {
+          "p50": 2404.9048000000003,
+          "p95": 2414.78492,
+          "p99": 2416.350184
+        },
+        "observer_ms": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "p99": 0.0
+        },
+        "query_ms": {
+          "p50": 0.6457,
+          "p95": 0.6472399999999999,
+          "p99": 0.6473679999999999
+        },
+        "scoped_query_ms": {
+          "p50": 43.2571,
+          "p95": 43.81676,
+          "p99": 43.871992000000006
+        },
+        "online_peak_rss_bytes": {
+          "p50": 22859776.0,
+          "p95": 22863052.8,
+          "p99": 22863708.16
+        },
+        "database_bytes": {
+          "p50": 9134080.0,
+          "p95": 9134080.0,
+          "p99": 9134080.0
+        }
+      },
+      "on": {
+        "advance_ms": {
+          "p50": 2384.6106,
+          "p95": 2395.8464799999992,
+          "p99": 2397.660495999999
+        },
+        "observer_ms": {
+          "p50": 4.709099999999999,
+          "p95": 5.02826,
+          "p99": 5.0723720000000005
+        },
+        "query_ms": {
+          "p50": 0.7613,
+          "p95": 0.80216,
+          "p99": 0.810192
+        },
+        "scoped_query_ms": {
+          "p50": 34.0099,
+          "p95": 35.817640000000004,
+          "p99": 36.101448000000005
+        },
+        "online_peak_rss_bytes": {
+          "p50": 22720512.0,
+          "p95": 22723788.8,
+          "p99": 22724444.16
+        },
+        "database_bytes": {
+          "p50": 9134080.0,
+          "p95": 9134080.0,
+          "p99": 9134080.0
+        }
+      }
+    },
+    "publication_percentiles": {
+      "off": {
+        "checkpoint_ms": {
+          "p50": 0.31355,
+          "p95": 0.517815,
+          "p99": 0.524169
+        },
+        "foreground_ms": {
+          "p50": 0.37955,
+          "p95": 0.58472,
+          "p99": 0.6007640000000001
+        },
+        "background_ms": {
+          "p50": 25.58215,
+          "p95": 38.506605,
+          "p99": 84.3174779999998
+        },
+        "restore_ms": {
+          "p50": 1134.71195,
+          "p95": 1693.82925,
+          "p99": 1694.55609
+        }
+      },
+      "on": {
+        "checkpoint_ms": {
+          "p50": 0.28369999999999995,
+          "p95": 0.55176,
+          "p99": 0.580466
+        },
+        "foreground_ms": {
+          "p50": 0.35585,
+          "p95": 0.6222599999999999,
+          "p99": 0.656956
+        },
+        "background_ms": {
+          "p50": 26.1233,
+          "p95": 35.759935,
+          "p99": 38.186005
+        },
+        "restore_ms": {
+          "p50": 1125.0588,
+          "p95": 1710.3507849999999,
+          "p99": 1714.882717
+        }
+      }
+    },
+    "warm_horizon": [
+      {
+        "world_id": "00000000-0000-003f-0000-000000000001",
+        "now_ms": "15552000000",
+        "facts": "96454",
+        "pending": "101",
+        "state_hash": "f248ff7458a1ed54",
+        "trace_hash": "417acb68cab12914",
+        "living": "36",
+        "queen_id": "2",
+        "queen_alive": "1",
+        "advance_ms": "1155.0012999999994",
+        "observer_ms": "3.0755999999999992",
+        "query_ms": "0.89129999999999998",
+        "scoped_query_ms": "12.876899999999999",
+        "rss_bytes": "45645824",
+        "online_peak_rss_bytes": "19607552",
+        "process_peak_rss_bytes": "199090176",
+        "database_bytes": "5427200",
+        "carb_in_ug": "6406600",
+        "carb_accounted_ug": "6406600",
+        "protein_in_ug": "643300",
+        "protein_accounted_ug": "643300",
+        "water_in_ug": "3259400",
+        "water_accounted_ug": "3259400",
+        "energy_input_nj": "703193000000",
+        "body_energy_nj": "62752429423",
+        "dissipated_energy_nj": "640440570577",
+        "soil_initial_q3": "17536",
+        "soil_remaining_q3": "17536",
+        "soil_carried_q3": "0",
+        "soil_deposited_q3": "0",
+        "replay": "exact"
+      },
+      {
+        "world_id": "00000000-0000-003f-0000-000000000001",
+        "now_ms": "15552000000",
+        "facts": "96454",
+        "pending": "101",
+        "state_hash": "712206f42f7e8edc",
+        "trace_hash": "417acb68cab12914",
+        "living": "36",
+        "queen_id": "2",
+        "queen_alive": "1",
+        "advance_ms": "1155.8509000000004",
+        "observer_ms": "3.7431999999999994",
+        "query_ms": "0.93079999999999996",
+        "scoped_query_ms": "13.095800000000001",
+        "rss_bytes": "47407104",
+        "online_peak_rss_bytes": "19312640",
+        "process_peak_rss_bytes": "199208960",
+        "database_bytes": "5427200",
+        "carb_in_ug": "6406600",
+        "carb_accounted_ug": "6406600",
+        "protein_in_ug": "643300",
+        "protein_accounted_ug": "643300",
+        "water_in_ug": "3259400",
+        "water_accounted_ug": "3259400",
+        "energy_input_nj": "703193000000",
+        "body_energy_nj": "62752429423",
+        "dissipated_energy_nj": "640440570577",
+        "soil_initial_q3": "17536",
+        "soil_remaining_q3": "17536",
+        "soil_carried_q3": "0",
+        "soil_deposited_q3": "0",
+        "replay": "exact"
+      }
+    ]
+  }
+}

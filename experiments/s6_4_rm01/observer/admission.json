@@ -1,0 +1,41 @@
+{
+  "recorded_utc": "2026-11-11T09:11:47.576+00:00",
+  "operating_system": "Windows-11-10.0.26200-SP0",
+  "processor": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "logical_cpus": 16,
+  "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+  "windows": [
+    {
+      "start_ticks_100ns": [
+        60683279062500,
+        64206503437500,
+        3607723281250
+      ],
+      "end_ticks_100ns": [
+        60683960312500,
+        64207280468750,
+        3607746562500
+      ],
+      "busy_percent": 14.877001171417415,
+      "seconds": 5.0
+    },
+    {
+      "start_ticks_100ns": [
+        60683960312500,
+        64207280468750,
+        3607746562500
+      ],
+      "end_ticks_100ns": [
+        60684625468750,
+        64208047187500,
+        3607770312500
+      ],
+      "busy_percent": 15.852935362719904,
+      "seconds": 5.0
+    }
+  ],
+  "temperature": "NOT MEASURED",
+  "clock": "NOT MEASURED",
+  "package_power": "NOT MEASURED",
+  "status": "ADMITTED"
+}

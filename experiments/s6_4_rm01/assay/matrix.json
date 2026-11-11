@@ -1,0 +1,219 @@
+[
+  {
+    "profile": "legacy",
+    "arm": "seed",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 13,
+    "canonical_sha256": "c7913ed5952bf213f17d4b035f3c46b0113773fbcc0afcecb6ac8c524421bfe6"
+  },
+  {
+    "profile": "legacy",
+    "arm": "funded",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 37,
+    "canonical_sha256": "475492435e13a54f4549cd213527064bfeb4e34c0ff23bd8aa7df17b53140387"
+  },
+  {
+    "profile": "legacy",
+    "arm": "sentinel",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 13,
+    "canonical_sha256": "c7913ed5952bf213f17d4b035f3c46b0113773fbcc0afcecb6ac8c524421bfe6"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "seed",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 28,
+    "canonical_sha256": "e2fb81b0507ffd035bc8aadf357cd7164cff8d8a9ccca61d162ab93c3547856e"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "funded",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 93,
+    "canonical_sha256": "dd612a66416824fe22adfc5a6f2e822b11e4f4a436598010f12e2ed7f738f4b3"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "sentinel",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 71,
+    "canonical_sha256": "f210ab0c687a675669033c2f16c44fe92010ebcee9e6e46afb9b0b932068e23b"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "seed",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 28,
+    "canonical_sha256": "e2fb81b0507ffd035bc8aadf357cd7164cff8d8a9ccca61d162ab93c3547856e"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "funded",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 93,
+    "canonical_sha256": "dd612a66416824fe22adfc5a6f2e822b11e4f4a436598010f12e2ed7f738f4b3"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "sentinel",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 67,
+    "canonical_sha256": "3502051b68f5bb3941094d5a50bfab754fd3985c30b292c03bd2cc24b86feb28"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "energy-tie",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 71,
+    "canonical_sha256": "e51be449ed5b297c21c5482fb1d153468bfdc1ac3abff4dde153ec6e7522724f"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "energy-tie",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 67,
+    "canonical_sha256": "9b9d64196d5ee11378fb7cf9885068ca921c1d31664031d350f52e14770c07cb"
+  },
+  {
+    "profile": "legacy",
+    "arm": "water-tie",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 12,
+    "canonical_sha256": "a625508f318b6f5623b2ce4afde4e5ab37c3d2a04c6f87f3ae8ee2e1ebe4cb59"
+  },
+  {
+    "profile": "legacy",
+    "arm": "interrupted",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 12,
+    "canonical_sha256": "ac44eb8029c7a5591a89f340e4a62feceefffa2596e403721207adf12dcdc836"
+  },
+  {
+    "profile": "legacy",
+    "arm": "ordinary-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 17069,
+    "canonical_sha256": "0c06a3164cd5c099ce236fe70405294d4265fc3b9d8791acdbdb612b533262fe"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "ordinary-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 15166,
+    "canonical_sha256": "f456c0251ca97e4149385a2046b28cfb662cef54a88c3813b190ee833c81cf18"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "ordinary-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 15166,
+    "canonical_sha256": "f456c0251ca97e4149385a2046b28cfb662cef54a88c3813b190ee833c81cf18"
+  },
+  {
+    "profile": "legacy",
+    "arm": "scarce-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 15408,
+    "canonical_sha256": "fe65b9caaac22a2f75fc75b02e73bac0a50eec5e1adb4804793645ca2166545f"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "scarce-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 15180,
+    "canonical_sha256": "45ba3591f3d797508614fb77a697301bc01d450118d53b8bc6d787b0a1a86e59"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "scarce-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 15180,
+    "canonical_sha256": "45ba3591f3d797508614fb77a697301bc01d450118d53b8bc6d787b0a1a86e59"
+  },
+  {
+    "profile": "legacy",
+    "arm": "depot-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 28624,
+    "canonical_sha256": "330599914d00bd54cb673377b8c1836a884693c6e99c22e7f90435bed0554ada"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "depot-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 28146,
+    "canonical_sha256": "277a6bd7b472bc1ced20a01a76681ace998e2a4bdcc9f03779abfb4bc6fae15d"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "depot-8",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 28146,
+    "canonical_sha256": "277a6bd7b472bc1ced20a01a76681ace998e2a4bdcc9f03779abfb4bc6fae15d"
+  },
+  {
+    "profile": "legacy",
+    "arm": "ordinary-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 467852,
+    "canonical_sha256": "2c28fc573a58785c3d4cd566361bd2a5f2f95f34f71bda262f89523145a22998"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "ordinary-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 53407,
+    "canonical_sha256": "90741347498b57959f2ac108da787069df21a03bb37d2230b6fbf057431b3879"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "ordinary-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 53407,
+    "canonical_sha256": "90741347498b57959f2ac108da787069df21a03bb37d2230b6fbf057431b3879"
+  },
+  {
+    "profile": "legacy",
+    "arm": "scarce-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 388133,
+    "canonical_sha256": "e1c3fa98978384384e53ba9771dfdd810cd29f63c59ee979a7f3f50559ce5e1b"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "scarce-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 53292,
+    "canonical_sha256": "42bcd2e914aa9e9e4e3f86a6127cb329cf1e5cbe8bf4da619437e9c2bae9af0b"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "scarce-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 53292,
+    "canonical_sha256": "42bcd2e914aa9e9e4e3f86a6127cb329cf1e5cbe8bf4da619437e9c2bae9af0b"
+  },
+  {
+    "profile": "legacy",
+    "arm": "depot-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 191461,
+    "canonical_sha256": "715d4ec5ff40e4a52b5370de4b9752f461bc277baff163da92e37e57dc54b4c2"
+  },
+  {
+    "profile": "borisovka",
+    "arm": "depot-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 96454,
+    "canonical_sha256": "a543657dfac57ac01b926d5d13ef240ad07d684d84a0ace13ec7e7146566631e"
+  },
+  {
+    "profile": "st-petersburg",
+    "arm": "depot-32",
+    "engineering_status": "ENGINEERING_PASS",
+    "fact_count": 96454,
+    "canonical_sha256": "a543657dfac57ac01b926d5d13ef240ad07d684d84a0ace13ec7e7146566631e"
+  }
+]

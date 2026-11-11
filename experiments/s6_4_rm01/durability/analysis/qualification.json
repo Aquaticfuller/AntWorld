@@ -1,0 +1,215 @@
+{
+  "result": "PASS",
+  "budgets": [
+    {
+      "case": "timed-legacy",
+      "metric": "foreground_ms_p95",
+      "observed": 1.22774,
+      "maximum": 25,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "foreground_max_ms",
+      "observed": 1.2328,
+      "maximum": 100,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "online_peak_max_bytes",
+      "observed": 141008896,
+      "maximum": 536870912,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "background_ms_p95",
+      "observed": 605.03386,
+      "maximum": 12000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "restore_ms_p95",
+      "observed": 2948.0297,
+      "maximum": 8000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "database_max_bytes",
+      "observed": 5206016,
+      "maximum": 134217728,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "history_page_ms_p95",
+      "observed": 1.34078,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-legacy",
+      "metric": "scoped_history_ms_p95",
+      "observed": 12.09642,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "foreground_ms_p95",
+      "observed": 1.17746,
+      "maximum": 25,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "foreground_max_ms",
+      "observed": 1.1844,
+      "maximum": 100,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "online_peak_max_bytes",
+      "observed": 140402688,
+      "maximum": 536870912,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "background_ms_p95",
+      "observed": 618.63978,
+      "maximum": 12000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "restore_ms_p95",
+      "observed": 2826.5445,
+      "maximum": 8000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "database_max_bytes",
+      "observed": 5214208,
+      "maximum": 134217728,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "history_page_ms_p95",
+      "observed": 1.5286,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "timed-continuous",
+      "metric": "scoped_history_ms_p95",
+      "observed": 9.79006,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-legacy",
+      "metric": "foreground_ms_p95",
+      "observed": 1.36262,
+      "maximum": 25,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-legacy",
+      "metric": "foreground_max_ms",
+      "observed": 1.3713,
+      "maximum": 100,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-legacy",
+      "metric": "online_peak_max_bytes",
+      "observed": 102682624,
+      "maximum": 536870912,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-legacy",
+      "metric": "history_page_ms_p95",
+      "observed": 0.90966,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-legacy",
+      "metric": "scoped_history_ms_p95",
+      "observed": 17.05728,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-continuous",
+      "metric": "foreground_ms_p95",
+      "observed": 1.18078,
+      "maximum": 25,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-continuous",
+      "metric": "foreground_max_ms",
+      "observed": 1.1813,
+      "maximum": 100,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-continuous",
+      "metric": "online_peak_max_bytes",
+      "observed": 86302720,
+      "maximum": 536870912,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-continuous",
+      "metric": "history_page_ms_p95",
+      "observed": 0.82156,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "integrated-continuous",
+      "metric": "scoped_history_ms_p95",
+      "observed": 15.23292,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "facts-1000000",
+      "metric": "restore_ms_p95",
+      "observed": 9688.65858,
+      "maximum": 15000,
+      "result": "PASS"
+    },
+    {
+      "case": "facts-1000000",
+      "metric": "online_peak_max_bytes",
+      "observed": 62414848,
+      "maximum": 805306368,
+      "result": "PASS"
+    },
+    {
+      "case": "facts-1000000",
+      "metric": "history_page_ms_p95",
+      "observed": 1.59062,
+      "maximum": 2000,
+      "result": "PASS"
+    },
+    {
+      "case": "facts-1000000",
+      "metric": "scoped_history_ms_p95",
+      "observed": 2.57844,
+      "maximum": 2000,
+      "result": "PASS"
+    }
+  ]
+}

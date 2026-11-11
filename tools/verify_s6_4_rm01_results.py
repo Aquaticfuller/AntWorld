@@ -4,10 +4,13 @@
 import argparse
 import json
 from collections import Counter
+from math import isclose
 from pathlib import Path
+from statistics import median
 
+from analyze_s6_3_4 import quantile
 from run_s6_4_rm01 import BASELINE, ECOLOGY, ROOT, SHORT, csv_rows, facts_csv, require
-from run_s6_3_4 import file_hash
+from run_s6_3_4 import cpu_window, file_hash
 
 
 CLOCKS = {"legacy": 172800000, "borisovka": 1442880000, "st-petersburg": 1356480000}
@@ -135,11 +138,89 @@ def verify(evidence):
             "source_commit": identity["code_commit"], "short": shorts, "ecology": ecology}
 
 
+def verify_observer(evidence):
+    host = json.loads((evidence / "admission.json").read_text(encoding="utf-8"))
+    windows = host["windows"]
+    require(host["status"] == "ADMITTED" and len(windows) == 2 and all(
+        window["seconds"] >= 5 and window["busy_percent"] <= 25
+        and window["busy_percent"] == cpu_window(window["start_ticks_100ns"], window["end_ticks_100ns"])["busy_percent"]
+        for window in windows), "observer host admission failed")
+    pairs = csv_rows(evidence / "observer_pairs.csv")
+    require([row["pair"] for row in pairs] == [f"{phase}-{n:02}" for phase in ("baseline", "observer")
+                                               for n in range(6)], "observer schedule changed")
+    envelope = json.loads((evidence / "baseline_envelope.json").read_text(encoding="utf-8"))
+    samples = {False: [], True: []}
+    publications = {False: [], True: []}
+    ratios = {"baseline": [], "observer": []}
+
+    def run(name):
+        root = evidence / name
+        receipt = json.loads((root / "receipt.json").read_text(encoding="utf-8"))
+        require(receipt["engineering_status"] == "ENGINEERING_PASS", "unsuccessful observer sample")
+        for filename in ("summary.csv", "cuts.csv"):
+            require(file_hash(root / filename) == receipt["outputs"][filename]["sha256"], f"changed {name}/{filename}")
+        return receipt, csv_rows(root / "summary.csv")[0], csv_rows(root / "cuts.csv")
+
+    for pair in pairs:
+        name = pair["pair"]
+        phase, repeat = name.split("-")
+        n = int(repeat)
+        a, b = [run(f"{name}-{leg}") for leg in ("a", "b")]
+        enabled = (phase == "observer" and n % 2 == 1, phase == "observer" and n % 2 == 0)
+        require((a[0]["observer"], b[0]["observer"]) == enabled and pair["role"] == ("retained" if n else "warmup")
+                and (pair["first_observer_enabled"] == "True") == enabled[0], "observer order changed")
+        require(a[0]["canonical_sha256"] == b[0]["canonical_sha256"] == pair["canonical_sha256"]
+                and a[0]["fact_count"] == b[0]["fact_count"] == int(pair["facts"])
+                and a[0]["outputs"]["final.frame"]["sha256"] == b[0]["outputs"]["final.frame"]["sha256"],
+                "observer changed world facts or the final frame")
+        times = [float(row["advance_ms"]) + float(row["observer_ms"]) for _, row, _ in (a, b)]
+        reference, comparison = reversed(times) if enabled[0] else times
+        ratio = comparison / reference
+        require(isclose(ratio, float(pair["ratio"])), "reported paired ratio changed")
+        if phase == "observer":
+            # The producer writes the envelope first. The recorded UTC timestamps can share a millisecond.
+            require(all(item[0]["started_utc"] >= envelope["recorded_before_observer_pairs_utc"] for item in (a, b)),
+                    "observer ran before the baseline envelope was recorded")
+            if n:
+                for item in (a, b):
+                    samples[item[0]["observer"]].append(item[1])
+                    publications[item[0]["observer"]].extend(item[2])
+        if n:
+            ratios[phase].append(ratio)
+    require((envelope["retained_pairs"], envelope["min_ratio"], envelope["max_ratio"]) ==
+            (len(ratios["baseline"]), min(ratios["baseline"]), max(ratios["baseline"])),
+            "baseline envelope differs from retained off/off pairs")
+
+    def percentiles(rows, metric):
+        values = [float(row[metric]) for row in rows if float(row[metric]) >= 0]
+        return {f"p{p}": quantile(values, p) for p in (50, 95, 99)}
+
+    return {
+        "status": "ENGINEERING_PASS", "baseline_envelope": envelope, "observer_pair_ratios": ratios["observer"],
+        "median_on_off": median(ratios["observer"]),
+        "run_percentiles": {
+            mode: {metric: percentiles(samples[enabled], metric) for metric in
+                   ("advance_ms", "observer_ms", "query_ms", "scoped_query_ms", "online_peak_rss_bytes", "database_bytes")}
+            for mode, enabled in (("off", False), ("on", True))
+        },
+        "publication_percentiles": {
+            mode: {metric: percentiles(publications[enabled], metric) for metric in
+                   ("checkpoint_ms", "foreground_ms", "background_ms", "restore_ms")}
+            for mode, enabled in (("off", False), ("on", True))
+        },
+        "warm_horizon": [run(f"horizon-{profile}")[1] for profile in ("borisovka", "st-petersburg")],
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("evidence", type=Path)
+    parser.add_argument("--observer", type=Path, help="Admitted observer measurement evidence")
     args = parser.parse_args()
-    print(json.dumps(verify(args.evidence), indent=2))
+    results = verify(args.evidence)
+    if args.observer is not None:
+        results["observer"] = verify_observer(args.observer)
+    print(json.dumps(results, indent=2))
 
 
 if __name__ == "__main__":

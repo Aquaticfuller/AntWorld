@@ -1,0 +1,2 @@
+scope,profile,mode,seed,species,population,condition,source,source_days,source_unit,clock_ms,observer_enabled,biological_status
+ENGINEERING_FIXTURE,legacy,water-tie,1,Lasius niger,"unspecified","S6.3.1 long-term control","ENGINEERING_FIXTURE",2,d,172800000,1,BIOLOGICAL_NOT_VALIDATED

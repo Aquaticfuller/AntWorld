@@ -1,0 +1,2 @@
+scope,profile,mode,seed,species,population,condition,source,source_days,source_unit,clock_ms,observer_enabled,biological_status
+ENGINEERING_FIXTURE,st-petersburg,depot-8,1,Lasius niger,"St. Petersburg","B06 Table 2 nominal 25 C, egg mean near 24.7 C","10.1023/B:JOEY.0000033808.45455.75",15.7,d,1356480000,1,BIOLOGICAL_NOT_VALIDATED

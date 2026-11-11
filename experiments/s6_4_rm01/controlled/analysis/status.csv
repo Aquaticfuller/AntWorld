@@ -1,0 +1,3 @@
+kind,status,qualified_sessions,required_sessions,raw_rows,planned_rows,batch
+contacts,INCONCLUSIVE,0,3,0,336,ADMISSION_EXHAUSTED
+births,INCONCLUSIVE,0,3,0,168,ADMISSION_EXHAUSTED

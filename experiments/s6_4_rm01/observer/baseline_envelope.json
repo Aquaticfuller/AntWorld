@@ -1,0 +1,7 @@
+{
+  "recorded_before_observer_pairs_utc": "2026-11-11T09:13:40.137+00:00",
+  "retained_pairs": 5,
+  "min_ratio": 0.989883851196829,
+  "max_ratio": 1.0044737560377945,
+  "work": "advance_ms plus observer_ms on the legacy depot-32 horizon"
+}

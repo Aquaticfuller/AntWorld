@@ -1,0 +1,30 @@
+{
+  "id": "31-timed-legacy-7",
+  "index": 31,
+  "role": "retained",
+  "repetition": 4,
+  "case": "timed-legacy",
+  "seed": 7,
+  "started_utc": "2026-11-11T08:54:59.339+00:00",
+  "finished_utc": "2026-11-11T08:55:05.307+00:00",
+  "elapsed_seconds": 5.967999999993481,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      60548396406250,
+      64054254687500,
+      3600257500000
+    ],
+    "end_ticks_100ns": [
+      60549018437500,
+      64055047656250,
+      3600410468750
+    ],
+    "busy_percent": 34.241823587710606
+  },
+  "exit_code": 0,
+  "files": {
+    "cuts.csv": "19f3da2279218e291fab369d078c99c74a69a04941255b25fefbd2e76313c621",
+    "sample.csv": "ee9c7c549e5d254dfb155a893afccccdfec6a35eda127b2b160943162325c7aa",
+    "console.log": "48527763534c29f65885ef13bd1e98e3bdb5d1430ae97fde818cb435e772a713"
+  }
+}

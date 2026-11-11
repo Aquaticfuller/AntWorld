@@ -1,0 +1,94 @@
+{
+  "baseline_commit": "51436048db93da8fbcfe4ff738ff74644bfa1731",
+  "baseline_cpp_tree": "277cc8e78cc1acd1cf4a74bf39d08dfdb6a99c69",
+  "code_commit": "2b7ca57bbc5a887527a9cf5f69066b7df0daa5ed",
+  "cpp_tree": "2b9d475fdb0d657dc87e46755d6511779da0c8b4",
+  "configuration": "Release",
+  "compiler": "Clang 23.1.5",
+  "generator": "Ninja",
+  "sanitizers": "OFF",
+  "executable": "antworld_s6_4_egg_timing.exe",
+  "executable_bytes": 4200960,
+  "executable_sha256": "de076c1e6c02573e3f236d57a6fb435600788b6d1fc5e6b78ab710ef6c2a5a59",
+  "source_sha256": {
+    "cpp/CMakeLists.txt": "9175e2b16aa75af0f2a5af1e03411871f26488272e31687a26a919886a32e866",
+    "cpp/apps/antworld_s6_4_egg_timing.cpp": "a7fd619c139caa83241a59eb7dc627148bde455424c29ca7711a2ab9e7b013c6",
+    "cpp/apps/rm01_egg_timing.hpp": "0646ecad7916702636ec8afb976ab5e3e670d14d729979772951cb6ac3763a05",
+    "cpp/tests/test_s6_4_egg_timing.cpp": "0a0927845d4c70ad4b643b959381152bb6e96e0e7e2437405e531ef6969e35f0",
+    "cpp/tests/test_s6_4_rm01.cmake": "80e4eb0129a772304a22484edca90f1fb92887fd18da81d669b8f75e9610182b",
+    "tools/run_s6_4_rm01.py": "97770a0da6768b97c38afa9304ef7177cdbefe51843cbb946b241a487ecef124"
+  },
+  "profile": "st-petersburg",
+  "arm": "energy-tie",
+  "seed": 1,
+  "observer": true,
+  "started_utc": "2026-11-11T08:45:12.500+00:00",
+  "finished_utc": "2026-11-11T08:45:12.587+00:00",
+  "native_wall_seconds": 0.07800000009592623,
+  "exit_code": 0,
+  "system_cpu_during_process": {
+    "start_ticks_100ns": [
+      60484583281250,
+      63976480781250,
+      3584136093750
+    ],
+    "end_ticks_100ns": [
+      60484588593750,
+      63976488593750,
+      3584139687500
+    ],
+    "busy_percent": 53.42465753424658
+  },
+  "biological_status": "BIOLOGICAL_NOT_VALIDATED",
+  "outputs": {
+    "configuration.csv": {
+      "bytes": 336,
+      "sha256": "f75937b72a70772361c002182f0e3a2f7114a7955c93951e7e150747cd851fce"
+    },
+    "cuts.csv": {
+      "bytes": 500,
+      "sha256": "77892a0d62b50428645dd886f57f5d0fb4c84c627885e36997a5680aba8ae32a"
+    },
+    "eggs.csv": {
+      "bytes": 484,
+      "sha256": "648245172097337db5d5b0921f18788610aae5b8ca8ab1df50d6817cb4340ad2"
+    },
+    "facts.csv": {
+      "bytes": 23101,
+      "sha256": "7b301ccd93ad2b0673a85f4d306c8e9711b1a9bd57c504bf44e8a629efb53090"
+    },
+    "final.frame": {
+      "bytes": 973,
+      "sha256": "85bef98c7c35a1b107faae30d0008eeefac60e796ed15e4a66d9c577d012b164"
+    },
+    "mid.checkpoint": {
+      "bytes": 6645,
+      "sha256": "8ff403dfafa40d765fd5b54cb913ec1828485c2f6ffb33dbbdf43c3da46e85d3"
+    },
+    "observations.csv": {
+      "bytes": 592,
+      "sha256": "54683d6c1dd9f6685a1e777b2205938aa6fe8bbd1074d6aba69bdbd21acca630"
+    },
+    "summary.csv": {
+      "bytes": 671,
+      "sha256": "6f1f629b5508bcf60df5bb13a659863a05cf957de1780c1570335d97ffefede5"
+    },
+    "world.sqlite": {
+      "bytes": 192512,
+      "sha256": "2be6312bf3513fcab358adfb3e4387a20786aefd26027e8cf4c8299a2d5dabff"
+    },
+    "world.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "859ea7b743d9746a225fedf64774a1ca2d4153da97bf5c694cddaaabbd773455"
+    },
+    "world.sqlite-wal": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "canonical_sha256": "9b9d64196d5ee11378fb7cf9885068ca921c1d31664031d350f52e14770c07cb",
+  "published_canonical_sha256": "9b9d64196d5ee11378fb7cf9885068ca921c1d31664031d350f52e14770c07cb",
+  "published_frame_count": 2,
+  "fact_count": 67,
+  "engineering_status": "ENGINEERING_PASS"
+}
