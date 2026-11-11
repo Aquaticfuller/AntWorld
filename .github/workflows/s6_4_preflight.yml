@@ -23,7 +23,8 @@ jobs:
             2e1a5fa129821176954f26a88f56791635bc8cda \
             f2994f4059c244258fe5dc7250f985bf8c399c6d \
             1652d092446fff2377b988e6f1326a9cc58f77af \
-            4dbafd087592b45d1b29101d67d35b400e388516
+            4dbafd087592b45d1b29101d67d35b400e388516 \
+            2fb9da7a602235a33ed11cc96ee54ab64b2f0f2b
       - name: Verify the source inventory
         run: python tools/audit_s6_4_preflight.py --check
       - name: Run source anchor regression tests
@@ -36,3 +37,5 @@ jobs:
         run: python research/s6_4_preflight/verify_batch3.py
       - name: Verify the integrated scientific evidence
         run: python research/s6_4_preflight/verify_scientific_integration.py
+      - name: Verify the Phase 2 scientific priorities
+        run: python research/s6_4_preflight/verify_scientific_priorities.py
