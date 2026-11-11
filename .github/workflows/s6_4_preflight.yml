@@ -25,7 +25,8 @@ jobs:
             1652d092446fff2377b988e6f1326a9cc58f77af \
             4dbafd087592b45d1b29101d67d35b400e388516 \
             2fb9da7a602235a33ed11cc96ee54ab64b2f0f2b \
-            c3cb3d0c02940420fd9e0bb4028628c7a9b19a9b
+            c3cb3d0c02940420fd9e0bb4028628c7a9b19a9b \
+            80fa974689fc15b6deef404e64bf7721c28fe57f
       - name: Verify the source inventory
         run: python tools/audit_s6_4_preflight.py --check
       - name: Run source anchor regression tests
@@ -42,3 +43,7 @@ jobs:
         run: python research/s6_4_preflight/verify_scientific_priorities.py
       - name: Verify the Phase 3 validation plan
         run: python research/s6_4_preflight/verify_scientific_validation_plan.py
+      - name: Test rejection of invalid Phase 3 validation records
+        run: python research/s6_4_preflight/test_phase3_validation_plan.py
+      - name: Verify the Phase 4 scientific gate and remediation plan
+        run: python research/s6_4_preflight/verify_scientific_gate.py
