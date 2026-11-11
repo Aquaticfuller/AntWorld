@@ -161,6 +161,28 @@ if(ANTWORLD_STORAGE)
         target_link_libraries(antworld_s5_history_benchmark PRIVATE psapi)
     endif()
     antworld_checks(antworld_s5_history_benchmark)
+
+    add_library(antworld_rm02_observer STATIC apps/rm02_observer.cpp)
+    target_include_directories(antworld_rm02_observer PUBLIC apps PRIVATE storage)
+    target_link_libraries(antworld_rm02_observer PUBLIC antworld_core PRIVATE antworld_storage antworld_sqlite)
+    antworld_checks(antworld_rm02_observer)
+    add_executable(antworld_s6_4_rm02 apps/antworld_s6_4_rm02.cpp)
+    target_include_directories(antworld_s6_4_rm02 PRIVATE storage)
+    target_link_libraries(antworld_s6_4_rm02 PRIVATE antworld_rm02_observer)
+    antworld_checks(antworld_s6_4_rm02)
+    if(BUILD_TESTING)
+        add_executable(antworld_s6_4_rm02_tests tests/test_s6_4_rm02.cpp)
+        target_include_directories(antworld_s6_4_rm02_tests PRIVATE storage)
+        target_link_libraries(antworld_s6_4_rm02_tests PRIVATE antworld_rm02_observer antworld_storage antworld_sqlite)
+        antworld_checks(antworld_s6_4_rm02_tests)
+        foreach(mode transfers failures lifecycle opportunities recovery faults)
+            add_test(NAME S6_4_RM02_${mode}
+                COMMAND ${CMAKE_COMMAND} -DTEST=$<TARGET_FILE:antworld_s6_4_rm02_tests>
+                -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output -DMODE=${mode}
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_4_rm02.cmake)
+            set_tests_properties(S6_4_RM02_${mode} PROPERTIES LABELS RM02 TIMEOUT 180)
+        endforeach()
+    endif()
 endif()
 
 if(BUILD_TESTING)
