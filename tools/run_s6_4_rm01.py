@@ -199,7 +199,17 @@ def paired_observation(binary, root, identity):
                           "first_observer_enabled": flags[0], "facts": a["fact_count"],
                           "canonical_sha256": a["canonical_sha256"],
                           "reference_work_ms": cost_a, "comparison_work_ms": cost_b, "ratio": cost_b / cost_a})
+        if phase == "baseline":
+            retained = [row["ratio"] for row in pairs if row["role"] == "retained"]
+            write_json(root / "evidence" / "baseline_envelope.json", {
+                "recorded_before_observer_pairs_utc": utc_now(), "retained_pairs": len(retained),
+                "min_ratio": min(retained), "max_ratio": max(retained),
+                "work": "advance_ms plus observer_ms on the legacy depot-32 horizon",
+            })
     write_rows(root / "evidence" / "observer_pairs.csv", pairs)
+    for profile in PROFILES[1:]:
+        trial = run_trial(binary, root, identity, f"horizon-{profile}", profile, "depot-32", True)
+        require(trial["engineering_status"] == "ENGINEERING_PASS", "warm horizon case failed")
 
 
 def main():
