@@ -149,6 +149,11 @@ jobs:
           python tools/analyze_s6_4_wp5.py experiments/s6_4_wp4/baseline experiments/s6_4_wp5/baseline experiments/s6_4_wp5/analysis --check
           python tools/analyze_s6_4_wp5_performance.py experiments/s6_4_wp5/performance/observer experiments/s6_4_wp5/performance/observer_analysis.json --check
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp5/performance/core --out experiments/s6_4_wp5/performance/core_analysis --check
+      - name: Verify WP-6A modeling policy and feasibility receipt (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          python tools/wp6a_budget_screen.py
+          python tools/test_s6_4_wp6a.py
 
   sanitizers:
     runs-on: ubuntu-24.04
