@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <type_traits>
 #ifndef _WIN32
 #include <fcntl.h>
 #endif
@@ -68,9 +69,31 @@ void write_bytes(std::ofstream& stream, std::span<const std::uint8_t> bytes) {
     stream.write(reinterpret_cast<const char*>(bytes.data()), static_cast<std::streamsize>(bytes.size()));
 }
 
-void mass(std::ostream& stream, FoodMass f) {
-    for (const auto n : f.components()) stream << ',' << n;
-}
+class CsvRow {
+public:
+    template<class... Numbers> void add(Numbers... values) { (number(values), ...); }
+    void mass(FoodMass f) { for (auto value : f.components()) number(value); }
+    void empty(std::size_t count) { row_.append(count,','); }
+    void write(std::ostream& stream) {
+        row_.push_back('\n');
+        stream.write(row_.data(),static_cast<std::streamsize>(row_.size()));
+        row_.clear();
+    }
+private:
+    std::string row_;
+    template<class Number> void number(Number value) {
+        char buffer[48];
+        const auto end=std::end(buffer);
+        const auto result=[&] {
+            if constexpr (std::is_same_v<Number,double>)
+                return std::to_chars(buffer,end,value,std::chars_format::general,17);
+            else return std::to_chars(buffer,end,value);
+        }();
+        require(result.ec==std::errc{},"cannot encode census value");
+        if (!row_.empty()) row_.push_back(',');
+        row_.append(buffer,result.ptr);
+    }
+};
 
 double ms(Clock::time_point start) { return std::chrono::duration<double, std::milli>(Clock::now()-start).count(); }
 
@@ -102,27 +125,30 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people) {
     const auto n = w.nutrition_snapshot();
     const auto f = w.founding_budget();
     const auto g = w.geometry_snapshot();
-    cuts << s.now.milliseconds << ',' << s.committed_events << ',' << s.pending_events << ',' << s.rng_state << ',' << s.living_ants;
-    mass(cuts, n.introduced); mass(cuts, n.accounted); mass(cuts, s.food_ledger.available); mass(cuts, s.food_ledger.stored);
-    cuts << ',' << n.energy_input_nj << ',' << n.body_energy_nj << ',' << n.dissipated_energy_nj << ',' << n.lost_water_ug
-         << ',' << f.owned_lipid_ug << ',' << f.spent_lipid_ug << ',' << f.owned_mobile_protein_ug << ',' << g.geometry_revision
-         << ',' << g.ledger.initial_q3 << ',' << g.ledger.remaining_q3 << ',' << g.ledger.carried_q3 << ',' << g.ledger.deposited_q3 << '\n';
+    require(n.introduced==n.accounted && n.energy_input_nj==n.body_energy_nj+n.dissipated_energy_nj &&
+            f.introduced_lipid_ug==f.owned_lipid_ug+f.spent_lipid_ug &&
+            g.ledger.initial_q3==g.ledger.remaining_q3+g.ledger.carried_q3+g.ledger.deposited_q3,
+            "unbalanced F1 census");
+    CsvRow row;
+    row.add(s.now.milliseconds,s.committed_events,s.pending_events,s.rng_state,s.living_ants);
+    row.mass(n.introduced); row.mass(n.accounted); row.mass(s.food_ledger.available); row.mass(s.food_ledger.stored);
+    row.add(n.energy_input_nj,n.body_energy_nj,n.dissipated_energy_nj,n.lost_water_ug,
+            f.owned_lipid_ug,f.spent_lipid_ug,f.owned_mobile_protein_ug,g.geometry_revision,
+            g.ledger.initial_q3,g.ledger.remaining_q3,g.ledger.carried_q3,g.ledger.deposited_q3);
+    row.write(cuts);
     for (const auto& a : w.ant_states()) {
         const AntRef ref{s.world, a.id};
         const auto p = *w.query_physiology(ref);
         const auto r = w.query_founding(ref);
-        people << s.now.milliseconds << ',' << s.committed_events << ',' << a.id.value << ',' << p.mother.value
-               << ',' << static_cast<unsigned>(a.caste) << ',' << static_cast<unsigned>(a.stage) << ',' << a.born_at.milliseconds
-               << ',' << a.position.x << ',' << a.position.y << ',' << a.position.z << ',' << a.position_revision
-               << ',' << static_cast<unsigned>(p.death_cause) << ',' << static_cast<unsigned>(p.behavior)
-               << ',' << p.stage_progress.milliseconds << ',' << p.next_absorption.milliseconds
-               << ',' << p.body_energy_nj << ',' << p.hydration_ug << ',' << p.tissue_protein_ug << ',' << p.lost_water_ug
-               << ',' << p.dissipated_energy_nj << ',' << p.oxidized_carbs_ug;
-        mass(people, p.crop); mass(people, a.carried_food);
-        people << ',' << r.has_value();
-        if (r) people << ',' << r->lipid_ug << ',' << r->spent_lipid_ug << ',' << r->mobile_protein_ug << ',' << r->energy_remainder << ',' << r->water_remainder;
-        else people << ",,,,,";
-        people << '\n';
+        row.add(s.now.milliseconds,s.committed_events,a.id.value,p.mother.value,
+                static_cast<unsigned>(a.caste),static_cast<unsigned>(a.stage),a.born_at.milliseconds,
+                a.position.x,a.position.y,a.position.z,a.position_revision,static_cast<unsigned>(p.death_cause),
+                static_cast<unsigned>(p.behavior),p.stage_progress.milliseconds,p.next_absorption.milliseconds,
+                p.body_energy_nj,p.hydration_ug,p.tissue_protein_ug,p.lost_water_ug,p.dissipated_energy_nj,p.oxidized_carbs_ug);
+        row.mass(p.crop); row.mass(a.carried_food); row.add(static_cast<unsigned>(r.has_value()));
+        if (r) row.add(r->lipid_ug,r->spent_lipid_ug,r->mobile_protein_ug,r->energy_remainder,r->water_remainder);
+        else row.empty(5);
+        row.write(people);
     }
 }
 
@@ -174,7 +200,7 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
         const auto s = w.summary();
         peak_queue = std::max(peak_queue, s.pending_events);
         const auto observe_start = Clock::now();
-        if (observation) { check_ledgers(w); observe(w, cuts, people); }
+        if (observation) observe(w,cuts,people);
         const auto cut_time = ms(observe_start);
         capture += cut_time;
         timings << at << ',' << elapsed << ',' << cut_time << ',' << s.committed_events << ',' << s.pending_events << '\n';
@@ -228,15 +254,15 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc!=4 && argc!=6 && argc!=7) {
-        std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT MODE [WINDOW_MS REPEAT_PPM [AFFINITY_MASK]]\n";
+    if (argc!=4 && argc!=6 && argc!=7 && argc!=8) {
+        std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT MODE [WINDOW_MS REPEAT_PPM [AFFINITY_MASK [EARLY_ACCESS_MASK]]]\n";
         return 1;
     }
     const std::string_view mode = argv[3];
     try {
         const bool profile=mode=="profile-observed" || mode=="profile-unobserved";
         require(profile || mode=="observed" || mode=="unobserved" || mode=="durable", "unknown F1 observation mode");
-        if (argc==7) {
+        if (argc>=7) {
             const auto mask=integer(argv[6]);
 #ifdef _WIN32
             require(mask==0 || SetProcessAffinityMask(GetCurrentProcess(),static_cast<DWORD_PTR>(mask)),"cannot pin assay child");
@@ -251,6 +277,11 @@ int main(int argc, char** argv) {
             require(window<=INT64_MAX && ppm<=UINT32_MAX && (window || !ppm),"invalid F1-R1 assay option");
             if (window) c.profile.feeding_persistence=FoundingFeedingPersistence{
                 {static_cast<std::int64_t>(window)},static_cast<std::uint32_t>(ppm)};
+        }
+        if (argc==8) {
+            const auto flags=integer(argv[7]);
+            require(flags>=1 && flags<=3 && c.profile.feeding_persistence,"invalid F1-R2 option");
+            c.profile.early_access=FoundingEarlyAccess{(flags&1)!=0,(flags&2)!=0};
         }
         std::filesystem::create_directories(argv[2]);
         run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved", mode=="durable" || profile, profile);

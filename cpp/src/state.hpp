@@ -163,6 +163,7 @@ struct WorldRuntime::State {
         std::uint64_t initial_energy{}, maximum_yield{}, development_commands{}, resolution_commands{};
         std::uint64_t founding_trace{};
         detail::FoundingMealMemory founding_meal;
+        SimTime last_founding_hatch_cue;
     } m;
     WorldId world;
     std::uint64_t seed;

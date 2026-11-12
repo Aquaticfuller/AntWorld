@@ -14,14 +14,14 @@ from run_s6_4_wp6b import input_bytes, schema_rejection, sha, write_json
 from run_s6_4_wp6b_r1 import BASE, EXACT, FREEZE, PROTOCOL, enumerate_cases, reference_records
 
 
-def audit_witnesses(case, summary, raw):
+def audit_witnesses(case, summary, raw, max_kind=F_RATION):
     queen, window, strength = int(summary["queen"]), *case["care_memory"]
     memory = wake = None
     local = False
     counts = dict(repeat_selected=0, repeat_unavailable=0, repeat_expired=0,
                   repeated_positive_protein=0, repeated_interrupted=0)
     chosen = set()
-    for event, time, source, kind, actor, payload, marker, stage, outcome, mass, obs in facts(raw):
+    for event, time, source, kind, actor, payload, marker, stage, outcome, mass, obs in facts(raw, max_kind):
         if wake is not None:
             check(kind == OBSERVATION and source == wake and actor == queen, "repeat annotation has no local selection")
             phase, act, target, bout, *_ = obs

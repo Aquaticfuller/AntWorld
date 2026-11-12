@@ -18,6 +18,7 @@ Digest anchor_digest(const SaveToken& token,SimTime time,std::span<const std::ui
 FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
     if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
+    if (bytes[14]=='H') return FactSchema::FoundingEarlyAccess;
     if (bytes[14]=='G') return FactSchema::FoundingPersistence;
     return bytes[14]=='F' ? FactSchema::Founding : FactSchema::Legacy;
 }
@@ -135,9 +136,8 @@ void verify_blocks(sqlite3* db,WorldId world,EventId from,EventId through,const 
     BlockCursor cursor(db,world,from,through);
     auto seen=block_tail(db,world,from);
     while (const auto block=cursor.next()) {
-        constexpr auto r1=FactSchema::FoundingPersistence;
-        require((block->header.fact_schema==static_cast<unsigned>(r1))==(schema==r1),
-                "F1-R1 frame and fact block versions disagree");
+        require(compatible_fact_schema(static_cast<FactSchema>(block->header.fact_schema),schema),
+                "founding frame and fact block versions disagree");
         require(block->header.first.value==from.value+1 && block->header.previous==seen,
                 "published cut does not start at an exact block boundary");
         from=block->header.last;

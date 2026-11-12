@@ -47,7 +47,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     BehaviorConfig behavior;
     behavior.trails_enabled = false;
     w.configure_surface({{-.03, 0, -.03}, 7, 7, .01}, {}, behavior);
-    if (c.workers) {
+    const bool water_trial=c.arm=="water-reachable" || c.arm=="water-blocked" || c.arm=="water-absent";
+    if (c.workers || water_trial) {
         scene.geometry.origin_m = {-.020, -.006, -.012};
         scene.geometry.initial_solid = {{0, 0, 0}, {80, 24, 80}};
         scene.geometry.work_duration = {hour_ms / 2};
@@ -85,10 +86,13 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         scene.workers.push_back(worker);
     }
     if (c.food.total_ug()) {
-        const PositionM depot = c.arm == "blocked" ? PositionM{0, 0, .020} : PositionM{};
+        const bool blocked=c.arm=="blocked" || c.arm=="water-blocked";
+        const PositionM depot = blocked ? PositionM{0, 0, .020} : PositionM{};
         w.seed_food(depot, c.food);
-        if (c.arm == "blocked") require(!w.query_route(scene.queen, depot).found && !w.spatially_clear({}, depot),
-                                         "blocked food is reachable at setup");
+        if (blocked) require(!w.query_route(scene.queen, depot).found && !w.spatially_clear({}, depot),
+                             "blocked food is reachable at setup");
+        else if (water_trial) require(w.spatially_clear({},depot) && w.query_material(depot)==Material::Void,
+                                      "accessible water is not in the same clear local pocket");
     }
     return scene;
 }

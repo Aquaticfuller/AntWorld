@@ -6,6 +6,7 @@
 namespace antworld::detail {
 inline constexpr auto founding_magic = UINT64_C(0x4654504b435741); // AWCKPTF
 inline constexpr auto founding_persistence_magic = UINT64_C(0x4754504b435741); // AWCKPTG
+inline constexpr auto founding_access_magic = UINT64_C(0x4854504b435741); // AWCKPTH
 inline constexpr std::array founding_times{
     &FoundingProfile::first_lay, &FoundingProfile::opening_width, &FoundingProfile::opening_spacing,
     &FoundingProfile::later_spacing, &FoundingProfile::maintenance_floor};
@@ -32,6 +33,10 @@ inline void write_founding_profile(Writer& w, EntityId founder, const FoundingPr
         w.time(repeat->window);
         w.put(repeat->repeat_ppm, 4);
     }
+    if (const auto& access = p.early_access) {
+        w.put(access->mobilize_larval_lipid, 1);
+        w.put(access->local_hatch_cue, 1);
+    }
 }
 
 template<class S> void write_founding(Writer& w, const S& s, bool frame) {
@@ -48,11 +53,13 @@ template<class S> void write_founding(Writer& w, const S& s, bool frame) {
         w.time(s.m.founding_meal.fed_at);
         w.put(s.m.founding_meal.meal.value);
     }
+    if (s.founding->profile.early_access) w.time(s.m.last_founding_hatch_cue);
 }
 
-template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limits, bool frame, bool persistence) {
-    ensure(r.get(4) == (persistence ? FoundingProfile::persistence_version : FoundingProfile::version),
-           "unsupported F1 profile version");
+template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limits, bool frame, std::uint32_t version) {
+    ensure(r.get(4) == version, "unsupported F1 profile version");
+    const bool persistence=version>=FoundingProfile::persistence_version;
+    const bool early_access=version==FoundingProfile::early_access_version;
     typename S::FoundingSetup setup;
     auto& p = setup.profile;
     p.population = static_cast<FoundingPopulation>(r.get(1));
@@ -65,6 +72,7 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     for (const auto member : founding_times) p.*member = r.time();
     for (const auto member : founding_values) p.*member = r.get();
     if (persistence) p.feeding_persistence = FoundingFeedingPersistence{r.time(), static_cast<std::uint32_t>(r.get(4))};
+    if (early_access) p.early_access = FoundingEarlyAccess{r.flag(), r.flag()};
     validate_founding(p);
     ensure(s.long_term && s.social && s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy &&
            s.ants.index.contains(setup.founder) && s.reproduction.contains(setup.founder) &&
@@ -93,6 +101,7 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     ensure(s.founding_reserves.contains(setup.founder) && lipid == p.lipid_ug, "F1 ledger lacks seeded material");
     if (frame) ensure(r.get() == s.m.founding_trace, "F1 frame history digest mismatch");
     if (persistence) s.m.founding_meal = {EntityId{r.get()}, r.time(), EventId{r.get()}};
+    if (early_access) s.m.last_founding_hatch_cue=r.time();
     s.founding = std::make_shared<const typename S::FoundingSetup>(setup);
 }
 } // namespace antworld::detail

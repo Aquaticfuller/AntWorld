@@ -130,8 +130,13 @@ void expiry_and_unavailable() {
     check_ledgers(sw); sw.restore(sw.checkpoint());
 }
 
-void blocked_funded_recipient() {
+void blocked_funded_recipient(bool hatch_cue=false) {
     auto c=probe(); c.profile.first_lay={6*hour_ms+253};
+    if (hatch_cue) {
+        c.profile.early_access=FoundingEarlyAccess{false,true};
+        // Keep the hatch away from the routine six-hour care lease in both arms.
+        c.profile.brood[0].duration.milliseconds+=hour_ms;
+    }
     WorldConfig config; config.continuous_spatial_motion=true;
     WorldRuntime w({646,52},1,config,s6_3_1_fixture::limits());
     w.configure_long_term(); w.configure_social(closure::day_social());
@@ -167,11 +172,17 @@ void blocked_funded_recipient() {
     require(!w.spatially_clear({},target) && w.geometry_snapshot().ledger.filled_q3==16,"soil was not physically occluding the larva");
     w.advance_to({6*day_ms});
     require(kind(w,FactKind::FoundingRation).empty(),"occluded funded larva received a ration");
+    require(kind(w,FactKind::FoundingHatchCue).empty(),"wall leaked a cue from the funded hatch");
     for (const auto& e : kind(w,FactKind::BiologicalObservation))
         require(e.time<close || e.actor!=queen.id || e.observation.target!=larva.id,"wall leaked larval care contact");
     check_ledgers(w); w.restore(w.checkpoint());
     w.restore(cut); w.advance_to({6*day_ms});
     require(!kind(w,FactKind::FoundingRation).empty(),"open control did not pay a local larva");
+    if (hatch_cue) {
+        const auto cues=kind(w,FactKind::FoundingHatchCue);
+        require(cues.size()==1 && cues.front().payload==larva.id.value,"open control did not perceive the paid hatch");
+        w.restore(w.checkpoint());
+    }
     check_ledgers(w);
 }
 
@@ -273,6 +284,7 @@ int main(int argc, char** argv) {
         if (mode=="R1_REPEAT_DISTRIBUTION") repeat_and_distribution();
         else if (mode=="R1_EXPIRY_UNAVAILABLE") expiry_and_unavailable();
         else if (mode=="R1_FUNDED_WALL") blocked_funded_recipient();
+        else if (mode=="R2_HATCH_WALL") blocked_funded_recipient(true);
         else if (mode=="R1_COMPETITION_INTERRUPT") competition_and_interruption();
         else if (mode=="R1_RESTORE_FAULT") restore_and_fault(argv[2]);
         else if (mode=="R1_FORMAT_ZERO") format_and_zero();

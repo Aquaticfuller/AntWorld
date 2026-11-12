@@ -20,6 +20,11 @@ from run_s6_4_wp6b import frozen_cases, git, input_bytes, sha
 from run_s6_4_wp6b_r1 import NOMINAL, PROTOCOL
 
 
+MODEL_ARGUMENTS = {"v1": (0, 0, 0), "r1": (*NOMINAL, 0)}
+MODEL_VERSIONS = {"v1": 1, "r1": 2}
+ADDITIONAL_SOURCES = ()
+
+
 def workload():
     cases = {case["case"]: (identity, case) for identity, case in frozen_cases() if case["software_seed"] == 1 and
              ((case["group"] == "micro" and case["arm"] == "nominal") or
@@ -32,7 +37,8 @@ def schedule(session):
     rows = []
     cells = list(workload())
     for case in cells[::-1] if session == 2 else cells:
-        for model in ("r1", "v1") if session == 2 else ("v1", "r1"):
+        models = tuple(MODEL_ARGUMENTS)
+        for model in models[::-1] if session == 2 else models:
             for block, (a, b) in enumerate((("off-a", "off-b"), ("off", "on"))):
                 order = (a, b, b, a) if (session+block) % 2 else (b, a, a, b)
                 for slot, treatment in enumerate(order):
@@ -43,7 +49,7 @@ def schedule(session):
 
 def source_hashes():
     names = (Path(__file__).name, "run_s6_4_rm02_performance.py", "analyze_s6_3_3_1_performance.py",
-             "profile_s6_4_wp6b.py", "run_s6_4_wp6b_r1.py", "run_s6_4_wp6b.py")
+             "profile_s6_4_wp6b.py", "run_s6_4_wp6b_r1.py", "run_s6_4_wp6b.py", *ADDITIONAL_SOURCES)
     return native.dependencies() | {name: sha(native.ROOT / "tools" / name) for name in names}
 
 
@@ -84,13 +90,15 @@ def collect(args, folder, archive, probe, logical, admission):
         try:
             for item in read(folder / "schedule.csv"):
                 identity, case = cases[item["case"]]
-                window, strength = NOMINAL if item["model"] == "r1" else (0, 0)
+                window, strength, access = MODEL_ARGUMENTS[item["model"]]
                 with TemporaryDirectory(dir=archive) as temp:
                     location = Path(temp)
                     params, output = location / "parameters.txt", location / "assay"
                     params.write_bytes(input_bytes(identity, case))
                     cmd = [args.binary, params, output, "profile-" + item["observation"],
                            str(window), str(strength), str(1 << logical)]
+                    if access:
+                        cmd.append(str(access))
                     log.write(f"{item['sample']} {item['case']} {item['model']} {item['treatment']}\n".encode())
                     log.flush()
                     launch = time.perf_counter_ns()
@@ -130,8 +138,9 @@ def collect(args, folder, archive, probe, logical, admission):
     receipt["host_after"] = native.host()
     receipt["telemetry_qualified"] = telemetry(folder, receipt)[1]
     native.save(folder / "receipt.json", receipt)
-    print(f"{folder.name}: {recorded}/160 samples, qualified telemetry {receipt['telemetry_qualified']}", flush=True)
-    return not code and not error and recorded == 160 and receipt["telemetry_qualified"]
+    required = len(schedule(int(folder.name[-1])))
+    print(f"{folder.name}: {recorded}/{required} samples, qualified telemetry {receipt['telemetry_qualified']}", flush=True)
+    return not code and not error and recorded == required and receipt["telemetry_qualified"]
 
 
 def run(args):
@@ -195,6 +204,7 @@ def analyze(raw, output):
         folder = raw / name
         plan = read(folder / "schedule.csv")
         assert sha(folder / "schedule.csv") == digest
+        assert plan == [{key: str(value) for key, value in row.items()} for row in schedule(int(name[-1]))]
         attempts = [native.load(path) for path in sorted(folder.glob("admission*_receipt.json"))]
         assert len(attempts) <= 3 and all(not a["admitted"] for a in attempts[:-1])
         for i, admission in enumerate(attempts, 1):
@@ -218,7 +228,7 @@ def analyze(raw, output):
     rng = Random(640601)
     results = []
     for case in workload():
-        for model in ("v1", "r1"):
+        for model in MODEL_ARGUMENTS:
             group = [r for r in samples if r["case"] == case and r["model"] == model]
             capture = [float(r["cut_ms"]) for r in cuts if r["case"] == case and r["model"] == model and r["treatment"] == "on"]
             if len(group) != 24:
@@ -226,7 +236,7 @@ def analyze(raw, output):
                 continue
             signatures = ("parameters_sha256", "initial_sha256", "frame_sha256", "facts_sha256", "events", "rng")
             assert len({tuple(r[k] for k in signatures) for r in group}) == 1
-            assert len(capture) == 546 and all(int(r["model_version"]) == (2 if model == "r1" else 1) for r in group)
+            assert len(capture) == 546 and all(int(r["model_version"]) == MODEL_VERSIONS[model] for r in group)
             on = [r for r in group if r["treatment"] == "on"]
             off = [r for r in group if r["treatment"] == "off"]
             rss = [median(int(r["peak_rss_bytes"]) for r in on if r["session"] == s) -
@@ -254,10 +264,11 @@ def analyze(raw, output):
                 writer = csv.DictWriter(stream, list(dict.fromkeys(k for r in entries for k in r)), lineterminator="\n")
                 writer.writeheader()
                 writer.writerows(entries)
-    verdict = "NOT_RUN" if not samples else "INCONCLUSIVE" if len(samples) != 480 or any(r["status"] == "INCONCLUSIVE" for r in results) else (
+    required = sum(len(schedule(i)) for i in range(1, 4))
+    verdict = "NOT_RUN" if not samples else "INCONCLUSIVE" if len(samples) != required or any(r["status"] == "INCONCLUSIVE" for r in results) else (
         "FAIL" if any(r["status"] == "FAIL" for r in results) else "PASS")
-    native.save(output / "decision.json", dict(status=verdict, rows=len(samples), required=480, collection=batch["outcome"]))
-    print(verdict, f"{len(samples)}/480 samples", flush=True)
+    native.save(output / "decision.json", dict(status=verdict, rows=len(samples), required=required, collection=batch["outcome"]))
+    print(verdict, f"{len(samples)}/{required} samples", flush=True)
 
 
 def main():

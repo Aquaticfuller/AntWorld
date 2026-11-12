@@ -2,6 +2,7 @@
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
+#include "founding_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -67,10 +68,10 @@ void WorldRuntime::observe(Transaction& tx, EntityId actor, ScheduledId source,
     f.colony=a.colony; f.stage=a.stage; f.position=a.position; f.observation=observation;
     f.transferred=amount; f.outcome=outcome; tx.fact(f);
 }
-void WorldRuntime::schedule_care(Transaction& tx, EntityId id, SimTime when) {
+void WorldRuntime::schedule_care(Transaction& tx, EntityId id, SimTime when, EntityId hatch_target) {
     auto& s=*state_; auto c=s.care.at(id); if (!c.enabled) return;
     ScheduledEvent e; e.actor=id; e.kind=ScheduledEvent::Kind::CareWake; e.issued_at=s.m.now;
-    e.key={when,Phase::Perception,0,0,0}; c.pending=tx.insert(e); tx.care.set(id,c);
+    e.key={when,Phase::Perception,0,0,0}; e.payload=hatch_target.value; c.pending=tx.insert(e); tx.care.set(id,c);
     auto p=s.physiology.at(id); p.behavior_event=c.pending; tx.physiology.set(id,p);
 }
 void WorldRuntime::enable_brood_care(AntRef ref, const IndividualCareProfile& profile) {
@@ -126,7 +127,7 @@ bool WorldRuntime::local_care_available(AntRef ref) const {
               within_contact(a.position,b.position,s.config)));
     });
 }
-void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId source) {
+void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId source,EntityId hatch_target) {
     auto& s=*state_;
     const auto a=*query_ant(ref);
     CareState care;
@@ -141,9 +142,34 @@ void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId 
     care.enabled=true;
     care.returning=a.position!=care.familiar_shelter;
     tx.care.set(a.id,care);
-    schedule_care(tx,a.id,after(s.m.now,1));
+    schedule_care(tx,a.id,after(s.m.now,1),hatch_target);
     WorldEvent f; f.kind=FactKind::CareProgramChanged; f.actor=a.id; f.colony=a.colony;
     f.stage=a.stage; f.position=a.position; f.payload=1; tx.fact(f);
+}
+void WorldRuntime::notify_local_hatch(Transaction& tx, const AntState& larva, ScheduledId source) {
+    auto& s=*state_;
+    const auto founder=s.founding->founder;
+    const auto last=s.m.last_founding_hatch_cue;
+    if ((last!=SimTime{} && s.m.now.milliseconds-last.milliseconds<founding_hatch_cooldown_ms) ||
+        !s.autonomy.contains(founder) || !s.autonomy.at(founder).enabled || care_owned(s,founder) ||
+        s.external_resolution(founder)) return;
+    const AntRef ref{s.world,founder};
+    const auto queen=*query_ant(ref);
+    const auto shelter=s.colonies.rows[s.colonies.index.at(queen.colony)].nest_position;
+    if (!queen.alive() || queen.colony!=larva.colony || queen.position!=shelter ||
+        s.physiology.at(larva.id).mother!=founder || !within_contact(queen.position,larva.position,s.config) ||
+        !within_distance(queen.position,larva.position,s.care_profile->perception_radius_m,s.config.continuous_spatial_motion) ||
+        !surface_care_clear(s,queen.position,larva.position) || !spatially_clear(queen.position,larva.position) ||
+        s.care_locks.contains(larva.id)) return;
+    const auto p=*query_physiology(ref);
+    if (p.behavior!=IndividualBehavior::Paused || p.body_energy_nj<p.config.energy_capacity_nj/4 ||
+        p.hydration_ug<p.config.hydration_capacity_ug/4) return;
+    start_autonomous_care(tx,ref,source,larva.id);
+    s.m.last_founding_hatch_cue=s.m.now;
+    WorldEvent f; f.kind=FactKind::FoundingHatchCue; f.actor=founder; f.colony=queen.colony;
+    f.stage=queen.stage; f.position=queen.position; f.source=source;
+    f.payload=larva.id.value; f.random_value=s.care.at(founder).pending.value;
+    tx.fact(f);
 }
 void WorldRuntime::interrupt_care(Transaction& tx, EntityId id, Outcome reason, bool disable) {
     auto& s=*state_; if (!s.care_profile) return;
@@ -273,6 +299,15 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
             }
         }
         if (cfg.motion && !brood_candidates.empty()) c.search_remaining=0;
+        const bool hatch_cue=wake.payload!=0;
+        if (hatch_cue) {
+            const EntityId target{wake.payload};
+            std::erase_if(brood_candidates,[&](AntRef other) {
+                return other.id!=target || std::find(opportunities[n].begin(),opportunities[n].end(),other)==opportunities[n].end() ||
+                       query_ant(other)->stage!=LifeStage::Larva || s.care_locks.contains(other.id);
+            });
+            remembered={}; // The single hatch cue is independent of last-meal preference.
+        }
         if (c.carrying_brood) {
             c.target=c.retrieval.target;
             const auto b=*query_ant({s.world,c.target});
@@ -291,7 +326,7 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         } else if (revisiting) {
             c.act=CareAct::RevisitBroodSite;
             c.destination=care_destination(c,a,c.retrieval.pickup_site);
-        } else if (capable && !continuing && a.caste==Caste::Queen && !workers.empty() && draw(cfg.worker_contact_probability)) {
+        } else if (!hatch_cue && capable && !continuing && a.caste==Caste::Queen && !workers.empty() && draw(cfg.worker_contact_probability)) {
             c.act=CareAct::CloseWorkerContact; c.target=workers[static_cast<std::size_t>(bounded_draw(rng,workers.size()))].id;
         } else if (capable && !brood_candidates.empty()) {
             double memory=0;

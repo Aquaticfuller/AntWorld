@@ -130,9 +130,8 @@ SaveToken Store::save_segmented(const SaveFrame& frame,std::optional<SaveToken> 
                 "stale or divergent world state");
         start={previous->cursor};
         parent=durable.digest;
-        constexpr auto r1=FactSchema::FoundingPersistence;
-        require((frame_fact_schema(frame.checkpoint)==r1)==(frame_fact_schema(durable.frame)==r1),
-                "F1-R1 requires an independent published history");
+        require(compatible_fact_schema(frame_fact_schema(frame.checkpoint),frame_fact_schema(durable.frame)),
+                "experimental founding models require independent published histories");
         if (state.now==durable.time && state.revision==previous->revision) {
             const auto retry_parent=preceding_token(db,world,previous->generation);
             require((expected==previous || (expected==retry_parent && (retry_parent || previous->generation==1))) &&
@@ -213,8 +212,8 @@ LoadedWorld Store::recover(WorldId world,std::uint64_t base_generation,std::uint
         const auto target=verified_anchor(impl_->db,world,target_generation,impl_->limits.checkpoint_bytes);
         const auto schema=frame_fact_schema(target.frame);
         const auto base_profile=base.world.founding_profile();
-        constexpr auto r1=FactSchema::FoundingPersistence;
-        require((schema==r1)==(base_profile && base_profile->feeding_persistence),"F1-R1 recovery cannot cross model versions");
+        const auto base_schema=base_profile ? static_cast<FactSchema>(base_profile->model_version()+1) : FactSchema::Legacy;
+        require(compatible_fact_schema(schema,base_schema),"experimental recovery cannot cross model versions");
         verify_blocks(impl_->db,world,{base.token.cursor},{target.token.cursor},target.tail,schema);
         base.world.restore_frame(target.frame,std::make_shared<SqlEventPrefix>(impl_->path,world,
             static_cast<std::size_t>(target.token.cursor),target.tail));

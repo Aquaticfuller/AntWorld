@@ -91,6 +91,17 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         tx.set_founding(e.actor, *reserve);
     } else settle(p, ant.stage, s.m.now);
     p.physiology_event = {};
+    bool mobilized=false;
+    if (reserve && !p.body_energy_nj) {
+        const auto amount = mobilize_founding_larval_lipid(s.founding->profile, p, *reserve, ant.stage);
+        if (amount) {
+            auto conversion = lipid_conversion(s.founding->profile, ant, e.id, amount);
+            conversion.kind = FactKind::FoundingLipidMobilized;
+            tx.set_founding(e.actor, *reserve);
+            tx.fact(conversion);
+            mobilized=true;
+        }
+    }
     WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.position = ant.position; f.stage = ant.stage;
     f.kind = FactKind::PhysiologyUpdated;
     if (!p.body_energy_nj || !p.hydration_ug) {
@@ -108,7 +119,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             if (amount) tx.fact(lipid_conversion(s.founding->profile, ant, e.id, amount));
             tx.set_founding(e.actor, *reserve);
         }
-        const bool advance_stage = reserve ? founding_develops(s.founding->profile, p, *reserve, ant.stage) :
+        const bool advance_stage = reserve ? (!mobilized || emitted_pulse) && founding_develops(s.founding->profile, p, *reserve, ant.stage) :
             developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage);
         if (advance_stage) {
             interrupt_care(tx,e.actor,Outcome::InvalidStage);
@@ -121,6 +132,9 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         if (emitted_pulse && !advance_stage) return;
     }
     tx.fact(f);
+    if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve &&
+        s.founding->profile.early_access && s.founding->profile.early_access->local_hatch_cue)
+        notify_local_hatch(tx, ant, e.id);
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     if (state_->care.contains(ref.id) && state_->care.at(ref.id).enabled) throw std::invalid_argument("pause care before changing worker program");

@@ -20,6 +20,7 @@ ANT_SEEDED, MOVED, STAGE, DIED, RESTED = 2, 4, 7, 8, 13
 COLLECTED, DELIVERED, UPTAKE, CARGO, NEST, GIFT = 5, 12, 16, 19, 20, 21
 AUTONOMY, LAY, BIRTH, RECYCLED, OBSERVATION = 31, 34, 35, 38, 42
 F_CONFIG, F_SEED, F_EGG, F_CONVERT, F_RATION = range(44, 49)
+F_MOBILIZE, F_CUE = 49, 50
 OBS_SELECTED, OBS_STARTED, OBS_COMPLETED, OBS_INTERRUPTED = 1, 2, 3, 4
 FEED = 7
 MASS = struct.Struct("<QQQQ")
@@ -39,7 +40,7 @@ def rows(data):
     return list(csv.DictReader(data.decode().splitlines()))
 
 
-def facts(data):
+def facts(data, max_kind=F_RATION):
     cursor, sequence, prior_time = 0, 1, 0
     world = None
     while cursor < len(data):
@@ -49,7 +50,7 @@ def facts(data):
         event_id, high, low, time, source = IDENTITY.unpack_from(data, cursor)
         world = world or (high, low)
         payload, value, kind, actor = PAYLOAD.unpack_from(data, cursor+49)
-        check(event_id == sequence and world == (high, low) and time >= prior_time and kind <= F_RATION and
+        check(event_id == sequence and world == (high, low) and time >= prior_time and kind <= max_kind and
               (size == 210) == (kind == OBSERVATION), "canonical order or kind changed")
         yield (event_id, time, source, kind, actor, payload, value, data[cursor+146], data[cursor+147],
                MASS.unpack_from(data, cursor+114), BOUT.unpack_from(data, cursor+159) if size == 210 else None)
@@ -127,7 +128,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             if recipient is not None:
                 flows[recipient][i] += value
 
-    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw):
+    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, F_CUE if profile_version == 3 else F_RATION):
         while current_cut < len(cut_rows) and int(cut_rows[current_cut]["cursor"]) < event:
             compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile)
             current_cut += 1
@@ -156,8 +157,10 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             stocks[actor][0] -= value
             stocks[actor][2] -= profile["egg_protein"]
             stocks[payload] = [value, 0, 0]
-        elif kind == F_CONVERT:
+        elif kind in (F_CONVERT, F_MOBILIZE):
             check(actor in stocks and payload > 0 and value == payload * profile["lipid_yield"], "lipid conversion is unbacked")
+            if kind == F_MOBILIZE:
+                check(case["early_access_mask"] & 1 and actor in child and stages[actor] == 1, "invalid R2 mobilization stage or mode")
             stocks[actor][0] -= payload
             stocks[actor][1] += payload
         elif kind == F_RATION:

@@ -50,7 +50,7 @@ std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
 }
 WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
     Reader reader{bytes}; auto event = read_fact(reader);
-    ensure(event.kind <= FactKind::FoundingRation && (!founding_fact(event.kind) || valid_founding_payload(event)),
+    ensure(event.kind <= FactKind::FoundingHatchCue && (!founding_fact(event.kind) || valid_founding_payload(event)),
            "unsupported or invalid canonical fact");
     ensure(reader.cursor == bytes.size(), "trailing fact payload bytes"); return event;
 }
@@ -94,10 +94,11 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const auto base=motion ? UINT64_C(0x4454504b435741) : retrieval ? UINT64_C(0x4354504b435741) : s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741);
     const bool spatial=s.config.continuous_spatial_motion;
     const bool persistence=s.founding && s.founding->profile.feeding_persistence.has_value();
+    const bool early_access=s.founding && s.founding->profile.early_access.has_value();
     if (frame) w.put(frame_magic);
-    w.put(persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
-    w.put(persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    w.put(early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
+    w.put(early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     if (s.founding) w.put(spatial ? spatial_magic : base);
     if (spatial) w.put(base);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
@@ -150,7 +151,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool frame=header==frame_magic;
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
-    const bool persistence=header==founding_persistence_magic;
+    const bool early_access=header==founding_access_magic;
+    const bool persistence=early_access || header==founding_persistence_magic;
     const bool founding=header==founding_magic || persistence;
     const auto encoded_schema=r.get(4),encoded_physics=r.get(4),rng=r.get(4);
     const auto inner=founding?r.get():header;
@@ -164,8 +166,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
     const auto schema=motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version;
     const auto physics=motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version;
-    ensure(encoded_schema==(persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
-        encoded_physics==(persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
+    ensure(encoded_schema==(early_access?founding_access_schema_version:persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
+        encoded_physics==(early_access?founding_access_physics_version:persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
         (!founding || motion),"unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -184,7 +186,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.key.time >= m.now && valid(e.key.phase) && valid(e.action) && valid(e.stage) &&
             e.kind <= (care_contract ? ScheduledEvent::Kind::CareEnd : extended ? ScheduledEvent::Kind::ReturnProtein : ScheduledEvent::Kind::AutonomyWake) && finite(e.destination) && e.issued_at <= m.now &&
             scheduled_ids.insert(e.id.value).second && sequences.insert(e.key.sequence).second &&
-            (s->queue.empty() || s->queue.rbegin()->first < e.key), "invalid future event");
+            (s->queue.empty() || s->queue.rbegin()->first < e.key) &&
+            (e.kind!=ScheduledEvent::Kind::CareWake || !e.payload || early_access), "invalid future event");
         s->queue.emplace(e.key, e); s->queue_index.emplace(e.id, e.key);
     }
     auto facts=std::size_t{};
@@ -215,7 +218,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source)) ||
             founding_fact(e.kind) || (founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source));
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= (founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= (early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
@@ -270,7 +273,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_long_term(r,*s,guarded,founding);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
     read_connectors(r,*s,limits);
-    if (founding) read_founding(r, *s, limits, frame, persistence);
+    if (founding) read_founding(r, *s, limits, frame, early_access ? FoundingProfile::early_access_version :
+                               persistence ? FoundingProfile::persistence_version : FoundingProfile::version);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");
@@ -291,9 +295,13 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 e.action==DiagnosticAction::Record && (queen ? (!e.resource.value && s->reproduction.contains(e.actor) && s->reproduction.at(e.actor).wake==e.id) :
                 (!e.actor.value && s->resource_cycles.contains(e.resource) && s->resource_cycles.at(e.resource).wake==e.id)),"invalid long-term scheduled event");
         } else if (e.kind>=ScheduledEvent::Kind::CareWake) {
+            const bool hatch=e.payload && e.kind==ScheduledEvent::Kind::CareWake && early_access &&
+                s->founding->profile.early_access->local_hatch_cue && e.actor==s->founding->founder &&
+                s->founding_reserves.contains(EntityId{e.payload}) && e.issued_at==m.last_founding_hatch_cue &&
+                key.time.milliseconds-e.issued_at.milliseconds==1;
             ensure(care_contract && s->care.contains(e.actor) && s->care.at(e.actor).pending==e.id &&
                 key.phase==(e.kind==ScheduledEvent::Kind::CareWake?Phase::Perception:Phase::Resolution) &&
-                !key.priority && !key.tie && !e.payload && !e.resource.value && !e.requested_ug && !e.observed_position_revision &&
+                !key.priority && !key.tie && (!e.payload || hatch) && !e.resource.value && !e.requested_ug && !e.observed_position_revision &&
                 e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,"invalid care schedule fields");
         } else if (e.kind==ScheduledEvent::Kind::ReturnProtein) {
             ensure(extended && s->long_term->protein_recycling && s->physiology.contains(e.actor) && key.phase==Phase::Resolution &&
@@ -397,6 +405,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::BiologicalObservation: ensure(care_contract,"care fact without contract"); break;
         case FactKind::FoundingConfigured: case FactKind::FoundingReserveSeeded: case FactKind::FoundingEggFunded:
         case FactKind::FoundingLipidConverted: case FactKind::FoundingRation:
+        case FactKind::FoundingLipidMobilized: case FactKind::FoundingHatchCue:
             ensure(s->founding && (!e.actor.value || (seeded_ants.contains(e.actor) && e.stage==stages.at(e.actor) &&
                    e.position==positions.at(e.actor))), "F1 fact lacks live spatial identity");
             if (const auto related=related_individual(e); related.value)

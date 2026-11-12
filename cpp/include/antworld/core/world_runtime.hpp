@@ -146,6 +146,7 @@ private:
     [[nodiscard]] bool founding_foundress(EntityId) const;
     [[nodiscard]] bool can_feed_founding(EntityId, EntityId, bool require_protein = false) const;
     void resolve_founding_feed(Transaction&, const ScheduledEvent&, WorldEvent&);
+    void notify_local_hatch(Transaction&, const AntState&, ScheduledId);
     void validate_nutrition_capacity() const;
     void execute_reproduction(Transaction&, const ScheduledEvent&);
     void execute_resource_release(Transaction&, const ScheduledEvent&);
@@ -195,7 +196,7 @@ public:
 private:
     void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] bool local_care_available(AntRef) const;
-    void start_autonomous_care(Transaction&, AntRef, ScheduledId);
+    void start_autonomous_care(Transaction&, AntRef, ScheduledId, EntityId hatch_target = {});
     void collect_care_neighbors(AntRef, double radius, std::vector<AntRef>&) const;
     [[nodiscard]] bool clear_care_segment(PositionM from, PositionM to, std::int32_t half) const;
     void execute_care_action(Transaction&, const ScheduledEvent&);
@@ -203,7 +204,7 @@ private:
     void validate_active_care(Transaction&);
     [[nodiscard]] PositionM care_destination(const CareState&,const AntState&,PositionM goal,
                                              std::optional<PositionM> load={}) const;
-    void schedule_care(Transaction&, EntityId, SimTime);
+    void schedule_care(Transaction&, EntityId, SimTime, EntityId hatch_target = {});
     void observe(Transaction&, EntityId, ScheduledId, const BehaviorObservation&, FoodMass = {}, Outcome = Outcome::Success);
     void observe_legacy_action(Transaction&, const ScheduledEvent&, const WorldEvent&);
 };

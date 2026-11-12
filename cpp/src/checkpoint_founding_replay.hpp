@@ -21,6 +21,12 @@ template<class S> class FoundingReplay {
     FoundingMealMemory memory;
     ScheduledId repeated_wake;
     bool repeated_contact{};
+    std::optional<WorldEvent> last_hatch, hatch_cue;
+    SimTime last_cue;
+    EntityId cue_target;
+    ScheduledId cue_wake;
+    std::optional<WorldEvent> opened_care;
+    bool cue_contact{}, founder_autonomous{}, founder_caring{};
 
     void expect(WorldEvent e) {
         ensure(pending < expected.size(), "too many F1 facts in one physiological boundary");
@@ -62,6 +68,52 @@ template<class S> class FoundingReplay {
         }
         if (repeat && repeat->repeat_ppm) update_founding_meal_memory(memory, founder_id, e);
     }
+    void review_hatch(const WorldEvent& e) {
+        if (e.kind==FactKind::StageChanged && e.stage==LifeStage::Larva) last_hatch=e;
+        if (cue_wake.value) {
+            const bool released=e.kind==FactKind::CareProgramChanged && !e.payload && !e.source.value;
+            ensure(founder(e.actor) && e.time==after(last_cue,1) &&
+                   ((e.kind==FactKind::BiologicalObservation && e.source==cue_wake) || released),
+                   "R2 hatch wake has no bounded care decision");
+            if (e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Opportunity)
+                cue_contact |= e.observation.target==cue_target;
+            else {
+                ensure(released || (cue_contact && e.observation.phase==ObservationPhase::Selected &&
+                       e.observation.target==cue_target && e.observation.bout.value), "R2 hatch cue selected an unwitnessed larva");
+                cue_wake={}; cue_target={}; cue_contact=false;
+            }
+        }
+        if (e.kind==FactKind::FoundingHatchCue) {
+            ensure(profile().early_access->local_hatch_cue && !hatch_cue && last_hatch && opened_care && founder_autonomous &&
+                   founder(e.actor) && enrolled({e.payload}) && last_hatch->actor==EntityId{e.payload} &&
+                   last_hatch->source==e.source && last_hatch->time==e.time && last_hatch->colony==e.colony &&
+                   opened_care->source.value==0 && opened_care->id.value+1==e.id.value && opened_care->position==e.position &&
+                   world.colonies.rows[world.colonies.index.at(e.colony)].nest_position==e.position &&
+                   e.random_value<world.m.next_scheduled &&
+                   (last_cue==SimTime{} || e.time.milliseconds-last_cue.milliseconds>=founding_hatch_cooldown_ms) &&
+                   within_contact(e.position,last_hatch->position,world.config) &&
+                   within_distance(e.position,last_hatch->position,world.care_profile->perception_radius_m,
+                                   world.config.continuous_spatial_motion) &&
+                   surface_care_clear(world,e.position,last_hatch->position) && clear(e.position,last_hatch->position,0,e.id),
+                   "R2 hatch cue lacks a bounded local hatch");
+            last_cue=e.time;
+            hatch_cue=e;
+        } else if (hatch_cue && founder(e.actor)) {
+            if (e.kind==FactKind::CareTick && e.payload==static_cast<std::uint64_t>(ScheduledEvent::Kind::CareWake)) {
+                ensure(e.source.value==hatch_cue->random_value && e.time==after(last_cue,1), "R2 hatch cue lost its first care wake");
+                cue_wake=e.source; cue_target={hatch_cue->payload};
+                hatch_cue.reset();
+            } else if ((e.kind==FactKind::CareProgramChanged && !e.payload) || e.kind==FactKind::AntDied) hatch_cue.reset();
+        }
+        if (founder(e.actor)) {
+            if (e.kind==FactKind::AutonomyChanged) founder_autonomous=e.payload!=0;
+            if (e.kind==FactKind::AntDied) founder_autonomous=false;
+            if (e.kind==FactKind::CareProgramChanged) {
+                if (e.payload && !founder_caring) opened_care=e;
+                founder_caring=e.payload!=0;
+            }
+        }
+    }
 public:
     std::map<EntityId, FoundingReserve> reserves;
 
@@ -72,13 +124,20 @@ public:
 
     bool before(const WorldEvent& e) {
         if (!world.founding) return false;
-        const bool required = pending != 0;
+        // A stage transition can first interrupt the existing care bout for that brood.
+        const bool interrupted_brood = pending && profile().early_access && expected.front().kind==FactKind::StageChanged &&
+            e.kind==FactKind::BiologicalObservation && e.time==expected.front().time &&
+            e.observation.phase==ObservationPhase::Interrupted && e.outcome==Outcome::InvalidStage &&
+            e.observation.target==expected.front().actor;
+        const bool required = pending != 0 && !interrupted_brood;
         if (required) {
             auto wanted = expected.front();
             wanted.id = e.id;
             wanted.world = e.world;
             wanted.revision = e.revision;
-            ensure(wanted == e, "missing or misordered F1 physical evidence");
+            if (wanted != e) throw std::runtime_error("missing or misordered F1 physical evidence at event " +
+                std::to_string(e.id.value) + ": expected kind " + std::to_string(static_cast<unsigned>(wanted.kind)) +
+                ", found kind " + std::to_string(static_cast<unsigned>(e.kind)));
             expected.front() = expected.back();
             --pending;
         }
@@ -88,9 +147,18 @@ public:
             declared = true;
         }
         if (profile().feeding_persistence) review_care(e);
+        if (e.kind==FactKind::FoundingHatchCue)
+            ensure(profile().early_access && profile().early_access->local_hatch_cue, "R2 hatch cue is disabled");
+        if (profile().early_access && profile().early_access->local_hatch_cue) review_hatch(e);
         if (e.kind == FactKind::FoundingReserveSeeded || e.kind == FactKind::FoundingEggFunded || e.kind == FactKind::FoundingLipidConverted)
             ensure(required, "unattributed F1 material fact");
         return required;
+    }
+
+    void mobilize(PhysiologyState& p, const WorldEvent& e, LifeStage stage) {
+        const auto amount=mobilize_founding_larval_lipid(profile(),p,reserves.at(e.actor),stage);
+        ensure(amount && e.payload==amount && e.random_value==multiply(amount,profile().lipid_yield_nj_per_ug),
+               "unfunded or misplaced R2 lipid mobilization");
     }
 
     void settle(EntityId id, PhysiologyState& p, LifeStage stage, SimTime time) {
@@ -184,9 +252,20 @@ public:
     }
 
     void finish() const {
-        ensure(!world.founding || (declared && !pending && !repeated_wake.value && memory == world.m.founding_meal &&
-               reserves.size() == world.founding_reserves.size()),
+        ensure(!world.founding || (declared && !pending && !repeated_wake.value && !cue_wake.value && memory == world.m.founding_meal &&
+               reserves.size() == world.founding_reserves.size() && last_cue==world.m.last_founding_hatch_cue),
                "incomplete F1 physiological evidence");
+        if (world.founding && world.founding->profile.early_access) {
+            unsigned pending_cues=0;
+            for (const auto& [key,e] : world.queue) {
+                if (e.kind!=ScheduledEvent::Kind::CareWake || !e.payload) continue;
+                ++pending_cues;
+                ensure(hatch_cue && founder(e.actor) && e.id.value==hatch_cue->random_value && e.payload==hatch_cue->payload &&
+                       e.issued_at==last_cue && key.time==after(last_cue,1) && key.phase==Phase::Perception,
+                       "pending R2 cue has no local hatch witness");
+            }
+            ensure(pending_cues==static_cast<unsigned>(hatch_cue.has_value()), "R2 pending hatch cue count disagrees with history");
+        }
     }
 };
 } // namespace antworld::detail

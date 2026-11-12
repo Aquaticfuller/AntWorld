@@ -37,11 +37,11 @@ def enumerate_cases(model):
     return result
 
 
-def reference_records():
-    index = json.loads((BASE / "completed.json").read_text(encoding="utf-8"))
+def reference_records(root=BASE):
+    index = json.loads((root / "completed.json").read_text(encoding="utf-8"))
     result = {}
     for filename, digest in index["archives"].items():
-        path = BASE / filename
+        path = root / filename
         if sha(path) != digest:
             raise ValueError(f"accepted F1 archive changed: {filename}")
         with zipfile.ZipFile(path) as reader:

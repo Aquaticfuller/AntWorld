@@ -55,7 +55,8 @@ enum class FactKind : std::uint8_t {
     SocialConfigured, AutonomyChanged, AutonomyDecision, LongTermConfigured, ReproductionEnabled,
     ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled,
     BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
-    FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation
+    FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation,
+    FoundingLipidMobilized, FoundingHatchCue
 };
 // F1-R1 CareWake annotation. Selection and material transfer are separate facts.
 enum class FoundingCareWake : std::uint8_t { Ordinary, Expired, Unavailable, Repeat };
@@ -82,14 +83,17 @@ struct WorldEvent {
     bool operator==(const WorldEvent&) const = default;
 };
 [[nodiscard]] constexpr bool founding_fact(FactKind kind) {
-    return kind >= FactKind::FoundingConfigured && kind <= FactKind::FoundingRation;
+    return kind >= FactKind::FoundingConfigured && kind <= FactKind::FoundingHatchCue;
+}
+[[nodiscard]] constexpr bool founding_early_fact(FactKind kind) {
+    return kind == FactKind::FoundingLipidMobilized || kind == FactKind::FoundingHatchCue;
 }
 // A participant ID, as opposed to a numeric dose, material quantity or fingerprint.
 [[nodiscard]] inline EntityId related_individual(const WorldEvent& e) {
     if (e.kind == FactKind::BiologicalObservation) return e.observation.target;
     switch (e.kind) {
     case FactKind::NutritionTransferred: case FactKind::AntBorn: case FactKind::BroodMoved:
-    case FactKind::FoundingEggFunded: case FactKind::FoundingRation: return {e.payload};
+    case FactKind::FoundingEggFunded: case FactKind::FoundingRation: case FactKind::FoundingHatchCue: return {e.payload};
     default: return {};
     }
 }
@@ -101,7 +105,7 @@ struct WorldEvent {
     switch (e.kind) {
     case FactKind::FoundingConfigured:
         return !e.actor.value && !e.colony.value && !e.source.value && e.time == SimTime{} &&
-               e.stage == LifeStage::Egg && e.position == PositionM{} && (e.random_value == 1 || e.random_value == 2) &&
+               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value >= 1 && e.random_value <= 3 &&
                e.transferred == FoodMass{};
     case FactKind::FoundingReserveSeeded:
         return e.actor.value && e.colony.value && !e.source.value && e.time == SimTime{} && e.stage == LifeStage::Adult &&
@@ -115,6 +119,12 @@ struct WorldEvent {
     case FactKind::FoundingRation:
         return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
                e.payload != e.actor.value && dry_packet && (e.random_value || e.transferred.protein_ug || e.transferred.water_ug);
+    case FactKind::FoundingLipidMobilized:
+        return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Larva && e.payload &&
+               e.random_value && e.transferred == FoodMass{};
+    case FactKind::FoundingHatchCue:
+        return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
+               e.payload != e.actor.value && e.random_value && e.transferred == FoodMass{};
     default: return false;
     }
 }

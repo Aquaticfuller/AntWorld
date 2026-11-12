@@ -6,6 +6,8 @@ namespace antworld::detail {
 inline constexpr std::uint64_t founding_day_ms = 86'400'000;
 inline constexpr std::uint32_t founding_schema_version = 15, founding_physics_version = 17;
 inline constexpr std::uint32_t founding_persistence_schema_version = 16, founding_persistence_physics_version = 18;
+inline constexpr std::uint32_t founding_access_schema_version = 17, founding_access_physics_version = 19;
+inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEERING_FIXTURE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
 struct FoundingRates { std::uint64_t energy, water; };
@@ -75,6 +77,13 @@ inline std::uint64_t convert_founding_lipid(const FoundingProfile& f, Physiology
     return used;
 }
 
+inline std::uint64_t mobilize_founding_larval_lipid(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r,
+                                                    LifeStage stage) {
+    if (!f.early_access || !f.early_access->mobilize_larval_lipid || stage != LifeStage::Larva ||
+        p.body_energy_nj || !p.hydration_ug || !r.lipid_ug) return 0;
+    return convert_founding_lipid(f, p, r, stage, false);
+}
+
 inline PhysiologyState initial_founding_physiology(const FoundingProfile& f, bool queen, SimTime at, EntityId mother = {}) {
     PhysiologyState p;
     p.config = founding_physiology(f, queen);
@@ -110,6 +119,9 @@ inline void validate_founding(const FoundingProfile& f) {
     if (const auto& repeat = f.feeding_persistence;
         repeat && (duration(repeat->window) > 3 * founding_day_ms || repeat->repeat_ppm > 875'000))
         throw std::invalid_argument("invalid F1-R1 feeding persistence");
+    if (f.early_access && (!f.feeding_persistence ||
+        !(f.early_access->mobilize_larval_lipid || f.early_access->local_hatch_cue)))
+        throw std::invalid_argument("invalid F1-R2 early access profile");
     for (const auto& b : f.brood) {
         if (!b.basal_nj_per_day || !b.water_ug_per_day) throw std::invalid_argument("missing F1 stage cost");
         auto carry = founding_day_ms - 1;
