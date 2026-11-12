@@ -1,5 +1,6 @@
 """Use the existing performance instruments with an exactly matched CPU sensor subset."""
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -12,6 +13,7 @@ from run_s6_4_wp6b import ROOT, write_json
 ORIGINAL = ROOT / "experiments/s6_2/hwinfo_columns_v2.json"
 MAPPING = ROOT / "experiments/s6_4_wp6b_r2/performance/hwinfo_columns.json"
 PROTOCOL = ROOT / "research/s6_4_wp6b_r2/FROZEN_R2_PROTOCOL.md"
+APPEND_LAYOUT = MAPPING.with_name("hwinfo_append_layout.json")
 
 
 def digest(data):
@@ -47,9 +49,25 @@ if __name__ == "__main__":
         import run_s6_3_3_1_performance as native
 
         native.MAPPING = MAPPING
+        use_append_log = "--append-layout" in sys.argv
+        if use_append_log:
+            from s6_4_wp6b_r2_append_log import AppendLog
+
+            options = argparse.ArgumentParser(add_help=False)
+            options.add_argument("--append-layout", action="store_true")
+            options.add_argument("--hwinfo-csv", required=True, type=lambda value: Path(value).resolve())
+            source, _ = options.parse_known_args()
+            sys.argv.remove("--append-layout")
+            adapter = AppendLog(source.hwinfo_csv, native.load(APPEND_LAYOUT), native.load(MAPPING))
+            native.sensor_tail = adapter.tail
+            native.extract = adapter.extract
+        dependencies = native.dependencies
+        frozen = {Path(__file__).name: native.digest(Path(__file__))}
+        if use_append_log:
+            reader = Path(__file__).with_name("s6_4_wp6b_r2_append_log.py")
+            frozen |= {reader.name: native.digest(reader), APPEND_LAYOUT.name: native.digest(APPEND_LAYOUT)}
+        native.dependencies = lambda: dependencies() | frozen
         if kind == "native":
-            dependencies = native.dependencies
-            native.dependencies = lambda: dependencies() | {Path(__file__).name: native.digest(Path(__file__))}
             native.main()
         elif kind == "protected":
             from s6_4_wp6b_r2_protected_observer import main

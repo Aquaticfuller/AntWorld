@@ -143,7 +143,7 @@ def collect(args, folder, archive, probe, logical, admission):
     return not code and not error and recorded == required and receipt["telemetry_qualified"]
 
 
-def run(args):
+def run(args, first_attempt=1):
     freeze = native.load(args.out / "freeze.json")
     assert freeze["sources"] == source_hashes() and freeze["protocol_sha256"] == sha(PROTOCOL)
     assert freeze["mapping_sha256"] == sha(native.MAPPING) and freeze["confirmation_sha256"] == sha(CONFIRMATION)
@@ -173,7 +173,7 @@ def run(args):
             folder = args.out / session
             probe = native.Sampler(topology, (logical,))
             try:
-                for attempt in range(1, 4):
+                for attempt in range(first_attempt if not completed else 1, 4):
                     admitted = native.admission(probe, logical, folder, args.hwinfo_csv, fields, attempt)
                     if admitted["admitted"]:
                         break
@@ -271,7 +271,7 @@ def analyze(raw, output):
     print(verdict, f"{len(samples)}/{required} samples", flush=True)
 
 
-def main():
+def main(on_prepare=prepare, on_run=run):
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("out", "binary", "build", "compiler", "archive", "hwinfo-csv", "analysis"):
         parser.add_argument("--" + name, type=lambda value: Path(value).resolve())
@@ -280,9 +280,9 @@ def main():
     if args.analysis:
         analyze(args.out, args.analysis)
     elif args.prepare:
-        prepare(args)
+        on_prepare(args)
     else:
-        run(args)
+        on_run(args)
 
 
 if __name__ == "__main__":
