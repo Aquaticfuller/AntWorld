@@ -1,0 +1,8 @@
+{
+  "archive": "pre_admission",
+  "status": "NOT_RUN",
+  "exit_code": 1,
+  "admission_rows": 0,
+  "timed_rows": 0,
+  "reason": "Restricted invocation failed while reading Win32_Processor through Get-CimInstance. Host metadata collection stopped before the first admission interval."
+}

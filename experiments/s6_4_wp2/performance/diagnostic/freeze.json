@@ -1,0 +1,15 @@
+{
+  "source_commit": "2d4ac364659b17b87f82a0baf67b7345a1b82c8b",
+  "executable": "antworld_s6_4_wp2_benchmark.exe",
+  "binary_sha256": "dabc157b9135085855a8ffa041dba1a5f9f3fc6af039a624d3285ef49c6d2525",
+  "protocol_sha256": "f5ece93ef3cbf0cca16867d8e1236e31f6c4a71e864b8e6afae017096739d09d",
+  "host": "Windows-11-10.0.26200-SP0",
+  "cells": [
+    "dense512",
+    "dense2048",
+    "depot32",
+    "care8"
+  ],
+  "warmup_blocks": 1,
+  "retained_blocks": 4
+}

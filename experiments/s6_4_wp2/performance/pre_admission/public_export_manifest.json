@@ -1,0 +1,37 @@
+[
+  {
+    "path": "batch_start.json",
+    "source_sha256": "41bd912049c2a22dcb5cbde2d05b65ed33055e5f494c26465d2ddb785b9d0366",
+    "public_sha256": "41bd912049c2a22dcb5cbde2d05b65ed33055e5f494c26465d2ddb785b9d0366",
+    "bytes": 124,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "freeze.json",
+    "source_sha256": "4d22398a26f18fb623d43be0866519c419bc3c90ae05f23658bede741fde96d6",
+    "public_sha256": "4d22398a26f18fb623d43be0866519c419bc3c90ae05f23658bede741fde96d6",
+    "bytes": 2527,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/schedule.csv",
+    "source_sha256": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "public_sha256": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session2/schedule.csv",
+    "source_sha256": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "public_sha256": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session3/schedule.csv",
+    "source_sha256": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e",
+    "public_sha256": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  }
+]
