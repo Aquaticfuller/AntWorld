@@ -1,0 +1,11 @@
+{
+  "archive_index_sha256": "2ec1472a76162b5dd0ca2e01eff85606fca9cf97492bd5493c21ae4dedc5601d",
+  "attempted": 1932,
+  "complete": 1896,
+  "outputs": {
+    "cases.csv": "baee31d1646a5a7969f8efdeeb86791e1cd607d2721053273ede64fc85722a69",
+    "larvae.csv.gz": "95e40f950354e514893aec8040421d2f59ad59582c26da1f55cbe9691566bb70",
+    "meals.csv.gz": "709053bd49c9d00cbfeba30d087dc71439254fd6771e288134a1efb500bfd1ce",
+    "wakes.csv.gz": "4db1c79a62b575accdc789cf728cd1f1291cb6e2e7b884f2ef51ac9c09242ccf"
+  }
+}
