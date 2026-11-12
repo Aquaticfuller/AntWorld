@@ -10,17 +10,10 @@ import zipfile
 
 from run_s6_4_wp6b import sha, write_json
 from run_s6_4_wp6b_r2 import app_args
-from verify_s6_4_wp6b_r2 import frozen
+from verify_s6_4_wp6b_r2 import REPRESENTATIVES, frozen
 from verify_s6_4_wp6b_r1 import verify
 
 
-CASES = {
-    "h1": ("borisovka-03-primary-1-on", "st_petersburg-00-primary-1-off"),
-    "h2": ("borisovka-micro-nominal-0-1",),
-    "both": ("borisovka-03-primary-1-on", "st_petersburg-00-primary-1-off"),
-    "water-r1": ("borisovka-micro-nominal-0-1-water-blocked",),
-    "water-both": ("borisovka-micro-nominal-0-1-water-reachable", "borisovka-micro-nominal-0-1-water-absent"),
-}
 FILES = ("initial.chk", "final.frame", "facts.bin")
 
 
@@ -40,7 +33,7 @@ def receipt(root, name, work):
 def run(root, binary, scratch, output):
     scratch.mkdir(parents=True, exist_ok=True)
     results = []
-    for mode, names in CASES.items():
+    for mode, names in REPRESENTATIVES.items():
         directory = root / mode
         verify(directory, subset=names, r2=frozen)
         for name in names:
