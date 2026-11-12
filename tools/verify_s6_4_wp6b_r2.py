@@ -34,6 +34,12 @@ def ci(root):
         measured = measured or scope
         check(scope == measured, "different binaries in the same experiment")
         verify(folder, subset=names, r2=frozen)
+    for model in frozen.REFERENCES:
+        manifest = json.loads((root / model / "run.json").read_text(encoding="utf-8"))
+        check(not manifest["selected_subset"] and manifest["model"] == model and
+              (manifest["source"], manifest["cpp_tree"], manifest["binary_sha256"]) == measured,
+              f"legacy replay is not bound to the factorial binary: {model}")
+        verify(root / model, r2=frozen)
 
 
 if __name__ == "__main__":

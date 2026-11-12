@@ -167,6 +167,14 @@ jobs:
           python tools/verify_s6_4_wp6b_r1.py experiments/s6_4_wp6b_r1/formal --case borisovka-00-primary-1-on --case st_petersburg-00-primary-1-off
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp6b_r1/performance/core --out experiments/s6_4_wp6b_r1/performance/core-analysis --check
           python tools/analyze_s6_4_wp6b_r1_protected_observer.py experiments/s6_4_wp6b_r1/performance/protected-observer experiments/s6_4_wp6b_r1/performance/protected-observer-analysis.json --check
+      - name: Audit formal F1-R2 archives and replay representative saves (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          python tools/verify_s6_4_wp6b_r2.py experiments/s6_4_wp6b_r2 --ci
+          python tools/check_s6_4_wp6b_r2_recovery.py --archive experiments/s6_4_wp6b_r2 --binary build/ci/antworld_s6_4_wp6b --scratch build/r2-scratch --out build/r2-recovery.json
+      - name: Recompute R2 archived Windows performance gates
+        if: runner.os == 'Windows' && matrix.configuration == 'Release'
+        run: python tools/verify_s6_4_wp6b_r2_performance.py experiments/s6_4_wp6b_r2/performance
 
   sanitizers:
     runs-on: ubuntu-24.04

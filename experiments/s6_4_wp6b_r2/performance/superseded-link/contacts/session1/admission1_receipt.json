@@ -1,0 +1,37 @@
+{
+  "attempt": 1,
+  "started_utc_ns": 1794523237697270200,
+  "ended_utc_ns": 1794523297711293600,
+  "admitted": false,
+  "checks": {
+    "system_busy_pct_complete": true,
+    "system_busy_pct_p50": 6.037092555036299,
+    "system_busy_pct_p95": 24.57206637817467,
+    "processor_busy_pct_complete": true,
+    "processor_busy_pct_p50": 1.5627519156578198,
+    "processor_busy_pct_p95": 42.181754454753026,
+    "native_intervals_valid": true,
+    "power_valid": true,
+    "sensors_valid": true
+  },
+  "host_before": {
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "os": [
+      {
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "TotalVisibleMemorySize": 16494648
+      }
+    ],
+    "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "timezone_minutes": 60
+  },
+  "source_header_sha256": "35276a32b38dbf842821c33edc5ebe29763685f856e3b3347cfbddf38de5da63"
+}
