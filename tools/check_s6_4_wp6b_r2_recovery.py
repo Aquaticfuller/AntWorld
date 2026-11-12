@@ -52,7 +52,9 @@ def run(root, binary, scratch, output, midpoints=None):
                         record, = csv.DictReader(stream)
                     if actual != expected or any(record[k] != reference["summary"][k] for k in ("state_hash", "trace_hash", "rng", "events")):
                         raise ValueError(f"recovery or observer changed canonical authority: {name}/{treatment}")
-                    result = dict(mode=mode, case=name, treatment=treatment, hashes=actual)
+                    result = dict(mode=mode, case=name, treatment=treatment, hashes=actual, counts_and_costs={k: record[k] for k in
+                                  ("events", "peak_sampled_queue", "setup_ms", "advance_ms", "cut_ms", "checkpoint_ms",
+                                   "midpoint_save_ms", "midpoint_restore_ms", "frame_bytes", "facts_bytes", "peak_rss_bytes")})
                     if treatment == "durable":
                         database = dest / "midpoint.sqlite"
                         if database.with_suffix(".sqlite-wal").exists():
