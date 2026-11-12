@@ -8,9 +8,13 @@ import profile_s6_4_wp6b_r1 as assay
 PROTOCOL = Path(__file__).resolve().parents[1] / "research/s6_4_wp6b_r2/FROZEN_R2_PROTOCOL.md"
 
 
-if __name__ == "__main__":
+def main():
     assay.PROTOCOL = PROTOCOL
     assay.MODEL_ARGUMENTS["both"] = (*assay.NOMINAL, 3)
     assay.MODEL_VERSIONS["both"] = 3
-    assay.ADDITIONAL_SOURCES = (Path(__file__).name,)
+    assay.ADDITIONAL_SOURCES = (Path(__file__).name, "run_s6_4_wp6b_r2_performance.py")
     assay.main()
+
+
+if __name__ == "__main__":
+    main()
