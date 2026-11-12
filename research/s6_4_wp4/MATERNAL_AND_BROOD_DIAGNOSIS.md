@@ -1,0 +1,47 @@
+# Maternal allocation and offspring viability diagnosis
+
+The [source audit](SOURCE_AND_EVIDENCE_AUDIT.md) describes which quantities have direct *Lasius niger* evidence. All observations below come from the frozen `ENGINEERING_FIXTURE` simulations. The actual birth, transfer, uptake, and lifecycle events are separate observables.
+
+## Material allocation and event order
+
+A funded egg is credited with 500,000,000 nJ, 200 µg body water, and 20 µg tissue protein. Its mother loses that energy and water from the body and that protein from her crop. The same commit dissipates an additional 10,000,000 nJ on the maternal account. The deferred attempt has zero export. Budget rows preserve its unknown internal guard reason. Previous/following cut labels give the exposure window around each committed attempt or death. A cut can include other same-time events.
+
+The isolated transfer arrives from a co-located worker in both positive pulse probes. The dose is 60 µg carbohydrate, 20 µg protein and 20 µg water. A gift 1 ms before the 6-hour pulse is followed by absorption 1 ms later. A gift at the pulse timestamp resolves after the Environment phase and the same positive carbohydrate and water uptake occurs 6 hours later. Adult protein remains in crop throughout the observation window. The empty-donor sham records an explicit zero-dose rejection. The no-request arm lacks an attempted event. Colony gift-to-uptake lags link only the next later positive pulse by component and EventId. Mixed crop prevents molecular source assignment.
+
+## Clock, death, and nutritional feasibility
+
+At 1 nJ/ms (1 µW), the original 0.5 J embryo store reaches zero in 500,000,000 ms, approximately 5.787 days. The 200 µg water store at 1 µg/h would reach zero after 8.333 days. The four warm original-budget focal eggs die of energy depletion before the nominal 15.7-day or 16.7-day boundary. Both seeded and maternally funded arms show that outcome. The legacy clock converts at two days, and the warm sentinels convert at their exact scheduled boundaries using declared engineering stores. The equal-energy and equal-water tests confirm that a depletion event wins over hatching at the same time.
+
+With the unchanged arithmetic, reaching the two warm boundaries alive would require more than 1.35648 J or 1.44288 J and more than 376 or 400 µg water, respectively. These are necessary budget bounds inside the fixture. B06 provides stage timing observations without embryo expenditure or reserves. Its daily census origin, paired counts within foundress, prepupal definition and survivor/completion filters limit numerical comparison to the reported endpoints. [Source and original conditions](SOURCE_VERIFICATION_RECEIPT.md)
+
+In the isolated larval contrast the first child always belongs to the same actual funded lineage. The host uses the Core nutrition transaction. It rejects the egg-age gift. After the two-day egg phase, identical carbohydrate and water gifts accompany either a 100 µg or a 40 µg protein offer. The full arm reaches the fixed tissue threshold after uptake and progresses through all stages. The low-protein and no-gift controls die as larvae. Stage intervals and subsequent deaths or censoring remain in the archive. This separates larval assimilation and the stage gate from egg clock feasibility. The dose, threshold and all rates remain engineering fixtures.
+
+The full arm incorporates 80 µg protein into the initial 20 µg tissue store and absorbs 180 µg carbohydrate and 20 µg water. It reaches adulthood on world day 9.25 and dies 32,005,000 ms after emergence. The low-protein control incorporates 40 µg and receives the same carbohydrate and water, yet dies as a larva at world time 852,800,000 ms. The no-gift control dies as a larva at 672,800,000 ms. The full dose demonstrates that the same funded offspring can reach adulthood under the legacy clock. Continued adult survival is a separate outcome.
+
+## Colony experiments
+
+Each row pools six software seeds. Counts refer to committed transitions during the window. The [paired comparisons](../../experiments/s6_4_wp4/analysis/paired_contrasts.csv) use common 90-day exposure for the supply/worker contrasts and 180 days for the separate depot contrast.
+
+| Supply | Initial workers | Follow-up (days) | Mothers alive | Funded eggs | Hatches | Pupations | Emerged workers |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Depot | 0 | 180 | 0/6 | 12 | 12 | 0 | 0 |
+| Depot | 8 | 180 | 1/6 | 34 | 34 | 20 | 20 |
+| Depot | 32 | 180 | 6/6 | 490 | 484 | 459 | 451 |
+| Ordinary | 0 | 90 | 0/6 | 12 | 12 | 0 | 0 |
+| Ordinary | 8 | 90 | 2/6 | 39 | 39 | 27 | 27 |
+| Ordinary | 32 | 90 | 0/6 | 103 | 103 | 89 | 88 |
+| Scarce protein | 0 | 90 | 0/6 | 12 | 12 | 0 | 0 |
+| Scarce protein | 8 | 90 | 2/6 | 35 | 33 | 20 | 18 |
+| Scarce protein | 32 | 90 | 1/6 | 98 | 97 | 85 | 84 |
+| Empty | 0 | 90 | 0/6 | 12 | 12 | 0 | 0 |
+| Empty | 8 | 90 | 0/6 | 12 | 12 | 12 | 0 |
+| Empty | 32 | 90 | 0/6 | 12 | 12 | 10 | 0 |
+
+- **Founding without workers.** Across all 24 ordinary-reserve, worker-free worlds the mother has only the initialized crop as a source of body energy after launch. She lays twice, depletes at day 7.8704, and each offspring dies before pupation. Finite food placed in the environment cannot reach her through a worker. The frozen ecology configuration has no maternal caregiving motor enabled. It exercises the historical fixture and leaves the effect of physical care untested. The supported world can fund embryos yet lacks a viable first-worker pathway in this setup. B03 observed 18.73 ± 4.74 pupae plus workers per queen at day 49 in the 30 unfed undisturbed foundresses. Their moist-cotton chamber and biological reserve use differ from this fixture. [B03 verification](SOURCE_VERIFICATION_RECEIPT.md)
+- **Worker access and external stock.** Ordinary supply at 0→8 workers adds 4.5 emergences per world (software-seed paired 95% interval 2.33–7.67) and 53.28 days of queen follow-up over the common window (31.26–73.37). Worker initial stores come with the new workers. In the separate 8→32 depot comparison, the mean gain is 71.83 emergences (69.33–74.83). At 32 all 451 emerged offspring were still recorded as adults at day 180. Absolute depot stock scales with the initial worker count. Ordinary 32-worker colonies produce more emergences than the ordinary eight-worker group, while all six queens die by day 90. Each death is energy depletion. The first completed cuts after those deaths show zero available nest carbohydrate and zero crop carbohydrate in the colony despite 4,000 µg carbohydrate still recorded as externally available. This is an inventory-location and timing result under the declared setup. It does not identify the particular missed individual opportunity or an ecological cause in nature. [Death brackets](../../experiments/s6_4_wp4/analysis/maternal_death_brackets.csv)
+- **Scarcity and zero external input.** Empty 8/32 groups can fund hatching and reach pupation using internal nutrition. None completes emergence. Scarce versus ordinary at 32 changes mean emergences by −0.67 (paired interval −4.67–2.00). Both arms start with 500 µg external source protein and differ in the later reserve. The contrast describes the program's finite stock and local delivery under these conditions, with no resolved biological protein dose-response.
+- **Reserve sensitivity and coupled provision.** Halving the initial queen energy and hydration with no workers reduces the committed eggs from two to one and advances death by 2.7778 days in all six pairs. With eight workers the same perturbation produces a mean of 4.5 more eggs (1.33–7.17) and 3.33 more emergences (0.33–5.67). Mean receipt of carbohydrate rises by 3,897.5 µg (1,580.17–6,457.83). Survival at day 90 is one of six, compared with two of six in the original reserve arm. The measured results expose coupling between reserve, social intake and reproductive output. The internal recipient choice and counterfactual gain per gift are outside the observation scope. The two starting reserve components change together. [Matched raw outcome series](../../experiments/s6_4_wp4/analysis/common_window_outcomes.csv)
+
+Across the 84 ecology/reserve worlds, all 71 maternal deaths are energy depletion. Three mothers still have carbohydrate in crop at the first completed cut after death. The ordinary eight-worker seed 97 retains 176 µg, the scarce eight-worker seed 43 retains 74 µg, and the half-reserve eight-worker seed 7 retains 55 µg. Their stored next-uptake times were 3.111, 5.444, and 0.667 hours later than death. The schedule stops at death. These cases show an existing body/crop boundary and unmet opportunity for scheduled uptake. The isolated pulse test establishes the phase effect without estimating a counterfactual ecological survival effect. [Death brackets and retained clock](../../experiments/s6_4_wp4/analysis/maternal_death_brackets.csv)
+
+The published endpoints add constraints on what a corrected model must explain. B03 isolated founders produced later brood under moist-cotton conditions and reported feed treatments. B01 records distinct founder and established-queen responses. FT01 records flight-muscle remodeling. Keller and Passera record a live-mass decrease among retained queens. These measurements constrain whole-colony output, stage-specific behavior and tissue change, with separate observation definitions. They do not resolve the fitted decomposition into usable maternal reserve, uptake, expenditure, egg export and offspring survival.
