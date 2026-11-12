@@ -12,8 +12,8 @@ from struct import unpack_from
 import zipfile
 
 from analyze_s6_4_wp6b import (BIRTH, CARGO, COLLECTED, DELIVERED, DIED, F_CONVERT, F_CUE, F_EGG, F_MOBILIZE,
-                              F_RATION, F_SEED, GIFT, MOVED, NEST, OBSERVATION, RECYCLED, STAGE, UPTAKE, check, facts, rows)
-from diagnose_s6_4_wp6b_r1 import sheet
+                              F_RATION, F_SEED, FEED, GIFT, MOVED, NEST, OBSERVATION, RECYCLED, STAGE, UPTAKE, check, facts, rows)
+from diagnose_s6_4_wp6b_r1 import CARE_TICK, CARE_WAKE, sheet
 from run_s6_4_wp6b import sha, write_json
 from wp6a_budget_screen import DAY_MS
 
@@ -127,6 +127,10 @@ def read_case(case, summary, raw, cuts, write):
     cut_groups = iter(groupby(rows(cuts), lambda row: (int(row["cursor"]),int(row["time_ms"]))))
     cut, group = next(cut_groups, (None,None))
     ncuts = 0
+    last_cue_ms = None
+    cues, bouts = {}, {}
+    latest_meal = None
+    unacknowledged_mobilization = None
 
     def write_point(ant, point, fact, time, cause="", mass=(0,0,0,0), lipid=0, source=0):
         write["points"](dict(case=name, ant=ant.id, mother=ant.mother, point=point, stage=ant.stage, time_ms=time,
@@ -137,6 +141,10 @@ def read_case(case, summary, raw, cuts, write):
     access = case.get("early_access_mask", 0)
     for entry, (resource,x,y,z) in zip(facts(raw, F_CUE if access else F_RATION),positions(raw),strict=True):
         event,time,source,kind,actor,payload,value,stage,outcome,mass,obs = entry
+        previous_meal, latest_meal = latest_meal, None
+        if unacknowledged_mobilization:
+            check((kind,actor,time,source)==(UPTAKE,*unacknowledged_mobilization), "mobilization lacks a same-boundary physiology fact")
+            unacknowledged_mobilization=None
         while cut is not None and cut[0] < event:
             cut_check(people,group,p)
             ncuts += 1
@@ -165,6 +173,7 @@ def read_case(case, summary, raw, cuts, write):
                           "emergency lipid debit without an enrolled dry-energy boundary")
                     mark(ant,"emergency_conversion",time,event)
                     ant.counters["emergency_conversions"]+=1
+                    unacknowledged_mobilization=(actor,time,source)
                 ant.lipid -= payload
                 ant.spent += payload
                 ant.energy += value
@@ -187,6 +196,8 @@ def read_case(case, summary, raw, cuts, write):
                 recipient.add_crop(mass)
                 mark(recipient,"meal",time,event)
                 recipient.counters.update(meals=1, maternal_lipid_ug=value, maternal_p_ug=mass[1], maternal_w_ug=mass[2])
+                recipient.counters["effective_protein_meals"]+=bool(mass[1])
+                latest_meal=(source,payload,dict(meal_event=event,meal_ms=time,lipid_ug=value,protein_ug=mass[1],water_ug=mass[2]))
                 write_point(recipient,"PAID_MATERNAL_RATION",event,time,mass=mass,lipid=value,source=source)
             elif kind == UPTAKE:
                 ant.absorb(mass)
@@ -207,6 +218,8 @@ def read_case(case, summary, raw, cuts, write):
                 point=("", "HATCH", "PUPATION", "ECLOSION")[stage]
                 write_point(ant,point,event,time,source=source)
                 ant.marks[point.lower()]=(time,event)
+                if stage==1:
+                    ant.marks["hatch_source"]=(source,)
             elif kind == DIED:
                 write_point(ant,"DEATH",event,time,cause=payload,source=source)
                 ant.counters["death_cause"]=payload
@@ -244,10 +257,29 @@ def read_case(case, summary, raw, cuts, write):
                 mark(recipient,"worker_meal",time,event)
                 write_point(recipient,"PAID_WORKER_GIFT",event,time,mass=mass,source=source)
         if kind==OBSERVATION:
-            phase,act,target,*_ = obs
+            phase,act,target,bout,*_ = obs
             if actor==queen and phase==0 and target in people and people[target].stage==1:
                 mark(people[target],"first_local_contact",time,event)
                 people[target].counters["contact_opportunities"]+=1
+            if actor==queen and source in cues:
+                cue=cues[source]
+                if phase==0 and target==cue["ant"]:
+                    cue["opportunity_event"]=event
+                elif phase==1:
+                    check(target==cue["ant"] and cue.get("opportunity_event") and bout,"cue choice has no local witness")
+                    cue.update(selected_event=event, act=act, bout=bout)
+                    bouts[bout]=cue
+            if actor==queen and bout in bouts and phase in (2,3,4):
+                cue=bouts[bout]
+                check(target==cue["ant"],"cue act lost the selected recipient")
+                if phase==2:
+                    cue["started_event"]=event
+                    cue["started_ms"]=time
+                else:
+                    cue.update(terminal_event=event, terminal_ms=time, outcome=outcome, terminal_phase=phase)
+                    if previous_meal:
+                        check(previous_meal[:2]==(source,target) and act==FEED and phase==3,"cue has a mismatched ration witness")
+                        cue.update(previous_meal[2])
             if ant is not None and not ant.queen and ant.stage==ADULT and phase==0:
                 ant.counters["observed_care_contacts"]+=1
         if ant is not None and ant.stage==ADULT and not ant.queen:
@@ -265,9 +297,22 @@ def read_case(case, summary, raw, cuts, write):
             ant.marks["death_water"]=(sum(sources.values()),food_colony)
             ant.marks["death_pos"] = (x,y,z)
         if kind==F_CUE:
-            check(access & 2 and actor==queen and people[payload].stage==1, "hatch cue lacks a living recipient")
-            mark(people[payload],"local_hatch_cue",time,event)
-            people[payload].counters["local_hatch_cues"]+=1
+            target=people[payload]
+            check(access & 2 and actor==queen and target.stage==1 and target.enter[1][0]==time and
+                  target.marks["hatch_source"]==(source,) and value not in cues and
+                  (last_cue_ms is None or time-last_cue_ms>=3_600_000),"hatch cue lacks a bounded local hatch")
+            last_cue_ms=time
+            cues[value]=dict(case=name, mother=queen, ant=payload, hatch_event=target.enter[1][1], cue_event=event,
+                             hatch_source=source, cue_ms=time, wake=value)
+            mark(target,"local_hatch_cue",time,event)
+            target.counters["local_hatch_cues"]+=1
+        elif kind==CARE_TICK and source in cues:
+            check(actor==queen and payload==CARE_WAKE and time==cues[source]["cue_ms"]+1,"misplaced cue wake")
+            cues[source]["wake_event"]=event
+    check(not unacknowledged_mobilization,"unfinished physiology after emergency conversion")
+    if "cues" in write:
+        for cue in cues.values():
+            write["cues"](cue)
     while cut is not None:
         check(cut[0]==int(summary["events"]),"terminal cut lacks event coverage")
         cut_check(people,group,p)
@@ -300,7 +345,7 @@ def read_case(case, summary, raw, cuts, write):
         if "early_access_mask" in case:
             for key in ("emergency_conversion","local_hatch_cue","adult_water_uptake"):
                 row[key+"_ms"],row[key+"_event"]=ant.marks.get(key,(None,None))
-            row.update(emergency_conversions=ant.counters["emergency_conversions"],local_hatch_cues=ant.counters["local_hatch_cues"])
+            row.update(**{key:ant.counters[key] for key in ("emergency_conversions","local_hatch_cues","effective_protein_meals")})
         write["individuals"](row)
     return dict(case=name,population=case["population"],group=case["group"],care=int(case["care_enabled"]),**output)
 
@@ -323,7 +368,8 @@ def main():
                         "uptake_after_meal","tissue_met") for v in ("ms","event"))+
                     " birth_ms birth_event local_contacts meals maternal_lipid_ug maternal_p_ug maternal_w_ug adult_water_absorbed_ug adult_carbs_absorbed_ug collected_water_ug delivered_water_ug cargo_water_ug nest_water_in_ug gift_water_in_ug gift_water_out_ug forage_decisions autonomy_decisions moves rejections observed_care_contacts dig_energy_unobserved adult_program_0_ms adult_program_1_ms adult_program_2_ms adult_program_3_ms adult_program_4_ms death_env_water_ug death_nest_water_ug death_x_m death_y_m death_z_m")
     if manifest.get("model") in ("h1","h2","both","water-r1","water-both"):
-        fields["individuals"]+=" emergency_conversion_ms emergency_conversion_event local_hatch_cue_ms local_hatch_cue_event adult_water_uptake_ms adult_water_uptake_event emergency_conversions local_hatch_cues"
+        fields["individuals"]+=" emergency_conversion_ms emergency_conversion_event local_hatch_cue_ms local_hatch_cue_event adult_water_uptake_ms adult_water_uptake_event emergency_conversions local_hatch_cues effective_protein_meals"
+        fields["cues"]="case mother ant hatch_event cue_event hatch_source cue_ms wake wake_event opportunity_event selected_event act bout started_event started_ms terminal_event terminal_ms outcome terminal_phase meal_event meal_ms lipid_ug protein_ug water_ug"
     seen, complete, counts = set(),[],Counter()
     target=set(args.case) if args.case else set(index["statuses"])
     with ExitStack() as stack:
