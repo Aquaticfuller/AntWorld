@@ -1,0 +1,89 @@
+{
+  "cpp_tree": "5d302f2a82976251bb54d766cb8edfef58e08c77",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "sanitizers": {
+    "ASAN_OPTIONS": "halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "test_runs": {
+    "release.log": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-release",
+        "--output-on-failure",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "tests": 269,
+      "failed": 0,
+      "elapsed_seconds": 60.72,
+      "sha256": "da0b654c48a82cb9c76abb715fe8ee1c6c1fe18c0fef5fefc408bdf1c1405f46"
+    },
+    "debug.log": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-debug",
+        "--output-on-failure",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "tests": 269,
+      "failed": 0,
+      "elapsed_seconds": 183.76,
+      "sha256": "cf6a2caae75176ed3b9b0ee9f77f6569eb1cdbc944e661941916457fe3d8431f"
+    },
+    "sanitizer.log": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-sanitizer",
+        "--output-on-failure",
+        "-j2"
+      ],
+      "exit_code": 8,
+      "tests": 269,
+      "failed": 1,
+      "elapsed_seconds": 557.74,
+      "sha256": "1924cdfd02d1807a08073300215c7e9744d99f1197493c3d469f1a4d40bf11c5"
+    },
+    "sanitizer-warm-retry.log": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-sanitizer",
+        "--output-on-failure",
+        "-R",
+        "^S6_4_RM01_warm$",
+        "-j1"
+      ],
+      "exit_code": 0,
+      "tests": 1,
+      "failed": 0,
+      "elapsed_seconds": 122.44,
+      "sha256": "2c83cbc0797e31889023b9dce6644eef877035f679c58faba482c8bd65b0ea15"
+    },
+    "sanitizer-serial.log": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-sanitizer",
+        "--output-on-failure",
+        "-j1"
+      ],
+      "exit_code": 0,
+      "tests": 269,
+      "failed": 0,
+      "elapsed_seconds": 590.35,
+      "sha256": "9e4fdccc444f80a7c916fcdf839a4a090959d8efe80d4d31f2617b64e2facfb1"
+    }
+  }
+}

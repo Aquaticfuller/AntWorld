@@ -1,0 +1,3 @@
+population,adults,energy_deaths,dehydration,censored,min_alive_ms,median_alive_ms,max_alive_ms
+borisovka,284,0,284,0,83880000,96840000.0,240840000
+st_petersburg,322,0,322,0,105120000,105120000.0,249120000

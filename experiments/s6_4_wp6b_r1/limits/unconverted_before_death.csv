@@ -1,0 +1,4 @@
+case,ant,hatch_ms,meal_event,meal_ms,next_nominal_pulse_ms,death_ms,unconverted_lipid_ug,terminal_energy_nj,terminal_water_ug,received_protein_ug,actual_positive_uptake
+borisovka-03-primary-1-on,35,5503680000,9201,5508002002,5529600000,5519972572,6,0,31,16,ABSENT
+borisovka-19-primary-1-on,35,5503680000,9201,5508002002,5529600000,5519972572,6,0,31,16,ABSENT
+borisovka-27-primary-1-on,35,5503680000,9201,5508002002,5529600000,5519972572,6,0,31,16,ABSENT

@@ -1,0 +1,17 @@
+population,group,care,model,positive_meals,selected_before_48h,observed_without_selection_to_48h,death_pupation_or_censor_before_48h
+borisovka,primary,0,v1,0,0,0,0
+borisovka,primary,0,r1,0,0,0,0
+borisovka,primary,1,v1,590,135,425,30
+borisovka,primary,1,r1,1622,1235,313,74
+borisovka,check,0,v1,0,0,0,0
+borisovka,check,0,r1,0,0,0,0
+borisovka,check,1,v1,160,26,116,18
+borisovka,check,1,r1,486,385,83,18
+st_petersburg,primary,0,v1,0,0,0,0
+st_petersburg,primary,0,r1,0,0,0,0
+st_petersburg,primary,1,v1,796,197,566,33
+st_petersburg,primary,1,r1,1955,1520,359,76
+st_petersburg,check,0,v1,0,0,0,0
+st_petersburg,check,0,r1,0,0,0,0
+st_petersburg,check,1,v1,185,35,144,6
+st_petersburg,check,1,r1,652,523,119,10

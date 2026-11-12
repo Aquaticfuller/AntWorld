@@ -1,0 +1,15 @@
+[OUTPUT] 
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+
+[HANDLER_OUTPUT] 
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+
+    Start 251: S6_4_RM01_warm
+1/1 Test #251: S6_4_RM01_warm ...................   Passed  122.43 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+RM01    = 122.43 sec*proc (1 test)
+
+Total Test time (real) = 122.44 sec

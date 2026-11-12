@@ -1,0 +1,21 @@
+Id,Scale,OriginalGate,R1Outcome,Evidence,Limit
+M01,Micro,F1_GATE,PASS,Archive verification and FND_R1_RESTORE_FAULT and protected nutrition ledgers,Zero tolerance at committed cuts
+M02,Micro,F1_GATE,PASS_SIM_PATTERN,Finite closed-stock payments and queen residuals in analysis/cases.csv,No field magnitude inferred
+M03,Micro,F1_GATE,PASS,FND_BIRTH_COMMIT and raw funded eggs and retained schema rejections,Inherited debit and headroom
+M10,Micro,F1_GATE,PASS_SIM_PATTERN,All primary care-on worlds had 12 separate funded births within the first laying day and low-stock arms can fail,No biological laying cadence estimate
+M04,Micro,F1_GATE,FAIL,analysis/timing_comparison.csv and limits/cohort_counts.csv,Zero complete count-matched worlds in both populations
+M05,Micro,F1_GATE,PASS,FND_DEATH_PRIORITY and stage exposures and low egg-stock control,Strict exhaustion priority and closed-stage reserve debits
+M06,Micro,F1_GATE,PASS_SIM_PATTERN,Repeat receipts and uptake with capped waiting cuts and competing exits,No unsupported conversion while dead or capped
+M07,Micro,F1_GATE,PASS_SIM_PATTERN,2645 primary protein-positive repeat payments with actual contact and timed bout,Observation of a selection alone cannot establish payment
+M08,Micro,F1_GATE,PASS,FND_R1_FUNDED_WALL and FND_R1_COMPETITION_INTERRUPT,Actual funded larva and committed physical occlusion
+M09,Micro,F1_GATE,PASS_WITH_ORIGINAL_SCOPE,Independent energy receipts and unchanged activity surcharge,Task labels are distinct from measured activity
+C01,Colony,F1_GATE,PASS,FND_R1_COMPETITION_INTERRUPT and meal to pulse traces and same-time gifts,Post-feed uptake can be absent after real payment
+C02,Colony,F1_GATE,PASS_SIM_PATTERN,Early 8/32 depot and blocked and empty arms with real food delivery or no delivery,Initial worker stocks and maternal contributions remain separate
+C03,Colony,DEFERRED_VALIDATION,DEFERRED,B01-like scan and B02 development controls retained,Independent matched care study unavailable
+C04,Colony,RETAINED_CONTROL,RETAINED_PASS,WP-3 navigation and WP-5 gate regressions,Scope is existing routes and custody
+C05,Colony,DEFERRED_VALIDATION,DEFERRED,Existing recruitment studies retained,No new model evidence for scout recruitment
+L01,LongTerm,F1_GATE,FAIL,analysis/decision.json and robustness_factors.csv,Borisovka factor floor missed despite successful worlds in both populations
+L02,LongTerm,F1_GATE,PASS_SIM_PATTERN,Competing events and negative late feed and low-stock cases,Preserved dehydration and non-viability
+L03,LongTerm,F1_GATE,PASS_WITH_ORIGINAL_SCOPE,Actual new adult actions and separate initial-worker supply arms,Primary autonomous adults all dehydrated and did not provision
+L04,LongTerm,DEFERRED_VALIDATION,DEFERRED,Explicit stage survival and censor outcomes,No independent natural risk curve
+L05,LongTerm,RETAINED_CONTROL,RETAINED_PASS,WP-5 geometry and real soil plus inherited Core tests,Existing bounded geometry scope

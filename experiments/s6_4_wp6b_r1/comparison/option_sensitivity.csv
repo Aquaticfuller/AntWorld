@@ -1,0 +1,13 @@
+population,option,worlds,workers,larvae,pupae,rations,repeats
+borisovka,nominal,6,6,234,11,66,50
+borisovka,repeat0,6,0,240,0,25,0
+borisovka,repeat50,6,6,234,9,60,44
+borisovka,repeat875,6,6,234,12,68,52
+borisovka,window24h,6,4,236,5,43,28
+borisovka,window72h,6,6,234,12,68,52
+st_petersburg,nominal,6,6,234,12,66,50
+st_petersburg,repeat0,6,0,240,0,22,0
+st_petersburg,repeat50,6,6,234,12,67,49
+st_petersburg,repeat875,6,6,234,13,68,52
+st_petersburg,window24h,6,5,235,8,57,36
+st_petersburg,window72h,6,6,234,13,68,52

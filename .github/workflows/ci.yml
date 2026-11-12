@@ -162,7 +162,11 @@ jobs:
           python tools/analyze_s6_4_wp6b_observer_performance.py experiments/s6_4_wp6b/performance/observer experiments/s6_4_wp6b/performance/observer_analysis.json --check
       - name: Audit representative F1-R1 archives (Linux Release)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
-        run: python tools/verify_s6_4_wp6b_r1.py experiments/s6_4_wp6b_r1/ci_archive
+        run: |
+          python tools/verify_s6_4_wp6b_r1.py experiments/s6_4_wp6b_r1/ci_archive
+          python tools/verify_s6_4_wp6b_r1.py experiments/s6_4_wp6b_r1/formal --case borisovka-00-primary-1-on --case st_petersburg-00-primary-1-off
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp6b_r1/performance/core --out experiments/s6_4_wp6b_r1/performance/core-analysis --check
+          python tools/analyze_s6_4_wp6b_r1_protected_observer.py experiments/s6_4_wp6b_r1/performance/protected-observer experiments/s6_4_wp6b_r1/performance/protected-observer-analysis.json --check
 
   sanitizers:
     runs-on: ubuntu-24.04

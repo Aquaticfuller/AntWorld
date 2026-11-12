@@ -11,7 +11,9 @@ The [prospective protocol](../../research/s6_4_wp6b_r1/FROZEN_R1_PROTOCOL.md) is
 | `analysis` | Independent ledger checks, phase occupancy, exact-count timing, unchanged robustness gates and full archive receipt |
 | `ci_archive` | Fixed representative care-on and care-off archives for the independent CI check |
 | `comparison` | World-paired changes, allocation and timing summaries, sensitivity arms and profile/seed bootstrap intervals |
+| `limits` | Hatch energy constraint, first-dose timing, daily counts and adult competing outcomes |
 | `performance` | Frozen schedules, all admissions, timed rows and analyses for native, protected observer and application workloads |
+| `tests` | Local test logs, the retained timeout and retry, build identity and cross-platform CI receipts |
 
 ## Reproduction
 
@@ -32,6 +34,7 @@ python tools/verify_s6_4_wp6b_r1.py out/r1-v1-replay
 python tools/verify_s6_4_wp6b_r1.py out/r1-formal --out out/r1-analysis
 python tools/diagnose_s6_4_wp6b_r1.py out/r1-formal out/r1-candidate-paths
 python tools/summarize_s6_4_wp6b_r1.py --v1 out/r1-base-paths --r1 out/r1-candidate-paths --candidate out/r1-analysis --out out/r1-comparison
+python tools/diagnose_s6_4_wp6b_r1_limits.py experiments/s6_4_wp6b_r1 out/r1-limits
 ```
 
 The formal tool compares native v1 output against the archived original bytes. Timing and machine receipts naturally differ on replay. Each candidate input preserves original world identity and seed and adds explicit R1 options in its `case.json`. The first entry of `care_memory` is the window in milliseconds. The second is the repeat probability in parts per million. A replay of one extracted case uses `antworld_s6_4_wp6b parameters.txt <empty-output-dir> observed <window-ms> <repeat-ppm>`. The observer can be disabled with the `unobserved` mode or verified across a durable midpoint with `durable`.
