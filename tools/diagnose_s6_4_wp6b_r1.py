@@ -23,7 +23,7 @@ MILESTONES = ("opportunity", "selected", "feed_selected", "feed_started", "first
 
 @contextmanager
 def sheet(path, columns):
-    with path.open("xb") as raw, gzip.GzipFile(fileobj=raw, filename="", mtime=0) as compressed:
+    with path.open("xb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", filename="", mtime=0) as compressed:
         with io.TextIOWrapper(compressed, encoding="utf-8", newline="") as stream:
             writer = csv.DictWriter(stream, columns.split(), lineterminator="\n")
             writer.writeheader()

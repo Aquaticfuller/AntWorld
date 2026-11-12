@@ -98,7 +98,7 @@ def census(sets, exact):
                 first_worker_ms=first_worker, pupa_overshoot=max(0, pupae-k), worker_overshoot=max(0, workers-k))
 
 
-def assess(case, summary, raw, cut_data, individual_data):
+def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
     profile, queen = case["parameters"], int(summary["queen"])
     cut_rows = rows(cut_data)
     daily = [(int(time), list(group)) for time, group in groupby(rows(individual_data), lambda r: r["time_ms"])]
@@ -140,7 +140,7 @@ def assess(case, summary, raw, cut_data, individual_data):
         if kind in (ANT_SEEDED, BIRTH, STAGE, DIED):
             stages[actor] = stage
         if kind == F_CONFIG:
-            check(actor == 0 and value == 1, "bad F1 profile declaration")
+            check(actor == 0 and value == profile_version, "bad F1 profile declaration")
         elif kind == F_SEED:
             check(actor == queen and payload == profile["maternal_lipid"] and mass == (0, profile["maternal_protein"], profile["maternal_water"], 0),
                   "unfunded or mismatched foundress seed")

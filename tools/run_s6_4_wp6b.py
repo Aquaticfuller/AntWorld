@@ -60,14 +60,14 @@ def schema_rejection(case):
             p["larva_basal"] < max(p["egg_basal"], p["pupa_basal"]) or p["egg_lipid"] > p["larval_lipid_capacity"])
 
 
-def run_one(binary, work, identity, case, mode):
+def run_one(binary, work, identity, case, mode, extra_args=()):
     work.mkdir()
     path = work / "parameters.txt"
     path.write_bytes(input_bytes(identity, case))
     write_json(work / "case.json", case)
     start = time.perf_counter()
     with (work / "program.log").open("wb") as log:
-        code = subprocess.run([binary, path, work, mode], stdout=log, stderr=subprocess.STDOUT).returncode
+        code = subprocess.run([binary, path, work, mode, *extra_args], stdout=log, stderr=subprocess.STDOUT).returncode
     elapsed = (time.perf_counter() - start) * 1_000
     expected = schema_rejection(case)
     summary_path = work / "summary.csv"
