@@ -1,0 +1,106 @@
+{
+  "asan": "halt_on_error=1",
+  "builds": {
+    "debug": {
+      "command": [
+        "cmake",
+        "--build",
+        "build/s6_3_4-debug",
+        "--parallel",
+        "4"
+      ],
+      "source_log_sha256": "fe2933f1dab0fd1380e40d18e0c8fc2e691c69b022d997a14947da3ce076fd00"
+    },
+    "release": {
+      "command": [
+        "cmake",
+        "--build",
+        "build/s6_3_4-release",
+        "--parallel",
+        "4"
+      ],
+      "source_log_sha256": "9ad98513bdfff03a2f1e4fe80cd01011d5bf2a36bfde8001882a7374affeeed8"
+    },
+    "sanitizer": {
+      "command": [
+        "cmake",
+        "--build",
+        "build/s6_3_4-sanitizer",
+        "--parallel",
+        "4"
+      ],
+      "source_log_sha256": "b045cba4bbb0ba18a47415025b8e87baa7916d6ae2a165fc75902d58fb391267"
+    }
+  },
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "cpp_tree": "bc94a2b1c34b416afccdd8ea30349ba294faaaa8",
+  "ctest": {
+    "debug": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-debug",
+        "--output-on-failure",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "failed": 0,
+      "seconds": 119.1,
+      "sha256": "7431950d44350cc033f3322f7e471263294f99f00b985e79a1b9b41bad2ff705",
+      "tests": 274
+    },
+    "release": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-release",
+        "--output-on-failure",
+        "-j2"
+      ],
+      "exit_code": 0,
+      "failed": 0,
+      "seconds": 38.32,
+      "sha256": "0c576e6daf4dee15f72ada4fa55f4f1efbe93eb13d509f46d21b276998f916ba",
+      "tests": 274
+    },
+    "sanitizer": {
+      "command": [
+        "ctest",
+        "--test-dir",
+        "build/s6_3_4-sanitizer",
+        "--output-on-failure",
+        "-j1"
+      ],
+      "exit_code": 0,
+      "failed": 0,
+      "seconds": 617.38,
+      "sha256": "555aacfbfe46de645db7a29236a364f6481662bf0eecafc89954b892edae5ed1",
+      "tests": 274
+    }
+  },
+  "initial_sanitizer": {
+    "command": [
+      "ctest",
+      "--test-dir",
+      "build/s6_3_4-sanitizer",
+      "--output-on-failure",
+      "-j1"
+    ],
+    "exit_code": 8,
+    "failed": 274,
+    "seconds": 45.16,
+    "sha256": "f61d4ce45b03df06dd09d786d9cd6c75f6399454748996a6c2a90ebe8d391147",
+    "tests": 274
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "sanitizer_path": "LLVM runtime bin directory prepended for the full successful repeat.",
+  "source": "4fd68185e96975ed4853807601e40f65253b98f5",
+  "ubsan": "halt_on_error=1:print_stacktrace=1"
+}
