@@ -123,6 +123,14 @@ jobs:
           python tools/analyze_s6_4_wp2_performance.py experiments/s6_4_wp2/performance/formal experiments/s6_4_wp2/performance/formal_analysis.json --check
           python tools/analyze_s6_4_wp2.py experiments/s6_4_wp2/baseline build/ci/wp2-audit --supplement experiments/s6_4_wp2/activity_hourly --supplement experiments/s6_4_wp2/integrated_hourly --case activity-empty-32-1-empty-0-empty --case integrated-care-4-7-underground-4-balanced --case b01-removed-5-7-plain-5-own --case b02-trio-3-7-line-6-own
           python tools/summarize_s6_4_wp2.py experiments/s6_4_wp2/analysis experiments/s6_4_wp2/comparison --check
+      - name: Verify WP-3 evidence, archives and controlled timing (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          python tools/build_s6_4_wp3_evidence.py --check
+          python tools/test_s6_4_wp3_observations.py
+          python tools/analyze_s6_4_wp3.py experiments/s6_4_wp3/baseline experiments/s6_4_wp3/analysis --check
+          python tools/analyze_s6_4_wp3_performance.py experiments/s6_4_wp3/performance/formal experiments/s6_4_wp3/performance/formal_analysis.json --check
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp3/performance/core --out experiments/s6_4_wp3/performance/core_analysis --check
 
   sanitizers:
     runs-on: ubuntu-24.04

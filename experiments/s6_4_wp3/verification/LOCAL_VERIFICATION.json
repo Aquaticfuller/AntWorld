@@ -1,0 +1,74 @@
+{
+  "environment": "Windows with LLVM MinGW clang 23.1.5 and CMake 3.31.10",
+  "source_commit": "c08a49d95aac8f7a2909ad84da6aecd434a39081",
+  "runs": {
+    "debug": {
+      "build_command": "cmake --build build/s6_3_4-debug --parallel 3",
+      "test_command": "ctest --test-dir build/s6_3_4-debug --output-on-failure",
+      "exit_code": 0,
+      "logs": {
+        "build-debug.log": {
+          "archive": "build-debug.log.gz",
+          "bytes": 1452,
+          "sha256": "77d08ec58db4c0866b89273308e733267092b69ba7b74cf7502ba9cf0cd064fa",
+          "archive_sha256": "54877c16019fd18463e43ff5dfee201e3ae439c82603ec66d5d684bd3bfb3357"
+        },
+        "ctest-debug.log": {
+          "archive": "ctest-debug.log.gz",
+          "bytes": 26847,
+          "sha256": "1bc81bda11fb7bbf2e101bf8f284839ee9c80d64fe024e9fca87ec7e999f6e1c",
+          "archive_sha256": "84250915ffa4b8218c9415eaf89801f967a1682c800adbdff4fa8d2ea35cbf6b"
+        }
+      },
+      "tests": 234,
+      "elapsed_seconds": 169.79
+    },
+    "release": {
+      "build_command": "cmake --build build/s6_3_4-release --parallel 3",
+      "test_command": "ctest --test-dir build/s6_3_4-release --output-on-failure",
+      "exit_code": 0,
+      "logs": {
+        "build-release.log": {
+          "archive": "build-release.log.gz",
+          "bytes": 23,
+          "sha256": "71aa391ec7d7e291b419a7f40fba91919e14ac2394ab4e8b66ed126e267d70f6",
+          "archive_sha256": "e4bdb7b1e1c29d636a3a4622619947fe581d337deb76945b9654f7074de94f3a"
+        },
+        "ctest-release.log": {
+          "archive": "ctest-release.log.gz",
+          "bytes": 26851,
+          "sha256": "2bcc2ad208e4c4712ebf3fe4a83026068ccd18902563b96fcf98e4518beb099c",
+          "archive_sha256": "862b76fc773c8a81a2cf4af08747dda1590698ee59e74123f4037ef169eae7cc"
+        }
+      },
+      "tests": 234,
+      "elapsed_seconds": 49.61
+    },
+    "sanitizer": {
+      "build_command": "cmake --build build/s6_3_4-sanitizer --parallel 3",
+      "test_command": "ctest --test-dir build/s6_3_4-sanitizer --output-on-failure",
+      "exit_code": 0,
+      "logs": {
+        "build-sanitizer.log": {
+          "archive": "build-sanitizer.log.gz",
+          "bytes": 1456,
+          "sha256": "c491e77f26454cfe845d9e4f4b9f6099b240f6e6b0bcc8729e1f0b1eefc1fec1",
+          "archive_sha256": "fe27eeb5996fa99903725698b05ceafb781acab2ca3ebc5e55dd3c5bf32d9567"
+        },
+        "ctest-sanitizer.log": {
+          "archive": "ctest-sanitizer.log.gz",
+          "bytes": 26855,
+          "sha256": "c0392f3c97812825612b27b6b7989a8a7867a15ad343f48e7f67e59219bfc726",
+          "archive_sha256": "f06094b53631cc2bdb0c32e29d9f8ae663f93dedca0044837fd1d555e7437a01"
+        }
+      },
+      "runtime": {
+        "ASAN_OPTIONS": "halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
+        "path_prepend": "LLVM MinGW runtime bin"
+      },
+      "tests": 234,
+      "elapsed_seconds": 603.7
+    }
+  }
+}

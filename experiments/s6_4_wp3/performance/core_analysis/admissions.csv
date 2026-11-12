@@ -1,0 +1,7 @@
+kind,session,attempt,admitted,pdh_invalid,system_busy_pct_complete,system_busy_pct_p50,system_busy_pct_p95,processor_busy_pct_complete,processor_busy_pct_p50,processor_busy_pct_p95,native_intervals_valid,power_valid,sensors_valid
+contacts,session1,1,True,4,True,2.1493995420320577,3.6440251935744823,True,0.0,3.12482731984211,True,True,True
+contacts,session2,1,True,0,True,2.061954290882527,3.7713261885029734,True,0.0,1.5622796597350617,True,True,True
+contacts,session3,1,True,4,True,2.134013247026946,3.441088519811727,True,0.0,3.1246581182607156,True,True,True
+births,session1,1,True,2,True,2.0578982847726763,3.775657048841969,True,0.0,1.5623861635575678,True,True,True
+births,session2,1,True,2,True,2.3403268013631937,3.5078199098000473,True,0.0,3.1236762386929087,True,True,True
+births,session3,1,True,0,True,1.8684681473424272,2.70171875,True,0.0,1.5622009283295153,True,True,True
