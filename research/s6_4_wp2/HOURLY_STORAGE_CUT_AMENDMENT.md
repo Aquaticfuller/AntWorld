@@ -1,0 +1,7 @@
+# WP-2 observation storage cut amendment
+
+The initial frozen matrix ran at application commit `ffda01615a0469bd0e3aece3dcaa62ae2783361e`. Its 213 successful cases and 15 incomplete observer attempts are retained, including the available sidecars, checkpoints and logs. Activity cases at daily capture had SQLite quota and per-cut capacity failures. The integrated empty 16-worker worlds also reached the per-cut limit. The initial drivers refused to publish an incomplete cut.
+
+The two affected strata use additional hourly host cuts across **all** their cases. Daily endpoints, the full simulated horizon, the biological fixture, observations selected, thresholds, midpoint anchors, seed list and arm balance stay as frozen. B01, B02 and the formal performance workloads retain their original protocol. Hourly captures give the existing bounded codec smaller payloads without discarding facts. The resulting physiology and daily endpoint tables use the originally declared reporting times. If storage still prevents complete observation, the affected case remains incomplete with its receipt.
+
+The comparison requires identical final canonical checkpoint bytes, fact count, state, trace and RNG against every completed original case. It checks same-schedule observer-off and midpoint restart within every corrected run. Incomplete originals remain linked as prior attempts with available provenance. This corrects an application storage limit without changing the 3 MiB cut, 4 MiB staging or 64 MiB database gates.

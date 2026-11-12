@@ -232,14 +232,14 @@ void dispatch(const std::filesystem::path& dir, const Case& c) {
         require((c.workers == 8 || c.workers == 32) && !c.brood && c.layout == c.arm &&
                 c.origin == (c.arm == "depot" || c.arm == "ordinary" ? "balanced" : c.arm), "invalid activity assay");
         auto fixture = ecology_fixture(c.seed, c.workers, c.arm);
-        assay(dir, c, fixture.world, s6_3_1_fixture::limits(), {90 * day, day, day, 45 * day}, no_input);
+        assay(dir, c, fixture.world, s6_3_1_fixture::limits(), {90 * day, hour, hour, 45 * day}, no_input);
     } else if (c.mode == "integrated") {
         require((c.workers == 4 || c.workers == 16) && c.brood == 4 && c.layout == "underground" &&
                 (c.arm == "care" || c.arm == "control") && (c.origin == "balanced" || c.origin == "empty"),
                 "invalid integrated assay");
         WorldRuntime world({6333, c.seed}, c.seed, {{-.04, -.02, -.02}, {.04, .02, .02}, .08, .002, true}, closure::limits());
         closure::prepare_ecology(world, c.workers, "underground", c.origin == "balanced", c.arm == "care");
-        assay(dir, c, world, closure::limits(), {21 * day, 6 * hour, day, 10 * day}, no_input);
+        assay(dir, c, world, closure::limits(), {21 * day, hour, hour, 10 * day}, no_input);
     } else if (c.mode == "b01") {
         const bool with_workers = c.arm == "added" || c.arm == "removed" || c.arm == "sham";
         require(c.origin == "own" && ((c.arm == "barrier" && c.workers == 3 && c.brood == 5 && c.layout == "wall") ||
