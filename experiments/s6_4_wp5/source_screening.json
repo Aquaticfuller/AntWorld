@@ -1,0 +1,238 @@
+{
+  "dataset_doi": "10.5281/zenodo.15353580",
+  "article_doi": "10.1126/science.ads5930",
+  "inputs": {
+    "architectural_immunity_nest_analysis.csv": {
+      "sha256": "849291610d8b115a83871a6ab056afd0e6b5eda97bef2a2577168db2d2977d51",
+      "bytes": 198164
+    },
+    "COLONY_INFO.csv": {
+      "sha256": "92585adf3572e294b127d31feaf9f98dcade5b78f901bbe3d80f19a02e7e2fa4",
+      "bytes": 4220
+    }
+  },
+  "eligibility": "DEVELOPMENT_CONTEXT_PROCESSED_SHAM_ONLY",
+  "raw_voxels": "NOT_ACQUIRED",
+  "measurements": "Unconverted values in the source columns. Repeated measurements within nest.",
+  "sham_nests": 10,
+  "sham_rows": 50,
+  "source_colonies": 6,
+  "published_analysis_exclusion": "R1C1SK_FRI",
+  "sham_rows_after_published_exclusion": 49,
+  "screening_includes_flagged_archive_row": true,
+  "sampling_patterns": {
+    "0;24;48;72;144": 10
+  },
+  "by_time": [
+    {
+      "time_in_source": 0,
+      "nests": 10,
+      "measurements": {
+        "volume": {
+          "n": 10,
+          "median": 8880.744999999999,
+          "minimum": 2816.46,
+          "maximum": 19456.63
+        },
+        "surface area": {
+          "n": 10,
+          "median": 7875.945,
+          "minimum": 2741.11,
+          "maximum": 21234.55
+        },
+        "weighted_diameter": {
+          "n": 10,
+          "median": 87.0818901642986,
+          "minimum": 8.4067716070877,
+          "maximum": 184.551542468254
+        },
+        "nest_entrances": {
+          "n": 10,
+          "median": 3.5,
+          "minimum": 1.0,
+          "maximum": 7.0
+        },
+        "junctions": {
+          "n": 10,
+          "median": 7.5,
+          "minimum": 1.0,
+          "maximum": 61.0
+        },
+        "edge_num": {
+          "n": 10,
+          "median": 18.5,
+          "minimum": 3.0,
+          "maximum": 119.0
+        }
+      }
+    },
+    {
+      "time_in_source": 24,
+      "nests": 10,
+      "measurements": {
+        "volume": {
+          "n": 10,
+          "median": 14873.2,
+          "minimum": 9382.58,
+          "maximum": 28256.24
+        },
+        "surface area": {
+          "n": 10,
+          "median": 14773.220000000001,
+          "minimum": 9517.84,
+          "maximum": 31770.39
+        },
+        "weighted_diameter": {
+          "n": 10,
+          "median": 74.61262123258535,
+          "minimum": 22.4842826031383,
+          "maximum": 163.445796517105
+        },
+        "nest_entrances": {
+          "n": 10,
+          "median": 5.5,
+          "minimum": 1.0,
+          "maximum": 9.0
+        },
+        "junctions": {
+          "n": 10,
+          "median": 24.5,
+          "minimum": 7.0,
+          "maximum": 109.0
+        },
+        "edge_num": {
+          "n": 10,
+          "median": 48.0,
+          "minimum": 21.0,
+          "maximum": 206.0
+        }
+      }
+    },
+    {
+      "time_in_source": 48,
+      "nests": 10,
+      "measurements": {
+        "volume": {
+          "n": 10,
+          "median": 17042.11,
+          "minimum": 11343.88,
+          "maximum": 29668.43
+        },
+        "surface area": {
+          "n": 10,
+          "median": 16240.665,
+          "minimum": 11783.23,
+          "maximum": 33813.65
+        },
+        "weighted_diameter": {
+          "n": 10,
+          "median": 61.03492841114805,
+          "minimum": 33.3803671190561,
+          "maximum": 170.112170164236
+        },
+        "nest_entrances": {
+          "n": 10,
+          "median": 7.0,
+          "minimum": 3.0,
+          "maximum": 11.0
+        },
+        "junctions": {
+          "n": 10,
+          "median": 26.0,
+          "minimum": 12.0,
+          "maximum": 128.0
+        },
+        "edge_num": {
+          "n": 10,
+          "median": 52.0,
+          "minimum": 28.0,
+          "maximum": 237.0
+        }
+      }
+    },
+    {
+      "time_in_source": 72,
+      "nests": 10,
+      "measurements": {
+        "volume": {
+          "n": 10,
+          "median": 17993.22,
+          "minimum": 11874.43,
+          "maximum": 31600.88
+        },
+        "surface area": {
+          "n": 10,
+          "median": 17670.825,
+          "minimum": 12408.27,
+          "maximum": 35817.66
+        },
+        "weighted_diameter": {
+          "n": 10,
+          "median": 83.77640272861319,
+          "minimum": 33.6770147254474,
+          "maximum": 599.59006256476
+        },
+        "nest_entrances": {
+          "n": 10,
+          "median": 6.5,
+          "minimum": 2.0,
+          "maximum": 12.0
+        },
+        "junctions": {
+          "n": 10,
+          "median": 28.5,
+          "minimum": 13.0,
+          "maximum": 145.0
+        },
+        "edge_num": {
+          "n": 10,
+          "median": 59.0,
+          "minimum": 31.0,
+          "maximum": 267.0
+        }
+      }
+    },
+    {
+      "time_in_source": 144,
+      "nests": 10,
+      "measurements": {
+        "volume": {
+          "n": 10,
+          "median": 19458.36,
+          "minimum": 13189.67,
+          "maximum": 35018.37
+        },
+        "surface area": {
+          "n": 10,
+          "median": 20138.28,
+          "minimum": 13862.29,
+          "maximum": 40446.4
+        },
+        "weighted_diameter": {
+          "n": 10,
+          "median": 77.2717290864054,
+          "minimum": 40.5291797062044,
+          "maximum": 268.999140501588
+        },
+        "nest_entrances": {
+          "n": 10,
+          "median": 6.0,
+          "minimum": 3.0,
+          "maximum": 16.0
+        },
+        "junctions": {
+          "n": 10,
+          "median": 38.5,
+          "minimum": 13.0,
+          "maximum": 169.0
+        },
+        "edge_num": {
+          "n": 10,
+          "median": 76.5,
+          "minimum": 34.0,
+          "maximum": 333.0
+        }
+      }
+    }
+  ]
+}

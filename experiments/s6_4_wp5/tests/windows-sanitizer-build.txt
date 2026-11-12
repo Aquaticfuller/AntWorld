@@ -1,0 +1,16 @@
+[0/1] Re-running CMake...
+-- Configuring done (1.1s)
+-- Generating done (0.2s)
+-- Build files have been written to: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+[1/13] Building CXX object CMakeFiles/antworld_s6_4_wp3_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[2/13] Building CXX object CMakeFiles/antworld_s6_4_rm02_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[3/13] Building CXX object CMakeFiles/antworld_s6_4_wp2_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[4/13] Building CXX object CMakeFiles/antworld_s6_4_wp4_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[5/13] Building CXX object CMakeFiles/antworld_s6_4_wp5_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[6/13] Building CXX object CMakeFiles/antworld_s6_4_wp5.dir/apps/antworld_s6_4_wp5.cpp.obj
+[7/13] Linking CXX executable antworld_s6_4_wp2_benchmark.exe
+[8/13] Linking CXX executable antworld_s6_4_rm02_benchmark.exe
+[9/13] Linking CXX executable antworld_s6_4_wp3_benchmark.exe
+[10/13] Linking CXX executable antworld_s6_4_wp4_benchmark.exe
+[11/13] Linking CXX executable antworld_s6_4_wp5.exe
+[12/13] Linking CXX executable antworld_s6_4_wp5_benchmark.exe

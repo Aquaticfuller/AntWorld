@@ -1,0 +1,10 @@
+case,world_id,issued_ms,execute_ms,kind,scheduled_id,event,event_kind,outcome
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,0,100,mine,3,10,SoilExcavated,Success
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,100,300,fill,5,13,SoilFilled,Success
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,100,500,attempt_crossing,6,16,ActionRejected,Blocked
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,500,600,future_revision,7,18,ActionRejected,StaleGeometry
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,600,700,reopen,8,20,SoilExcavated,Success
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,700,900,too_fast_reopened,10,23,ActionRejected,TooFast
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,900,1400,cross_reopened,11,25,Moved,Success
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,1400,1500,drop,12,28,SoilDropped,Success
+gate-reopen-2-1,00000000-0000-0285-0000-000000000005,1500,1600,pickup,13,31,SoilPickedUp,Success

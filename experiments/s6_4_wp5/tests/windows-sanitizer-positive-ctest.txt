@@ -1,0 +1,11 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+    Start 20: S6_4_WP5_compact
+1/1 Test #20: S6_4_WP5_compact .................   Passed   13.50 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+WP5    =  13.50 sec*proc (1 test)
+
+Total Test time (real) =  13.52 sec
