@@ -76,6 +76,38 @@ def summarize_individuals(folder, cases, *, old_meals=None):
     return counters, {name: gini(values) for name, values in people.items()}, adults
 
 
+def water_pairs(rows, output):
+    arms = ("water-reachable", "water-blocked", "water-absent")
+    blocks = defaultdict(dict)
+    for row in rows:
+        if row["group"] == "water":
+            blocks[row["model"], row["population"], row["seed"]][row["arm"]] = row
+    pairs = []
+    for (model, pop, seed), values in sorted(blocks.items()):
+        assert set(values) == set(arms)
+        for arm in arms[1:]:
+            a, b = values[arm], values[arms[0]]
+            pairs.append(dict(model=model, population=pop, seed=seed, control=arm,
+                              **{f"delta_{key}": number(b, key) - number(a, key) for key in
+                                 ("adults", "adults_with_water_uptake", "adult_water_absorbed_ug", "adults_at_least_1d",
+                                  "adults_at_least_7d", "adults_at_least_7d_and_moved", "adult_energy_deaths",
+                                  "adult_water_deaths", "adult_right_censored")}))
+    csv_out(output / "water_paired_worlds.csv", pairs)
+    groups = defaultdict(list)
+    for row in pairs:
+        groups[row["model"], row["population"], row["control"]].append(row)
+    rng = Random(6406201)
+    summary = []
+    for (model, pop, arm), records in sorted(groups.items()):
+        assert len(records) == 6
+        for key in (k for k in records[0] if k.startswith("delta_")):
+            values = [r[key] for r in records]
+            lo, hi = interval([sum(rng.choices(values, k=len(values))) / len(values) for _ in range(4096)])
+            summary.append(dict(model=model, population=pop, control=arm, endpoint=key, worlds=len(values),
+                                mean_delta=sum(values) / len(values), ci95_low=lo, ci95_high=hi))
+    csv_out(output / "water_paired_summary.csv", summary)
+
+
 def summarize(root, output):
     histories = {m: root / f"{m}-tracks" for m in ("h1", "h2", "both", "water-r1", "water-both")}
     base = ROOT / "experiments/s6_4_wp6b_r1"
@@ -111,6 +143,7 @@ def summarize(root, output):
     output.mkdir(parents=True)
     csv_out(output / "cases.csv", results)
     csv_out(output / "water_adults.csv", workers)
+    water_pairs(results, output)
     group_keys = ("model", "population", "group", "arm", "care", "high_risk")
     fields = sorted({key for row in results for key in row if key not in (*group_keys, "status", "case", "seed", "profile",
                      "maternal_protein_gini_all_offspring", "queen_death_ms", "queen_death_cause", "first_worker_ms")})
