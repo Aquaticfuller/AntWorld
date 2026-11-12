@@ -1,0 +1,65 @@
+[
+  {
+    "path": "batch_result.json",
+    "source_sha256": "4942a77c8c2b1246e7943723e76383623556f53f07d92362f400d4716a421812",
+    "public_sha256": "4942a77c8c2b1246e7943723e76383623556f53f07d92362f400d4716a421812",
+    "bytes": 155,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "batch_start.json",
+    "source_sha256": "16e710d1e92285de40745df564bc178f0931d00e88df95449616866d49f124d6",
+    "public_sha256": "16e710d1e92285de40745df564bc178f0931d00e88df95449616866d49f124d6",
+    "bytes": 131,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "configuration.json",
+    "source_sha256": "00ed36f63c47977769147fca49e1625bafb3dbbaec51ec5adfa714ba641c4fdf",
+    "public_sha256": "366ab48e044906914d3906bcf798e54d3f809ce859c9ea00f509a60e2677ccfc",
+    "bytes": 2230,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "freeze.json",
+    "source_sha256": "23c0ed055f540903b56e70b13dee3f138370d2b22db8160cd15b0ce19ed8c6b1",
+    "public_sha256": "23c0ed055f540903b56e70b13dee3f138370d2b22db8160cd15b0ce19ed8c6b1",
+    "bytes": 3024,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/admission1.csv",
+    "source_sha256": "fe37611821f16c39e98a38d887199c05ff542a29b5bede3cc5b9936609fe25d5",
+    "public_sha256": "fe37611821f16c39e98a38d887199c05ff542a29b5bede3cc5b9936609fe25d5",
+    "bytes": 107029,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/admission1_receipt.json",
+    "source_sha256": "8dd220ac1e9796c5e32357e3aff7a58db56ed3d1f4d2d34fc8c3eeca24991dcc",
+    "public_sha256": "4e0a468e09e73755f379163b7d5ab70614280b3080030f606df1632b902461d1",
+    "bytes": 1036,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "session1/schedule.csv",
+    "source_sha256": "0dbb04b28d9f2691dbeb81c5a2a1132b23d05c7bae91a82510500fb73d04eaa9",
+    "public_sha256": "0dbb04b28d9f2691dbeb81c5a2a1132b23d05c7bae91a82510500fb73d04eaa9",
+    "bytes": 13801,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session2/schedule.csv",
+    "source_sha256": "b4f86b24870e9471164b0d8f7862d55c9c5436c5cbef490ed44b21f765399750",
+    "public_sha256": "b4f86b24870e9471164b0d8f7862d55c9c5436c5cbef490ed44b21f765399750",
+    "bytes": 13801,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session3/schedule.csv",
+    "source_sha256": "9ba99f7718104de4b33cebb4ff6cdf162ebb5979e92692eb18c7dbf07e48df03",
+    "public_sha256": "9ba99f7718104de4b33cebb4ff6cdf162ebb5979e92692eb18c7dbf07e48df03",
+    "bytes": 13801,
+    "process_inventory_removed": false
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "path": "batch_result.json",
+    "source_sha256": "8403cea3578d7bb28bc5579ad7434baf39b56746c64e47b88816cde0960aa77d",
+    "public_sha256": "8403cea3578d7bb28bc5579ad7434baf39b56746c64e47b88816cde0960aa77d",
+    "bytes": 145,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "batch_start.json",
+    "source_sha256": "57c32ec487108241df60047e6d8cf6dbb8bf50e0b3b310dc70ca400541dd27d7",
+    "public_sha256": "57c32ec487108241df60047e6d8cf6dbb8bf50e0b3b310dc70ca400541dd27d7",
+    "bytes": 124,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "configuration.json",
+    "source_sha256": "7b13d02a3fb60ef32a458a796cce5485df41c5055ce76fb1af86fa5081814559",
+    "public_sha256": "c35b2db190c32e30496ea6b84060bc3ae0f7716cdb1593931ae750fee369b84f",
+    "bytes": 2259,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "freeze.json",
+    "source_sha256": "3b78f0e75d11fa5aac022e0adee4d68e77121ee5d7d456b7b9712aec6404bc76",
+    "public_sha256": "3b78f0e75d11fa5aac022e0adee4d68e77121ee5d7d456b7b9712aec6404bc76",
+    "bytes": 2641,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/admission1.csv",
+    "source_sha256": "256d45b4c09cfdf63b1a35452db925101fa12173f3ab1904ac3f9b9b67b3c7be",
+    "public_sha256": "256d45b4c09cfdf63b1a35452db925101fa12173f3ab1904ac3f9b9b67b3c7be",
+    "bytes": 117138,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/admission1_receipt.json",
+    "source_sha256": "e2d6ceafe7b00153e4ea73675aec8b02ca0ad1295a683fec71b1b6ba741ff73b",
+    "public_sha256": "ac3f877626e82a97db9d9dffeb350da5b36ae59479275296777d2642343b2b29",
+    "bytes": 1018,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "session1/captures.csv",
+    "source_sha256": "b825a9a2a3652896ec0994645dfb87ff2c3f3db36ac9a245bc190c32cfa95c55",
+    "public_sha256": "b825a9a2a3652896ec0994645dfb87ff2c3f3db36ac9a245bc190c32cfa95c55",
+    "bytes": 251715,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/hwinfo.csv",
+    "source_sha256": "251697f4b3bde8b8e14d12386773e8b6d3aee4328b27e61a07550a54c44f0bef",
+    "public_sha256": "251697f4b3bde8b8e14d12386773e8b6d3aee4328b27e61a07550a54c44f0bef",
+    "bytes": 1096,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/hwinfo_provenance.json",
+    "source_sha256": "6cd2b3bb2413ac0f4c9c061705c8ff68e322718366cc5b6015fa8c118a2cdf9d",
+    "public_sha256": "6cd2b3bb2413ac0f4c9c061705c8ff68e322718366cc5b6015fa8c118a2cdf9d",
+    "bytes": 506,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/native.log",
+    "source_sha256": "805f84f02eddeceb7b2a2406ed60ead870388d29491083a3e704ecd304905eb0",
+    "public_sha256": "805f84f02eddeceb7b2a2406ed60ead870388d29491083a3e704ecd304905eb0",
+    "bytes": 4036,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/receipt.json",
+    "source_sha256": "c665ac888cfeed8aea1b6426c5733f5a2860c8cac7173fe36fa90ee9bfdc670b",
+    "public_sha256": "0ece77870a43c5067bd2b460c64641948266c50c9b14cc48afd5f40052cad4a3",
+    "bytes": 1045,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "session1/samples.csv",
+    "source_sha256": "a2846625dd478d6d2eeb7ed6f8881116ddbb16859edb7049e9f7d4a3238f11ca",
+    "public_sha256": "a2846625dd478d6d2eeb7ed6f8881116ddbb16859edb7049e9f7d4a3238f11ca",
+    "bytes": 69144,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/schedule.csv",
+    "source_sha256": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "public_sha256": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session1/telemetry.csv.gz",
+    "source_sha256": "20ca1dd350c9a187ccc31c100374cfaabaa4b964d6674821abd424d430a90381",
+    "public_sha256": "20ca1dd350c9a187ccc31c100374cfaabaa4b964d6674821abd424d430a90381",
+    "bytes": 336859,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session2/schedule.csv",
+    "source_sha256": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "public_sha256": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "session3/schedule.csv",
+    "source_sha256": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e",
+    "public_sha256": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e",
+    "bytes": 4387,
+    "process_inventory_removed": false
+  }
+]

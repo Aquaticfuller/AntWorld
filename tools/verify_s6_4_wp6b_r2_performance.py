@@ -27,6 +27,9 @@ def check(root):
         raise ValueError("native analysis differs")
     report = root / "protected-observer-analysis.json"
     status = json.loads(report.read_text(encoding="utf-8"))["status"]
+    controls = (root / "application-analysis/decision.json").read_text(encoding="utf-8")
+    if json.loads(controls)["required"] != 720:
+        raise ValueError("changed application performance denominator")
     with TemporaryDirectory() as location:
         # The protected analyzer exits 1 for a scientific/performance outcome other than PASS.
         reproduced = Path(location) / "protected.json"

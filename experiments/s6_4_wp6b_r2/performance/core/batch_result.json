@@ -1,0 +1,8 @@
+{
+  "outcome": "ADMISSION_EXHAUSTED",
+  "completed": [
+    "contacts/session1"
+  ],
+  "started_utc_ns": 1794524159034113300,
+  "ended_utc_ns": 1794525079407604100
+}
