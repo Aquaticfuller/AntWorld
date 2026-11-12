@@ -466,8 +466,9 @@ int main(int argc, char** argv) {
         require(memory == "0"sv || memory == "1"sv, "invalid memory setting");
         const auto seed_text = std::string_view(argv[7]);
         std::uint64_t seed{};
-        const auto parsed = std::from_chars(seed_text.begin(), seed_text.end(), seed);
-        require(parsed.ec == std::errc{} && parsed.ptr == seed_text.end(), "invalid seed integer");
+        const auto* const seed_end = seed_text.data() + seed_text.size();
+        const auto parsed = std::from_chars(seed_text.data(), seed_end, seed);
+        require(parsed.ec == std::errc{} && parsed.ptr == seed_end, "invalid seed integer");
         const Case c{argv[2], argv[3], argv[4], argv[6], memory == "1"sv, seed};
         validate(c);
         const Path dir = argv[1];
