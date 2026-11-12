@@ -43,6 +43,11 @@ def ci(root):
               f"legacy replay is not bound to the factorial binary: {model}")
         verify(root / model, r2=frozen)
     recovery = json.loads((root / "recovery-saved.json").read_text(encoding="utf-8"))
+    expected = {(model, name, treatment) for model, names in REPRESENTATIVES.items() for name in names
+                for treatment in ("durable", "unobserved")}
+    check(recovery["binary_sha256"] == measured[1] and len(recovery["cases"]) == len(expected) and
+          {(r["mode"], r["case"], r["treatment"]) for r in recovery["cases"]} == expected,
+          "representative recovery coverage differs")
     for row in recovery["cases"]:
         if row["treatment"] == "durable":
             file = root / "midpoints" / f"{row['mode']}-{row['case']}.zip"
