@@ -1,0 +1,19 @@
+# S6.4 WP-2 results
+
+| Review item | Result |
+|---|---|
+| WP-2 engineering and observation | `PASS`. The expanded host projection, failure handling, exact on/off and checkpoint rejoin tests pass. |
+| WP-2 controlled performance | `PASS_FROZEN_SCOPE`. Three admitted sessions, 504 archived rows and 432 scored rows support a pass under the original three-cell gates. The timed-care micro-workload remains a descriptive measurement. |
+| Mechanism diagnosis | `COMPLETE`. All 228 frozen cases have verified original events, state, replay and raw data. Fifteen incomplete first attempts remain archived. |
+| RM-03 scientific comparability | `LIMITED`. Published ethograms and resting oxygen constrain experiment design. Condition-matched movement, resting expenditure and water loss remain unavailable. |
+| RM-06 scientific comparability | `PARTIAL_DEVELOPMENT_COMPARISON`. The B01 scan analogue and B02 placement count can be compared with explicit limitations. Published timing markers and simulated act boundaries differ. |
+| BR-03, BR-05 and BR-02 biological validation | `BLOCKED`. Independent, condition-matched measurements and held-out source colonies are still required. |
+| Next model change authorization | `NOT_AUTHORIZED`. |
+
+The observer's timing decomposition shows high Nurse occupancy can coexist with sparse movement and that short foraging bouts can contain many committed moves. Depletion and uptake records retain exact ordering and crop state. The B01 addition window retains a +0.875 percentage-point care-scan difference. In B02, near-line queen and trio trials complete all six placements on average, and far or blocked layouts reveal large differences before pickup. The integrated care arm transports brood successfully and can still have less feeding or queen intake than its matched control. [Mechanism and accounting results](MECHANISM_DIAGNOSIS.md) [Scientific comparison and candidate experiments](SCIENTIFIC_INTERPRETATION.md)
+
+The accepted base is `39b21eae59794dc0d472fea1630f618fe7b90a9b`. The frozen study is `11412e707df551b9a52a2815d4ca98791f2b69ab`. Host implementation starts at `ffda01615a0469bd0e3aece3dcaa62ae2783361e`. The archival amendment was committed at `2d4ac364659b17b87f82a0baf67b7345a1b82c8b` before the supplemental runs. The native archive verification is `3826447e77eba9ec4b6c8fc905222298a803048e`, and the experiment archive and analysis are `f3ae97fd4c37049b7c3b6ec2e95ceb863312bdc7`. The base and final Git trees for `cpp/src`, `cpp/include` and `cpp/storage` are respectively `b5f20efbfcdd9baeebb8c6c43abcb12810e1c93d`, `168ec1e9cb18edcb929507b8f3c8ecaf443bd0af` and `14d0c32d3a0738dc2198a56b1ffd0fd4cad919bd`. Earlier scientific evidence and RM-02-R1 raw artifacts are byte-identical.
+
+The evidence projection contains 21 mechanisms, 32 transitions and 133 parameter links for BR-05, and 17 mechanisms, 27 transitions and 95 parameter links for BR-03, including documented cross-package overlap. The protected 72-case RM-02-R1 analysis was regenerated using the compatible Sidecar reader and matched its archived tables. Local Debug, Release and ASan/UBSan pass all 227 tests each. The branch Core CI runs the inherited four platform/configuration builds, Linux ASan/UBSan, WP-2 performance and representative archive verification, plus checks of the accepted prior evidence. [Evidence projection](MECHANISM_TRANSITION_PARAMETER_MAP.csv) [Performance, raw data and verification commands](PERFORMANCE_AND_VERIFICATION.md) [Core CI history](https://github.com/Aquaticfuller/AntWorld/actions/workflows/ci.yml?query=branch%3Acodex%2Fs6.4-wp2-activity-energy-brood-care)
+
+[Frozen protocol](FROZEN_PROTOCOL.md) [Host observation design](OBSERVATION_ENGINEERING.md) [Source and primary evidence](SOURCE_AND_EVIDENCE_AUDIT.md) [Native performance](../../experiments/s6_4_wp2/performance) [Raw experiment and derived archives](../../experiments/s6_4_wp2)
