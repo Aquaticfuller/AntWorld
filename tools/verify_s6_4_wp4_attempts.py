@@ -34,7 +34,9 @@ def verify(first, accepted):
         older = load(first / "receipts" / (key + ".json"))
         current = load(accepted / "raw" / key / "receipt.json")
         require(older["exit_code"] == code and older["case"] == current["case"] == key, "wrong prior receipt")
-        same = ["initial.chk", "midpoint.chk"]
+        same = ["initial.chk"]
+        if "midpoint.chk" in older["artifacts"]:
+            same.append("midpoint.chk")
         if code == 0:
             same += ["final.chk", "canonical.bin"]
             unchanged.append(key)
@@ -46,8 +48,11 @@ def verify(first, accepted):
                     "prior failed archive changed")
             with tarfile.open(path, "r:gz") as archive:
                 log = archive.extractfile("program.log").read().decode()
-            require(log.strip() == "SQLite error 13: database or disk is full", "new failure type needs review")
+            failure_kind = {"SQLite error 13: database or disk is full": "SIDECAR_DATABASE_LIMIT",
+                            "WP-4 sidecar has incomplete coverage": "CUT_COVERAGE_LIMIT"}.get(log.strip())
+            require(failure_kind is not None, "new failure type needs review")
             failures.append(dict(case=key, exit_code=code, cause=log.strip(),
+                                 failure_kind=failure_kind, midpoint_retained="midpoint.chk" in older["artifacts"],
                                  sidecar_bytes=older["artifacts"]["observer.sqlite"]["bytes"]))
         for artifact in same:
             require(older["artifacts"][artifact] == current["artifacts"][artifact],

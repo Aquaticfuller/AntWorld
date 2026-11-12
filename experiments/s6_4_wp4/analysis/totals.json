@@ -1,0 +1,16 @@
+{
+  "cases": 104,
+  "events": 8868731,
+  "cuts": 9524,
+  "budgets_checked": 196238,
+  "attempts": 1811,
+  "births": 955,
+  "gifts": 62942,
+  "brood_moves": 0,
+  "egg_transition": 945,
+  "egg_death": 10,
+  "larva_transition": 771,
+  "larva_death": 128,
+  "pupa_transition": 736,
+  "pupa_death": 24
+}

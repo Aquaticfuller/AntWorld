@@ -1,0 +1,58 @@
+{
+  "case": "ecology-ordinary-32-legacy-19",
+  "family": "ecology",
+  "arm": "ordinary",
+  "workers": 32,
+  "profile": "legacy",
+  "seed": 19,
+  "exit_code": 1,
+  "program_exit_code": 1,
+  "archive_bytes": 13714042,
+  "archive_sha256": "a12fcddf5b8685e7437a75409a5feb6ef92c5f640fcbddaeaad89416cddea0cc",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 421,
+      "sha256": "6decba55f72d695cb656cdcdfd7b347c046ce931074e648823d23dc62eb1ebc0"
+    },
+    "cuts.csv": {
+      "bytes": 10074,
+      "sha256": "8b637ac9472069428b8f8edb1d8d4aa7a4edffcc599ba9197d03c0d8d406e4e5"
+    },
+    "initial.chk": {
+      "bytes": 43665,
+      "sha256": "2f0374c1803b2b88257f095ccf321f3bc09e396d389254cb0f71573516377196"
+    },
+    "initial_food.csv": {
+      "bytes": 90,
+      "sha256": "3d331b56788d82571a688d4ee0eacd1815dc910f2e6d8792822ec2e3e8712c8f"
+    },
+    "inputs.csv": {
+      "bytes": 68,
+      "sha256": "e967b8bc0914f4eb5c7b34843cdbcb2b265ddc1768559fdc868c405e1f604b03"
+    },
+    "lineage.csv": {
+      "bytes": 380624,
+      "sha256": "ec179aa8404244b765db3b8682609048dc18eae1a53cafe3b146dffdbcd1bee9"
+    },
+    "lineage_inputs.csv": {
+      "bytes": 8094,
+      "sha256": "1f22c793ec0f07a85d0389a9f13656f30a830910a3cfcf7e79a7120ac7dbb2f5"
+    },
+    "midpoint.chk": {
+      "bytes": 35512769,
+      "sha256": "c785166da2c818c17ad05c93f1a44bc264c9885502217537adfd54975ea9a2c1"
+    },
+    "midpoint.sqlite": {
+      "bytes": 6930432,
+      "sha256": "a0c7841aa149c9bce4895a2f31cda8cb50e0e89c985bda1d58b41914ec765d49"
+    },
+    "observer.sqlite": {
+      "bytes": 66551808,
+      "sha256": "0667543bc8e01ce925b6a2b86b7de5e4ad26e755d7ad658cf7115f146b183be8"
+    },
+    "program.log": {
+      "bytes": 43,
+      "sha256": "8d4425a2c09c608e744dd10cce9e0975e9e8f87781c963eb9aac37166cde92fe"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "case": "ecology-scarce-0-legacy-7",
+  "family": "ecology",
+  "arm": "scarce",
+  "workers": 0,
+  "profile": "legacy",
+  "seed": 7,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 38187,
+  "archive_sha256": "b1686caf08c8987a666383868a7315677357f99ca7ea4c45ce82e17ea21979f9",
+  "artifacts": {
+    "canonical.bin": {
+      "bytes": 30807,
+      "sha256": "26ab7adb4f651ab103b9249d8d13e5e4cdcbf12f7408d6d1a141c520daffb31f"
+    },
+    "configuration.csv": {
+      "bytes": 417,
+      "sha256": "d18619e80da247b8b0bb70904bfcd84135761cd357204919fa61083295815124"
+    },
+    "cuts.csv": {
+      "bytes": 9992,
+      "sha256": "480aac544829ce2a7ab8e2c299d0648c328328cdc85381d11762cd9e40d50c3c"
+    },
+    "final.chk": {
+      "bytes": 33314,
+      "sha256": "834f7684dc181dd5055b9a5ecb1d21bfbc82b5d2ace8017cfd48d3919b5929fe"
+    },
+    "initial.chk": {
+      "bytes": 3985,
+      "sha256": "568567200321e83045b162d3e75dded03eb1fb32a1e10b6660af31d5104b9213"
+    },
+    "initial_food.csv": {
+      "bytes": 89,
+      "sha256": "4cd2c05d43d4cda2b5774732a7083c23c8df68a7f009fec2d47a5fb7d51f4bfb"
+    },
+    "inputs.csv": {
+      "bytes": 68,
+      "sha256": "e967b8bc0914f4eb5c7b34843cdbcb2b265ddc1768559fdc868c405e1f604b03"
+    },
+    "lineage.csv": {
+      "bytes": 27532,
+      "sha256": "6b7847f071cbcaa037158d1eb00b9036c1c5f72af3493b777ca00ddc9d2932d6"
+    },
+    "lineage_inputs.csv": {
+      "bytes": 912,
+      "sha256": "d09d8174496aaa6fe1bd5b0cee27feabee04d0118becb6e8375a4b8a8fe37f9a"
+    },
+    "midpoint.chk": {
+      "bytes": 26159,
+      "sha256": "c5e2f606fafdb825d8f8397084b11a04ef87ab2885bc71d271ac8a0e059b890f"
+    },
+    "midpoint.sqlite": {
+      "bytes": 176128,
+      "sha256": "ff952f54ab28edf69968e8b5e0f9ede73056c96c0ec93b5da39780f271b5e9fe"
+    },
+    "observer.sqlite": {
+      "bytes": 49152,
+      "sha256": "02f820dc16a72246ea77704b8202eb47430d90181697acd9729bd681c941fbe8"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "summary.csv": {
+      "bytes": 459,
+      "sha256": "2a0b662ebf8db9c7e668b0f07b690c46769d0fdab587adcf8d742e647b488b3c"
+    }
+  }
+}

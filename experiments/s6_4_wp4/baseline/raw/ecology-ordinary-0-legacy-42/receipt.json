@@ -1,0 +1,70 @@
+{
+  "case": "ecology-ordinary-0-legacy-42",
+  "family": "ecology",
+  "arm": "ordinary",
+  "workers": 0,
+  "profile": "legacy",
+  "seed": 42,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 39383,
+  "archive_sha256": "e1d7341b13d85b9c7399aaed1fb9c7efea724e8e7e899ea22ef93c641f12ddc2",
+  "artifacts": {
+    "canonical.bin": {
+      "bytes": 30807,
+      "sha256": "f282b6ca72e3ff3033c3ec08a3e761f95fa40a27da5060b0e2ce2425ab47be63"
+    },
+    "configuration.csv": {
+      "bytes": 449,
+      "sha256": "1e81344c6e2e93cf3a4eeaa68a5e3a4e2fe47333c11dec6e702d6f9593d05488"
+    },
+    "cuts.csv": {
+      "bytes": 10027,
+      "sha256": "2b55538e1406d98b8a13e3b039777eb856be91ec24562c615d5228f669326aa5"
+    },
+    "final.chk": {
+      "bytes": 33314,
+      "sha256": "e0f0e575c22c23b2f81cf1d50fb8d8850203b3cce56eadb3db26a03a8e60c74d"
+    },
+    "initial.chk": {
+      "bytes": 3985,
+      "sha256": "9654c4e01e55c588aa0b4cb740a081a0e86dccdf8fdf52c6185b1f78937dffd5"
+    },
+    "initial_food.csv": {
+      "bytes": 89,
+      "sha256": "4cd2c05d43d4cda2b5774732a7083c23c8df68a7f009fec2d47a5fb7d51f4bfb"
+    },
+    "inputs.csv": {
+      "bytes": 68,
+      "sha256": "e967b8bc0914f4eb5c7b34843cdbcb2b265ddc1768559fdc868c405e1f604b03"
+    },
+    "lineage.csv": {
+      "bytes": 27532,
+      "sha256": "6b7847f071cbcaa037158d1eb00b9036c1c5f72af3493b777ca00ddc9d2932d6"
+    },
+    "lineage_inputs.csv": {
+      "bytes": 912,
+      "sha256": "d09d8174496aaa6fe1bd5b0cee27feabee04d0118becb6e8375a4b8a8fe37f9a"
+    },
+    "midpoint.chk": {
+      "bytes": 26159,
+      "sha256": "b8a2d4ad1487b9f9c599819909db6f2ba648197df93a6af53de668d20aba4410"
+    },
+    "midpoint.sqlite": {
+      "bytes": 188416,
+      "sha256": "111ce37a4ad425219c4906f6812288b132bac0f2995afa19c7416a23817edd4b"
+    },
+    "observer.sqlite": {
+      "bytes": 49152,
+      "sha256": "142c75d850590ed08b6b646ef36722338fb795a80ad35b7d94fda848a1b62345"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "summary.csv": {
+      "bytes": 460,
+      "sha256": "9b9cabbe76c0f16e3ae145674969a58f19ce364586cba147d44fee3bad9df873"
+    }
+  }
+}

@@ -314,7 +314,7 @@ def case_result(case, dest, tables):
         require(0 < bracket < len(maternal), "queen death missing bracketing cuts")
         for relation, snap in (("before", maternal[bracket - 1]), ("after", maternal[bracket])):
             tables.add("maternal_death_brackets", run, relation=relation, event_id=death.event, death_ms=death.time,
-                       death_cause=DEATHS[death_code(death)], **snap)
+                       death_cause_label=DEATHS[death_code(death)], **snap)
     if case.family == "ecology" and case.workers and case.seed == 1:
         historical = f"ecology-{case.arm}-{case.workers}-1"
         accepted = load(REFERENCE / historical / "receipt.json")

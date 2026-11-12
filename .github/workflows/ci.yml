@@ -131,6 +131,16 @@ jobs:
           python tools/analyze_s6_4_wp3.py experiments/s6_4_wp3/baseline experiments/s6_4_wp3/analysis --check
           python tools/analyze_s6_4_wp3_performance.py experiments/s6_4_wp3/performance/formal experiments/s6_4_wp3/performance/formal_analysis.json --check
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp3/performance/core --out experiments/s6_4_wp3/performance/core_analysis --check
+      - name: Verify WP-4 joint budgets and controlled timing (Linux Release)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
+        run: |
+          python tools/build_s6_4_wp4_evidence.py --check
+          python tools/analyze_s6_4_wp4.py experiments/s6_4_wp4/baseline experiments/s6_4_wp4/analysis --check
+          python tools/summarize_s6_4_wp4.py experiments/s6_4_wp4/analysis --check
+          python tools/test_s6_4_wp4_observations.py experiments/s6_4_wp4/analysis
+          python tools/verify_s6_4_wp4_attempts.py experiments/s6_4_wp4/first_attempt experiments/s6_4_wp4/baseline --check
+          python tools/analyze_s6_4_wp4_performance.py experiments/s6_4_wp4/performance/formal experiments/s6_4_wp4/performance/formal_analysis.json --check
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp4/performance/core --out experiments/s6_4_wp4/performance/core_analysis --check
 
   sanitizers:
     runs-on: ubuntu-24.04

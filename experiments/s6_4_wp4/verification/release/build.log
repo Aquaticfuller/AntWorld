@@ -1,0 +1,6 @@
+[1/6] Building CXX object CMakeFiles/antworld_s6_4_rm02_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[2/6] Building CXX object CMakeFiles/antworld_s6_4_wp3_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[3/6] Building CXX object CMakeFiles/antworld_s6_4_wp2_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[4/6] Linking CXX executable antworld_s6_4_wp3_benchmark.exe
+[5/6] Linking CXX executable antworld_s6_4_rm02_benchmark.exe
+[6/6] Linking CXX executable antworld_s6_4_wp2_benchmark.exe

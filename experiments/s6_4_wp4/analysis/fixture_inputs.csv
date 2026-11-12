@@ -1,0 +1,14 @@
+case,world_id,event_id,resolution,outcome,committed_carbs_ug,committed_protein_ug,committed_water_ug,committed_other_ug,issued_ms,execute_ms,actor,recipient,kind,requested_ug,scheduled_id
+clock-interrupted-0-legacy-1,00000000-0000-0040-0000-000000000001,12,AntDied,Success,0,0,0,0,0,172799999,2,0,fixture_interruption,0,2
+pulse-sham-1-legacy-1,00000000-0000-0041-0000-000000000001,8,ActionRejected,EmptyInventory,0,0,0,0,0,21599999,3,2,gift,100,3
+pulse-before-1-legacy-1,00000000-0000-0041-0000-000000000001,8,NutritionTransferred,Success,60,20,20,0,0,21599999,3,2,gift,100,3
+pulse-on-1-legacy-1,00000000-0000-0041-0000-000000000001,9,NutritionTransferred,Success,60,20,20,0,0,21600000,3,2,gift,100,3
+brood-full-3-legacy-1,00000000-0000-0041-0000-000000000002,24,ActionRejected,InvalidStage,0,0,0,0,172800000,172800001,3,6,gift,100,17
+brood-full-3-legacy-1,00000000-0000-0041-0000-000000000002,45,NutritionTransferred,Success,0,100,0,0,345600000,345600001,3,6,gift,100,38
+brood-full-3-legacy-1,00000000-0000-0041-0000-000000000002,46,NutritionTransferred,Success,90,0,10,0,345600000,345600002,4,6,gift,100,39
+brood-full-3-legacy-1,00000000-0000-0041-0000-000000000002,47,NutritionTransferred,Success,90,0,10,0,345600000,345600003,5,6,gift,100,40
+brood-low-protein-3-legacy-1,00000000-0000-0041-0000-000000000002,24,ActionRejected,InvalidStage,0,0,0,0,172800000,172800001,3,6,gift,100,17
+brood-low-protein-3-legacy-1,00000000-0000-0041-0000-000000000002,45,NutritionTransferred,Partial,0,40,0,0,345600000,345600001,3,6,gift,100,38
+brood-low-protein-3-legacy-1,00000000-0000-0041-0000-000000000002,46,NutritionTransferred,Success,90,0,10,0,345600000,345600002,4,6,gift,100,39
+brood-low-protein-3-legacy-1,00000000-0000-0041-0000-000000000002,47,NutritionTransferred,Success,90,0,10,0,345600000,345600003,5,6,gift,100,40
+brood-none-3-legacy-1,00000000-0000-0041-0000-000000000002,24,ActionRejected,InvalidStage,0,0,0,0,172800000,172800001,3,6,gift,100,17

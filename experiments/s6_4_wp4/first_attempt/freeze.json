@@ -1,0 +1,861 @@
+{
+  "baseline": "562cd6a65d075e1f3f9de2c5184975d41f104dd6",
+  "source_commit": "e691a5609f8d2957a7867769f265f35a0a940954",
+  "cpp_tree": "05e1975f1d3c5f6b132c1b86e9efbc30087e4be4",
+  "authority": {
+    "cpp/src": "b5f20efbfcdd9baeebb8c6c43abcb12810e1c93d",
+    "cpp/include": "168ec1e9cb18edcb929507b8f3c8ecaf443bd0af",
+    "cpp/storage": "14d0c32d3a0738dc2198a56b1ffd0fd4cad919bd"
+  },
+  "protocol_sha256": "712790fb971465219cba7f12c3432cda585bccbc9e2c8a4ab51dae1a2b06ab9b",
+  "case_matrix_sha256": "344cbd09703b58238ea45d68c03b725961f91de8d81d81aa2f47e3eaffb6e02f",
+  "runner_sha256": "ba5ad3f609590fc8b198e102c90e3761c77e2f026eb23b0e587ec946e1582484",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "binary_sha256": "135413849fd05399d4405a158c785bd64cb27919f2794907e838728e7dc99023",
+  "executable": "antworld_s6_4_wp4.exe",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "started_utc_ns": 1794457691873628500,
+  "host": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "selection": "full",
+  "cases": [
+    {
+      "case": "ecology-depot-0-legacy-1",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-depot-0-legacy-7",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-depot-0-legacy-19",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-depot-0-legacy-42",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-depot-0-legacy-43",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-depot-0-legacy-97",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-depot-8-legacy-1",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-depot-8-legacy-7",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-depot-8-legacy-19",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-depot-8-legacy-42",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-depot-8-legacy-43",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-depot-8-legacy-97",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-depot-32-legacy-1",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-depot-32-legacy-7",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-depot-32-legacy-19",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-depot-32-legacy-42",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-depot-32-legacy-43",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-depot-32-legacy-97",
+      "family": "ecology",
+      "arm": "depot",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-1",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-7",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-19",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-42",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-43",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-ordinary-0-legacy-97",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-1",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-7",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-19",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-42",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-43",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-ordinary-8-legacy-97",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-1",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-7",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-19",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-42",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-43",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-ordinary-32-legacy-97",
+      "family": "ecology",
+      "arm": "ordinary",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-scarce-0-legacy-1",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-scarce-0-legacy-7",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-scarce-0-legacy-19",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-scarce-0-legacy-42",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-scarce-0-legacy-43",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-scarce-0-legacy-97",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-scarce-8-legacy-1",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-scarce-8-legacy-7",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-scarce-8-legacy-19",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-scarce-8-legacy-42",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-scarce-8-legacy-43",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-scarce-8-legacy-97",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-scarce-32-legacy-1",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-scarce-32-legacy-7",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-scarce-32-legacy-19",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-scarce-32-legacy-42",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-scarce-32-legacy-43",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-scarce-32-legacy-97",
+      "family": "ecology",
+      "arm": "scarce",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-empty-0-legacy-1",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-empty-0-legacy-7",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-empty-0-legacy-19",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-empty-0-legacy-42",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-empty-0-legacy-43",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-empty-0-legacy-97",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-empty-8-legacy-1",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-empty-8-legacy-7",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-empty-8-legacy-19",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-empty-8-legacy-42",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-empty-8-legacy-43",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-empty-8-legacy-97",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "ecology-empty-32-legacy-1",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "ecology-empty-32-legacy-7",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "ecology-empty-32-legacy-19",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "ecology-empty-32-legacy-42",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "ecology-empty-32-legacy-43",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "ecology-empty-32-legacy-97",
+      "family": "ecology",
+      "arm": "empty",
+      "workers": 32,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-1",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-7",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-19",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-42",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-43",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "reserve-ordinary-0-legacy-97",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-1",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-7",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 7
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-19",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 19
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-42",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 42
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-43",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 43
+    },
+    {
+      "case": "reserve-ordinary-8-legacy-97",
+      "family": "reserve",
+      "arm": "ordinary",
+      "workers": 8,
+      "profile": "legacy",
+      "seed": 97
+    },
+    {
+      "case": "clock-seed-0-legacy-1",
+      "family": "clock",
+      "arm": "seed",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "clock-funded-0-legacy-1",
+      "family": "clock",
+      "arm": "funded",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "clock-sentinel-0-legacy-1",
+      "family": "clock",
+      "arm": "sentinel",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "clock-seed-0-borisovka-1",
+      "family": "clock",
+      "arm": "seed",
+      "workers": 0,
+      "profile": "borisovka",
+      "seed": 1
+    },
+    {
+      "case": "clock-funded-0-borisovka-1",
+      "family": "clock",
+      "arm": "funded",
+      "workers": 0,
+      "profile": "borisovka",
+      "seed": 1
+    },
+    {
+      "case": "clock-sentinel-0-borisovka-1",
+      "family": "clock",
+      "arm": "sentinel",
+      "workers": 0,
+      "profile": "borisovka",
+      "seed": 1
+    },
+    {
+      "case": "clock-seed-0-st-petersburg-1",
+      "family": "clock",
+      "arm": "seed",
+      "workers": 0,
+      "profile": "st-petersburg",
+      "seed": 1
+    },
+    {
+      "case": "clock-funded-0-st-petersburg-1",
+      "family": "clock",
+      "arm": "funded",
+      "workers": 0,
+      "profile": "st-petersburg",
+      "seed": 1
+    },
+    {
+      "case": "clock-sentinel-0-st-petersburg-1",
+      "family": "clock",
+      "arm": "sentinel",
+      "workers": 0,
+      "profile": "st-petersburg",
+      "seed": 1
+    },
+    {
+      "case": "clock-energy-tie-0-borisovka-1",
+      "family": "clock",
+      "arm": "energy-tie",
+      "workers": 0,
+      "profile": "borisovka",
+      "seed": 1
+    },
+    {
+      "case": "clock-energy-tie-0-st-petersburg-1",
+      "family": "clock",
+      "arm": "energy-tie",
+      "workers": 0,
+      "profile": "st-petersburg",
+      "seed": 1
+    },
+    {
+      "case": "clock-water-tie-0-legacy-1",
+      "family": "clock",
+      "arm": "water-tie",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "clock-interrupted-0-legacy-1",
+      "family": "clock",
+      "arm": "interrupted",
+      "workers": 0,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "pulse-none-1-legacy-1",
+      "family": "pulse",
+      "arm": "none",
+      "workers": 1,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "pulse-sham-1-legacy-1",
+      "family": "pulse",
+      "arm": "sham",
+      "workers": 1,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "pulse-before-1-legacy-1",
+      "family": "pulse",
+      "arm": "before",
+      "workers": 1,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "pulse-on-1-legacy-1",
+      "family": "pulse",
+      "arm": "on",
+      "workers": 1,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "brood-full-3-legacy-1",
+      "family": "brood",
+      "arm": "full",
+      "workers": 3,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "brood-low-protein-3-legacy-1",
+      "family": "brood",
+      "arm": "low-protein",
+      "workers": 3,
+      "profile": "legacy",
+      "seed": 1
+    },
+    {
+      "case": "brood-none-3-legacy-1",
+      "family": "brood",
+      "arm": "none",
+      "workers": 3,
+      "profile": "legacy",
+      "seed": 1
+    }
+  ]
+}
