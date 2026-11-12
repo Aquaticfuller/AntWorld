@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include "s6_3_1_fixture.hpp"
 #include "wp5_fixtures.hpp"
 
