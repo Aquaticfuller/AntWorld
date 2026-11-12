@@ -50,6 +50,7 @@ python tools/profile_s6_4_wp6b_r1.py --out out/r1-application --binary $r1Binary
 python tools/analyze_s6_3_3_1_performance.py --raw out/r1-core --out out/r1-core-analysis
 python tools/analyze_s6_4_wp6b_r1_protected_observer.py out/r1-observer out/r1-observer-analysis.json
 python tools/profile_s6_4_wp6b_r1.py --out out/r1-application --analysis out/r1-application-analysis
+python tools/summarize_s6_4_wp6b_r1_costs.py --raw out/r1-application --v1 experiments/s6_4_wp6b/formal --r1 out/r1-formal --out out/r1-application-costs
 ```
 
 `$r1Release` is the Release build directory. `$r1BirthBinary` is `antworld_s6_3_1_birth_benchmark.exe`, `$r1ObserverBinary` is `antworld_s6_4_wp5_benchmark.exe`, and `$r1SensorFile` is the ongoing HWiNFO CSV. `$r1PrivateCore`, `$r1PrivateObserver` and `$r1PrivateApplication` are separate fresh scratch directories. Use `tools/archive_s6_4_rm02_performance.py` to prepare public timing receipts with process inventories removed. The original 693 ms result remains in the [v1 application profiling archive](../s6_4_wp6b/profiling).

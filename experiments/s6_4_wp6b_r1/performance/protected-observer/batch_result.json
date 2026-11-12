@@ -1,0 +1,10 @@
+{
+  "outcome": "COLLECTION_FINISHED",
+  "completed": [
+    "session1",
+    "session2",
+    "session3"
+  ],
+  "started_utc_ns": 1794514380784813300,
+  "ended_utc_ns": 1794515289484273700
+}

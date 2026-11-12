@@ -41,6 +41,15 @@ def main():
     named = {r["case"] for r in primary+wider}
     first = describe_paths(args.v1, named)
     second = describe_paths(args.r1, named)
+    # The alternative choice cannot affect the first paid ration. Check this
+    # before estimating later effects, including worlds with no ration at all.
+    signature = ("ant", "event", "source", "time_ms", "lipid_ug", "protein_ug", "water_ug")
+    for name in named:
+        before, after = (min(case_meals[name], key=lambda m: int(m["event"]), default=None)
+                         for case_meals in (first[2], second[2]))
+        before, after = (tuple(m[key] for key in signature) if m else None for m in (before, after))
+        if before != after:
+            raise ValueError(f"R1 affected a case before the first paid ration: {name}")
     official = {r["case"]: r for r in read(args.candidate/"cases.csv")}
     rng = Random(640601)
     groups, paired, difference, retarget = [], [], [], []
