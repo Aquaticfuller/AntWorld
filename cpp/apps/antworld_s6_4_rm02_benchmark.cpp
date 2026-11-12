@@ -8,6 +8,9 @@
 #ifdef ANTWORLD_WP4_BENCHMARK
 #include "wp4_lineage.hpp"
 #endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+#include "wp5_geometry_view.hpp"
+#endif
 
 #include <fstream>
 #include <iomanip>
@@ -32,6 +35,11 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     const auto database = folder / "observer.sqlite";
     const auto init_begin = Clock::now();
     std::unique_ptr<Observer> observer;
+#ifdef ANTWORLD_WP5_BENCHMARK
+    std::unique_ptr<std::ofstream> spatial;
+    const AntRef geometry_focal{world.summary().world, focal.front()};
+    const auto target = wp5::physical({18, 12, 12}, world.geometry_snapshot().config);
+#endif
 #ifdef ANTWORLD_WP4_BENCHMARK
     std::unique_ptr<wp4::Lineage> lineage;
 #endif
@@ -45,6 +53,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #endif
         observer = std::make_unique<Observer>(database, world, std::move(plan));
         observer->start_background();
+#ifdef ANTWORLD_WP5_BENCHMARK
+        if (!dense) spatial = std::make_unique<std::ofstream>(wp4::output(folder / "geometry.csv"));
+#endif
 #ifdef ANTWORLD_WP4_BENCHMARK
         if (!dense) lineage = std::make_unique<wp4::Lineage>(folder);
 #endif
@@ -57,6 +68,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #ifdef ANTWORLD_WP4_BENCHMARK
         std::size_t lineage_bytes;
 #endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+        std::size_t probe_bytes;
+#endif
     };
     std::vector<Captured> cuts;
     cuts.reserve(dense ? 1 : 91);
@@ -67,6 +81,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #ifdef ANTWORLD_WP4_BENCHMARK
         const auto lineage_bytes = lineage ? lineage->capture(world, cuts.size() + 1, cut.end.cursor, cut.end.time) : 0;
 #endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+        const auto probe_bytes = spatial ? wp5::probe(*spatial, world, geometry_focal, target) : 0;
+#endif
         const auto middle = Clock::now();
         observer->submit(std::move(cut));
         const auto finish = Clock::now();
@@ -74,6 +91,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
                         cut.end.cursor, cut.examined, cut.selected, cut.records, cut.dropped, payload
 #ifdef ANTWORLD_WP4_BENCHMARK
                         , lineage_bytes
+#endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+                        , probe_bytes
 #endif
                         });
     };
@@ -95,6 +115,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     }
 #ifdef ANTWORLD_WP4_BENCHMARK
     if (lineage) lineage->close();
+#endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+    if (spatial) spatial->close();
 #endif
     const auto flush_ms = elapsed(flush_begin);
     const Stamp finish;
@@ -150,6 +173,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #ifdef ANTWORLD_WP4_BENCHMARK
     detail << ",lineage_bytes";
 #endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+    detail << ",probe_bytes";
+#endif
     detail << '\n';
     for (const auto& row : cuts) {
         detail << row.sim_ms << ',' << row.read_ms << ',' << row.write_ms << ',' << row.cursor << ','
@@ -157,6 +183,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
                << row.payload;
 #ifdef ANTWORLD_WP4_BENCHMARK
         detail << ',' << row.lineage_bytes;
+#endif
+#ifdef ANTWORLD_WP5_BENCHMARK
+        detail << ',' << row.probe_bytes;
 #endif
         detail << '\n';
     }
