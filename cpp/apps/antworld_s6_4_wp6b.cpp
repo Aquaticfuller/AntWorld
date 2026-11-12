@@ -1,12 +1,16 @@
 #include "wp6b_fixture.hpp"
 #include "process_memory.hpp"
 #include "antworld/storage/live_history.hpp"
+#include <charconv>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <map>
+#ifndef _WIN32
+#include <fcntl.h>
+#endif
 
 namespace {
 using namespace antworld;
@@ -70,6 +74,29 @@ void mass(std::ostream& stream, FoodMass f) {
 
 double ms(Clock::time_point start) { return std::chrono::duration<double, std::milli>(Clock::now()-start).count(); }
 
+std::uint64_t integer(std::string_view text) {
+    std::uint64_t value{};
+    const auto end=text.data()+text.size();
+    const auto result=std::from_chars(text.data(),end,value);
+    require(result.ec==std::errc{} && result.ptr==end,"invalid F1-R1 assay integer");
+    return value;
+}
+
+void synchronize_output(const Path& path) {
+#ifdef _WIN32
+    const auto file=CreateFileW(path.c_str(),GENERIC_WRITE,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
+    require(file!=INVALID_HANDLE_VALUE,"cannot open assay output for synchronization");
+    const auto success=FlushFileBuffers(file);
+    CloseHandle(file);
+#else
+    const auto file=open(path.c_str(),O_RDWR);
+    require(file>=0,"cannot open assay output for synchronization");
+    const auto success=fsync(file)==0;
+    close(file);
+#endif
+    require(success,"cannot synchronize assay output");
+}
+
 void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people) {
     const auto s = w.summary();
     const auto n = w.nutrition_snapshot();
@@ -115,7 +142,7 @@ void write_facts(const WorldRuntime& w, std::ofstream& stream) {
     }
 }
 
-void run(const Case& c, const Path& dir, bool observation, bool durable) {
+void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile) {
     const auto start = Clock::now();
     auto scene = setup(c);
     auto& w = scene.world;
@@ -178,6 +205,18 @@ void run(const Case& c, const Path& dir, bool observation, bool durable) {
     write_facts(w, facts);
     facts.close();
     const auto [rss, peak] = performance::memory();
+    if (profile) {
+        const auto synchronize=Clock::now();
+        for (const auto* file : {"initial.chk","final.frame","facts.bin"}) synchronize_output(dir/file);
+        const auto common_ms=ms(synchronize);
+        const auto optional_start=Clock::now();
+        if (observation) for (const auto* file : {"cuts.csv","individuals.csv"}) synchronize_output(dir/file);
+        const auto optional_ms=ms(optional_start);
+        const auto total=ms(start);
+        auto cost=output(dir/"profile.csv");
+        cost << "total_ms,common_sync_ms,optional_sync_ms,post_cut_ms,model_version\n" << total << ',' << common_ms
+             << ',' << optional_ms << ',' << ms(checkpoint_start) << ',' << c.profile.model_version() << '\n';
+    }
     auto receipt = output(dir/"summary.csv");
     receipt << "world,seed,queen,state_hash,trace_hash,rng,events,time_ms,peak_sampled_queue,setup_ms,advance_ms,cut_ms,checkpoint_ms,"
                "midpoint_save_ms,midpoint_restore_ms,frame_bytes,facts_bytes,rss_bytes,peak_rss_bytes,reserve_record_bytes\n"
@@ -189,12 +228,32 @@ void run(const Case& c, const Path& dir, bool observation, bool durable) {
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc!=4) { std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT observed|unobserved|durable\n"; return 1; }
+    if (argc!=4 && argc!=6 && argc!=7) {
+        std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT MODE [WINDOW_MS REPEAT_PPM [AFFINITY_MASK]]\n";
+        return 1;
+    }
     const std::string_view mode = argv[3];
     try {
-        require(mode=="observed" || mode=="unobserved" || mode=="durable", "unknown F1 observation mode");
+        const bool profile=mode=="profile-observed" || mode=="profile-unobserved";
+        require(profile || mode=="observed" || mode=="unobserved" || mode=="durable", "unknown F1 observation mode");
+        if (argc==7) {
+            const auto mask=integer(argv[6]);
+#ifdef _WIN32
+            require(mask==0 || SetProcessAffinityMask(GetCurrentProcess(),static_cast<DWORD_PTR>(mask)),"cannot pin assay child");
+#else
+            require(mask==0,"use external affinity on this host");
+#endif
+        }
+        auto c=read_case(argv[1]);
+        if (argc>=6) {
+            const auto window=integer(argv[4]);
+            const auto ppm=integer(argv[5]);
+            require(window<=INT64_MAX && ppm<=UINT32_MAX && (window || !ppm),"invalid F1-R1 assay option");
+            if (window) c.profile.feeding_persistence=FoundingFeedingPersistence{
+                {static_cast<std::int64_t>(window)},static_cast<std::uint32_t>(ppm)};
+        }
         std::filesystem::create_directories(argv[2]);
-        run(read_case(argv[1]), argv[2], mode!="unobserved", mode=="durable");
+        run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved", mode=="durable" || profile, profile);
         return 0;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

@@ -35,7 +35,7 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
     WorldEvent f;
     f.kind = FactKind::FoundingConfigured;
     f.payload = founding_profile_hash(ref.id, profile);
-    f.random_value = FoundingProfile::version;
+    f.random_value = profile.model_version();
     tx.fact(f);
     f = {};
     f.actor = ref.id;
@@ -92,13 +92,13 @@ FoundingBudget WorldRuntime::founding_budget() const {
     return budget;
 }
 
-bool WorldRuntime::can_feed_founding(EntityId donor, EntityId larva) const {
+bool WorldRuntime::can_feed_founding(EntityId donor, EntityId larva, bool require_protein) const {
     const auto& s = *state_;
     if (!s.social->exchange_enabled || !s.founding_reserves.contains(larva)) return false;
     const auto q = query_physiology({s.world, donor}), p = query_physiology({s.world, larva});
     const auto a = query_founding({s.world, donor}), b = query_founding({s.world, larva});
     const auto ration = founding_ration(s.founding->profile, *q, *a, *p, *b);
-    return ration.lipid_ug || ration.crop.total_ug();
+    return require_protein ? ration.crop.protein_ug != 0 : ration.lipid_ug || ration.crop.total_ug();
 }
 
 void WorldRuntime::resolve_founding_feed(Transaction& tx, const ScheduledEvent& event, WorldEvent& fact) {

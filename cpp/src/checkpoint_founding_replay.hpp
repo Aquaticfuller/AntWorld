@@ -2,6 +2,7 @@
 
 #include "checkpoint_codec.hpp"
 #include "founding_internal.hpp"
+#include "founding_memory.hpp"
 #include "spatial_navigation.hpp"
 #include "care_internal.hpp"
 
@@ -17,6 +18,9 @@ template<class S> class FoundingReplay {
     EditIndex index;
     GeometryEdits::const_iterator next_edit;
     bool declared{};
+    FoundingMealMemory memory;
+    ScheduledId repeated_wake;
+    bool repeated_contact{};
 
     void expect(WorldEvent e) {
         ensure(pending < expected.size(), "too many F1 facts in one physiological boundary");
@@ -32,6 +36,31 @@ template<class S> class FoundingReplay {
         auto conversion = lipid_conversion(profile(), ant, source.source, amount);
         conversion.time = source.time;
         expect(conversion);
+    }
+    void review_care(const WorldEvent& e) {
+        const auto founder_id = world.founding->founder;
+        const auto& repeat = profile().feeding_persistence;
+        if (repeated_wake.value) {
+            ensure(e.kind == FactKind::BiologicalObservation && e.source == repeated_wake && e.actor == founder_id,
+                   "F1-R1 repeat lacks its local care observations");
+            const auto& o = e.observation;
+            if (o.phase == ObservationPhase::Opportunity) repeated_contact |= o.target == memory.target;
+            else {
+                ensure(repeated_contact && o.phase == ObservationPhase::Selected && o.act == CareAct::FeedBrood &&
+                       o.target == memory.target && o.bout.value, "F1-R1 repeat lacks its witnessed feeding selection");
+                repeated_wake = {};
+                repeated_contact = false;
+            }
+        }
+        if (e.kind == FactKind::CareTick && e.random_value) {
+            ensure(repeat && repeat->repeat_ppm && e.actor == founder_id && memory.target.value && e.time > memory.fed_at,
+                   "F1-R1 annotation lacks a preceding ration");
+            const auto status = static_cast<FoundingCareWake>(e.random_value);
+            const bool expired = e.time.milliseconds - memory.fed_at.milliseconds >= repeat->window.milliseconds;
+            ensure(expired == (status == FoundingCareWake::Expired), "F1-R1 memory age contradicts the care annotation");
+            if (status == FoundingCareWake::Repeat) repeated_wake = e.source;
+        }
+        if (repeat && repeat->repeat_ppm) update_founding_meal_memory(memory, founder_id, e);
     }
 public:
     std::map<EntityId, FoundingReserve> reserves;
@@ -54,9 +83,11 @@ public:
             --pending;
         }
         if (e.kind == FactKind::FoundingConfigured) {
-            ensure(!declared && e.payload == founding_profile_hash(world.founding->founder, profile()), "F1 profile differs from declaration");
+            ensure(!declared && e.random_value == profile().model_version() &&
+                   e.payload == founding_profile_hash(world.founding->founder, profile()), "F1 profile differs from declaration");
             declared = true;
         }
+        if (profile().feeding_persistence) review_care(e);
         if (e.kind == FactKind::FoundingReserveSeeded || e.kind == FactKind::FoundingEggFunded || e.kind == FactKind::FoundingLipidConverted)
             ensure(required, "unattributed F1 material fact");
         return required;
@@ -153,7 +184,8 @@ public:
     }
 
     void finish() const {
-        ensure(!world.founding || (declared && !pending && reserves.size() == world.founding_reserves.size()),
+        ensure(!world.founding || (declared && !pending && !repeated_wake.value && memory == world.m.founding_meal &&
+               reserves.size() == world.founding_reserves.size()),
                "incomplete F1 physiological evidence");
     }
 };

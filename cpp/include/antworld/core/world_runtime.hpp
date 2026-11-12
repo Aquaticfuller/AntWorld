@@ -144,7 +144,7 @@ private:
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
     [[nodiscard]] bool founding_foundress(EntityId) const;
-    [[nodiscard]] bool can_feed_founding(EntityId, EntityId) const;
+    [[nodiscard]] bool can_feed_founding(EntityId, EntityId, bool require_protein = false) const;
     void resolve_founding_feed(Transaction&, const ScheduledEvent&, WorldEvent&);
     void validate_nutrition_capacity() const;
     void execute_reproduction(Transaction&, const ScheduledEvent&);

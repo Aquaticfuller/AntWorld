@@ -15,9 +15,11 @@ Digest anchor_digest(const SaveToken& token,SimTime time,std::span<const std::ui
 }
 } // namespace
 
-bool founding_frame(std::span<const std::uint8_t> bytes) {
-    constexpr std::array<std::uint8_t,8> magic{'A','W','C','K','P','T','F',0};
-    return bytes.size()>=16 && std::equal(magic.begin(),magic.end(),bytes.begin()+8);
+FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
+    constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
+    if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
+    if (bytes[14]=='G') return FactSchema::FoundingPersistence;
+    return bytes[14]=='F' ? FactSchema::Founding : FactSchema::Legacy;
 }
 
 SaveFrame capture_frame(const WorldRuntime& world) {
@@ -106,7 +108,7 @@ std::vector<WorldEvent> SqlEventPrefix::read(EventId after,std::size_t limit) co
     return out;
 }
 
-Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,EventId from,EventId through,bool founding) {
+Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,EventId from,EventId through,FactSchema schema) {
     require(from<=through && through.value<=capture.size(),"invalid captured block range");
     auto previous=block_tail(db,world,from);
     Statement put(db,"INSERT INTO fact_blocks VALUES(?,?,?,?,?,?,?,?)");
@@ -115,7 +117,7 @@ Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,Eve
         const auto facts=capture.read(from,count);
         require(facts.size()==count && facts.front().id.value==from.value+1 && facts.front().world==world,
                 "captured suffix does not continue published facts");
-        const auto block=seal_block(facts,previous,founding);
+        const auto block=seal_block(facts,previous,schema);
         const auto& h=block.header;
         put.text(1,world.str());
         put.u64(2,h.first.value); put.u64(3,h.last.value);
@@ -129,10 +131,13 @@ Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,Eve
     return previous;
 }
 
-void verify_blocks(sqlite3* db,WorldId world,EventId from,EventId through,const Digest& tail) {
+void verify_blocks(sqlite3* db,WorldId world,EventId from,EventId through,const Digest& tail,FactSchema schema) {
     BlockCursor cursor(db,world,from,through);
     auto seen=block_tail(db,world,from);
     while (const auto block=cursor.next()) {
+        constexpr auto r1=FactSchema::FoundingPersistence;
+        require((block->header.fact_schema==static_cast<unsigned>(r1))==(schema==r1),
+                "F1-R1 frame and fact block versions disagree");
         require(block->header.first.value==from.value+1 && block->header.previous==seen,
                 "published cut does not start at an exact block boundary");
         from=block->header.last;

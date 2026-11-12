@@ -2,6 +2,7 @@
 
 #include "antworld/core/physiology.hpp"
 #include <array>
+#include <optional>
 
 namespace antworld {
 enum class FoundingPopulation : std::uint8_t { Borisovka = 1, StPetersburg = 2 };
@@ -12,10 +13,18 @@ struct FoundingStageProfile {
     bool operator==(const FoundingStageProfile&) const = default;
 };
 
+// ENGINEERING_FIXTURE. Applies only to the explicitly selected F1-R1 experiment.
+struct FoundingFeedingPersistence {
+    SimTime window;
+    std::uint32_t repeat_ppm{};
+    bool operator==(const FoundingFeedingPersistence&) const = default;
+};
+
 // Warm protected founding experiment. All uncalibrated inputs are ENGINEERING_FIXTURE.
 // Stage order is egg, larva, prepupa plus pupa. The population identifies the clock context.
 struct FoundingProfile {
     static constexpr std::uint32_t version = 1;
+    static constexpr std::uint32_t persistence_version = 2;
     FoundingPopulation population{};
     std::array<FoundingStageProfile, 3> brood;
     PhysiologyConfig worker;
@@ -25,6 +34,8 @@ struct FoundingProfile {
     std::uint64_t egg_lipid_ug{}, egg_protein_ug{}, egg_water_ug{}, lay_overhead_nj{};
     std::uint64_t larval_tissue_ug{}, larval_lipid_capacity_ug{};
     std::uint64_t ration_lipid_ug{}, ration_protein_ug{}, ration_water_ug{};
+    std::optional<FoundingFeedingPersistence> feeding_persistence;
+    [[nodiscard]] std::uint32_t model_version() const { return feeding_persistence ? persistence_version : version; }
     bool operator==(const FoundingProfile&) const = default;
 };
 

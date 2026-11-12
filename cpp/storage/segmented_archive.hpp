@@ -61,9 +61,9 @@ private:
 
 [[nodiscard]] Digest column_digest(const Statement&,int);
 [[nodiscard]] Digest block_tail(sqlite3*,WorldId,EventId);
-[[nodiscard]] Digest append_blocks(sqlite3*,WorldId,const HistoryCapture&,EventId from,EventId through,bool founding=false);
-[[nodiscard]] bool founding_frame(std::span<const std::uint8_t>);
-void verify_blocks(sqlite3*,WorldId,EventId from,EventId through,const Digest& tail);
+[[nodiscard]] Digest append_blocks(sqlite3*,WorldId,const HistoryCapture&,EventId from,EventId through,FactSchema = FactSchema::Legacy);
+[[nodiscard]] FactSchema frame_fact_schema(std::span<const std::uint8_t>);
+void verify_blocks(sqlite3*,WorldId,EventId from,EventId through,const Digest& tail,FactSchema);
 void require_history_prefix(sqlite3*,WorldId,const HistoryCapture&,EventId cursor,const Digest& tail);
 void put_anchor(sqlite3*,const SaveToken&,SimTime,std::span<const std::uint8_t>,const Digest& parent,const Digest& tail);
 [[nodiscard]] HistoryAnchor read_anchor(sqlite3*,WorldId,std::uint64_t,std::size_t byte_limit);

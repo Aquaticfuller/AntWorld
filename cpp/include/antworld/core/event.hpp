@@ -57,6 +57,8 @@ enum class FactKind : std::uint8_t {
     BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
     FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation
 };
+// F1-R1 CareWake annotation. Selection and material transfer are separate facts.
+enum class FoundingCareWake : std::uint8_t { Ordinary, Expired, Unavailable, Repeat };
 struct WorldEvent {
     EventId id;
     WorldId world;
@@ -99,7 +101,8 @@ struct WorldEvent {
     switch (e.kind) {
     case FactKind::FoundingConfigured:
         return !e.actor.value && !e.colony.value && !e.source.value && e.time == SimTime{} &&
-               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value == 1 && e.transferred == FoodMass{};
+               e.stage == LifeStage::Egg && e.position == PositionM{} && (e.random_value == 1 || e.random_value == 2) &&
+               e.transferred == FoodMass{};
     case FactKind::FoundingReserveSeeded:
         return e.actor.value && e.colony.value && !e.source.value && e.time == SimTime{} && e.stage == LifeStage::Adult &&
                e.payload && !e.random_value && dry_packet && e.transferred.protein_ug && e.transferred.water_ug;
@@ -114,6 +117,12 @@ struct WorldEvent {
                e.payload != e.actor.value && dry_packet && (e.random_value || e.transferred.protein_ug || e.transferred.water_ug);
     default: return false;
     }
+}
+[[nodiscard]] inline bool valid_founding_care_wake(const WorldEvent& e) {
+    return e.kind == FactKind::CareTick && e.payload == static_cast<std::uint64_t>(ScheduledEvent::Kind::CareWake) &&
+           e.random_value > 0 && e.random_value <= static_cast<std::uint64_t>(FoundingCareWake::Repeat) &&
+           e.actor.value && e.source.value && e.stage == LifeStage::Adult && e.outcome == Outcome::Success &&
+           e.action == DiagnosticAction::Record && e.transferred == FoodMass{};
 }
 // Canonical fact payload codec. It is not a full-world recovery format.
 std::vector<std::uint8_t> encode_event(const WorldEvent&);

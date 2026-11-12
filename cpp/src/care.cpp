@@ -202,6 +202,10 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
     std::vector<CareState> choices(0); choices.reserve(wakes.size());
     std::vector<std::vector<AntRef>> opportunities(0); opportunities.reserve(wakes.size());
     for (std::size_t n=0;n<wakes.size();++n) opportunities.emplace_back(0);
+    const auto* persistence = s.founding && s.founding->profile.feeding_persistence
+        ? &*s.founding->profile.feeding_persistence : nullptr;
+    std::vector<FoundingCareWake> annotations(0);
+    if (persistence && persistence->repeat_ppm) annotations.resize(wakes.size());
     for (std::size_t n=0;n<wakes.size();++n) {
         const auto& wake=wakes[n]; auto c=s.care.at(wake.actor); const auto a=*query_ant({s.world,wake.actor});
         if (!c.enabled || c.active || c.pending!=wake.id || !a.alive()) throw std::logic_error("care wake ownership");
@@ -252,6 +256,22 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         } else if (cfg.local_retrieval && !c.carrying_brood) {
             c.retrieval={};
         }
+        EntityId remembered;
+        if (!annotations.empty() && founding_foundress(a.id) && s.m.founding_meal.target.value) {
+            const auto& memory=s.m.founding_meal;
+            const AntRef ref{s.world,memory.target};
+            if (s.m.now.milliseconds-memory.fed_at.milliseconds >= persistence->window.milliseconds)
+                annotations[n]=FoundingCareWake::Expired;
+            else if (std::find(opportunities[n].begin(),opportunities[n].end(),ref)==opportunities[n].end())
+                annotations[n]=FoundingCareWake::Unavailable;
+            else {
+                const auto b=*query_ant(ref);
+                if (b.stage==LifeStage::Larva && b.colony==a.colony && within_contact(b.position,c.familiar_shelter,s.config) &&
+                    (!s.care_locks.contains(b.id) || s.care_locks.at(b.id)==a.id) && can_feed_founding(a.id,b.id,true))
+                    remembered=b.id;
+                else annotations[n]=FoundingCareWake::Unavailable;
+            }
+        }
         if (cfg.motion && !brood_candidates.empty()) c.search_remaining=0;
         if (c.carrying_brood) {
             c.target=c.retrieval.target;
@@ -278,7 +298,13 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
             if (c.has_worker_contact) memory=std::max(0.0,1.0-static_cast<double>(s.m.now.milliseconds-c.last_worker_contact.milliseconds)/static_cast<double>(cfg.social_memory_horizon.milliseconds));
             const auto probability=cfg.care_probability*(a.caste==Caste::Queen ? 1-cfg.maximum_inhibition*memory : 1);
             if (continuing || draw(probability)) {
-                c.target=c.retrieval.target.value?c.retrieval.target:
+                bool repeat=false;
+                if (remembered.value && !continuing && std::any_of(brood_candidates.begin(),brood_candidates.end(),
+                        [&](AntRef ref) { return ref.id==remembered; })) {
+                    auto repeat_rng=individual_rng(s.seed ^ UINT64_C(0x4631523146454544),a.id,c.decisions);
+                    repeat=bounded_draw(repeat_rng,1'000'000)<persistence->repeat_ppm;
+                }
+                c.target=repeat?remembered:c.retrieval.target.value?c.retrieval.target:
                     brood_candidates[static_cast<std::size_t>(bounded_draw(rng,brood_candidates.size()))].id;
                 const auto b=*query_ant({s.world,c.target});
                 const bool displaced=!within_contact(b.position,c.familiar_shelter,s.config);
@@ -291,6 +317,9 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 } else if (displaced) {
                     if (cfg.motion) c.act=CareAct::PickUpBrood;
                     else { c.act=CareAct::TransportBrood; c.destination=toward(a.position,c.familiar_shelter,cfg.step_m); }
+                } else if (repeat) {
+                    c.act=CareAct::FeedBrood;
+                    annotations[n]=FoundingCareWake::Repeat;
                 } else {
                     std::vector<CareAct> acts{CareAct::InspectBrood,CareAct::ArrangeBrood,CareAct::CleanBrood};
                     const auto receiver=query_physiology({s.world,b.id});
@@ -327,7 +356,9 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         const auto& wake=wakes[n]; auto c=choices[n]; ++c.decisions;
         WorldEvent tick; tick.kind=FactKind::CareTick; tick.actor=wake.actor;
         const auto a=*query_ant({s.world,wake.actor}); tick.colony=a.colony; tick.stage=a.stage; tick.position=a.position;
-        tick.source=wake.id; tick.payload=static_cast<std::uint64_t>(wake.kind); tx.fact(tick);
+        tick.source=wake.id; tick.payload=static_cast<std::uint64_t>(wake.kind);
+        if (!annotations.empty()) tick.random_value=static_cast<std::uint64_t>(annotations[n]);
+        tx.fact(tick);
         {
             profiling::Scope profile(profiling::Category::CareOpportunities);
             for (auto other:opportunities[n]) observe(tx,wake.actor,wake.id,{ObservationPhase::Opportunity,

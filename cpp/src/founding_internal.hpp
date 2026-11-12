@@ -5,6 +5,7 @@
 namespace antworld::detail {
 inline constexpr std::uint64_t founding_day_ms = 86'400'000;
 inline constexpr std::uint32_t founding_schema_version = 15, founding_physics_version = 17;
+inline constexpr std::uint32_t founding_persistence_schema_version = 16, founding_persistence_physics_version = 18;
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
 struct FoundingRates { std::uint64_t energy, water; };
@@ -106,6 +107,9 @@ inline void validate_founding(const FoundingProfile& f) {
     };
     for (const auto t : {f.first_lay, f.opening_width, f.opening_spacing, f.later_spacing, f.maintenance_floor}) duration(t);
     if (f.opening_spacing > f.opening_width) throw std::invalid_argument("invalid F1 opening bout");
+    if (const auto& repeat = f.feeding_persistence;
+        repeat && (duration(repeat->window) > 3 * founding_day_ms || repeat->repeat_ppm > 875'000))
+        throw std::invalid_argument("invalid F1-R1 feeding persistence");
     for (const auto& b : f.brood) {
         if (!b.basal_nj_per_day || !b.water_ug_per_day) throw std::invalid_argument("missing F1 stage cost");
         auto carry = founding_day_ms - 1;

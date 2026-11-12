@@ -7,6 +7,7 @@ namespace antworld::storage::detail {
 inline constexpr std::size_t block_records=4096;
 inline constexpr std::size_t block_raw_limit=block_records*214;
 inline constexpr std::size_t block_encoded_limit=block_raw_limit+4096;
+enum class FactSchema : unsigned { Legacy = 1, Founding = 2, FoundingPersistence = 3 };
 struct BlockHeader {
     WorldId world;
     EventId first,last;
@@ -20,7 +21,10 @@ struct EventBlock {
     std::vector<std::uint8_t> bytes;
 };
 
-[[nodiscard]] EventBlock seal_block(std::span<const WorldEvent>,const Digest& previous,bool founding=false);
+[[nodiscard]] EventBlock seal_block(std::span<const WorldEvent>,const Digest& previous,FactSchema = FactSchema::Legacy);
+[[nodiscard]] inline EventBlock seal_block(std::span<const WorldEvent> facts, const Digest& previous, bool founding) {
+    return seal_block(facts, previous, founding ? FactSchema::Founding : FactSchema::Legacy);
+}
 [[nodiscard]] BlockHeader inspect_block(std::span<const std::uint8_t>);
 [[nodiscard]] std::vector<WorldEvent> read_block(std::span<const std::uint8_t>,const BlockHeader&);
 } // namespace antworld::storage::detail

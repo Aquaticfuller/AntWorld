@@ -93,10 +93,11 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const bool motion=s.care_profile && s.care_profile->motion;
     const auto base=motion ? UINT64_C(0x4454504b435741) : retrieval ? UINT64_C(0x4354504b435741) : s.care_profile ? UINT64_C(0x4254504b435741) : guarded ? UINT64_C(0x4154504b435741) : s.long_term ? UINT64_C(0x3954504b435741) : UINT64_C(0x3854504b435741);
     const bool spatial=s.config.continuous_spatial_motion;
+    const bool persistence=s.founding && s.founding->profile.feeding_persistence.has_value();
     if (frame) w.put(frame_magic);
-    w.put(s.founding ? founding_magic : spatial?spatial_magic:base);
-    w.put(s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    w.put(persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
+    w.put(persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     if (s.founding) w.put(spatial ? spatial_magic : base);
     if (spatial) w.put(base);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
@@ -149,7 +150,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool frame=header==frame_magic;
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
-    const bool founding=header==founding_magic;
+    const bool persistence=header==founding_persistence_magic;
+    const bool founding=header==founding_magic || persistence;
     const auto encoded_schema=r.get(4),encoded_physics=r.get(4),rng=r.get(4);
     const auto inner=founding?r.get():header;
     const bool spatial=inner==spatial_magic;
@@ -162,8 +164,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
     const auto schema=motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version;
     const auto physics=motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version;
-    ensure(encoded_schema==(founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
-        encoded_physics==(founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
+    ensure(encoded_schema==(persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
+        encoded_physics==(persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
         (!founding || motion),"unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -204,7 +206,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind==FactKind::ReproductionEnabled || e.kind==FactKind::ResourceCycleConfigured || e.kind==FactKind::BiologyConfigured || e.kind==FactKind::CareProgramChanged ||
             e.kind == FactKind::FoundingConfigured || e.kind == FactKind::FoundingReserveSeeded ||
             (e.kind == FactKind::FoundingLipidConverted && !e.source.value);
-        if (e.kind==FactKind::CareTick) ensure(care_ticks.insert(e.source).second,"duplicate care tick");
+        if (e.kind==FactKind::CareTick) {
+            ensure(care_ticks.insert(e.source).second,"duplicate care tick");
+            ensure(!e.random_value || (persistence && valid_founding_care_wake(e)), "care annotation outside F1-R1");
+        }
         if (founding && e.kind==FactKind::PhysiologyUpdated) founding_pulses.insert(e.source);
         const bool auxiliary=((e.kind==FactKind::BehaviorChanged || e.kind==FactKind::AntBorn) && e.source.value) ||
             e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source)) ||
@@ -214,7 +219,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
-                (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || founding_fact(e.kind) || e.random_value == 0) &&
+                (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || founding_fact(e.kind) ||
+                (persistence && e.kind==FactKind::CareTick) || e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         if (founding) {
@@ -264,7 +270,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_long_term(r,*s,guarded,founding);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
     read_connectors(r,*s,limits);
-    if (founding) read_founding(r, *s, limits, frame);
+    if (founding) read_founding(r, *s, limits, frame, persistence);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");

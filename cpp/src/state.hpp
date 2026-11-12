@@ -5,6 +5,7 @@
 #include "geometry_internal.hpp"
 #include "contact_index.hpp"
 #include "event_journal.hpp"
+#include "founding_memory.hpp"
 #include "antworld/core/profiling.hpp"
 #include <algorithm>
 #include <cmath>
@@ -161,6 +162,7 @@ struct WorldRuntime::State {
         FoodMass physiology_inputs; // Derived conservative registration budget; rebuilt on restore.
         std::uint64_t initial_energy{}, maximum_yield{}, development_commands{}, resolution_commands{};
         std::uint64_t founding_trace{};
+        detail::FoundingMealMemory founding_meal;
     } m;
     WorldId world;
     std::uint64_t seed;
@@ -404,7 +406,11 @@ public:
         s.journal.check_append();
         e.id = {detail::take(s.m.next_event)}; e.world = s.world; e.time = s.m.now;
         detail::bump(s.m.revision); e.revision = s.m.revision; s.journal.push_back(e);
-        if (s.founding) s.m.founding_trace = detail::append_trace_hash(s.m.founding_trace, e);
+        if (s.founding) {
+            s.m.founding_trace = detail::append_trace_hash(s.m.founding_trace, e);
+            const auto& persistence = s.founding->profile.feeding_persistence;
+            if (persistence && persistence->repeat_ppm) detail::update_founding_meal_memory(s.m.founding_meal, s.founding->founder, e);
+        }
     }
 };
 } // namespace antworld
