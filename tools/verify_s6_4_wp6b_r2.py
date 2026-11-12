@@ -1,8 +1,10 @@
 """Check the R2 frozen case roster, archive bytes, independent budgets and timing gates."""
 
 import argparse
+from hashlib import sha256
 import json
 from pathlib import Path
+import zipfile
 
 import run_s6_4_wp6b_r2 as frozen
 from analyze_s6_4_wp6b import check
@@ -40,12 +42,17 @@ def ci(root):
               (manifest["cpp_tree"], manifest["binary_sha256"], manifest["runner_sources"]) == measured,
               f"legacy replay is not bound to the factorial binary: {model}")
         verify(root / model, r2=frozen)
-    recovery = json.loads((root / "recovery.json").read_text(encoding="utf-8"))
+    recovery = json.loads((root / "recovery-saved.json").read_text(encoding="utf-8"))
     for row in recovery["cases"]:
         if row["treatment"] == "durable":
-            file = root / "midpoints" / f"{row['mode']}-{row['case']}.sqlite"
-            check(file.stat().st_size == row["midpoint_sqlite_bytes"] and sha(file) == row["midpoint_sqlite_sha256"],
-                  f"midpoint archive differs: {file.name}")
+            file = root / "midpoints" / f"{row['mode']}-{row['case']}.zip"
+            check(sha(file) == row["midpoint_archive_sha256"], f"midpoint archive differs: {file.name}")
+            with zipfile.ZipFile(file) as bundle:
+                check(sorted(bundle.namelist()) == sorted(row["midpoint_files"]), f"midpoint file set differs: {file.name}")
+                for name, record in row["midpoint_files"].items():
+                    data = bundle.read(name)
+                    check(len(data) == record["bytes"] and sha256(data).hexdigest() == record["sha256"],
+                          f"midpoint member differs: {file.name}/{name}")
 
 
 if __name__ == "__main__":

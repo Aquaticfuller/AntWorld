@@ -2,9 +2,9 @@
 
 import argparse
 import csv
+from hashlib import sha256
 import json
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 import zipfile
@@ -57,14 +57,17 @@ def run(root, binary, scratch, output, midpoints=None):
                                    "midpoint_save_ms", "midpoint_restore_ms", "frame_bytes", "facts_bytes", "peak_rss_bytes")})
                     if treatment == "durable":
                         database = dest / "midpoint.sqlite"
-                        if database.with_suffix(".sqlite-wal").exists():
-                            raise ValueError("midpoint database still has an open WAL")
-                        result.update(midpoint_sqlite_bytes=database.stat().st_size, midpoint_sqlite_sha256=sha(database))
+                        files = [file for file in (database, database.with_suffix(".sqlite-wal")) if file.is_file()]
+                        result["midpoint_files"] = {file.name: dict(bytes=file.stat().st_size, sha256=sha(file)) for file in files}
                         if midpoints:
-                            target = midpoints / f"{mode}-{name}.sqlite"
-                            shutil.copyfile(database, target)
-                            if sha(target) != result["midpoint_sqlite_sha256"]:
-                                raise ValueError(f"copied midpoint differs: {target}")
+                            target = midpoints / f"{mode}-{name}.zip"
+                            with zipfile.ZipFile(target, "x", zipfile.ZIP_DEFLATED, compresslevel=4) as bundle:
+                                for file in files:
+                                    bundle.write(file, file.name)
+                            with zipfile.ZipFile(target) as bundle:
+                                if any(sha256(bundle.read(file.name)).hexdigest() != result["midpoint_files"][file.name]["sha256"] for file in files):
+                                    raise ValueError(f"archived midpoint differs: {target}")
+                            result["midpoint_archive_sha256"]=sha(target)
                     results.append(result)
     write_json(output, dict(binary_sha256=sha(binary), cases=results))
     print(f"{len(results)} exact midpoint or observation-disabled runs")

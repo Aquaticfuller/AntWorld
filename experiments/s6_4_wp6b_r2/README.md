@@ -22,8 +22,8 @@ foreach ($arm in @('v1', 'r1', 'h1', 'h2', 'both', 'water-r1', 'water-both')) {
         python tools/trace_s6_4_wp6b_r2.py "out/r2/$arm" "out/r2/$arm-tracks"
     }
 }
+python tools/check_s6_4_wp6b_r2_recovery.py --archive out/r2 --binary $r2App --scratch out/r2-restore --out out/r2/recovery-saved.json --midpoints out/r2/midpoints
 python tools/verify_s6_4_wp6b_r2.py out/r2 --ci
-python tools/check_s6_4_wp6b_r2_recovery.py --archive out/r2 --binary $r2App --scratch out/r2-restore --out out/r2/recovery.json --midpoints out/r2/midpoints
 python tools/summarize_s6_4_wp6b_r2.py out/r2 out/r2/comparison
 ```
 
