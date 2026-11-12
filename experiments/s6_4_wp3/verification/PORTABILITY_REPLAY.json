@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "frozen_source": "c08a49d95aac8f7a2909ad84da6aecd434a39081",
+  "replay_source": "e5cc989d3c0467a8967b7c3c1a8d8389d2ec5247",
+  "frozen_executable_sha256": "7d4eb009da46759d7d46f3e5200d4832b63dfe3988527a92285a921664060551",
+  "replay_executable_sha256": "5817d0ec0ba9f6337a8429d3beb6eab82ddcb9c1d367ad4be67f07084104a04f",
+  "byte_identical_artifacts": 2946,
+  "canonical_facts": 93041,
+  "cuts": 4026,
+  "cases": 228,
+  "detached_steps": 1296
+}

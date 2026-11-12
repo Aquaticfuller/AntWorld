@@ -20,6 +20,7 @@ cmake --build $Build --target antworld_s6_4_wp3 antworld_s6_4_wp3_benchmark antw
 python tools/run_s6_4_wp3.py --binary "$Build/antworld_s6_4_wp3.exe" --cache "$Build/CMakeCache.txt" --compiler $Compiler --out out/wp3-replay --scratch out/wp3-scratch
 python tools/verify_s6_4_wp3.py out/wp3-replay
 python tools/analyze_s6_4_wp3.py out/wp3-replay out/wp3-analysis
+python tools/verify_s6_4_wp3.py experiments/s6_4_wp3/baseline --compare-replay out/wp3-replay
 
 python tools/run_s6_4_wp3_performance.py --prepare --out out/wp3-formal --binary "$Build/antworld_s6_4_wp3_benchmark.exe" --build $Build --compiler $Compiler
 python tools/run_s6_4_wp3_performance.py --out out/wp3-formal --binary "$Build/antworld_s6_4_wp3_benchmark.exe" --archive out/wp3-formal-sensors --hwinfo-csv $HwinfoCsv

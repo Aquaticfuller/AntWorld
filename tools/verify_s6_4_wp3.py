@@ -251,11 +251,49 @@ def select(root, chosen):
     return result
 
 
+def compare_replay(frozen, replay):
+    expected, actual = select(frozen, []), select(replay, [])
+    require(expected == actual, "replay inputs differ from frozen matrix")
+    cut_timing = {"capture_ms", "submission_ms", "view_ms"}
+    summary_timing = {"advance_ms", "wall_ms", "midpoint_ms", "drain_ms", "writer_ms", "peak_queue_bytes",
+                      "rss_bytes", "peak_rss_bytes"}
+    def omit(values, fields):
+        return [{key: value for key, value in item.items() if key not in fields} for item in values]
+
+    result = Counter()
+    for case in expected:
+        with extracted(frozen, case) as first, extracted(replay, case) as second:
+            artifacts = PREPARED if case.family == "prepared" else LIVE
+            for name in artifacts:
+                if name not in ("cuts.csv", "summary.csv"):
+                    require(sha256(first / name) == sha256(second / name), f"replay bytes differ: {case.key}/{name}")
+                    result["byte_identical_artifacts"] += 1
+            if case.family == "prepared":
+                result["detached_steps"] += len(verify_prepared(case, second))
+            else:
+                for name, excluded in (("cuts.csv", cut_timing), ("summary.csv", summary_timing)):
+                    require(omit(rows(first / name), excluded) == omit(rows(second / name), excluded),
+                            f"replay semantic rows differ: {case.key}/{name}")
+                _, summary, facts = verify_live(case, second)
+                result["canonical_facts"] += len(facts)
+                result["cuts"] += int(summary["cuts"])
+            result["cases"] += 1
+    return dict(status="PASS", frozen_source=load(frozen / "freeze.json")["source_commit"],
+                replay_source=load(replay / "freeze.json")["source_commit"],
+                frozen_executable_sha256=load(frozen / "freeze.json")["binary_sha256"],
+                replay_executable_sha256=load(replay / "freeze.json")["binary_sha256"], **result)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
     parser.add_argument("--case", action="append", default=[])
+    parser.add_argument("--compare-replay", type=Path)
     args = parser.parse_args()
+    if args.compare_replay:
+        require(not args.case, "replay comparison requires the entire archive")
+        print(json.dumps(compare_replay(args.root, args.compare_replay), indent=2))
+        return
     total = Counter()
     identities = set()
     for case in select(args.root, args.case):

@@ -1,6 +1,6 @@
 # AntWorld S6.4 WP-3 results
 
-Accepted parent `e2094fbf95dbe61855472b7509da19a221b1ecbb`. The protected `cpp/src`, `cpp/include` and `cpp/storage` tree identities remain those of WP-2. Changes are confined to the application observer, fixture and benchmark targets, validators, CI and research evidence. Existing state machines, species parameters, transactions, storage and prior scientific evidence retain the accepted scope.
+Accepted parent `e2094fbf95dbe61855472b7509da19a221b1ecbb`. The protected `cpp/src`, `cpp/include` and `cpp/storage` tree identities remain those of WP-2. Changes are confined to the application observer, fixture and benchmark targets, validators, CI, retrieval of the already pinned build dependency and research evidence. Existing state machines, species parameters, transactions, storage and prior scientific evidence retain the accepted scope.
 
 | Deliverable or gate | Result |
 |---|---|
