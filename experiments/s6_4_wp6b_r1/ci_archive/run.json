@@ -1,0 +1,26 @@
+{
+  "binary": "antworld_s6_4_wp6b.exe",
+  "binary_sha256": "73f2120da433460e38e492e03dfa9a6ea09cf488f0ff0b0b86f266228445491e",
+  "cases": [
+    "borisovka-00-primary-1-on",
+    "st_petersburg-00-primary-1-off"
+  ],
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "5d302f2a82976251bb54d766cb8edfef58e08c77",
+  "frozen": "809487fd5009c32cfd562e3a822cd5b5730336f7",
+  "model": "r1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "c6e95d662e2f6563e1301bc80e77d1dd9b68e1f3aef7060b52d7c8067b468d6f",
+  "python": "3.12.14",
+  "runner_sha256": "0f27ffa06e3c79b9f276aa28196e89b69367a6cf9d5103e1597adba539993fd0",
+  "selected_subset": true,
+  "source": "cf92bf35ccc9e27cddd336a3c972e7e05131f055",
+  "started_ns": 1794514050797802000
+}

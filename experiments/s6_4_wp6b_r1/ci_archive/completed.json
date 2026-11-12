@@ -1,0 +1,12 @@
+{
+  "archives": {
+    "raw-000.zip": "6bf31d7f1b2a1ad8b9eb33c5656fc91a012813affe9d81dbeb17bcb9f1a322d5"
+  },
+  "attempts": 2,
+  "ended_ns": 1794514051418075800,
+  "reference_archive_index_sha256": "2ec1472a76162b5dd0ca2e01eff85606fca9cf97492bd5493c21ae4dedc5601d",
+  "statuses": {
+    "borisovka-00-primary-1-on": "COMPLETE",
+    "st_petersburg-00-primary-1-off": "COMPLETE"
+  }
+}

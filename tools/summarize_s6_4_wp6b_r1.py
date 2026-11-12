@@ -43,7 +43,7 @@ def main():
     second = describe_paths(args.r1, named)
     official = {r["case"]: r for r in read(args.candidate/"cases.csv")}
     rng = Random(640601)
-    groups, paired, difference = [], [], []
+    groups, paired, difference, retarget = [], [], [], []
     distribution_keys = [f"doses_{n}" for n in range(7)]
     count_keys = ("births", "hatch", "visible_opportunities", "feed_selected", "feed_started", "feed_completed",
                   "feed_interrupted", "meals_seen_again", "meals_selected_again", "tissue_met", "pupa", "eclosed",
@@ -81,6 +81,19 @@ def main():
                         for key in ("repeat_selected", "repeat_expired", "repeat_unavailable", "repeated_positive_protein", "repeated_interrupted"):
                             row[key] = sum(number(official[name],key) for name in selection)
                     groups.append(row)
+                    visits = Counter()
+                    horizon = 2*DAY_MS
+                    for dose in doses:
+                        origin = int(dose["time_ms"])
+                        if dose["next_selected_ms"] and int(dose["next_selected_ms"])-origin < horizon:
+                            visits["selected_before_48h"] += 1
+                        elif int(dose["follow_end_ms"])-origin >= horizon:
+                            visits["observed_without_selection_to_48h"] += 1
+                        else:
+                            visits["death_pupation_or_censor_before_48h"] += 1
+                    retarget.append(dict(population=pop, group=group, care=care, model=label, positive_meals=len(doses),
+                                         **{k:visits[k] for k in ("selected_before_48h", "observed_without_selection_to_48h",
+                                                                   "death_pupation_or_censor_before_48h")}))
                 grid = defaultdict(list)
                 for name in selection:
                     before, after = first[0][name], second[0][name]
@@ -120,6 +133,7 @@ def main():
     args.out.mkdir(parents=True)
     for name, rows in (("populations.csv",groups),("paired_worlds.csv",paired),("paired_bootstrap.csv",difference),
                        ("wider_success_controls.csv",matched_wider),
+                       ("retarget_windows.csv",retarget),
                        ("option_sensitivity.csv",[dict(population=p, option=o, **c) for (p,o),c in sorted(options.items())])):
         csv_out(args.out/name,rows)
     print(json.dumps([r for r in groups if r["group"] == "primary" and r["care"] == "1"], indent=2))
