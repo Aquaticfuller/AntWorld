@@ -1,0 +1,21 @@
+Id,Scale,OriginalGate,R2Outcome,Evidence,Limit
+M01,Micro,F1_GATE,PASS,Independent budgets for 3356 archives and exact rollback and continuation,Zero tolerance at committed cuts
+M02,Micro,F1_GATE,PASS_SIM_PATTERN,Finite maternal payments and preserved depleted controls,No field magnitude inferred
+M03,Micro,F1_GATE,PASS,Actual funded birth facts and FND_BIRTH_COMMIT,Exact maternal egg ledger
+M10,Micro,F1_GATE,PASS_SIM_PATTERN,Separately funded early eggs and observed deficits,No biological laying cadence estimate
+M04,Micro,F1_GATE,INSUFFICIENT,Zero complete B06 count-matched worlds in either population,Original minimum of twelve unchanged
+M05,Micro,F1_GATE,PASS,Owned egg and pupal stock only and FND_DEATH_PRIORITY,No added conversion at egg or pupal exhaustion
+M06,Micro,F1_GATE,PASS_SIM_PATTERN,H1 use of paid reserve and continued tissue failure in paired controls,No guaranteed developmental transition
+M07,Micro,F1_GATE,PASS_SIM_PATTERN,Real cue opportunity and local handling before paid rations,Retain no-selection and failed bouts
+M08,Micro,F1_GATE,PASS,FND_R2_HATCH_WALL and inherited competition controls,Zero cue and ration through the plug
+M09,Micro,F1_GATE,PASS_WITH_ORIGINAL_SCOPE,Energy ledgers and separate task and observed action facts,Adult and queen rates still engineering fixtures
+C01,Colony,F1_GATE,PASS,Actual ration and later component uptake and same-time donor controls,Payments do not imply uptake
+C02,Colony,F1_GATE,PASS_SIM_PATTERN,Actual material delivery in inherited early-worker controls and exact byte replays,Pure-water treatment analyzed separately
+C03,Colony,DEFERRED_VALIDATION,DEFERRED,B01 scan proxy and inherited B02 data,No matched independent care experiment
+C04,Colony,RETAINED_CONTROL,RETAINED_PASS,WP-3 and WP-5 routing tests and corpus,Scope is existing routes and custody
+C05,Colony,DEFERRED_VALIDATION,DEFERRED,Inherited scout and recruitment evidence,No new social recruitment claim
+L01,LongTerm,F1_GATE,PASS_INCIDENCE_H2_AND_BOTH,H2 and combined pass 32/32 in both populations and 8/8 check profiles,H1 misses two factor floors and timing remains separate
+L02,LongTerm,F1_GATE,PASS_SIM_PATTERN,Adverse zero-worker arms and chronological energy and water exits,All ordinary primary adults eventually dehydrate
+L03,LongTerm,F1_GATE,PASS_WITH_ORIGINAL_SCOPE,Real autonomous actions and water delivery plus inherited early-worker controls,No sustained colony established by pure water
+L04,LongTerm,DEFERRED_VALIDATION,DEFERRED,Separate death and censoring with ages and archived cohorts,No validated age-specific natural hazard
+L05,LongTerm,RETAINED_CONTROL,RETAINED_PASS,WP-5 geometry and soil controls and CTest,Existing bounded geometry and material scope
