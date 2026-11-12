@@ -320,14 +320,15 @@ void configuration(const Scene& scene, const Case& c, const Path& dir) {
     const auto& p = rm01::profile(c.profile);
     const auto r = reproduction();
     out << "family,arm,workers,profile,seed,world_id,queen,seeded_egg,horizon_ms,egg_ms,clock_population,clock_source,"
-           "reproduction_interval_ms,maintenance_ms,egg_export_nj,egg_export_protein_ug,egg_export_water_ug,egg_heat_nj,classification\n"
+           "reproduction_interval_ms,maintenance_ms,egg_export_nj,egg_export_protein_ug,egg_export_water_ug,egg_heat_nj,"
+           "sidecar_scope,classification\n"
         << c.family << ',' << c.arm << ',' << c.workers << ',' << c.profile << ',' << c.seed << ',' << identity.str()
         << ',' << scene.queen.id.value << ',' << scene.egg.id.value << ',' << c.end() << ',' << c.clock().milliseconds
         << ',' << std::quoted(p.population) << ',' << p.source << ',';
     if (c.lays()) out << r.interval.milliseconds << ',' << r.maintenance_horizon.milliseconds << ',' << r.egg_energy_nj
                        << ',' << r.egg_protein_ug << ',' << r.egg_water_ug << ',' << r.dissipated_energy_nj << ',';
     else out << ",,,,,,";
-    out << "ENGINEERING_FIXTURE\n";
+    out << "RM02_NUTRITION,ENGINEERING_FIXTURE\n";
     out.close();
     auto resources = output(dir / "initial_food.csv");
     resources << "resource,x_m,y_m,z_m,carbs_ug,protein_ug,water_ug,other_ug\n";
@@ -345,7 +346,8 @@ void run(const Path& dir, const Case& c) {
     save(dir / "initial.chk", initial);
     configuration(scene, c, dir);
     Plan plan{"maternal-development", {}, {}, true};
-    plan.activity_care = true;
+    // Full care, movement and other facts are preserved once in canonical.bin.
+    // The live sidecar supplies only the existing RM-02 budget projection.
     if (scene.queen.id.value) plan.focal.push_back(scene.queen.id);
     if (scene.egg.id.value) plan.focal.push_back(scene.egg.id);
     for (const auto worker : scene.workers) plan.focal.push_back(worker.id);
