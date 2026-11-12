@@ -282,6 +282,8 @@ def read_case(case, summary, raw, cuts, write):
                         cue.update(previous_meal[2])
             if ant is not None and not ant.queen and ant.stage==ADULT and phase==0:
                 ant.counters["observed_care_contacts"]+=1
+            if ant is not None and not ant.queen and ant.stage==ADULT and phase==3 and outcome<=1:
+                ant.counters["completed_care_acts"]+=1
         if ant is not None and ant.stage==ADULT and not ant.queen:
             if kind==DECISION:
                 ant.counters["forage_decisions"]+=1
@@ -289,6 +291,8 @@ def read_case(case, summary, raw, cuts, write):
                 ant.counters["autonomy_decisions"]+=1
             elif kind==MOVED:
                 ant.counters["moves"]+=1
+                ant.marks["last_move"]=(time,event)
+                mark(ant,"first_move",time,event)
             elif kind==REJECTED:
                 ant.counters["rejections"]+=1
             elif kind==GIFT:
@@ -343,9 +347,9 @@ def read_case(case, summary, raw, cuts, write):
         row["death_env_water_ug"],row["death_nest_water_ug"]=ant.marks.get("death_water",(None,None))
         row["death_x_m"],row["death_y_m"],row["death_z_m"]=ant.marks.get("death_pos",(None,None,None))
         if "early_access_mask" in case:
-            for key in ("emergency_conversion","local_hatch_cue","adult_water_uptake"):
+            for key in ("emergency_conversion","local_hatch_cue","adult_water_uptake","first_move","last_move"):
                 row[key+"_ms"],row[key+"_event"]=ant.marks.get(key,(None,None))
-            row.update(**{key:ant.counters[key] for key in ("emergency_conversions","local_hatch_cues","effective_protein_meals")})
+            row.update(**{key:ant.counters[key] for key in ("emergency_conversions","local_hatch_cues","effective_protein_meals","completed_care_acts")})
         write["individuals"](row)
     return dict(case=name,population=case["population"],group=case["group"],care=int(case["care_enabled"]),**output)
 
@@ -368,7 +372,7 @@ def main():
                         "uptake_after_meal","tissue_met") for v in ("ms","event"))+
                     " birth_ms birth_event local_contacts meals maternal_lipid_ug maternal_p_ug maternal_w_ug adult_water_absorbed_ug adult_carbs_absorbed_ug collected_water_ug delivered_water_ug cargo_water_ug nest_water_in_ug gift_water_in_ug gift_water_out_ug forage_decisions autonomy_decisions moves rejections observed_care_contacts dig_energy_unobserved adult_program_0_ms adult_program_1_ms adult_program_2_ms adult_program_3_ms adult_program_4_ms death_env_water_ug death_nest_water_ug death_x_m death_y_m death_z_m")
     if manifest.get("model") in ("h1","h2","both","water-r1","water-both"):
-        fields["individuals"]+=" emergency_conversion_ms emergency_conversion_event local_hatch_cue_ms local_hatch_cue_event adult_water_uptake_ms adult_water_uptake_event emergency_conversions local_hatch_cues effective_protein_meals"
+        fields["individuals"]+=" emergency_conversion_ms emergency_conversion_event local_hatch_cue_ms local_hatch_cue_event adult_water_uptake_ms adult_water_uptake_event first_move_ms first_move_event last_move_ms last_move_event emergency_conversions local_hatch_cues effective_protein_meals completed_care_acts"
         fields["cues"]="case mother ant hatch_event cue_event hatch_source cue_ms wake wake_event opportunity_event selected_event act bout started_event started_ms terminal_event terminal_ms outcome terminal_phase meal_event meal_ms lipid_ug protein_ug water_ug"
     seen, complete, counts = set(),[],Counter()
     target=set(args.case) if args.case else set(index["statuses"])

@@ -68,6 +68,8 @@ def summarize_individuals(folder, cases, *, old_meals=None):
         drank = number(individual, "adult_water_absorbed_ug") > 0
         c["adults_with_water_uptake"] += drank
         c["adult_water_absorbed_ug"] += number(individual, "adult_water_absorbed_ug")
+        for key in ("collected_water_ug", "delivered_water_ug", "gift_water_out_ug", "completed_care_acts"):
+            c[f"adult_{key}"] += number(individual, key)
         for days in (1, 7):
             c[f"adults_at_least_{days}d"] += age >= days * DAY_MS
             c[f"adults_censored_before_{days}d"] += age < days * DAY_MS and individual["outcome"] == "RIGHT_CENSORED"
@@ -173,8 +175,12 @@ def summarize(root, output):
             results.append(row)
             normalized[name] = row
         by_model[model] = normalized
-        workers.extend(dict(model=model, arm=declared[r["case"]]["arm"], population=declared[r["case"]]["population"], **r)
-                       for r in adults if declared[r["case"]]["group"] == "water")
+        if model.startswith("water-"):
+            start = {(r["case"], r["ant"]): r for r in read(source / "points.csv.gz") if r["point"] == "ECLOSION"}
+            workers.extend(dict(model=model, arm=declared[r["case"]]["arm"], population=declared[r["case"]]["population"], **r,
+                                **{f"at_eclosion_{k}": start[r["case"], r["ant"]][k] for k in
+                                   ("body_nj", "owned_lipid_ug", "body_water_ug", "crop_water_ug", "env_water_ug", "nest_water_ug")})
+                           for r in adults)
     output.mkdir(parents=True)
     csv_out(output / "cases.csv", results)
     csv_out(output / "water_adults.csv", workers)
