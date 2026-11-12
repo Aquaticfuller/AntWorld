@@ -98,7 +98,7 @@ def water_pairs(rows, output):
     groups = defaultdict(list)
     for row in pairs:
         groups[row["model"], row["population"], row["control"]].append(row)
-    rng = Random(6406201)
+    rng = Random(640601)
     summary = []
     for (model, pop, arm), records in sorted(groups.items()):
         assert len(records) == 6
@@ -205,7 +205,7 @@ def summarize(root, output):
                                **{key: sum(number(r, key) for r in records) for key in fields}))
     csv_out(output / "groups.csv", aggregates)
 
-    rng = Random(64062)
+    rng = Random(640601)
     paired, contrasts = [], []
     for before, after in (("r1", "h1"), ("r1", "h2"), ("r1", "both"), ("h2", "both"), ("h1", "both")):
         for pop in ("borisovka", "st_petersburg"):
@@ -238,7 +238,7 @@ def summarize(root, output):
     csv_out(output / "paired_summary.csv", contrasts)
     write_json(output / "receipt.json", dict(outputs={p.name: sha(p) for p in sorted(output.iterdir())},
                inputs={m: sha(p / "receipt.json") for m, p in histories.items()},
-               r1_protein_doses_sha256=sha(base / "candidate_paths/larvae.csv.gz"), seed=64062, bootstrap=4096))
+               r1_protein_doses_sha256=sha(base / "candidate_paths/larvae.csv.gz"), seed=640601, bootstrap=4096))
 
 
 if __name__ == "__main__":
