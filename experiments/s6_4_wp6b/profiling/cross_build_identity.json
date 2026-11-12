@@ -1,0 +1,57 @@
+{
+  "all_10_identical": true,
+  "formal_source": "d7b5948fd052b5620f461808e23d1c5dcaddf761",
+  "hashes": {
+    "borisovka-early-depot-32-1": {
+      "facts.bin": "b3bb1f40a3c2fc608e80a26fc0b10a5a160f2e1a61e6f3658204649c4b12e01b",
+      "final.frame": "5e43b66ebf875bc1c578ee9bdb61fed9a1acee59252bee12eec9e233ee1be4e2",
+      "initial.chk": "5f4ba35e249b850a51b0a0f58fff74673b4eeddb9cd82f5e443f7c8c507827b4"
+    },
+    "borisovka-early-depot-8-1": {
+      "facts.bin": "b87cbcb6721e69a30466419946ef8d379dba707733967c1f3c649e92375acb5c",
+      "final.frame": "4da60274a99c8a7b2c9fec8d21b3d0c06cb86eca12f5633979208483ef8224a0",
+      "initial.chk": "bcb8074ad82507fc4d885480d243b9a7c53dcc722dd71bbf51ed18f71700b21a"
+    },
+    "borisovka-early-empty-32-1": {
+      "facts.bin": "af75048195e0ffafc2e9fa367ee2a3824ded560b7833261fbce8101608c63865",
+      "final.frame": "1fea4defd21a53a331f11b2c4211af5d0c3a626b3e6d4ee6dc9252ec19b39112",
+      "initial.chk": "77117a85f5514e3ef15f30d9b314ec0348d90e940a0b31e8fb083e9e90bbf193"
+    },
+    "borisovka-early-empty-8-1": {
+      "facts.bin": "d360bc6231da4fc13cb38bfd565b9889a72c7f063144b66c8cc285e43d5aca08",
+      "final.frame": "c9ed56ff8b51a494cfa723a5b847d81ee74a3a50a77b7941d3e6dab2e3bb917d",
+      "initial.chk": "ca1c8e336d3e66cc89b9a01808db20c0b1cc88b9c0a4c2975a8b88782624e23a"
+    },
+    "borisovka-micro-nominal-0-1": {
+      "facts.bin": "fc123fc82c3712e48d987160a1804e5099649edc854ef5b55427e3aff2a7a1b8",
+      "final.frame": "edc9c1a94694c89d8cefe992b0c45a72f4a4f1fe4470080fbab67e66dffffa47",
+      "initial.chk": "1530bbe70356662c1ce483cd85bd927c619d2fba06a2d27202b9532d702dd1b1"
+    },
+    "st_petersburg-early-depot-32-1": {
+      "facts.bin": "9bcfcbb0bcee2e32ba2836976c26f5c304bb949dd92e86d74c5c063771cb0f1f",
+      "final.frame": "1c1088ccaf21524fa5ff808ffc0a3227e5f21fb22d53bab3683104bd6d062f0f",
+      "initial.chk": "d9844bd5dbf32d2a41280f345e1a0a36bd38061af256c0e2516b8cf1f9810e0e"
+    },
+    "st_petersburg-early-depot-8-1": {
+      "facts.bin": "e66dd26277f7b71894668ef0fec69b1c35f8036f590736470b8b377807b6d4cb",
+      "final.frame": "d33513fe33c2bbe858b1e8f2ea292837a7b3f12d8c7390e44a5bd8cd2ea55922",
+      "initial.chk": "56231aba17aa8066c0b6e9723d625031153990734c4b33492512f51bac853467"
+    },
+    "st_petersburg-early-empty-32-1": {
+      "facts.bin": "5b3233bbefe5cb47354c9b48a2064a2953e02edea52898a73b2b278f4eb3b0a4",
+      "final.frame": "0bd0de2c9a631bfb5b98b451ae8d06f78418883af08b9f84502601f1c4b26fce",
+      "initial.chk": "a5ffe192ab9eb33fd3c98b04974eacfb85ae45a7524f7bf1628566867594d34d"
+    },
+    "st_petersburg-early-empty-8-1": {
+      "facts.bin": "b0ca9f491c3525a7b324d0133086b723ca906f170442e879be68e154f3a7cc26",
+      "final.frame": "5a935923b7cdfcda6e82e2ee32d5a6675d5b9cdb8a1f2043cfacd07c4c0ac889",
+      "initial.chk": "f03bf2f8eeb7d2c7088ae5a46e496372e8f08edf55a3fb315717913e0f73124f"
+    },
+    "st_petersburg-micro-nominal-0-1": {
+      "facts.bin": "e7e551ad8cc205bb00d5d205698eb027040205ad9daf904f60386a0a2ae37774",
+      "final.frame": "155b44c1404e7fe858c113a1df3a95a072534f13c11d51ca7378bc65e7dc754d",
+      "initial.chk": "5de99f7cc38dc80882e6b6a29e72a427461e94fa9a3491089fdbfbf5ae2d3efb"
+    }
+  },
+  "portable_source": "f1aca01d860c7c0c4a51607d013039c453f682b1"
+}

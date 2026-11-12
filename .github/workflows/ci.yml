@@ -154,9 +154,12 @@ jobs:
         run: |
           python tools/wp6a_budget_screen.py
           python tools/test_s6_4_wp6a.py
-      - name: Verify the frozen WP-6B case inputs (Linux Release)
+      - name: Verify WP-6B frozen inputs and protected performance (Linux Release)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
-        run: python tools/freeze_s6_4_wp6b.py
+        run: |
+          python tools/freeze_s6_4_wp6b.py
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_wp6b/performance/core --out experiments/s6_4_wp6b/performance/core_analysis --check
+          python tools/analyze_s6_4_wp6b_observer_performance.py experiments/s6_4_wp6b/performance/observer experiments/s6_4_wp6b/performance/observer_analysis.json --check
 
   sanitizers:
     runs-on: ubuntu-24.04

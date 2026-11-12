@@ -1,0 +1,35 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-release
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-release
+      Start  1: FND_LEGACY_BYTES
+ 1/13 Test  #1: FND_LEGACY_BYTES .................   Passed    0.58 sec
+      Start  2: FND_CONFIG_MASS_OVERFLOW
+ 2/13 Test  #2: FND_CONFIG_MASS_OVERFLOW .........   Passed    0.08 sec
+      Start  3: FND_CONVERSION
+ 3/13 Test  #3: FND_CONVERSION ...................   Passed    0.08 sec
+      Start  4: FND_BIRTH_COMMIT
+ 4/13 Test  #4: FND_BIRTH_COMMIT .................   Passed    0.08 sec
+      Start  5: FND_OPENING_BOUT
+ 5/13 Test  #5: FND_OPENING_BOUT .................   Passed    0.08 sec
+      Start  6: FND_DEATH_PRIORITY
+ 6/13 Test  #6: FND_DEATH_PRIORITY ...............   Passed    0.08 sec
+      Start  7: FND_LARVA_CAP
+ 7/13 Test  #7: FND_LARVA_CAP ....................   Passed    0.10 sec
+      Start  8: FND_PUPAL_MARGIN
+ 8/13 Test  #8: FND_PUPAL_MARGIN .................   Passed    0.08 sec
+      Start  9: FND_LOCAL_FEED
+ 9/13 Test  #9: FND_LOCAL_FEED ...................   Passed    0.08 sec
+      Start 10: FND_FOLLOW_UP
+10/13 Test #10: FND_FOLLOW_UP ....................   Passed    0.09 sec
+      Start 11: FND_EXACT_RESTORE
+11/13 Test #11: FND_EXACT_RESTORE ................   Passed    0.22 sec
+      Start 12: FND_CORRUPT_OR_UNSUPPORTED
+12/13 Test #12: FND_CORRUPT_OR_UNSUPPORTED .......   Passed    0.11 sec
+      Start 13: FND_BOUNDED_COST
+13/13 Test #13: FND_BOUNDED_COST .................   Passed    0.13 sec
+
+100% tests passed, 0 tests failed out of 13
+
+Label Time Summary:
+FND    =   1.77 sec*proc (13 tests)
+
+Total Test time (real) =   1.80 sec

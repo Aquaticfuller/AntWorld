@@ -2,9 +2,28 @@
 
 Protected runtime qualification uses the unchanged TD-01 and TD-08 workloads and the accepted observer workloads. The native collection holds each binary and workload identity, fixed per-core admission, ABBA/BAAB order and original limits. The contact and birth growth gate remains ≤6× at 512 to 2,048 workers. The protected observer gate includes total wall time and real durable writes, with the final drain measured separately. [Frozen protocol](FROZEN_PROTOCOL.md) [Original benchmark acceptance](../s6_4_wp5/ENGINEERING_VERIFICATION.md)
 
+## Protected native results
+
+The six admitted contact and birth sessions retained all 504 scheduled rows, 336 contact and 168 birth. Five sessions admitted on the first attempt. The first birth admission had selected-core background P95 of 26.73% against 20%. The controller kept all 60 samples, waited the prescribed interval and admitted the second attempt before it timed any birth rows. Every measured workload matched the frozen identity, including exact continuation and the birth/reserve control at all three populations. The receipt binds the portable implementation at `f1aca01d860c7c0c4a51607d013039c453f682b1`. [Raw native measurements](../../experiments/s6_4_wp6b/performance/core) [Admission reconciliation](../../experiments/s6_4_wp6b/performance/core_analysis/admissions.csv)
+
+| 512 to 2,048 workload | P50 ratio | Bootstrap 95% interval | Paired median | Paired 95% interval | Gate |
+|---|---:|---:|---:|---:|---|
+| TD-01 dense contact advance | 5.3468× | 5.2272–5.5046× | 5.3084× | 5.2442–5.3929× | PASS |
+| TD-08 dense birth advance | 4.3599× | 4.2886–4.4533× | 4.2919× | 4.2126–4.4058× | PASS |
+
+Setup, encode, restore and dispersed workloads remain separately identified. Raw phase and CPU-cycle rows, admission failures, sensor mapping, HWiNFO extraction hashes and exact binary fingerprints are retained. The public export excludes unrelated process inventories. [Growth and confidence intervals](../../experiments/s6_4_wp6b/performance/core_analysis/growth.csv)
+
+All three native observer sessions admitted on the first attempt, with valid telemetry. The collection retained 504 timing rows, including the fixed warmups. The accepted analysis uses 432 rows after warmup exclusion. Off/off repeatability, exact checkpoint and history identities and every unchanged budget passed. [Raw observer measurements](../../experiments/s6_4_wp6b/performance/observer) [Observer analysis](../../experiments/s6_4_wp6b/performance/observer_analysis.json)
+
+| Workload | Total P50 on/off | Total P95 on/off | Foreground P95 / max (ms) | Peak RSS increment (MiB) | Maximum final drain (ms) |
+|---|---:|---:|---:|---:|---:|
+| Dense 512 | 1.0620× | 1.0678× | 1.2029 / 1.5733 | 1.6562 | 2.9650 |
+| Dense 2,048 | 1.0227× | 1.0026× | 2.9831 / 5.1625 | 1.6484 | 5.0921 |
+| Depot 32 | 1.0736× | 1.0220× | 1.1777 / 12.0271 | 2.8125 | 4.5189 |
+
 ## Candidate workload costs
 
-The independent F1 profiling batch used the frozen nominal foundress case for each population and both 8/32-worker depot and empty cases for seed 1. Each case had four observed and four unobserved launches in ABBA/BAAB order, plus one observed launch with a day-45 SQLite publication and reopen. All 90 launches matched the initial checkpoint, final frame and every canonical fact byte for their respective case. Observation on/off concerns exported census data. Maternal care remained enabled in all these profiling launches. [Frozen profiling identity](../../experiments/s6_4_wp6b/profiling/freeze.json) [Paired raw samples](../../experiments/s6_4_wp6b/profiling/samples.csv)
+The independent F1 profiling batch used the frozen nominal foundress case for each population and both 8/32-worker depot and empty cases for seed 1. Each case had four observed and four unobserved launches in ABBA/BAAB order, plus one observed launch with a day-45 SQLite publication and reopen. All 90 launches matched the initial checkpoint, final frame and every canonical fact byte for their respective case. Observation on/off concerns exported census data. Maternal care remained enabled in all these profiling launches. The ten profiled canonical identities also match the original formal collection across the include-only build correction. [Frozen profiling identity](../../experiments/s6_4_wp6b/profiling/freeze.json) [Paired raw samples](../../experiments/s6_4_wp6b/profiling/samples.csv) [Cross-build hashes](../../experiments/s6_4_wp6b/profiling/cross_build_identity.json)
 
 | Observable across measured F1 cases | Minimum | Median | Maximum |
 |---|---:|---:|---:|

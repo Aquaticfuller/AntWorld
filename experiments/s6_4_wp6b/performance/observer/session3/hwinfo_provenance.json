@@ -1,0 +1,11 @@
+{
+  "source_prefix_bytes": 7581427,
+  "source_prefix_sha256": "99433cf332da80b0130e5e8bbe2465305d99b0c2f1ea8d72e1bb38f119371038",
+  "mapping_sha256": "2889cc2e1f1b10eabff6f176b5ad9108cc4e5d5ff5286f5156378caaebe59507",
+  "retained_rows": 59,
+  "incomplete_rows": 0,
+  "first_utc_ns": 1794508252200000000,
+  "last_utc_ns": 1794508368328999936,
+  "timezone_offset_minutes": 60,
+  "selection": "Every CPU sensor row inside the declared run interval plus 3 s bracketing; no value-based filtering."
+}
