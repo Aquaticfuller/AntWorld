@@ -1,0 +1,148 @@
+[0/1] Re-running CMake...
+-- Configuring done (0.9s)
+-- Generating done (0.2s)
+-- Build files have been written to: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+[1/172] Building CXX object CMakeFiles/antworld_core.dir/src/event_journal.cpp.obj
+[2/172] Building CXX object CMakeFiles/antworld_core.dir/src/spatial_navigation.cpp.obj
+[3/172] Building CXX object CMakeFiles/antworld_core.dir/src/foraging.cpp.obj
+[4/172] Building CXX object CMakeFiles/antworld_core.dir/src/world_runtime.cpp.obj
+[5/172] Building CXX object CMakeFiles/antworld_core.dir/src/checkpoint.cpp.obj
+[6/172] Building CXX object CMakeFiles/antworld_core.dir/src/physiology.cpp.obj
+[7/172] Building CXX object CMakeFiles/antworld_core.dir/src/founding.cpp.obj
+[8/172] Building CXX object CMakeFiles/antworld_core.dir/src/geometry.cpp.obj
+[9/172] Building CXX object CMakeFiles/antworld_core.dir/src/excavation.cpp.obj
+[10/172] Building CXX object CMakeFiles/antworld_core.dir/src/commands.cpp.obj
+[11/172] Building CXX object CMakeFiles/antworld_core.dir/src/social.cpp.obj
+[12/172] Building CXX object CMakeFiles/antworld_core.dir/src/inspection.cpp.obj
+[13/172] Building CXX object CMakeFiles/antworld_core.dir/src/ecology.cpp.obj
+[14/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/analytics.cpp.obj
+[15/172] Building CXX object CMakeFiles/antworld_core.dir/src/long_term.cpp.obj
+[16/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/store.cpp.obj
+[17/172] Building CXX object CMakeFiles/antworld_core.dir/src/observations.cpp.obj
+[18/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/queries.cpp.obj
+[19/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/event_block.cpp.obj
+[20/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/segmented_archive.cpp.obj
+[21/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/recovery.cpp.obj
+[22/172] Building CXX object CMakeFiles/antworld_core.dir/src/care.cpp.obj
+[23/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/segmented_analytics.cpp.obj
+[24/172] Linking CXX static library libantworld_core.a
+[25/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/segmented_store.cpp.obj
+[26/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/live_history.cpp.obj
+[27/172] Building CXX object CMakeFiles/antworld_storage.dir/storage/history_migration.cpp.obj
+[28/172] Building CXX object CMakeFiles/antworld_headless.dir/apps/antworld_headless.cpp.obj
+[29/172] Linking CXX static library libantworld_storage.a
+[30/172] Building CXX object CMakeFiles/antworld_benchmark.dir/apps/antworld_benchmark.cpp.obj
+[31/172] Building CXX object CMakeFiles/antworld_rm02_observer.dir/apps/rm02_observer.cpp.obj
+[32/172] Building CXX object CMakeFiles/antworld_scheduler_benchmark.dir/apps/antworld_scheduler_benchmark.cpp.obj
+[33/172] Building CXX object CMakeFiles/antworld_s1_benchmark.dir/apps/antworld_s1_benchmark.cpp.obj
+[34/172] Building CXX object CMakeFiles/antworld_s2_experiment.dir/apps/antworld_s2_experiment.cpp.obj
+[35/172] Building CXX object CMakeFiles/antworld_s2_benchmark.dir/apps/antworld_s2_benchmark.cpp.obj
+[36/172] Building CXX object CMakeFiles/antworld_s3_experiment.dir/apps/antworld_s3_experiment.cpp.obj
+[37/172] Building CXX object CMakeFiles/antworld_s2_2_experiment.dir/apps/antworld_s2_2_experiment.cpp.obj
+[38/172] Building CXX object CMakeFiles/antworld_s2_1_experiment.dir/apps/antworld_s2_1_experiment.cpp.obj
+[39/172] Building CXX object CMakeFiles/antworld_s3_benchmark.dir/apps/antworld_s3_benchmark.cpp.obj
+[40/172] Building CXX object CMakeFiles/antworld_s4_benchmark.dir/apps/antworld_s4_benchmark.cpp.obj
+[41/172] Building CXX object CMakeFiles/antworld_s6_nutrition.dir/apps/antworld_s6_nutrition.cpp.obj
+[42/172] Building CXX object CMakeFiles/antworld_s4_experiment.dir/apps/antworld_s4_experiment.cpp.obj
+[43/172] Building CXX object CMakeFiles/antworld_s6_surplus.dir/apps/antworld_s6_surplus.cpp.obj
+[44/172] Building CXX object CMakeFiles/antworld_s6_contact_benchmark.dir/apps/antworld_s6_contact_benchmark.cpp.obj
+[45/172] Building CXX object CMakeFiles/antworld_s6_2_benchmark.dir/apps/antworld_s6_2_benchmark.cpp.obj
+[46/172] Building CXX object CMakeFiles/antworld_s6_2_choice.dir/apps/antworld_s6_2_choice.cpp.obj
+[47/172] Building CXX object CMakeFiles/antworld_s6_1_trace.dir/apps/antworld_s6_1_trace.cpp.obj
+[48/172] Building CXX object CMakeFiles/antworld_s6_2_nutrition.dir/apps/antworld_s6_2_nutrition.cpp.obj
+[49/172] Building CXX object CMakeFiles/antworld_s6_1_experiment.dir/apps/antworld_s6_1_experiment.cpp.obj
+[50/172] Building CXX object CMakeFiles/antworld_s6_3_experiment.dir/apps/antworld_s6_3_experiment.cpp.obj
+[51/172] Building CXX object CMakeFiles/antworld_s6_3_2_audit.dir/apps/antworld_s6_3_2_audit.cpp.obj
+[52/172] Building CXX object CMakeFiles/antworld_s6_3_birth_benchmark.dir/apps/antworld_s6_3_birth_benchmark.cpp.obj
+[53/172] Building CXX object CMakeFiles/antworld_s6_3_1_experiment.dir/apps/antworld_s6_3_1_experiment.cpp.obj
+[54/172] Building CXX object CMakeFiles/antworld_s6_3_1_birth_benchmark.dir/apps/antworld_s6_3_birth_benchmark.cpp.obj
+[55/172] Building CXX object CMakeFiles/antworld_archive.dir/apps/antworld_archive.cpp.obj
+[56/172] Building CXX object CMakeFiles/antworld_s5_experiment.dir/apps/antworld_s5_experiment.cpp.obj
+[57/172] Linking CXX static library libantworld_rm02_observer.a
+[58/172] Building CXX object CMakeFiles/antworld_s6_experiment.dir/apps/antworld_s6_experiment.cpp.obj
+[59/172] Building CXX object CMakeFiles/antworld_s5_benchmark.dir/apps/antworld_s5_benchmark.cpp.obj
+[60/172] Building CXX object CMakeFiles/antworld_s5_history_benchmark.dir/apps/antworld_s5_history_benchmark.cpp.obj
+[61/172] Building CXX object CMakeFiles/antworld_s6_4_rm02.dir/apps/antworld_s6_4_rm02.cpp.obj
+[62/172] Building CXX object CMakeFiles/antworld_s6_4_rm02_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[63/172] Building CXX object CMakeFiles/antworld_s6_4_wp2.dir/apps/antworld_s6_4_wp2.cpp.obj
+[64/172] Building CXX object CMakeFiles/antworld_s6_4_wp2_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[65/172] Building CXX object CMakeFiles/antworld_s6_4_wp3.dir/apps/antworld_s6_4_wp3.cpp.obj
+[66/172] Building CXX object CMakeFiles/antworld_s6_4_wp3_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[67/172] Building CXX object CMakeFiles/antworld_s6_4_wp4.dir/apps/antworld_s6_4_wp4.cpp.obj
+[68/172] Building CXX object CMakeFiles/antworld_s6_4_wp4_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[69/172] Building CXX object CMakeFiles/antworld_s6_4_wp6b.dir/apps/antworld_s6_4_wp6b.cpp.obj
+[70/172] Building CXX object CMakeFiles/antworld_s6_4_wp5.dir/apps/antworld_s6_4_wp5.cpp.obj
+[71/172] Building CXX object CMakeFiles/antworld_s6_4_egg_timing_tests.dir/tests/test_s6_4_egg_timing.cpp.obj
+[72/172] Building CXX object CMakeFiles/antworld_s6_4_wp5_benchmark.dir/apps/antworld_s6_4_rm02_benchmark.cpp.obj
+[73/172] Building CXX object CMakeFiles/antworld_s6_4_rm02_tests.dir/tests/test_s6_4_rm02.cpp.obj
+[74/172] Building CXX object CMakeFiles/antworld_s6_3_1_tests.dir/tests/test_s6_3_1.cpp.obj
+[75/172] Building CXX object CMakeFiles/antworld_s6_3_tests.dir/tests/test_s6_3.cpp.obj
+[76/172] Building CXX object CMakeFiles/antworld_s6_4_wp6b_tests.dir/tests/test_s6_4_wp6b.cpp.obj
+[77/172] Building CXX object CMakeFiles/antworld_s5_io.dir/tests/test_s5_io.cpp.obj
+[78/172] Building CXX object CMakeFiles/antworld_s6_1_tests.dir/tests/test_s6_1.cpp.obj
+[79/172] Building CXX object CMakeFiles/antworld_s6_tests.dir/tests/test_s6.cpp.obj
+[80/172] Building CXX object CMakeFiles/antworld_s3_tests.dir/tests/test_s3.cpp.obj
+[81/172] Building CXX object CMakeFiles/antworld_s5_tests.dir/tests/test_s5.cpp.obj
+[82/172] Building CXX object CMakeFiles/antworld_s4_tests.dir/tests/test_s4.cpp.obj
+[83/172] Building CXX object CMakeFiles/antworld_s2_2_tests.dir/tests/test_s2_2.cpp.obj
+[84/172] Building CXX object CMakeFiles/antworld_s2_1_tests.dir/tests/test_s2_1.cpp.obj
+[85/172] Building CXX object CMakeFiles/antworld_s2_tests.dir/tests/test_s2.cpp.obj
+[86/172] Building CXX object CMakeFiles/antworld_allocation_tests.dir/tests/test_allocation_failure.cpp.obj
+[87/172] Building CXX object CMakeFiles/antworld_s1_tests.dir/tests/test_s1.cpp.obj
+[88/172] Building CXX object CMakeFiles/antworld_tests.dir/tests/test_core.cpp.obj
+[89/172] Building CXX object CMakeFiles/antworld_s6_3_3_1_tests.dir/tests/test_s6_3_3_1.cpp.obj
+[90/172] Building CXX object CMakeFiles/antworld_s6_3_3_tests.dir/tests/test_s6_3_3.cpp.obj
+[91/172] Building CXX object CMakeFiles/antworld_s6_3_3_2_tests.dir/tests/test_s6_3_3_2.cpp.obj
+[92/172] Building CXX object CMakeFiles/antworld_s6_3_3_1_density.dir/apps/antworld_s6_3_3_1_density.cpp.obj
+[93/172] Building CXX object CMakeFiles/antworld_s6_3_3_2_density.dir/apps/antworld_s6_3_3_2_density.cpp.obj
+[94/172] Building CXX object CMakeFiles/antworld_s6_3_3_3_ecology.dir/apps/antworld_s6_3_3_3_ecology.cpp.obj
+[95/172] Building CXX object CMakeFiles/antworld_s6_3_3_experiment.dir/apps/antworld_s6_3_3_experiment.cpp.obj
+[96/172] Building CXX object CMakeFiles/antworld_s6_3_3_3_r1.dir/apps/antworld_s6_3_3_3_r1.cpp.obj
+[97/172] Building CXX object CMakeFiles/antworld_s6_3_3_3_density.dir/apps/antworld_s6_3_3_3_density.cpp.obj
+[98/172] Linking CXX executable antworld_headless.exe
+[99/172] Linking CXX executable antworld_benchmark.exe
+[100/172] Building CXX object CMakeFiles/antworld_s6_3_4_tests.dir/tests/test_s6_3_4.cpp.obj
+[101/172] Building CXX object CMakeFiles/antworld_s6_3_4_experiment.dir/apps/antworld_s6_3_4_experiment.cpp.obj
+[102/172] Building CXX object CMakeFiles/antworld_s6_4_egg_timing.dir/apps/antworld_s6_4_egg_timing.cpp.obj
+[103/172] Linking CXX executable antworld_scheduler_benchmark.exe
+[104/172] Linking CXX executable antworld_s1_benchmark.exe
+[105/172] Linking CXX executable antworld_s2_experiment.exe
+[106/172] Linking CXX executable antworld_s2_1_audit.exe
+[107/172] Linking CXX executable antworld_s2_benchmark.exe
+[108/172] Linking CXX executable antworld_s2_2_experiment.exe
+[109/172] Linking CXX executable antworld_s2_1_experiment.exe
+[110/172] Linking CXX executable antworld_s3_experiment.exe
+[111/172] Linking CXX executable antworld_s3_benchmark.exe
+[112/172] Linking CXX executable antworld_s4_experiment.exe
+[113/172] Linking CXX executable antworld_s4_benchmark.exe
+[114/172] Linking CXX executable antworld_s6_nutrition.exe
+[115/172] Linking CXX executable antworld_s6_contact_benchmark.exe
+[116/172] Linking CXX executable antworld_s6_2_benchmark.exe
+[117/172] Linking CXX executable antworld_s6_surplus.exe
+[118/172] Linking CXX executable antworld_s6_2_nutrition.exe
+[119/172] Linking CXX executable antworld_s6_2_choice.exe
+[120/172] Linking CXX executable antworld_s6_1_trace.exe
+[121/172] Linking CXX executable antworld_s6_1_experiment.exe
+[122/172] Linking CXX executable antworld_s6_3_experiment.exe
+[123/172] Linking CXX executable antworld_s6_3_1_birth_benchmark.exe
+[124/172] Linking CXX executable antworld_s6_3_birth_benchmark.exe
+[125/172] Linking CXX executable antworld_s6_3_1_experiment.exe
+[126/172] Linking CXX executable antworld_s6_3_2_audit.exe
+[127/172] Linking CXX executable antworld_s6_experiment.exe
+[128/172] Linking CXX executable antworld_archive.exe
+[129/172] Linking CXX executable antworld_s5_benchmark.exe
+[130/172] Linking CXX executable antworld_s5_experiment.exe
+[131/172] Linking CXX executable antworld_s5_history_benchmark.exe
+[132/172] Linking CXX executable antworld_s6_4_rm02_benchmark.exe
+[133/172] Linking CXX executable antworld_s6_4_rm02.exe
+FAILED: [code=1] antworld_s6_4_rm02.exe 
+C:\WINDOWS\system32\cmd.exe /C "cd . && D:\Codex_workspace\AntWorld\.tools\llvm-mingw-20261104-ucrt-x86_64\bin\clang++.exe -g -fsanitize=address,undefined CMakeFiles/antworld_s6_4_rm02.dir/apps/antworld_s6_4_rm02.cpp.obj -o antworld_s6_4_rm02.exe -Wl,--out-implib,libantworld_s6_4_rm02.dll.a -Wl,--major-image-version,0,--minor-image-version,0  libantworld_rm02_observer.a  libantworld_storage.a  libantworld_core.a  _deps/antworld_zlib-build/libzsd.a  -lpthread  libantworld_sqlite.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+LLVM ERROR: IO failure on output stream: No space left on device
+PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace and instructions to reproduce the bug.
+Stack dump:
+0.	Program arguments: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/ld.lld -m i386pep -Bdynamic -o antworld_s6_4_rm02.exe D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.asan_dynamic-x86_64.dll.a D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/x86_64-w64-mingw32/lib/crt2.o D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/x86_64-w64-mingw32/lib/crtbegin.o -LD:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/x86_64-w64-mingw32/lib -LD:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/x86_64-w64-mingw32/mingw/lib -LD:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib -LD:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows CMakeFiles/antworld_s6_4_rm02.dir/apps/antworld_s6_4_rm02.cpp.obj --out-implib libantworld_s6_4_rm02.dll.a --major-image-version 0 --minor-image-version 0 libantworld_rm02_observer.a libantworld_storage.a libantworld_core.a _deps/antworld_zlib-build/libzsd.a -lpthread libantworld_sqlite.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lc++ -lmingw32 D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.asan_dynamic-x86_64.dll.a D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.asan_dynamic_runtime_thunk-x86_64.a --require-defined __asan_seh_interceptor --whole-archive D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.asan_dynamic_runtime_thunk-x86_64.a --no-whole-archive -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/lib/clang/23/lib/windows/libclang_rt.builtins-x86_64.a -lunwind -lmoldname -lmingwex -lmsvcrt -lkernel32 D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/x86_64-w64-mingw32/lib/crtend.o
+clang-23: error: linker command failed with exit code 1 (use -v to see invocation)
+[134/172] Linking CXX executable antworld_s6_4_wp2.exe
+[135/172] Linking CXX executable antworld_s6_4_wp2_benchmark.exe
+[136/172] Linking CXX executable antworld_s6_4_wp3.exe
+ninja: build stopped: subcommand failed.

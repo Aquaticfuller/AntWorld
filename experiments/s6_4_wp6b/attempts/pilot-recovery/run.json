@@ -1,0 +1,25 @@
+{
+  "binary": "antworld_s6_4_wp6b.exe",
+  "binary_sha256": "c5c8a85978abc94fa3ee9f44b945323b23affd881159e569fef14e76943e989a",
+  "cases": [
+    "borisovka-micro-contact-blocked-0-1",
+    "borisovka-early-depot-8-1"
+  ],
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "efa5130c13e9e4d66c410810d2a7214e30e8b650",
+  "dirty": "M cpp/CMakeLists.txt\n M cpp/include/antworld/core/event.hpp\n M cpp/include/antworld/core/world_runtime.hpp\n M cpp/src/care.cpp\n M cpp/src/checkpoint.cpp\n M cpp/src/checkpoint_care.hpp\n M cpp/src/checkpoint_s3.hpp\n M cpp/src/checkpoint_s6_3.hpp\n M cpp/src/long_term.cpp\n M cpp/src/physiology.cpp\n M cpp/src/state.hpp\n M cpp/storage/event_block.cpp\n M cpp/storage/event_block.hpp\n M cpp/storage/queries.cpp\n M cpp/storage/segmented_analytics.cpp\n M cpp/storage/segmented_archive.cpp\n M cpp/storage/segmented_archive.hpp\n M cpp/storage/segmented_store.cpp\n M cpp/storage/store.cpp\n?? cpp/apps/antworld_s6_4_wp6b.cpp\n?? cpp/apps/wp6b_fixture.hpp\n?? cpp/include/antworld/core/founding.hpp\n?? cpp/src/checkpoint_founding.hpp\n?? cpp/src/checkpoint_founding_replay.hpp\n?? cpp/src/founding.cpp\n?? cpp/src/founding_internal.hpp\n?? cpp/tests/test_s6_4_wp6b.cmake\n?? cpp/tests/test_s6_4_wp6b.cpp\n?? tools/run_s6_4_wp6b.py",
+  "frozen": "9e8b0d2",
+  "mode": "durable",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "runner_sha256": "3584e344644642553a10cf301ae9257e53320fd24c2914d1bff75490b4a0456e",
+  "source": "9e8b0d25f88e6bbfc36f58e9d96b620c390931d2",
+  "started_ns": 1794505504507203400
+}

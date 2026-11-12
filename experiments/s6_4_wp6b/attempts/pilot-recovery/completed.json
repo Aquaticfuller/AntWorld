@@ -1,0 +1,11 @@
+{
+  "archives": {
+    "raw-000.zip": "8fdd4c54f8003803e35550facc5771c333206f404b73b5b9dff14f0f54ba6c1a"
+  },
+  "attempts": 2,
+  "ended_ns": 1794505505883926700,
+  "statuses": {
+    "borisovka-early-depot-8-1": "COMPLETE",
+    "borisovka-micro-contact-blocked-0-1": "COMPLETE"
+  }
+}

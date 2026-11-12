@@ -1,0 +1,29 @@
+{
+  "binary_sha256": "64b294d28d3aa6a03782df977733e785ebe215ab2cfa1ca9988bda821384b8e8",
+  "host": "Windows-11-10.0.26200-SP0",
+  "interval": "90 fixed daily advances",
+  "qualification": "DESCRIPTIVE_ONLY",
+  "sequence": [
+    "observed",
+    "unobserved",
+    "unobserved",
+    "observed",
+    "unobserved",
+    "observed",
+    "observed",
+    "unobserved"
+  ],
+  "source": "f1aca01d860c7c0c4a51607d013039c453f682b1",
+  "workload": [
+    "borisovka-micro-nominal-0-1",
+    "borisovka-early-depot-8-1",
+    "borisovka-early-empty-8-1",
+    "borisovka-early-depot-32-1",
+    "borisovka-early-empty-32-1",
+    "st_petersburg-micro-nominal-0-1",
+    "st_petersburg-early-depot-8-1",
+    "st_petersburg-early-empty-8-1",
+    "st_petersburg-early-depot-32-1",
+    "st_petersburg-early-empty-32-1"
+  ]
+}

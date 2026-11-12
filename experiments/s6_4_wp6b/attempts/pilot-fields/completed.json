@@ -1,0 +1,14 @@
+{
+  "archives": {
+    "raw-000.zip": "f41ed6b8ce707b5d9660dffa433ddd72e5e093369b4f0b9a07caca4b077e2515"
+  },
+  "attempts": 5,
+  "ended_ns": 1794505384591670200,
+  "statuses": {
+    "borisovka-early-blocked-8-1": "COMPLETE",
+    "borisovka-early-depot-8-1": "COMPLETE",
+    "borisovka-early-empty-32-1": "COMPLETE",
+    "borisovka-micro-contact-blocked-0-1": "ENGINEERING_FAILURE",
+    "borisovka-wider-larva_basal-low-0-1": "INPUT_REJECTED"
+  }
+}
