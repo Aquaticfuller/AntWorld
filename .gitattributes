@@ -12,3 +12,4 @@ experiments/s6_3_4/** -text whitespace=blank-at-eol,blank-at-eof,space-before-ta
 experiments/s6_4_rm02_sprint/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_rm02_r1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_wp2/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/s6_4_wp6b_r1/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

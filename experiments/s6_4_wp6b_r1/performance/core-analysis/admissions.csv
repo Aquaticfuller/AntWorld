@@ -1,0 +1,8 @@
+kind,session,attempt,admitted,pdh_invalid,system_busy_pct_complete,system_busy_pct_p50,system_busy_pct_p95,processor_busy_pct_complete,processor_busy_pct_p50,processor_busy_pct_p95,native_intervals_valid,power_valid,sensors_valid
+contacts,session1,1,True,0,True,1.5617407807560608,7.604827633986608,True,0.0,1.5626460541957494,True,True,True
+contacts,session2,1,True,3,True,1.6496943284076826,3.3986631219491876,True,0.0,3.126027168620001,True,True,True
+contacts,session3,1,True,6,True,1.639998191967817,3.4558149199695474,True,0.0,0.07809768143103099,True,True,True
+births,session1,1,True,7,True,1.7409387997623291,11.615588312454905,True,0.0,11.017510916845954,True,True,True
+births,session2,1,False,6,True,1.914266100776524,22.977067492958675,True,0.0,15.61875161178977,True,True,True
+births,session2,2,True,1,True,1.9522764171868925,9.13787687388908,True,0.0,7.894668330603583,True,True,True
+births,session3,1,True,4,True,7.81541742042821,14.253976754499728,True,0.0,6.248305372508678,True,True,True
