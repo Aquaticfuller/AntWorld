@@ -1,5 +1,11 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.4 WP-6B-R2 early-life resource access
+
+- **BR-01, BR-03 and BR-04 remain BIOLOGICAL_BLOCKED.** The historical closed-budget experiment separates failure to receive a first meal, delayed availability of a paid reserve, and unmet tissue or hydration requirements. An opt-in boundary conversion and a local hatch cue are separate candidate interventions. The original warm clock and adverse resource trials remain in the archive. Matching larval age, time to actual feeding and assimilation needs independent *Lasius niger* measurements.
+- **BR-05 and BR-08 retain the worker hydration and lifespan gap.** An actual finite water resource and physical access have separate simulated effects from the unmodeled damp-cotton and ambient humidity conditions. Trace body and crop water, post-eclosion intake, actual work, and energy or dehydration mortality independently. Adult callow metabolic and water-loss rates remain `ENGINEERING_FIXTURE`.
+- **Protected performance and the F1 observer are separate gates.** Preserve all admitted and rejected sessions, the earlier 693 ms measurement, and the three R1 application failures. See the [R2 instrument receipt](../research/s6_4_wp6b_r2/PERFORMANCE_INSTRUMENT_RECEIPT.md) and [validation boundaries](../research/s6_4_wp6b_r2/NEXT_VALIDATION_BOUNDARIES.md).
+
 ## S6.3.4 live durable history
 
 - **TD-11, storage subgate qualified for the frozen workloads.** New headless archives use lossless canonical blocks and a bounded background writer. Preserve the legacy 490,240 opportunities, 498,598 facts, 1,074,458,624-byte SQLite size and 51.62554 s save median. Candidate overlap and the true volume of opportunity facts still grow in crowded worlds. Denser and longer assay scale remains OPEN.
