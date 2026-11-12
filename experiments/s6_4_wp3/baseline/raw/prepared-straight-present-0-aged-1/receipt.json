@@ -1,0 +1,27 @@
+{
+  "case": "prepared-straight-present-0-aged-1",
+  "family": "prepared",
+  "layout": "straight",
+  "signal": "present",
+  "memory": 0,
+  "age": "aged",
+  "seed": 1,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 874,
+  "archive_sha256": "658953240816fa818cd86a22a1efdab3fcc0c2264cd90c46eeb78e80d8f41e48",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 121,
+      "sha256": "290e90c63c43d570aefaea3425333d4e885b066930f54f5866d2259275cb4f11"
+    },
+    "prepared.csv": {
+      "bytes": 1930,
+      "sha256": "d66780c55370d5626b63d5251f19ac7309165ac064ac77684c33bf2766ae7df9"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "case": "prepared-straight-absent-0-aged-19",
+  "family": "prepared",
+  "layout": "straight",
+  "signal": "absent",
+  "memory": 0,
+  "age": "aged",
+  "seed": 19,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 605,
+  "archive_sha256": "297a40943ee5738aa2d64a859bba326e1eb97717036181bfabc3c13a0181bb18",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 121,
+      "sha256": "5c15378ac47a32199c38416ea30bafd3566e4c5111098f1c47ea9ff8c77ed2f0"
+    },
+    "prepared.csv": {
+      "bytes": 1517,
+      "sha256": "3a62e070a4cf40deb3b3151b0a58bd648a59f699147c437d751393b1d6a3020d"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

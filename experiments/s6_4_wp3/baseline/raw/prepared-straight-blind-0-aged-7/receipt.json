@@ -1,0 +1,27 @@
+{
+  "case": "prepared-straight-blind-0-aged-7",
+  "family": "prepared",
+  "layout": "straight",
+  "signal": "blind",
+  "memory": 0,
+  "age": "aged",
+  "seed": 7,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 675,
+  "archive_sha256": "13bf8ef40e745a9a8af047d003deee985caceb6f75592541c67fa752540bd38e",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 119,
+      "sha256": "602712c013cc579b5c0fb1c7472f64e820e3e0794eafeeffb4b442a34c92854e"
+    },
+    "prepared.csv": {
+      "bytes": 1610,
+      "sha256": "bfa87d645448e21b73f731e96ef27230f222f08566a472a9f3e15642179a6796"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

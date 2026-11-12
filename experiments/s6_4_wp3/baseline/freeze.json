@@ -1,0 +1,2076 @@
+{
+  "baseline": "e2094fbf95dbe61855472b7509da19a221b1ecbb",
+  "source_commit": "c08a49d95aac8f7a2909ad84da6aecd434a39081",
+  "cpp_tree": "77c639d3cfb42733f64a981d1d46dcdf25e60c09",
+  "protocol_sha256": "5b94bf2376e0c507bb0b45e3a5330e4afdc4701567ae6db2aa0a3755f1a4b38e",
+  "case_matrix_sha256": "fd2bcf6b847fb064c937a23787394c164983e6f104e45e549a29eda4d64d0db9",
+  "runner_sha256": "c3842a63c2e5f6815e650dbde8eb15fd6599ebd71cbd0a7eace16c32263cc30e",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "binary_sha256": "7d4eb009da46759d7d46f3e5200d4832b63dfe3988527a92285a921664060551",
+  "executable": "antworld_s6_4_wp3.exe",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "started_utc_ns": 1794449948861956900,
+  "host": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "selection": "full",
+  "cases": [
+    {
+      "case": "factorial-near-absent-0-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-absent-0-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-absent-0-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-absent-0-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-absent-0-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-absent-0-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-absent-1-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-blind-0-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-blind-1-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-near-present-0-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-present-0-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-present-0-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-present-0-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-present-0-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-present-0-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-near-present-1-fresh-1",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-near-present-1-fresh-7",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-near-present-1-fresh-19",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-near-present-1-fresh-42",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-near-present-1-fresh-43",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-near-present-1-fresh-97",
+      "family": "factorial",
+      "layout": "near",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-absent-0-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-absent-1-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-blind-0-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-blind-1-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "blind",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-present-0-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-present-0-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-present-0-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-present-0-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-present-0-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-present-0-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "factorial-far-present-1-fresh-1",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "factorial-far-present-1-fresh-7",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "factorial-far-present-1-fresh-19",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "factorial-far-present-1-fresh-42",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "factorial-far-present-1-fresh-43",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "factorial-far-present-1-fresh-97",
+      "family": "factorial",
+      "layout": "far",
+      "signal": "present",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-absent-0-fresh-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-absent-0-fresh-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-absent-0-fresh-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-absent-0-fresh-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-absent-0-fresh-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-absent-0-fresh-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-absent-0-aged-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-absent-0-aged-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-absent-0-aged-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-absent-0-aged-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-absent-0-aged-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-absent-0-aged-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-absent-0-expired-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-absent-0-expired-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-absent-0-expired-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-absent-0-expired-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-absent-0-expired-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-absent-0-expired-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-blind-0-fresh-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-blind-0-fresh-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-blind-0-fresh-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-blind-0-fresh-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-blind-0-fresh-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-blind-0-fresh-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-blind-0-aged-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-blind-0-aged-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-blind-0-aged-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-blind-0-aged-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-blind-0-aged-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-blind-0-aged-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-blind-0-expired-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-blind-0-expired-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-blind-0-expired-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-blind-0-expired-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-blind-0-expired-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-blind-0-expired-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-present-0-fresh-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-present-0-fresh-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-present-0-fresh-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-present-0-fresh-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-present-0-fresh-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-present-0-fresh-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-present-0-aged-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-present-0-aged-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-present-0-aged-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-present-0-aged-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-present-0-aged-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-present-0-aged-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "scout-near-present-0-expired-1",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "scout-near-present-0-expired-7",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "scout-near-present-0-expired-19",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "scout-near-present-0-expired-42",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "scout-near-present-0-expired-43",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "scout-near-present-0-expired-97",
+      "family": "scout",
+      "layout": "near",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-1",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-7",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-19",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-42",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-43",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "disruption-open-absent-1-fresh-97",
+      "family": "disruption",
+      "layout": "open",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-1",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-7",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-19",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-42",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-43",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "disruption-wall-absent-1-fresh-97",
+      "family": "disruption",
+      "layout": "wall",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-1",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-7",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-19",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-42",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-43",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "disruption-gap-absent-1-fresh-97",
+      "family": "disruption",
+      "layout": "gap",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-1",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-7",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-19",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-42",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-43",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "disruption-deplete-absent-1-fresh-97",
+      "family": "disruption",
+      "layout": "deplete",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-1",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-7",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-19",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-42",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-43",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "disruption-empty-absent-1-fresh-97",
+      "family": "disruption",
+      "layout": "empty",
+      "signal": "absent",
+      "memory": 1,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-1",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-7",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-19",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-42",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-43",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "density-sparse8-present-0-fresh-97",
+      "family": "density",
+      "layout": "sparse8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "density-dense8-present-0-fresh-1",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "density-dense8-present-0-fresh-7",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "density-dense8-present-0-fresh-19",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "density-dense8-present-0-fresh-42",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "density-dense8-present-0-fresh-43",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "density-dense8-present-0-fresh-97",
+      "family": "density",
+      "layout": "dense8",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "density-dense32-present-0-fresh-1",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "density-dense32-present-0-fresh-7",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "density-dense32-present-0-fresh-19",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "density-dense32-present-0-fresh-42",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "density-dense32-present-0-fresh-43",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "density-dense32-present-0-fresh-97",
+      "family": "density",
+      "layout": "dense32",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-absent-0-fresh-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-absent-0-aged-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-absent-0-expired-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "absent",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-blind-0-fresh-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-blind-0-aged-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-blind-0-expired-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "blind",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-present-0-fresh-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "fresh",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-present-0-aged-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-present-0-aged-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-present-0-aged-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-present-0-aged-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-present-0-aged-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-present-0-aged-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "aged",
+      "seed": 97
+    },
+    {
+      "case": "prepared-straight-present-0-expired-1",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 1
+    },
+    {
+      "case": "prepared-straight-present-0-expired-7",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 7
+    },
+    {
+      "case": "prepared-straight-present-0-expired-19",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 19
+    },
+    {
+      "case": "prepared-straight-present-0-expired-42",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 42
+    },
+    {
+      "case": "prepared-straight-present-0-expired-43",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 43
+    },
+    {
+      "case": "prepared-straight-present-0-expired-97",
+      "family": "prepared",
+      "layout": "straight",
+      "signal": "present",
+      "memory": 0,
+      "age": "expired",
+      "seed": 97
+    }
+  ]
+}

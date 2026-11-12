@@ -1,0 +1,27 @@
+{
+  "case": "prepared-straight-blind-0-fresh-97",
+  "family": "prepared",
+  "layout": "straight",
+  "signal": "blind",
+  "memory": 0,
+  "age": "fresh",
+  "seed": 97,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 833,
+  "archive_sha256": "57a8e94be8d1a23bfb3220e13e0b0e4767bf0d670354565a6eb8d11aa424cfb6",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 116,
+      "sha256": "b7db4aee67041715eaa6eb6ab6c87b410f1a182981080be611f65e248ae3d1e0"
+    },
+    "prepared.csv": {
+      "bytes": 1819,
+      "sha256": "c80f8166d78ee64338b81ae0f34e6f510fc012ebc60c646e2fabe35cd27811a6"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

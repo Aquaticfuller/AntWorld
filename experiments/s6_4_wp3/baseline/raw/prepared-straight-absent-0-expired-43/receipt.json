@@ -1,0 +1,27 @@
+{
+  "case": "prepared-straight-absent-0-expired-43",
+  "family": "prepared",
+  "layout": "straight",
+  "signal": "absent",
+  "memory": 0,
+  "age": "expired",
+  "seed": 43,
+  "exit_code": 0,
+  "program_exit_code": 0,
+  "archive_bytes": 608,
+  "archive_sha256": "0ded8227622e2155ee2c63c5d31e007f897b5a6df8ffc01b651b00e192ee1b1b",
+  "artifacts": {
+    "configuration.csv": {
+      "bytes": 124,
+      "sha256": "b1fc9b95443ad95866c211330fe4bc37d416f97776cc9fc78868b21e0314ab99"
+    },
+    "prepared.csv": {
+      "bytes": 1517,
+      "sha256": "8fb9867edcd006c7716fd344b6edccadf4ad42e26f1ade88fb15016721545db6"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
