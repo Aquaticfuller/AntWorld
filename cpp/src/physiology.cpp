@@ -2,6 +2,7 @@
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
+#include "founding_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -37,7 +38,14 @@ void WorldRuntime::enable_physiology(AntRef ref, const PhysiologySeed& seed, con
 }
 void WorldRuntime::synchronize_physiology(Transaction& tx, EntityId id) {
     auto& s = *state_; if (!s.physiology.contains(id)) return;
-    auto p = s.physiology.at(id); settle(p, s.ants.get(s.ants.index.at(id)).stage, s.m.now); tx.physiology.set(id, p);
+    auto p = s.physiology.at(id);
+    const auto stage = s.ants.get(s.ants.index.at(id)).stage;
+    if (s.founding && s.founding_reserves.contains(id)) {
+        auto reserve = s.founding_reserves.at(id);
+        settle_founding(s.founding->profile, p, reserve, stage, founding_foundress(id), s.m.now);
+        tx.set_founding(id, reserve);
+    } else settle(p, stage, s.m.now);
+    tx.physiology.set(id, p);
 }
 void WorldRuntime::schedule_physiology(Transaction& tx, EntityId id) {
     auto& s = *state_; auto p = s.physiology.at(id); const auto ant = s.ants.get(s.ants.index.at(id));
@@ -45,7 +53,10 @@ void WorldRuntime::schedule_physiology(Transaction& tx, EntityId id) {
     p.physiology_event = {};
     if (ant.alive()) {
         ScheduledEvent e; e.actor = id; e.kind = ScheduledEvent::Kind::Physiology; e.issued_at = s.m.now;
-        e.key = {next_physiology(p, ant.stage), Phase::Environment, 0, 0, 0}; p.physiology_event = tx.insert(e);
+        const auto next = s.founding && s.founding_reserves.contains(id)
+            ? next_founding_physiology(s.founding->profile, p, s.founding_reserves.at(id), ant.stage, founding_foundress(id))
+            : next_physiology(p, ant.stage);
+        e.key = {next, Phase::Environment, 0, 0, 0}; p.physiology_event = tx.insert(e);
     }
     tx.physiology.set(id, p);
 }
@@ -56,7 +67,13 @@ void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause caus
     auto p = s.physiology.at(id);
     // Lifecycle fixtures may interrupt before the next physiological boundary.
     const auto stage = s.ants.get(s.ants.index.at(id)).stage;
-    if (stage != LifeStage::Dead) settle(p, stage, s.m.now);
+    if (stage != LifeStage::Dead) {
+        if (s.founding && s.founding_reserves.contains(id)) {
+            auto reserve = s.founding_reserves.at(id);
+            settle_founding(s.founding->profile, p, reserve, stage, founding_foundress(id), s.m.now);
+            tx.set_founding(id, reserve);
+        } else settle(p, stage, s.m.now);
+    }
     for (const auto event : {p.physiology_event, p.behavior_event})
         if (event.value && s.queue_index.contains(event)) tx.remove(s.queue_index.at(event));
     p.physiology_event = {}; p.behavior_event = {}; p.behavior = IndividualBehavior::Paused;
@@ -66,7 +83,14 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     profiling::Scope profile(profiling::Category::Physiology);
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i); auto p = s.physiology.at(e.actor);
     if (!ant.alive() || p.physiology_event != e.id) throw std::logic_error("invalid physiology event ownership");
-    settle(p, ant.stage, s.m.now); p.physiology_event = {};
+    std::optional<FoundingReserve> reserve;
+    const bool queen = founding_foundress(e.actor);
+    if (s.founding && s.founding_reserves.contains(e.actor)) {
+        reserve = s.founding_reserves.at(e.actor);
+        settle_founding(s.founding->profile, p, *reserve, ant.stage, queen, s.m.now);
+        tx.set_founding(e.actor, *reserve);
+    } else settle(p, ant.stage, s.m.now);
+    p.physiology_event = {};
     WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.position = ant.position; f.stage = ant.stage;
     f.kind = FactKind::PhysiologyUpdated;
     if (!p.body_energy_nj || !p.hydration_ug) {
@@ -76,13 +100,25 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         index_contact(tx,e.actor,{});
         tx.physiology.set(e.actor, p); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, p.death_cause); stop_autonomy(tx,e.actor);
     } else {
-        if (developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage)) {
+        const bool emitted_pulse = reserve && s.m.now == p.next_absorption;
+        if (emitted_pulse) {
+            f.transferred = absorb(p, ant.stage);
+            tx.fact(f);
+            const auto amount = convert_founding_lipid(s.founding->profile, p, *reserve, ant.stage, queen);
+            if (amount) tx.fact(lipid_conversion(s.founding->profile, ant, e.id, amount));
+            tx.set_founding(e.actor, *reserve);
+        }
+        const bool advance_stage = reserve ? founding_develops(s.founding->profile, p, *reserve, ant.stage) :
+            developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage);
+        if (advance_stage) {
             interrupt_care(tx,e.actor,Outcome::InvalidStage);
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
+            f.transferred = {};
             if (ant.stage==LifeStage::Adult) schedule_autonomy(tx,e.actor);
-        } else if (s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
+        } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
+        if (emitted_pulse && !advance_stage) return;
     }
     tx.fact(f);
 }
@@ -334,7 +370,12 @@ std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const 
     profiling::Scope profile(profiling::Category::Physiology);
     const auto& s = *state_; const auto ant = query_ant(ref);
     if (!ant || !s.physiology.contains(ref.id)) return {};
-    auto p = s.physiology.at(ref.id); settle(p, ant->stage, s.m.now); return p;
+    auto p = s.physiology.at(ref.id);
+    if (s.founding && s.founding_reserves.contains(ref.id)) {
+        auto reserve = s.founding_reserves.at(ref.id);
+        settle_founding(s.founding->profile, p, reserve, ant->stage, founding_foundress(ref.id), s.m.now);
+    } else settle(p, ant->stage, s.m.now);
+    return p;
 }
 NutritionSnapshot WorldRuntime::nutrition_snapshot() const {
     const auto& s = *state_; NutritionSnapshot n;
@@ -346,10 +387,17 @@ NutritionSnapshot WorldRuntime::nutrition_snapshot() const {
         n.crop = sum(n.crop, p.crop); n.hydration_ug = add(n.hydration_ug, p.hydration_ug);
         n.tissue_protein_ug = add(n.tissue_protein_ug, p.tissue_protein_ug); n.oxidized_carbs_ug = add(n.oxidized_carbs_ug, p.oxidized_carbs_ug);
         n.lost_water_ug = add(n.lost_water_ug, p.lost_water_ug);
-        n.energy_input_nj = add(n.energy_input_nj, add(p.mother.value ? 0 : p.initial.body_energy_nj, multiply(p.oxidized_carbs_ug, p.config.carbohydrate_yield_nj_per_ug)));
+        n.energy_input_nj = add(n.energy_input_nj, add(p.mother.value || founding_foundress(id) ? 0 : p.initial.body_energy_nj,
+                                                    multiply(p.oxidized_carbs_ug, p.config.carbohydrate_yield_nj_per_ug)));
         n.body_energy_nj = add(n.body_energy_nj, p.body_energy_nj); n.dissipated_energy_nj = add(n.dissipated_energy_nj, p.dissipated_energy_nj);
     }
     n.accounted = sum(n.accounted, sum(n.crop, {n.oxidized_carbs_ug, n.tissue_protein_ug, add(n.hydration_ug, n.lost_water_ug), 0}));
+    if (s.founding) {
+        const auto budget = founding_budget();
+        n.introduced.protein_ug = add(n.introduced.protein_ug, budget.introduced_protein_ug);
+        n.accounted.protein_ug = add(n.accounted.protein_ug, budget.owned_mobile_protein_ug);
+        n.energy_input_nj = add(n.energy_input_nj, multiply(budget.spent_lipid_ug, s.founding->profile.lipid_yield_nj_per_ug));
+    }
     return n;
 }
 void WorldRuntime::validate_nutrition_capacity() const {
@@ -357,6 +405,7 @@ void WorldRuntime::validate_nutrition_capacity() const {
     const auto introduced = sum(s.m.ledger.introduced, s.m.physiology_inputs); (void)introduced.total_ug();
     // Bound even complete future carbohydrate oxidation, so queries never discover
     // an overflow that a previous mutation should have rejected.
-    (void)add(s.m.initial_energy, multiply(introduced.carbs_ug, s.m.maximum_yield));
+    auto energy = add(s.m.initial_energy, multiply(introduced.carbs_ug, s.m.maximum_yield));
+    if (s.founding) (void)add(energy, multiply(s.founding->profile.lipid_ug, s.founding->profile.lipid_yield_nj_per_ug));
 }
 } // namespace antworld

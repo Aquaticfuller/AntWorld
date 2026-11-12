@@ -3,6 +3,7 @@
 #include "checkpoint_codec.hpp"
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
+#include "checkpoint_founding_replay.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array physiology_config_times{
@@ -57,7 +58,8 @@ template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits&
 inline bool nutrition_fact(FactKind k) {
     return k == FactKind::CargoIngested || k == FactKind::NestIngested || k == FactKind::NutritionTransferred;
 }
-template <typename S> void validate_physiology_evidence(const S& s) {
+template <typename S> void validate_physiology_evidence(const S& s, const RuntimeLimits& limits) {
+    FoundingReplay<S> founding(s, limits);
     std::map<EntityId, PhysiologyState> audit;
     std::map<EntityId, LifeStage> stages;
     std::map<EntityId, PositionM> positions;
@@ -67,6 +69,7 @@ template <typename S> void validate_physiology_evidence(const S& s) {
     FoodMass accounted = sum(sum(s.m.ledger.available, s.m.ledger.carried), s.m.ledger.stored);
     for (const auto& [id,r]:s.resource_cycles) { (void)id; accounted=sum(accounted,r.remaining); }
     for (const auto& e : s.journal) {
+        const bool expected_founding_fact = founding.before(e);
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
         if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) positions[e.actor] = e.position;
         if (e.kind == FactKind::ForagingStarted) active_foragers.insert(e.actor);
@@ -77,7 +80,15 @@ template <typename S> void validate_physiology_evidence(const S& s) {
             p.tissue_protein_ug = p.initial.tissue_protein_ug; p.next_absorption = after(e.time,p.config.absorption_period.milliseconds);
             p.updated_at=e.time; p.mother=saved.mother;
             if (active_foragers.contains(e.actor)) p.behavior = IndividualBehavior::Forage;
-            if (e.kind==FactKind::AntBorn) {
+            if (founding.enrolled(e.actor)) {
+                auto* mother = e.kind == FactKind::AntBorn ? &audit.at(EntityId{e.payload}) : nullptr;
+                if (mother) {
+                    const EntityId parent{e.payload};
+                    ensure(stages.at(parent)==LifeStage::Adult && e.position==positions.at(parent), "F1 birth lacks living maternal placement");
+                    founding.settle(parent,*mother,LifeStage::Adult,e.time);
+                }
+                founding.initialize(p, e, mother);
+            } else if (e.kind==FactKind::AntBorn) {
                 const EntityId parent{e.payload}; ensure(s.long_term && p.mother==parent && audit.contains(parent) && s.reproduction.contains(parent),"missing birth parent");
                 auto& mother=audit.at(parent); const auto& c=s.reproduction.at(parent).config;
                 settle(mother,stages.at(parent),e.time);
@@ -96,20 +107,27 @@ template <typename S> void validate_physiology_evidence(const S& s) {
             audit.emplace(e.actor, p);
         } else if (audit.contains(e.actor)) {
             auto& p = audit.at(e.actor); const auto prior_stage = stages.at(e.actor);
+            const bool enrolled = founding.enrolled(e.actor);
+            if (enrolled && !expected_founding_fact && (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged ||
+                (e.kind == FactKind::AntDied && e.payload)))
+                ensure(e.time == founding.next(e.actor, p, prior_stage), "F1 fact is outside its physiological boundary");
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || (e.kind == FactKind::ActionRejected && e.payload))
-                settle(p, prior_stage, e.time);
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || (e.kind == FactKind::ActionRejected && e.payload))
+                founding.settle(e.actor, p, prior_stage, e.time);
             if (e.kind == FactKind::PhysiologyUpdated) {
-                ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
+                if (enrolled) founding.pulse(p, e, prior_stage);
+                else ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
                     "invalid absorption evidence");
             } else if (e.kind==FactKind::ReproductionAttempt) {
                 ensure(s.reproduction.contains(e.actor),"attempt lacks reproduction configuration");
                 const auto& c=s.reproduction.at(e.actor).config;
-                const bool funded=reproductive_resources(c,p);
+                const bool funded=founding.founder(e.actor) ? founding.funded(p, e) : reproductive_resources(c,p);
                 ensure(funded==(e.payload!=0),"reproduction outcome differs from physiological funding");
             } else if (e.kind == FactKind::StageChanged) {
-                ensure(p.body_energy_nj && p.hydration_ug && developing(p, prior_stage) &&
-                    p.stage_progress == stage_duration(p.config, prior_stage), "unearned development evidence"); p.stage_progress = {};
+                const bool ready = enrolled ? founding_develops(founding.profile(), p, founding.reserves.at(e.actor), prior_stage) :
+                    developing(p, prior_stage) && p.stage_progress == stage_duration(p.config, prior_stage);
+                ensure(p.body_energy_nj && p.hydration_ug && ready &&
+                    (!enrolled || e.time != p.next_absorption), "unearned development evidence"); p.stage_progress = {};
             } else if (e.kind == FactKind::AntDied) {
                 p.death_cause = e.payload ? static_cast<DeathCause>(e.payload) : DeathCause::Fixture;
                 ensure((p.death_cause == DeathCause::Fixture && e.payload == 0) ||
@@ -129,7 +147,8 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                     "invalid local nutrition decision"); bump(p.decisions); ensure(e.payload == p.decisions, "nutrition decision counter mismatch");
             } else if (e.kind == FactKind::NutritionTransferred) {
                 const EntityId target{e.payload}; ensure(audit.contains(target) && target != e.actor, "missing transfer recipient");
-                auto& recipient = audit.at(target); const auto target_stage = stages.at(target); settle(recipient, target_stage, e.time);
+                auto& recipient = audit.at(target); const auto target_stage = stages.at(target);
+                founding.settle(target, recipient, target_stage, e.time);
                 auto a = s.ants.get(s.ants.index.at(e.actor)), b = s.ants.get(s.ants.index.at(target));
                 a.position = positions.at(e.actor); b.position = positions.at(target);
                 ensure(prior_stage == LifeStage::Adult && (a.caste == Caste::Worker || (s.care_profile && a.caste==Caste::Queen && s.care.contains(e.actor))) &&
@@ -143,6 +162,12 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 }
                 p.crop = subtract(p.crop, e.transferred); recipient.crop = sum(recipient.crop, e.transferred);
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");
+            } else if (e.kind == FactKind::FoundingRation) {
+                const EntityId target{e.payload};
+                auto& recipient = audit.at(target);
+                const auto stage = stages.at(target);
+                founding.settle(target, recipient, stage, e.time);
+                founding.ration(p, recipient, e, positions.at(target), stage);
             } else if (e.kind == FactKind::ProteinRecycled) {
                 ensure(s.long_term && s.long_term->protein_recycling && prior_stage==LifeStage::Adult &&
                     s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker &&
@@ -150,15 +175,24 @@ template <typename S> void validate_physiology_evidence(const S& s) {
                 p.crop=subtract(p.crop,e.transferred);
             } else if (e.kind == FactKind::CargoIngested || e.kind == FactKind::NestIngested) p.crop = sum(p.crop, e.transferred);
             if (e.kind == FactKind::ActionRejected && e.payload && audit.contains(EntityId{e.payload}))
-                settle(audit.at(EntityId{e.payload}), stages.at(EntityId{e.payload}), e.time);
+                founding.settle({e.payload}, audit.at(EntityId{e.payload}), stages.at(EntityId{e.payload}), e.time);
             ensure(p.crop.total_ug() <= p.config.crop_capacity_ug, "crop capacity exceeded in history");
         } else ensure(e.kind < FactKind::PhysiologyEnabled || e.kind >= FactKind::GeometryConfigured, "physiology fact without initialization");
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied) stages[e.actor] = e.stage;
     }
+    founding.finish();
     ensure(audit.size() == s.physiology.size(), "missing physiology evidence");
     for (const auto& [id, saved] : s.physiology) {
         const auto ant = s.ants.get(s.ants.index.at(id)); auto expected = audit.at(id); auto actual = saved;
-        settle(expected, ant.stage, s.m.now); settle(actual, ant.stage, s.m.now);
+        const bool enrolled = founding.enrolled(id);
+        if (enrolled) {
+            auto left = founding.reserves.at(id), right = s.founding_reserves.at(id);
+            settle_founding(founding.profile(), expected, left, ant.stage, founding.founder(id), s.m.now);
+            settle_founding(founding.profile(), actual, right, ant.stage, founding.founder(id), s.m.now);
+            ensure(left == right, "F1 reserve row disagrees with history");
+        } else {
+            settle(expected, ant.stage, s.m.now); settle(actual, ant.stage, s.m.now);
+        }
         expected.physiology_event = actual.physiology_event; expected.behavior_event = actual.behavior_event;
         ensure(expected == actual, "physiology row disagrees with committed history");
         ensure(ant.alive() == (saved.death_cause == DeathCause::None), "life/death cause mismatch");
@@ -166,7 +200,8 @@ template <typename S> void validate_physiology_evidence(const S& s) {
             ensure(saved.body_energy_nj && saved.hydration_ug && saved.next_absorption >= saved.updated_at &&
                 s.queue_index.contains(saved.physiology_event), "missing living physiological schedule");
             const auto& e = s.queue.at(s.queue_index.at(saved.physiology_event));
-            ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Physiology && e.key.time == next_physiology(saved, ant.stage),
+            ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Physiology &&
+                e.key.time == founding.next(id, saved, ant.stage, enrolled ? &s.founding_reserves.at(id) : nullptr),
                 "wrong physiology threshold schedule");
         } else ensure(!saved.physiology_event.value && !saved.behavior_event.value && saved.behavior == IndividualBehavior::Paused,
             "dead physiology still scheduled");
@@ -184,11 +219,17 @@ template <typename S> void validate_physiology_evidence(const S& s) {
         ensure((saved.behavior==IndividualBehavior::Excavate)==(excavator!=s.excavators.end() && excavator->second.enabled),"excavation program mismatch");
         if (!saved.mother.value) {
             introduced = sum(introduced, sum(saved.initial.crop, {0, saved.initial.tissue_protein_ug, saved.initial.hydration_ug, 0}));
-            initial_energy = add(initial_energy, saved.initial.body_energy_nj);
+            if (founding.founder(id)) {
+                introduced.protein_ug = add(introduced.protein_ug, founding.profile().protein_ug);
+                accounted.protein_ug = add(accounted.protein_ug, s.founding_reserves.at(id).mobile_protein_ug);
+                initial_energy = add(initial_energy, multiply(founding.profile().lipid_ug, founding.profile().lipid_yield_nj_per_ug));
+            } else initial_energy = add(initial_energy, saved.initial.body_energy_nj);
         }
         max_yield = std::max(max_yield, saved.config.carbohydrate_yield_nj_per_ug);
         accounted = sum(accounted, sum(saved.crop, {saved.oxidized_carbs_ug, saved.tissue_protein_ug, add(saved.hydration_ug, saved.lost_water_ug), 0}));
-        ensure(add(saved.initial.body_energy_nj, multiply(saved.oxidized_carbs_ug, saved.config.carbohydrate_yield_nj_per_ug)) ==
+        const auto seed_energy = enrolled ? multiply(s.founding_reserves.at(id).spent_lipid_ug, founding.profile().lipid_yield_nj_per_ug) :
+            saved.initial.body_energy_nj;
+        ensure(add(seed_energy, multiply(saved.oxidized_carbs_ug, saved.config.carbohydrate_yield_nj_per_ug)) ==
             add(add(saved.body_energy_nj, saved.dissipated_energy_nj),saved.exported_energy_nj), "energy ledger mismatch");
     }
     for (const auto& [id, f] : s.foragers) if (!s.physiology.contains(id))

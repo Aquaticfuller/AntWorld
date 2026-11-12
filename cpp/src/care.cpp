@@ -294,7 +294,11 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 } else {
                     std::vector<CareAct> acts{CareAct::InspectBrood,CareAct::ArrangeBrood,CareAct::CleanBrood};
                     const auto receiver=query_physiology({s.world,b.id});
-                    if (b.stage==LifeStage::Larva && receiver && ingredient_min(p.crop,nutrient_demand(*receiver,b.stage)).total_ug()) acts.push_back(CareAct::FeedBrood);
+                    if (b.stage==LifeStage::Larva && receiver) {
+                        const bool available = founding_foundress(a.id) && s.founding_reserves.contains(b.id)
+                            ? can_feed_founding(a.id, b.id) : ingredient_min(p.crop,nutrient_demand(*receiver,b.stage)).total_ug() != 0;
+                        if (available) acts.push_back(CareAct::FeedBrood);
+                    }
                     c.act=acts[static_cast<std::size_t>(bounded_draw(rng,acts.size()))];
                     if (c.act==CareAct::ArrangeBrood) c.destination=toward(b.position,a.position,cfg.arrangement_m);
                 }
@@ -435,7 +439,9 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             ScheduledEvent gift=event; gift.kind=ScheduledEvent::Kind::Trophallaxis; gift.payload=c.target.value;
             gift.requested_ug=s.physiology.at(a.id).config.transfer_limit_ug;
             WorldEvent f; f.kind=FactKind::ActionRejected; f.source=event.id; f.actor=a.id; f.colony=a.colony; f.stage=a.stage; f.position=a.position;
-            resolve_nutrition_action(tx,gift,f); outcome=f.outcome; amount=f.transferred; tx.fact(f);
+            if (founding_foundress(a.id) && s.founding_reserves.contains(c.target)) resolve_founding_feed(tx,gift,f);
+            else resolve_nutrition_action(tx,gift,f);
+            outcome=f.outcome; amount=f.transferred; tx.fact(f);
         } else if (c.act==CareAct::CloseWorkerContact) {
             ended.has_worker_contact=true; ended.last_worker_contact=s.m.now; tx.care.set(a.id,ended);
         }

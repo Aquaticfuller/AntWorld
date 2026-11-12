@@ -6,6 +6,7 @@
 namespace antworld::storage::detail {
 namespace {
 constexpr std::uint64_t block_magic=UINT64_C(0x3130544341465741); // AWFACT01
+constexpr std::uint64_t founding_block_magic=UINT64_C(0x3230544341465741); // AWFACT02
 constexpr std::size_t hashed_header=104, header_size=136;
 
 void put(std::vector<std::uint8_t>& bytes,std::uint64_t value,unsigned width) {
@@ -21,17 +22,20 @@ std::uint64_t get(std::span<const std::uint8_t> bytes,std::size_t& cursor,unsign
 
 void validate_event(const WorldEvent& event,const BlockHeader& header,EventId expected,
                     SimTime previous_time,std::uint64_t previous_revision) {
-    require(event.id==expected && event.world==header.world && event.kind<=FactKind::BroodMoved &&
+    require(event.id==expected && event.world==header.world &&
+            event.kind<=(header.fact_schema==2?FactKind::FoundingRation:FactKind::BroodMoved) &&
+            (!founding_fact(event.kind) || valid_founding_payload(event)) &&
             event.time>=previous_time && event.time<=header.end && event.revision>previous_revision,
             "invalid canonical event block order or fact");
 }
 } // namespace
 
-EventBlock seal_block(std::span<const WorldEvent> facts,const Digest& previous) {
+EventBlock seal_block(std::span<const WorldEvent> facts,const Digest& previous,bool founding) {
     require(!facts.empty() && facts.size()<=block_records,"invalid event block record count");
     const auto& first=facts.front();
     const auto& last=facts.back();
     BlockHeader header{first.world,first.id,last.id,first.time,last.time,0,0,previous,{}};
+    header.fact_schema=founding?2U:1U;
     std::vector<std::uint8_t> raw(0);
     raw.reserve(facts.size()*214);
     std::uint64_t revision=0;
@@ -54,8 +58,8 @@ EventBlock seal_block(std::span<const WorldEvent> facts,const Digest& previous) 
     header.compressed_bytes=packed.size();
     std::vector<std::uint8_t> bytes(0);
     bytes.reserve(header_size+packed.size());
-    put(bytes,block_magic,8);
-    for (unsigned value:{1U,1U,1U,0U}) put(bytes,value,2); // Block, codec, fact schema, reserved.
+    put(bytes,founding?founding_block_magic:block_magic,8);
+    for (unsigned value:{header.fact_schema,1U,header.fact_schema,0U}) put(bytes,value,2); // Block, codec, fact schema, reserved.
     for (const auto value:{first.world.high,first.world.low,first.id.value,last.id.value,
              static_cast<std::uint64_t>(first.time.milliseconds),static_cast<std::uint64_t>(last.time.milliseconds)})
         put(bytes,value,8);
@@ -71,9 +75,12 @@ EventBlock seal_block(std::span<const WorldEvent> facts,const Digest& previous) 
 BlockHeader inspect_block(std::span<const std::uint8_t> bytes) {
     require(bytes.size()>=header_size && bytes.size()<=block_encoded_limit,"invalid event block length");
     std::size_t cursor=0;
-    require(get(bytes,cursor,8)==block_magic && get(bytes,cursor,2)==1 && get(bytes,cursor,2)==1 &&
-            get(bytes,cursor,2)==1 && get(bytes,cursor,2)==0,"unsupported canonical event block");
+    const auto magic=get(bytes,cursor,8);
+    const unsigned schema=magic==founding_block_magic?2U:1U;
+    require((magic==block_magic || magic==founding_block_magic) && get(bytes,cursor,2)==schema && get(bytes,cursor,2)==1 &&
+            get(bytes,cursor,2)==schema && get(bytes,cursor,2)==0,"unsupported canonical event block");
     BlockHeader header{};
+    header.fact_schema=schema;
     header.world={get(bytes,cursor,8),get(bytes,cursor,8)};
     header.first={get(bytes,cursor,8)};
     header.last={get(bytes,cursor,8)};

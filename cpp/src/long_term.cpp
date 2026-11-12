@@ -1,5 +1,6 @@
 #include "long_term_internal.hpp"
 #include "care_internal.hpp"
+#include "founding_internal.hpp"
 #include <set>
 
 namespace antworld {
@@ -83,13 +84,15 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   synchronize_physiology(tx, e.actor);
   auto p = s.physiology.at(e.actor);
   const auto &c = r.config;
+  const auto* founding = founding_foundress(e.actor) ? &s.founding->profile : nullptr;
   // Only this individual's current body reserves and maintenance rates enter.
   // A deferred attempt spends nothing; unmet needs can still cause death.
   const bool funded =
-      reproductive_resources(c, p) &&
+      (founding ? funds_founding_egg(*founding, p, s.founding_reserves.at(e.actor)) : reproductive_resources(c, p)) &&
       spatially_clear(mother.position, mother.position,
                       s.geometry ? s.geometry->config.body_half_q : 0);
   EntityId child;
+  std::uint64_t converted{};
   if (funded) {
     if (integrated_care(s) && care_owned(s,mother.id)) {
       interrupt_care(tx,mother.id,Outcome::InvalidTransition,true);
@@ -97,12 +100,17 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     }
     tx.entity_budget();
     child = {take(s.m.next_entity)};
-    p.crop.protein_ug -= c.egg_protein_ug;
-    p.hydration_ug -= c.egg_water_ug;
-    p.body_energy_nj -= add(c.egg_energy_nj, c.dissipated_energy_nj);
-    p.exported_energy_nj = add(p.exported_energy_nj, c.egg_energy_nj);
-    p.dissipated_energy_nj =
-        add(p.dissipated_energy_nj, c.dissipated_energy_nj);
+    if (founding) {
+      auto maternal = s.founding_reserves.at(e.actor);
+      debit_founding_egg(*founding, p, maternal);
+      tx.set_founding(e.actor, maternal);
+    } else {
+      p.crop.protein_ug -= c.egg_protein_ug;
+      p.hydration_ug -= c.egg_water_ug;
+      p.body_energy_nj -= add(c.egg_energy_nj, c.dissipated_energy_nj);
+      p.exported_energy_nj = add(p.exported_energy_nj, c.egg_energy_nj);
+      p.dissipated_energy_nj = add(p.dissipated_energy_nj, c.dissipated_energy_nj);
+    }
     tx.physiology.set(e.actor, p);
     schedule_physiology(tx, e.actor);
     s.ants.append({child,
@@ -119,15 +127,23 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     index_contact(tx, child, mother.position);
     bump(s.m.living);
     PhysiologyState q;
-    q.config = p.config;
-    q.config.adult_protein_target_ug = 0;
-    q.initial = {{}, c.egg_energy_nj, c.egg_water_ug, c.egg_protein_ug};
-    q.body_energy_nj = c.egg_energy_nj;
-    q.hydration_ug = c.egg_water_ug;
-    q.tissue_protein_ug = c.egg_protein_ug;
-    q.updated_at = s.m.now;
-    q.next_absorption = after(s.m.now, q.config.absorption_period.milliseconds);
-    q.mother = e.actor;
+    if (founding) {
+      q = initial_founding_physiology(*founding, false, s.m.now, e.actor);
+      FoundingReserve reserve{founding->egg_lipid_ug};
+      converted = convert_founding_lipid(*founding, q, reserve, LifeStage::Egg, false);
+      q.initial.body_energy_nj = q.body_energy_nj;
+      tx.set_founding(child, reserve);
+    } else {
+      q.config = p.config;
+      q.config.adult_protein_target_ug = 0;
+      q.initial = {{}, c.egg_energy_nj, c.egg_water_ug, c.egg_protein_ug};
+      q.body_energy_nj = c.egg_energy_nj;
+      q.hydration_ug = c.egg_water_ug;
+      q.tissue_protein_ug = c.egg_protein_ug;
+      q.updated_at = s.m.now;
+      q.next_absorption = after(s.m.now, q.config.absorption_period.milliseconds);
+      q.mother = e.actor;
+    }
     tx.physiology.set(child, q);
     schedule_physiology(tx, child);
     bump(r.births);
@@ -135,7 +151,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   bump(r.attempts);
   auto next = e;
   next.issued_at = s.m.now;
-  next.key.time = after(s.m.now, c.interval.milliseconds);
+  next.key.time = founding ? founding_lay_after(*founding, s.m.now) : after(s.m.now, c.interval.milliseconds);
   r.wake = tx.insert(next);
   tx.reproduction.set(e.actor, r);
   WorldEvent f;
@@ -153,8 +169,18 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     f.stage = LifeStage::Egg;
     f.payload = mother.id.value;
     f.transferred = {0, c.egg_protein_ug, c.egg_water_ug, 0};
-    f.random_value = c.egg_energy_nj;
+    f.random_value = founding ? 0 : c.egg_energy_nj;
     tx.fact(f);
+    if (founding) {
+      f.kind = FactKind::FoundingEggFunded;
+      f.actor = mother.id;
+      f.stage = mother.stage;
+      f.payload = child.value;
+      f.random_value = founding->egg_lipid_ug;
+      f.transferred = {};
+      tx.fact(f);
+      tx.fact(lipid_conversion(*founding, s.ants.get(s.ants.index.at(child)), e.id, converted));
+    }
     change_autonomy(tx, {s.world, child}, true);
   }
 }

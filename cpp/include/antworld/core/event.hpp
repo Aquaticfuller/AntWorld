@@ -54,7 +54,8 @@ enum class FactKind : std::uint8_t {
     GeometryConfigured, SoilExcavated, SoilDropped, SoilPickedUp, SoilFilled, ExcavationDecision, FoodPlaced,
     SocialConfigured, AutonomyChanged, AutonomyDecision, LongTermConfigured, ReproductionEnabled,
     ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled,
-    BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved
+    BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
+    FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation
 };
 struct WorldEvent {
     EventId id;
@@ -78,6 +79,42 @@ struct WorldEvent {
     BehaviorObservation observation; // Encoded only for BiologicalObservation facts.
     bool operator==(const WorldEvent&) const = default;
 };
+[[nodiscard]] constexpr bool founding_fact(FactKind kind) {
+    return kind >= FactKind::FoundingConfigured && kind <= FactKind::FoundingRation;
+}
+// A participant ID, as opposed to a numeric dose, material quantity or fingerprint.
+[[nodiscard]] inline EntityId related_individual(const WorldEvent& e) {
+    if (e.kind == FactKind::BiologicalObservation) return e.observation.target;
+    switch (e.kind) {
+    case FactKind::NutritionTransferred: case FactKind::AntBorn: case FactKind::BroodMoved:
+    case FactKind::FoundingEggFunded: case FactKind::FoundingRation: return {e.payload};
+    default: return {};
+    }
+}
+[[nodiscard]] inline bool valid_founding_payload(const WorldEvent& e) {
+    if (e.resource.value || e.outcome != Outcome::Success || e.action != DiagnosticAction::Record ||
+        e.deposited_units != 0 || e.forgot_memory || e.mode != BehaviorMode::Explore || e.reason != DecisionReason::None)
+        return false;
+    const auto dry_packet = !e.transferred.carbs_ug && !e.transferred.other_ug;
+    switch (e.kind) {
+    case FactKind::FoundingConfigured:
+        return !e.actor.value && !e.colony.value && !e.source.value && e.time == SimTime{} &&
+               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value == 1 && e.transferred == FoodMass{};
+    case FactKind::FoundingReserveSeeded:
+        return e.actor.value && e.colony.value && !e.source.value && e.time == SimTime{} && e.stage == LifeStage::Adult &&
+               e.payload && !e.random_value && dry_packet && e.transferred.protein_ug && e.transferred.water_ug;
+    case FactKind::FoundingEggFunded:
+        return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
+               e.payload != e.actor.value && e.random_value && e.transferred == FoodMass{};
+    case FactKind::FoundingLipidConverted:
+        return e.actor.value && e.colony.value && (e.source.value || e.time == SimTime{}) && e.stage < LifeStage::Dead &&
+               e.payload && e.random_value && e.transferred == FoodMass{};
+    case FactKind::FoundingRation:
+        return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
+               e.payload != e.actor.value && dry_packet && (e.random_value || e.transferred.protein_ug || e.transferred.water_ug);
+    default: return false;
+    }
+}
 // Canonical fact payload codec. It is not a full-world recovery format.
 std::vector<std::uint8_t> encode_event(const WorldEvent&);
 WorldEvent decode_event(std::span<const std::uint8_t>);

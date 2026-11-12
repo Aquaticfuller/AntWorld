@@ -1,0 +1,43 @@
+#pragma once
+
+#include "antworld/core/physiology.hpp"
+#include <array>
+
+namespace antworld {
+enum class FoundingPopulation : std::uint8_t { Borisovka = 1, StPetersburg = 2 };
+
+struct FoundingStageProfile {
+    SimTime duration;
+    std::uint64_t basal_nj_per_day{}, water_ug_per_day{};
+    bool operator==(const FoundingStageProfile&) const = default;
+};
+
+// Warm protected founding experiment. All uncalibrated inputs are ENGINEERING_FIXTURE.
+// Stage order is egg, larva, prepupa plus pupa. The population identifies the clock context.
+struct FoundingProfile {
+    static constexpr std::uint32_t version = 1;
+    FoundingPopulation population{};
+    std::array<FoundingStageProfile, 3> brood;
+    PhysiologyConfig worker;
+    SimTime first_lay, opening_width, opening_spacing, later_spacing, maintenance_floor;
+    std::uint64_t wet_mass_ug{}, structural_minimum_ug{}, lipid_ug{}, protein_ug{}, water_ug{};
+    std::uint64_t lipid_yield_nj_per_ug{}, basal_nj_per_day{}, active_nj_per_ms{}, water_ug_per_day{};
+    std::uint64_t egg_lipid_ug{}, egg_protein_ug{}, egg_water_ug{}, lay_overhead_nj{};
+    std::uint64_t larval_tissue_ug{}, larval_lipid_capacity_ug{};
+    std::uint64_t ration_lipid_ug{}, ration_protein_ug{}, ration_water_ug{};
+    bool operator==(const FoundingProfile&) const = default;
+};
+
+struct FoundingReserve {
+    std::uint64_t lipid_ug{}, spent_lipid_ug{}, mobile_protein_ug{};
+    std::uint64_t energy_remainder{}, water_remainder{};
+    bool operator==(const FoundingReserve&) const = default;
+};
+
+struct FoundingBudget {
+    std::uint64_t introduced_lipid_ug{}, owned_lipid_ug{}, spent_lipid_ug{};
+    std::uint64_t introduced_protein_ug{}, owned_mobile_protein_ug{}, effective_energy_nj{};
+    std::uint64_t enrolled{};
+    bool operator==(const FoundingBudget&) const = default;
+};
+} // namespace antworld

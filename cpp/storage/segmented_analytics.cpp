@@ -40,10 +40,7 @@ void bucket_key(Statement& q,WorldId world,const BucketKey& key) {
 } // namespace
 
 EntityId related_entity(const WorldEvent& fact) {
-    if (fact.kind==FactKind::BiologicalObservation) return fact.observation.target;
-    if (fact.kind==FactKind::NutritionTransferred || fact.kind==FactKind::AntBorn || fact.kind==FactKind::BroodMoved)
-        return {fact.payload};
-    return {};
+    return related_individual(fact);
 }
 
 HistoryRecord segmented_record(sqlite3* db,const WorldEvent& fact) {

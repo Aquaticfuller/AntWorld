@@ -68,6 +68,7 @@ std::optional<SaveToken> Store::latest(WorldId world) const {
 }
 SaveToken Store::save(const WorldRuntime &w, std::optional<SaveToken> expected, const SaveOptions &options) {
     if (format()==StoreFormat::Segmented) return save_segmented(capture_frame(w),expected,options);
+    if (w.founding_profile()) throw std::invalid_argument("F1 requires the versioned segmented store");
     if (impl_->requires_recovery)
         throw RecoveryRequired("reopen and recover after an uncertain database commit");
     if (!options.retained_generations || options.retained_generations > 64)

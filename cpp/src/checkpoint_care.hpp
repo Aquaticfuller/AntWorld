@@ -141,6 +141,7 @@ template<class S> void validate_care_evidence(const S& s) {
     std::map<ScheduledId,BehaviorObservation> starts;
     std::map<ScheduledId,EntityId> owners;
     std::map<EntityId,PositionM> positions;
+    std::optional<WorldEvent> ration;
     const auto spatial=s.config.continuous_spatial_motion;
     for (const auto& e:s.journal) {
         if (spatial && (e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn ||
@@ -154,8 +155,26 @@ template<class S> void validate_care_evidence(const S& s) {
         if (e.kind==FactKind::CareTick && e.payload==static_cast<std::uint64_t>(ScheduledEvent::Kind::CareWake)) {
             ensure(audit.contains(e.actor) && audit.at(e.actor).enabled,"care decision without enrollment"); ++audit.at(e.actor).decisions;
         }
+        if (e.kind==FactKind::FoundingRation) {
+            ensure(s.founding && !ration && audit.contains(e.actor) && audit.at(e.actor).started &&
+                audit.at(e.actor).started->act==CareAct::FeedBrood && audit.at(e.actor).started->target==EntityId{e.payload},
+                "F1 ration without a started feeding bout");
+            const auto& start=*audit.at(e.actor).started;
+            ensure(e.time==after(start.began_at,care_duration(*s.care_profile,s.config,Caste::Queen,CareAct::FeedBrood,e.position,e.position).milliseconds),
+                "F1 ration outside completed feeding duration");
+            ration=e;
+            continue;
+        }
+        if (ration) ensure(e.kind==FactKind::BiologicalObservation && e.source==ration->source && e.actor==ration->actor &&
+            e.observation.phase==ObservationPhase::Completed && e.observation.act==CareAct::FeedBrood &&
+            e.observation.target==EntityId{ration->payload} && e.transferred==ration->transferred,
+            "F1 ration without its committed completion observation");
         if (e.kind!=FactKind::BiologicalObservation) continue;
         const auto& o=e.observation;
+        if (s.founding && e.actor==s.founding->founder && o.act==CareAct::FeedBrood &&
+            o.phase==ObservationPhase::Completed && s.founding_reserves.contains(o.target))
+            ensure(ration.has_value(), "F1 completed feeding without a real ration");
+        ration.reset();
         ensure(o.act<CareAct::Count && o.phase<=ObservationPhase::Interrupted && o.began_at<=e.time && finite(o.destination) &&
             (!o.target.value || (s.ants.index.contains(o.target) && o.target!=e.actor &&
              (s.ants.get(s.ants.index.at(o.target)).colony==e.colony ||
@@ -226,7 +245,7 @@ template<class S> void validate_care_evidence(const S& s) {
             ensure(o.phase!=ObservationPhase::Completed || e.outcome<=Outcome::Partial,"rejection presented as completed act");
         }
     }
-    ensure(configured==1 && audit.size()==s.care.size(),"care configuration/enrollment evidence missing");
+    ensure(configured==1 && audit.size()==s.care.size() && !ration,"care configuration/enrollment evidence missing");
     for (const auto& [id,c]:s.care) {
         const auto& a=audit.at(id);
         ensure(c.enabled==a.enabled && c.decisions==a.decisions && c.has_worker_contact==a.contact && c.last_worker_contact==a.last &&

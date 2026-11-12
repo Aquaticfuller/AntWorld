@@ -103,6 +103,7 @@ template <typename IdType, typename Row> struct Store {
 };
 std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes);
 std::uint64_t trace_hash(const EventJournal& events);
+std::uint64_t append_trace_hash(std::uint64_t, const WorldEvent&);
 
 // Undo only touched map entries. Reinsert retained nodes without allocating.
 template <typename Map> class MapJournal {
@@ -159,6 +160,7 @@ struct WorldRuntime::State {
         ContactWork contact_work;
         FoodMass physiology_inputs; // Derived conservative registration budget; rebuilt on restore.
         std::uint64_t initial_energy{}, maximum_yield{}, development_commands{}, resolution_commands{};
+        std::uint64_t founding_trace{};
     } m;
     WorldId world;
     std::uint64_t seed;
@@ -193,6 +195,10 @@ struct WorldRuntime::State {
     using Reproduction = std::map<EntityId, ReproductionState>;
     using ResourceCycles = std::map<ResourceId, ResourceCycleState>;
     Reproduction reproduction;
+    struct FoundingSetup { EntityId founder; FoundingProfile profile; };
+    std::shared_ptr<const FoundingSetup> founding;
+    using FoundingReserves = std::map<EntityId, FoundingReserve>;
+    FoundingReserves founding_reserves;
     ResourceCycles resource_cycles;
     std::shared_ptr<const SpeciesCareProfile> care_profile;
     EnvironmentCareProfile care_environment;
@@ -259,6 +265,8 @@ class WorldRuntime::Transaction {
     std::shared_ptr<const detail::GeometryDefinition> geometry_before;
     std::shared_ptr<const SocialConfig> social_before;
     std::shared_ptr<const LongTermConfig> long_term_before;
+    std::shared_ptr<const State::FoundingSetup> founding_before;
+    std::optional<detail::MapJournal<State::FoundingReserves>> founding_undo;
     std::shared_ptr<const SpeciesCareProfile> care_profile_before;
     EnvironmentCareProfile care_environment_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
@@ -295,7 +303,7 @@ public:
     detail::MapJournal<State::Care> care;
     detail::MapJournal<State::CareLocks> care_locks;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
-        geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term),
+        geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term), founding_before(state.founding),
         care_profile_before(state.care_profile), care_environment_before(state.care_environment),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), connectors(s.connectors), trails(s.trails),
@@ -323,6 +331,7 @@ public:
         s.geometry = geometry_before;
         s.social = social_before;
         s.long_term = long_term_before;
+        s.founding = founding_before;
         s.care_profile = care_profile_before; s.care_environment = care_environment_before;
     }
     void commit() noexcept {
@@ -333,8 +342,13 @@ public:
         soil_requests.commit(); excavators.commit(); sdf_cache.commit(); dirty_bricks.commit();
         commands.commit();
         reproduction.commit(); resource_cycles.commit();
+        if (founding_undo) founding_undo->commit();
         pending_conflicts.commit();
         care.commit(); care_locks.commit();
+    }
+    void set_founding(EntityId id, const FoundingReserve& reserve) {
+        if (!founding_undo) founding_undo.emplace(s.founding_reserves);
+        founding_undo->set(id, reserve);
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }
@@ -390,6 +404,7 @@ public:
         s.journal.check_append();
         e.id = {detail::take(s.m.next_event)}; e.world = s.world; e.time = s.m.now;
         detail::bump(s.m.revision); e.revision = s.m.revision; s.journal.push_back(e);
+        if (s.founding) s.m.founding_trace = detail::append_trace_hash(s.m.founding_trace, e);
     }
 };
 } // namespace antworld

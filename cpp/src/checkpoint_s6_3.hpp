@@ -1,6 +1,7 @@
 #pragma once
 #include "checkpoint_codec.hpp"
 #include "long_term_internal.hpp"
+#include "founding_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array reproduction_values{
@@ -43,7 +44,7 @@ template <class S> void write_long_term(Writer &w, const S &s, bool guarded) {
     w.put(r.pulses);
   }
 }
-template <class S> void read_long_term(Reader &r, S &s, bool guarded) {
+template <class S> void read_long_term(Reader &r, S &s, bool guarded, bool founding) {
   if (!s.long_term)
     return;
   LongTermConfig c{r.flag(), r.flag(), static_cast<std::uint32_t>(r.get(4)),
@@ -66,7 +67,7 @@ template <class S> void read_long_term(Reader &r, S &s, bool guarded) {
                s.ants.get(s.ants.index.at(id)).caste == Caste::Queen &&
                q.births <= q.attempts && s.reproduction.emplace(id, q).second,
            "invalid queen record");
-    validate_reproduction(q.config, s.physiology.at(id).config);
+    if (!founding) validate_reproduction(q.config, s.physiology.at(id).config);
   }
   count = r.count(s.foods.rows.size(), 173);
   for (std::size_t i = 0; i < count; ++i) {
@@ -95,6 +96,7 @@ template <class S> void validate_long_term_evidence(const S &s) {
   typename S::ResourceCycles cycles;
   std::map<EntityId, LifeStage> stages;
   std::map<ScheduledId, std::pair<EntityId, EntityId>> births;
+  SimTime next_founding_lay = s.founding ? s.founding->profile.first_lay : SimTime{};
   for (const auto &e : s.journal) {
     if (e.kind == FactKind::AntSeeded || e.kind == FactKind::AntBorn ||
         e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
@@ -121,7 +123,10 @@ template <class S> void validate_long_term_evidence(const S &s) {
              "attempt by inactive queen");
       auto &q = queens.at(e.actor);
       bump(q.attempts);
-      ensure(e.time.milliseconds ==
+      if (s.founding && e.actor == s.founding->founder) {
+        ensure(e.time == next_founding_lay, "unexpected F1 reproduction timing");
+        next_founding_lay = founding_lay_after(s.founding->profile, e.time);
+      } else ensure(e.time.milliseconds ==
                  static_cast<std::int64_t>(
                      multiply(q.attempts, static_cast<std::uint64_t>(
                                               q.config.interval.milliseconds))),
@@ -190,8 +195,8 @@ template <class S> void validate_long_term_evidence(const S &s) {
       ensure(s.queue_index.contains(q.wake), "missing queen wake");
       const auto &e = s.queue.at(s.queue_index.at(q.wake));
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Reproduction &&
-                 e.key.time ==
-                     after(e.issued_at, q.config.interval.milliseconds),
+                 e.key.time == (s.founding && id == s.founding->founder ? next_founding_lay :
+                     after(e.issued_at, q.config.interval.milliseconds)),
              "invalid next reproduction time");
     }
   }
@@ -218,7 +223,9 @@ template <class S> void rebuild_nutrition_budget(S &s) {
           sum(s.m.physiology_inputs,
               sum(p.initial.crop,
                   {0, p.initial.tissue_protein_ug, p.initial.hydration_ug, 0}));
-      s.m.initial_energy = add(s.m.initial_energy, p.initial.body_energy_nj);
+      if (s.founding && id == s.founding->founder)
+        s.m.physiology_inputs.protein_ug = add(s.m.physiology_inputs.protein_ug, s.founding->profile.protein_ug);
+      else s.m.initial_energy = add(s.m.initial_energy, p.initial.body_energy_nj);
     }
     s.m.maximum_yield =
         std::max(s.m.maximum_yield, p.config.carbohydrate_yield_nj_per_ug);

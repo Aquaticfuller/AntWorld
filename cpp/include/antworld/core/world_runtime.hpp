@@ -2,6 +2,7 @@
 #include "antworld/core/long_term.hpp"
 
 #include "antworld/core/event.hpp"
+#include "antworld/core/founding.hpp"
 #include "antworld/core/command.hpp"
 #include "antworld/core/history.hpp"
 #include "antworld/core/social.hpp"
@@ -70,6 +71,10 @@ public:
     ScheduledId submit_nutrition(const NutritionProposal&);
     [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
     [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
+    void enable_founding(AntRef founder, const FoundingProfile&);
+    [[nodiscard]] std::optional<FoundingProfile> founding_profile() const;
+    [[nodiscard]] std::optional<FoundingReserve> query_founding(AntRef) const;
+    [[nodiscard]] FoundingBudget founding_budget() const;
     void configure_geometry(const GeometryConfig&, std::span<const BoxQ> seed_voids, std::span<const BoxQ> rocks = {});
     ScheduledId submit_soil(const SoilProposal&);
     [[nodiscard]] GeometrySnapshot geometry_snapshot() const;
@@ -138,6 +143,9 @@ private:
     void schedule_physiology(Transaction&, EntityId);
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
+    [[nodiscard]] bool founding_foundress(EntityId) const;
+    [[nodiscard]] bool can_feed_founding(EntityId, EntityId) const;
+    void resolve_founding_feed(Transaction&, const ScheduledEvent&, WorldEvent&);
     void validate_nutrition_capacity() const;
     void execute_reproduction(Transaction&, const ScheduledEvent&);
     void execute_resource_release(Transaction&, const ScheduledEvent&);

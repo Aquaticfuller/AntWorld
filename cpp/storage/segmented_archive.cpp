@@ -15,6 +15,11 @@ Digest anchor_digest(const SaveToken& token,SimTime time,std::span<const std::ui
 }
 } // namespace
 
+bool founding_frame(std::span<const std::uint8_t> bytes) {
+    constexpr std::array<std::uint8_t,8> magic{'A','W','C','K','P','T','F',0};
+    return bytes.size()>=16 && std::equal(magic.begin(),magic.end(),bytes.begin()+8);
+}
+
 SaveFrame capture_frame(const WorldRuntime& world) {
     return {world.summary(),world.checkpoint_frame(),world.capture_history(),observe(world),
             world.geometry_snapshot(),world.geometry_edits(),world.ant_states(),world.command_receipts()};
@@ -101,7 +106,7 @@ std::vector<WorldEvent> SqlEventPrefix::read(EventId after,std::size_t limit) co
     return out;
 }
 
-Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,EventId from,EventId through) {
+Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,EventId from,EventId through,bool founding) {
     require(from<=through && through.value<=capture.size(),"invalid captured block range");
     auto previous=block_tail(db,world,from);
     Statement put(db,"INSERT INTO fact_blocks VALUES(?,?,?,?,?,?,?,?)");
@@ -110,7 +115,7 @@ Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,Eve
         const auto facts=capture.read(from,count);
         require(facts.size()==count && facts.front().id.value==from.value+1 && facts.front().world==world,
                 "captured suffix does not continue published facts");
-        const auto block=seal_block(facts,previous);
+        const auto block=seal_block(facts,previous,founding);
         const auto& h=block.header;
         put.text(1,world.str());
         put.u64(2,h.first.value); put.u64(3,h.last.value);

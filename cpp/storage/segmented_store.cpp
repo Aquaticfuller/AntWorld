@@ -146,7 +146,7 @@ SaveToken Store::save_segmented(const SaveFrame& frame,std::optional<SaveToken> 
     const auto generation=previous?checked_add(previous->generation,1):1;
     const SaveToken result{world,generation,state.revision,state.committed_events,hash(frame.checkpoint)};
     hook(SaveStage::BeforeBlocks);
-    const auto tail=append_blocks(db,world,frame.history,start,{result.cursor});
+    const auto tail=append_blocks(db,world,frame.history,start,{result.cursor},founding_frame(frame.checkpoint));
     hook(SaveStage::AfterBlocks);
     auto derived=collect_index([&](EventId after,std::size_t count){return frame.history.read(after,count);},
                                start,{result.cursor},frame.geometry,frame.edits);
