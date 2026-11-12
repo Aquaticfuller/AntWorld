@@ -1,0 +1,73 @@
+{
+  "CAND-03": {
+    "doi": "10.5061/dryad.9j1cp",
+    "file": "doi_10_5061_dryad_9j1cp__v20160504.zip",
+    "bytes": 98177,
+    "sha256": "ceed6278eaa69028e5917217fb5559896a099521ad5588383cd572622baf6557",
+    "observed_worksheets": [
+      "Individual learning",
+      "Collective foraging"
+    ],
+    "status": "VERIFIED",
+    "scope": "Workbook identity and sheet inventory"
+  },
+  "CAND-04": {
+    "doi": "10.5061/dryad.qz612jm8x",
+    "file": "doi_10_5061_dryad_qz612jm8x__v20200407.zip",
+    "bytes": 322457,
+    "sha256": "5cb03929342e95062d06661ee202d41e73f5185958b96fc2ffb6ae4d587b3ab8",
+    "observed_worksheets": [
+      "RawData",
+      "PivotChart",
+      "DataSheet",
+      "RandomOrder",
+      "PilotData"
+    ],
+    "status": "VERIFIED",
+    "scope": "Workbook identity and sheet inventory"
+  },
+  "CAND-02": {
+    "doi": "10.5281/zenodo.16893940",
+    "file": "ALTAA_data.zip",
+    "bytes": 2586249758,
+    "motion_stream_files": 129,
+    "files_by_path_prefix": {
+      "202208_3nests/worker01": 26,
+      "202208_3nests/worker06": 26,
+      "202208_3nests/worker10": 26,
+      "202307_WithoutBrood/n01": 30,
+      "202307_WithoutBrood/n06": 21
+    },
+    "sample_columns": [
+      "Cam-idx",
+      "Timestamp",
+      "Key",
+      "Value"
+    ],
+    "status": "VERIFIED",
+    "scope": "ZIP catalog and one stream header; prior intake verified whole-file SHA-256"
+  },
+  "WP3-OPTICS-2026": {
+    "doi": "10.5281/zenodo.22111492",
+    "file": "SlowEvap_time_volume.dat",
+    "bytes": 99669,
+    "sha256": "b232e05833b4a7d33ba3f8fab87bbdd70f2b1a592dc25161d2763a44a9ef40a6",
+    "repository_md5": "4cc2abbda27907d97124620a85f42a32",
+    "status": "VERIFIED",
+    "samples": 5606,
+    "first_time_min": 1.5,
+    "last_time_min": 77.2583,
+    "first_volume_pl": 0.314835,
+    "last_volume_pl": 0.297874,
+    "scope": "Time-volume table from one optical sequence; no kinetic fit or biological response"
+  },
+  "WP3-WADA-METHODS": {
+    "doi": "10.1038/s41598-025-02058-z",
+    "file": "41598_2025_2058_MOESM1_ESM.docx",
+    "bytes": 250363,
+    "sha256": "e10316088f9d0fc10c8bebb28410af72cb88c97822ce48f2d8d9e4f57062ea4e",
+    "publisher_md5": "051d75086827357e6b5199b125764f83",
+    "status": "VERIFIED",
+    "scope": "Methods for projected non-arrival time and reported model fits"
+  }
+}

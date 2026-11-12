@@ -19,7 +19,7 @@ After depletion, the 20 s scheduled debit was 8,400 µg in three worlds and 10,0
 
 ## RM-08 marked route, departure and delivery
 
-All 72 scout/density worlds recorded a first scout delivery and its subsequent retirement. Matched scout signal weights yielded identical pre-release field strength in the present and blind cases for each seed and age. At release the fresh present fields ranged from 2.925 to 26.778 effective units summed across cells. The 120 s arm retained a quarter of the matched field to the precision of the recorded snapshots. The 600 s arm had no active field at release. Newly started workers could deposit fresh marks later, so that arm isolates launch conditions and cannot guarantee a field-free remainder.
+All 72 scout/density worlds recorded a first scout delivery and its subsequent retirement. Pre-release field strength matched between present and blind cases for each seed and age. At release the fresh present fields ranged from 2.925 to 26.778 effective units summed across cells. The 120 s arm retained a quarter of the matched field to the precision of the recorded snapshots. The 600 s arm had no active field at release. Newly started workers could deposit fresh marks later, so that arm isolates launch conditions and cannot guarantee a field-free remainder.
 
 | Newcomer pathway | Fresh present | Fresh blind | Fresh absent |
 |---|---:|---:|---:|
