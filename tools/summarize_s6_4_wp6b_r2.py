@@ -108,6 +108,23 @@ def water_pairs(rows, output):
     csv_out(output / "water_paired_summary.csv", summary)
 
 
+def cue_summary(histories, by_model, output):
+    counts = defaultdict(Counter)
+    for model, source in histories.items():
+        if model == "r1":
+            continue
+        for cue in read(source / "cues.csv.gz"):
+            case = by_model[model][cue["case"]]
+            row = counts[model, case["population"], case["group"], case["arm"], case["care"], case["high_risk"]]
+            row["cues"] += 1
+            for field in ("wake_event", "opportunity_event", "selected_event", "started_event", "terminal_event", "meal_event"):
+                row[field] += bool(cue[field])
+            row["confirmed_interruption"] += cue["terminal_phase"] == "4"
+            row["completed_without_positive_payment"] += cue["terminal_phase"] == "3" and not cue["meal_event"]
+    keys = ("model", "population", "group", "arm", "care", "high_risk")
+    csv_out(output / "cue_outcomes.csv", [dict(zip(keys, key, strict=True), **row) for key, row in sorted(counts.items())])
+
+
 def summarize(root, output):
     histories = {m: root / f"{m}-tracks" for m in ("h1", "h2", "both", "water-r1", "water-both")}
     base = ROOT / "experiments/s6_4_wp6b_r1"
@@ -144,6 +161,7 @@ def summarize(root, output):
     csv_out(output / "cases.csv", results)
     csv_out(output / "water_adults.csv", workers)
     water_pairs(results, output)
+    cue_summary(histories, by_model, output)
     group_keys = ("model", "population", "group", "arm", "care", "high_risk")
     fields = sorted({key for row in results for key in row if key not in (*group_keys, "status", "case", "seed", "profile",
                      "maternal_protein_gini_all_offspring", "queen_death_ms", "queen_death_cause", "first_worker_ms")})
