@@ -58,8 +58,8 @@ def app_args(case):
 
 
 def manifest(args, cases, binary):
-    frozen = git("show", f"{FREEZE}:{PROTOCOL.relative_to(ROOT).as_posix()}")
-    if frozen != PROTOCOL.read_text(encoding="utf-8").strip():
+    frozen = subprocess.check_output(["git", "show", f"{FREEZE}:{PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
+    if frozen != PROTOCOL.read_bytes():
         raise ValueError("R2 prospective protocol differs from its frozen commit")
     paths = [Path(__file__), Path(__file__).with_name("run_s6_4_wp6b.py"), Path(__file__).with_name("run_s6_4_wp6b_r1.py")]
     return dict(source=git("rev-parse", "HEAD"), cpp_tree=git("rev-parse", "HEAD:cpp"), model=args.model,

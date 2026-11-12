@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import zipfile
 
-from analyze_s6_4_wp6b import (DAY_MS, DIED, F_RATION, FEED, OBSERVATION, STAGE, assess, check, csv_out, evaluate, facts, rows)
+from analyze_s6_4_wp6b import (DAY_MS, DIED, F_CUE, F_RATION, FEED, OBSERVATION, STAGE, assess, check, csv_out, evaluate, facts, rows)
 from diagnose_s6_4_wp6b_r1 import CARE_TICK, CARE_WAKE
 from run_s6_4_wp6b import input_bytes, schema_rejection, sha, write_json
 from run_s6_4_wp6b_r1 import BASE, EXACT, FREEZE, PROTOCOL, enumerate_cases, reference_records
@@ -83,23 +83,27 @@ def audit_waiting_cut(case, data):
     return {f"waiting_cut_{key}": len(values) for key, values in sorted(waiting.items())}
 
 
-def verify(root, output=None, subset=()):
+def verify(root, output=None, subset=(), *, r2=None):
     index = json.loads((root / "completed.json").read_text(encoding="utf-8"))
     manifest = json.loads((root / "run.json").read_text(encoding="utf-8"))
-    check(manifest["frozen"] == FREEZE and manifest["protocol_sha256"] == sha(PROTOCOL), "run did not bind the frozen protocol")
-    check(index["reference_archive_index_sha256"] == sha(BASE / "completed.json"), "reference archive identity changed")
-    cases = {c["case"]: (identity, c) for identity, c in enumerate_cases(manifest["model"])}
+    model = manifest["model"]
+    frozen, protocol = (r2.FREEZE, r2.PROTOCOL) if r2 else (FREEZE, PROTOCOL)
+    check(manifest["frozen"] == frozen and manifest["protocol_sha256"] == sha(protocol), "run did not bind the frozen protocol")
+    reference = r2.REFERENCES.get(model) if r2 else BASE
+    check(index["reference_archive_index_sha256"] == (sha(reference / "completed.json") if reference else None),
+          "reference archive identity changed")
+    cases = {c["case"]: (identity, c) for identity, c in (r2.declared_cases(model) if r2 else enumerate_cases(model))}
     ids = set(manifest["cases"])
     check(ids <= cases.keys() and (manifest["selected_subset"] or ids == cases.keys()) and
           len(manifest["cases"]) == index["attempts"] == len(ids) and ids == index["statuses"].keys(), "run denominator changed")
-    if manifest["model"] == "v1":
-        refs = reference_records()
+    if (r2 and reference) or model == "v1":
+        refs = reference_records(reference)
         for name in sorted(ids):
             result = index["statuses"][name]
-            reference = refs[name]
-            check(result["exact"] and result["exit_code"] == reference["exit_code"] and
-                  result["signature"] == {key: reference["artifacts"].get(key) for key in EXACT}, f"v1 replay differs: {name}")
-        print(f"{len(ids)} exact F1 v1 replay receipts")
+            historical = refs[name]
+            check(result["exact"] and result["exit_code"] == historical["exit_code"] and
+                  result["signature"] == {key: historical["artifacts"].get(key) for key in EXACT}, f"{model} replay differs: {name}")
+        print(f"{len(ids)} exact {model} replay receipts")
         return
 
     wanted = set(subset) if subset else ids
@@ -145,14 +149,17 @@ def verify(root, output=None, subset=()):
                           f"unexpected failure instead of the frozen rejection: {name}")
                 else:
                     initial, frame, raw = data["initial.chk"], data["final.frame"], data["facts.bin"]
-                    check(initial[:16] == frame[8:24] == b"AWCKPTG\x00\x10\x00\x00\x00\x12\x00\x00\x00", "wrong R1 checkpoint marker")
+                    version = case.get("model_version", 2)
+                    marker = b"AWCKPTH\x00\x11\x00\x00\x00\x13\x00\x00\x00" if version == 3 else b"AWCKPTG\x00\x10\x00\x00\x00\x12\x00\x00\x00"
+                    extension = 8 if version == 3 else 0
+                    check(initial[:16] == frame[8:24] == marker, "wrong model checkpoint marker")
                     summary = record["summary"]
-                    check(record["exit_code"] == 0 and int(summary["trace_hash"]) == int.from_bytes(frame[-40:-32], "little"),
+                    check(record["exit_code"] == 0 and int(summary["trace_hash"]) == int.from_bytes(frame[-40-extension:-32-extension], "little"),
                           "frame did not bind the recorded history")
                     try:
-                        metrics, life, workers, counts = assess(case, summary, raw, data["cuts.csv"], data["individuals.csv"], profile_version=2)
-                        repeat, memory = audit_witnesses(case, summary, raw)
-                        check(tuple(int.from_bytes(frame[i:i+8], "little") for i in range(len(frame)-32, len(frame)-8, 8)) == memory,
+                        metrics, life, workers, counts = assess(case, summary, raw, data["cuts.csv"], data["individuals.csv"], profile_version=version)
+                        repeat, memory = audit_witnesses(case, summary, raw, F_CUE if version == 3 else F_RATION)
+                        check(tuple(int.from_bytes(frame[i:i+8], "little") for i in range(len(frame)-32-extension, len(frame)-8-extension, 8)) == memory,
                               "frame memory differs from committed facts")
                     except ValueError as exc:
                         raise ValueError(f"{name}: {exc}") from exc
@@ -170,13 +177,13 @@ def verify(root, output=None, subset=()):
         for filename, entries in (("cases.csv", results), ("stage_exposure.csv", timeline), ("offspring.csv", paths),
                                   ("daily_count_timing.csv", censuses), ("assay_costs.csv", costs)):
             csv_out(output / filename, entries)
-        if not subset and not manifest["selected_subset"]:
+        if not subset and not manifest["selected_subset"] and not model.startswith("water-"):
             evaluate(output, results, timeline, censuses)
         write_json(output / "archive_verification.json", dict(archive_index_sha256=sha(root / "completed.json"),
                    run_manifest_sha256=sha(root / "run.json"), case_receipts=len(seen), member_files=member_count,
                    canonical_facts=fact_count, completed=len(costs), verifier_sha256=sha(Path(__file__)),
                    outputs={p.name: sha(p) for p in sorted(output.iterdir())}))
-    print(f"{len(seen)} R1 case receipts, {member_count} file hashes and {fact_count} canonical facts verified")
+    print(f"{len(seen)} {model} case receipts, {member_count} file hashes and {fact_count} canonical facts verified")
 
 
 def main():

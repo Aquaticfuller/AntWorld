@@ -37,11 +37,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("raw", "v1", "r1", "out"):
         parser.add_argument("--"+name, type=Path, required=True)
+    parser.add_argument("--both", type=Path)
     args = parser.parse_args()
     samples = [row for session in sorted(args.raw.glob("session*")) for row in read(session/"samples.csv")
                if (session/"samples.csv").exists()]
-    wanted = {r["case"] for r in samples}
-    sources = {model: receipts(root, wanted) for model, root in (("v1", args.v1), ("r1", args.r1))}
+    roots = {"v1": args.v1, "r1": args.r1}
+    if args.both:
+        roots["both"] = args.both
+    sources = {model: receipts(root, {r["case"] for r in samples if r["model"] == model}) for model, root in roots.items()}
     groups = defaultdict(list)
     for row in samples:
         reference = sources[row["model"]][row["case"]]
@@ -70,7 +73,7 @@ def main():
             writer.writerows(output)
     write_json(args.out/"reference_equivalence.json", dict(samples=len(samples), case_models=len({(r["case"],r["model"]) for r in samples}),
                fields=list(FILES), canonical_match=True if samples else None,
-               v1_index_sha256=sha(args.v1/"completed.json"), r1_index_sha256=sha(args.r1/"completed.json")))
+               **{f"{model}_index_sha256": sha(root/"completed.json") for model, root in roots.items()}))
 
 
 if __name__ == "__main__":
