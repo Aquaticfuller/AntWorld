@@ -22,6 +22,7 @@ struct Plan {
     bool all_relevant{}, pending{}, start_at_current{};
     std::size_t payload_limit{cut_limit};
     bool activity_care{};
+    bool foraging{};
 };
 
 struct Boundary {

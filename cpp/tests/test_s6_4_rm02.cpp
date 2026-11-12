@@ -1,5 +1,6 @@
 #include "rm02_observer.hpp"
 #include "s6_3_3_fixture.hpp"
+#include "s2_fixture.hpp"
 
 #include "antworld/storage/store.hpp"
 #include "sqlite_internal.hpp"
@@ -441,6 +442,47 @@ void wp2_scope(const Path& dir) {
     off.advance_to({600000});
     require(off.checkpoint() == later, "WP-2 observed continuation differs from direct off replay");
 }
+
+void wp3_scope(const Path& dir) {
+    fixture::Scene scene(19, true, true, "open", 1);
+    auto& world = scene.world;
+    const auto id = scene.workers.front().id;
+    Plan plan{"foraging-test", {id}, {}, true};
+    const auto legacy = plan;
+    plan.foraging = true;
+    world.advance_to({10000});
+    const auto before = world.checkpoint();
+    const auto path = dir / "foraging.sqlite";
+    {
+        Observer observer(path, world, plan);
+        Observer narrow(dir / "legacy.sqlite", world, legacy);
+        const auto captured = observer.capture();
+        const auto broad = decode(captured);
+        require(!captured.dropped && captured.selected > narrow.capture().selected && broad.states == 1 && broad.ledgers == 1,
+                "WP-3 incomplete scope");
+        for (const auto kind : {FactKind::SurfaceConfigured, FactKind::ForagingStarted, FactKind::ForagingDecision,
+                                FactKind::Moved, FactKind::TrailMaintenance}) {
+            require(has(broad, [=](const auto& fact) { return fact.kind == kind; }), "WP-3 missing foraging fact");
+        }
+        observer.start_background();
+        observer.submit(observer.capture(), PublicationFault::BeforeCommit);
+        rejects([&] { observer.flush(); });
+        require(world.checkpoint() == before && observer.committed_cuts() == 0, "WP-3 fault changed history or world");
+        require(observer.publish(observer.capture()) == Publish::Committed, "WP-3 fault retry failed");
+        observer.anchor(before);
+    }
+    WorldRuntime restored({91, 3}, 1);
+    restored.restore(before);
+    rejects([&] { Observer wrong(path, restored, legacy, before); });
+    Observer reopened(path, restored, plan, before);
+    require(reopened.publish(reopened.capture()) == Publish::Duplicate, "WP-3 duplicate restored publication");
+    restored.advance_to({20000});
+    const auto second = restored.checkpoint();
+    require(reopened.publish(reopened.capture()) == Publish::Committed, "WP-3 failed to persist new coverage");
+    world.advance_to({17001});
+    world.advance_to({20000});
+    require(second == world.checkpoint(), "WP-3 restored and split advances diverged");
+}
 } // namespace
 
 int main(int argc, char** argv) {
@@ -457,6 +499,7 @@ int main(int argc, char** argv) {
         else if (mode == "recovery") recovery(dir);
         else if (mode == "faults") fault_cases(dir);
         else if (mode == "wp2_scope") wp2_scope(dir);
+        else if (mode == "wp3_scope") wp3_scope(dir);
         else throw std::invalid_argument("unknown RM-02 test mode");
         std::cout << "PASS RM-02 " << mode << '\n';
         return 0;

@@ -94,11 +94,14 @@ void validate_plan(Plan& plan) {
     require(plan.focal.size() <= focal_limit &&
             std::adjacent_find(plan.focal.begin(), plan.focal.end()) == plan.focal.end() &&
             (plan.focal.empty() || plan.focal.front().value != 0) &&
+            !(plan.activity_care && plan.foraging) &&
             plan.payload_limit && plan.payload_limit <= cut_limit, "invalid observer scope or capacity");
 }
 
 std::string manifest_identity(const WorldSnapshot& state, const Plan& plan) {
-    auto text = std::string(plan.activity_care ? "WP2-SIDECAR-1\n" : "RM02-SIDECAR-1\n") +
+    const auto* scope = plan.foraging ? "WP3-SIDECAR-1\n" :
+        plan.activity_care ? "WP2-SIDECAR-1\n" : "RM02-SIDECAR-1\n";
+    auto text = std::string(scope) +
         plan.lineage + '\n' + state.world.str() + '\n' +
         std::to_string(state.seed) + '\n' + std::to_string(plan.all_relevant) + '\n' +
         std::to_string(plan.pending) + '\n' + std::to_string(plan.start_at_current) + '\n' +
@@ -212,7 +215,7 @@ void capture_fact(Cut& cut, const WorldEvent& e, std::size_t cap) {
     append(cut, Record::Fact, row.view(), cap);
 }
 
-bool relevant(const WorldEvent& fact, bool activity_care) {
+bool relevant(const WorldEvent& fact, const Plan& plan) {
     switch (fact.kind) {
     case FactKind::AntSeeded:
     case FactKind::FoodSeeded:
@@ -240,23 +243,28 @@ bool relevant(const WorldEvent& fact, bool activity_care) {
     case FactKind::ProteinRecycled:
         return true;
     case FactKind::BiologicalObservation:
-        return activity_care || fact.observation.act == CareAct::FeedBrood || fact.observation.act == CareAct::TransferNutrition ||
+        return plan.activity_care || fact.observation.act == CareAct::FeedBrood || fact.observation.act == CareAct::TransferNutrition ||
             fact.observation.act == CareAct::IngestFood ||
             (fact.observation.act == CareAct::Inactive && fact.observation.phase == ObservationPhase::Selected);
     case FactKind::ColonySeeded:
     case FactKind::Moved:
-    case FactKind::BroodMoved:
     case FactKind::Rested:
     case FactKind::ForagingStarted:
     case FactKind::ForagingDecision:
-    case FactKind::ExcavationDecision:
     case FactKind::SoilPickedUp:
     case FactKind::SoilDropped:
     case FactKind::SoilFilled:
+        return plan.activity_care || plan.foraging;
+    case FactKind::SurfaceConfigured:
+    case FactKind::TrailMaintenance:
+    case FactKind::GeometryConfigured:
+        return plan.foraging;
+    case FactKind::BroodMoved:
+    case FactKind::ExcavationDecision:
     case FactKind::BiologyConfigured:
     case FactKind::CareProgramChanged:
     case FactKind::CareTick:
-        return activity_care;
+        return plan.activity_care;
     default:
         return false;
     }
@@ -267,7 +275,7 @@ bool included(const Plan& plan, EntityId id) {
 }
 
 bool projected(const Plan& plan, const WorldEvent& fact) {
-    if (!relevant(fact, plan.activity_care))
+    if (!relevant(fact, plan))
         return false;
     if (plan.all_relevant || included(plan, fact.actor))
         return true;

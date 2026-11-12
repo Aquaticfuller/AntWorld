@@ -34,6 +34,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #ifdef ANTWORLD_WP2_BENCHMARK
         plan.activity_care = true;
 #endif
+#ifdef ANTWORLD_WP3_BENCHMARK
+        plan.foraging = true;
+#endif
         observer = std::make_unique<Observer>(database, world, std::move(plan));
         observer->start_background();
     }

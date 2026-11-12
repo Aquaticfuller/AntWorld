@@ -59,6 +59,10 @@ class Fact:
     position: tuple = ()
     colony: int = 0
     resource: int = 0
+    mode: int = 0
+    reason: int = 0
+    deposited_units: float = 0.0
+    forgot_memory: bool = False
 
 
 def decode_fact(data, world):
@@ -73,7 +77,8 @@ def decode_fact(data, world):
     else:
         require(len(data) == FACT.size, "unexpected canonical fact suffix")
     return Fact(row[0], row[3], row[4], row[6], row[10], row[7], row[8],
-                kind, row[16:20], row[20], OUTCOMES[row[21]], care, row[13:16], row[11], row[12])
+                kind, row[16:20], row[20], OUTCOMES[row[21]], care, row[13:16], row[11], row[12],
+                row[22], row[23], row[24], bool(row[25]))
 
 
 def unpack(payload, version, limit):
@@ -126,7 +131,8 @@ def open_sidecar(path):
         require(app_id == 1096241714 and version in (1, 2), "foreign sidecar format")
         identity, origin = db.execute("SELECT identity,origin FROM manifest WHERE id=1").fetchone()
         magic, lineage, world, seed, all_relevant, pending, late, neighbor, limit, *focal = identity.splitlines()
-        require(magic in ("RM02-SIDECAR-1", "WP2-SIDECAR-1") and 0 <= origin, "invalid sidecar manifest")
+        require(magic in ("RM02-SIDECAR-1", "WP2-SIDECAR-1", "WP3-SIDECAR-1") and 0 <= origin,
+                "invalid sidecar manifest")
         require(all(v in ("0", "1") for v in (all_relevant, pending, late)), "invalid manifest scope flags")
         entity_ids = tuple(map(int, focal))
         require(len(entity_ids) <= 64 and entity_ids == tuple(sorted(set(entity_ids))), "invalid focal scope")
@@ -137,7 +143,8 @@ def open_sidecar(path):
         metadata = dict(world_id=world, world=(world_id >> 64, world_id & (2**64 - 1)), seed=int(seed),
                         lineage=lineage, origin=origin, focal=entity_ids, all_relevant=all_relevant == "1",
                         pending=pending == "1", late=late == "1", neighbor=int(neighbor),
-                        limit=limit, version=version, anchors=anchors, activity_care=magic == "WP2-SIDECAR-1")
+                        limit=limit, version=version, anchors=anchors, activity_care=magic == "WP2-SIDECAR-1",
+                        foraging=magic == "WP3-SIDECAR-1")
         yield metadata, read_cuts(db, identity, metadata)
     finally:
         db.close()
