@@ -27,7 +27,9 @@ python tools/verify_s6_4_wp6b_r2.py out/r2 --ci
 python tools/summarize_s6_4_wp6b_r2.py out/r2 out/r2/comparison
 ```
 
-`$r2App` is the Release executable, and `$r2Compiler` is its compiler path. The trace reads each relevant raw member and rebuilds individual energy, material and water using committed events and declared rates. The archive verifier additionally checks all member hashes, event order, budgets and the original simulation gates. `cues.csv.gz` links the committed cue and standard care phases to the actual paid ration where one exists. Empty fields retain unavailable endpoints. `water_adults.csv` retains actual adult exposure, deaths, absorbed water and motion. A right-censored worker with less than seven days of follow-up cannot establish seven-day survival.
+`$r2App` is the Release executable, and `$r2Compiler` is its compiler path. The trace reads each relevant raw member and rebuilds individual energy, material and water using committed events and declared rates. The archive verifier additionally checks all member hashes, event order, budgets and the original simulation gates. `cues.csv.gz` links the committed cue and standard care phases to the actual paid ration where one exists. Empty fields retain unavailable endpoints. `water_adults.csv` retains actual adult exposure, deaths, absorbed water and motion. A right-censored worker with less than seven days of follow-up cannot establish seven-day survival. The reachable and blocked arms both create a resource identity. The absent arm creates none, which can shift later ant IDs and their ID-keyed choices. Use reachable versus blocked as the matched spatial contrast. Each representative midpoint bundle retains the SQLite file and its original WAL. Extract both to one folder when using a database directly.
+
+To regenerate the figure with the existing plotting environment, run `python tools/plot_s6_4_wp6b_r2.py out/r2/comparison out/r2/resource-access.png` with Matplotlib 3.10.7.
 
 ## Windows performance
 
