@@ -1,0 +1,17 @@
+population,rule,endpoint,contributing,complete_worlds,worlds,median,lo95,hi95,published_min,published_max,status
+borisovka,at_least,egg_d,192,0,192,17.0,17.0,17.0,15,18,INSUFFICIENT
+borisovka,at_least,larva_d,27,0,192,21.0,21.0,21.0,7,14,INSUFFICIENT
+borisovka,at_least,pupa_d,0,0,192,,,,13,16,INSUFFICIENT
+borisovka,at_least,total_d,0,0,192,,,,39,47,INSUFFICIENT
+borisovka,exact,egg_d,192,0,192,17.0,17.0,17.0,15,18,INSUFFICIENT
+borisovka,exact,larva_d,27,0,192,21.0,21.0,21.0,7,14,INSUFFICIENT
+borisovka,exact,pupa_d,0,0,192,,,,13,16,INSUFFICIENT
+borisovka,exact,total_d,0,0,192,,,,39,47,INSUFFICIENT
+st_petersburg,at_least,egg_d,192,0,192,16.0,16.0,16.0,14,19,INSUFFICIENT
+st_petersburg,at_least,larva_d,16,0,192,24.0,22.0,24.0,8.5,12.5,INSUFFICIENT
+st_petersburg,at_least,pupa_d,0,0,192,,,,12,16,INSUFFICIENT
+st_petersburg,at_least,total_d,0,0,192,,,,37,44,INSUFFICIENT
+st_petersburg,exact,egg_d,192,0,192,16.0,16.0,16.0,14,19,INSUFFICIENT
+st_petersburg,exact,larva_d,16,0,192,24.0,24.0,24.0,8.5,12.5,INSUFFICIENT
+st_petersburg,exact,pupa_d,0,0,192,,,,12,16,INSUFFICIENT
+st_petersburg,exact,total_d,0,0,192,,,,37,44,INSUFFICIENT

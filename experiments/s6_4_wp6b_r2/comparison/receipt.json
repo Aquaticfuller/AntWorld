@@ -1,0 +1,24 @@
+{
+  "bootstrap": 4096,
+  "inputs": {
+    "both": "dd60626655f0d9e32c9416a96461e6620123558f61d0307f3a9c81f613781b9a",
+    "h1": "b39fb804cd2348625c0d59c9a35308c5ba2ccce545f7d1d70c3be8e346d4d06d",
+    "h2": "41380f4e7be6cae966565b377da6d26ee793deb6294c1c65eadcb38cd411a5ce",
+    "r1": "e45606bc6f7a5ddd0891b8befbb2c5c1457e26d03cf17034fee3b739156ddb0c",
+    "water-both": "bff2016e514690d3d5f9a0a3528a9412387336178a516210bae189a87a92986c",
+    "water-r1": "349fd92d8aa7fdd8c3f8fbbb68c9b65305b6fea4218fe16f57f2349e12e117b9"
+  },
+  "outputs": {
+    "cases.csv": "878413f332001d969186c5af4da370a7d1e6dc67da6ba3dc07729239cbd8a783",
+    "cue_outcomes.csv": "1d643a324bf9c3fdfc1c8b19f93099027ed7a1898b95635906bd21a8aa1260ae",
+    "groups.csv": "9cd88fcbd47eef20f8f8d97ea47d41a74bc55a63572dcface8e839668438c69e",
+    "paired_summary.csv": "ba4dcd803a4182e4a988034479d423a09797aeabd4a71320d70dc790a4fbbfa1",
+    "paired_worlds.csv": "d54325720605eeaa800c1ff8cf1a191342507e9229ad98f7bc5bc7908fc6f6a9",
+    "water_adults.csv": "691a44675b254a05c33decf19b0399f0591feb83a623a5238c4d196748bfd9eb",
+    "water_paired_summary.csv": "fea8289eb2b51cb69f0842e3dc3e0ec5fbc7de8a40fbb492e73a0dd409a49110",
+    "water_paired_worlds.csv": "de4d9ed456de01f4f05cba0445c9ef27484209c2336ea80b093d5ab8b1051f33",
+    "wider_spacing_controls.csv": "15f4332253bf36874de007aa1da4bec9e3f0b2f815f931717f32034d2f071325"
+  },
+  "r1_protein_doses_sha256": "14554c2b4763e2985783f971a91effa36fb796ef9276fe3f17e3f8f810cd70ed",
+  "seed": 640601
+}

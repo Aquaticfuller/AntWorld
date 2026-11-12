@@ -1,0 +1,21 @@
+{
+  "archive_index_sha256": "ef56a9f62928b6ca40d6738e1232056e5af3ef96511cf9dc4d4d7e812ff641f7",
+  "canonical_facts": 13781011,
+  "case_receipts": 1100,
+  "completed": 1100,
+  "member_files": 12100,
+  "outputs": {
+    "assay_costs.csv": "a735168c1d0ae2b5c77e37356c46a1cd17240786e21a6597238ef5ba2b342331",
+    "cases.csv": "5f22ce841f47bc42188268d5afeef1f89b72eaedcd8e59ee39c40f146e156d70",
+    "competing_events.csv": "9962d48a62385eb98f83abda4c6b8be3afd904858227ac40d62351916b688256",
+    "daily_count_timing.csv": "c155c80becab68793975df15d99c5a9f7d16e3d3a16a23ef6bccecbcc09389fa",
+    "decision.json": "18d1380ea62079c35f5fe62cd13c934160e0f85cdd27d62b15abc7bbaadbf83d",
+    "offspring.csv": "01c3d012c08f32a7bf5f188cac4c9aecbda5b6417ae775702a263e4cd8f506dd",
+    "robustness_factors.csv": "7af3fefaf4262c0a80da2d9b10670b6238552e0c96f6e92341efdc5df2598f33",
+    "robustness_profiles.csv": "00fb30b6dc209838f722b28d41f4d516bea4e51489ab45facb072ce07545b355",
+    "stage_exposure.csv": "6c219a817eb519b2d1ffa4879e17c7cd5bbff6799d9272c4043db2f29e910390",
+    "timing_comparison.csv": "b59558e9418223d1a7d06f60627f5554102714fd4cc2f58d9a1c2be4b591da2c"
+  },
+  "run_manifest_sha256": "f01e17346336b74657aeaf9690b59ecf3a2dfb6dea2ece862d4e600aad7c73f3",
+  "verifier_sha256": "c6cf9dc1723bc8a559c0761732452597bb92f8e7cd9a6ac29a3abff0e7d5c006"
+}

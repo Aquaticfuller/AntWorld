@@ -1,0 +1,63 @@
+{
+  "statuses": {
+    "COMPLETE": 1092
+  },
+  "coverage": 1092,
+  "population": [
+    {
+      "population": "borisovka",
+      "group": "primary",
+      "passing_profiles": 32,
+      "profiles": 32,
+      "required": 24,
+      "successful_on": 182,
+      "trials_on": 192,
+      "paired_ci95": [
+        0.890625,
+        0.9895833333333334
+      ]
+    },
+    {
+      "population": "borisovka",
+      "group": "check",
+      "passing_profiles": 8,
+      "profiles": 8,
+      "required": 6,
+      "successful_on": 48,
+      "trials_on": 48,
+      "paired_ci95": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "population": "st_petersburg",
+      "group": "primary",
+      "passing_profiles": 32,
+      "profiles": 32,
+      "required": 24,
+      "successful_on": 192,
+      "trials_on": 192,
+      "paired_ci95": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "population": "st_petersburg",
+      "group": "check",
+      "passing_profiles": 8,
+      "profiles": 8,
+      "required": 6,
+      "successful_on": 48,
+      "trials_on": 48,
+      "paired_ci95": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "any_no_care_pupations": false,
+  "profiles_gate": true,
+  "timing_gate": false
+}

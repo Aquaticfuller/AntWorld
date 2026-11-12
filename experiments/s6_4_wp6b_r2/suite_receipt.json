@@ -1,0 +1,25 @@
+{
+  "exit_codes": {
+    "collect/both": 0,
+    "collect/h1": 0,
+    "collect/h2": 0,
+    "collect/r1": 0,
+    "collect/v1": 0,
+    "collect/water-both": 0,
+    "collect/water-r1": 0,
+    "comparison": 0,
+    "recovery": 0,
+    "trace/both": 0,
+    "trace/h1": 0,
+    "trace/h2": 0,
+    "trace/water-both": 0,
+    "trace/water-r1": 0,
+    "verify/both": 0,
+    "verify/h1": 0,
+    "verify/h2": 0,
+    "verify/r1": 0,
+    "verify/v1": 0,
+    "verify/water-both": 0,
+    "verify/water-r1": 0
+  }
+}

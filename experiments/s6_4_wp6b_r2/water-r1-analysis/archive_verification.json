@@ -1,0 +1,16 @@
+{
+  "archive_index_sha256": "9a886d8bcbd8af5b44c68da7972a91eb074ebf4338a125e477c79ba29243f8bc",
+  "canonical_facts": 434490,
+  "case_receipts": 36,
+  "completed": 36,
+  "member_files": 396,
+  "outputs": {
+    "assay_costs.csv": "0d4f81da6057768d465c226757e30ba7b6b46e12e1182620d2ff8a3e329999e2",
+    "cases.csv": "51a1fd7910e340dfcd016f65d31e13612bee74d6abff4b6e510ec6a936008919",
+    "daily_count_timing.csv": "f9c6df619974d5bc290f99725c04ab159e0bd23ee65b57be1ece125fbeba411e",
+    "offspring.csv": "cbcfedb67b7c2abfe80ca04d783fb769708eb6d90c7086369f615616112c08d2",
+    "stage_exposure.csv": "d0d6cfd580b7f3c40d24f02b788f62ad6dc543423dc333c03716b4df1eefca90"
+  },
+  "run_manifest_sha256": "30fd0177537c62a26de9812eeddfc21c396384407b7cd6be354492d2f35ee7d3",
+  "verifier_sha256": "c6cf9dc1723bc8a559c0761732452597bb92f8e7cd9a6ac29a3abff0e7d5c006"
+}
