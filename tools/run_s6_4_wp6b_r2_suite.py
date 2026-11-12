@@ -17,6 +17,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("binary", "compiler", "out", "scratch"):
         parser.add_argument("--" + name, type=lambda p: Path(p).resolve(), required=True)
+    parser.add_argument("--save-midpoints", action="store_true")
     args = parser.parse_args()
     exits = {}
     for model in (*MASKS, *REFERENCES):
@@ -26,8 +27,9 @@ if __name__ == "__main__":
         exits[f"verify/{model}"] = run_tool("verify_s6_4_wp6b_r2", args.out / model, "--out", args.out / f"{model}-analysis")
         if model in MASKS:
             exits[f"trace/{model}"] = run_tool("trace_s6_4_wp6b_r2", args.out / model, args.out / f"{model}-tracks")
+    storage = ("--midpoints", args.out / "midpoints") if args.save_midpoints else ()
     exits["recovery"] = run_tool("check_s6_4_wp6b_r2_recovery", "--archive", args.out, "--binary", args.binary,
-                                "--scratch", args.scratch, "--out", args.out / "recovery.json")
+                                "--scratch", args.scratch, "--out", args.out / "recovery.json", *storage)
     if not any(exits.values()):
         exits["comparison"] = run_tool("summarize_s6_4_wp6b_r2", args.out, args.out / "comparison")
     write_json(args.out / "suite_receipt.json", dict(exit_codes=exits))
