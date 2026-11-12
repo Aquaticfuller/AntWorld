@@ -1,0 +1,13 @@
+{
+  "archive_index_sha256": "2ec1472a76162b5dd0ca2e01eff85606fca9cf97492bd5493c21ae4dedc5601d",
+  "cases": 1932,
+  "outputs": {
+    "cases.csv": "f9c86867d6bb0e4af8f8e91042a727e6835591d604fc703fd85b606642c7370b",
+    "individuals.csv.gz": "6489deca40607feb9acfcf8ec11b0d936e30e9a92740ca1dbc72c496d894d6bb",
+    "points.csv.gz": "823225e3d035ffdd6c11ab4655d1c297f62d23cc3d92897d02631e16ab9948f1"
+  },
+  "status_counts": {
+    "COMPLETE": 1896,
+    "INPUT_REJECTED": 36
+  }
+}
