@@ -1,0 +1,39 @@
+# AntWorld biological modeling policy
+
+S6.4 WP-6A records the modeling policy adopted by the project owner. AntWorld aims to give players a scientifically credible ecosystem to observe. Prefer reliable condition-matched measurements. When evidence is indirect or qualitative, use the smallest falsifiable mechanism that respects biology and material budgets. Judge it by individual actions, colony coordination and trajectories over time, including failures and uncertainty. [WP-6A decision and implementation index](research/s6_4_wp6a/S6_4_WP6A_RESULTS.md)
+
+## Biological evidence
+
+Grade a particular measurement, mechanism claim or parameter use in its stated setting. A source can support the measured endpoint strongly and the transfer to a simulator coefficient weakly. Record those as separate claims.
+
+| Grade | Admission | Typical use |
+|---|---|---|
+| A | Direct quantitative *Lasius niger* measurements with matching stage, setting, origin and observation definition. Keep the sample unit and uncertainty. | Constrain the same endpoint. Propagate measurement uncertainty through any documented dimensional conversion. |
+| B | Direct *L. niger* qualitative support or quantitative support with a defined mismatch, including conditional results and imperfectly matched assays. | Constrain direction, occurrence, scale or a particular comparison window. Record the mismatch and uncertainty. |
+| C | Biological extrapolation or a simple, mechanistically supported hypothesis. Cite its source, causal assumptions, scope and competing explanation. | Test a bounded mechanism or a physically derived parameter range. Retain a falsifier and relevant negative comparisons. |
+| D | Engineering input, discretization, unsupported numeric coefficient or explicit sensitivity stress. | Implement and test the specified mechanism. Keep uncalibrated values marked `ENGINEERING_FIXTURE`, including values used by a C hypothesis. |
+
+Each parameter record includes a stable key, quantity and unit, admitted range, nominal test value if applicable, evidence grade, condition and source locator, derivation, uncertainty, dependencies and exclusions. Label correlations and admissibility constraints. An observed time interval can bound a detection endpoint while leaving growth cost and survival unresolved. Physical limits and engineered control values remain distinguishable from observed individual distributions. Source grade increases require review of the original measure and any new conditions. When a source is contradicted, correct the new claim with dated evidence and retain the earlier assessment in history.
+
+The earlier Evidence Atlas grades, evidence-source classifications, engineering receipts and scientific verdicts retain their original meanings. This new A–D column is a separate assessment of the stated use. The nine existing root blockers retain `BIOLOGICAL_BLOCKED`. A source entry, a parameter hypothesis and a full biological validation each have their own record.
+
+## Simulation readiness
+
+Every readiness record identifies a model/version and an admitted condition range. Review records include the scope, experiment manifest, tested ranges, failed arms, evidence grades, exceptions and authorizer. Current and superseded records are append-only.
+
+| Status | Entry requirements | Failure, suspension and re-entry |
+|---|---|---|
+| `NOT_READY` | A required capability is missing in scope, a mandatory biological pattern fails, or a hard engineering invariant fails. | Document the failure and affected scope. A new implementation can move to `ENGINEERING_ONLY` after correcting functional defects and demonstrating invariant tests. |
+| `ENGINEERING_ONLY` | Core integrity, conservation, reproducible execution and the stated engineering capability pass. Scientific patterns or scope still need evidence. | A functional or engineering regression returns the affected claim to `NOT_READY`. Collect quantitative checks where justified and execute the frozen pattern/robustness battery before requesting conditional acceptance. |
+| `SIMULATION_CONDITIONALLY_ACCEPTED` | Engineering gates pass. A reviewed, bounded hypothesis or stronger evidence explains the admitted mechanisms. The preregistered microscopic, colony and long-term patterns hold across the admitted parameter range with the required negative controls and uncertainty analysis. Record unsupported mechanisms and keep only the approved claim. | Suspend after a safety-invariant failure, a material contradiction with better evidence, a relevant algorithm or parameter-envelope change, or a condition change outside the qualified profile. Retest the affected levels and integration, retain the failed evidence and obtain approval before restoring the claim. A hard defect goes to `NOT_READY`; uncertain or invalidated biological patterns go to `ENGINEERING_ONLY` if engineering still passes. |
+| `BIOLOGICALLY_VALIDATED` | In addition to conditional readiness, prospectively matched independent biological data meet frozen error/uncertainty limits for the specific mechanism, intermediate outcomes and condition. Development data and biological replicates are traceably separated. | Suspend the validation claim if independence, measurement validity or condition matching changes, or if the result fails a preregistered replication or its applicable interval. Reassess engineering and conditional readiness separately, then repeat independent evaluation before restoring this status. |
+
+Simulation conditional acceptance can coexist with `BIOLOGICAL_BLOCKED`. Biological validation requires a separate decision per BR endpoint and condition. A conditional result grants eligibility to request opt-in game use in that scope. Shipping the default, replacing a saved world's model and expanding the scope each require their own review. An unchanged default and previous save remain valid historical controls.
+
+## Scope and experiment rules
+
+The first proposed game envelope is a documented temperate active-season *L. niger* founding and early-worker window. WP-6B starts with an isolated mated foundress and a protected chamber under the nominal 25 °C reference profile, then tests early support and no-supply contrasts. Other contexts can keep their engineering status. Overwintering, mature and multi-year colony trajectories, field climate and disease, field mortality, mating flights and mature nest architecture remain outside the present qualified claims. The broader world and lifecycle remain product goals.
+
+Freeze scenario inputs, parameter ranges, output definitions and failure rules before reading test outcomes. Record structural/adverse and ordinary contexts, exact resource access, shared source colonies, all seeds and both biologically valid failures and engineering failures. Use source-colony or independent collection-group resampling for biological observations. Software seeds measure simulation uncertainty. Time-to-completion among survivors, probability of completion, competing mortality and censoring are separate endpoints. Validation units and thresholds come from the admitted study and measurement errors. Simple conditional acceptance can use preregistered gameplay robustness criteria with explicit engineering provenance. It still requires meaningful intermediate patterns and coverage across an envelope rather than a fitted final population.
+
+Candidate models spend explicit substrates and water through the authoritative single-writer transaction path. Finite stocks, depletion, costs and ordinary failure must remain possible. Preserve stable identities, local agency, true geometry, deterministic ties and exact recovery. Pending proposals carry no material authority. Technical controls, stress conditions and unsupported parameters remain `ENGINEERING_FIXTURE`. [Multi-scale protocol](research/s6_4_wp6a/MULTISCALE_ACCEPTANCE_PROTOCOL.md)
