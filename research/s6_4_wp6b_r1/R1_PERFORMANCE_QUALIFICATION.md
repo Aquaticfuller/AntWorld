@@ -42,3 +42,14 @@ The 24.6419 ms drain is retained and included in the durable total. The 20 ms ce
 | Borisovka depot, 8 workers | F1 v1 | 1.0227 / 0.9427 | 1.0382 / 2.1210 | FAIL, process tail |
 
 The R1 St. Petersburg long sample is session 1, sample 95. Its application total was 272.680 ms, of which advance was 31.206 ms, daily capture 19.167 ms, midpoint save 49.275 ms, midpoint reopen 87.634 ms, and mandatory and optional file sync 25.844 and 4.757 ms. These phases record separate sources of elapsed time. The child and whole-process totals were both affected. The Borisovka depot v1 long sample is session 3, sample 23. It completed its measured application work in 628.547 ms and took 1,790.069 ms at the process boundary. The 1,161.523 ms outer residual is not attributable to a particular operation from the available trace. Both rows remain in their original positions. The earlier 693 ms result is also preserved. No sampling rule or budget was revised in response. [Raw application timing and telemetry](../../experiments/s6_4_wp6b_r1/performance/application-observer) [Cell ratios and uncertainty](../../experiments/s6_4_wp6b_r1/performance/application-observer-analysis)
+
+All 480 measured runs match their respective uninterrupted archive's input, initial checkpoint, terminal frame and canonical fact SHA-256. This includes every observed and unobserved restart. The 10 cells in each model are traceable to the original formal inputs. [Reference equivalence](../../experiments/s6_4_wp6b_r1/performance/application-costs/reference_equivalence.json)
+
+| Observed nominal seed 1 | Facts | Frame (B) | Advance P50 (ms) | Advance per fact (µs) | Midpoint save / reopen P50 (ms) |
+|---|---:|---:|---:|---:|---:|
+| Borisovka v1 | 10,004 | 25,886 | 9.74 | 0.974 | 31.55 / 41.67 |
+| Borisovka R1 | 12,798 | 29,168 | 16.04 | 1.253 | 31.98 / 44.66 |
+| St. Petersburg v1 | 9,857 | 25,886 | 9.56 | 0.970 | 32.31 / 40.69 |
+| St. Petersburg R1 | 14,747 | 30,291 | 19.42 | 1.317 | 31.86 / 42.49 |
+
+The fixed frame addition for the configuration and witness is 36 bytes. Different hatch, feeding, development and worker activity histories change work and frame size across versions. Per-fact normalization describes the changed workload mix and cannot isolate CPU overhead of the added draw or state. The phase summary records setup, advance, capture, encode, sync, save, reopen and peak RSS at P50, P95 and P99 for each cell and treatment. [Application phase summary](../../experiments/s6_4_wp6b_r1/performance/application-costs/phase_costs.csv)
