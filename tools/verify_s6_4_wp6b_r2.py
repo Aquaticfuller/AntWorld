@@ -40,6 +40,12 @@ def ci(root):
               (manifest["cpp_tree"], manifest["binary_sha256"], manifest["runner_sources"]) == measured,
               f"legacy replay is not bound to the factorial binary: {model}")
         verify(root / model, r2=frozen)
+    recovery = json.loads((root / "recovery.json").read_text(encoding="utf-8"))
+    for row in recovery["cases"]:
+        if row["treatment"] == "durable":
+            file = root / "midpoints" / f"{row['mode']}-{row['case']}.sqlite"
+            check(file.stat().st_size == row["midpoint_sqlite_bytes"] and sha(file) == row["midpoint_sqlite_sha256"],
+                  f"midpoint archive differs: {file.name}")
 
 
 if __name__ == "__main__":

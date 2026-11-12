@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import zipfile
@@ -30,8 +31,10 @@ def receipt(root, name, work):
     raise ValueError(f"missing recovery case: {name}")
 
 
-def run(root, binary, scratch, output):
+def run(root, binary, scratch, output, midpoints=None):
     scratch.mkdir(parents=True, exist_ok=True)
+    if midpoints:
+        midpoints.mkdir(parents=True)
     results = []
     for mode, names in REPRESENTATIVES.items():
         directory = root / mode
@@ -49,8 +52,18 @@ def run(root, binary, scratch, output):
                         record, = csv.DictReader(stream)
                     if actual != expected or any(record[k] != reference["summary"][k] for k in ("state_hash", "trace_hash", "rng", "events")):
                         raise ValueError(f"recovery or observer changed canonical authority: {name}/{treatment}")
-                    results.append(dict(mode=mode, case=name, treatment=treatment, hashes=actual,
-                                        midpoint_sqlite_bytes=(dest / "midpoint.sqlite").stat().st_size if treatment == "durable" else None))
+                    result = dict(mode=mode, case=name, treatment=treatment, hashes=actual)
+                    if treatment == "durable":
+                        database = dest / "midpoint.sqlite"
+                        if database.with_suffix(".sqlite-wal").exists():
+                            raise ValueError("midpoint database still has an open WAL")
+                        result.update(midpoint_sqlite_bytes=database.stat().st_size, midpoint_sqlite_sha256=sha(database))
+                        if midpoints:
+                            target = midpoints / f"{mode}-{name}.sqlite"
+                            shutil.copyfile(database, target)
+                            if sha(target) != result["midpoint_sqlite_sha256"]:
+                                raise ValueError(f"copied midpoint differs: {target}")
+                    results.append(result)
     write_json(output, dict(binary_sha256=sha(binary), cases=results))
     print(f"{len(results)} exact midpoint or observation-disabled runs")
 
@@ -59,5 +72,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("archive", "binary", "scratch", "out"):
         parser.add_argument("--" + name, type=lambda p: Path(p).resolve(), required=True)
+    parser.add_argument("--midpoints", type=Path)
     args = parser.parse_args()
-    run(args.archive, args.binary, args.scratch, args.out)
+    run(args.archive, args.binary, args.scratch, args.out, args.midpoints)
