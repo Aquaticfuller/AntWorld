@@ -2,6 +2,8 @@
 
 The [prospective protocol](../../research/s6_4_wp6b_r2/FROZEN_R2_PROTOCOL.md) identifies the protected inputs and gates. `v1_tracks` and `r1_tracks` contain independent compartment reconstructions from every prior archive. They are separate from new simulations. The v1 and R1 replay receipts compare six native outputs with the reviewed archives. Each H1, H2, combined and water archive contains complete canonical facts and identity, not just success records. An archived final frame needs its corresponding canonical prefix to restore.
 
+The case roster additionally keeps both full, inherited wider spacing families for every model. These include the five archived v1 successes and the matched failures, with all 24 identities and unchanged input bytes. The eight combined-model seed-1 early-worker performance cases have independent uninterrupted references. Supplemental cases do not contribute to the ordinary founding gates.
+
 ## Reproduction
 
 Build `antworld_s6_4_wp6b` in Release using the compiler in the run manifest. Use fresh output directories and the same working tree for all assays. R2 version 3 uses mask 1 for H1, mask 2 for H2 and mask 3 for both. The app's positional options after the mode are the existing R1 window, repeat parts per million and processor affinity, followed by the R2 mask. Zero affinity leaves the operating system's scheduling in place. To replay an extracted paired candidate case with actual midpoint save/reopen, use `antworld_s6_4_wp6b parameters.txt <empty-output-dir> durable 172800000 750000 0 <mask>` and compare the initial, final and canonical facts SHA-256 values in its receipt.

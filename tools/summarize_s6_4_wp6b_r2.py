@@ -125,6 +125,24 @@ def cue_summary(histories, by_model, output):
     csv_out(output / "cue_outcomes.csv", [dict(zip(keys, key, strict=True), **row) for key, row in sorted(counts.items())])
 
 
+def spacing_controls(models, output):
+    scope = ROOT / "experiments/s6_4_wp6b/analysis/cases.csv"
+    old = {r["case"]: r for r in read(scope)}
+    rows = []
+    for _, case in declared_cases("v1"):
+        if case.get("arm") not in ("opening_lay_spacing-low", "lay_interval-high"):
+            continue
+        name = case["case"]
+        r = old[name]
+        rows.append(dict(case=name, population=case["population"], seed=case["software_seed"], arm=case["arm"],
+                         v1_eclosed=r["eclosed"], v1_first_worker_ms=r["first_worker_ms"],
+                         **{f"{m}_{key}": data[name].get(key, 0) for m, data in models.items()
+                            if m in ("r1","h1","h2","both") for key in
+                            ("adults","hatches","maternal_first_meals","pupations","tissue_requirement_met","first_worker_ms")}))
+    assert len(rows) == 24 and sum(number(row,"v1_eclosed") > 0 for row in rows) == 5
+    csv_out(output / "wider_spacing_controls.csv", rows)
+
+
 def summarize(root, output):
     histories = {m: root / f"{m}-tracks" for m in ("h1", "h2", "both", "water-r1", "water-both")}
     base = ROOT / "experiments/s6_4_wp6b_r1"
@@ -162,6 +180,7 @@ def summarize(root, output):
     csv_out(output / "water_adults.csv", workers)
     water_pairs(results, output)
     cue_summary(histories, by_model, output)
+    spacing_controls(by_model, output)
     group_keys = ("model", "population", "group", "arm", "care", "high_risk")
     fields = sorted({key for row in results for key in row if key not in (*group_keys, "status", "case", "seed", "profile",
                      "maternal_protein_gini_all_offspring", "queen_death_ms", "queen_death_cause", "first_worker_ms")})

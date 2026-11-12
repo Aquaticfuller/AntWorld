@@ -36,13 +36,12 @@ def declared_cases(model):
         selected = [(identity, c) for identity, c in items if c["group"] in ("primary", "check") or
                     c["group"] in ("micro", "wider") and c["arm"] in MICRO]
         assert Counter(c["group"] for _, c in selected) == {"primary": 768, "check": 192, "micro": 36, "wider": 72}
-        if model in REFERENCES:
-            wider = [(identity, c) for identity, c in items if c["group"] == "wider" and
-                     any(f"-wider-{factor}-{level}-" in c["case"] for factor, level in
-                         (("opening_lay_spacing", "low"), ("lay_interval", "high")))]
-            assert len(wider) == 24
-            selected.extend(wider)
-        elif model == "both":
+        # Keep both inherited wider spacing families, including the five v1 successes.
+        wider = [(identity, c) for identity, c in items if c["group"] == "wider" and
+                 c["arm"] in ("opening_lay_spacing-low", "lay_interval-high")]
+        assert len(wider) == 24
+        selected.extend(wider)
+        if model == "both":
             references = [(identity, c) for identity, c in items if c["group"] == "early" and
                           c["software_seed"] == 1 and c["arm"] in ("depot", "empty")]
             assert len(references) == 8
