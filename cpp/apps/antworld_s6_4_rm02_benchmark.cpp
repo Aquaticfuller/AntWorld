@@ -5,6 +5,9 @@
 #ifdef ANTWORLD_WP2_BENCHMARK
 #include "s6_3_3_3_fixture.hpp"
 #endif
+#ifdef ANTWORLD_WP4_BENCHMARK
+#include "wp4_lineage.hpp"
+#endif
 
 #include <fstream>
 #include <iomanip>
@@ -29,9 +32,12 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
     const auto database = folder / "observer.sqlite";
     const auto init_begin = Clock::now();
     std::unique_ptr<Observer> observer;
+#ifdef ANTWORLD_WP4_BENCHMARK
+    std::unique_ptr<wp4::Lineage> lineage;
+#endif
     if (on) {
         Plan plan{"performance", std::move(focal), {}, !dense};
-#ifdef ANTWORLD_WP2_BENCHMARK
+#if defined(ANTWORLD_WP2_BENCHMARK) || defined(ANTWORLD_WP4_BENCHMARK)
         plan.activity_care = true;
 #endif
 #ifdef ANTWORLD_WP3_BENCHMARK
@@ -39,12 +45,18 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
 #endif
         observer = std::make_unique<Observer>(database, world, std::move(plan));
         observer->start_background();
+#ifdef ANTWORLD_WP4_BENCHMARK
+        if (!dense) lineage = std::make_unique<wp4::Lineage>(folder);
+#endif
     }
     const auto init = elapsed(init_begin);
     struct Captured {
         double read_ms, write_ms;
         std::int64_t sim_ms;
         std::uint64_t cursor, examined, selected, records, dropped, payload;
+#ifdef ANTWORLD_WP4_BENCHMARK
+        std::size_t lineage_bytes;
+#endif
     };
     std::vector<Captured> cuts;
     cuts.reserve(dense ? 1 : 91);
@@ -52,11 +64,18 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
         const auto begin = Clock::now();
         auto cut = observer->capture();
         const auto payload = cut.payload.size();
+#ifdef ANTWORLD_WP4_BENCHMARK
+        const auto lineage_bytes = lineage ? lineage->capture(world, cuts.size() + 1, cut.end.cursor, cut.end.time) : 0;
+#endif
         const auto middle = Clock::now();
         observer->submit(std::move(cut));
         const auto finish = Clock::now();
         cuts.push_back({elapsed(begin, middle), elapsed(middle, finish), cut.end.time.milliseconds,
-                        cut.end.cursor, cut.examined, cut.selected, cut.records, cut.dropped, payload});
+                        cut.end.cursor, cut.examined, cut.selected, cut.records, cut.dropped, payload
+#ifdef ANTWORLD_WP4_BENCHMARK
+                        , lineage_bytes
+#endif
+                        });
     };
     double advance{};
     const Stamp begin;
@@ -74,6 +93,9 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
         observer->flush();
         require(observer->committed_cuts() == cuts.size(), "unpublished benchmark cut");
     }
+#ifdef ANTWORLD_WP4_BENCHMARK
+    if (lineage) lineage->close();
+#endif
     const auto flush_ms = elapsed(flush_begin);
     const Stamp finish;
     const auto background = on ? observer->background_stats() : BackgroundStats{};
@@ -124,11 +146,20 @@ void run(const std::filesystem::path& folder, WorldRuntime& world, std::vector<E
         summary << std::setw(2) << static_cast<unsigned>(byte);
     summary << ",1,1\n";
     auto detail = open("captures.csv");
-    detail << "sim_ms,capture_ms,publish_ms,cursor,examined,selected,records,dropped,payload_bytes\n";
-    for (const auto& row : cuts)
+    detail << "sim_ms,capture_ms,publish_ms,cursor,examined,selected,records,dropped,payload_bytes";
+#ifdef ANTWORLD_WP4_BENCHMARK
+    detail << ",lineage_bytes";
+#endif
+    detail << '\n';
+    for (const auto& row : cuts) {
         detail << row.sim_ms << ',' << row.read_ms << ',' << row.write_ms << ',' << row.cursor << ','
                << row.examined << ',' << row.selected << ',' << row.records << ',' << row.dropped << ','
-               << row.payload << '\n';
+               << row.payload;
+#ifdef ANTWORLD_WP4_BENCHMARK
+        detail << ',' << row.lineage_bytes;
+#endif
+        detail << '\n';
+    }
 }
 } // namespace
 
