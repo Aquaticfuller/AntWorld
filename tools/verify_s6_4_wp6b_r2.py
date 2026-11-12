@@ -30,14 +30,14 @@ def ci(root):
               f"incomplete formal scope: {model}")
         check(audit["archive_index_sha256"] == sha(folder / "completed.json") and
               audit["run_manifest_sha256"] == sha(folder / "run.json"), f"formal audit identity differs: {model}")
-        scope = manifest["source"], manifest["cpp_tree"], manifest["binary_sha256"]
+        scope = manifest["cpp_tree"], manifest["binary_sha256"], manifest["runner_sources"]
         measured = measured or scope
         check(scope == measured, "different binaries in the same experiment")
         verify(folder, subset=names, r2=frozen)
     for model in frozen.REFERENCES:
         manifest = json.loads((root / model / "run.json").read_text(encoding="utf-8"))
         check(not manifest["selected_subset"] and manifest["model"] == model and
-              (manifest["source"], manifest["cpp_tree"], manifest["binary_sha256"]) == measured,
+              (manifest["cpp_tree"], manifest["binary_sha256"], manifest["runner_sources"]) == measured,
               f"legacy replay is not bound to the factorial binary: {model}")
         verify(root / model, r2=frozen)
 
