@@ -1,0 +1,56 @@
+{
+  "mode": "integrated",
+  "arm": "control",
+  "workers": 16,
+  "seed": 43,
+  "layout": "underground",
+  "brood": 4,
+  "origin": "empty",
+  "case": "integrated-control-16-43-underground-4-empty",
+  "exit_code": 1,
+  "program_exit_code": 1,
+  "artifacts": {
+    "configuration.csv": {
+      "path": "configuration.csv",
+      "bytes": 256,
+      "sha256": "f1821b48c1e14f04f728585a4628c691a5288e6b0adac66d179bf826c0608f69",
+      "archived_bytes": 256,
+      "archived_sha256": "f1821b48c1e14f04f728585a4628c691a5288e6b0adac66d179bf826c0608f69"
+    },
+    "initial_ants.csv": {
+      "path": "initial_ants.csv",
+      "bytes": 1447,
+      "sha256": "4b109c3c1e00cb0c964b2df48c0b8fb0fbb7b328a4f6f29389295c6b0ae07481",
+      "archived_bytes": 1447,
+      "archived_sha256": "4b109c3c1e00cb0c964b2df48c0b8fb0fbb7b328a4f6f29389295c6b0ae07481"
+    },
+    "cuts.csv": {
+      "path": "cuts.csv",
+      "bytes": 594,
+      "sha256": "1966ff05e416142e81d7785c733db5e9cfe3ae7377a611adb2152a11c54fab68",
+      "archived_bytes": 594,
+      "archived_sha256": "1966ff05e416142e81d7785c733db5e9cfe3ae7377a611adb2152a11c54fab68"
+    },
+    "initial.chk": {
+      "path": "initial.chk.gz",
+      "bytes": 27149,
+      "sha256": "96b9d944d333ef1b0e9dc4dfb3909655e614b3a1479dc6194590ce3ed4d1a35c",
+      "archived_bytes": 2226,
+      "archived_sha256": "31a967bbc1d3a0401c8b93bae39540c7256c6d6251ac248cab322325251b332b"
+    },
+    "observer.sqlite": {
+      "path": "observer.sqlite.gz",
+      "bytes": 5111808,
+      "sha256": "246b164ca02598f94c90b6ad51b8686629e21112ad39794952eae6d4b70c72ae",
+      "archived_bytes": 427840,
+      "archived_sha256": "37c45a2f402ce9204c02c4eccc892d8f5ba3a17d0673bbe7ff4a41ebecdc5fa5"
+    },
+    "program.log": {
+      "path": "program.log",
+      "bytes": 37,
+      "sha256": "aa89006bd4111ccebb62f9da7ccbdea5d4087dce2187af32abb0ad1c32fe24b6",
+      "archived_bytes": 37,
+      "archived_sha256": "aa89006bd4111ccebb62f9da7ccbdea5d4087dce2187af32abb0ad1c32fe24b6"
+    }
+  }
+}

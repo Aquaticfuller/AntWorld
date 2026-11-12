@@ -1,0 +1,13 @@
+{
+  "bootstrap_seed": 64203,
+  "draws": 4096,
+  "cases": {
+    "activity": 48,
+    "integrated": 24,
+    "b01": 36,
+    "b02": 120
+  },
+  "b01_sha256": "948e31ecec22b17b66e67a3c28d76dbc927debdf4fb07e87c3e81482868cb9b4",
+  "b02_sha256": "2b26b2416cf8a76ac0b9ae4886c51f35c4424db9266c0e2f74733c1e8589ed91",
+  "classification": "DEVELOPMENT_COMPARISON_AND_ENGINEERING_DIAGNOSIS"
+}

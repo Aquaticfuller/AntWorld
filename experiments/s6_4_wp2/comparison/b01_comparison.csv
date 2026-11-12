@@ -1,0 +1,4 @@
+endpoint,arm,scope,n_seeds,n_biological_units,simulation_mean,empirical_mean,empirical_sd,simulated_minus_measured,ci_low,ci_high,interpretation
+positive_scans_percent,absent,B01,6,16,4.333333333333333,6.5,7.247988226627671,-2.166666666666667,-7.625,3.458333333333333,DEVELOPMENT_OPERATOR_APPROXIMATE
+positive_scans_percent,added,B01,6,16,1.0,0.125,0.5,0.875,0.08333333333333331,1.6666666666666667,DEVELOPMENT_OPERATOR_APPROXIMATE
+positive_scans_percent,removed,B01,6,16,7.0,6.25,9.848857801796104,0.75,-5.484375,6.083333333333334,DEVELOPMENT_OPERATOR_APPROXIMATE

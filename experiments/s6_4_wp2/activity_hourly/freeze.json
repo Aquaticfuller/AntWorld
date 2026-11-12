@@ -1,0 +1,503 @@
+{
+  "source_commit": "2d4ac364659b17b87f82a0baf67b7345a1b82c8b",
+  "baseline": "39b21eae59794dc0d472fea1630f618fe7b90a9b",
+  "cpp_tree": "e34d7653ab27a4b530dd08c35b6aebb6115cd182",
+  "protocol_sha256": "f5ece93ef3cbf0cca16867d8e1236e31f6c4a71e864b8e6afae017096739d09d",
+  "runner_sha256": "08291b5f3a6325fcf963164e488b5785b87337861d07a9cc23cf0831e18e66d9",
+  "binary_sha256": "569cb99af0dd89a482345fad922808120bfac65f9fa06537b1c2e69bc90f6cb2",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "executable": "antworld_s6_4_wp2.exe",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "started_utc_ns": 1794442302015929100,
+  "host": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "selection": "activity",
+  "cases": [
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 1,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-1-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 2,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-2-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 3,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-3-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 4,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-4-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 5,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-5-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 8,
+      "seed": 6,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-8-6-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 1,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-1-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 2,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-2-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 3,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-3-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 4,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-4-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 5,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-5-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "depot",
+      "workers": 32,
+      "seed": 6,
+      "layout": "depot",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-depot-32-6-depot-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 1,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-1-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 2,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-2-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 3,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-3-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 4,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-4-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 5,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-5-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 8,
+      "seed": 6,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-8-6-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 1,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-1-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 2,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-2-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 3,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-3-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 4,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-4-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 5,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-5-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "ordinary",
+      "workers": 32,
+      "seed": 6,
+      "layout": "ordinary",
+      "brood": 0,
+      "origin": "balanced",
+      "case": "activity-ordinary-32-6-ordinary-0-balanced"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 1,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-1-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 2,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-2-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 3,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-3-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 4,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-4-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 5,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-5-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 8,
+      "seed": 6,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-8-6-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 1,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-1-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 2,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-2-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 3,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-3-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 4,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-4-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 5,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-5-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "scarce",
+      "workers": 32,
+      "seed": 6,
+      "layout": "scarce",
+      "brood": 0,
+      "origin": "scarce",
+      "case": "activity-scarce-32-6-scarce-0-scarce"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 1,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-1-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 2,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-2-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 3,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-3-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 4,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-4-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 5,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-5-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 8,
+      "seed": 6,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-8-6-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 1,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-1-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 2,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-2-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 3,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-3-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 4,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-4-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 5,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-5-empty-0-empty"
+    },
+    {
+      "mode": "activity",
+      "arm": "empty",
+      "workers": 32,
+      "seed": 6,
+      "layout": "empty",
+      "brood": 0,
+      "origin": "empty",
+      "case": "activity-empty-32-6-empty-0-empty"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+mode,arm,workers,seed,layout,brood,origin,world_id,horizon_ms,step_ms,cut_ms,midpoint_ms,input_ms,classification
+b01,barrier,3,137,wall,5,own,00000000-0000-0279-0000-000000000089,90000000,1800000,1800000,43200000,0,ENGINEERING_FIXTURE

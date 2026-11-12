@@ -1,0 +1,41 @@
+{
+  "expected": 228,
+  "completed": 228,
+  "by_stratum": {
+    "activity": 48,
+    "integrated": 24,
+    "b01": 36,
+    "b02": 120
+  },
+  "original_incomplete": [
+    "activity-ordinary-32-1-ordinary-0-balanced",
+    "activity-scarce-32-2-scarce-0-scarce",
+    "activity-scarce-32-6-scarce-0-scarce",
+    "activity-empty-32-1-empty-0-empty",
+    "activity-empty-32-2-empty-0-empty",
+    "activity-empty-32-3-empty-0-empty",
+    "activity-empty-32-4-empty-0-empty",
+    "activity-empty-32-5-empty-0-empty",
+    "activity-empty-32-6-empty-0-empty",
+    "integrated-care-16-7-underground-4-empty",
+    "integrated-care-16-19-underground-4-empty",
+    "integrated-care-16-43-underground-4-empty",
+    "integrated-control-16-7-underground-4-empty",
+    "integrated-control-16-19-underground-4-empty",
+    "integrated-control-16-43-underground-4-empty"
+  ],
+  "supplemented": 72,
+  "output_rows": {
+    "body_cuts": 146034,
+    "ledgers": 126684,
+    "program_intervals": 174229,
+    "transitions": 175443,
+    "individuals": 3153,
+    "runs": 228,
+    "open_bouts": 10139,
+    "custody": 383,
+    "care_phases": 4883,
+    "b01_scans": 5400,
+    "retrieval_targets": 588
+  }
+}

@@ -1,0 +1,2 @@
+status,events,cuts,living,individuals,state_hash,trace_hash,rng,observer_off_equal,midpoint_rejoined,advance_ms,wall_including_midpoint_ms,midpoint_ms,terminal_and_mid_drain_ms,writer_ms,peak_queued_bytes,rss_bytes,peak_rss_bytes,closed_database_bytes,wal_at_end_bytes
+PASS,578,27,7,7,7709163433494423620,18012993568680155864,7,1,1,1.2242999999999999,13.1327,8.1557999999999993,2.9933000000000001,3.2800000000000002,14456,7274496,7290880,98304,53592

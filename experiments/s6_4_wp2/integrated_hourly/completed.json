@@ -1,0 +1,29 @@
+{
+  "ended_utc_ns": 1794442601049221800,
+  "exit_codes": {
+    "integrated-care-4-7-underground-4-balanced": 0,
+    "integrated-care-4-19-underground-4-balanced": 0,
+    "integrated-care-4-43-underground-4-balanced": 0,
+    "integrated-care-4-7-underground-4-empty": 0,
+    "integrated-care-4-19-underground-4-empty": 0,
+    "integrated-care-4-43-underground-4-empty": 0,
+    "integrated-care-16-7-underground-4-balanced": 0,
+    "integrated-care-16-19-underground-4-balanced": 0,
+    "integrated-care-16-43-underground-4-balanced": 0,
+    "integrated-care-16-7-underground-4-empty": 0,
+    "integrated-care-16-19-underground-4-empty": 0,
+    "integrated-care-16-43-underground-4-empty": 0,
+    "integrated-control-4-7-underground-4-balanced": 0,
+    "integrated-control-4-19-underground-4-balanced": 0,
+    "integrated-control-4-43-underground-4-balanced": 0,
+    "integrated-control-4-7-underground-4-empty": 0,
+    "integrated-control-4-19-underground-4-empty": 0,
+    "integrated-control-4-43-underground-4-empty": 0,
+    "integrated-control-16-7-underground-4-balanced": 0,
+    "integrated-control-16-19-underground-4-balanced": 0,
+    "integrated-control-16-43-underground-4-balanced": 0,
+    "integrated-control-16-7-underground-4-empty": 0,
+    "integrated-control-16-19-underground-4-empty": 0,
+    "integrated-control-16-43-underground-4-empty": 0
+  }
+}

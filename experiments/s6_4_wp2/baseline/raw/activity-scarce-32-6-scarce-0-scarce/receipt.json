@@ -1,0 +1,63 @@
+{
+  "mode": "activity",
+  "arm": "scarce",
+  "workers": 32,
+  "seed": 6,
+  "layout": "scarce",
+  "brood": 0,
+  "origin": "scarce",
+  "case": "activity-scarce-32-6-scarce-0-scarce",
+  "exit_code": 1,
+  "program_exit_code": 1,
+  "artifacts": {
+    "configuration.csv": {
+      "path": "configuration.csv",
+      "bytes": 249,
+      "sha256": "557b91fdee88a88f1ec77932e834fa4b2bf3ed24ebfeac55edeb0a9442e24d83",
+      "archived_bytes": 249,
+      "archived_sha256": "557b91fdee88a88f1ec77932e834fa4b2bf3ed24ebfeac55edeb0a9442e24d83"
+    },
+    "initial_ants.csv": {
+      "path": "initial_ants.csv",
+      "bytes": 1461,
+      "sha256": "b82d454fbd644cfef9430adc74dad65bd8aace1c58a9c87fbeceab21ced7f7b4",
+      "archived_bytes": 1461,
+      "archived_sha256": "b82d454fbd644cfef9430adc74dad65bd8aace1c58a9c87fbeceab21ced7f7b4"
+    },
+    "cuts.csv": {
+      "path": "cuts.csv",
+      "bytes": 8460,
+      "sha256": "081f0f890f6a394ab8d00c26986c69ebec68bae11c42f1d426550697c64dca01",
+      "archived_bytes": 8460,
+      "archived_sha256": "081f0f890f6a394ab8d00c26986c69ebec68bae11c42f1d426550697c64dca01"
+    },
+    "initial.chk": {
+      "path": "initial.chk.gz",
+      "bytes": 43665,
+      "sha256": "fc47ff7744797d578f9baec27935310a79902155f3ce0eb907093c88fb654943",
+      "archived_bytes": 3302,
+      "archived_sha256": "69322d5893c387fffa59906158644302b6dec65f63e7e7871f240d9054286b51"
+    },
+    "midpoint.chk": {
+      "path": "midpoint.chk.gz",
+      "bytes": 18826786,
+      "sha256": "5d18668ca9b91d0652570d031a555f394b19591840709c6686f2d604ca3272c6",
+      "archived_bytes": 1788564,
+      "archived_sha256": "ae0bfb9049cb36f56ab8940534f82b3230e92f27b0573346b6159605cf207dfe"
+    },
+    "observer.sqlite": {
+      "path": "observer.sqlite.gz",
+      "bytes": 66715648,
+      "sha256": "e1a9ea49cb6d5513aa5b392c112185b1ed2030e264793c89c4d5edf9eb7eb3ba",
+      "archived_bytes": 6624438,
+      "archived_sha256": "b335df9e75f67785a945cdfd7b5f58f974c0189318d007ab1358ca9f35b4bdb0"
+    },
+    "program.log": {
+      "path": "program.log",
+      "bytes": 55,
+      "sha256": "5e413786bbfa000be757c968b02c49dd7029f7beec58e249a00783dc33c34639",
+      "archived_bytes": 55,
+      "archived_sha256": "5e413786bbfa000be757c968b02c49dd7029f7beec58e249a00783dc33c34639"
+    }
+  }
+}

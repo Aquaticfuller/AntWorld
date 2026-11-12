@@ -1,0 +1,2 @@
+mode,arm,workers,seed,layout,brood,origin,world_id,horizon_ms,step_ms,cut_ms,midpoint_ms,input_ms,classification
+b01,added,5,137,plain,5,own,00000000-0000-0279-0000-000000000089,435600000,1800000,1800000,216000000,259200000,ENGINEERING_FIXTURE

@@ -1,0 +1,56 @@
+{
+  "mode": "integrated",
+  "arm": "control",
+  "workers": 16,
+  "seed": 7,
+  "layout": "underground",
+  "brood": 4,
+  "origin": "empty",
+  "case": "integrated-control-16-7-underground-4-empty",
+  "exit_code": 1,
+  "program_exit_code": 1,
+  "artifacts": {
+    "configuration.csv": {
+      "path": "configuration.csv",
+      "bytes": 255,
+      "sha256": "a123c8a5cdc1b812d597756bc42a91a7a9c4bb1f50eaddb5f58220fd8c3b279f",
+      "archived_bytes": 255,
+      "archived_sha256": "a123c8a5cdc1b812d597756bc42a91a7a9c4bb1f50eaddb5f58220fd8c3b279f"
+    },
+    "initial_ants.csv": {
+      "path": "initial_ants.csv",
+      "bytes": 1447,
+      "sha256": "4b109c3c1e00cb0c964b2df48c0b8fb0fbb7b328a4f6f29389295c6b0ae07481",
+      "archived_bytes": 1447,
+      "archived_sha256": "4b109c3c1e00cb0c964b2df48c0b8fb0fbb7b328a4f6f29389295c6b0ae07481"
+    },
+    "cuts.csv": {
+      "path": "cuts.csv",
+      "bytes": 548,
+      "sha256": "730609d5ed4dcca3723c9ad8152157ac2f3a4ded28805168d6ffeeb5c63ab56f",
+      "archived_bytes": 548,
+      "archived_sha256": "730609d5ed4dcca3723c9ad8152157ac2f3a4ded28805168d6ffeeb5c63ab56f"
+    },
+    "initial.chk": {
+      "path": "initial.chk.gz",
+      "bytes": 27149,
+      "sha256": "13588e2c6619607aa74d63d1bda6005da485e6ee1be5e919fc4f576e6dbcda6b",
+      "archived_bytes": 2225,
+      "archived_sha256": "e4eaa190c8c338b2bb243a4800a4a95b83954d32c330b9136ab6d8e8668b45eb"
+    },
+    "observer.sqlite": {
+      "path": "observer.sqlite.gz",
+      "bytes": 4689920,
+      "sha256": "3850be6ef2c1a1da2ef4d6a9bf724ad45d84002aa9925be94c9a5472a44de868",
+      "archived_bytes": 404306,
+      "archived_sha256": "1188a5e2bdaf02193935170ef43998acbacbb54ecead02d1c2c5feb17ca8e120"
+    },
+    "program.log": {
+      "path": "program.log",
+      "bytes": 37,
+      "sha256": "aa89006bd4111ccebb62f9da7ccbdea5d4087dce2187af32abb0ad1c32fe24b6",
+      "archived_bytes": 37,
+      "archived_sha256": "aa89006bd4111ccebb62f9da7ccbdea5d4087dce2187af32abb0ad1c32fe24b6"
+    }
+  }
+}

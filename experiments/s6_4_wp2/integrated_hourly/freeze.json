@@ -1,0 +1,263 @@
+{
+  "source_commit": "2d4ac364659b17b87f82a0baf67b7345a1b82c8b",
+  "baseline": "39b21eae59794dc0d472fea1630f618fe7b90a9b",
+  "cpp_tree": "e34d7653ab27a4b530dd08c35b6aebb6115cd182",
+  "protocol_sha256": "f5ece93ef3cbf0cca16867d8e1236e31f6c4a71e864b8e6afae017096739d09d",
+  "runner_sha256": "08291b5f3a6325fcf963164e488b5785b87337861d07a9cc23cf0831e18e66d9",
+  "binary_sha256": "569cb99af0dd89a482345fad922808120bfac65f9fa06537b1c2e69bc90f6cb2",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "executable": "antworld_s6_4_wp2.exe",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "started_utc_ns": 1794442542656598600,
+  "host": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "selection": "integrated",
+  "cases": [
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-4-7-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-4-19-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-4-43-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-4-7-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-4-19-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 4,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-4-43-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-16-7-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-16-19-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-care-16-43-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-16-7-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-16-19-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "care",
+      "workers": 16,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-care-16-43-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-4-7-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-4-19-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-4-43-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-4-7-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-4-19-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 4,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-4-43-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-16-7-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-16-19-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "balanced",
+      "case": "integrated-control-16-43-underground-4-balanced"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 7,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-16-7-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 19,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-16-19-underground-4-empty"
+    },
+    {
+      "mode": "integrated",
+      "arm": "control",
+      "workers": 16,
+      "seed": 43,
+      "layout": "underground",
+      "brood": 4,
+      "origin": "empty",
+      "case": "integrated-control-16-43-underground-4-empty"
+    }
+  ]
+}

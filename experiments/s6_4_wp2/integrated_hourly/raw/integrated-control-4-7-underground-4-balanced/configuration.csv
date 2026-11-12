@@ -1,0 +1,2 @@
+mode,arm,workers,seed,layout,brood,origin,world_id,horizon_ms,step_ms,cut_ms,midpoint_ms,input_ms,classification
+integrated,control,4,7,underground,4,balanced,00000000-0000-18bd-0000-000000000007,1814400000,3600000,3600000,864000000,0,ENGINEERING_FIXTURE

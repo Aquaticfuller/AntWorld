@@ -1,0 +1,63 @@
+{
+  "mode": "activity",
+  "arm": "ordinary",
+  "workers": 32,
+  "seed": 1,
+  "layout": "ordinary",
+  "brood": 0,
+  "origin": "balanced",
+  "case": "activity-ordinary-32-1-ordinary-0-balanced",
+  "exit_code": 1,
+  "program_exit_code": 1,
+  "artifacts": {
+    "configuration.csv": {
+      "path": "configuration.csv",
+      "bytes": 255,
+      "sha256": "0eda31b6ed26bcffffdf60416ce9804e1a9ad0a0c389f8142061b0bdd71d00e5",
+      "archived_bytes": 255,
+      "archived_sha256": "0eda31b6ed26bcffffdf60416ce9804e1a9ad0a0c389f8142061b0bdd71d00e5"
+    },
+    "initial_ants.csv": {
+      "path": "initial_ants.csv",
+      "bytes": 1461,
+      "sha256": "b82d454fbd644cfef9430adc74dad65bd8aace1c58a9c87fbeceab21ced7f7b4",
+      "archived_bytes": 1461,
+      "archived_sha256": "b82d454fbd644cfef9430adc74dad65bd8aace1c58a9c87fbeceab21ced7f7b4"
+    },
+    "cuts.csv": {
+      "path": "cuts.csv",
+      "bytes": 7714,
+      "sha256": "7733db020a2abe655564747be794e1d2e553d35f4d12d454d10f32c174316751",
+      "archived_bytes": 7714,
+      "archived_sha256": "7733db020a2abe655564747be794e1d2e553d35f4d12d454d10f32c174316751"
+    },
+    "initial.chk": {
+      "path": "initial.chk.gz",
+      "bytes": 43665,
+      "sha256": "deabd4119e30a4ee65335b758139bbb662aecfb3271a5556a1189c031c31e349",
+      "archived_bytes": 3297,
+      "archived_sha256": "b458fd95492ecc91bf910202ad96fb8b14602fde4b17f56ef4704a9c16ebce60"
+    },
+    "midpoint.chk": {
+      "path": "midpoint.chk.gz",
+      "bytes": 18361177,
+      "sha256": "192ef9f72a1eac7b573cca1a6e3c5e6a817363a4bfaa2bd89c49a1cbccb7707e",
+      "archived_bytes": 1737131,
+      "archived_sha256": "b4c208cad1201a110f4eb8cd048d0286a2e99361fc14db4840ee0614103692c3"
+    },
+    "observer.sqlite": {
+      "path": "observer.sqlite.gz",
+      "bytes": 66748416,
+      "sha256": "210d14f6e832e015bb6031d756d2405ea0e4ad016619ef295b1fbe392b53fb47",
+      "archived_bytes": 6624174,
+      "archived_sha256": "500e48f0822a08738e5c398c0e62295e04d508480f083c68188089e03a5c206f"
+    },
+    "program.log": {
+      "path": "program.log",
+      "bytes": 55,
+      "sha256": "5e413786bbfa000be757c968b02c49dd7029f7beec58e249a00783dc33c34639",
+      "archived_bytes": 55,
+      "archived_sha256": "5e413786bbfa000be757c968b02c49dd7029f7beec58e249a00783dc33c34639"
+    }
+  }
+}
