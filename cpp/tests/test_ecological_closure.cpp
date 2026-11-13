@@ -238,14 +238,14 @@ void founding_ablation() {
 }
 
 void bounded_history() {
-    auto a=ecological_assay::recruitment(1,"scout",{},true);
-    a.world.advance_to({30000});
-    const auto first=a.world.checkpoint();
     const auto directory=std::filesystem::path("ecological-test-saves");
     std::filesystem::create_directories(directory);
     const auto db=directory/"bounded-history.sqlite";
     std::filesystem::remove(db);
     {
+        auto a=ecological_assay::recruitment(1,"scout",{},true);
+        a.world.advance_to({30000});
+        const auto first=a.world.checkpoint();
         storage::Store store(db,{},storage::StoreFormat::Segmented);
         storage::SaveOptions fault;
         fault.fault_hook=[](auto stage) {
