@@ -55,6 +55,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $commands = "1" + [Environment]::NewLine + "d 150" + [Environment]::NewLine + "q"
-          $result = $commands | ./tools/start_op0.ps1 -Terminal -Python python
-          if ($LASTEXITCODE -ne 0 -or ($result -join " ") -notmatch "45 workers") { exit 1 }
+          @("1", "d 150", "q") | Set-Content -Encoding ascii "$env:RUNNER_TEMP\op0-commands.txt"
+          cmd.exe /d /c "pwsh -NoProfile -File .\tools\start_op0.ps1 -Terminal -Python python < ""$env:RUNNER_TEMP\op0-commands.txt"" > ""$env:RUNNER_TEMP\op0-terminal.txt"""
+          $status = $LASTEXITCODE
+          Get-Content -Encoding utf8 "$env:RUNNER_TEMP\op0-terminal.txt"
+          if ($status -ne 0 -or -not (Select-String -SimpleMatch "45 workers" "$env:RUNNER_TEMP\op0-terminal.txt")) { exit 1 }
