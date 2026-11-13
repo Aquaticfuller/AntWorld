@@ -1,0 +1,21 @@
+{
+  "archives": {
+    "raw-000.zip": "b37b850f2c43fc23b088708704be29f77becb8187c1b0a53f19dcf9510c7579a"
+  },
+  "attempts": 12,
+  "ended_ns": 1794539081775937200,
+  "statuses": {
+    "borisovka-micro-nominal-0-1-balanced": "COMPLETE",
+    "borisovka-micro-nominal-0-19-balanced": "COMPLETE",
+    "borisovka-micro-nominal-0-42-balanced": "COMPLETE",
+    "borisovka-micro-nominal-0-43-balanced": "COMPLETE",
+    "borisovka-micro-nominal-0-7-balanced": "COMPLETE",
+    "borisovka-micro-nominal-0-97-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-1-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-19-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-42-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-43-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-7-balanced": "COMPLETE",
+    "st_petersburg-micro-nominal-0-97-balanced": "COMPLETE"
+  }
+}

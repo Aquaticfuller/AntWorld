@@ -1,0 +1,11 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+    Start 30: FND_IF_LOCAL_RESUPPLY
+1/1 Test #30: FND_IF_LOCAL_RESUPPLY ............   Passed  111.30 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+FND    = 111.30 sec*proc (1 test)
+
+Total Test time (real) = 111.33 sec

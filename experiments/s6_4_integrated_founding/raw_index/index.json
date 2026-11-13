@@ -1,0 +1,276 @@
+{
+  "archive_batches": [
+    {
+      "audit_sha256": null,
+      "batch": "both-factorial",
+      "bytes": 489195548,
+      "cases": 192,
+      "complete_sha256": "d4b029c2e237bd669ddd07c845a32948736929e2fd4b63866f46937d739d683a",
+      "files": 16,
+      "run_sha256": "1e040863db407e8c478dc60084b6462aaf61eb6c01e7730c41c53f9a970609f4",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "both-nominal",
+      "bytes": 133991687,
+      "cases": 84,
+      "complete_sha256": "b156b7b9f7605652a1973aaeac4261becafd80f65bac5e740b257edad226d66f",
+      "files": 7,
+      "run_sha256": "613f540f14af699d20c6a9a5e80e43c2b56e35b9d06ddc115925d99bc8c7d33e",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "886a572a4a4bb9f70bdd423078537dbe6618215ea9778871436aa74d42772c63",
+      "batch": "diet-closed",
+      "bytes": 198908610,
+      "cases": 960,
+      "complete_sha256": "5743a54477ecc28ad2fe9119aace0ed01c8813e04b71189f584b2b62f9df19c5",
+      "files": 80,
+      "run_sha256": "14e3c39c3ea079959e5bfeb865fcbcc8db5f6ef12ddd153221281f41cf9fb996",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "diet-factorial",
+      "bytes": 984760914,
+      "cases": 192,
+      "complete_sha256": "9810bfa535806d25d03402f08e48187a4f48c7f0914efd6ab2191ed12573686b",
+      "files": 16,
+      "run_sha256": "4b7ffda169dae7c63d04dc02fcd946b8caf3b70fc19f4acfac24d2ce81006cf3",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "diet-high-nominal",
+      "bytes": 97159750,
+      "cases": 12,
+      "complete_sha256": "7ba5441870adda14da986172f19e059167ea1f518066322b188913e67a3c275a",
+      "files": 1,
+      "run_sha256": "5e94699a83c4f741dd692df42825da255aff94f2ac0ca0fe4e237726ce64b079",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "diet-low-nominal",
+      "bytes": 71994345,
+      "cases": 12,
+      "complete_sha256": "58a6ad97d2dcfefbac88b7492439a717987c1cecbd58bfd8301d966cba3f0b30",
+      "files": 1,
+      "run_sha256": "e865794e9020623ee3c0c178c7b6d6a211ef19c1053151d6b056decd9c46935a",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "diet-nominal",
+      "bytes": 352752375,
+      "cases": 84,
+      "complete_sha256": "17996ef2bb46491cfdc5a163da10f36eae22e229ff33538e9d818db00a0fd99a",
+      "files": 7,
+      "run_sha256": "9f2b791b21aecb5136775ecc2e43f14f3869e6d2572b3fe1e0e7d992aaf00486",
+      "witnesses": {
+        "borisovka-micro-nominal-0-1-balanced.zip": "a262c187c248cd7468a1f657780e579129fb97cb646a4ace072ac7603248b21e",
+        "borisovka-micro-nominal-0-1-blocked.zip": "ef8c60cd4883c0e009c7c65c784b39b608cfbb356d346bf8932d7ba687a29144",
+        "st_petersburg-micro-nominal-0-1-balanced.zip": "04766ff6b9c2cbf5bc452997dd238c708161f047cb909d42221352239280d391",
+        "st_petersburg-micro-nominal-0-1-blocked.zip": "7dab825a4a9cfc64149c00831766ddf37a1a5b4b338e4c6577b15e107f4b2671"
+      }
+    },
+    {
+      "audit_sha256": null,
+      "batch": "eggs-nominal",
+      "bytes": 312154507,
+      "cases": 84,
+      "complete_sha256": "1413f9fa52e8fb6354fc1cfafd1f0154fd3031e91128316b0d14c353b1800e10",
+      "files": 7,
+      "run_sha256": "47bea40cae9a383613e5994e2e707583deb2d27696fc7f6f8aed77adb10dd78d",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "high-yield-nominal",
+      "bytes": 41140193,
+      "cases": 12,
+      "complete_sha256": "14c28c0e1d6f34014f9c56c48262041514bf415298bbb48260a70fc2713d828d",
+      "files": 1,
+      "run_sha256": "a0fd5ccb7aa4ee2df0336cbb1de52865e1eed5228ed36cc2f6f130531cd00753",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "low-yield-nominal",
+      "bytes": 42590767,
+      "cases": 12,
+      "complete_sha256": "750cce093e50176d8ab5d21e94d757e65cb2d890aa3b91e1777c1637407cb462",
+      "files": 1,
+      "run_sha256": "e0e210d1e6e5d9b51a1e794b221c7a701564299980426e4e997a1b8c3cb3d4b2",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "nest-nominal",
+      "bytes": 257054598,
+      "cases": 84,
+      "complete_sha256": "e64a6e1b444b67186aea58959932f4352a4260dafa37659ef1787e4991b26dba",
+      "files": 7,
+      "run_sha256": "c4632e88ef75ac7eba8e17d05e357878b88ab95f853228177fdbc09df1e417b3",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "provision-nominal",
+      "bytes": 118249055,
+      "cases": 84,
+      "complete_sha256": "3fecec5f3816d56ec03428400cbef371f19345f5b9dfd560743a8c731bbbecbd",
+      "files": 7,
+      "run_sha256": "6883a7f3831b9f0a871b6025830796e787e5562ef641b32c0b6b532257b4b5ae",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "r2-factorial",
+      "bytes": 55550625,
+      "cases": 192,
+      "complete_sha256": "cf708cd65ccef9bf73123bbfe5086bc775b93d43e27a0ededffd63c18abeb08c",
+      "files": 16,
+      "run_sha256": "c4202fb50baf7b0f52242615d7ddc53aab43af6ebfcb41bba9acbbbc303fc71a",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "r2-nominal",
+      "bytes": 22786947,
+      "cases": 84,
+      "complete_sha256": "c213dd5c602efffd27c36d019440d46c2391ee733fa2ed07a809b2a99e5d63b0",
+      "files": 7,
+      "run_sha256": "8cc209d78df1dd0479998248634a89df9da3987cd9b4a23c572ffd7a0ffa4f23",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "a9c84d4a6d0ffb155944303038c08d8f5cf00c1620481e393887edc42b9cdc2b",
+      "batch": "resupply-closed",
+      "bytes": 198944376,
+      "cases": 960,
+      "complete_sha256": "06294b1bfe4df82f1f8eaeeaf7a72a357c9f44a2ea3d1f590d73ddb4c9a88c56",
+      "files": 80,
+      "run_sha256": "8ad4efc18a2c2d575f03149ca1c339218c857eefe12ec09b6766c202743e229b",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "2d6f8d004761acae892d5e15b19890099fd08db9b084e563e73fa68080b04fc1",
+      "batch": "resupply-factorial",
+      "bytes": 1085623151,
+      "cases": 192,
+      "complete_sha256": "b5e7e2d47ce8249f3ce5caab85e7f50d954078089c59100e9b041a408a670b69",
+      "files": 16,
+      "run_sha256": "07a853c3d6d29ff11fe52680bb30eb6f8a860406a93fe33c332fe5edc4ee4a93",
+      "witnesses": {
+        "borisovka-10-primary-1-on-balanced.zip": "0165fc255ea4670369202f95e91e941f8b99734cad8064f55b792f2be87c77a3",
+        "borisovka-10-primary-1-on-blocked.zip": "45c4de88326bc922047100dec4e69a4472d3e8951b9c4335285d897e2a4f2c40",
+        "st_petersburg-10-primary-1-on-balanced.zip": "236a3593c1a7b1c7a3812707ec59d6d38f32daca2649b1db4c93f9e4fc8b7194",
+        "st_petersburg-10-primary-1-on-blocked.zip": "0e4614b02d810e8b8ddd6fc9aba971705189c9e0661a8bd782bfa11d970c969e"
+      }
+    },
+    {
+      "audit_sha256": "d8bf88817818313bdf1f0fe0ea238fb1a2e80583ee606743136a70d843ac3943",
+      "batch": "resupply-high-nominal",
+      "bytes": 97160911,
+      "cases": 12,
+      "complete_sha256": "297d39da9f8c78d341dd65c38ca074e183f0ba3a99f75873ebc60e67b06e0748",
+      "files": 1,
+      "run_sha256": "eb8dfcac4130ff88e3daecce1ad464be8909a8510bb4d5777f5e7a8db0baa1d8",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "14a12117bbeb77cfc540c576dc923c8351d2be406860205105ad0a0203f88549",
+      "batch": "resupply-low-nominal",
+      "bytes": 88939374,
+      "cases": 12,
+      "complete_sha256": "ab302186bb80962cb11a27a1a32fb2d5f16535fafe6fb476f3bedc2c3d933497",
+      "files": 1,
+      "run_sha256": "03904a16d018411349a5560e5f58b6f5fbf37327f94702d87d3aeb0d74864945",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "cc22a35ca69c033cb1b3b6eea5977f418e01febe8ce0a695f81b68423349e1ba",
+      "batch": "resupply-nominal",
+      "bytes": 374998861,
+      "cases": 84,
+      "complete_sha256": "841f0aa021999001d00fef187045c208e57b12d6617d6fb66c3d5f3b53f02a3c",
+      "files": 7,
+      "run_sha256": "a32fcb08230a84fb352e37d6c8cef8b624ddb09eb1c5ea272d4041aca1560b78",
+      "witnesses": {
+        "borisovka-micro-nominal-0-1-balanced.zip": "81d87e987e304e36ba88f006eacf8f48d197843f635f61352414d1b04c5482b7",
+        "borisovka-micro-nominal-0-1-blocked.zip": "90725641ff60d7c66a3acc0abd972dbc81514c39598828dcdcbde0a7e074d2cf",
+        "st_petersburg-micro-nominal-0-1-balanced.zip": "ef45ee95f9d606f9d8a1b65c5d94466016cf0226a5dc42ce38b15390a207193b",
+        "st_petersburg-micro-nominal-0-1-blocked.zip": "5dee2a38fa871c90520aa6ff7e7ecfbec4389afc5df444411b49181d2f626ef7"
+      }
+    },
+    {
+      "audit_sha256": null,
+      "batch": "sugar-nominal",
+      "bytes": 38940361,
+      "cases": 84,
+      "complete_sha256": "800389c594db0f7cac24e00a01d05e89eb48f75038ee00c904e44794ad6732ef",
+      "files": 7,
+      "run_sha256": "4f84b4ca8281c71f5477a28c0dd1b71d0e937e0143debac7497d80086227738b",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "8b94af8bcc4c172f9bbc4c539bda67302e9a9701b49b12140440bf91bdcdf552",
+      "batch": "uptake-closed",
+      "bytes": 198970380,
+      "cases": 960,
+      "complete_sha256": "1c5967a02903451f83b8140d2ce3d219cb5d81a13be220cfc4626689a3ac4a2a",
+      "files": 80,
+      "run_sha256": "92b06da9f8168c825614c2a9052767064e0f025f987730181117ba0598f87db2",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": "c79084aa50309df277bc6669caae0b3090285ff2a66ef4c667bf9617a5750964",
+      "batch": "uptake-factorial",
+      "bytes": 989235033,
+      "cases": 192,
+      "complete_sha256": "af904b234f4b0d9c160ea3752a76345e2ed8728dfbfc9067c85ac07e1e203dfe",
+      "files": 16,
+      "run_sha256": "39d981f559b6cc1fa5ffae855cd53cfccf8e42537fb910bfa63b6a9cc9e4ed57",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "uptake-high-nominal",
+      "bytes": 97161066,
+      "cases": 12,
+      "complete_sha256": "9d3658f8d0b3b23e3a95fb2a89fbf76eee3888798c1d166db5368a6ae87f1fd0",
+      "files": 1,
+      "run_sha256": "c830bc53b506bfa537d53861abec3edcf7a3d1e29bc653d3d7f3d05528fded4d",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "uptake-low-nominal",
+      "bytes": 72225870,
+      "cases": 12,
+      "complete_sha256": "1014f9ba02900bd1fdd60c793c577ee385852c1c9d511cc35c827ae762a9bf5f",
+      "files": 1,
+      "run_sha256": "b81aaa7ec4ed92bea214282a2262a59beb3d17284ce3c250bf4932cd2a8424fb",
+      "witnesses": {}
+    },
+    {
+      "audit_sha256": null,
+      "batch": "uptake-nominal",
+      "bytes": 353548794,
+      "cases": 84,
+      "complete_sha256": "1d94958fc8ab3fede59e4860d57caace21c146c7e3570339208f082ebb7c63fa",
+      "files": 7,
+      "run_sha256": "530351595907deacb63708b3246da9198251526b06fb5f3de22b3e1ca896cc91",
+      "witnesses": {
+        "borisovka-micro-nominal-0-1-balanced.zip": "bf9068be9d9c2cc40075d040b7d6b54e973ed65e9ed0811eddc80ff002110081",
+        "borisovka-micro-nominal-0-1-blocked.zip": "c3f1ae692d2fab67151098a30df74be7fc715f171ef2fbb3044c8c06ec3ea5cd",
+        "st_petersburg-micro-nominal-0-1-balanced.zip": "369e1cff3ebdaba22b52978c0d8838fa3af021c65213b3dc275d002a8f791edb",
+        "st_petersburg-micro-nominal-0-1-blocked.zip": "ab7512cfe64fa44dfcf2a5af2b5272afd93119cdff4ff6c78d75e43e8b8e9d11"
+      }
+    }
+  ],
+  "attempts": 4692,
+  "world_receipts_sha256": "96a32fce2273bd9cec717b63fedb40cdb942c122a7ff2e9ddf8890660dc7ef4b"
+}

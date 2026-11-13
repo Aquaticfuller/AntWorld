@@ -1,0 +1,50 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "4000000",
+    "15"
+  ],
+  "binary": "antworld_s6_4_wp6b.exe",
+  "binary_sha256": "3696828cfa0b2d75e713de9f9a0c3b86da69f97bcdedd1639522fcb02797bd06",
+  "candidate_protocol_sha256": "f37be7fec15d130332273ae742671d7c2a7fac5032997f0e655093ce5ba19678",
+  "cases": [
+    "borisovka-micro-nominal-0-1-balanced",
+    "borisovka-micro-nominal-0-7-balanced",
+    "borisovka-micro-nominal-0-19-balanced",
+    "borisovka-micro-nominal-0-42-balanced",
+    "borisovka-micro-nominal-0-43-balanced",
+    "borisovka-micro-nominal-0-97-balanced",
+    "st_petersburg-micro-nominal-0-1-balanced",
+    "st_petersburg-micro-nominal-0-7-balanced",
+    "st_petersburg-micro-nominal-0-19-balanced",
+    "st_petersburg-micro-nominal-0-42-balanced",
+    "st_petersburg-micro-nominal-0-43-balanced",
+    "st_petersburg-micro-nominal-0-97-balanced"
+  ],
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "428e820ce78fef8736bc3a4e04d652ddde7bf80a",
+  "executable_receipt_sha256": null,
+  "frozen": "1e57c9a",
+  "matrix": "nominal",
+  "mode": "observed",
+  "model": "resupply-low",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "0921afadd926ad59a0def91ac2d800441a9c95f12da73e67a94aeda5f7962102",
+  "python": "3.12.14",
+  "runner_sha256": "04c36155bf1dcdc15603406e29ae719f073046ce39b68ab7a75ae356d0af58fb",
+  "runner_source": "92a6ed916fb24ec5e49ee52a9dc6e012ed70d1ed",
+  "selected_subset": false,
+  "source": "92a6ed916fb24ec5e49ee52a9dc6e012ed70d1ed",
+  "started_ns": 1794538943623597000
+}

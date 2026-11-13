@@ -34,9 +34,15 @@ def sources(root):
 
 
 def package(raw, published, audits):
+    batches=list(sources(raw))
+    audit_paths={}
+    if audits:
+        for folder in batches:
+            audit_paths[folder.name]=next((root/f"analysis-{folder.name}/audit.json" for root in audits
+                                          if (root/f"analysis-{folder.name}/audit.json").is_file()),None)
     published.mkdir(parents=True)
     index, all_cases = [], []
-    for folder in sources(raw):
+    for folder in batches:
         model, matrix = folder.name.rsplit("-",1)
         universe = {case["case"]:case for _,case in environments(matrix)}
         meta, end = (json.loads((folder/name).read_text(encoding="utf-8")) for name in ("run.json","completed.json"))
@@ -70,13 +76,14 @@ def package(raw, published, audits):
                                 subset.writestr(part,raw_bytes)
                         witnesses[witness.name] = sha(witness)
         check(seen==set(meta["cases"])==end["statuses"].keys(),"case coverage changed")
-        if audits:
-            audit_path=audits/f"analysis-{folder.name}/audit.json"
+        audit_path=audit_paths.get(folder.name)
+        if audit_path:
             evidence=json.loads(audit_path.read_text(encoding="utf-8"))
             check(evidence["audited_attempts"]==evidence["input_attempts"]==len(seen),"archive lacks a complete fact audit")
             (manifest/"audit.json").write_bytes(audit_path.read_bytes())
         index.append(dict(batch=folder.name,cases=len(seen),bytes=checked_bytes,files=len(end["archives"]),
-                          run_sha256=sha(manifest/"run.json"),complete_sha256=sha(manifest/"completed.json"),witnesses=witnesses))
+                          run_sha256=sha(manifest/"run.json"),complete_sha256=sha(manifest/"completed.json"),
+                          audit_sha256=sha(audit_path) if audit_path else None,witnesses=witnesses))
     with (published/"world_receipts.jsonl").open("x",encoding="utf-8",newline="\n") as stream:
         for row in all_cases:
             stream.write(json.dumps(row,sort_keys=True,separators=(",",":"))+"\n")
@@ -92,6 +99,6 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("raw",type=Path)
     parser.add_argument("published",type=Path)
-    parser.add_argument("--audits",type=Path)
+    parser.add_argument("--audits",type=Path,action="append",default=[])
     args=parser.parse_args()
     package(args.raw,args.published,args.audits)

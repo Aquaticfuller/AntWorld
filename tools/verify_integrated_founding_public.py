@@ -45,6 +45,9 @@ def verify(path):
         receipt=records[folder.name]
         check(batch["cases"]==len(receipt)==complete["attempts"] and len(complete["archives"])==batch["files"] and
               set(run["cases"])==receipt.keys()==complete["statuses"].keys()==official.keys(),"case inventory changed")
+        if batch["audit_sha256"]:
+            audit=folder/"audit.json"
+            check(sha(audit)==batch["audit_sha256"] and load(audit)["audited_attempts"]==len(receipt),"full fact audit mismatch")
         check(run["arguments"][4:]==list(MODELS[model]),"model identity changed")
         for name,row in receipt.items():
             record=row["receipt"]

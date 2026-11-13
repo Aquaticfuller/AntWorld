@@ -1,0 +1,104 @@
+{
+  "checked_facts": 29807868,
+  "checked_files": 2112,
+  "complete_worlds": 0,
+  "group_rows": [
+    {
+      "arm": "absent",
+      "chain": 0,
+      "first_delivery": 0,
+      "late_eclosion": 0,
+      "population": "borisovka",
+      "queen_150": 0,
+      "queen_uptake": 0,
+      "worlds": 24
+    },
+    {
+      "arm": "balanced",
+      "chain": 0,
+      "first_delivery": 22,
+      "late_eclosion": 18,
+      "population": "borisovka",
+      "queen_150": 0,
+      "queen_uptake": 22,
+      "worlds": 24
+    },
+    {
+      "arm": "blocked",
+      "chain": 0,
+      "first_delivery": 0,
+      "late_eclosion": 0,
+      "population": "borisovka",
+      "queen_150": 0,
+      "queen_uptake": 0,
+      "worlds": 24
+    },
+    {
+      "arm": "limited",
+      "chain": 0,
+      "first_delivery": 22,
+      "late_eclosion": 18,
+      "population": "borisovka",
+      "queen_150": 0,
+      "queen_uptake": 22,
+      "worlds": 24
+    },
+    {
+      "arm": "absent",
+      "chain": 0,
+      "first_delivery": 0,
+      "late_eclosion": 0,
+      "population": "st_petersburg",
+      "queen_150": 0,
+      "queen_uptake": 0,
+      "worlds": 24
+    },
+    {
+      "arm": "balanced",
+      "chain": 0,
+      "first_delivery": 24,
+      "late_eclosion": 18,
+      "population": "st_petersburg",
+      "queen_150": 0,
+      "queen_uptake": 24,
+      "worlds": 24
+    },
+    {
+      "arm": "blocked",
+      "chain": 0,
+      "first_delivery": 0,
+      "late_eclosion": 0,
+      "population": "st_petersburg",
+      "queen_150": 0,
+      "queen_uptake": 0,
+      "worlds": 24
+    },
+    {
+      "arm": "limited",
+      "chain": 0,
+      "first_delivery": 24,
+      "late_eclosion": 18,
+      "population": "st_petersburg",
+      "queen_150": 0,
+      "queen_uptake": 24,
+      "worlds": 24
+    }
+  ],
+  "input_attempts": 192,
+  "matrix": "factorial",
+  "model": "both",
+  "profile_pass": {
+    "borisovka": {
+      "0": 0,
+      "10": 0,
+      "21": 0,
+      "31": 0
+    },
+    "st_petersburg": {
+      "0": 0,
+      "10": 0,
+      "21": 0,
+      "31": 0
+    }
+  }
+}

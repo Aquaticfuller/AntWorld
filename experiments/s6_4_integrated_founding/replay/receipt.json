@@ -1,0 +1,4156 @@
+{
+  "binary_sha256": "3696828cfa0b2d75e713de9f9a0c3b86da69f97bcdedd1639522fcb02797bd06",
+  "comparisons": [
+    {
+      "case": "borisovka-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3"
+      ],
+      "model": "r2",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 26425,
+              "sha256": "d9d25737b6bdd795b7cfc8ee9d6b48e2b4b46ab7300bc91bc7bafb834e12525b"
+            },
+            "facts.bin": {
+              "bytes": 2477127,
+              "sha256": "72b3c0872004da2ff487adbbca685a6e78d49fa824f8d76724e656fa647ccdd4"
+            },
+            "final.frame": {
+              "bytes": 28361,
+              "sha256": "7c3ee096e23f8d044cdd803ee98bc1569f793b6c6eac6acc07ee12b9ee19a473"
+            },
+            "individuals.csv": {
+              "bytes": 731956,
+              "sha256": "e0310fffb44ebb187e0d7cfdb736b4893cc237b8e59b1383395d657c5f2469b9"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "92f1f24a0e4ab551597fe47eb614d98a609a588726ed6b0df032af12a1acf2e0"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "12e64a5ee4b1db7054b3d810a116824de979f256ef4a27601b45c635af195d2d"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1297832,
+              "sha256": "7ed0d620848d388dee60b1887e0a4c824ad152cd4d6128d6ee71d6053b39c54d"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 481,
+              "sha256": "d0a2a1b4e976df920924f14e3576b6c90926101c8549d14836915bde0fa7b543"
+            },
+            "timings.csv": {
+              "bytes": 8561,
+              "sha256": "d4de072bb818e014f37aa6fab81e8e94752bb0d18a0f121351ec9a16fc6b102f"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 474.9230000015814,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 275083,
+            "name": "r2-borisovka-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "f6d48499674ea037a83d1f36119efb7f23d4a38f056cb10aba11e782be5859a3"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "40.598699999999987",
+            "checkpoint_ms": "35.245399999999997",
+            "cut_ms": "7.5843999999999987",
+            "events": "13383",
+            "facts_bytes": "2477127",
+            "frame_bytes": "28361",
+            "midpoint_restore_ms": "179.70930000000001",
+            "midpoint_save_ms": "96.841499999999996",
+            "peak_rss_bytes": "21164032",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10162176",
+            "seed": "1",
+            "setup_ms": "0.072300000000000003",
+            "state_hash": "16277104888744247105",
+            "time_ms": "12960000000",
+            "trace_hash": "3870686770199210608",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 26425,
+              "sha256": "d9d25737b6bdd795b7cfc8ee9d6b48e2b4b46ab7300bc91bc7bafb834e12525b"
+            },
+            "facts.bin": {
+              "bytes": 2477127,
+              "sha256": "72b3c0872004da2ff487adbbca685a6e78d49fa824f8d76724e656fa647ccdd4"
+            },
+            "final.frame": {
+              "bytes": 28361,
+              "sha256": "7c3ee096e23f8d044cdd803ee98bc1569f793b6c6eac6acc07ee12b9ee19a473"
+            },
+            "individuals.csv": {
+              "bytes": 731956,
+              "sha256": "e0310fffb44ebb187e0d7cfdb736b4893cc237b8e59b1383395d657c5f2469b9"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "92f1f24a0e4ab551597fe47eb614d98a609a588726ed6b0df032af12a1acf2e0"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 445,
+              "sha256": "0b2ebc341c9248368412d6a9693e78324b0c2e16a274dbf4cfbce302bfa3a212"
+            },
+            "timings.csv": {
+              "bytes": 8054,
+              "sha256": "df848c4bb62bbf56e3dc72771ee0238af31387a58cd9acc14c1baffefded6d89"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 176.645900006406,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "52.76050000000005",
+            "checkpoint_ms": "19.453099999999999",
+            "cut_ms": "11.974900000000005",
+            "events": "13383",
+            "facts_bytes": "2477127",
+            "frame_bytes": "28361",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14594048",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10055680",
+            "seed": "1",
+            "setup_ms": "0.10979999999999999",
+            "state_hash": "16277104888744247105",
+            "time_ms": "12960000000",
+            "trace_hash": "3870686770199210608",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2477127,
+              "sha256": "72b3c0872004da2ff487adbbca685a6e78d49fa824f8d76724e656fa647ccdd4"
+            },
+            "final.frame": {
+              "bytes": 28361,
+              "sha256": "7c3ee096e23f8d044cdd803ee98bc1569f793b6c6eac6acc07ee12b9ee19a473"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "92f1f24a0e4ab551597fe47eb614d98a609a588726ed6b0df032af12a1acf2e0"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 424,
+              "sha256": "39470ce8c7b0a9866a7a80d7bc086174e9b7867eaaf4fc618662266ffb35cfb9"
+            },
+            "timings.csv": {
+              "bytes": 5997,
+              "sha256": "d4e2a1f8d14627b43039e3619764d80b7c3c1f1ade64ba52270c0580fd8ceaed"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 139.3557000264991,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "46.655900000000081",
+            "checkpoint_ms": "18.238",
+            "cut_ms": "0.0086000000000000035",
+            "events": "13383",
+            "facts_bytes": "2477127",
+            "frame_bytes": "28361",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14417920",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10039296",
+            "seed": "1",
+            "setup_ms": "0.1037",
+            "state_hash": "16277104888744247105",
+            "time_ms": "12960000000",
+            "trace_hash": "3870686770199210608",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3"
+      ],
+      "model": "r2",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "ad15b3fb5d3c4339c4829a0af813e4ffa4fe7b40dce2dcb0e77cc696d26477d0"
+            },
+            "facts.bin": {
+              "bytes": 2680389,
+              "sha256": "fc80f747ae15f6058370f313bcb12bd573c9ff786bf18248fdf3503eeb5223cd"
+            },
+            "final.frame": {
+              "bytes": 30389,
+              "sha256": "57b84f5c6de9ac6ca915e98becc0713df39085f0a087bed331bece7a8a1ea18a"
+            },
+            "individuals.csv": {
+              "bytes": 730614,
+              "sha256": "48b2f7719c72f4695b1b876443ca3bee098175d9900d9d93f74b4fa642a54c43"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "2eb0566a73959df6c17eab757238a1e4d9bb1c9accac30b50af75a32ab30108b"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "31397cd180488b305d07698abdb9e3891cfae768d925e86df2e7ab31b9a1f3ad"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1479112,
+              "sha256": "2e134d70b7c8d5d1289494e7986bf43bef51443ae77c284a18ddc9c1c22717e6"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 477,
+              "sha256": "b36108e0832e77e95b19c6f68409eba68fb97b8e9180d1165f2c81b2397bc049"
+            },
+            "timings.csv": {
+              "bytes": 8176,
+              "sha256": "f28ca66c9c628efed276b63452f0a70ffc522a32dff105bc665b2374b77e254d"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 394.89480000338517,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 295713,
+            "name": "r2-borisovka-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "1557794144e2c5f1500abfaa7711891bb2a9800d28b2982c10d24b6b1342f930"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "26.139200000000066",
+            "checkpoint_ms": "12.549099999999999",
+            "cut_ms": "5.746900000000001",
+            "events": "14370",
+            "facts_bytes": "2680389",
+            "frame_bytes": "30389",
+            "midpoint_restore_ms": "162.60319999999999",
+            "midpoint_save_ms": "94.538200000000003",
+            "peak_rss_bytes": "21856256",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11264000",
+            "seed": "1",
+            "setup_ms": "0.081799999999999998",
+            "state_hash": "96950144992630153",
+            "time_ms": "12960000000",
+            "trace_hash": "6352479136119413045",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "ad15b3fb5d3c4339c4829a0af813e4ffa4fe7b40dce2dcb0e77cc696d26477d0"
+            },
+            "facts.bin": {
+              "bytes": 2680389,
+              "sha256": "fc80f747ae15f6058370f313bcb12bd573c9ff786bf18248fdf3503eeb5223cd"
+            },
+            "final.frame": {
+              "bytes": 30389,
+              "sha256": "57b84f5c6de9ac6ca915e98becc0713df39085f0a087bed331bece7a8a1ea18a"
+            },
+            "individuals.csv": {
+              "bytes": 730614,
+              "sha256": "48b2f7719c72f4695b1b876443ca3bee098175d9900d9d93f74b4fa642a54c43"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "2eb0566a73959df6c17eab757238a1e4d9bb1c9accac30b50af75a32ab30108b"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 444,
+              "sha256": "a57e3f19abb66db19f57d1784e6ad25f44fb1ef252b213bbaf75ea7c2e2836e9"
+            },
+            "timings.csv": {
+              "bytes": 8433,
+              "sha256": "1d13609f27b6904004025142ec90c8f5d6f560c18d53b95232216e995b1de1fe"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 127.01650001690723,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "29.282300000000031",
+            "checkpoint_ms": "17.224499999999999",
+            "cut_ms": "7.8308999999999989",
+            "events": "14370",
+            "facts_bytes": "2680389",
+            "frame_bytes": "30389",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "15396864",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10153984",
+            "seed": "1",
+            "setup_ms": "0.076200000000000004",
+            "state_hash": "96950144992630153",
+            "time_ms": "12960000000",
+            "trace_hash": "6352479136119413045",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2680389,
+              "sha256": "fc80f747ae15f6058370f313bcb12bd573c9ff786bf18248fdf3503eeb5223cd"
+            },
+            "final.frame": {
+              "bytes": 30389,
+              "sha256": "57b84f5c6de9ac6ca915e98becc0713df39085f0a087bed331bece7a8a1ea18a"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "2eb0566a73959df6c17eab757238a1e4d9bb1c9accac30b50af75a32ab30108b"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 445,
+              "sha256": "957afb2f62e4c627944ba40ffa697d4f357bfbedebc1792bd611348243c7498b"
+            },
+            "timings.csv": {
+              "bytes": 6334,
+              "sha256": "ad1802db3c16edc609ea71b68076f6b7635ca4fd5a804b2d177ce5c1387106f4"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 130.21639999351464,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "30.85059999999994",
+            "checkpoint_ms": "18.592300000000002",
+            "cut_ms": "0.0075000000000000067",
+            "events": "14370",
+            "facts_bytes": "2680389",
+            "frame_bytes": "30389",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "15101952",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10022912",
+            "seed": "1",
+            "setup_ms": "0.15340000000000001",
+            "state_hash": "96950144992630153",
+            "time_ms": "12960000000",
+            "trace_hash": "6352479136119413045",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3"
+      ],
+      "model": "r2",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 26518,
+              "sha256": "bd39cc5f842d2a04a1723b4d17e4d158eb9970603e8a90dad827803dd9fa6708"
+            },
+            "facts.bin": {
+              "bytes": 2387756,
+              "sha256": "5708a656c01d3d847bff3c6002157e2b4995dbd06640f3ceb0bed04f548c5b01"
+            },
+            "final.frame": {
+              "bytes": 29571,
+              "sha256": "a4d7b341d736f021734f216b6c3bd3951923d679a98a6cdf62b2cc71eee5e70b"
+            },
+            "individuals.csv": {
+              "bytes": 784426,
+              "sha256": "a4d4c5d64cc675c0b264110be2aca528c755d7b042b2dba32bf7916c4cf1b18a"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "1d090fd8272e4627603ca904473cf231f699393122f9026c0fec419ab4b2fa33"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "545b3beb19d8c4c4ff72d4776477422c18ccc33773f9f3b9d459e12aaa0781dd"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1219552,
+              "sha256": "11975f0f0ba0af29dc817ccaebb17a8ce7ce38cfadfa5c578d26c1492fdbf359"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 445,
+              "sha256": "c0e40a64bc0f3b561c883f30ce161868fa3241de27b20f6fb5b3258c205910fe"
+            },
+            "timings.csv": {
+              "bytes": 7789,
+              "sha256": "897fb437d08a6540ca9cbbe09187b0e8a4c2523f1da7753a380d626bf57518ff"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 430.4701999935787,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 259578,
+            "name": "r2-st_petersburg-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "45eea05422b147b4f72b2c259e3bfa5402a1068268b5c1be838961d910d07d56"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "32.130700000000026",
+            "checkpoint_ms": "14.4239",
+            "cut_ms": "9.0719000000000065",
+            "events": "12917",
+            "facts_bytes": "2387756",
+            "frame_bytes": "29571",
+            "midpoint_restore_ms": "156.4485",
+            "midpoint_save_ms": "78.492000000000004",
+            "peak_rss_bytes": "20262912",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "9191424",
+            "seed": "1",
+            "setup_ms": "0.1348",
+            "state_hash": "17579348548399248737",
+            "time_ms": "12960000000",
+            "trace_hash": "7489688753953885537",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 26518,
+              "sha256": "bd39cc5f842d2a04a1723b4d17e4d158eb9970603e8a90dad827803dd9fa6708"
+            },
+            "facts.bin": {
+              "bytes": 2387756,
+              "sha256": "5708a656c01d3d847bff3c6002157e2b4995dbd06640f3ceb0bed04f548c5b01"
+            },
+            "final.frame": {
+              "bytes": 29571,
+              "sha256": "a4d7b341d736f021734f216b6c3bd3951923d679a98a6cdf62b2cc71eee5e70b"
+            },
+            "individuals.csv": {
+              "bytes": 784426,
+              "sha256": "a4d4c5d64cc675c0b264110be2aca528c755d7b042b2dba32bf7916c4cf1b18a"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "1d090fd8272e4627603ca904473cf231f699393122f9026c0fec419ab4b2fa33"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 431,
+              "sha256": "e2a188016c25bbf2ba85d06b2f7b2da42c048034856ddeba143a8af1bed6d3a6"
+            },
+            "timings.csv": {
+              "bytes": 8005,
+              "sha256": "913017cde8e1b080f3dcceaeccf999b9ce30994a35d8a7156d8b674875d23deb"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 127.19289999222383,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "38.472100000000125",
+            "checkpoint_ms": "15.825900000000001",
+            "cut_ms": "9.1571999999999996",
+            "events": "12917",
+            "facts_bytes": "2387756",
+            "frame_bytes": "29571",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "15765504",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11329536",
+            "seed": "1",
+            "setup_ms": "0.11",
+            "state_hash": "17579348548399248737",
+            "time_ms": "12960000000",
+            "trace_hash": "7489688753953885537",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2387756,
+              "sha256": "5708a656c01d3d847bff3c6002157e2b4995dbd06640f3ceb0bed04f548c5b01"
+            },
+            "final.frame": {
+              "bytes": 29571,
+              "sha256": "a4d7b341d736f021734f216b6c3bd3951923d679a98a6cdf62b2cc71eee5e70b"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "1d090fd8272e4627603ca904473cf231f699393122f9026c0fec419ab4b2fa33"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 448,
+              "sha256": "a7cdcc2133ae2c1fce17685d323230666052cc06ae800fb881e425bf6736c363"
+            },
+            "timings.csv": {
+              "bytes": 5852,
+              "sha256": "b3800517a1372ededfc060cee25c62cabfcb68759f694f47689ed836e0eceb97"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 140.00250000390224,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "33.899899999999917",
+            "checkpoint_ms": "14.485300000000001",
+            "cut_ms": "0.0059000000000000025",
+            "events": "12917",
+            "facts_bytes": "2387756",
+            "frame_bytes": "29571",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14360576",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "9785344",
+            "seed": "1",
+            "setup_ms": "0.16830000000000001",
+            "state_hash": "17579348548399248737",
+            "time_ms": "12960000000",
+            "trace_hash": "7489688753953885537",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3"
+      ],
+      "model": "r2",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "2c5c5631d345d1b37d8ee4b58bb050adb9905337251e3419f997b0c0942f5fa5"
+            },
+            "facts.bin": {
+              "bytes": 2583081,
+              "sha256": "fbe68e75b4e10a8c64db5c05663ba2cb1c5a30f098a910c484a6bc2b8dac4150"
+            },
+            "final.frame": {
+              "bytes": 30970,
+              "sha256": "8ab4dbcf0f75c095a5fda4f6efb277ec959888c117545ad150b6770e65d86de8"
+            },
+            "individuals.csv": {
+              "bytes": 769053,
+              "sha256": "fb6c8dec2f326b7ef6749dda350d8279ee4512b7ce8e8bd785e0c46f59b5d9f2"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "08c17889c4a561dd5cfed63dc61191be9719973e7e2d2442bfdf75015196400d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "ad10b19dd8443faa08094f3592dd00e3d98a0c2632497d74ddc9433d1f4da882"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1376112,
+              "sha256": "06083ad7e53e85fff9834dfaaa4d2cfa36bcd0375143d3f234db3593ce4ad675"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 470,
+              "sha256": "21c63893094ed882bd08dda435fdd4a1e543bfcacf2359bffa1db855cdc72524"
+            },
+            "timings.csv": {
+              "bytes": 8172,
+              "sha256": "547fa64d504a0fe6de030794639b1ae2b21520f8990a23d1c4265d8ee327b0ff"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 464.2511999991257,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 283316,
+            "name": "r2-st_petersburg-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "fc1a2233009406a2298c3d7b03d45e96c70e6a226d46af740ef7f14db354989d"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "30.378499999999981",
+            "checkpoint_ms": "26.6449",
+            "cut_ms": "12.667799999999996",
+            "events": "13860",
+            "facts_bytes": "2583081",
+            "frame_bytes": "30970",
+            "midpoint_restore_ms": "177.46090000000001",
+            "midpoint_save_ms": "113.67010000000001",
+            "peak_rss_bytes": "21815296",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "9924608",
+            "seed": "1",
+            "setup_ms": "0.070199999999999999",
+            "state_hash": "17302644040532029931",
+            "time_ms": "12960000000",
+            "trace_hash": "12681661592216958683",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "2c5c5631d345d1b37d8ee4b58bb050adb9905337251e3419f997b0c0942f5fa5"
+            },
+            "facts.bin": {
+              "bytes": 2583081,
+              "sha256": "fbe68e75b4e10a8c64db5c05663ba2cb1c5a30f098a910c484a6bc2b8dac4150"
+            },
+            "final.frame": {
+              "bytes": 30970,
+              "sha256": "8ab4dbcf0f75c095a5fda4f6efb277ec959888c117545ad150b6770e65d86de8"
+            },
+            "individuals.csv": {
+              "bytes": 769053,
+              "sha256": "fb6c8dec2f326b7ef6749dda350d8279ee4512b7ce8e8bd785e0c46f59b5d9f2"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "08c17889c4a561dd5cfed63dc61191be9719973e7e2d2442bfdf75015196400d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 447,
+              "sha256": "dba9b5eb6099c49498132be3d9152c5d51c873fe29a4df7d80b6b1c72760d60e"
+            },
+            "timings.csv": {
+              "bytes": 8517,
+              "sha256": "07ac17a33c369949a833f4a67438819dcccc6d0e2b3070c81b21c91468f700b6"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 133.208499988541,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "36.562599999999975",
+            "checkpoint_ms": "16.739100000000001",
+            "cut_ms": "10.377999999999998",
+            "events": "13860",
+            "facts_bytes": "2583081",
+            "frame_bytes": "30970",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14516224",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10334208",
+            "seed": "1",
+            "setup_ms": "0.16950000000000001",
+            "state_hash": "17302644040532029931",
+            "time_ms": "12960000000",
+            "trace_hash": "12681661592216958683",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2583081,
+              "sha256": "fbe68e75b4e10a8c64db5c05663ba2cb1c5a30f098a910c484a6bc2b8dac4150"
+            },
+            "final.frame": {
+              "bytes": 30970,
+              "sha256": "8ab4dbcf0f75c095a5fda4f6efb277ec959888c117545ad150b6770e65d86de8"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5658,
+              "sha256": "08c17889c4a561dd5cfed63dc61191be9719973e7e2d2442bfdf75015196400d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 437,
+              "sha256": "be1bfbc2722a734e06afaa93f006d644bf3b418755035e5ce21d39348559f25f"
+            },
+            "timings.csv": {
+              "bytes": 5679,
+              "sha256": "fbb5201889c444045f27bfe9efeb0d8231e8edf60a8c330cb2a80073fbc64477"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 114.21420000260696,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "26.79940000000008",
+            "checkpoint_ms": "15.7935",
+            "cut_ms": "0.006500000000000004",
+            "events": "13860",
+            "facts_bytes": "2583081",
+            "frame_bytes": "30970",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14553088",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10334208",
+            "seed": "1",
+            "setup_ms": "0.14460000000000001",
+            "state_hash": "17302644040532029931",
+            "time_ms": "12960000000",
+            "trace_hash": "12681661592216958683",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "3"
+      ],
+      "model": "diet",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27204,
+              "sha256": "644fe6c3288b35ada4200fac1cc6b9ea74f91afc591449017a556c294a60ed7a"
+            },
+            "facts.bin": {
+              "bytes": 128140899,
+              "sha256": "0869b1148779c86b9378f1b8d3234960314822cd88c04a58ed07b978af4b3ad7"
+            },
+            "final.frame": {
+              "bytes": 104447,
+              "sha256": "83eb5e42d8053af5434a2f5bdd3536002bd7b54e39be559365016941df7c5e2f"
+            },
+            "individuals.csv": {
+              "bytes": 1051126,
+              "sha256": "0b0daca9b9b1593c8aa897685b7d89a3358b4950cf1ae56999386c7e2ce1befa"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "e55698b361e5f0bc4a74883ae04c5f292a1000bdf423affb8b54ffe08e372edc"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4808704,
+              "sha256": "33bf035f9faaa81d83508897914b7c277d0f1ab7ad532aca50232462d6c9eabd"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "bd98f5eebc58ba5bb1147c7809d481a4192724cdb6bc28e6a1ea535f011f20ce"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4812192,
+              "sha256": "8f6d56581b86da0c4e44fddaf1e5acf68415c354450f403c7b1fc8abb2ab3c98"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 463,
+              "sha256": "4cd812bbfb940f3c4a6f66da14001d91402b1b42f602c1dda978d455ccc517bd"
+            },
+            "timings.csv": {
+              "bytes": 8183,
+              "sha256": "c9fd94be8dc2a53887b4a780c853524622afb7a704e93538f731ce0dda087783"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4793.905099999392,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 1957318,
+            "name": "diet-borisovka-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "d6731de92d0bf4190b7a44f13d24b5fef7fe39d595598b76aad0689adcd60893"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1646.4556",
+            "checkpoint_ms": "273.01760000000002",
+            "cut_ms": "17.21990000000001",
+            "events": "624279",
+            "facts_bytes": "128140899",
+            "frame_bytes": "104447",
+            "midpoint_restore_ms": "672.62710000000004",
+            "midpoint_save_ms": "353.59469999999999",
+            "peak_rss_bytes": "270610432",
+            "peak_sampled_queue": "113",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "153612288",
+            "seed": "1",
+            "setup_ms": "0.1085",
+            "state_hash": "4412660296054368091",
+            "time_ms": "12960000000",
+            "trace_hash": "3178777726948135665",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27204,
+              "sha256": "644fe6c3288b35ada4200fac1cc6b9ea74f91afc591449017a556c294a60ed7a"
+            },
+            "facts.bin": {
+              "bytes": 128140899,
+              "sha256": "0869b1148779c86b9378f1b8d3234960314822cd88c04a58ed07b978af4b3ad7"
+            },
+            "final.frame": {
+              "bytes": 104447,
+              "sha256": "83eb5e42d8053af5434a2f5bdd3536002bd7b54e39be559365016941df7c5e2f"
+            },
+            "individuals.csv": {
+              "bytes": 1051126,
+              "sha256": "0b0daca9b9b1593c8aa897685b7d89a3358b4950cf1ae56999386c7e2ce1befa"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "e55698b361e5f0bc4a74883ae04c5f292a1000bdf423affb8b54ffe08e372edc"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 453,
+              "sha256": "7c885209ffabc6a80284ff7dcbefcef52a08081e392fc2e34cfc9802a8b00494"
+            },
+            "timings.csv": {
+              "bytes": 7769,
+              "sha256": "d3a878cc88ceb44168dc2f51a8bc00d2071cea3c42d218a48b9cd2d4185589d9"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 3547.263500018744,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1536.8459000000003",
+            "checkpoint_ms": "882.93870000000004",
+            "cut_ms": "16.811299999999999",
+            "events": "624279",
+            "facts_bytes": "128140899",
+            "frame_bytes": "104447",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "414052352",
+            "peak_sampled_queue": "113",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "164057088",
+            "seed": "1",
+            "setup_ms": "0.092700000000000005",
+            "state_hash": "4412660296054368091",
+            "time_ms": "12960000000",
+            "trace_hash": "3178777726948135665",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 128140899,
+              "sha256": "0869b1148779c86b9378f1b8d3234960314822cd88c04a58ed07b978af4b3ad7"
+            },
+            "final.frame": {
+              "bytes": 104447,
+              "sha256": "83eb5e42d8053af5434a2f5bdd3536002bd7b54e39be559365016941df7c5e2f"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "e55698b361e5f0bc4a74883ae04c5f292a1000bdf423affb8b54ffe08e372edc"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 441,
+              "sha256": "9ee1362414eba7a6caa5d38dfb08c22f8ac6bb880497e2fc07d10e7c5f5c52e5"
+            },
+            "timings.csv": {
+              "bytes": 6990,
+              "sha256": "c49e74f7a5a3e4a3ccf24ffc71af220276767b156ff0e6a6ed95b877f4c7908f"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4177.834300004179,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1810.3639000000005",
+            "checkpoint_ms": "850.13520000000005",
+            "cut_ms": "0.015099999999999999",
+            "events": "624279",
+            "facts_bytes": "128140899",
+            "frame_bytes": "104447",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "413601792",
+            "peak_sampled_queue": "113",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "162582528",
+            "seed": "1",
+            "setup_ms": "0.1145",
+            "state_hash": "4412660296054368091",
+            "time_ms": "12960000000",
+            "trace_hash": "3178777726948135665",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "3"
+      ],
+      "model": "diet",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "4755dfd2055bfb3a5365ed1f4e30a7a1d407c351bcf7816b16827a95e3e18ff2"
+            },
+            "final.frame": {
+              "bytes": 30392,
+              "sha256": "6c4c07face0016e22edfd0c32fcd44bf44bb6e457bb1f4f2fde8249ee0f7260d"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "d97964233f25aa7e791355dc8a6b5f6d9c9846eb76133705db2fca3546931fa8"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "bd04f112f95a0432e57d3c20a6075e32878e9fe1ab11d73eb7e120dfee372e3c"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1639792,
+              "sha256": "f2293ccfcd8e522d4ce0266803886ad7793f6702f0032c798efc965f9686e7a4"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 470,
+              "sha256": "62759242fd8fce5a93e166ff036dd7d22b313bec2b6839a1c9fcf690796eedad"
+            },
+            "timings.csv": {
+              "bytes": 8373,
+              "sha256": "bb2d06ad6f9e7ac2e0dbd82ee712e75fb6f76a6619ec96dfdadc9eebaee466cf"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 547.2759999975096,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 320573,
+            "name": "diet-borisovka-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "4d3a9ccefafbdb95ca4e67a5143a3e63bb8ee36559c285b795923dd32a7ae441"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "44.413000000000068",
+            "checkpoint_ms": "16.7135",
+            "cut_ms": "9.0098999999999982",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "30392",
+            "midpoint_restore_ms": "210.00200000000001",
+            "midpoint_save_ms": "138.04259999999999",
+            "peak_rss_bytes": "22392832",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10223616",
+            "seed": "1",
+            "setup_ms": "0.097500000000000003",
+            "state_hash": "11950773342915469457",
+            "time_ms": "12960000000",
+            "trace_hash": "2754974081816790872",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "4755dfd2055bfb3a5365ed1f4e30a7a1d407c351bcf7816b16827a95e3e18ff2"
+            },
+            "final.frame": {
+              "bytes": 30392,
+              "sha256": "6c4c07face0016e22edfd0c32fcd44bf44bb6e457bb1f4f2fde8249ee0f7260d"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "d97964233f25aa7e791355dc8a6b5f6d9c9846eb76133705db2fca3546931fa8"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 433,
+              "sha256": "1974c38168117466063747b62997c9ddcba7e854e9ce80b4418b460bfea3a42b"
+            },
+            "timings.csv": {
+              "bytes": 8425,
+              "sha256": "f83ca5e67c27a05019cd2214d65a9097f51b521b2db252be13de150d1d1201ba"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 159.77709999424405,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "45.242499999999957",
+            "checkpoint_ms": "21.844000000000001",
+            "cut_ms": "10.426700000000004",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "30392",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17121280",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11788288",
+            "seed": "1",
+            "setup_ms": "0.1031",
+            "state_hash": "11950773342915469457",
+            "time_ms": "12960000000",
+            "trace_hash": "2754974081816790872",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "4755dfd2055bfb3a5365ed1f4e30a7a1d407c351bcf7816b16827a95e3e18ff2"
+            },
+            "final.frame": {
+              "bytes": 30392,
+              "sha256": "6c4c07face0016e22edfd0c32fcd44bf44bb6e457bb1f4f2fde8249ee0f7260d"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "d97964233f25aa7e791355dc8a6b5f6d9c9846eb76133705db2fca3546931fa8"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 436,
+              "sha256": "a47be17c6b65a99c98b24a6633bd06033ec25f623a7fed5c726431f56992d4eb"
+            },
+            "timings.csv": {
+              "bytes": 5851,
+              "sha256": "0237da98c5f8c48d0728ef7df99758462d89136dabe66bb70e059fbbf03222f6"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 156.37819998664781,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "45.008200000000066",
+            "checkpoint_ms": "27.465699999999998",
+            "cut_ms": "0.0080000000000000071",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "30392",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17084416",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11780096",
+            "seed": "1",
+            "setup_ms": "0.1082",
+            "state_hash": "11950773342915469457",
+            "time_ms": "12960000000",
+            "trace_hash": "2754974081816790872",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "3"
+      ],
+      "model": "diet",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27288,
+              "sha256": "00cfed3fa8539c08cf786c13b583ef25bb9a3a93eb2a70500d9d038a1ec2f910"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "93b0191e7e79479977b85454b411936c7e200dc71fc069ccb0cee27e78b6ee5e"
+            },
+            "final.frame": {
+              "bytes": 101803,
+              "sha256": "b7d66cbbb7954333d70c7e600071861f831f0f849781c43707874c8410f0e480"
+            },
+            "individuals.csv": {
+              "bytes": 1090850,
+              "sha256": "4f291d01f3bf4b5b4a41303814c0af9b45b1984074fcaeffe7f7992b7fb660ea"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "538fde202d8668875a77d7d14c6a14b9d38c234ac4630dc182bf93d5a9c11284"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4382720,
+              "sha256": "62bbb6f96eb2f96c7f3bbc4428216b82538cee26cfcb4348fdf259224388731c"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "056873eb6b03055ddfc4ae43e1c2b353e4e08542645f905bb109746414a59097"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4383712,
+              "sha256": "866e8c64fdca651abd47f7c285c4079d95d2d3a3eac73198ce6e863bdddf436d"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 459,
+              "sha256": "5c1cd9b93e318a146e124492e5e63e775937c239b64728056600d7670e864d95"
+            },
+            "timings.csv": {
+              "bytes": 7954,
+              "sha256": "05477ff4f94cc62e621824f461d9d4a2cdde27924287f9ee177c44d1b4cfac2f"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4520.982600020943,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 1778791,
+            "name": "diet-st_petersburg-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "3a6f998ba41dec0b0419892f073a86ffeefec33288abc788b550cbab11638e87"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1575.7793000000001",
+            "checkpoint_ms": "212.5763",
+            "cut_ms": "17.568000000000005",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "101803",
+            "midpoint_restore_ms": "615.7903",
+            "midpoint_save_ms": "351.5376",
+            "peak_rss_bytes": "269090816",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "154165248",
+            "seed": "1",
+            "setup_ms": "0.073999999999999996",
+            "state_hash": "16241469773675316032",
+            "time_ms": "12960000000",
+            "trace_hash": "12523370889850288347",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27288,
+              "sha256": "00cfed3fa8539c08cf786c13b583ef25bb9a3a93eb2a70500d9d038a1ec2f910"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "93b0191e7e79479977b85454b411936c7e200dc71fc069ccb0cee27e78b6ee5e"
+            },
+            "final.frame": {
+              "bytes": 101803,
+              "sha256": "b7d66cbbb7954333d70c7e600071861f831f0f849781c43707874c8410f0e480"
+            },
+            "individuals.csv": {
+              "bytes": 1090850,
+              "sha256": "4f291d01f3bf4b5b4a41303814c0af9b45b1984074fcaeffe7f7992b7fb660ea"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "538fde202d8668875a77d7d14c6a14b9d38c234ac4630dc182bf93d5a9c11284"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 454,
+              "sha256": "08c530a3d4ea298e152da96c834239d4a161264ffba646f1ecd5098def43446e"
+            },
+            "timings.csv": {
+              "bytes": 8096,
+              "sha256": "17266cbe4c259a2692cc8eb94bbe0b89c736c4c6b0e09cbaf70a9f7f7ebd99be"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4052.7277999790385,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1512.0400999999997",
+            "checkpoint_ms": "939.96720000000005",
+            "cut_ms": "18.221899999999994",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "101803",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "407298048",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "158613504",
+            "seed": "1",
+            "setup_ms": "0.11550000000000001",
+            "state_hash": "16241469773675316032",
+            "time_ms": "12960000000",
+            "trace_hash": "12523370889850288347",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "93b0191e7e79479977b85454b411936c7e200dc71fc069ccb0cee27e78b6ee5e"
+            },
+            "final.frame": {
+              "bytes": 101803,
+              "sha256": "b7d66cbbb7954333d70c7e600071861f831f0f849781c43707874c8410f0e480"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "538fde202d8668875a77d7d14c6a14b9d38c234ac4630dc182bf93d5a9c11284"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 456,
+              "sha256": "27bafd91863d00f031592853076ed4c92ce45ae84af649ce94480caa6561de82"
+            },
+            "timings.csv": {
+              "bytes": 6787,
+              "sha256": "b8622e1f563bff7fcc9c3d685c6a4c09fa72afd86b0305e204b987fb8f7b1a66"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4062.174299993785,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1584.1799000000001",
+            "checkpoint_ms": "857.47469999999998",
+            "cut_ms": "0.014599999999999991",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "101803",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "407314432",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "159662080",
+            "seed": "1",
+            "setup_ms": "0.10199999999999999",
+            "state_hash": "16241469773675316032",
+            "time_ms": "12960000000",
+            "trace_hash": "12523370889850288347",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "3"
+      ],
+      "model": "diet",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "b989e4a05ce02f459b2b661a38b785b3259134178d4c83768866a78ab25b5f80"
+            },
+            "final.frame": {
+              "bytes": 30997,
+              "sha256": "4a7c6d72cc59979ea18fd998fbfd68d7c7814a426bc745388c0c97334e4ad9fa"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "2ee7b0a24d135d4abd5cd65f59b9280c1429cdc60144ba616db4912837b159eb"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "3357f496f3dd6ca88f33ccc9c84c9be2fd780471d81ca7e1f1c77056480a04ac"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1689232,
+              "sha256": "d9aca5d9ca7ea989e9a18102984e2e43b32c46bf5229eefa9ef65117db0f88c3"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 469,
+              "sha256": "5a9fed7d05429707540f6926dbfdbe8fd0ae504cef0a0d835a7a0d210a76cab0"
+            },
+            "timings.csv": {
+              "bytes": 7968,
+              "sha256": "c15a0fecfae193739d0e4df70bdae96d4bd44056e920ff861c86c89ca42c6f3f"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 501.6493999864906,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 328295,
+            "name": "diet-st_petersburg-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "ce46f91fc2bdd17569a25a4319bb66122452f5f299d77215fa176f956f55478f"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "42.349500000000035",
+            "checkpoint_ms": "18.970700000000001",
+            "cut_ms": "10.819700000000005",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "30997",
+            "midpoint_restore_ms": "190.91540000000001",
+            "midpoint_save_ms": "119.7201",
+            "peak_rss_bytes": "22507520",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10407936",
+            "seed": "1",
+            "setup_ms": "0.074899999999999994",
+            "state_hash": "2269160489067268261",
+            "time_ms": "12960000000",
+            "trace_hash": "418365616123010944",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "b989e4a05ce02f459b2b661a38b785b3259134178d4c83768866a78ab25b5f80"
+            },
+            "final.frame": {
+              "bytes": 30997,
+              "sha256": "4a7c6d72cc59979ea18fd998fbfd68d7c7814a426bc745388c0c97334e4ad9fa"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "2ee7b0a24d135d4abd5cd65f59b9280c1429cdc60144ba616db4912837b159eb"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 444,
+              "sha256": "3c1396186a8247d7fc232a646c2d8e4d5b47dee4a07b77cedfb153be4061d1ce"
+            },
+            "timings.csv": {
+              "bytes": 8281,
+              "sha256": "823b9542b3ebdff93795d8d31cccd3c8aaf98c75696fe536c18175c45903dc4c"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 140.47350001055747,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "41.217999999999932",
+            "checkpoint_ms": "17.744599999999998",
+            "cut_ms": "7.457000000000007",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "30997",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "15458304",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10018816",
+            "seed": "1",
+            "setup_ms": "0.073300000000000004",
+            "state_hash": "2269160489067268261",
+            "time_ms": "12960000000",
+            "trace_hash": "418365616123010944",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "b989e4a05ce02f459b2b661a38b785b3259134178d4c83768866a78ab25b5f80"
+            },
+            "final.frame": {
+              "bytes": 30997,
+              "sha256": "4a7c6d72cc59979ea18fd998fbfd68d7c7814a426bc745388c0c97334e4ad9fa"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5661,
+              "sha256": "2ee7b0a24d135d4abd5cd65f59b9280c1429cdc60144ba616db4912837b159eb"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 434,
+              "sha256": "75318af80aa323d213cb3f9636ec47551535910a49b37d73d06bef1e7658515a"
+            },
+            "timings.csv": {
+              "bytes": 5830,
+              "sha256": "7f4edc0970466e967801e5fba128bd35011d381158295a5df60203a5414c4e33"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 134.99039999442175,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "42.632399999999954",
+            "checkpoint_ms": "17.692699999999999",
+            "cut_ms": "0.0064000000000000038",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "30997",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "15826944",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10375168",
+            "seed": "1",
+            "setup_ms": "0.1028",
+            "state_hash": "2269160489067268261",
+            "time_ms": "12960000000",
+            "trace_hash": "418365616123010944",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "7"
+      ],
+      "model": "uptake",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27190,
+              "sha256": "43eae6ea09637a197436efe8c7abdd66fc2f5e0ea801034aaa331b0981711736"
+            },
+            "facts.bin": {
+              "bytes": 127605793,
+              "sha256": "ccda6cc422f6bbd60e88bbdb5068c8fd50bc5ef095263f1bc4c75ce5d566ba2f"
+            },
+            "final.frame": {
+              "bytes": 102513,
+              "sha256": "54e9d5c445fcbdfe297e2c5e7d8b165c8b5082302d8b2eae2330ea5032c8f7a0"
+            },
+            "individuals.csv": {
+              "bytes": 1050851,
+              "sha256": "3403486d34e72149342afa40d974240bfce0630250e68ad1d342c767a717b9bb"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5efdf505f15a9e707638fd504613bb5c1eeb1b189c64244b98cf55e763961567"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4808704,
+              "sha256": "8ef5210a08929ea5bc0bb4f10604c33dfb178a1c10b6c48b62a88533975fc83b"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "d73c8d6c603d2f015bc2458d4bdca8e328bf8718c210498b804b162fc64c6c33"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4812192,
+              "sha256": "00fe466616f83e3c19187fb0fe1657b02ad019f6b06a4ac9e46d2a646950d873"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 479,
+              "sha256": "266c4dc60ab12340c16f3a3a75ff88ccefe9009a9ad00186618477584cd27801"
+            },
+            "timings.csv": {
+              "bytes": 7803,
+              "sha256": "83daf036fbf29932f6aa28060d8b7206c8160ac4601a36d0030f7700770c44d0"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4362.388100009412,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 1957517,
+            "name": "uptake-borisovka-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "097e62a2ed6f147c9e99ee36858dfb0c4d56120b5cd2c80164ecb846c50e7aac"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1599.6015",
+            "checkpoint_ms": "265.17700000000002",
+            "cut_ms": "18.330699999999997",
+            "events": "621646",
+            "facts_bytes": "127605793",
+            "frame_bytes": "102513",
+            "midpoint_restore_ms": "581.54269999999997",
+            "midpoint_save_ms": "283.94459999999998",
+            "peak_rss_bytes": "270970880",
+            "peak_sampled_queue": "112",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "153210880",
+            "seed": "1",
+            "setup_ms": "0.078899999999999998",
+            "state_hash": "8557349871913693367",
+            "time_ms": "12960000000",
+            "trace_hash": "16307493848539892703",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27190,
+              "sha256": "43eae6ea09637a197436efe8c7abdd66fc2f5e0ea801034aaa331b0981711736"
+            },
+            "facts.bin": {
+              "bytes": 127605793,
+              "sha256": "ccda6cc422f6bbd60e88bbdb5068c8fd50bc5ef095263f1bc4c75ce5d566ba2f"
+            },
+            "final.frame": {
+              "bytes": 102513,
+              "sha256": "54e9d5c445fcbdfe297e2c5e7d8b165c8b5082302d8b2eae2330ea5032c8f7a0"
+            },
+            "individuals.csv": {
+              "bytes": 1050851,
+              "sha256": "3403486d34e72149342afa40d974240bfce0630250e68ad1d342c767a717b9bb"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5efdf505f15a9e707638fd504613bb5c1eeb1b189c64244b98cf55e763961567"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 454,
+              "sha256": "2db28a174939885e3e249b3424ec5ba7f50733e027a3bedf34b23e2a0fe19c9d"
+            },
+            "timings.csv": {
+              "bytes": 7854,
+              "sha256": "4e4c287f50bc1388c6a5a7992d251c8222a8d27d54df8a65caea262c36d8c904"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 3885.9551000059582,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1681.8842999999997",
+            "checkpoint_ms": "903.31880000000001",
+            "cut_ms": "18.158200000000008",
+            "events": "621646",
+            "facts_bytes": "127605793",
+            "frame_bytes": "102513",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "412291072",
+            "peak_sampled_queue": "112",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "162975744",
+            "seed": "1",
+            "setup_ms": "0.097699999999999995",
+            "state_hash": "8557349871913693367",
+            "time_ms": "12960000000",
+            "trace_hash": "16307493848539892703",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 127605793,
+              "sha256": "ccda6cc422f6bbd60e88bbdb5068c8fd50bc5ef095263f1bc4c75ce5d566ba2f"
+            },
+            "final.frame": {
+              "bytes": 102513,
+              "sha256": "54e9d5c445fcbdfe297e2c5e7d8b165c8b5082302d8b2eae2330ea5032c8f7a0"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5efdf505f15a9e707638fd504613bb5c1eeb1b189c64244b98cf55e763961567"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 455,
+              "sha256": "1c836cc01409ab02c8b63bff6c4eb40452b03ae9d4e89e4a0d5aa1f38d8691a8"
+            },
+            "timings.csv": {
+              "bytes": 7143,
+              "sha256": "714d4af457f42cd5cad41d91bf335830632a6073fddfac9141438f41df19d087"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4217.280100012431,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1806.7738999999999",
+            "checkpoint_ms": "899.51940000000002",
+            "cut_ms": "0.016299999999999992",
+            "events": "621646",
+            "facts_bytes": "127605793",
+            "frame_bytes": "102513",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "410824704",
+            "peak_sampled_queue": "112",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "162258944",
+            "seed": "1",
+            "setup_ms": "0.12559999999999999",
+            "state_hash": "8557349871913693367",
+            "time_ms": "12960000000",
+            "trace_hash": "16307493848539892703",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "7"
+      ],
+      "model": "uptake",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "7b4a3d933bc5590055495ede30a0d0418e0c214a5f15f8d50d388316ae9b40c1"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "8bec992f78578fde5a6d46262bbd886f4e6a2ca665eb38226552b78de523d13f"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "01ce4f6551f7543987d626b25823f6f4cdeb492317e869ed1bcd9bdd711675ac"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "4d04e5d405cb745197847c874f2894ad9b6abf15e33df64194bfe70386c8a953"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1639792,
+              "sha256": "a83ca36c696dc946d32869674032efc9c5688a4ab694eff32dffd6a477bd5056"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 461,
+              "sha256": "3efe4adefb06e6f516d8ea60cb1b057464ed39e1eb00154d31c4458eb1540e9c"
+            },
+            "timings.csv": {
+              "bytes": 8155,
+              "sha256": "a9a7ef3fa3cefa9197137ccda009b679955c1882b32dfd497a3b10ba6598bc5d"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 1387.3027000227012,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 320590,
+            "name": "uptake-borisovka-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "ed0c3d68440ae2b80d09002b868daf552c31d20bf66130c97a9a4fae6ad4d05f"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "41.298699999999947",
+            "checkpoint_ms": "14.273899999999999",
+            "cut_ms": "7.2608000000000015",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "180.9178",
+            "midpoint_save_ms": "1031.9439",
+            "peak_rss_bytes": "22339584",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10289152",
+            "seed": "1",
+            "setup_ms": "0.10970000000000001",
+            "state_hash": "3456354192160862736",
+            "time_ms": "12960000000",
+            "trace_hash": "16532642477509147557",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "7b4a3d933bc5590055495ede30a0d0418e0c214a5f15f8d50d388316ae9b40c1"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "8bec992f78578fde5a6d46262bbd886f4e6a2ca665eb38226552b78de523d13f"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "01ce4f6551f7543987d626b25823f6f4cdeb492317e869ed1bcd9bdd711675ac"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 446,
+              "sha256": "ba88454b39f446de2a8615ee09ec41573530da2cd6a02ebd1585f1662fe9c84b"
+            },
+            "timings.csv": {
+              "bytes": 8106,
+              "sha256": "b7420e2fee6e0588540872469d249ed6ec858c671e9caca3def4a722a0b285a0"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 141.92530000582337,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "42.819100000000041",
+            "checkpoint_ms": "18.545500000000001",
+            "cut_ms": "9.5018000000000047",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "16322560",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "12509184",
+            "seed": "1",
+            "setup_ms": "0.10489999999999999",
+            "state_hash": "3456354192160862736",
+            "time_ms": "12960000000",
+            "trace_hash": "16532642477509147557",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "7b4a3d933bc5590055495ede30a0d0418e0c214a5f15f8d50d388316ae9b40c1"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "8bec992f78578fde5a6d46262bbd886f4e6a2ca665eb38226552b78de523d13f"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "01ce4f6551f7543987d626b25823f6f4cdeb492317e869ed1bcd9bdd711675ac"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 450,
+              "sha256": "224c69d1b4d24888a9e0d416a1b037e022d994fa47286996b9697981609d2105"
+            },
+            "timings.csv": {
+              "bytes": 5728,
+              "sha256": "65aea8b5b7738480c16b49bdf0d21dbbcbe3f66942d4b6a1559ccc230ad069a9"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 144.30210000136867,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "35.038500000000035",
+            "checkpoint_ms": "19.793700000000001",
+            "cut_ms": "0.0088000000000000023",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17010688",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10739712",
+            "seed": "1",
+            "setup_ms": "0.075700000000000003",
+            "state_hash": "3456354192160862736",
+            "time_ms": "12960000000",
+            "trace_hash": "16532642477509147557",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "7"
+      ],
+      "model": "uptake",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27288,
+              "sha256": "00cfed3fa8539c08cf786c13b583ef25bb9a3a93eb2a70500d9d038a1ec2f910"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "5bb64a7bca5f53a3248bf0cf951fed5af003b1e4b71e4d2575d7e82d59a2d217"
+            },
+            "final.frame": {
+              "bytes": 102939,
+              "sha256": "8924b97b8af7ac5934cfa235905d219d05373a2c535725f902ac0197f747aa45"
+            },
+            "individuals.csv": {
+              "bytes": 1090850,
+              "sha256": "4f291d01f3bf4b5b4a41303814c0af9b45b1984074fcaeffe7f7992b7fb660ea"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cf59b1abecf9ff07c5b1f204acd2abc743962a4691cb50690337b95485eb1ff6"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4382720,
+              "sha256": "c716ba0f56f02f24d9dc66690072632c023e8b9a6ac0f61b6ca30fcc2291c8e3"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "d1eb44736a250758d89f2577bd44edc185eacc536a61106ebb415a89eb7552d9"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4383712,
+              "sha256": "a0797635903e6f9c584ac6b7055bba4f48d2a505b88c5225d847031152d9fdca"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 463,
+              "sha256": "e79524006aaa32a4e509047ef238055ad59dfe7cdd17b1ca168eee718935bc4c"
+            },
+            "timings.csv": {
+              "bytes": 8060,
+              "sha256": "d34578c6f5768e4c5f6ec3bfe46ef10cf10c406d6c0d3a658582d4492d59cd57"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4124.586599995382,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 1778858,
+            "name": "uptake-st_petersburg-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "b377b2cf7a8496ff97a0527269bd2bd4a5fbcb908fb4e008cac1e16593ec836d"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1520.9512999999995",
+            "checkpoint_ms": "247.9933",
+            "cut_ms": "16.609000000000005",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "102939",
+            "midpoint_restore_ms": "493.33359999999999",
+            "midpoint_save_ms": "238.48689999999999",
+            "peak_rss_bytes": "268992512",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "151650304",
+            "seed": "1",
+            "setup_ms": "0.2208",
+            "state_hash": "4558732579970671044",
+            "time_ms": "12960000000",
+            "trace_hash": "6096200414899779543",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27288,
+              "sha256": "00cfed3fa8539c08cf786c13b583ef25bb9a3a93eb2a70500d9d038a1ec2f910"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "5bb64a7bca5f53a3248bf0cf951fed5af003b1e4b71e4d2575d7e82d59a2d217"
+            },
+            "final.frame": {
+              "bytes": 102939,
+              "sha256": "8924b97b8af7ac5934cfa235905d219d05373a2c535725f902ac0197f747aa45"
+            },
+            "individuals.csv": {
+              "bytes": 1090850,
+              "sha256": "4f291d01f3bf4b5b4a41303814c0af9b45b1984074fcaeffe7f7992b7fb660ea"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cf59b1abecf9ff07c5b1f204acd2abc743962a4691cb50690337b95485eb1ff6"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 444,
+              "sha256": "17df658c87d2fb2a8b976ca044fec1bef8f8c89981b0bb57668e78fc0f6fa16f"
+            },
+            "timings.csv": {
+              "bytes": 7883,
+              "sha256": "ac26a5a128dbbe3bb39a41eb8b72b05ca4d212ff7d00a0f5eb8c8b66b39636e7"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4046.756199997617,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1483.3732",
+            "checkpoint_ms": "912.68089999999995",
+            "cut_ms": "14.875500000000002",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "102939",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "408809472",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "161148928",
+            "seed": "1",
+            "setup_ms": "0.073899999999999993",
+            "state_hash": "4558732579970671044",
+            "time_ms": "12960000000",
+            "trace_hash": "6096200414899779543",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 126212450,
+              "sha256": "5bb64a7bca5f53a3248bf0cf951fed5af003b1e4b71e4d2575d7e82d59a2d217"
+            },
+            "final.frame": {
+              "bytes": 102939,
+              "sha256": "8924b97b8af7ac5934cfa235905d219d05373a2c535725f902ac0197f747aa45"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cf59b1abecf9ff07c5b1f204acd2abc743962a4691cb50690337b95485eb1ff6"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 454,
+              "sha256": "61ebe957af6f258c0319bc69450eb05bf42f4e64ec80aef4d472cdaea1ee4402"
+            },
+            "timings.csv": {
+              "bytes": 7164,
+              "sha256": "6a4f51525cc48c0d212d8079f9564669c9b3bb541e306093a6495ff584471992"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 3862.2412999975495,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1746.2339999999997",
+            "checkpoint_ms": "885.06349999999998",
+            "cut_ms": "0.017399999999999988",
+            "events": "614417",
+            "facts_bytes": "126212450",
+            "frame_bytes": "102939",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "407691264",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "161054720",
+            "seed": "1",
+            "setup_ms": "0.10639999999999999",
+            "state_hash": "4558732579970671044",
+            "time_ms": "12960000000",
+            "trace_hash": "6096200414899779543",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "7"
+      ],
+      "model": "uptake",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "1adbf865448dd91ebefe5ffbbe109c1b4650ff057902cf4754ba0525e0dee24f"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "c6e2671b6a667e5946de6f63458e5dd538e88912280efb895c1fe1b5610a7cfe"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "6d556cd09a7a5834fab369815a603c3cbbb0c5ff51d9fcb57f62fd59a579e369"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "8d01b255c6f0af75b12fe822ae666968ac14217b4fff24bf3c0504fc01e4373d"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1689232,
+              "sha256": "20245765f9a2f788a354723fd000ccf9555ad44ecfe9af50ad727b4604588f44"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 469,
+              "sha256": "f2a13d414d13016b8e62a8df3b3c5902567ce65696b65dc2286f127606ff4df3"
+            },
+            "timings.csv": {
+              "bytes": 8137,
+              "sha256": "c755c3f63fd5e36ad23f21f05c2b50ac625e0c0272e81e2c8347e69f0c8d1dbc"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 523.0921000184026,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 328356,
+            "name": "uptake-st_petersburg-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "9e3b56fdd5b102a77fe85eff9d82b2cdf2aa169f5c00e5702bc394f64a356935"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "41.416100000000071",
+            "checkpoint_ms": "16.874300000000002",
+            "cut_ms": "14.346399999999996",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "192.08240000000001",
+            "midpoint_save_ms": "127.0218",
+            "peak_rss_bytes": "22626304",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10457088",
+            "seed": "1",
+            "setup_ms": "0.10589999999999999",
+            "state_hash": "7417082348173366995",
+            "time_ms": "12960000000",
+            "trace_hash": "9327092600869907228",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "1adbf865448dd91ebefe5ffbbe109c1b4650ff057902cf4754ba0525e0dee24f"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "c6e2671b6a667e5946de6f63458e5dd538e88912280efb895c1fe1b5610a7cfe"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "6d556cd09a7a5834fab369815a603c3cbbb0c5ff51d9fcb57f62fd59a579e369"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 446,
+              "sha256": "ade59f4e3242592dd715de361733a556ebc8f46dbb87ae62943c183578af7f7a"
+            },
+            "timings.csv": {
+              "bytes": 8566,
+              "sha256": "7a3c03627fb903c660b750aff0237f7894e0edb68f3def47cc2a5422c3c09370"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 153.7112999940291,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "38.126199999999955",
+            "checkpoint_ms": "20.694199999999999",
+            "cut_ms": "7.0280999999999985",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17346560",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11771904",
+            "seed": "1",
+            "setup_ms": "0.090300000000000005",
+            "state_hash": "7417082348173366995",
+            "time_ms": "12960000000",
+            "trace_hash": "9327092600869907228",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "1adbf865448dd91ebefe5ffbbe109c1b4650ff057902cf4754ba0525e0dee24f"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "c6e2671b6a667e5946de6f63458e5dd538e88912280efb895c1fe1b5610a7cfe"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "6d556cd09a7a5834fab369815a603c3cbbb0c5ff51d9fcb57f62fd59a579e369"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 435,
+              "sha256": "935d5617b2ce319043e2731d679394e5252cc073a8931107b25777ea167d377c"
+            },
+            "timings.csv": {
+              "bytes": 6088,
+              "sha256": "ae54ebef3d68fa6b1b7b93c45a675d408a9f6cfffcf6d9ea48f65abf9efb7852"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 171.5072999941185,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "46.936200000000099",
+            "checkpoint_ms": "19.597799999999999",
+            "cut_ms": "0.0081000000000000065",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17072128",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11714560",
+            "seed": "1",
+            "setup_ms": "0.1072",
+            "state_hash": "7417082348173366995",
+            "time_ms": "12960000000",
+            "trace_hash": "9327092600869907228",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "15"
+      ],
+      "model": "resupply",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27293,
+              "sha256": "86e603a76066d0469f7264fc818e0325aee6ba75f15ccc75870f88b25ef47a62"
+            },
+            "facts.bin": {
+              "bytes": 131624455,
+              "sha256": "080d12c531b519bb61c5900b5d59ea33adbb31551c5b283242e9f48771157bda"
+            },
+            "final.frame": {
+              "bytes": 94233,
+              "sha256": "9acb72560aeab96cd858a21ea3e35922ad08cd1c8da75c216ea0f5e8948494ad"
+            },
+            "individuals.csv": {
+              "bytes": 1050867,
+              "sha256": "c62401500f7c8fdc2be792e72c802b2913440ddb6b2a8b783fc9a000b3a4be2a"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5e246b09f74217867133038fe4393d89bc30095e83e2e7db44fe6be3a6a4a69e"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4808704,
+              "sha256": "66696425ac524c8f689981045f561b26a3fd9e0f79dd04315bbcb801d1a8bae2"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "2bf184a899c39a50b35016c664e030a6602991e1c055f19d4a6dc1b2afbd23d1"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4812192,
+              "sha256": "067c36b7737bc20e5b1e79815a38fe8636c02cccaa080180640aeb7fa0d9a613"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 463,
+              "sha256": "dc566260614cc146c143b6cc9d84afd9ac160798f22c1b484ce666b746b0841c"
+            },
+            "timings.csv": {
+              "bytes": 8110,
+              "sha256": "c2f2ca209fb620c45b463bdcb1b80428d2242a58d2e7da224166b34af1c8104c"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 5060.596199997235,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 1957515,
+            "name": "resupply-borisovka-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "e0476e10aaad299cd52561f4a13bc33f60f024b3797df6997e35060dd98bea13"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1931.9833000000001",
+            "checkpoint_ms": "285.3972",
+            "cut_ms": "20.597999999999995",
+            "events": "641002",
+            "facts_bytes": "131624455",
+            "frame_bytes": "94233",
+            "midpoint_restore_ms": "736.31859999999995",
+            "midpoint_save_ms": "382.02190000000002",
+            "peak_rss_bytes": "269615104",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "157732864",
+            "seed": "1",
+            "setup_ms": "0.1094",
+            "state_hash": "11683757506278170936",
+            "time_ms": "12960000000",
+            "trace_hash": "5495131897272427329",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 27293,
+              "sha256": "86e603a76066d0469f7264fc818e0325aee6ba75f15ccc75870f88b25ef47a62"
+            },
+            "facts.bin": {
+              "bytes": 131624455,
+              "sha256": "080d12c531b519bb61c5900b5d59ea33adbb31551c5b283242e9f48771157bda"
+            },
+            "final.frame": {
+              "bytes": 94233,
+              "sha256": "9acb72560aeab96cd858a21ea3e35922ad08cd1c8da75c216ea0f5e8948494ad"
+            },
+            "individuals.csv": {
+              "bytes": 1050867,
+              "sha256": "c62401500f7c8fdc2be792e72c802b2913440ddb6b2a8b783fc9a000b3a4be2a"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5e246b09f74217867133038fe4393d89bc30095e83e2e7db44fe6be3a6a4a69e"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 451,
+              "sha256": "cb9714730a022e21e440a872c43b0d590f0e1eec6819b25fbff2df4309e997fd"
+            },
+            "timings.csv": {
+              "bytes": 8034,
+              "sha256": "330324f420db4040b50d69487bd7b21c1c03a63683f40edbfa29b3f84f8bbf5d"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4300.8631999837235,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1737.5540000000003",
+            "checkpoint_ms": "895.33119999999997",
+            "cut_ms": "18.12939999999999",
+            "events": "641002",
+            "facts_bytes": "131624455",
+            "frame_bytes": "94233",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "423501824",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "166780928",
+            "seed": "1",
+            "setup_ms": "0.18940000000000001",
+            "state_hash": "11683757506278170936",
+            "time_ms": "12960000000",
+            "trace_hash": "5495131897272427329",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1446,
+              "sha256": "7e115187962a2dcb7ea8338e66d1d78c4ae24a94f83734679c939120b69bca65"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 131624455,
+              "sha256": "080d12c531b519bb61c5900b5d59ea33adbb31551c5b283242e9f48771157bda"
+            },
+            "final.frame": {
+              "bytes": 94233,
+              "sha256": "9acb72560aeab96cd858a21ea3e35922ad08cd1c8da75c216ea0f5e8948494ad"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "5e246b09f74217867133038fe4393d89bc30095e83e2e7db44fe6be3a6a4a69e"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "51dc34f18437d43e57b76488ef42b1b0a239cbcf5fb7b63285f6a02795f62207"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 454,
+              "sha256": "71e2cc54e7d250890e13c3c81709168eb669af1bd309d9a439272011720e1ee9"
+            },
+            "timings.csv": {
+              "bytes": 7299,
+              "sha256": "3d83840317a475015eae13b67aff2810e47ab6b63b9cdd90d693976ceda01bec"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4344.661200011615,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1924.9601000000002",
+            "checkpoint_ms": "869.43240000000003",
+            "cut_ms": "0.018099999999999995",
+            "events": "641002",
+            "facts_bytes": "131624455",
+            "frame_bytes": "94233",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "423407616",
+            "peak_sampled_queue": "111",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "166699008",
+            "seed": "1",
+            "setup_ms": "0.10150000000000001",
+            "state_hash": "11683757506278170936",
+            "time_ms": "12960000000",
+            "trace_hash": "5495131897272427329",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "15"
+      ],
+      "model": "resupply",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "a8e15f484aa9eb13e0d6692786876c11a6a646c9c80c4aaa041b059d20fb6a70"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "ab977847220dc478c48d4be688ff8de660c1a003e5079093bcf0b5f758f78688"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "930145154ec9f313027067d4034dfa0b05320459c50d7c5ec7a571eff7ebeb6d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "90171d2ad98331a0682435c8a4a4b556c35cb97422e6a7ee011782e718e5656d"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1639792,
+              "sha256": "d3be70ee0de6a7557761df86a69aba3a724c186632cee2415348099e22421738"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 469,
+              "sha256": "f8aa1c99508143d788f3c0115bbe1357a07355b1c0db3d9be34f596732c8bf61"
+            },
+            "timings.csv": {
+              "bytes": 8468,
+              "sha256": "4945b66740b0d94a9660f8adced9c92bcd5ead010b1d62225c554ad4a108dc96"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 421.63530000834726,
+          "exit_code": 0,
+          "identity": 100961,
+          "midpoint_archive": {
+            "bytes": 320617,
+            "name": "resupply-borisovka-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "d2be3304c04515d12801e08327217eca53d6b035e2f255c18787524970394782"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "32.479299999999952",
+            "checkpoint_ms": "13.9496",
+            "cut_ms": "6.6179000000000006",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "162.00110000000001",
+            "midpoint_save_ms": "99.168700000000001",
+            "peak_rss_bytes": "22290432",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10276864",
+            "seed": "1",
+            "setup_ms": "0.073800000000000004",
+            "state_hash": "379847371592908962",
+            "time_ms": "12960000000",
+            "trace_hash": "12385375555226797409",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 25867,
+              "sha256": "1b6aa89f862fa924aaa725fca54ff58138f673fe997dd7dfc64e4defb5fb9144"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "a8e15f484aa9eb13e0d6692786876c11a6a646c9c80c4aaa041b059d20fb6a70"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "ab977847220dc478c48d4be688ff8de660c1a003e5079093bcf0b5f758f78688"
+            },
+            "individuals.csv": {
+              "bytes": 730713,
+              "sha256": "58c0a817ca55294e64a32cd502a96c04ed1fe23931e785e599012f4ab567219f"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "930145154ec9f313027067d4034dfa0b05320459c50d7c5ec7a571eff7ebeb6d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 433,
+              "sha256": "eff7de86e679852072a4cc3846f9213196e677eec2c80ea9ffa33c61aeea57e0"
+            },
+            "timings.csv": {
+              "bytes": 8283,
+              "sha256": "b62a64a43d079a4ad4584d0f44c766d4ddf6881ffb53678abdd4762ae9f86cfe"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 242.73309999261983,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "31.983099999999983",
+            "checkpoint_ms": "18.8719",
+            "cut_ms": "8.218300000000001",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14835712",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11030528",
+            "seed": "1",
+            "setup_ms": "0.13739999999999999",
+            "state_hash": "379847371592908962",
+            "time_ms": "12960000000",
+            "trace_hash": "12385375555226797409",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1444,
+              "sha256": "3ae179f2a01c5672f13b676b686e66d5f891ce53a44c63c5226825e4e101a040"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2816408,
+              "sha256": "a8e15f484aa9eb13e0d6692786876c11a6a646c9c80c4aaa041b059d20fb6a70"
+            },
+            "final.frame": {
+              "bytes": 31000,
+              "sha256": "ab977847220dc478c48d4be688ff8de660c1a003e5079093bcf0b5f758f78688"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "930145154ec9f313027067d4034dfa0b05320459c50d7c5ec7a571eff7ebeb6d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "3833d0d57c9032c6ecbd80240540358bc638641ecf9912ad21e822b629764b2e"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 423,
+              "sha256": "d9745fd6e1742cbdfcb2f79d856a79f882841167e8cd30b26f1fbe4f618c91ff"
+            },
+            "timings.csv": {
+              "bytes": 5882,
+              "sha256": "cdb324689e77b38f034b088acabd3bd7b80987e90c2f63de07c6d203a5097981"
+            }
+          },
+          "case": "borisovka-micro-nominal-0-1-blocked",
+          "elapsed_ms": 151.80630001123063,
+          "exit_code": 0,
+          "identity": 100961,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "40.567500000000123",
+            "checkpoint_ms": "18.8306",
+            "cut_ms": "0.0074000000000000064",
+            "events": "15074",
+            "facts_bytes": "2816408",
+            "frame_bytes": "31000",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "14831616",
+            "peak_sampled_queue": "27",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10350592",
+            "seed": "1",
+            "setup_ms": "0.094",
+            "state_hash": "379847371592908962",
+            "time_ms": "12960000000",
+            "trace_hash": "12385375555226797409",
+            "world": "00000000-0000-0286-0000-000000018a61"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-balanced",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "15"
+      ],
+      "model": "resupply",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27335,
+              "sha256": "07a9eb70992c1b6da40f6aadb810375faa70e7cad9faefdc3aee0d0353a817ae"
+            },
+            "facts.bin": {
+              "bytes": 129627266,
+              "sha256": "398acf0f80da986f9072d567a0acba1474f2f6682789ee62fe36444974ba22da"
+            },
+            "final.frame": {
+              "bytes": 98569,
+              "sha256": "d802f3eb56009042855281d676325c5146a0862d3584ca4655bef2931ac7c61c"
+            },
+            "individuals.csv": {
+              "bytes": 1090744,
+              "sha256": "8821bbe413b12fe304effc65ef60690ac80f3cdee77a223e57bac875a4fc3761"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cd7e209925f1ef47951e3b7ad26f65c6548eb61e26ff1f2923b44d9e521a1f7d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 4382720,
+              "sha256": "c91872b5c7501657139ff8e59f6dc79db0c28b2b377e04c24dcb9e6ecd31dfee"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "5bb5bf3c7e6368aece4f018e18f86f44e52ea71a20cef349620ebc1c2c6d896e"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 4383712,
+              "sha256": "1d2f78cb9b0e2738a08171f25b7502e942972a014791c8b3b9bdc264164826ce"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 487,
+              "sha256": "1a0aea12acd9a744b02cdd050ba3d233e0b84c1a5e793e2542613f322ea66790"
+            },
+            "timings.csv": {
+              "bytes": 8201,
+              "sha256": "f9d2bc8eadf871bb26ab1adcd71dbe2a5d5683954a66b262d93b4996d37e5fef"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4502.498599991668,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 1778667,
+            "name": "resupply-st_petersburg-micro-nominal-0-1-balanced-midpoint.zip",
+            "sha256": "e9fb70611e245cc35e85bc80e907d6ffb2a5e0b8f8f59e713a11dcbe7b204a2e"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1663.1746999999998",
+            "checkpoint_ms": "253.68199999999999",
+            "cut_ms": "17.243400000000005",
+            "events": "631100",
+            "facts_bytes": "129627266",
+            "frame_bytes": "98569",
+            "midpoint_restore_ms": "576.43520000000001",
+            "midpoint_save_ms": "373.30419999999998",
+            "peak_rss_bytes": "270733312",
+            "peak_sampled_queue": "120",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "156061696",
+            "seed": "1",
+            "setup_ms": "0.080100000000000005",
+            "state_hash": "13505301296483326459",
+            "time_ms": "12960000000",
+            "trace_hash": "3047960546603417346",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 27335,
+              "sha256": "07a9eb70992c1b6da40f6aadb810375faa70e7cad9faefdc3aee0d0353a817ae"
+            },
+            "facts.bin": {
+              "bytes": 129627266,
+              "sha256": "398acf0f80da986f9072d567a0acba1474f2f6682789ee62fe36444974ba22da"
+            },
+            "final.frame": {
+              "bytes": 98569,
+              "sha256": "d802f3eb56009042855281d676325c5146a0862d3584ca4655bef2931ac7c61c"
+            },
+            "individuals.csv": {
+              "bytes": 1090744,
+              "sha256": "8821bbe413b12fe304effc65ef60690ac80f3cdee77a223e57bac875a4fc3761"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cd7e209925f1ef47951e3b7ad26f65c6548eb61e26ff1f2923b44d9e521a1f7d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 453,
+              "sha256": "b128a2925fda26457d920f1133161abfac84e33e6bcdb4ca7c1de805ba64b92b"
+            },
+            "timings.csv": {
+              "bytes": 8035,
+              "sha256": "6dd528b81b4c538a37771ee85f243cd0e4d859223f29f3d7abad7b952a811549"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4248.706800019136,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1820.9276000000004",
+            "checkpoint_ms": "957.39750000000004",
+            "cut_ms": "17.536600000000004",
+            "events": "631100",
+            "facts_bytes": "129627266",
+            "frame_bytes": "98569",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "418246656",
+            "peak_sampled_queue": "120",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "163987456",
+            "seed": "1",
+            "setup_ms": "0.072900000000000006",
+            "state_hash": "13505301296483326459",
+            "time_ms": "12960000000",
+            "trace_hash": "3047960546603417346",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1458,
+              "sha256": "b707e9a50e30b980e6347e62bccf779e598c486d7244aa49a4ed2cc7b8edbba8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 129627266,
+              "sha256": "398acf0f80da986f9072d567a0acba1474f2f6682789ee62fe36444974ba22da"
+            },
+            "final.frame": {
+              "bytes": 98569,
+              "sha256": "d802f3eb56009042855281d676325c5146a0862d3584ca4655bef2931ac7c61c"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "cd7e209925f1ef47951e3b7ad26f65c6548eb61e26ff1f2923b44d9e521a1f7d"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 770,
+              "sha256": "845ff9535adbb6afdf489a9967e2abfb5956e757a8b72ff4a2bd9cf1318fa4e4"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 441,
+              "sha256": "2d753a12055b94fcaab9d39c9adc0e57cc7ecc9f50c1bdaa3e6a90c233157b7f"
+            },
+            "timings.csv": {
+              "bytes": 7149,
+              "sha256": "f7ffd049e0a653416fbccc58a0f9e79dcffd90710831e16ae547d9a1ffa87610"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-balanced",
+          "elapsed_ms": 4222.440000012284,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "1841.4629999999993",
+            "checkpoint_ms": "922.10429999999997",
+            "cut_ms": "0.016399999999999984",
+            "events": "631100",
+            "facts_bytes": "129627266",
+            "frame_bytes": "98569",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "417345536",
+            "peak_sampled_queue": "120",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "164081664",
+            "seed": "1",
+            "setup_ms": "0.1497",
+            "state_hash": "13505301296483326459",
+            "time_ms": "12960000000",
+            "trace_hash": "3047960546603417346",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    },
+    {
+      "case": "st_petersburg-micro-nominal-0-1-blocked",
+      "command": [
+        "172800000",
+        "750000",
+        "0",
+        "3",
+        "1",
+        "8000000",
+        "15"
+      ],
+      "model": "resupply",
+      "runs": {
+        "durable": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "23f4dbd7b077aa4c5fe20935419c63d7d2117c6d8a9b5303bce3f9e356185376"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "11c7ff763a1efb0ecd64749441c634041122f69bdf56572d70d83d1bd50ccf5a"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "1a9eae5778a9bcc3fbb4dcdb04bfebfe0a04410a6ed8fdc6c4c4af573a4c2581"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "midpoint.sqlite": {
+              "bytes": 147456,
+              "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+            },
+            "midpoint.sqlite-shm": {
+              "bytes": 32768,
+              "sha256": "136e38685c9bb16a8401b90b963b826cdcf1a7be7099ce5f7148aec503ba99de"
+            },
+            "midpoint.sqlite-wal": {
+              "bytes": 1689232,
+              "sha256": "840a7f3c6821d06e6b9c3114c77219f1be69262aa109b0466a81018c17af69a3"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 480,
+              "sha256": "d2d51d9348d530550c49b2d837633d603306c0603dec2f688b72237353d98c0f"
+            },
+            "timings.csv": {
+              "bytes": 7880,
+              "sha256": "acc3638ed7e2986eb63b88d49f19924cc2f10d3bddb496fad87a1389d3b02ebb"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 378.58109999797307,
+          "exit_code": 0,
+          "identity": 101447,
+          "midpoint_archive": {
+            "bytes": 328282,
+            "name": "resupply-st_petersburg-micro-nominal-0-1-blocked-midpoint.zip",
+            "sha256": "e356fcb92ec60c52379684eeb5f70f144aa34dcc05689a609d6f28c38d111c62"
+          },
+          "mode": "durable",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "26.457500000000081",
+            "checkpoint_ms": "14.000299999999999",
+            "cut_ms": "5.7570999999999994",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "136.84200000000001",
+            "midpoint_save_ms": "93.376199999999997",
+            "peak_rss_bytes": "22605824",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "10452992",
+            "seed": "1",
+            "setup_ms": "0.090899999999999995",
+            "state_hash": "822161166408308097",
+            "time_ms": "12960000000",
+            "trace_hash": "12920207690098379632",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "observed": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 25970,
+              "sha256": "ac5f0a64819f5b0fcccd6cc6b45584ab1c7e9ade44a0a7917a81d6a6c2b1c936"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "23f4dbd7b077aa4c5fe20935419c63d7d2117c6d8a9b5303bce3f9e356185376"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "11c7ff763a1efb0ecd64749441c634041122f69bdf56572d70d83d1bd50ccf5a"
+            },
+            "individuals.csv": {
+              "bytes": 768973,
+              "sha256": "55dfebdab3c431414c7c61095cf599e1d5fbd95c7cc7a65adcfe98d968a0b218"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "1a9eae5778a9bcc3fbb4dcdb04bfebfe0a04410a6ed8fdc6c4c4af573a4c2581"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 446,
+              "sha256": "04d273b6f54ade269977b2674b40be849c1f2ca920497f34db8792f792e02853"
+            },
+            "timings.csv": {
+              "bytes": 8147,
+              "sha256": "dd5477bb64e92701896132a0ea0fff51143bc4aa71b81d60842451b0ce50dac5"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 111.40429999795742,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "observed",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "26.830600000000072",
+            "checkpoint_ms": "16.962700000000002",
+            "cut_ms": "5.7480000000000011",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17313792",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11780096",
+            "seed": "1",
+            "setup_ms": "0.069699999999999998",
+            "state_hash": "822161166408308097",
+            "time_ms": "12960000000",
+            "trace_hash": "12920207690098379632",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        },
+        "unobserved": {
+          "artifacts": {
+            "case.json": {
+              "bytes": 1456,
+              "sha256": "e123c75fb5b1e6ce9afa6c4fd2b0354e823aef453ef63a05d31c6686472532b8"
+            },
+            "cuts.csv": {
+              "bytes": 381,
+              "sha256": "53af7113f2ed9e19d2a15c74e6a0060cae8f6ffda57b83aabaaebbee75c52d19"
+            },
+            "facts.bin": {
+              "bytes": 2824449,
+              "sha256": "23f4dbd7b077aa4c5fe20935419c63d7d2117c6d8a9b5303bce3f9e356185376"
+            },
+            "final.frame": {
+              "bytes": 31621,
+              "sha256": "11c7ff763a1efb0ecd64749441c634041122f69bdf56572d70d83d1bd50ccf5a"
+            },
+            "individuals.csv": {
+              "bytes": 362,
+              "sha256": "cdd2112fb132f5fff1df23ce778bf7c0c8a7d20c43d11fb65bd479519e20cd88"
+            },
+            "initial.chk": {
+              "bytes": 5677,
+              "sha256": "1a9eae5778a9bcc3fbb4dcdb04bfebfe0a04410a6ed8fdc6c4c4af573a4c2581"
+            },
+            "interventions.csv": {
+              "bytes": 56,
+              "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+            },
+            "parameters.txt": {
+              "bytes": 769,
+              "sha256": "842dc672a33ed975a58db31138c5847806796efdb75c8a95ee695f695d885cc9"
+            },
+            "program.log": {
+              "bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "summary.csv": {
+              "bytes": 448,
+              "sha256": "5af713356ae1e4581ae7bf52e4aa3edaf976f9261837e206f1a28de72e200bbf"
+            },
+            "timings.csv": {
+              "bytes": 5877,
+              "sha256": "59a92e85e6d69af6903e2b2a3ff9b5056490680d9d04555fcc591b1b1d48c4ad"
+            }
+          },
+          "case": "st_petersburg-micro-nominal-0-1-blocked",
+          "elapsed_ms": 114.15540002053604,
+          "exit_code": 0,
+          "identity": 101447,
+          "mode": "unobserved",
+          "status": "COMPLETE",
+          "summary": {
+            "advance_ms": "28.828800000000093",
+            "checkpoint_ms": "17.174800000000001",
+            "cut_ms": "0.006100000000000003",
+            "events": "15108",
+            "facts_bytes": "2824449",
+            "frame_bytes": "31621",
+            "midpoint_restore_ms": "0",
+            "midpoint_save_ms": "0",
+            "peak_rss_bytes": "17096704",
+            "peak_sampled_queue": "26",
+            "queen": "2",
+            "reserve_record_bytes": "40",
+            "rng": "1",
+            "rss_bytes": "11784192",
+            "seed": "1",
+            "setup_ms": "0.078100000000000003",
+            "state_hash": "822161166408308097",
+            "time_ms": "12960000000",
+            "trace_hash": "12920207690098379632",
+            "world": "00000000-0000-0286-0000-000000018c47"
+          }
+        }
+      }
+    }
+  ],
+  "cpp_tree": "428e820ce78fef8736bc3a4e04d652ddde7bf80a",
+  "rows": 16,
+  "source": "92a6ed916fb24ec5e49ee52a9dc6e012ed70d1ed"
+}

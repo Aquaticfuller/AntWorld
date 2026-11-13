@@ -1,0 +1,50 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "12000000",
+    "3"
+  ],
+  "binary": "antworld_s6_4_wp6b.exe",
+  "binary_sha256": "74b5264100f8b0e748ceb20b5eedbcc9471be5ae7968072449512843065cfe61",
+  "candidate_protocol_sha256": "81734313f7d37d4d1cadbae4dc86b60140f84f92b8d037b162914ca0a0c53a6c",
+  "cases": [
+    "borisovka-micro-nominal-0-1-balanced",
+    "borisovka-micro-nominal-0-7-balanced",
+    "borisovka-micro-nominal-0-19-balanced",
+    "borisovka-micro-nominal-0-42-balanced",
+    "borisovka-micro-nominal-0-43-balanced",
+    "borisovka-micro-nominal-0-97-balanced",
+    "st_petersburg-micro-nominal-0-1-balanced",
+    "st_petersburg-micro-nominal-0-7-balanced",
+    "st_petersburg-micro-nominal-0-19-balanced",
+    "st_petersburg-micro-nominal-0-42-balanced",
+    "st_petersburg-micro-nominal-0-43-balanced",
+    "st_petersburg-micro-nominal-0-97-balanced"
+  ],
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "271aee416569e02734d7e0a3e16fa5f0b76f053c",
+  "executable_receipt_sha256": "9f2b791b21aecb5136775ecc2e43f14f3869e6d2572b3fe1e0e7d992aaf00486",
+  "frozen": "1e57c9a",
+  "matrix": "nominal",
+  "mode": "observed",
+  "model": "diet-high",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "0921afadd926ad59a0def91ac2d800441a9c95f12da73e67a94aeda5f7962102",
+  "python": "3.12.14",
+  "runner_sha256": "ce000259933605da1e24d5ce6ad80c70d8a471e7d4b13cc342808f202ca13192",
+  "runner_source": "6205b467dab8ed00862d6f013fd92625fffd3ff7",
+  "selected_subset": false,
+  "source": "945b1a22215e17192823fe9ba1b332db70f44ff3",
+  "started_ns": 1794537110134963700
+}
