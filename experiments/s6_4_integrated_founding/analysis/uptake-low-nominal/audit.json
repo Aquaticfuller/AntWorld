@@ -1,0 +1,32 @@
+{
+  "audited_attempts": 12,
+  "checked_facts": 5023857,
+  "checked_files": 132,
+  "complete_worlds": 0,
+  "group_rows": [
+    {
+      "arm": "balanced",
+      "chain": 0,
+      "first_delivery": 6,
+      "late_eclosion": 6,
+      "population": "borisovka",
+      "queen_150": 0,
+      "queen_uptake": 6,
+      "worlds": 6
+    },
+    {
+      "arm": "balanced",
+      "chain": 0,
+      "first_delivery": 6,
+      "late_eclosion": 6,
+      "population": "st_petersburg",
+      "queen_150": 0,
+      "queen_uptake": 6,
+      "worlds": 6
+    }
+  ],
+  "input_attempts": 12,
+  "matrix": "nominal",
+  "model": "uptake-low",
+  "profile_pass": {}
+}

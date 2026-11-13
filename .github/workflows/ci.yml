@@ -178,7 +178,7 @@ jobs:
       - name: Audit integrated founding reference facts and save equivalence
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
-          python tools/verify_integrated_founding_public.py experiments/s6_4_integrated_founding/raw_index
+          python tools/verify_integrated_founding_public.py experiments/s6_4_integrated_founding/raw_index --analysis experiments/s6_4_integrated_founding/analysis
           python tools/analyze_integrated_founding.py experiments/s6_4_integrated_founding/r2-nominal build/integrated-r2-audit --case borisovka-micro-nominal-0-1-balanced --case st_petersburg-micro-nominal-0-1-blocked
           python tools/verify_integrated_founding_replay.py build/ci/antworld_s6_4_wp6b build/integrated-replay --model r2 --model resupply
       - name: Recompute integrated native performance qualification

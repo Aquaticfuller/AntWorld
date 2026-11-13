@@ -1,0 +1,11 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+    Start 29: FND_IF_BOUNDARY_COLONY
+1/1 Test #29: FND_IF_BOUNDARY_COLONY ...........   Passed  284.74 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+FND    = 284.74 sec*proc (1 test)
+
+Total Test time (real) = 284.76 sec

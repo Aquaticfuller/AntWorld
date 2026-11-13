@@ -1,0 +1,24 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+    Start  26: FND_IF_COLONY
+1/4 Test  #26: FND_IF_COLONY ....................   Passed   94.46 sec
+    Start  29: FND_IF_BOUNDARY_COLONY
+2/4 Test  #29: FND_IF_BOUNDARY_COLONY ...........***Timeout 180.02 sec
+
+    Start  61: S6_4_WP2_b01
+3/4 Test  #61: S6_4_WP2_b01 .....................   Passed   84.59 sec
+    Start 262: S6_4_RM01_warm
+4/4 Test #262: S6_4_RM01_warm ...................   Passed  147.37 sec
+
+75% tests passed, 1 tests failed out of 4
+
+Label Time Summary:
+FND     = 274.48 sec*proc (2 tests)
+RM01    = 147.37 sec*proc (1 test)
+WP2     =  84.59 sec*proc (1 test)
+
+Total Test time (real) = 506.47 sec
+
+The following tests FAILED:
+	 29 - FND_IF_BOUNDARY_COLONY (Timeout)                  FND
+Errors while running CTest

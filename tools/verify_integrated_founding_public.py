@@ -2,6 +2,7 @@
 
 import argparse
 from collections import defaultdict
+import csv
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -16,7 +17,33 @@ def load(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def verify(path):
+def read_csv(path):
+    with path.open(encoding="utf-8", newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def verify_audit(folder, receipt, manifest):
+    for name in ("audit.json", "worlds.csv", "censuses.csv"):
+        check(sha(folder/name)==manifest[f"{Path(name).stem}_sha256"], "published analysis file changed")
+    audit, worlds = load(folder/"audit.json"), read_csv(folder/"worlds.csv")
+    check(len(worlds)==audit["audited_attempts"]==audit["input_attempts"]==len(receipt) and
+          {row["case"] for row in worlds}==receipt.keys(), "published analysis coverage changed")
+    facts = 0
+    for row in worlds:
+        original = receipt[row["case"]]["receipt"]
+        check(row["status"]==original["status"] and int(row["exit_code"])==original["exit_code"], "analysis status differs from original receipt")
+        if row["status"]=="COMPLETE":
+            count = int(row["source_facts"])
+            check(count==int(original["summary"]["events"]), "analysis fact count differs from original receipt")
+            if row.get("canonical_sha256"):
+                check(row["canonical_sha256"]==original["artifacts"]["facts.bin"]["sha256"], "analysis fact identity differs")
+            facts += count
+    check(facts==audit["checked_facts"] and sum(int(row["complete"]) for row in worlds)==audit["complete_worlds"],
+          "published audit totals differ from world tables")
+    return facts
+
+
+def verify(path, analysis=None):
     index = load(path/"index.json")
     file = path/"world_receipts.jsonl"
     check(sha(file)==index["world_receipts_sha256"],"world receipt manifest mismatch")
@@ -33,8 +60,14 @@ def verify(path):
         "closed":{"diet","uptake","resupply"},
     }
     check(set(records)=={f"{model}-{matrix}" for matrix,models in expected.items() for model in models},"batch scope changed")
-    check(len(index["archive_batches"])==len(records),"batch manifest coverage changed")
-    witnesses=0
+    check(len(index["archive_batches"])==len(records) and
+          {batch["batch"] for batch in index["archive_batches"]}==records.keys(),"batch manifest coverage changed")
+    witnesses, audited_facts = 0, 0
+    if analysis:
+        entries = read_csv(analysis/"audit_index.csv")
+        manifests = {row["batch"]:row for row in entries}
+        check({folder.name for folder in analysis.iterdir() if folder.is_dir()}==records.keys(), "published audit inventory changed")
+        check(len(entries)==len(manifests) and manifests.keys()==records.keys(), "published audit index changed")
     for batch in index["archive_batches"]:
         folder=path/batch["batch"]
         model,matrix=folder.name.rsplit("-",1)
@@ -71,12 +104,20 @@ def verify(path):
                     count=sum(1 for _ in located_facts(archive.read(root+"facts.bin")))
                     check(count==int(record["summary"]["events"]),"canonical fact count differs")
             witnesses+=1
+        if analysis:
+            manifest = manifests[folder.name]
+            check(manifest["completed_sha256"]==batch["complete_sha256"], "analysis uses a different original archive")
+            audited_facts += verify_audit(analysis/folder.name,receipt,manifest)
     check(sum(map(len,records.values()))==index["attempts"],"global world denominator changed")
     check(witnesses==16,"published witness coverage changed")
     print(f"{index['attempts']} world receipts, {len(records)} batches and {witnesses} canonical witnesses verified")
+    if analysis:
+        print(f"{audited_facts} canonical fact counts reconciled across published audits")
 
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive",type=Path)
-    verify(parser.parse_args().archive)
+    parser.add_argument("--analysis",type=Path)
+    args=parser.parse_args()
+    verify(args.archive,args.analysis)

@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from profile_integrated_founding import APPEND_LAYOUT, MAPPING, check_mapping
 from reconcile_s6_4_rm02_performance import verify_manifest
+from run_s6_4_wp6b_r2_performance import APPEND_LAYOUT, MAPPING, check_mapping
 from run_s6_4_wp6b import ROOT, sha
 from verify_s6_4_wp6b_r2_performance import compare_outputs, run
 
