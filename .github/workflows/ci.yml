@@ -188,6 +188,12 @@ jobs:
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_integrated_founding/performance/births --out experiments/s6_4_integrated_founding/performance/births-analysis --check
           python tools/s6_4_wp6b_r2_protected_observer.py --analyze experiments/s6_4_integrated_founding/performance/protected experiments/s6_4_integrated_founding/performance/protected-analysis.json --check
           python tools/verify_integrated_founding_application.py experiments/s6_4_integrated_founding/performance
+      - name: Replay founding qualification witnesses and interrupted publication
+        if: matrix.configuration == 'Release'
+        run: python tools/founding_qualification_witnesses.py experiments/s6_4_founding_qualification/witnesses --binary build/ci/antworld_s6_4_wp6b --scratch build/founding-closure-crash
+      - name: Recompute founding application qualification and timing tails
+        if: runner.os == 'Windows' && matrix.configuration == 'Release'
+        run: python tools/verify_integrated_founding_application.py experiments/s6_4_founding_qualification/performance
 
   sanitizers:
     runs-on: ubuntu-24.04
