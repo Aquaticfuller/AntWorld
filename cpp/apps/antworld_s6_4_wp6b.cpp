@@ -33,8 +33,18 @@ Case read_case(const Path& path) {
     unsigned population;
     if (!(stream >> c.identity >> c.seed >> population >> c.arm >> c.care >> c.workers >> c.horizon.milliseconds >>
           c.food.carbs_ug >> c.food.protein_ug >> c.food.water_ug >> c.food.other_ug) ||
-        (population != 1 && population != 2) || c.horizon.milliseconds != 90 * day_ms ||
+        (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
+    c.integrated_assay=c.arm.starts_with("integrated-");
+    require(c.horizon.milliseconds==(c.integrated_assay?150:90)*day_ms,"invalid F1 assay horizon");
+    if (c.integrated_assay) {
+        c.arm.erase(0,11);
+        require(!c.workers && c.care,"the integrated assay begins with one active queen");
+        const std::map<std::string,FoodMass> inputs{
+            {"balanced",{6000,3000,18000,0}},{"limited",{752,376,2252,0}},{"water",{0,0,18000,0}},
+            {"carbohydrate",{6000,0,0,0}},{"no-protein",{6000,0,18000,0}},{"blocked",{6000,3000,18000,0}},{"absent",{}}};
+        require(inputs.contains(c.arm) && inputs.at(c.arm)==c.food,"invalid integrated resource fixture");
+    }
     c.profile = nominal(static_cast<FoundingPopulation>(population));
     std::map<std::string, std::uint64_t> values;
     std::string key;
@@ -204,7 +214,7 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
         const auto cut_time = ms(observe_start);
         capture += cut_time;
         timings << at << ',' << elapsed << ',' << cut_time << ',' << s.committed_events << ',' << s.pending_events << '\n';
-        if (durable && at==45*day_ms) {
+        if (durable && at==c.horizon.milliseconds/2) {
             const auto limits = s6_3_1_fixture::limits();
             const auto save_start = Clock::now();
             const auto bytes = w.checkpoint();

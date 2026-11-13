@@ -37,18 +37,41 @@ struct Case {
     FoodMass food;
     FoundingProfile profile;
     SimTime horizon{90 * day_ms};
+    bool integrated_assay{};
 };
+
+inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
+    auto& w = scene.world;
+    const auto side = c.seed % 2 ? 1 : -1;
+    std::vector<Cell> blocked;
+    if (c.arm == "blocked")
+        for (int z=0; z<5; ++z) blocked.push_back({4 + side*2, z});
+    BehaviorConfig behavior;
+    behavior.trails_enabled = false;
+    behavior.step_duration = {30'000}; // ENGINEERING_FIXTURE.
+    w.configure_surface({{-.04, 0, -.02}, 9, 5, .01}, blocked, behavior);
+    closure::chamber(w);
+    scene.target = {.03*side, 0, 0};
+    const PositionM outside{scene.target.x,.001,scene.target.z};
+    require(!w.spatially_clear(nest,scene.target) &&
+            w.spatially_clear({0,.001,0},outside,2)==(c.arm!="blocked"),
+            "integrated source access does not match the closed or open strip");
+}
 
 inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixture::limits(),
                         SocialConfig social = closure::day_social(), SpeciesCareProfile care = closure::timed_care(true)) {
-    wp5::Scene scene{WorldRuntime({646, c.identity}, c.seed, {}, limits), {}, {}, {}, {}, {}, {}};
+    WorldConfig config;
+    config.continuous_spatial_motion = c.integrated_assay;
+    wp5::Scene scene{WorldRuntime({646, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
     auto& w = scene.world;
+    const PositionM nest{0,c.integrated_assay?-.004:0,0};
     w.configure_long_term();
     BehaviorConfig behavior;
     behavior.trails_enabled = false;
-    w.configure_surface({{-.03, 0, -.03}, 7, 7, .01}, {}, behavior);
+    if (c.integrated_assay) configure_integrated_assay(scene,c,nest);
+    else w.configure_surface({{-.03, 0, -.03}, 7, 7, .01}, {}, behavior);
     const bool water_trial=c.arm=="water-reachable" || c.arm=="water-blocked" || c.arm=="water-absent";
-    if (c.workers || water_trial) {
+    if (!c.integrated_assay && (c.workers || water_trial)) {
         scene.geometry.origin_m = {-.020, -.006, -.012};
         scene.geometry.initial_solid = {{0, 0, 0}, {80, 24, 80}};
         scene.geometry.work_duration = {hour_ms / 2};
@@ -56,17 +79,17 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         scene.geometry.decision_delay = {60000};
         scene.voids = {{{36, 8, 20}, {44, 16, 28}}, {{0, 10, 22}, {80, 14, 26}}, {{36, 8, 60}, {44, 16, 68}}};
         w.configure_geometry(scene.geometry, scene.voids);
-    } else if (c.arm == "contact-blocked") {
+    } else if (!c.integrated_assay && c.arm == "contact-blocked") {
         // Same site with a narrow wall and a genuine route around its end.
         scene.geometry.origin_m = {-.008, -.006, -.006};
         scene.geometry.initial_solid = {{0, 0, 0}, {32, 24, 24}};
         scene.voids = {{{11, 8, 8}, {17, 16, 17}}, {{18, 8, 8}, {23, 16, 17}}, {{11, 8, 15}, {23, 16, 19}}};
         w.configure_geometry(scene.geometry, scene.voids);
-    } else wp5::configure(scene, {"founding", "on", 0, c.seed});
+    } else if (!c.integrated_assay) wp5::configure(scene, {"founding", "on", 0, c.seed});
     w.configure_social(social);
     w.configure_biology(care);
-    const auto colony = w.seed_colony();
-    scene.queen = w.seed_ant(colony, {{}, LifeStage::Adult, Caste::Queen, 4000});
+    const auto colony = w.seed_colony(nest);
+    scene.queen = w.seed_ant(colony, {nest, LifeStage::Adult, Caste::Queen, 4000});
     w.enable_founding(scene.queen, c.profile);
     if (c.arm == "contact-blocked") {
         // One legacy assay larva on each side of the wall, at equal distances.
@@ -85,7 +108,12 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         w.set_autonomy(worker);
         scene.workers.push_back(worker);
     }
-    if (c.food.total_ug()) {
+    if (c.integrated_assay && c.food.total_ug()) {
+        const auto source=w.seed_food(scene.target,c.food);
+        const auto daily = c.arm == "limited" ? FoodMass{188,94,563,0} :
+            FoodMass{c.food.carbs_ug/4,c.food.protein_ug/4,c.food.water_ug/4,0};
+        w.configure_resource_cycle(source, {{daily.carbs_ug*120,daily.protein_ug*120,daily.water_ug*120,0},daily});
+    } else if (!c.integrated_assay && c.food.total_ug()) {
         const bool blocked=c.arm=="blocked" || c.arm=="water-blocked";
         const PositionM depot = blocked ? PositionM{0, 0, .020} : PositionM{};
         w.seed_food(depot, c.food);
