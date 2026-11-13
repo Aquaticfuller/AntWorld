@@ -44,7 +44,7 @@ struct Case {
     bool qualification{}, compact{}, shaft{}, fast_connector{};
     TrailTreatment trail_treatment{TrailTreatment::Silent};
     bool dogleg{}, blocked_water{};
-    std::optional<EcologicalClosureConfig> ecological;
+    std::optional<EcologicalClosureConfig> ecological{};
     bool expanded_history{};
 };
 
