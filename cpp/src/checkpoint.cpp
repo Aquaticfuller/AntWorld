@@ -107,7 +107,8 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     if (frame) w.put(frame_magic);
     if (s.ecological) {
         w.put(ecological_magic);
-        w.put(ecological_schema,4); w.put(ecological_physics,4);
+        w.put(ecological_schema,4);
+        w.put(s.ecological->portable_field?portable_ecological_physics:ecological_physics,4);
     }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
     w.put(resupply ? founding_resupply_schema_version : uptake ? founding_uptake_schema_version : dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
@@ -166,8 +167,12 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
     const bool ecological = header==ecological_magic;
+    bool portable_field=false;
     if (ecological) {
-        ensure(r.get(4)==ecological_schema && r.get(4)==ecological_physics,"unsupported ecological closure contract");
+        ensure(r.get(4)==ecological_schema,"unsupported ecological closure schema");
+        const auto physics=r.get(4);
+        ensure(physics==ecological_physics || physics==portable_ecological_physics,"unsupported ecological closure physics");
+        portable_field=physics==portable_ecological_physics;
         header=r.get();
     }
     const bool resupply=header==founding_resupply_magic;
@@ -262,7 +267,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (!frame) s->journal.push_back(e);
     }
     s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
-    if (ecological) s->ecological=read_ecological(r,s->config);
+    if (ecological) {
+        s->ecological=read_ecological(r,s->config);
+        s->ecological->portable_field=portable_field;
+    }
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();
     m.executed = r.get(); m.living = r.get(); m.ledger = {r.mass(), r.mass(), r.mass(), r.mass()};

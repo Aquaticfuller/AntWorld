@@ -7,14 +7,21 @@
 
 int main(int argc,char** argv) {
     using namespace antworld;
-    if (argc!=4 && argc!=5) return 1;
+    if (argc<4 || argc>6) return 1;
     try {
         const std::string_view input=argv[1];
         std::uint64_t seed{};
         const auto parsed=std::from_chars(input.data(),input.data()+input.size(),seed);
         if (parsed.ec!=std::errc{} || parsed.ptr!=input.data()+input.size() || !seed)
             throw std::invalid_argument("invalid recruitment seed");
-        auto scene=ecological_assay::recruitment(seed,argv[2]);
+        bool durable=false,portable=false;
+        for (int i=4;i<argc;++i) {
+            const std::string_view option=argv[i];
+            if (option=="durable" && !durable) durable=true;
+            else if (option=="portable" && !portable) portable=true;
+            else throw std::invalid_argument("invalid recruitment replay option");
+        }
+        auto scene=ecological_assay::recruitment(seed,argv[2],{},portable);
         const auto output=std::filesystem::path(argv[3]);
         std::filesystem::create_directories(output);
         auto write=[&](const char* name,std::span<const std::uint8_t> bytes) {
@@ -24,7 +31,7 @@ int main(int argc,char** argv) {
         };
         write("initial.chk",scene.world.checkpoint());
         scene.world.advance_to({30000});
-        if (argc==5) {
+        if (durable) {
             storage::Store store(output/"live.sqlite",{},storage::StoreFormat::Segmented);
             const auto initial=scene.world.checkpoint();
             const auto token=store.save(scene.world);

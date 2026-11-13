@@ -48,11 +48,11 @@ def roster(panel):
                                      parameters=c["parameters"] | {"maternal_lipid": reserve}), mode
 
 
-def scout(binary, work, arm, seed, mode):
+def scout(binary, work, arm, seed, mode, portable=False):
     work.mkdir()
     write_json(work/"case.json", dict(arm=arm, seed=seed, horizon_ms=1200000, mode=mode))
     with (work/"program.log").open("wb") as log:
-        args = [binary, str(seed), arm, work] + (["durable"] if mode == "durable" else [])
+        args = [binary, str(seed), arm, work] + (["durable"] if mode == "durable" else []) + (["portable"] if portable else [])
         code = subprocess.run(args, stdout=log, stderr=subprocess.STDOUT).returncode
     receipt = dict(status="COMPLETE" if not code else "ENGINEERING_FAILURE", exit_code=code,
                    artifacts={p.name: dict(bytes=p.stat().st_size, sha256=sha(p)) for p in work.iterdir() if p.is_file()})
@@ -60,7 +60,7 @@ def scout(binary, work, arm, seed, mode):
     return receipt
 
 
-def collect(binary, output, panel, expanded):
+def collect(binary, output, panel, expanded, portable=False):
     frozen = subprocess.check_output(["git", "show", f"26110c0:{PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
     if frozen != PROTOCOL.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/run_ecological_closure.py"):
         raise ValueError("commit the collection source and retain the frozen protocol")
@@ -69,19 +69,21 @@ def collect(binary, output, panel, expanded):
                     for mode in (("observed", "durable") if seed == 1 and arm == "scout" else ("observed",))]
     else:
         selected = [(c["case"], (identity, c, mode)) for identity, c, mode in roster(panel)]
-        if expanded:
-            selected = [(name, (identity, c | dict(arm=c["arm"].replace("ecology-","ecology4-",1)), mode))
+        if expanded or portable:
+            version = "ecology5-" if portable else "ecology4-"
+            selected = [(name, (identity, c | dict(arm=c["arm"].replace("ecology-",version,1)), mode))
                         for name, (identity,c,mode) in selected]
     output.mkdir(parents=True)
     write_json(output/"run.json", dict(reference=REFERENCE, source=git("rev-parse", "HEAD"),
         cpp_tree=git("rev-parse", "HEAD:cpp"), protocol_sha256=sha(PROTOCOL), binary_sha256=sha(binary),
         collector_sha256=sha(Path(__file__)), platform=platform.platform(), python=platform.python_version(),
-        panel=panel, expanded=expanded, cases=[name for name, _ in selected], arguments=COMMAND if panel != "scout" else []))
+        panel=panel, expanded=expanded or portable, portable_field=portable, cases=[name for name, _ in selected],
+        arguments=COMMAND if panel != "scout" else []))
     with (output/"archives.jsonl").open("x", encoding="utf-8", newline="\n") as index:
         for name, args in selected:
             with TemporaryDirectory(dir=output) as temp:
                 work = Path(temp)/name
-                receipt = scout(binary,work,*args) if panel=="scout" else run_one(binary,work,*args,COMMAND)
+                receipt = scout(binary,work,*args,portable) if panel=="scout" else run_one(binary,work,*args,COMMAND)
                 archive = output/f"{name}.zip"
                 with ZipFile(archive, "x", ZIP_DEFLATED, compresslevel=4) as bundle:
                     for member in sorted(work.iterdir()):
@@ -97,5 +99,6 @@ if __name__ == "__main__":
     parser.add_argument("binary", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--expanded", action="store_true")
+    parser.add_argument("--portable-field", action="store_true")
     args = parser.parse_args()
-    collect(args.binary.resolve(strict=True), args.output.resolve(), args.panel, args.expanded)
+    collect(args.binary.resolve(strict=True), args.output.resolve(), args.panel, args.expanded, args.portable_field)

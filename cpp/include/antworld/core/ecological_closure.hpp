@@ -10,6 +10,7 @@ struct EcologicalClosureConfig {
     SimTime soil_handling{5000}, cue_lifetime{120000};
     std::uint64_t cue_minimum_carbs_ug{50}, water_sip_ug{};
     std::uint32_t cue_response_ppm{350000}, first_ration_ppm{};
+    bool portable_field{}; // Physics 25 fixes the numerical representation of the same local field.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

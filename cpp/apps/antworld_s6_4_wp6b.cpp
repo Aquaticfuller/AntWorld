@@ -40,7 +40,8 @@ Case read_case(const Path& path) {
         (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
-    c.expanded_history=c.arm.starts_with("ecology4-");
+    const bool portable_field=c.arm.starts_with("ecology5-");
+    c.expanded_history=c.arm.starts_with("ecology4-") || portable_field;
     const bool ecology=c.arm.starts_with("ecology-") || c.expanded_history;
     if (ecology) {
         const auto arm=c.arm.substr(c.expanded_history?9:8);
@@ -56,6 +57,7 @@ Case read_case(const Path& path) {
         c.compact=true; c.shaft=true; c.qualification=true;
         c.ecological.emplace();
         auto& e=*c.ecological;
+        e.portable_field=portable_field;
         e.distance_clock=true;
         e.floor_space=treatment=="joint" || treatment=="silent";
         e.recruitment=treatment=="joint";

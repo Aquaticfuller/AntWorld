@@ -132,10 +132,30 @@ inline Cell connector_cell(std::uint64_t encoded) {
     return {static_cast<std::int32_t>(encoded>>32),static_cast<std::int32_t>(encoded&UINT32_MAX)};
 }
 inline constexpr std::uint64_t connector_move_fact=1;
-inline double trail_at(const Trail& t, SimTime now, const BehaviorConfig& p) {
+inline double portable_trail_exponential(double halves) {
+    // Whole half-lives are exact binary scaling. Explicitly fused steps
+    // approximate exp(-ln(2)*fraction) at binary64 precision.
+    if (halves>=1075) return 0;
+    const auto whole=static_cast<int>(halves);
+    const auto fraction=halves-whole;
+    constexpr auto log_two=0x1.62e42fefa39efp-1;
+    double series=1;
+    for (int n=18;n>=1;--n)
+        series=std::fma(series,-log_two*fraction/static_cast<double>(n),1.);
+    return std::ldexp(series,-whole);
+}
+inline double trail_at(const Trail& t, SimTime now, const BehaviorConfig& p, bool portable=false) {
     const auto seconds = static_cast<double>(now.milliseconds-t.updated.milliseconds)/1000.0;
-    const auto amount = t.units*std::exp(-std::log(2.0)*seconds/p.trail_half_life_s);
+    const auto amount = t.units*(portable ? portable_trail_exponential(seconds/p.trail_half_life_s) :
+        std::exp(-std::log(2.0)*seconds/p.trail_half_life_s));
     return amount < p.trail_cutoff_units ? 0 : amount;
+}
+inline double next_trail(const BehaviorConfig& p,double current,bool portable) {
+    const auto next=std::min(p.trail_cap_units,current+p.deposit_units);
+    // Snap stored concentrations to a 2^-36-unit lattice. Keep sublattice
+    // values and an off-lattice configured cap so all legal inputs retain a signal.
+    if (!portable || next<=0x1p-36 || next==p.trail_cap_units) return next;
+    return std::clamp(std::ldexp(std::round(std::ldexp(next,36)),-36),current,p.trail_cap_units);
 }
 void validate_surface(const SurfaceConfig&, const BehaviorConfig&, const WorldConfig&, const RuntimeLimits&);
 } // namespace antworld::detail

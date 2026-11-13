@@ -12,7 +12,7 @@ struct RecruitmentScene {
     std::array<AntRef,3> receivers;
 };
 
-inline RecruitmentScene recruitment(std::uint64_t seed, std::string_view arm, RuntimeLimits limits = {}) {
+inline RecruitmentScene recruitment(std::uint64_t seed, std::string_view arm, RuntimeLimits limits = {}, bool portable=false) {
     const bool enabled = arm == "scout" || arm == "sham" || arm == "naive" || arm == "blocked" || arm == "depleted";
     if (!enabled && arm != "disabled" && arm != "existing")
         throw std::invalid_argument("unknown recruitment treatment");
@@ -22,6 +22,7 @@ inline RecruitmentScene recruitment(std::uint64_t seed, std::string_view arm, Ru
     auto& w=scene.world;
     EcologicalClosureConfig ecological;
     ecological.distance_clock=true;
+    ecological.portable_field=portable;
     // In the disabled arm scouts still leave the physical cue and trail.
     ecological.recruitment=true;
     if (!enabled) ecological.cue_response_ppm=0;

@@ -1,5 +1,6 @@
 #include "ecological_recruitment_fixture.hpp"
 #include "wp6b_fixture.hpp"
+#include "../src/surface_internal.hpp"
 #include "antworld/storage/store.hpp"
 #include <algorithm>
 #include <filesystem>
@@ -156,6 +157,32 @@ void soil_handling() {
             returned->time.milliseconds-first_dig->time.milliseconds<geometry.work_duration.milliseconds,
             "loaded return did not commit the independent handling time");
 }
+
+void portable_field() {
+    using detail::portable_trail_exponential;
+    require(portable_trail_exponential(0)==1 && portable_trail_exponential(1)==.5 &&
+            portable_trail_exponential(10)==0x1p-10 && portable_trail_exponential(1075)==0,
+            "portable field changed the configured half-life");
+    for (int i=0;i<1024;++i) {
+        const auto halves=i/32.;
+        const auto value=portable_trail_exponential(halves);
+        const auto reference=std::exp2(-halves);
+        require(std::abs(value-reference)<=reference*2e-15,"portable field exceeded numerical error bound");
+    }
+    for (const auto policy:{false,true}) {
+        auto a=ecological_assay::recruitment(1,"scout",{},policy);
+        a.world.advance_to({30000});
+        const auto encoded=a.world.checkpoint();
+        require(encoded[12]==(policy?25:24),"portable field silently changed legacy physics");
+        WorldRuntime restored(a.scout.world,1);
+        restored.restore(encoded);
+        require(restored.ecological_closure()->portable_field==policy,"lost field arithmetic policy");
+        restored.advance_to({35999});
+        restored.advance_to({120000});
+        a.world.advance_to({120000});
+        require(a.world.checkpoint()==restored.checkpoint(),"field arithmetic changed on restoration");
+    }
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -167,6 +194,7 @@ int main(int argc,char** argv) {
         else if (name=="restore") authority();
         else if (name=="activity") paid_motion();
         else if (name=="soil") soil_handling();
+        else if (name=="portable") portable_field();
         else return 1;
         return 0;
     } catch (const std::exception& error) {

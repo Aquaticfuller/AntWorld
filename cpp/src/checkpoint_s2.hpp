@@ -181,6 +181,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
     std::map<ResourceId, FoodMass> remaining;
     std::map<EntityId,std::uint32_t> connector_cursors;
     ForagingCounters counts; bool configured = false;
+    const auto portable=s.ecological && s.ecological->portable_field;
     for (const auto& e : s.journal) {
         if (e.kind == FactKind::SurfaceConfigured) {
             ensure(!configured && (e.id == EventId{1} || (s.long_term && e.id==EventId{2} && s.journal.front().kind==FactKind::LongTermConfigured)) && e.position == surface.config.origin_m && !e.actor.value && !e.colony.value &&
@@ -271,14 +272,17 @@ template <typename S> void validate_surface_evidence(const S& s) {
                     // round slightly above deposit_units even for a valid addition.
                     ensure(p.trails_enabled && cargo[e.actor].total_ug(), "deposit without carried food");
                     const TrailKey key{e.colony, *to}; const auto it = audit_trails.find(key);
-                    const auto old_amount = it == audit_trails.end() ? 0 : trail_at(it->second, e.time, p);
-                    const auto next = std::min(p.trail_cap_units, old_amount+p.deposit_units);
+                    const auto old_amount = it == audit_trails.end() ? 0 : trail_at(it->second,e.time,p,portable);
+                    const auto next = next_trail(p,old_amount,portable);
                     ensure(e.deposited_units == next-old_amount, "invalid saturated deposit evidence");
                     audit_trails[key] = {next, e.time}; counts.deposited_units += e.deposited_units;
                 } else if (p.trails_enabled && cargo[e.actor].total_ug()) {
                     const TrailKey key{e.colony, *to}; const auto it = audit_trails.find(key);
-                    ensure(it != audit_trails.end() && trail_at(it->second, e.time, p) == p.trail_cap_units, "missing deposit evidence");
-                    audit_trails[key] = {p.trail_cap_units, e.time};
+                    ensure(it != audit_trails.end(), "missing deposit evidence");
+                    const auto old_amount=trail_at(it->second,e.time,p,portable);
+                    const auto next=next_trail(p,old_amount,portable);
+                    ensure((portable ? old_amount==next : old_amount==p.trail_cap_units), "missing deposit evidence");
+                    audit_trails[key] = {next, e.time};
                 }
             } else ensure(e.deposited_units == 0, "non-forager deposited a trail");
             positions[e.actor] = e.position;
@@ -314,7 +318,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
             ensure(p.trails_enabled && !e.actor.value && !e.colony.value && !e.resource.value, "invalid field maintenance fact");
             std::uint64_t removed = 0;
             for (auto i = audit_trails.begin(); i != audit_trails.end();) {
-                const auto value = trail_at(i->second, e.time, p);
+                const auto value = trail_at(i->second,e.time,p,portable);
                 if (value == 0) { i = audit_trails.erase(i); ++removed; }
                 else { i->second = {value, e.time}; ++i; }
             }

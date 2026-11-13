@@ -85,6 +85,7 @@ LocalObservation WorldRuntime::sense(AntRef ref) const {
     const auto at=navigation_cell(s,ant->position);
     if (!at) throw std::invalid_argument("ant is not at a walkable surface cell");
     const auto& p = s.surface->behavior;
+    const auto portable = s.ecological && s.ecological->portable_field;
     LocalObservation result; result.time = s.m.now; result.current = *at;
     if (s.config.continuous_spatial_motion) {
         const auto f=s.foragers.find(ref.id);
@@ -97,7 +98,7 @@ LocalObservation WorldRuntime::sense(AntRef ref) const {
         double trail = 0;
         if (p.trails_enabled) {
             const auto found = s.trails.find({ant->colony, c});
-            if (found != s.trails.end()) trail = trail_at(found->second, s.m.now, p);
+            if (found != s.trails.end()) trail = trail_at(found->second, s.m.now, p,portable);
         }
         result.steps[result.step_count++] = {c, dir, trail};
     }
@@ -298,8 +299,9 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
         if (p.trails_enabled && before.carried_food.total_ug()) {
             const TrailKey key{ant.colony, to}; const auto old = s.trails.find(key);
             if (old == s.trails.end() && s.trails.size() >= limits_.trail_cells) throw std::length_error("sparse trail host budget exceeded");
-            const auto amount = old == s.trails.end() ? 0 : trail_at(old->second, s.m.now, p);
-            const auto next = std::min(p.trail_cap_units, amount+p.deposit_units);
+            const auto portable=s.ecological && s.ecological->portable_field;
+            const auto amount = old == s.trails.end() ? 0 : trail_at(old->second,s.m.now,p,portable);
+            const auto next = next_trail(p,amount,portable);
             fact.deposited_units = next-amount; s.m.foraging.deposited_units += fact.deposited_units;
             if (!std::isfinite(s.m.foraging.deposited_units)) throw std::overflow_error("trail accounting overflow");
             tx.trails.set(key, {next, s.m.now});
@@ -332,8 +334,9 @@ void WorldRuntime::stop_dead_forager(Transaction& tx, EntityId actor) {
 }
 void WorldRuntime::maintain_trails(Transaction& tx, const ScheduledEvent& e) {
     auto& s = *state_; const auto& p = s.surface->behavior; std::uint64_t removed = 0;
+    const auto portable=s.ecological && s.ecological->portable_field;
     for (auto i = s.trails.begin(); i != s.trails.end();) {
-        const auto key = i->first; const auto value = trail_at(i->second, s.m.now, p); ++i;
+        const auto key = i->first; const auto value = trail_at(i->second,s.m.now,p,portable); ++i;
         if (value == 0) { tx.trails.erase(key); ++removed; }
         else tx.trails.set(key, {value, s.m.now});
     }
@@ -348,8 +351,9 @@ std::optional<ForagerState> WorldRuntime::query_forager(AntRef ref) const {
 std::vector<TrailSample> WorldRuntime::trails() const {
     std::vector<TrailSample> result(0); const auto& s = *state_; if (!s.surface) return result;
     result.reserve(s.trails.size());
+    const auto portable=s.ecological && s.ecological->portable_field;
     for (const auto& [key, value] : s.trails) {
-        const auto amount = trail_at(value, s.m.now, s.surface->behavior);
+        const auto amount = trail_at(value,s.m.now,s.surface->behavior,portable);
         if (amount > 0) result.push_back({key.colony, key.cell, amount});
     }
     return result;
@@ -375,7 +379,7 @@ SurfaceSnapshot WorldRuntime::surface_snapshot() const {
         }
     }
     for (const auto& [key, value] : s.trails) {
-        (void)key; const auto amount = trail_at(value, s.m.now, s.surface->behavior);
+        (void)key; const auto amount = trail_at(value,s.m.now,s.surface->behavior,s.ecological && s.ecological->portable_field);
         if (amount > 0) { ++result.active_trail_cells; result.trail_units += amount; }
     }
     result.evaporated_units = std::max(0.0, result.counters.deposited_units-result.trail_units); return result;
