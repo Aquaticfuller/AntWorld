@@ -21,6 +21,12 @@ CELLS = {
 }
 ROOT = assay.native.ROOT
 PROTOCOL = ROOT / "research/s6_4_founding_qualification/FROZEN_CLOSURE_PROTOCOL.md"
+BASE_SCHEDULE = assay.schedule
+
+
+def diagnostic_schedule(session):
+    rows = [row for row in BASE_SCHEDULE(session, ("v1", "r1", "both")) if (row["case"], row["model"]) in CELLS]
+    return [row | dict(sample=index) for index, row in enumerate(rows)]
 
 
 def configure(hw):
@@ -32,14 +38,10 @@ def configure(hw):
     assay.MODEL_VERSIONS["both"] = 3
     assay.DIAGNOSTIC_STORAGE = True
     assay.ADDITIONAL_SOURCES = (Path(__file__).name, "run_s6_4_wp6b_r2_performance.py", "s6_4_wp6b_r2_append_log.py")
-    dependencies, base_schedule = native.dependencies, assay.schedule
+    dependencies = native.dependencies
     native.dependencies = lambda: dependencies() | {APPEND_LAYOUT.name: native.digest(APPEND_LAYOUT)}
 
-    def selected(session):
-        rows = [row for row in base_schedule(session) if (row["case"], row["model"]) in CELLS]
-        return [row | dict(sample=index) for index, row in enumerate(rows)]
-
-    assay.schedule = selected
+    assay.schedule = diagnostic_schedule
     log = AppendLog(hw.resolve(), native.load(APPEND_LAYOUT), native.load(MAPPING))
     native.sensor_tail, native.extract = log.tail, log.extract
 

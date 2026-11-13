@@ -46,7 +46,10 @@ WorldEvent read_fact(Reader& r) {
 }
 } // namespace
 std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
-    Writer writer; write_fact(writer, event); return writer.bytes;
+    Writer writer;
+    writer.bytes.reserve(event.kind==FactKind::BiologicalObservation?210:159);
+    write_fact(writer, event);
+    return writer.bytes;
 }
 WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
     Reader reader{bytes}; auto event = read_fact(reader);

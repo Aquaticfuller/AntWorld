@@ -34,11 +34,11 @@ def workload():
     return cases
 
 
-def schedule(session):
+def schedule(session, model_names=None):
     rows = []
     cells = list(workload())
     for case in cells[::-1] if session == 2 else cells:
-        models = tuple(MODEL_ARGUMENTS)
+        models = tuple(MODEL_ARGUMENTS if model_names is None else model_names)
         for model in models[::-1] if session == 2 else models:
             for block, (a, b) in enumerate((("off-a", "off-b"), ("off", "on"))):
                 order = (a, b, b, a) if (session+block) % 2 else (b, a, a, b)

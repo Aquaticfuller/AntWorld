@@ -215,6 +215,25 @@ void write_facts(const WorldRuntime& w, std::ofstream& stream) {
     }
 }
 
+[[noreturn]] void interrupt_publication(WorldRuntime& world, storage::Store& store, const storage::SaveToken& saved,
+                                       const Path& directory, SimTime next) {
+    auto frame=output(directory/"published.frame");
+    write_bytes(frame,world.checkpoint_frame());
+    frame.close();
+    world.advance_to(next);
+    storage::SaveOptions failure;
+    failure.fault_hook=[&](storage::SaveStage stage) {
+        if (stage!=storage::SaveStage::BeforeCommit) return;
+        auto marker=output(directory/"interruption.csv");
+        marker << "published_generation,published_cursor,attempted_time_ms\n"
+               << saved.generation << ',' << saved.cursor << ',' << world.summary().now.milliseconds << '\n';
+        marker.close();
+        std::_Exit(78);
+    };
+    store.save(world,saved,failure);
+    throw std::logic_error("interruption did not stop the child");
+}
+
 void resume_interrupted(const Case& c, const Path& evidence, const Path& dir) {
     const auto limits=s6_3_1_fixture::limits();
     storage::Store store(evidence,limits,storage::StoreFormat::Segmented);
@@ -347,48 +366,33 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
 #ifdef ANTWORLD_STORAGE_TIMING
             diagnostic.midpoint_encode=ms(save_start);
             const auto sqlite_begin=Clock::now();
+            Clock::time_point close_start;
 #endif
             {
-            storage::Store store(dir/"midpoint.sqlite", limits, storage::StoreFormat::Segmented);
+                storage::Store store(dir/"midpoint.sqlite", limits, storage::StoreFormat::Segmented);
 #ifdef ANTWORLD_STORAGE_TIMING
-            diagnostic.sqlite_open=ms(sqlite_begin);
-            const auto write_start=Clock::now();
+                diagnostic.sqlite_open=ms(sqlite_begin);
+                const auto write_start=Clock::now();
 #endif
-            const auto saved = store.save(w);
-            durable_ms = ms(save_start);
+                const auto saved = store.save(w);
+                durable_ms = ms(save_start);
 #ifdef ANTWORLD_STORAGE_TIMING
-            diagnostic.save=ms(write_start);
+                diagnostic.save=ms(write_start);
 #endif
-            if (interrupted) {
-                auto frame=output(dir/"published.frame");
-                write_bytes(frame,w.checkpoint_frame());
-                frame.close();
-                w.advance_to({at+day_ms});
-                storage::SaveOptions failure;
-                failure.fault_hook=[&](storage::SaveStage stage) {
-                    if (stage!=storage::SaveStage::BeforeCommit) return;
-                    auto marker=output(dir/"interruption.csv");
-                    marker << "published_generation,published_cursor,attempted_time_ms\n"
-                           << saved.generation << ',' << saved.cursor << ',' << w.summary().now.milliseconds << '\n';
-                    marker.close();
-                    std::_Exit(78);
-                };
-                store.save(w,saved,failure);
-                throw std::logic_error("interruption did not stop the child");
-            }
-            const auto reopen = Clock::now();
-            auto loaded = store.load(id);
-            restore_ms = ms(reopen);
-            require(loaded.token==saved && loaded.world.checkpoint()==bytes,"F1 midpoint durable recovery differs");
+                if (interrupted) interrupt_publication(w,store,saved,dir,{at+day_ms});
+                const auto reopen = Clock::now();
+                auto loaded = store.load(id);
+                restore_ms = ms(reopen);
+                require(loaded.token==saved && loaded.world.checkpoint()==bytes,"F1 midpoint durable recovery differs");
 #ifdef ANTWORLD_STORAGE_TIMING
-            diagnostic.restore=restore_ms;
-            diagnostic.restore_encode=ms(reopen)-restore_ms;
-            diagnostic.sqlite_close=ms(start);
+                diagnostic.restore=restore_ms;
+                diagnostic.restore_encode=ms(reopen)-restore_ms;
+                close_start=Clock::now();
 #endif
-            w = std::move(loaded.world);
+                w = std::move(loaded.world);
             }
 #ifdef ANTWORLD_STORAGE_TIMING
-            diagnostic.sqlite_close=ms(start)-diagnostic.sqlite_close;
+            diagnostic.sqlite_close=ms(close_start);
 #endif
         }
     }

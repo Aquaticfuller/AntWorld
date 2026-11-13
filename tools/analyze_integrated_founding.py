@@ -28,7 +28,7 @@ def located_facts(raw):
         offset += size + 4
 
 
-def verify_sources(raw, case, cuts):
+def verify_sources(raw, case, cuts, source_observer=None):
     empty = (0, 0, 0, 0)
     seeded, reserve, on_site, cargo = None, empty, empty, defaultdict(lambda: empty)
     totals = [0, 0, 0, 0]
@@ -57,7 +57,7 @@ def verify_sources(raw, case, cuts):
             check(on_site == mass, "source seed lacks exact material")
         elif kind == 36:
             daily = (188, 94, 563, 0) if case["arm"] == "integrated-limited" else tuple(m//4 for m in on_site)
-            reserve = tuple(120*m for m in daily)
+            reserve = tuple(case.get("release_days",120)*m for m in daily)
             check(resource == seeded and mass == reserve, "food release source differs from the finite input")
         elif kind == 37:
             check(resource == seeded, "release lacks its finite source")
@@ -72,6 +72,8 @@ def verify_sources(raw, case, cuts):
             if kind == DELIVERED:
                 for i, value in enumerate(mass):
                     totals[i] += value
+        if source_observer and kind in (3,36,37,COLLECTED,DELIVERED,CARGO):
+            source_observer(event,resource,position,reserve,on_site,cargo[actor])
     reconcile(last+1)
     check(cut is None and bool(seeded) == bool(case["external_food_ug"]), "missing source or terminal coverage")
     return dict(zip(("delivered_c", "delivered_p", "delivered_w", "delivered_o"), totals, strict=True))

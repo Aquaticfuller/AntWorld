@@ -1,6 +1,7 @@
 #pragma once
 #include "antworld/core/event.hpp"
 #include <bit>
+#include <cstring>
 #include <limits>
 #include <span>
 #include <stdexcept>
@@ -42,6 +43,20 @@ struct Reader {
     std::size_t cursor{};
     std::uint64_t get(unsigned width = 8) {
         if (width > bytes.size()-cursor) throw std::invalid_argument("truncated checkpoint");
+        if constexpr (std::endian::native == std::endian::little) {
+            if (width == sizeof(std::uint64_t)) {
+                std::uint64_t word;
+                std::memcpy(&word,bytes.data()+cursor,sizeof(word));
+                cursor += sizeof(word);
+                return word;
+            }
+            if (width == sizeof(std::uint32_t)) {
+                std::uint32_t word;
+                std::memcpy(&word,bytes.data()+cursor,sizeof(word));
+                cursor += sizeof(word);
+                return word;
+            }
+        }
         std::uint64_t result = 0;
         for (unsigned i = 0; i < width; ++i) result |= std::uint64_t{bytes[cursor++]} << (8*i);
         return result;

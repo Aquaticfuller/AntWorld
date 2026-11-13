@@ -107,7 +107,7 @@ def census(sets, exact):
 def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
     profile, queen = case["parameters"], int(summary["queen"])
     carbohydrate_yield = case.get("carbohydrate_yield_nj_per_ug", 1_000_000)
-    nest = [0, 0, 0, 0] if case.get("arm", "").startswith("integrated-") else None
+    nest = [0, 0, 0, 0] if case.get("arm", "").startswith(("integrated-", "scope-")) else None
     cut_rows = rows(cut_data)
     daily = [(int(time), list(group)) for time, group in groupby(rows(individual_data), lambda r: r["time_ms"])]
     check([t for t, _ in daily] == list(range(0, case["horizon_ms"]+1, DAY_MS)) == [int(c["time_ms"]) for c in cut_rows],

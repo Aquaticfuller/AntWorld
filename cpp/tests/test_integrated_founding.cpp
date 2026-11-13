@@ -1,4 +1,5 @@
 #include "wp6b_fixture.hpp"
+#include "checkpoint_codec.hpp"
 #include "founding_internal.hpp"
 #include "event_block.hpp"
 #include "antworld/storage/store.hpp"
@@ -201,6 +202,33 @@ void local_resupply(const std::filesystem::path& folder) {
     require(loaded.checkpoint()==treatment.world.checkpoint(),"resupply continuation changed across cuts");
     check_ledgers(loaded);
 }
+
+void canonical_words() {
+    constexpr std::array<std::uint8_t,14> bytes{0xfe,0x80,0x01,0x00,0xff,0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x91,0x67};
+    Reader reader{std::span{bytes}.subspan(1)};
+    require(reader.get(4)==0xff000180 && reader.get()==UINT64_C(0x9102030405060708) &&
+            reader.get(1)==0x67,"unaligned little-endian words changed");
+    const auto cursor=reader.cursor;
+    rejects([&] { (void)reader.get(4); });
+    require(reader.cursor==cursor,"short word advanced the reader");
+    const std::array kinds{FactKind::AntSeeded,FactKind::BiologicalObservation};
+    for (const auto kind:kinds) {
+        WorldEvent event;
+        event.kind=kind;
+        event.id={0xff000180};
+        event.world={UINT64_C(0x9102030405060708),7};
+        event.time={0xff000180};
+        event.position={-.004,0,.03};
+        if (kind==FactKind::BiologicalObservation) event.observation.destination={1,-2,3};
+        const auto canonical=encode_event(event);
+        require(canonical.size()==(kind==FactKind::BiologicalObservation?210:159) && decode_event(canonical)==event,
+                "canonical word codec changed the event");
+        auto unaligned=canonical;
+        unaligned.insert(unaligned.begin(),0);
+        require(decode_event(std::span{unaligned}.subspan(1))==event,"unaligned event decode changed");
+        rejects([&] { (void)decode_event(std::span{canonical}.first(canonical.size()-1)); });
+    }
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -213,6 +241,7 @@ int main(int argc,char** argv) {
         else if (mode=="IF_BOUNDARY_COMPONENTS") boundary_components();
         else if (mode=="IF_BOUNDARY_COLONY") boundary_colony(argv[2]);
         else if (mode=="IF_LOCAL_RESUPPLY") local_resupply(argv[2]);
+        else if (mode=="IF_CANONICAL_WORDS") canonical_words();
         else throw std::invalid_argument("unknown integrated founding test");
         return 0;
     } catch (const std::exception& e) {
