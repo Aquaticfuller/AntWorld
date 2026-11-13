@@ -51,6 +51,7 @@ Case read_case(const Path& path) {
             const auto layout = c.arm.substr(10);
             c.compact = layout != "roomy";
             c.shaft = layout.starts_with("shaft-");
+            c.fast_connector = layout.starts_with("shaft-fast-");
             if (layout == "roomy" || layout == "compact-silent") {
                 c.arm = "balanced";
             } else if (layout == "compact-blind" || layout == "shaft-blind") {
@@ -59,8 +60,11 @@ Case read_case(const Path& path) {
             } else {
                 require(layout == "compact-marked" || layout == "compact-blocked" ||
                         layout == "compact-no-protein" || layout == "compact-absent" ||
-                        layout == "shaft-marked" || layout == "shaft-blocked", "invalid qualification layout");
-                c.arm = layout.ends_with("-marked") ? "balanced" : layout.substr(c.shaft ? 6 : 8);
+                        layout == "shaft-marked" || layout == "shaft-blocked" || layout == "shaft-fast-marked" ||
+                        layout == "shaft-fast-blocked", "invalid qualification layout");
+                if (layout.ends_with("-marked")) c.arm = "balanced";
+                else if (layout.ends_with("-blocked")) c.arm = "blocked";
+                else c.arm = layout.substr(8);
                 c.trail_treatment = TrailTreatment::Marked;
             }
         } else c.arm.erase(0,11);

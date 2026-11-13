@@ -18,6 +18,8 @@ PROTOCOL = ROOT / "research/s6_4_final_core_readiness/FROZEN_FINAL_PROTOCOL.md"
 FREEZE = "d107384"
 SHAFT_PROTOCOL = PROTOCOL.with_name("FROZEN_SHAFT_DIAGNOSTIC.md")
 SHAFT_FREEZE = "82078ff"
+CLOCK_PROTOCOL = PROTOCOL.with_name("FROZEN_CONNECTOR_CLOCK_DIAGNOSTIC.md")
+CLOCK_FREEZE = "d21f61f"
 REFERENCE = "73e801946a2419bf33eb78e5240f8af0923ff31a"
 ARMS = {
     "roomy": "balanced", "compact-silent": "balanced", "compact-marked": "balanced",
@@ -25,6 +27,7 @@ ARMS = {
     "compact-absent": "absent",
 }
 SHAFT_ARMS = {"shaft-marked": "balanced", "shaft-blind": "balanced", "shaft-blocked": "blocked"}
+CLOCK_ARMS = {"shaft-fast-marked": "balanced", "shaft-fast-blocked": "blocked"}
 SEEDS = (1, 7, 19, 42, 43, 97)
 POPULATIONS = ("borisovka", "st_petersburg")
 WITNESSES = {
@@ -33,14 +36,19 @@ WITNESSES = {
     ("borisovka", 1, "compact-absent"),
 }
 SHAFT_WITNESSES = {(population, 1, "shaft-marked") for population in POPULATIONS} | {("borisovka", 1, "shaft-blocked")}
+CLOCK_WITNESSES = {(population, 1, "shaft-fast-marked") for population in POPULATIONS} | {("borisovka", 1, "shaft-fast-blocked")}
+PANELS = {
+    "primary": (PROTOCOL, FREEZE, ARMS, "compact-marked", WITNESSES),
+    "shaft": (SHAFT_PROTOCOL, SHAFT_FREEZE, SHAFT_ARMS, "shaft-marked", SHAFT_WITNESSES),
+    "clock": (CLOCK_PROTOCOL, CLOCK_FREEZE, CLOCK_ARMS, "shaft-fast-marked", CLOCK_WITNESSES),
+}
 
 
-def cases(shaft=False):
+def cases(panel="primary"):
     base = environments("nominal")
     by_arm = {(c["population"], c["software_seed"], c["arm"]): (i, c) for i, c in base}
-    arms = SHAFT_ARMS if shaft else ARMS
+    _, _, arms, marked, _ = PANELS[panel]
     primary = [(p, s, a, "observed") for p in POPULATIONS for s in SEEDS for a in arms]
-    marked = "shaft-marked" if shaft else "compact-marked"
     repeats = [(p, SEEDS[0], marked, m) for p in POPULATIONS for m in ("unobserved", "durable-split")]
     for population, seed, arm, mode in primary + repeats:
         identity, standard = by_arm[population, seed, "integrated-" + arms[arm]]
@@ -51,12 +59,12 @@ def cases(shaft=False):
         yield identity, case, mode
 
 
-def collect(binary, compiler, output, shaft=False):
-    protocol, freeze = (SHAFT_PROTOCOL, SHAFT_FREEZE) if shaft else (PROTOCOL, FREEZE)
+def collect(binary, compiler, output, panel="primary"):
+    protocol, freeze, _, _, _ = PANELS[panel]
     frozen = subprocess.check_output(["git", "show", f"{freeze}:{protocol.relative_to(ROOT).as_posix()}"], cwd=ROOT)
     if frozen != protocol.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/final_core_integration.py"):
         raise ValueError("the protocol and collection source must be frozen before the run")
-    roster = list(cases(shaft))
+    roster = list(cases(panel))
     output.mkdir(parents=True)
     write_json(output / "run.json", dict(source=git("rev-parse", "HEAD"), reference=REFERENCE,
         cpp_tree=git("rev-parse", "HEAD:cpp"), binary_sha256=sha(binary), arguments=COMMAND,
@@ -83,7 +91,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--compiler", type=Path, required=True)
-    parser.add_argument("--shaft", action="store_true")
+    choice = parser.add_mutually_exclusive_group()
+    choice.add_argument("--shaft", action="store_const", const="shaft", dest="panel")
+    choice.add_argument("--clock", action="store_const", const="clock", dest="panel")
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
-    collect(args.binary.resolve(strict=True), args.compiler.resolve(strict=True), args.output.resolve(), args.shaft)
+    collect(args.binary.resolve(strict=True), args.compiler.resolve(strict=True), args.output.resolve(), args.panel or "primary")
