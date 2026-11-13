@@ -1,5 +1,6 @@
 #include "event_block.hpp"
 #include "sqlite_internal.hpp"
+#include "storage_timing.hpp"
 #include "zlib.h"
 #include <algorithm>
 
@@ -117,6 +118,7 @@ BlockHeader inspect_block(std::span<const std::uint8_t> bytes) {
 }
 
 std::vector<WorldEvent> read_block(std::span<const std::uint8_t> bytes,const BlockHeader& header) {
+    timing::Scope decode(timing::Phase::DecodeBlock);
     std::vector<std::uint8_t> raw(header.raw_bytes);
     auto size=static_cast<uLongf>(raw.size());
     auto consumed=static_cast<uLong>(header.compressed_bytes);

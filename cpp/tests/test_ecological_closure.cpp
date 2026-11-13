@@ -236,6 +236,46 @@ void founding_ablation() {
     }
     require(counts[0]>0 && counts[1]==0,"matched hatch toggle did not isolate the local cue");
 }
+
+void bounded_history() {
+    auto a=ecological_assay::recruitment(1,"scout",{},true);
+    a.world.advance_to({30000});
+    const auto first=a.world.checkpoint();
+    const auto directory=std::filesystem::path("ecological-test-saves");
+    std::filesystem::create_directories(directory);
+    const auto db=directory/"bounded-history.sqlite";
+    std::filesystem::remove(db);
+    {
+        storage::Store store(db,{},storage::StoreFormat::Segmented);
+        storage::SaveOptions fault;
+        fault.fault_hook=[](auto stage) {
+            if (stage==storage::SaveStage::BeforeCommit) throw std::runtime_error("injected synchronous publication fault");
+        };
+        rejects([&] { (void)store.save_and_acknowledge(a.world,{},fault); });
+        require(a.world.checkpoint()==first && a.world.unpublished_history()>0 && !store.latest(a.scout.world),
+                "failed publication retired or changed live facts");
+        const auto first_token=store.save_and_acknowledge(a.world);
+        require(!a.world.unpublished_history() && a.world.checkpoint()==first,"first durable acknowledgement changed authority");
+        a.world.advance_to({44000});
+        const auto cut=a.world.capture_history();
+        a.world.advance_to({120000});
+        const auto total=a.world.summary().committed_events;
+        const auto after=first_token.cursor-5;
+        const auto across_prefix=a.world.events_after({after},100);
+        const auto across_hot=a.world.events_after({cut.size()-3},12);
+        const auto captured=a.world.capture_history();
+        require(across_prefix==captured.read({after},100) && across_hot==captured.read({cut.size()-3},12),
+                "history query across cold and sealed boundaries lost a fact");
+        const auto full=a.world.checkpoint();
+        const auto digest=a.world.snapshot().state_hash;
+        const auto saved=store.save_and_acknowledge(a.world,first_token);
+        require(saved.cursor==total && !a.world.unpublished_history() && a.world.checkpoint()==full &&
+                store.load(a.scout.world).world.snapshot().state_hash==digest &&
+                store.recover(a.scout.world,first_token.generation,saved.generation).world.checkpoint()==full,
+                "bounded history changes complete recovery");
+    }
+    std::filesystem::remove(db);
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -249,6 +289,7 @@ int main(int argc,char** argv) {
         else if (name=="soil") soil_handling();
         else if (name=="portable") portable_field();
         else if (name=="founding_ablation") founding_ablation();
+        else if (name=="bounded_history") bounded_history();
         else return 1;
         return 0;
     } catch (const std::exception& error) {

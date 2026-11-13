@@ -63,18 +63,27 @@ def manifest(path):
     return [json.loads(line) for line in (path / "archives.jsonl").read_bytes().splitlines()]
 
 
-def collect(panel, binary, directory, scratch):
+def collect(panel, binary, directory, scratch, binary_receipt=None):
     frozen = subprocess.check_output(["git", "show", f"{FREEZE}:{PROTOCOL.as_posix()}"], cwd=ROOT)
-    if frozen != (ROOT / PROTOCOL).read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/run_founding_cohort_release.py"):
-        raise ValueError("commit the simulation and runner and retain the prospective protocol")
+    if frozen != (ROOT / PROTOCOL).read_bytes():
+        raise ValueError("retain the prospective protocol")
+    source = git("rev-parse", "HEAD")
+    if binary_receipt:
+        receipt=json.loads(binary_receipt.read_bytes())
+        source=receipt["source"]
+        if (receipt["binary_sha256"]!=sha(binary) or receipt["cpp_tree"]!=git("rev-parse",f"{source}:cpp") or
+            source not in git("rev-list","HEAD").splitlines()):
+            raise ValueError("frozen executable does not match its committed source")
+    elif git("status", "--porcelain", "--", "cpp", "tools/run_founding_cohort_release.py"):
+        raise ValueError("commit the simulation and runner before collecting")
     selected = list(roster(panel))
     names = [case["case"] for _, case, _, _ in selected]
     if len(set(names)) != len(names) or len(names) != COUNTS[panel]:
         raise ValueError("changed frozen roster")
     directory.mkdir(parents=True)
     scratch.mkdir(parents=True, exist_ok=True)
-    write_json(directory / "run.json", dict(source=git("rev-parse", "HEAD"), reference=REFERENCE,
-               cpp_tree=git("rev-parse", "HEAD:cpp"), protocol_sha256=sha(ROOT / PROTOCOL),
+    write_json(directory / "run.json", dict(source=source, reference=REFERENCE,
+               cpp_tree=git("rev-parse", f"{source}:cpp"), protocol_sha256=sha(ROOT / PROTOCOL),
                binary_sha256=sha(binary), collector_sha256=sha(Path(__file__)), python=platform.python_version(),
                platform=platform.platform(), panel=panel, cases=names))
     with (directory / "archives.jsonl").open("x", newline="\n", encoding="utf-8") as index:
@@ -96,5 +105,6 @@ if __name__ == "__main__":
     parser.add_argument("panel", choices=tuple(COUNTS))
     for name in ("binary", "output", "scratch"):
         parser.add_argument(name, type=Path)
+    parser.add_argument("--binary-receipt",type=Path)
     args = parser.parse_args()
-    collect(args.panel, args.binary.resolve(strict=True), args.output.resolve(), args.scratch.resolve())
+    collect(args.panel, args.binary.resolve(strict=True), args.output.resolve(), args.scratch.resolve(), args.binary_receipt)

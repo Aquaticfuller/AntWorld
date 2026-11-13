@@ -14,6 +14,7 @@ public:
     [[nodiscard]] bool empty() const noexcept { return !size(); }
     [[nodiscard]] bool has_prefix() const noexcept { return static_cast<bool>(prefix_); }
     [[nodiscard]] std::size_t unpublished() const noexcept { return size() - cold_size(); }
+    [[nodiscard]] std::size_t resident_bytes() const;
     void limit(std::size_t value) {
         if (!value || unpublished() > value) throw std::length_error("unpublished history budget exceeded");
         limit_ = value;

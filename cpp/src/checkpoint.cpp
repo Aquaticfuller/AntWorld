@@ -62,12 +62,12 @@ WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
 namespace detail {
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile& profile) {
     auto digest = fnv_offset;
-    Writer w(0, &digest);
+    Writer w(std::numeric_limits<std::size_t>::max(), &digest);
     write_founding_profile(w, founder, profile);
     return digest;
 }
 std::uint64_t append_trace_hash(std::uint64_t digest, const WorldEvent& event) {
-    Writer w(0, &digest);
+    Writer w(std::numeric_limits<std::size_t>::max(), &digest);
     write_fact(w, event);
     return digest;
 }
@@ -78,7 +78,7 @@ std::uint64_t hash_bytes(std::span<const std::uint8_t> bytes) {
 }
 std::uint64_t trace_hash(const EventJournal& events) {
     auto result=fnv_offset;
-    Writer w(0,&result);
+    Writer w(std::numeric_limits<std::size_t>::max(),&result);
     for (const auto& e:events) write_fact(w,e);
     return result;
 }
@@ -595,16 +595,16 @@ std::vector<std::uint8_t> WorldRuntime::checkpoint_frame() const { return encode
 
 WorldSnapshot WorldRuntime::snapshot() const {
     auto result=summary();
-    if (state_->journal.has_prefix()) {
-        result.state_hash=fnv_offset;
-        Writer w(0,&result.state_hash);
-        write_checkpoint(w,*state_,false);
-    } else {
-        const auto bytes=checkpoint();
-        result.state_hash=hash_bytes(std::span{bytes}.first(bytes.size()-8));
-    }
+    result.state_hash=fnv_offset;
+    const auto cold=state_->journal.has_prefix();
+    if (!cold && limits_.checkpoint_bytes<8) throw std::length_error("checkpoint byte host budget exceeded");
+    Writer w(cold?std::numeric_limits<std::size_t>::max():limits_.checkpoint_bytes-8,&result.state_hash);
+    write_checkpoint(w,*state_,false);
     result.trace_hash=state_->founding ? state_->m.founding_trace : trace_hash(state_->journal);
     return result;
+}
+std::size_t WorldRuntime::resident_history_bytes() const {
+    return state_->journal.resident_bytes();
 }
 void WorldRuntime::restore(std::span<const std::uint8_t> bytes) {
     auto restored = decode(bytes, limits_); state_.swap(restored);

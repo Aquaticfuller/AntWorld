@@ -41,6 +41,19 @@ std::vector<WorldEvent> HistoryCapture::read(EventId after,std::size_t limit) co
 } // namespace antworld
 
 namespace antworld::detail {
+std::size_t EventJournal::resident_bytes() const {
+    auto bytes=sealed_.capacity()*sizeof(HistoryCapture::Chunk);
+    const auto add=[&](std::size_t capacity) {
+        if (capacity>(std::numeric_limits<std::size_t>::max()-bytes)/sizeof(WorldEvent))
+            throw std::overflow_error("resident history size overflow");
+        bytes+=capacity*sizeof(WorldEvent);
+    };
+    for (const auto& chunk:sealed_) add(chunk.events->capacity());
+    add(active_.capacity());
+    add(cache_.capacity());
+    return bytes;
+}
+
 WorldEvent EventJournal::at(std::size_t index) const {
     if (index>=sealed_end_) return active_.at(index-sealed_end_);
     if (index<cold_size()) {
@@ -68,9 +81,30 @@ std::vector<WorldEvent> EventJournal::read(EventId after,std::size_t limit) cons
         const auto begin=active_.begin()+static_cast<std::ptrdiff_t>(first-sealed_end_);
         return {begin,begin+static_cast<std::ptrdiff_t>(count)};
     }
+    auto cursor=first;
+    const auto end=first+count;
     std::vector<WorldEvent> result(0);
+    if (cursor<cold_size()) {
+        const auto count_from_prefix=std::min(end,cold_size())-cursor;
+        result=prefix_->read(after,count_from_prefix);
+        if (result.size()!=count_from_prefix) throw std::runtime_error("short durable journal page");
+        cursor+=count_from_prefix;
+    }
     result.reserve(count);
-    for (std::size_t i=0;i<count;++i) result.push_back(at(first+i));
+    auto chunk=std::upper_bound(sealed_.begin(),sealed_.end(),cursor,
+        [](std::size_t value,const auto& item) { return value<item.begin; });
+    if (cursor<sealed_end_ && chunk!=sealed_.begin()) --chunk;
+    for (; cursor<end && cursor<sealed_end_ && chunk!=sealed_.end(); ++chunk) {
+        const auto& events=*chunk->events;
+        const auto begin=events.begin()+static_cast<std::ptrdiff_t>(cursor-chunk->begin);
+        const auto take=std::min(end-cursor,events.size()-(cursor-chunk->begin));
+        result.insert(result.end(),begin,begin+static_cast<std::ptrdiff_t>(take));
+        cursor+=take;
+    }
+    if (cursor<end) {
+        const auto begin=active_.begin()+static_cast<std::ptrdiff_t>(cursor-sealed_end_);
+        result.insert(result.end(),begin,begin+static_cast<std::ptrdiff_t>(end-cursor));
+    }
     return result;
 }
 

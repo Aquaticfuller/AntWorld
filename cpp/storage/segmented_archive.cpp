@@ -110,17 +110,18 @@ std::vector<WorldEvent> SqlEventPrefix::read(EventId after,std::size_t limit) co
     std::vector<WorldEvent> out(0);
     if (after.value>=size_ || !limit) return out;
     const auto count=std::min<std::size_t>(limit,size_-static_cast<std::size_t>(after.value));
-    out.reserve(count);
     BlockCursor cursor(db_.get(),world_,after,{size_});
     while (out.size()<count) {
         const auto block=cursor.next();
         require(block.has_value(),"short durable history range");
         if (block->header.last.value==size_) require(block->header.digest==tail_,"durable prefix tail changed");
-        const auto facts=read_block(block->bytes,block->header);
-        for (const auto& fact:facts) {
-            if (fact.id>after) out.push_back(fact);
-            if (out.size()==count) break;
-        }
+        auto facts=read_block(block->bytes,block->header);
+        if (out.empty() && block->header.first.value==after.value+1 && facts.size()==count) return facts;
+        if (out.empty()) out.reserve(count);
+        const auto skip=after.value>=block->header.first.value?after.value-block->header.first.value+1:0;
+        const auto take=std::min(count-out.size(),facts.size()-skip);
+        const auto first=facts.begin()+static_cast<std::ptrdiff_t>(skip);
+        out.insert(out.end(),first,first+static_cast<std::ptrdiff_t>(take));
     }
     return out;
 }

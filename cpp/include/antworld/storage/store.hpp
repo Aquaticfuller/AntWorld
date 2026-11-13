@@ -75,6 +75,9 @@ class Store {
     Store(const Store &) = delete;
     Store &operator=(const Store &) = delete;
     SaveToken save(const WorldRuntime &, std::optional<SaveToken> expected = {}, const SaveOptions & = {});
+    // Publish a complete segmented cut, then retire its hot history on the
+    // sole world thread. Publication failures leave the live history readable.
+    SaveToken save_and_acknowledge(WorldRuntime &, std::optional<SaveToken> expected = {}, const SaveOptions & = {});
     LoadedWorld load(WorldId, std::optional<std::uint64_t> generation = {}) const;
     LoadedWorld recover(WorldId,std::uint64_t base_generation,std::uint64_t target_generation) const;
     void rebuild_history_indexes(WorldId);

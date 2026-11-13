@@ -108,6 +108,14 @@ std::optional<SaveToken> preceding_token(sqlite3* db,WorldId world,std::uint64_t
 }
 } // namespace
 
+SaveToken Store::save_and_acknowledge(WorldRuntime& world,std::optional<SaveToken> expected,const SaveOptions& options) {
+    require(format()==StoreFormat::Segmented,"history acknowledgement requires a segmented store");
+    const auto frame=capture_frame(world);
+    const auto token=save_segmented(frame,expected,options);
+    world.acknowledge_history(frame.history,published_prefix(token));
+    return token;
+}
+
 SaveToken Store::save_segmented(const SaveFrame& frame,std::optional<SaveToken> expected,const SaveOptions& options) {
     if (impl_->requires_recovery) throw RecoveryRequired("reopen and recover after an uncertain database commit");
     const auto& state=frame.state;

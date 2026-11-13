@@ -219,7 +219,7 @@ void synchronize_output(const Path& path) {
 
 void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
 #ifdef ANTWORLD_STORAGE_TIMING
-             , double& state_ms, double& csv_ms, std::uint64_t& writes
+             , double& state_ms, double& csv_ms, double& write_ms, std::uint64_t& writes
 #endif
              , bool buffered = false) {
 #ifdef ANTWORLD_STORAGE_TIMING
@@ -243,9 +243,13 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
     row.add(n.energy_input_nj,n.body_energy_nj,n.dissipated_energy_nj,n.lost_water_ug,
             f.owned_lipid_ug,f.spent_lipid_ug,f.owned_mobile_protein_ug,g.geometry_revision,
             g.ledger.initial_q3,g.ledger.remaining_q3,g.ledger.carried_q3,g.ledger.deposited_q3);
-    row.write(cuts);
 #ifdef ANTWORLD_STORAGE_TIMING
     csv_ms+=ms(phase_start);
+    phase_start=Clock::now();
+#endif
+    row.write(cuts);
+#ifdef ANTWORLD_STORAGE_TIMING
+    write_ms+=ms(phase_start);
     phase_start=Clock::now();
 #endif
     const auto ants=w.ant_states();
@@ -254,9 +258,13 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
     if (buffered) buffered_people.reserve(batch_capacity);
     const auto flush_people=[&] {
         if (buffered_people.empty()) return;
+#ifdef ANTWORLD_STORAGE_TIMING
+        const auto begin=Clock::now();
+#endif
         people.write(buffered_people.data(),static_cast<std::streamsize>(buffered_people.size()));
         buffered_people.clear();
 #ifdef ANTWORLD_STORAGE_TIMING
+        write_ms+=ms(begin);
         ++writes;
 #endif
     };
@@ -282,29 +290,31 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
         row.mass(p.crop); row.mass(a.carried_food); row.add(static_cast<unsigned>(r.has_value()));
         if (r) row.add(r->lipid_ug,r->spent_lipid_ug,r->mobile_protein_ug,r->energy_remainder,r->water_remainder);
         else row.empty(5);
+#ifdef ANTWORLD_STORAGE_TIMING
+        csv_ms+=ms(phase_start);
+#endif
         if (buffered && row.size()<=batch_capacity) {
             if (buffered_people.size()+row.size()>batch_capacity) flush_people();
+#ifdef ANTWORLD_STORAGE_TIMING
+            phase_start=Clock::now();
+#endif
             row.append_to(buffered_people);
+#ifdef ANTWORLD_STORAGE_TIMING
+            csv_ms+=ms(phase_start);
+#endif
         } else {
             flush_people();
+#ifdef ANTWORLD_STORAGE_TIMING
+            phase_start=Clock::now();
+#endif
             row.write(people);
 #ifdef ANTWORLD_STORAGE_TIMING
+            write_ms+=ms(phase_start);
             ++writes;
 #endif
         }
-#ifdef ANTWORLD_STORAGE_TIMING
-        csv_ms+=ms(phase_start);
-#endif
     }
-    if (buffered && !buffered_people.empty()) {
-#ifdef ANTWORLD_STORAGE_TIMING
-        phase_start=Clock::now();
-#endif
-        flush_people();
-#ifdef ANTWORLD_STORAGE_TIMING
-        csv_ms+=ms(phase_start);
-#endif
-    }
+    if (buffered) flush_people();
 }
 
 void write_facts(const WorldRuntime& w, std::ofstream& stream) {
@@ -416,7 +426,7 @@ struct DiagnosticTiming {
     storage::timing::Counts storage{};
     qualification::SqliteIo sqlite{};
     std::optional<qualification::TimedVfs> vfs;
-    double cpu_start{}, initial_encode{}, observation_state{}, observation_csv{}, midpoint_encode{},
+    double cpu_start{}, initial_encode{}, observation_state{}, observation_csv{}, observation_write{}, midpoint_encode{},
         sqlite_open{}, save{}, restore{}, restore_encode{}, sqlite_close{}, output_close{}, final_frame{}, fact_export{};
     std::uint64_t individual_writes{};
 
@@ -431,11 +441,11 @@ struct DiagnosticTiming {
     void publish(const Path& dir) const {
         const auto cpu=thread_cpu_ms()-cpu_start;
         auto stream=output(dir/"phases.csv");
-        stream << "thread_cpu_ms,initial_encode_ms,observation_state_ms,observation_csv_ms,midpoint_encode_ms,sqlite_open_ms,save_ms,restore_ms,"
+        stream << "thread_cpu_ms,initial_encode_ms,observation_state_ms,observation_csv_ms,observation_write_ms,midpoint_encode_ms,sqlite_open_ms,save_ms,restore_ms,"
                   "restore_encode_ms,sqlite_close_ms,output_close_ms,final_frame_ms,fact_export_ms";
         for (const auto name:storage::timing::names) stream << ',' << name << "_ms," << name << "_calls";
         stream << ",vfs_read_ms,vfs_read_calls,vfs_read_bytes,vfs_write_ms,vfs_write_calls,vfs_written_bytes,vfs_sync_ms,vfs_sync_calls,individual_writes\n";
-        stream << cpu << ',' << initial_encode << ',' << observation_state << ',' << observation_csv << ',' << midpoint_encode
+        stream << cpu << ',' << initial_encode << ',' << observation_state << ',' << observation_csv << ',' << observation_write << ',' << midpoint_encode
                << ',' << sqlite_open << ',' << save << ',' << restore << ',' << restore_encode << ',' << sqlite_close
                << ',' << output_close << ',' << final_frame << ',' << fact_export;
         for (const auto& item:storage) stream << ',' << static_cast<double>(item.ns)/1e6 << ',' << item.calls;
@@ -447,15 +457,31 @@ struct DiagnosticTiming {
 #endif
 
 void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile, bool interrupted, bool split,
-         bool buffered) {
+         bool buffered, bool history_measurement, bool bounded_history) {
     const auto start = Clock::now();
 #ifdef ANTWORLD_STORAGE_TIMING
-    DiagnosticTiming diagnostic(profile);
+    DiagnosticTiming diagnostic(profile || history_measurement);
 #endif
     auto scene = setup(c,assay_limits(c));
     auto& w = scene.world;
     const auto setup_ms = ms(start);
     const auto id = w.summary().world;
+    std::optional<storage::Store> history_store;
+    std::optional<storage::SaveToken> history_token;
+    std::ofstream history_samples;
+    std::ofstream capture_samples;
+#ifdef ANTWORLD_STORAGE_TIMING
+    if (profile || history_measurement) {
+        capture_samples=output(dir/"capture_phases.csv");
+        capture_samples << "time_ms,cursor,foreground_wall_ms,thread_cpu_ms,state_ms,csv_ms,write_ms,space_ms\n";
+    }
+#endif
+    if (history_measurement) {
+        history_samples=output(dir/"history_cost.csv");
+        history_samples << "time_ms,facts,hot_bytes_before,hot_bytes_after,process_rss_before,process_rss_after,"
+                           "peak_rss_after,checkpoint_ms,durable_save_ms,validated_restore_ms,database_bytes\n";
+        if (bounded_history) history_store.emplace(dir/"periodic.sqlite",assay_limits(c),storage::StoreFormat::Segmented);
+    }
     auto inputs = output(dir/"interventions.csv");
     inputs << "issued_ms,execute_ms,scheduled_id,operation,x_m,y_m,z_m\n";
     auto cuts = output(dir/"cuts.csv");
@@ -497,15 +523,53 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
         const auto s = w.summary();
         peak_queue = std::max(peak_queue, s.pending_events);
         const auto observe_start = Clock::now();
+#ifdef ANTWORLD_STORAGE_TIMING
+        const auto read_before=diagnostic.observation_state, csv_before=diagnostic.observation_csv;
+        const auto write_before=diagnostic.observation_write;
+        const auto thread_before=capture_samples.is_open()?thread_cpu_ms():0.;
+#endif
         if (observation) observe(w,cuts,people
 #ifdef ANTWORLD_STORAGE_TIMING
-                                , diagnostic.observation_state, diagnostic.observation_csv, diagnostic.individual_writes
+                                , diagnostic.observation_state, diagnostic.observation_csv, diagnostic.observation_write,
+                                  diagnostic.individual_writes
 #endif
                                 ,buffered);
+#ifdef ANTWORLD_STORAGE_TIMING
+        const auto space_begin=Clock::now();
+#endif
         if (space.is_open()) observe_space(scene, space);
         const auto cut_time = ms(observe_start);
+#ifdef ANTWORLD_STORAGE_TIMING
+        if (capture_samples.is_open()) capture_samples << at << ',' << s.committed_events << ',' << cut_time << ','
+            << thread_cpu_ms()-thread_before << ',' << diagnostic.observation_state-read_before << ','
+            << diagnostic.observation_csv-csv_before << ',' << diagnostic.observation_write-write_before << ','
+            << ms(space_begin) << '\n';
+#endif
         capture += cut_time;
         timings << at << ',' << elapsed << ',' << cut_time << ',' << s.committed_events << ',' << s.pending_events << '\n';
+        if (history_measurement) {
+            const auto hot_before=w.resident_history_bytes();
+            const auto rss_before=performance::memory().first;
+            double encode_ms{}, save_ms{}, load_ms{};
+            if (history_store && (at%(15*day_ms)==0 || at==c.horizon.milliseconds)) {
+                const auto save_started=Clock::now();
+                history_token=history_store->save_and_acknowledge(w,history_token);
+                save_ms=ms(save_started);
+                if (at==c.horizon.milliseconds/2 || at==c.horizon.milliseconds) {
+                    const auto load_started=Clock::now();
+                    auto loaded=history_store->load(id);
+                    load_ms=ms(load_started);
+                    const auto encode_started=Clock::now();
+                    require(loaded.token==history_token && loaded.world.checkpoint_frame()==w.checkpoint_frame() &&
+                            loaded.world.snapshot().state_hash==w.snapshot().state_hash,"bounded publication differs on restore");
+                    encode_ms=ms(encode_started);
+                }
+            }
+            const auto [rss_after,peak_after]=performance::memory();
+            history_samples << at << ',' << s.committed_events << ',' << hot_before << ',' << w.resident_history_bytes()
+                << ',' << rss_before << ',' << rss_after << ',' << peak_after << ',' << encode_ms << ',' << save_ms << ','
+                << load_ms << ',' << (history_store?history_store->database_bytes():0) << '\n';
+        }
         if (durable && at==c.horizon.milliseconds/2) {
             const auto limits = assay_limits(c);
             const auto save_start = Clock::now();
@@ -582,7 +646,9 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
     diagnostic.fact_export=ms(export_start);
 #endif
     const auto [rss, peak] = performance::memory();
-    if (profile) {
+    if (history_samples.is_open()) history_samples.close();
+    if (capture_samples.is_open()) capture_samples.close();
+    if (profile || history_measurement) {
         const auto synchronize=Clock::now();
         for (const auto* file : {"initial.chk","final.frame","facts.bin"}) synchronize_output(dir/file);
         const auto common_ms=ms(synchronize);
@@ -616,9 +682,11 @@ int main(int argc, char** argv) {
     try {
         const bool buffered=mode=="profile-buffered";
         const bool profile=mode=="profile-observed" || mode=="profile-unobserved" || buffered;
+        const bool bounded_history=mode=="history-bounded";
+        const bool history_measurement=bounded_history || mode=="history-resident";
         const bool interrupted=mode=="interrupt-save", resume=mode=="resume-save";
         const bool split=mode=="durable-split";
-        require((profile || mode=="observed" || mode=="unobserved" || mode=="durable" || interrupted || resume || split) &&
+        require((profile || history_measurement || mode=="observed" || mode=="unobserved" || mode=="durable" || interrupted || resume || split) &&
                 ((argc==12)==resume),"unknown F1 observation mode or recovery path");
         if (argc>=7) {
             const auto mask=integer(argv[6]);
@@ -662,7 +730,8 @@ int main(int argc, char** argv) {
                     "qualification requires the version 7 model");
         if (resume) resume_interrupted(c,argv[11],argv[2]);
         else run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved" && !split,
-                 mode=="durable" || profile || interrupted || split, profile, interrupted, split, buffered);
+                 mode=="durable" || profile || interrupted || split, profile, interrupted, split, buffered,
+                 history_measurement,bounded_history);
         return 0;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

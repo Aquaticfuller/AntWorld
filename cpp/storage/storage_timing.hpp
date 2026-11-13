@@ -7,11 +7,11 @@
 namespace antworld::storage::timing {
 enum class Phase : unsigned {
     CaptureFrame, SealBlocks, DeriveIndexes, WriteIndexes, Commit,
-    VerifyBlocks, RestoreFrame, CheckIndexes, Count
+    VerifyBlocks, RestoreFrame, CheckIndexes, DecodeBlock, Count
 };
 inline constexpr std::array<std::string_view, static_cast<unsigned>(Phase::Count)> names{
     "capture_frame", "seal_blocks", "derive_indexes", "write_indexes", "commit",
-    "verify_blocks", "restore_frame", "check_indexes"};
+    "verify_blocks", "restore_frame", "check_indexes", "decode_block"};
 struct Counter { std::uint64_t calls{}, ns{}; };
 using Counts = std::array<Counter, names.size()>;
 

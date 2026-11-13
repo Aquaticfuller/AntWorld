@@ -18,10 +18,13 @@ struct Writer {
     std::vector<std::uint8_t> bytes;
     std::size_t limit;
     std::uint64_t* streamed_hash;
+    std::size_t streamed_size{};
     explicit Writer(std::size_t byte_limit = std::numeric_limits<std::size_t>::max(),std::uint64_t* digest=nullptr)
         :bytes(0),limit(byte_limit),streamed_hash(digest) {}
     void put(std::uint64_t v, unsigned width = 8) {
         if (streamed_hash) {
+            if (width > limit-streamed_size) throw std::length_error("checkpoint byte host budget exceeded");
+            streamed_size+=width;
             for (unsigned i=0;i<width;++i) {
                 *streamed_hash=hash_byte(*streamed_hash,static_cast<std::uint8_t>(v&255));
                 v>>=8;

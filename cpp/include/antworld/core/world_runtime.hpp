@@ -124,6 +124,7 @@ public:
     void acknowledge_history(const HistoryCapture&,std::shared_ptr<const EventPrefix>);
     void limit_unpublished_history(std::size_t count);
     [[nodiscard]] std::size_t unpublished_history() const noexcept;
+    [[nodiscard]] std::size_t resident_history_bytes() const;
 
 private:
     struct State;
