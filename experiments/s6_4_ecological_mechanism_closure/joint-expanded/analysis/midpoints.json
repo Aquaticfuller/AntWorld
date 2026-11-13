@@ -1,0 +1,50 @@
+[
+  {
+    "anchor": "196a0b2c490e8d1dc0cf381f9d13d534007d8d32928758a8a09895aaac8a1ea4",
+    "canonical_bytes": 79461987,
+    "canonical_sha256": "399213c2247bc4660b0385927ca72dec8562bedf87a73745c1e8e4c290f88ea6",
+    "case": "borisovka-1-shaft-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "796154f4bcbc0021515d6e7aa8d39f20078d251ff9b56d9343233b170ad96999",
+    "cursor": 441054,
+    "revision": 591176,
+    "tail": "d9441336343043add9f6fb4678eb32dc6d83637125ea2587453c492afd79f768",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "31becc7a8b41b901bb870eeaeb21e745c93506b52c2946a6f9540d5f758c4932",
+    "canonical_bytes": 79755827,
+    "canonical_sha256": "05ff69432ca0d9dc760f767d377ddac0057776117ea10cd224b26859dfe1324a",
+    "case": "borisovka-1-dogleg-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "22247ea37a7bdc6506bdb223a1dcf15673a5671ffa2ebeeebee2c04c1d986a9b",
+    "cursor": 442643,
+    "revision": 593220,
+    "tail": "548b55ab774f2ce08fac83324bd81d07db3ec51115109737d11568f5b840abd2",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "8065c66eb4168d461f3597195f5aafebf566e3cdde04d1d8d2b76f5ad465bd0a",
+    "canonical_bytes": 16520367,
+    "canonical_sha256": "f32822db465f5d8b90799863b346b24e9160ffda09a82f8716123a97d80d91c2",
+    "case": "st_petersburg-1-shaft-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "327c6959220adfd8631d47f881a84760a01b7a3c5e90065280246724d8b4ea9d",
+    "cursor": 83751,
+    "revision": 104900,
+    "tail": "43ebb12c46d23c5c1df75670e9b2878a4ba02d97ab576d2817b36df77a05f7a4",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  },
+  {
+    "anchor": "2f54910402c920bba221930702bf1ffd84568b258d604ecc7bb57e3ad16ab9bf",
+    "canonical_bytes": 17409369,
+    "canonical_sha256": "cec79949ae2513883894f37d47fb44a2b6de5d0c6b63d739d242eb2ab3716322",
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "8694e8f64dbc15b33d702f70e4e833f040e30f2e8f160290cce23066f6ce61ba",
+    "cursor": 88236,
+    "revision": 109714,
+    "tail": "4839267612ec1440ed2e24df23980ddf7bb481e469e23d9d6a8e68de0c4837bd",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  }
+]

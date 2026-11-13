@@ -1,0 +1,57 @@
+{
+  "source": "b8f95014157856619032ae44bf1492bba3e16459",
+  "cpp_tree": "5ea1614e569131b97b96df12c085a592ac0aeef2",
+  "compiler": "LLVM-MinGW Clang 23.1.5, Windows x86_64 UCRT",
+  "local_ctest": {
+    "ctest-debug.log": {
+      "configuration": "debug",
+      "exit_code": 0,
+      "sha256": "7b81d9f97d43d254f928f8c63b9c630c79bcc8ca7b635896174f583d33bf659d",
+      "wall": "Total Test time (real) = 366.26 sec"
+    },
+    "ctest-release-final.log": {
+      "configuration": "release",
+      "exit_code": 0,
+      "sha256": "00d827d4347e8c3d72f0e9f59c283ba4b55bbc6bf32403b8faf07cd0b2d77ada",
+      "wall": "Total Test time (real) = 111.25 sec"
+    },
+    "ctest-sanitizer-final.log": {
+      "configuration": "sanitizer",
+      "exit_code": 0,
+      "sha256": "7534675a8ceaf7cc116c3593f6c077b4b3f394fa96548c828ee391fc9f3b8468",
+      "wall": "Total Test time (real) = 721.43 sec"
+    }
+  },
+  "core_ci": {
+    "url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910",
+    "run": 135,
+    "status": "success",
+    "jobs": [
+      {
+        "name": "build (ubuntu-24.04, Debug)",
+        "conclusion": "success",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910/job/131879790140"
+      },
+      {
+        "name": "build (ubuntu-24.04, Release)",
+        "conclusion": "success",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910/job/131879790171"
+      },
+      {
+        "name": "build (windows-2022, Debug)",
+        "conclusion": "success",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910/job/131879790401"
+      },
+      {
+        "name": "build (windows-2022, Release)",
+        "conclusion": "success",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910/job/131879790335"
+      },
+      {
+        "name": "sanitizers",
+        "conclusion": "success",
+        "html_url": "https://github.com/Aquaticfuller/AntWorld/actions/runs/43423731910/job/131879789918"
+      }
+    ]
+  }
+}

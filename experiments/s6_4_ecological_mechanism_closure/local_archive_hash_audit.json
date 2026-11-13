@@ -1,0 +1,22 @@
+{
+  "care": {
+    "manifest_sha256": "4fcc8373feb94140fa1d68f7d6ed52397db350519f1b762b1aa2a8de9a999f07",
+    "verified_archives": 72
+  },
+  "joint-expanded": {
+    "manifest_sha256": "1e7e1bd51e1634f89551507e29b88cb8d85a88c7f21ed6f8c3ef739250ce9350",
+    "verified_archives": 224
+  },
+  "joint-original": {
+    "manifest_sha256": "a4c27245b7a212c4545e902f09d3742c09658a7a4d6348cd2e5cd200cf7f1e31",
+    "verified_archives": 224
+  },
+  "joint-repaired": {
+    "manifest_sha256": "a561557a53af55df69fca87947b245cd7247be46c07942c1e7bcf49a163d8ecf",
+    "verified_archives": 224
+  },
+  "scout": {
+    "manifest_sha256": "50b46d37e1a61a195ef1216cede1af646f2c8cda704f3b0084443f5541fb3eef",
+    "verified_archives": 85
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "artifacts": {
+    "case.json": {
+      "bytes": 1383,
+      "sha256": "84624f99f8394d6b5869c5ad9dadcbb4faa22541c1805fcd97995c63dabb280f"
+    },
+    "cuts.csv": {
+      "bytes": 17491,
+      "sha256": "9541cc266dc69a3922595b78d138d7ed918de8c09ac24f16ae8bd777bf173816"
+    },
+    "facts.bin": {
+      "bytes": 12333398,
+      "sha256": "de845bcc4455e012b46bffe0247eb7651a1230f625992bde1045af94b459eefb"
+    },
+    "final.frame": {
+      "bytes": 48272,
+      "sha256": "77155eca96e8ccb968ae6372333004b32928ee45cadb9f37fdfdf736926602d1"
+    },
+    "individuals.csv": {
+      "bytes": 436639,
+      "sha256": "8472092929a4700fdecb1b4dde49f9dcf14c2676cd894a673f0724451f751736"
+    },
+    "initial.chk": {
+      "bytes": 15133,
+      "sha256": "9d4426c3e6f0f87509f933b69ece51cee4b55a480cd3bc23e983efd9015da0f0"
+    },
+    "interventions.csv": {
+      "bytes": 56,
+      "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+    },
+    "midpoint.sqlite": {
+      "bytes": 147456,
+      "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+    },
+    "midpoint.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "ff22de4a71330eac5306798f39c0d5e686fcb63636c1437d7d4794ae0353ad4c"
+    },
+    "midpoint.sqlite-wal": {
+      "bytes": 1421432,
+      "sha256": "d1fc16e679c651d06f414a0b46e798fda5334265db3e1ff1091134b801fe159d"
+    },
+    "parameters.txt": {
+      "bytes": 759,
+      "sha256": "baf0b9b9cc3603bad6eec93f578e902ae8ae65fccc246bd71cc0018441d6f7d2"
+    },
+    "phases.csv": {
+      "bytes": 1044,
+      "sha256": "66781644fcb7a4e7f6bc7f15ab2ad52d499d7de5ccbdbd2a58ce9c0b4c8823af"
+    },
+    "profile.csv": {
+      "bytes": 102,
+      "sha256": "79328feb875dea33bf3f198500510d818dcc455acc61cad8baf9b47388f1286d"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "summary.csv": {
+      "bytes": 471,
+      "sha256": "fbee20add3deb3039b090c368f23da3a11009f519bbc57f67bbb610b36ba8e17"
+    },
+    "timings.csv": {
+      "bytes": 4867,
+      "sha256": "225d2aa81bca2ff453d6416a50e772385a35e8d7c66c7a5a36d01194e2c965d4"
+    }
+  },
+  "case": "st_petersburg-early-depot-8-1",
+  "elapsed_ms": 1745.9511999913957,
+  "exit_code": 0,
+  "identity": 1885,
+  "mode": "profile-buffered",
+  "status": "COMPLETE",
+  "summary": {
+    "advance_ms": "553.22299999999984",
+    "checkpoint_ms": "70.082599999999999",
+    "cut_ms": "11.911900000000001",
+    "events": "63206",
+    "facts_bytes": "12333398",
+    "frame_bytes": "48272",
+    "midpoint_restore_ms": "596.9579",
+    "midpoint_save_ms": "198.20099999999999",
+    "peak_rss_bytes": "43524096",
+    "peak_sampled_queue": "48",
+    "queen": "2",
+    "reserve_record_bytes": "40",
+    "rng": "1",
+    "rss_bytes": "16580608",
+    "seed": "1",
+    "setup_ms": "0.40820000000000001",
+    "state_hash": "11135244517758727780",
+    "time_ms": "7776000000",
+    "trace_hash": "13726523313432159091",
+    "world": "00000000-0000-0286-0000-00000000075d"
+  }
+}

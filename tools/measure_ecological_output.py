@@ -39,7 +39,8 @@ def main():
                 with TemporaryDirectory(dir=output) as temp:
                     work = Path(temp)/"world"
                     receipt = run_one(exe,work,identity,case,"profile-"+mode,options)
-                    for member in ("case.json","parameters.txt","program.log","timings.csv","phases.csv","receipt.json","summary.csv"):
+                    for member in ("case.json","parameters.txt","program.log","timings.csv","phases.csv","profile.csv",
+                                   "receipt.json","summary.csv"):
                         if (work/member).exists():
                             shutil.copyfile(work/member,retained/member)
                     if receipt["status"]!="COMPLETE":
@@ -47,6 +48,8 @@ def main():
                     verified[mode] = [receipt["artifacts"][k] for k in AUTHORITY]
                     with (work/"phases.csv").open(newline="",encoding="utf-8") as phases:
                         timing = next(csv.DictReader(phases))
+                    with (work/"profile.csv").open(newline="",encoding="utf-8") as profile:
+                        timing.update(next(csv.DictReader(profile)))
                     with (work/"timings.csv").open(newline="",encoding="utf-8") as samples:
                         maximum = max(float(row["cut_ms"]) for row in csv.DictReader(samples))
                     rows.append(dict(case=name,pair=pair+1,slot=slot,mode=mode,wall_ms=receipt["elapsed_ms"],

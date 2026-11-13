@@ -1,0 +1,213 @@
+"""Verify the prespecified published witnesses and their reported endpoints."""
+
+import argparse
+from collections import Counter
+import csv
+import gzip
+import json
+import math
+from pathlib import Path
+import subprocess
+from tempfile import TemporaryDirectory
+
+from analyze_s6_4_wp6b import check
+from founding_qualification_witnesses import COMMAND
+from run_ecological_closure import roster
+from run_s6_4_wp6b import ROOT, run_one, sha, write_json
+from verify_ecological_closure import fixed_witnesses, frozen_names, run
+from verify_final_core_integration import check_identity
+
+
+EVIDENCE = ROOT/"experiments/s6_4_ecological_mechanism_closure"
+AUTHORITY = ("initial.chk", "final.frame", "facts.bin")
+
+
+def csv_rows(path):
+    read = gzip.open if path.suffix == ".gz" else open
+    with read(path,"rt",encoding="utf-8",newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def manifest(path):
+    return [json.loads(line) for line in (path/"archives.jsonl").read_bytes().splitlines()]
+
+
+def same(expected, actual):
+    if expected == actual:
+        return True
+    try:
+        return math.isclose(float(expected),float(actual),rel_tol=1e-13,abs_tol=1e-13)
+    except (ValueError,TypeError):
+        return False
+
+
+def compare(path, rebuilt):
+    for filename, identity in (("worlds.csv",("case",)),("larvae.csv",("case","ant")),
+                               ("receivers.csv",("case","actor")),("stages.csv",("case","ant","stage"))):
+        file = rebuilt/filename
+        if not file.exists():
+            continue
+        published = path/"analysis"/filename
+        expected = csv_rows(published if published.exists() else published.with_suffix(".csv.gz"))
+        expected = {tuple(row[k] for k in identity):row for row in expected}
+        for row in csv_rows(file):
+            prior = expected[tuple(row[k] for k in identity)]
+            check(all(same(prior[k],value) for k,value in row.items()),f"recomputed {filename} differs")
+    for filename, identity in (("failures.json","case"),("midpoints.json","case")):
+        expected = {r[identity]:r for r in json.loads((path/"analysis"/filename).read_bytes())}
+        for row in json.loads((rebuilt/filename).read_bytes()):
+            check(row == expected[row[identity]],f"recomputed {filename} differs")
+
+
+def verify_matrix(path, panel):
+    attempts = manifest(path)
+    names = frozen_names(panel)
+    check([row["case"] for row in attempts] == names,"archived matrix differs from frozen roster")
+    by_case = {row["case"]:row["receipt"] for row in attempts}
+    worlds = csv_rows(path/"analysis/worlds.csv")
+    failures = {r["case"] for r in json.loads((path/"analysis/failures.json").read_bytes())
+                if r["status"]!="COMPARISON_NOT_AVAILABLE"}
+    check(failures=={row["case"] for row in attempts if row["receipt"]["status"]!="COMPLETE"},
+          "a recorded failure is missing from the analysis")
+    if panel == "scout":
+        observed = {name for name in names if name.endswith("-observed")}
+        check({row["case"] for row in worlds} == observed and all(r["status"]=="COMPLETE" for r in by_case.values()),
+              "incomplete scout control matrix")
+        counts = Counter(r["arm"] for r in worlds if int(r["complete"])>0)
+        check(counts["scout"]>=8 and not counts.keys()-{"scout"},"SC-06 delivery decision differs")
+        check(all(not int(r["activated"]) for r in worlds if r["arm"] in {"sham","disabled","naive"}) and
+              all(not int(r["collections"]) for r in worlds if r["arm"] == "blocked"),"adverse scout arm responded")
+    else:
+        expected = {name for name in names if by_case[name]["mode"]=="observed" and by_case[name]["status"]=="COMPLETE"}
+        check({row["case"] for row in worlds} == expected and len(worlds)==len(expected),"incomplete biological denominator")
+        check(all(int(by_case[r["case"]]["summary"]["events"])==int(r["source_facts"]) for r in worlds),
+              "reported case has a different fact count")
+        check(all(not int(r.get("collection") or 0) for r in worlds if r["source"] in {"blocked","absent"}),
+              "collection at a blocked or absent food source")
+        if panel == "care":
+            check(all(not int(r["actual_rations"]) for r in worlds if r["treatment"]=="careoff"),
+                  "care-off paid a maternal ration")
+        else:
+            check(all(not int(r["worker_protein_assimilated_lower_bound_ug"]) for r in worlds if r["source"]=="no-protein"),
+                  "protein entered the protein-free arm")
+    return attempts, worlds
+
+
+def joint_cells(worlds):
+    groups = Counter((r["population"],r["layout"],int(r["reserve"])) for r in worlds
+                     if r["treatment"]=="joint" and r["source"]=="balanced" and int(r["joint"]))
+    return [{"population":population,"layout":layout,"reserve_ug":reserve,
+             "passed":groups[population,layout,reserve],"denominator":6}
+            for population in ("borisovka","st_petersburg")
+            for layout in ("shaft","dogleg") for reserve in (5500,5250)]
+
+
+def verify_timing(path):
+    timings = csv_rows(path/"measurements.csv")
+    expected = {(r["case"],int(r["pair"]),r["mode"]):r for r in timings}
+    check(len(timings)==len(expected)==18,"fixed timing sample was omitted")
+    for case in {r["case"] for r in timings}:
+        for pair in range(1,4):
+            authorities = []
+            for mode in ("observed","buffered"):
+                row = expected[case,pair,mode]
+                saved = path/f"{case}-{pair}-{mode}"
+                receipt = json.loads((saved/"receipt.json").read_bytes())
+                check(receipt["status"]=="COMPLETE" and float(row["wall_ms"])==receipt["elapsed_ms"] and
+                      int(row["slot"])==int((mode=="buffered")!=(pair==2)), "diagnostic order or elapsed identity changed")
+                required = ["case.json","parameters.txt","program.log","phases.csv","timings.csv","summary.csv"]
+                if "total_ms" in row:
+                    required.append("profile.csv")
+                for name in required:
+                    check(sha(saved/name)==receipt["artifacts"][name]["sha256"],f"changed diagnostic sample: {name}")
+                check(float(row["max_cut_ms"])==max(float(r["cut_ms"]) for r in csv_rows(saved/"timings.csv")) and
+                      all(row[k]==v for k,v in csv_rows(saved/"phases.csv")[0].items()),"reported diagnostic differs")
+                if "total_ms" in row:
+                    check(all(row[k]==v for k,v in csv_rows(saved/"profile.csv")[0].items()),"changed output sync timing")
+                authorities.append([receipt["artifacts"][k] for k in (*AUTHORITY,"cuts.csv","individuals.csv")])
+            check(authorities[0]==authorities[1],"row writer changed authority or observations")
+
+
+def exe_path(path):
+    if not path.is_file():
+        path = path.parent/"Release"/(path.stem+".exe")
+    return path.resolve(strict=True)
+
+
+def replay(output, joint_executable, scout_executable):
+    binary = exe_path(joint_executable)
+    for panel,folder,observed in (
+        ("joint","joint-repaired","borisovka-1-shaft-joint-balanced-5500"),
+        ("care","care","borisovka-1-shaft-water-absent-5500"),
+        ("care","care","borisovka-1-shaft-wallwater-absent-5500"),
+    ):
+        identity,case,_ = next((i,c,m) for i,c,m in roster(panel) if c["case"]==observed)
+        original = next(r["receipt"] for r in manifest(EVIDENCE/folder) if r["case"]==observed)
+        if panel=="joint":
+            case = case | {"arm":case["arm"].replace("ecology-","ecology4-",1)}
+        durable = run_one(binary,output/observed,identity,case,"durable-split",COMMAND)
+        check(durable["status"]=="COMPLETE","fresh ecological recovery failed")
+        check_identity(original,durable,observed)
+    scout = output/"fresh-scout"
+    subprocess.run([exe_path(scout_executable),"1","scout",scout,"durable"],check=True)
+    reference = next(r["receipt"] for r in manifest(EVIDENCE/"scout") if r["case"]=="scout-1-observed")
+    check(all(sha(scout/k)==reference["artifacts"][k]["sha256"] for k in AUTHORITY),
+          "fresh scout recovery changed canonical authority")
+
+
+def verify(output, joint_executable, scout_executable):
+    output.mkdir(parents=True)
+    summary = {}
+    matrix = csv_rows(ROOT/"research/s6_4_ecological_mechanism_closure/BR_READINESS_MATRIX.csv")
+    contexts = {r["SourceContextId"] for r in csv_rows(ROOT/"research/s6_4_preflight/UNIFIED_SOURCE_CONTEXT_REGISTER.csv")}
+    check([r["BR"] for r in matrix]==[f"BR-{i:02d}" for i in range(1,10)] and
+          all(r["ScientificStatus"]=="BIOLOGICAL_BLOCKED" and r["FixtureGrade"]=="D" and
+              r["DirectGrade"] in {"A","B"} and r["HypothesisGrade"]=="C" and
+              set(r["SourceContexts"].split(";")) <= contexts and
+              r["Readiness"] in {"ENGINEERING_ONLY","NOT_READY"} for r in matrix),"biological gate changed")
+    panels = (("scout","scout"),("care","care"),("joint-original","joint"),
+              ("joint-expanded","joint"),("joint-repaired","joint"))
+    archive_audit = json.loads((EVIDENCE/"local_archive_hash_audit.json").read_bytes())
+    tests = json.loads((EVIDENCE/"tests/receipt.json").read_bytes())
+    for name,entry in tests["local_ctest"].items():
+        log = EVIDENCE/"tests"/name
+        check(sha(log)==entry["sha256"] and entry["exit_code"]==0 and
+              "100% tests passed, 0 tests failed out of 286" in log.read_text(encoding="utf-8"),
+              "local CTest receipt does not match the raw log")
+    check(len(tests["local_ctest"])==3 and tests["core_ci"]["status"]=="success" and
+          len(tests["core_ci"]["jobs"])==5 and all(r["conclusion"]=="success" for r in tests["core_ci"]["jobs"]),
+          "test receipt has an incomplete matrix")
+    with TemporaryDirectory(dir=output) as temp:
+        scratch = Path(temp)
+        for name,panel in panels:
+            path = EVIDENCE/name
+            attempts,worlds = verify_matrix(path,panel)
+            check(archive_audit[name]=={"manifest_sha256":sha(path/"archives.jsonl"),"verified_archives":len(attempts)},
+                  "local digest receipt differs from the complete published manifest")
+            failures = [r["case"] for r in attempts if r["receipt"]["status"]!="COMPLETE"]
+            selection = fixed_witnesses(panel) if name in {"scout","care","joint-repaired"} else set(failures[:1]) if name=="joint-original" else set()
+            summary[name] = dict(attempts=len(attempts),observed=len(worlds),failures=len(failures),public_witnesses=len(selection))
+            if panel == "joint":
+                cells = joint_cells(worlds)
+                summary[name].update(joint_cells=cells,joint_gate="PASS" if all(r["passed"]>=4 for r in cells) else "FAIL")
+            if selection:
+                run(panel,path,scratch/name,True,selection)
+                compare(path,scratch/name)
+        check(summary["joint-original"]["failures"]==17 and summary["joint-expanded"]["joint_gate"]=="FAIL",
+              "preserved engineering failures changed")
+        verify_timing(EVIDENCE/"timing")
+        if joint_executable and scout_executable:
+            replay(scratch,joint_executable,scout_executable)
+    write_json(output/"public_verification.json",summary | {"fresh_replay":bool(joint_executable),"timing_processes":18})
+    print(summary)
+
+
+if __name__=="__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("output",type=Path)
+    parser.add_argument("--joint-binary",type=Path)
+    parser.add_argument("--scout-binary",type=Path)
+    args=parser.parse_args()
+    if bool(args.joint_binary)!=bool(args.scout_binary):
+        parser.error("provide both replay executables")
+    verify(args.output,args.joint_binary,args.scout_binary)

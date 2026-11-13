@@ -207,6 +207,12 @@ jobs:
           python tools/verify_final_core_integration.py --shaft experiments/s6_4_final_core_readiness/shaft build/final-shaft --witness-only
           python tools/verify_final_core_integration.py --clock experiments/s6_4_final_core_readiness/clock build/final-clock --witness-only --replay build/ci/antworld_s6_4_wp6b
           python tools/verify_final_core_evidence.py build/final-evidence
+      - name: Audit ecological closure facts and replay new recovery witnesses
+        if: matrix.configuration == 'Release'
+        run: >-
+          python tools/verify_ecological_publication.py build/ecological-closure
+          --joint-binary build/ci/antworld_s6_4_wp6b
+          --scout-binary build/ci/antworld_ecological_recruitment
 
   sanitizers:
     runs-on: ubuntu-24.04

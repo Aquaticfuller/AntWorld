@@ -1,0 +1,13 @@
+{
+  "binary_sha256": "103e15e659811702ecb9d8623a6e68e6774f5b656fd59c3b783351f9dc068b33",
+  "complete_pairs": 9,
+  "equal_byte_outputs": [
+    "initial.chk",
+    "final.frame",
+    "facts.bin",
+    "cuts.csv",
+    "individuals.csv"
+  ],
+  "scope": "uncontrolled diagnostic; no formal admission",
+  "source": "634e66d37247ecc70bb54a97d9bb8552cc3f27dd"
+}

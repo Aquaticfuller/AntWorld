@@ -1,0 +1,87 @@
+[
+  {
+    "case": "borisovka-42-shaft-clock-balanced-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-shaft-joint-balanced-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-shaft-joint-balanced-5250",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-dogleg-joint-balanced-5250",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-shaft-joint-balanced-5500-unobserved",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-shaft-joint-balanced-5500-durable-split",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-unobserved",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-shaft-joint-limited-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-1-dogleg-joint-limited-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-shaft-joint-balanced-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-shaft-joint-balanced-5250",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-dogleg-joint-balanced-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-dogleg-joint-balanced-5250",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-shaft-joint-limited-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  },
+  {
+    "case": "st_petersburg-43-dogleg-joint-limited-5500",
+    "message": "committed event host budget exceeded\r\n",
+    "status": "ENGINEERING_FAILURE"
+  }
+]
