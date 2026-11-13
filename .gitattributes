@@ -23,3 +23,5 @@ experiments/s6_4_integrated_founding/performance/**/console.log whitespace=-blan
 experiments/s6_4_founding_qualification/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_founding_qualification/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 experiments/s6_4_founding_qualification/performance/**/console.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+experiments/s6_4_final_core_readiness/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/s6_4_final_core_readiness/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

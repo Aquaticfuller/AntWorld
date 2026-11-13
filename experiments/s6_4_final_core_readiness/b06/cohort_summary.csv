@@ -1,0 +1,7 @@
+matrix,population,worlds,first_census_larvae,any_first_cohort_eclosion,all_first_cohort_eclosed,first_cohort_larval_median_days,first_cohort_egg_to_worker_median_days,first_cohort_pupated,first_cohort_eclosed,first_cohort_larval_energy_deaths,first_cohort_larval_water_deaths,first_cohort_larval_censored,first_cohort_no_paid_ration,first_cohort_no_protein_uptake,first_cohort_eligible_but_wait_cut,first_cohort_worker_deaths,exact_within_all_reference_ranges,at_least_within_all_reference_ranges,exact_census_pupa_worlds,exact_census_worker_worlds,at_least_census_pupa_worlds,at_least_census_worker_worlds,exact_census_pupa_other_members,exact_census_worker_other_members,at_least_census_pupa_other_members,at_least_census_worker_other_members
+closed,borisovka,192,688,80,0,10.2,41.4,80,80,272,336,0,600,600,32,80,0,0,27,0,27,0,70,0,70,0
+closed,st_petersburg,192,768,96,0,10.6,39.9,96,96,168,504,0,608,608,0,96,0,0,16,0,16,0,48,0,48,0
+factorial,borisovka,24,86,10,0,10.2,41.4,10,10,34,42,0,75,75,4,0,0,0,19,17,20,20,70,57,75,69
+factorial,st_petersburg,24,96,12,0,10.6,39.9,12,12,21,63,0,76,76,0,0,0,0,23,21,24,24,90,72,97,86
+nominal,borisovka,6,24,3,0,10.2,41.4,3,3,21,0,0,21,21,0,0,0,0,6,6,6,6,24,21,24,21
+nominal,st_petersburg,6,24,3,0,10.6,39.9,3,3,19,2,0,19,19,0,0,0,0,6,6,6,6,24,21,24,21

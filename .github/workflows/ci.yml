@@ -200,6 +200,13 @@ jobs:
       - name: Verify founding evidence and recompute native and protected timings (Windows)
         if: runner.os == 'Windows' && matrix.configuration == 'Release'
         run: python tools/verify_founding_qualification.py experiments/s6_4_founding_qualification --native
+      - name: Rebuild final joint ecology evidence and replay the fast-shaft checkpoint
+        if: matrix.configuration == 'Release'
+        run: |
+          python tools/verify_final_core_integration.py experiments/s6_4_final_core_readiness/matrix build/final-matrix --witness-only
+          python tools/verify_final_core_integration.py --shaft experiments/s6_4_final_core_readiness/shaft build/final-shaft --witness-only
+          python tools/verify_final_core_integration.py --clock experiments/s6_4_final_core_readiness/clock build/final-clock --witness-only --replay build/ci/antworld_s6_4_wp6b
+          python tools/verify_final_core_evidence.py build/final-evidence
 
   sanitizers:
     runs-on: ubuntu-24.04

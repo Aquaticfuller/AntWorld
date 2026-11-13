@@ -1,0 +1,470 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "8000000",
+    "15"
+  ],
+  "binary_sha256": "3f285b0010533f42366442fe991ce6fafcc60bbfdb40a46eb8c7ff26f73a0b6c",
+  "collector_sha256": "91373994ba5b1ecc7ded1401762c059c7b0465ebd8f0d2ed9f046462589ede5c",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "3572ea0135bfb0720ffed58469c2c5df56afe095",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "0647f8bb62242675eac2e359322aeee0d4d553fc824b3054515647f4aaa150b7",
+  "python": "3.12.14",
+  "reference": "73e801946a2419bf33eb78e5240f8af0923ff31a",
+  "roster": [
+    {
+      "case": "borisovka-1-roomy",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-silent",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-marked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-blind",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-blocked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-no-protein",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-absent",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-roomy",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-silent",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-marked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-blind",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-blocked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-no-protein",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-compact-absent",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-roomy",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-silent",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-marked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-blind",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-blocked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-no-protein",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-compact-absent",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-roomy",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-silent",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-marked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-blind",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-blocked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-no-protein",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-compact-absent",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-roomy",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-silent",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-marked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-blind",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-blocked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-no-protein",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-compact-absent",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-roomy",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-silent",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-marked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-blind",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-blocked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-no-protein",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-compact-absent",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-roomy",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-silent",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-marked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-blind",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-blocked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-no-protein",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-compact-absent",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-roomy",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-silent",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-marked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-blind",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-blocked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-no-protein",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-compact-absent",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-roomy",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-silent",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-marked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-blind",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-blocked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-no-protein",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-compact-absent",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-roomy",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-silent",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-marked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-blind",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-blocked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-no-protein",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-compact-absent",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-roomy",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-silent",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-marked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-blind",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-blocked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-no-protein",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-compact-absent",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-roomy",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-silent",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-marked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-blind",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-blocked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-no-protein",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-compact-absent",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-compact-marked-unobserved",
+      "identity": 100961,
+      "mode": "unobserved"
+    },
+    {
+      "case": "borisovka-1-compact-marked-durable-split",
+      "identity": 100961,
+      "mode": "durable-split"
+    },
+    {
+      "case": "st_petersburg-1-compact-marked-unobserved",
+      "identity": 101447,
+      "mode": "unobserved"
+    },
+    {
+      "case": "st_petersburg-1-compact-marked-durable-split",
+      "identity": 101447,
+      "mode": "durable-split"
+    }
+  ],
+  "source": "08557a55cc016ee301647ef564a7f04045864fc3",
+  "started_ns": 1794561561836157000
+}

@@ -1,0 +1,1980 @@
+[OUTPUT] 
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+
+[HANDLER_OUTPUT] 
+Test project D:/Codex_workspace/AntWorld/build/s6_3_4-sanitizer
+
+        Start  29: FND_IF_BOUNDARY_COLONY
+        Start  26: FND_IF_COLONY
+        Start  30: FND_IF_LOCAL_RESUPPLY
+  1/281 Test  #26: FND_IF_COLONY ....................***Failed    4.48 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_COLONY failed with Exit code 0xc0000135
+
+
+
+
+        Start 263: S6_4_RM01_warm
+  2/281 Test  #29: FND_IF_BOUNDARY_COLONY ...........***Failed    4.68 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_BOUNDARY_COLONY failed with Exit code 0xc0000135
+
+
+
+
+        Start  62: S6_4_WP2_b01
+  3/281 Test  #30: FND_IF_LOCAL_RESUPPLY ............***Failed    4.64 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_LOCAL_RESUPPLY failed with Exit code 0xc0000135
+
+
+
+
+        Start  24: FND_R2_FINITE_WATER
+  4/281 Test #263: S6_4_RM01_warm ...................***Failed    0.47 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:8 (message):
+  RM-01 borisovka ordinary-32 failed
+Call Stack (most recent call first):
+  D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:25 (check_arm)
+
+
+
+        Start 262: S6_4_RM01_legacy
+  5/281 Test  #62: S6_4_WP2_b01 .....................***Failed    0.62 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp2.cmake:16 (message):
+  WP-2 b01 failed
+
+
+
+        Start  65: S6_4_WP2_activity
+  6/281 Test #262: S6_4_RM01_legacy .................***Failed    0.66 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:8 (message):
+  RM-01 legacy depot-8 failed
+Call Stack (most recent call first):
+  D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:23 (check_arm)
+
+
+
+        Start  14: FND_R1_REPEAT_DISTRIBUTION
+  7/281 Test  #65: S6_4_WP2_activity ................***Failed    0.53 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp2.cmake:16 (message):
+  WP-2 activity failed
+
+
+
+        Start  51: S6_4_WP5_compact
+  8/281 Test  #51: S6_4_WP5_compact .................***Failed    0.39 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 compact failed
+
+
+
+        Start  97: S6_1_PARTITION
+  9/281 Test  #97: S6_1_PARTITION ...................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start  27: FND_IF_NO_SOURCE
+ 10/281 Test  #27: FND_IF_NO_SOURCE .................***Failed    0.42 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_NO_SOURCE failed with Exit code 0xc0000135
+
+
+
+
+        Start 130: S5_EQUIVALENCE
+ 11/281 Test #130: S5_EQUIVALENCE ...................Exit code 0xc0000135
+***Exception:   0.24 sec
+
+        Start  21: FND_R2_MOBILIZATION
+ 12/281 Test  #24: FND_R2_FINITE_WATER ..............***Failed    2.73 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R2_FINITE_WATER failed with Exit code 0xc0000135
+
+
+
+
+        Start 188: S2_MULTISEED
+ 13/281 Test  #21: FND_R2_MOBILIZATION ..............***Failed    0.52 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R2_MOBILIZATION failed with Exit code 0xc0000135
+
+
+
+
+        Start  90: S6_2_NUTRITION_OBSERVER
+ 14/281 Test #188: S2_MULTISEED .....................Exit code 0xc0000135
+***Exception:   0.29 sec
+
+        Start 115: S6_DURABLE_INTEGRATION
+ 15/281 Test #115: S6_DURABLE_INTEGRATION ...........Exit code 0xc0000135
+***Exception:   0.22 sec
+
+        Start 118: S5_EXPERIMENT_SMOKE
+ 16/281 Test  #90: S6_2_NUTRITION_OBSERVER ..........***Failed    0.52 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_2_observer.cmake:11 (message):
+  Observer failed (Exit code 0xc0000135
+
+  ):
+
+
+
+
+        Start 116: S6_1_DURABLE_INTEGRATION
+ 17/281 Test  #14: FND_R1_REPEAT_DISTRIBUTION .......***Failed    2.55 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_REPEAT_DISTRIBUTION failed with Exit code 0xc0000135
+
+
+
+
+ 18/281 Test #118: S5_EXPERIMENT_SMOKE ..............Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start  85: S6_3_RETURN_VISIT
+        Start  54: S6_4_WP5_joint
+ 19/281 Test #116: S6_1_DURABLE_INTEGRATION .........Exit code 0xc0000135
+***Exception:   0.27 sec
+
+ 20/281 Test  #85: S6_3_RETURN_VISIT ................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start  25: FND_IF_COMPONENTS
+        Start  11: FND_EXACT_RESTORE
+ 21/281 Test  #54: S6_4_WP5_joint ...................***Failed    0.28 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 joint failed
+
+
+
+        Start 215: S1_BUDGETS
+ 22/281 Test  #25: FND_IF_COMPONENTS ................***Failed    0.29 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_COMPONENTS failed with Exit code 0xc0000135
+
+
+
+
+        Start 120: S5_IO_FAILURE
+ 23/281 Test #215: S1_BUDGETS .......................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start  91: S6_2_CHOICE_OBSERVER
+ 24/281 Test #120: S5_IO_FAILURE ....................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start 280: S6_3_3_3_R1_integration
+ 25/281 Test  #91: S6_2_CHOICE_OBSERVER .............***Failed    0.35 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_2_observer.cmake:11 (message):
+  Observer failed (Exit code 0xc0000135
+
+  ):
+
+
+
+
+        Start 194: S4_ALLOCATION_FAILURE
+ 26/281 Test #280: S6_3_3_3_R1_integration ..........***Failed    0.37 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+        Start  19: FND_R1_FORMAT_ZERO
+ 27/281 Test #194: S4_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start 275: S6_3_3_3_smoke
+ 28/281 Test  #19: FND_R1_FORMAT_ZERO ...............***Failed    0.23 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_FORMAT_ZERO failed with Exit code 0xc0000135
+
+
+
+
+        Start  83: S6_3_MONTH
+ 29/281 Test  #83: S6_3_MONTH .......................Exit code 0xc0000135
+***Exception:   0.10 sec
+
+        Start 152: S3_EXPERIMENT_SMOKE
+ 30/281 Test #275: S6_3_3_3_smoke ...................***Failed    0.34 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+        Start  47: S6_4_WP4_brood
+ 31/281 Test #152: S3_EXPERIMENT_SMOKE ..............Exit code 0xc0000135
+***Exception:   0.18 sec
+
+        Start 108: S6_MIXED_SPACE
+ 32/281 Test #108: S6_MIXED_SPACE ...................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start  64: S6_4_WP2_integrated
+ 33/281 Test  #47: S6_4_WP4_brood ...................***Failed    0.31 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 brood failed
+
+
+
+        Start 242: S6_3_3_COMPETITION
+ 34/281 Test  #64: S6_4_WP2_integrated ..............***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp2.cmake:16 (message):
+  WP-2 integrated failed
+
+
+
+        Start  88: S6_3_SPACE_RESPONSE
+ 35/281 Test #242: S6_3_3_COMPETITION ...............Exit code 0xc0000135
+***Exception:   0.24 sec
+
+        Start 273: S6_3_4_IO_FAILURE
+ 36/281 Test  #88: S6_3_SPACE_RESPONSE ..............Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 261: S6_4_RM01_short
+ 37/281 Test #273: S6_3_4_IO_FAILURE ................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start   7: FND_LARVA_CAP
+ 38/281 Test #261: S6_4_RM01_short ..................***Failed    0.29 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:8 (message):
+  RM-01 legacy seed failed
+Call Stack (most recent call first):
+  D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm01.cmake:15 (check_arm)
+
+
+
+        Start 268: S6_3_4_CORRUPT
+ 39/281 Test  #11: FND_EXACT_RESTORE ................***Failed    2.20 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_EXACT_RESTORE failed with Exit code 0xc0000135
+
+
+
+
+        Start 265: S6_3_4_LIVE
+ 40/281 Test   #7: FND_LARVA_CAP ....................***Failed    0.38 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_LARVA_CAP failed with Exit code 0xc0000135
+
+
+
+
+        Start  73: S6_3_1_CONTROLS
+ 41/281 Test #268: S6_3_4_CORRUPT ...................***Failed    0.32 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 CORRUPT failed
+
+
+
+        Start 176: S2_1_SOCIAL
+ 42/281 Test  #73: S6_3_1_CONTROLS ..................Exit code 0xc0000135
+***Exception:   0.25 sec
+
+        Start 272: S6_3_4_ECO_SMOKE
+ 43/281 Test #265: S6_3_4_LIVE ......................***Failed    0.43 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 LIVE failed
+
+
+
+ 44/281 Test #176: S2_1_SOCIAL ......................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start 251: S6_3_3_1_CONFLICT
+        Start 192: S6_ALLOCATION_FAILURE
+ 45/281 Test #251: S6_3_3_1_CONFLICT ................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+        Start 177: S2_1_EXPERIMENT_SMOKE
+ 46/281 Test #192: S6_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.19 sec
+
+        Start   1: FND_LEGACY_BYTES
+ 47/281 Test #272: S6_3_4_ECO_SMOKE .................***Failed    0.50 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 ECO_SMOKE failed
+
+
+
+ 48/281 Test #177: S2_1_EXPERIMENT_SMOKE ............Exit code 0xc0000135
+***Exception:   0.22 sec
+
+        Start  49: S6_4_WP5_founder-on
+        Start  75: S6_3_DURABLE
+ 49/281 Test   #1: FND_LEGACY_BYTES .................***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_LEGACY_BYTES failed with Exit code 0xc0000135
+
+
+
+
+        Start 135: S4_EXPERIMENT_SMOKE
+ 50/281 Test  #49: S6_4_WP5_founder-on ..............***Failed    0.30 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 founder-on failed
+
+
+
+        Start  10: FND_FOLLOW_UP
+ 51/281 Test #135: S4_EXPERIMENT_SMOKE ..............Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start 196: S6_1_ALLOCATION_FAILURE
+ 52/281 Test  #75: S6_3_DURABLE .....................***Failed    0.37 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_experiment.cmake:5 (message):
+  Long-term durable experiment failed:
+
+
+
+
+        Start  23: FND_R2_RESTORE_FAULT_FORMAT
+ 53/281 Test #196: S6_1_ALLOCATION_FAILURE ..........Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  40: S6_4_WP4_adverse-clock
+ 54/281 Test  #10: FND_FOLLOW_UP ....................***Failed    0.33 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_FOLLOW_UP failed with Exit code 0xc0000135
+
+
+
+
+        Start  31: FND_IF_CANONICAL_WORDS
+ 55/281 Test  #23: FND_R2_RESTORE_FAULT_FORMAT ......***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R2_RESTORE_FAULT_FORMAT failed with Exit code 0xc0000135
+
+
+
+
+        Start  56: S6_4_WP3_factorial
+ 56/281 Test  #40: S6_4_WP4_adverse-clock ...........***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 adverse-clock failed
+
+
+
+        Start  68: S6_3_1_OBSERVER
+ 57/281 Test  #31: FND_IF_CANONICAL_WORDS ...........***Failed    0.24 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_CANONICAL_WORDS failed with Exit code 0xc0000135
+
+
+
+
+        Start 276: S6_3_3_3_probes
+ 58/281 Test  #68: S6_3_1_OBSERVER ..................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 169: S2_2_REPLAY
+ 59/281 Test  #56: S6_4_WP3_factorial ...............***Failed    0.37 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 factorial failed
+
+
+
+        Start 178: S2_EXPERIMENT_SMOKE
+ 60/281 Test #169: S2_2_REPLAY ......................Exit code 0xc0000135
+***Exception:   0.24 sec
+
+        Start  94: S6_1_LOCAL_CONTINUATION
+ 61/281 Test #276: S6_3_3_3_probes ..................***Failed    0.39 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+ 62/281 Test #178: S2_EXPERIMENT_SMOKE ..............Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  18: FND_R1_RESTORE_FAULT
+        Start  53: S6_4_WP5_shielded
+ 63/281 Test  #94: S6_1_LOCAL_CONTINUATION ..........Exit code 0xc0000135
+***Exception:   0.23 sec
+
+        Start  13: FND_BOUNDED_COST
+ 64/281 Test  #18: FND_R1_RESTORE_FAULT .............***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_RESTORE_FAULT failed with Exit code 0xc0000135
+
+
+
+
+        Start 111: S6_DETERMINISM
+ 65/281 Test  #53: S6_4_WP5_shielded ................***Failed    0.23 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 shielded failed
+
+
+
+        Start  58: S6_4_WP3_density
+ 66/281 Test #111: S6_DETERMINISM ...................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 270: S6_3_4_custody
+ 67/281 Test  #13: FND_BOUNDED_COST .................***Failed    0.31 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_BOUNDED_COST failed with Exit code 0xc0000135
+
+
+
+
+        Start  52: S6_4_WP5_isolated
+ 68/281 Test  #58: S6_4_WP3_density .................***Failed    0.25 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 density failed
+
+
+
+        Start  20: FND_R2_HATCH_WALL
+ 69/281 Test #270: S6_3_4_custody ...................***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 custody failed
+
+
+
+        Start  28: FND_IF_BOUNDARY_COMPONENTS
+ 70/281 Test  #52: S6_4_WP5_isolated ................***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 isolated failed
+
+
+
+        Start 166: S2_2_MODEL
+ 71/281 Test  #20: FND_R2_HATCH_WALL ................***Failed    0.24 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R2_HATCH_WALL failed with Exit code 0xc0000135
+
+
+
+
+        Start  57: S6_4_WP3_scout
+ 72/281 Test #166: S2_2_MODEL .......................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 279: S6_3_3_3_R1_connectivity
+ 73/281 Test  #28: FND_IF_BOUNDARY_COMPONENTS .......***Failed    0.30 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_BOUNDARY_COMPONENTS failed with Exit code 0xc0000135
+
+
+
+
+        Start  55: S6_4_WP5_gate
+ 74/281 Test  #57: S6_4_WP3_scout ...................***Failed    0.25 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 scout failed
+
+
+
+        Start 269: S6_3_4_CRASH
+ 75/281 Test #279: S6_3_3_3_R1_connectivity .........***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+        Start 134: S5_CRASH
+ 76/281 Test  #55: S6_4_WP5_gate ....................***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 gate failed
+
+
+
+        Start 271: S6_3_4_connectivity
+ 77/281 Test #269: S6_3_4_CRASH .....................***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:9 (message):
+  Cannot create crash seed
+
+
+
+        Start 117: S5_ARCHIVE_CLI
+ 78/281 Test #134: S5_CRASH .........................***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s5_crash.cmake:5 (message):
+  Crash fixture initialization failed
+
+
+
+        Start 264: S6_3_4_CODEC
+ 79/281 Test #271: S6_3_4_connectivity ..............***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 connectivity failed
+
+
+
+        Start  32: S6_4_RM02_transfers
+ 80/281 Test #117: S5_ARCHIVE_CLI ...................***Failed    0.28 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_archive.cmake:7 (message):
+  Archive create failed
+
+
+
+        Start 200: S6_3_3_1_ALLOCATION_FAILURE
+ 81/281 Test #264: S6_3_4_CODEC .....................***Failed    0.24 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 CODEC failed
+
+
+
+        Start  22: FND_R2_HATCH_CUE
+ 82/281 Test #200: S6_3_3_1_ALLOCATION_FAILURE ......Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 110: S6_SEALED
+ 83/281 Test  #32: S6_4_RM02_transfers ..............***Failed    0.30 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 transfers failed
+
+
+
+        Start  63: S6_4_WP2_b02
+ 84/281 Test #110: S6_SEALED ........................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 106: S6_SURPLUS
+ 85/281 Test  #22: FND_R2_HATCH_CUE .................***Failed    0.28 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R2_HATCH_CUE failed with Exit code 0xc0000135
+
+
+
+
+        Start 119: S5_HISTORY_STORAGE_SMOKE
+ 86/281 Test #106: S6_SURPLUS .......................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  96: S6_1_CONTROLS
+ 87/281 Test  #63: S6_4_WP2_b02 .....................***Failed    0.30 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp2.cmake:16 (message):
+  WP-2 b02 failed
+
+
+
+ 88/281 Test #119: S5_HISTORY_STORAGE_SMOKE .........Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 232: S6_3_3_CAPABILITY
+        Start 201: S6_3_3_2_ALLOCATION_FAILURE
+ 89/281 Test  #96: S6_1_CONTROLS ....................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+ 90/281 Test #232: S6_3_3_CAPABILITY ................Exit code 0xc0000135
+***Exception:   0.10 sec
+
+        Start 122: S5_ATOMIC
+        Start 281: S6_3_3_EXPERIMENT_SMOKE
+ 91/281 Test #201: S6_3_3_2_ALLOCATION_FAILURE ......Exit code 0xc0000135
+***Exception:   0.21 sec
+
+ 92/281 Test #122: S5_ATOMIC ........................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  12: FND_CORRUPT_OR_UNSUPPORTED
+        Start 248: S6_3_3_1_PERSISTENCE
+ 93/281 Test #281: S6_3_3_EXPERIMENT_SMOKE ..........Exit code 0xc0000135
+***Exception:   0.26 sec
+
+        Start  60: S6_4_WP3_deplete
+ 94/281 Test #248: S6_3_3_1_PERSISTENCE .............Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 101: S6_DEMAND
+ 95/281 Test  #12: FND_CORRUPT_OR_UNSUPPORTED .......***Failed    0.32 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_CORRUPT_OR_UNSUPPORTED failed with Exit code 0xc0000135
+
+
+
+
+        Start 267: S6_3_4_MIGRATION
+ 96/281 Test #101: S6_DEMAND ........................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+        Start  16: FND_R1_FUNDED_WALL
+ 97/281 Test  #60: S6_4_WP3_deplete .................***Failed    0.36 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 deplete failed
+
+
+
+        Start  15: FND_R1_EXPIRY_UNAVAILABLE
+ 98/281 Test #267: S6_3_4_MIGRATION .................***Failed    0.31 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 MIGRATION failed
+
+
+
+        Start 205: S1_ENTITIES
+ 99/281 Test #205: S1_ENTITIES ......................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 254: S6_3_3_2_FOREIGN
+100/281 Test  #16: FND_R1_FUNDED_WALL ...............***Failed    0.48 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_FUNDED_WALL failed with Exit code 0xc0000135
+
+
+
+
+        Start  67: S6_4_RM01_PROFILE
+101/281 Test  #15: FND_R1_EXPIRY_UNAVAILABLE ........***Failed    0.52 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_EXPIRY_UNAVAILABLE failed with Exit code 0xc0000135
+
+
+
+
+102/281 Test #254: S6_3_3_2_FOREIGN .................Exit code 0xc0000135
+***Exception:   0.27 sec
+
+        Start  50: S6_4_WP5_founder-off
+        Start 185: S2_REPLAY
+103/281 Test  #67: S6_4_RM01_PROFILE ................Exit code 0xc0000135
+***Exception:   0.31 sec
+
+        Start  66: S6_3_2_AUDIT_SMOKE
+104/281 Test #185: S2_REPLAY ........................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start 228: T11
+105/281 Test  #66: S6_3_2_AUDIT_SMOKE ...............Exit code 0xc0000135
+***Exception:   0.22 sec
+
+        Start  17: FND_R1_COMPETITION_INTERRUPT
+106/281 Test  #50: S6_4_WP5_founder-off .............***Failed    0.48 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp5.cmake:20 (message):
+  WP-5 founder-off failed
+
+
+
+        Start 144: S4_AUTONOMY
+107/281 Test #228: T11 ..............................***Failed    0.30 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: Exit code 0xc0000135
+
+  :
+
+
+
+        Start 153: S3_INITIALIZATION
+108/281 Test #144: S4_AUTONOMY ......................Exit code 0xc0000135
+***Exception:   0.25 sec
+
+        Start  76: S6_3_BIRTH
+109/281 Test  #17: FND_R1_COMPETITION_INTERRUPT .....***Failed    0.40 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_R1_COMPETITION_INTERRUPT failed with Exit code 0xc0000135
+
+
+
+
+110/281 Test #153: S3_INITIALIZATION ................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start 136: S4_INITIAL
+        Start 179: S2_SURFACE
+111/281 Test  #76: S6_3_BIRTH .......................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+112/281 Test #136: S4_INITIAL .......................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 216: T00
+        Start 114: S6_LOCALITY
+113/281 Test #179: S2_SURFACE .......................Exit code 0xc0000135
+***Exception:   0.33 sec
+
+114/281 Test #216: T00 ..............................Exit code 0xc0000135
+***Exception:   0.26 sec
+
+        Start 171: S2_1_BIAS
+        Start 100: S6_1_CONTACT_LINKS
+115/281 Test #114: S6_LOCALITY ......................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+116/281 Test #171: S2_1_BIAS ........................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start  92: S6_1_GIFT_PRIORITY
+        Start 278: S6_3_3_3_R1_custody
+117/281 Test #100: S6_1_CONTACT_LINKS ...............Exit code 0xc0000135
+***Exception:   0.22 sec
+
+118/281 Test  #92: S6_1_GIFT_PRIORITY ...............Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 155: S3_EXCHANGE
+        Start  48: S6_4_WP4_founders
+119/281 Test #155: S3_EXCHANGE ......................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start   9: FND_LOCAL_FEED
+120/281 Test #278: S6_3_3_3_R1_custody ..............***Failed    0.32 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+        Start 127: S5_CORRUPTION
+121/281 Test  #48: S6_4_WP4_founders ................***Failed    0.24 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 founders failed
+
+
+
+        Start  59: S6_4_WP3_wall
+122/281 Test #127: S5_CORRUPTION ....................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  41: S6_4_WP4_sentinel
+123/281 Test   #9: FND_LOCAL_FEED ...................***Failed    0.34 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_LOCAL_FEED failed with Exit code 0xc0000135
+
+
+
+
+        Start  42: S6_4_WP4_energy-tie
+124/281 Test  #59: S6_4_WP3_wall ....................***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 wall failed
+
+
+
+        Start  46: S6_4_WP4_pulse-on
+125/281 Test  #41: S6_4_WP4_sentinel ................***Failed    0.27 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 sentinel failed
+
+
+
+        Start  45: S6_4_WP4_pulse-before
+126/281 Test  #42: S6_4_WP4_energy-tie ..............***Failed    0.26 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 energy-tie failed
+
+
+
+        Start  43: S6_4_WP4_water-tie
+127/281 Test  #46: S6_4_WP4_pulse-on ................***Failed    0.28 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 pulse-on failed
+
+
+
+        Start 230: CLI_VALIDATION
+128/281 Test  #45: S6_4_WP4_pulse-before ............***Failed    0.29 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 pulse-before failed
+
+
+
+        Start  44: S6_4_WP4_interrupted
+129/281 Test  #43: S6_4_WP4_water-tie ...............***Failed    0.39 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 water-tie failed
+
+
+
+        Start   8: FND_PUPAL_MARGIN
+130/281 Test #230: CLI_VALIDATION ...................***Failed    0.45 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: Exit code 0xc0000135
+
+  :
+
+
+
+        Start   5: FND_OPENING_BOUT
+131/281 Test  #44: S6_4_WP4_interrupted .............***Failed    0.50 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp4.cmake:26 (message):
+  WP-4 interrupted failed
+
+
+
+        Start 182: S2_ORDER
+132/281 Test   #8: FND_PUPAL_MARGIN .................***Failed    0.46 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_PUPAL_MARGIN failed with Exit code 0xc0000135
+
+
+
+
+        Start   2: FND_CONFIG_MASS_OVERFLOW
+133/281 Test #182: S2_ORDER .........................Exit code 0xc0000135
+***Exception:   0.25 sec
+
+        Start   4: FND_BIRTH_COMMIT
+134/281 Test   #5: FND_OPENING_BOUT .................***Failed    0.47 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_OPENING_BOUT failed with Exit code 0xc0000135
+
+
+
+
+        Start   6: FND_DEATH_PRIORITY
+135/281 Test   #2: FND_CONFIG_MASS_OVERFLOW .........***Failed    0.38 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_CONFIG_MASS_OVERFLOW failed with Exit code 0xc0000135
+
+
+
+
+        Start 103: S6_CONTACTS
+136/281 Test   #4: FND_BIRTH_COMMIT .................***Failed    0.35 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_BIRTH_COMMIT failed with Exit code 0xc0000135
+
+
+
+
+        Start 159: S3_LIFECYCLE
+137/281 Test   #6: FND_DEATH_PRIORITY ...............***Failed    0.37 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_DEATH_PRIORITY failed with Exit code 0xc0000135
+
+
+
+
+138/281 Test #103: S6_CONTACTS ......................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+        Start 277: S6_3_3_3_R1_motion
+        Start 125: S5_METRICS
+139/281 Test #159: S3_LIFECYCLE .....................Exit code 0xc0000135
+***Exception:   0.27 sec
+
+        Start 129: S5_GEOMETRY
+140/281 Test #125: S5_METRICS .......................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start   3: FND_CONVERSION
+141/281 Test #129: S5_GEOMETRY ......................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+        Start 124: S5_ISOLATION
+142/281 Test #277: S6_3_3_3_R1_motion ...............***Failed    0.44 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_3_ecology.cmake:5 (message):
+  
+
+
+
+
+        Start 203: S2_ALLOCATION_FAILURE
+143/281 Test #124: S5_ISOLATION .....................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 202: S1_ALLOCATION_FAILURE
+144/281 Test #203: S2_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.17 sec
+
+        Start 172: S2_1_RUNTIME_BIAS
+145/281 Test #202: S1_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 161: S3_REPLAY
+146/281 Test   #3: FND_CONVERSION ...................***Failed    0.49 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_CONVERSION failed with Exit code 0xc0000135
+
+
+
+
+147/281 Test #172: S2_1_RUNTIME_BIAS ................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 121: S5_WAL_CRASH
+        Start  38: S6_4_RM02_wp2_scope
+148/281 Test #161: S3_REPLAY ........................Exit code 0xc0000135
+***Exception:   0.25 sec
+
+        Start 247: S6_3_3_STORAGE
+149/281 Test #121: S5_WAL_CRASH .....................***Failed    0.46 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s5_wal_crash.cmake:4 (message):
+  WAL crash seed failed
+
+
+
+        Start 195: S3_ALLOCATION_FAILURE
+150/281 Test  #38: S6_4_RM02_wp2_scope ..............***Failed    0.44 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 wp2_scope failed
+
+
+
+        Start 173: S2_1_RESPONSE
+151/281 Test #247: S6_3_3_STORAGE ...................***Failed    0.40 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_storage.cmake:9 (message):
+  
+
+
+
+
+152/281 Test #195: S3_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 170: S2_2_EXPERIMENT_SMOKE
+        Start 132: S5_BEHAVIORS
+153/281 Test #173: S2_1_RESPONSE ....................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 238: S6_3_3_WORKER
+154/281 Test #170: S2_2_EXPERIMENT_SMOKE ............Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 164: S3_CORRUPTION
+155/281 Test #132: S5_BEHAVIORS .....................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+156/281 Test #238: S6_3_3_WORKER ....................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start  39: S6_4_RM02_wp3_scope
+        Start 199: S6_3_3_ALLOCATION_FAILURE
+157/281 Test #164: S3_CORRUPTION ....................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+        Start 126: S5_WINDOWS
+158/281 Test #199: S6_3_3_ALLOCATION_FAILURE ........Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 131: S5_HISTORY
+159/281 Test #126: S5_WINDOWS .......................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 244: S6_3_3_OBSERVATION_ONLY
+160/281 Test #131: S5_HISTORY .......................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start 274: S6_3_4_WAL_CRASH
+161/281 Test  #39: S6_4_RM02_wp3_scope ..............***Failed    0.46 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 wp3_scope failed
+
+
+
+162/281 Test #244: S6_3_3_OBSERVATION_ONLY ..........Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 233: S6_3_3_LOCALITY
+        Start 168: S2_2_CONTINUOUS
+163/281 Test #233: S6_3_3_LOCALITY ..................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 133: S5_STORAGE_LIMITS
+164/281 Test #168: S2_2_CONTINUOUS ..................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 241: S6_3_3_TRANSPORT
+165/281 Test #133: S5_STORAGE_LIMITS ................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 253: S6_3_3_1_STORAGE
+166/281 Test #241: S6_3_3_TRANSPORT .................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start  36: S6_4_RM02_recovery
+167/281 Test #274: S6_3_4_WAL_CRASH .................***Failed    0.54 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s5_wal_crash.cmake:4 (message):
+  WAL crash seed failed
+
+
+
+        Start  37: S6_4_RM02_faults
+168/281 Test #253: S6_3_3_1_STORAGE .................***Failed    0.38 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_storage.cmake:9 (message):
+  
+
+
+
+
+        Start  61: S6_4_WP3_prepared
+169/281 Test  #36: S6_4_RM02_recovery ...............***Failed    0.42 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 recovery failed
+
+
+
+        Start 260: S6_3_3_2_MOTION
+170/281 Test  #37: S6_4_RM02_faults .................***Failed    0.42 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 faults failed
+
+
+
+        Start 175: S2_1_ACTIVATION
+171/281 Test #175: S2_1_ACTIVATION ..................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 197: S6_3_ALLOCATION_FAILURE
+172/281 Test  #61: S6_4_WP3_prepared ................***Failed    0.41 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_wp3.cmake:20 (message):
+  WP-3 prepared failed
+
+
+
+        Start 198: S6_3_1_ALLOCATION_FAILURE
+173/281 Test #260: S6_3_3_2_MOTION ..................***Failed    0.34 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_3_storage.cmake:9 (message):
+  
+
+
+
+
+        Start 163: S3_LOCALITY
+174/281 Test #197: S6_3_ALLOCATION_FAILURE ..........Exit code 0xc0000135
+***Exception:   0.18 sec
+
+175/281 Test #198: S6_3_1_ALLOCATION_FAILURE ........Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 123: S5_COMMANDS
+        Start 165: S3_ALLOCATION_LIMIT
+176/281 Test #163: S3_LOCALITY ......................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+        Start 209: S1_FAIRNESS
+177/281 Test #165: S3_ALLOCATION_LIMIT ..............Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 138: S4_OVERLAP
+178/281 Test #123: S5_COMMANDS ......................Exit code 0xc0000135
+***Exception:   0.25 sec
+
+        Start 266: S6_3_4_PRESSURE
+179/281 Test #209: S1_FAIRNESS ......................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+180/281 Test #138: S4_OVERLAP .......................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start  33: S6_4_RM02_failures
+        Start  35: S6_4_RM02_opportunities
+181/281 Test #266: S6_3_4_PRESSURE ..................***Failed    0.34 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_3_4.cmake:34 (message):
+  S6.3.4 PRESSURE failed
+
+
+
+        Start  34: S6_4_RM02_lifecycle
+182/281 Test  #33: S6_4_RM02_failures ...............***Failed    0.37 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 failures failed
+
+
+
+        Start 229: T13
+183/281 Test  #35: S6_4_RM02_opportunities ..........***Failed    0.38 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 opportunities failed
+
+
+
+        Start 234: S6_3_3_REVERSIBILITY
+184/281 Test  #34: S6_4_RM02_lifecycle ..............***Failed    0.35 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_s6_4_rm02.cmake:5 (message):
+  RM-02 lifecycle failed
+
+
+
+        Start 204: S2_1_ALLOCATION_FAILURE
+185/281 Test #234: S6_3_3_REVERSIBILITY .............Exit code 0xc0000135
+***Exception:   0.19 sec
+
+        Start 213: S1_PERSISTENCE
+186/281 Test #229: T13 ..............................***Failed    0.35 sec
+CMake Error at D:/Codex_workspace/AntWorld/cpp/tests/test_cli.cmake:10 (message):
+  CLI failed: Exit code 0xc0000135
+
+  :
+
+
+
+187/281 Test #204: S2_1_ALLOCATION_FAILURE ..........Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 174: S2_1_CONTINUITY
+        Start 183: S2_MEMORY
+188/281 Test #213: S1_PERSISTENCE ...................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+189/281 Test #174: S2_1_CONTINUITY ..................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 141: S4_NAVIGATION
+        Start 258: S6_3_3_2_AUTONOMY
+190/281 Test #183: S2_MEMORY ........................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+191/281 Test #141: S4_NAVIGATION ....................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 191: S2_CORRUPTION
+        Start 214: S1_ARITHMETIC
+192/281 Test #258: S6_3_3_2_AUTONOMY ................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+193/281 Test #191: S2_CORRUPTION ....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 128: S5_UINT64
+        Start 107: S6_AUTONOMY_CONTROL
+194/281 Test #214: S1_ARITHMETIC ....................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+195/281 Test #128: S5_UINT64 ........................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 226: T10
+        Start  98: S6_1_LOCALITY
+196/281 Test #107: S6_AUTONOMY_CONTROL ..............Exit code 0xc0000135
+***Exception:   0.17 sec
+
+197/281 Test #226: T10 ..............................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 147: S4_NEIGHBORHOOD
+        Start 184: S2_TRAILS
+198/281 Test  #98: S6_1_LOCALITY ....................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+199/281 Test #147: S4_NEIGHBORHOOD ..................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start 186: S2_ROLLBACK
+        Start 146: S4_FILL_NAVIGATION
+200/281 Test #184: S2_TRAILS ........................Exit code 0xc0000135
+***Exception:   0.22 sec
+
+201/281 Test #186: S2_ROLLBACK ......................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 189: S2_MODEL
+        Start 140: S4_SDF
+202/281 Test #146: S4_FILL_NAVIGATION ...............Exit code 0xc0000135
+***Exception:   0.21 sec
+
+203/281 Test #189: S2_MODEL .........................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start 113: S6_CORRUPTION
+        Start 150: S4_CONNECTIVITY
+204/281 Test #140: S4_SDF ...........................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+205/281 Test #113: S6_CORRUPTION ....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 160: S3_BEHAVIOR
+        Start 181: S2_LOOP
+206/281 Test #150: S4_CONNECTIVITY ..................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+207/281 Test #160: S3_BEHAVIOR ......................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 249: S6_3_3_1_LOCALITY
+        Start 148: S4_CORRUPTION
+208/281 Test #181: S2_LOOP ..........................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+        Start 235: S6_3_3_STAGES
+209/281 Test #249: S6_3_3_1_LOCALITY ................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+210/281 Test #148: S4_CORRUPTION ....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 212: S1_ROLLBACK
+        Start 243: S6_3_3_CORRUPTION
+211/281 Test #235: S6_3_3_STAGES ....................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+212/281 Test #212: S1_ROLLBACK ......................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 237: S6_3_3_INTERRUPTION
+        Start 190: S2_COLONIES
+213/281 Test #243: S6_3_3_CORRUPTION ................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+214/281 Test #237: S6_3_3_INTERRUPTION ..............Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 256: S6_3_3_2_GEOMETRY
+        Start 246: S6_3_3_GEOMETRY_CLOSURE
+215/281 Test #190: S2_COLONIES ......................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+216/281 Test #256: S6_3_3_2_GEOMETRY ................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 154: S3_INTEGRATION
+        Start 252: S6_3_3_1_GEOMETRY
+217/281 Test #246: S6_3_3_GEOMETRY_CLOSURE ..........Exit code 0xc0000135
+***Exception:   0.21 sec
+
+218/281 Test #154: S3_INTEGRATION ...................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 187: S2_SCHEDULING
+        Start 236: S6_3_3_DURATION
+219/281 Test #252: S6_3_3_1_GEOMETRY ................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+220/281 Test #187: S2_SCHEDULING ....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 231: CORE_EDGE_CASES
+        Start 149: S4_BUDGETS
+221/281 Test #236: S6_3_3_DURATION ..................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+222/281 Test #231: CORE_EDGE_CASES ..................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 239: S6_3_3_QUERY
+        Start 221: T05
+223/281 Test #149: S4_BUDGETS .......................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+224/281 Test #239: S6_3_3_QUERY .....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 245: S6_3_3_TARGET_LIFECYCLE
+        Start 156: S3_CONSTRAINTS
+225/281 Test #221: T05 ..............................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+226/281 Test #245: S6_3_3_TARGET_LIFECYCLE ..........Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 139: S4_CONSTRAINTS
+        Start  79: S6_3_RESERVE
+227/281 Test #156: S3_CONSTRAINTS ...................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+228/281 Test #139: S4_CONSTRAINTS ...................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 250: S6_3_3_1_CONTACT
+        Start  95: S6_1_RELEASE_CUE
+229/281 Test  #79: S6_3_RESERVE .....................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+230/281 Test #250: S6_3_3_1_CONTACT .................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start  70: S6_3_1_PULSE
+        Start 240: S6_3_3_ROLLBACK
+231/281 Test  #95: S6_1_RELEASE_CUE .................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+        Start 145: S4_ROLLBACK
+232/281 Test  #70: S6_3_1_PULSE .....................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+233/281 Test #240: S6_3_3_ROLLBACK ..................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 211: S1_PHASES
+        Start  72: S6_3_1_CORRUPTION
+234/281 Test #145: S4_ROLLBACK ......................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+235/281 Test #211: S1_PHASES ........................Exit code 0xc0000135
+***Exception:   0.15 sec
+
+        Start 193: S5_ALLOCATION_FAILURE
+        Start  86: S6_3_CONTACT_SEQUENCE
+236/281 Test  #72: S6_3_1_CORRUPTION ................Exit code 0xc0000135
+***Exception:   0.21 sec
+
+237/281 Test #193: S5_ALLOCATION_FAILURE ............Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start  84: S6_3_CORRUPTION
+        Start  89: S6_3_PENDING_INDEX
+238/281 Test  #86: S6_3_CONTACT_SEQUENCE ............Exit code 0xc0000135
+***Exception:   0.23 sec
+
+239/281 Test  #84: S6_3_CORRUPTION ..................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+        Start 259: S6_3_3_2_REPRODUCTION
+        Start  99: S6_1_CORRUPTION
+240/281 Test  #89: S6_3_PENDING_INDEX ...............Exit code 0xc0000135
+***Exception:   0.27 sec
+
+241/281 Test #259: S6_3_3_2_REPRODUCTION ............Exit code 0xc0000135
+***Exception:   0.20 sec
+
+        Start 207: S1_COMPETITION
+        Start 257: S6_3_3_2_LIFECYCLE
+242/281 Test  #99: S6_1_CORRUPTION ..................Exit code 0xc0000135
+***Exception:   0.31 sec
+
+243/281 Test #207: S1_COMPETITION ...................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+        Start 210: S1_LIFECYCLE
+        Start 142: S4_CLEARANCE
+244/281 Test #257: S6_3_3_2_LIFECYCLE ...............Exit code 0xc0000135
+***Exception:   0.18 sec
+
+245/281 Test #210: S1_LIFECYCLE .....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 109: S6_OFF_PLANE
+        Start 157: S3_INGESTION
+246/281 Test #142: S4_CLEARANCE .....................Exit code 0xc0000135
+***Exception:   0.16 sec
+
+247/281 Test #109: S6_OFF_PLANE .....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 137: S4_MATERIAL
+        Start  77: S6_3_SHORTFALL
+248/281 Test #157: S3_INGESTION .....................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+249/281 Test #137: S4_MATERIAL ......................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 208: S1_FAILURES
+        Start  81: S6_3_RECYCLE
+250/281 Test  #77: S6_3_SHORTFALL ...................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+251/281 Test #208: S1_FAILURES ......................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start  87: S6_3_NO_RECIPIENT
+        Start 105: S6_CONTACT_WALL
+252/281 Test  #81: S6_3_RECYCLE .....................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+253/281 Test  #87: S6_3_NO_RECIPIENT ................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start  80: S6_3_REMAINDER
+        Start 180: S2_LOCALITY
+254/281 Test #105: S6_CONTACT_WALL ..................Exit code 0xc0000135
+***Exception:   0.18 sec
+
+255/281 Test  #80: S6_3_REMAINDER ...................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 102: S6_CONCURRENT
+        Start 255: S6_3_3_2_COMPETING
+256/281 Test #180: S2_LOCALITY ......................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+257/281 Test #102: S6_CONCURRENT ....................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 206: S1_MOVEMENT
+        Start 104: S6_CONTACT_INDEX
+258/281 Test #255: S6_3_3_2_COMPETING ...............Exit code 0xc0000135
+***Exception:   0.16 sec
+
+259/281 Test #206: S1_MOVEMENT ......................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 158: S3_THRESHOLDS
+        Start 112: S6_LIMITS
+260/281 Test #104: S6_CONTACT_INDEX .................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+261/281 Test #158: S3_THRESHOLDS ....................Exit code 0xc0000135
+***Exception:   0.13 sec
+
+        Start  93: S6_1_SELF_MAINTENANCE
+        Start 143: S4_CONTACT
+262/281 Test #112: S6_LIMITS ........................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+263/281 Test  #93: S6_1_SELF_MAINTENANCE ............Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start  78: S6_3_QUEEN_DEATH
+        Start  74: S6_3_1_VALIDATION
+264/281 Test #143: S4_CONTACT .......................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+265/281 Test  #78: S6_3_QUEEN_DEATH .................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start  69: S6_3_1_FUNDING
+        Start  82: S6_3_ROLLBACK
+266/281 Test  #74: S6_3_1_VALIDATION ................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+267/281 Test  #69: S6_3_1_FUNDING ...................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 162: S3_ROLLBACK
+        Start  71: S6_3_1_BARRIER
+268/281 Test  #82: S6_3_ROLLBACK ....................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+269/281 Test #162: S3_ROLLBACK ......................Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 151: S4_SURFACE_BARRIER
+        Start 219: T03
+270/281 Test  #71: S6_3_1_BARRIER ...................Exit code 0xc0000135
+***Exception:   0.19 sec
+
+271/281 Test #151: S4_SURFACE_BARRIER ...............Exit code 0xc0000135
+***Exception:   0.12 sec
+
+        Start 222: T06
+        Start 227: T12
+272/281 Test #219: T03 ..............................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+273/281 Test #222: T06 ..............................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 225: T09
+        Start 217: T01
+274/281 Test #227: T12 ..............................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+275/281 Test #225: T09 ..............................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 220: T04
+        Start 224: T08
+276/281 Test #217: T01 ..............................Exit code 0xc0000135
+***Exception:   0.17 sec
+
+277/281 Test #220: T04 ..............................Exit code 0xc0000135
+***Exception:   0.11 sec
+
+        Start 218: T02
+        Start 167: S2_2_LOCALITY
+278/281 Test #224: T08 ..............................Exit code 0xc0000135
+***Exception:   0.20 sec
+
+279/281 Test #218: T02 ..............................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+        Start 223: T07
+280/281 Test #167: S2_2_LOCALITY ....................Exit code 0xc0000135
+***Exception:   0.14 sec
+
+281/281 Test #223: T07 ..............................Exit code 0xc0000135
+***Exception:   0.07 sec
+
+
+0% tests passed, 281 tests failed out of 281
+
+Label Time Summary:
+FND            =  30.24 sec*proc (31 tests)
+RM01           =   1.73 sec*proc (4 tests)
+RM02           =   3.13 sec*proc (8 tests)
+S1             =   1.86 sec*proc (12 tests)
+S2             =   2.81 sec*proc (15 tests)
+S2.1           =   1.19 sec*proc (8 tests)
+S2.2           =   0.79 sec*proc (5 tests)
+S3             =   2.55 sec*proc (15 tests)
+S4             =   2.91 sec*proc (18 tests)
+S5             =   3.74 sec*proc (19 tests)
+S6             =   2.57 sec*proc (16 tests)
+S6.1           =   2.17 sec*proc (11 tests)
+S6.2           =   0.86 sec*proc (2 tests)
+S6.3           =   2.82 sec*proc (16 tests)
+S6.3.1         =   1.36 sec*proc (8 tests)
+S6.3.2         =   0.22 sec*proc (1 test)
+S6.3.3         =   2.72 sec*proc (17 tests)
+S6.3.3.1       =   1.31 sec*proc (7 tests)
+S6.3.3.2       =   1.65 sec*proc (8 tests)
+S6.3.3.3       =   0.73 sec*proc (2 tests)
+S6.3.3.3-R1    =   1.39 sec*proc (4 tests)
+S6.3.4         =   3.62 sec*proc (11 tests)
+WP2            =   1.71 sec*proc (4 tests)
+WP3            =   1.92 sec*proc (6 tests)
+WP4            =   2.82 sec*proc (9 tests)
+WP5            =   2.21 sec*proc (7 tests)
+
+Total Test time (real) =  30.04 sec
+
+The following tests FAILED:
+	  1 - FND_LEGACY_BYTES (Failed)                         FND
+	  2 - FND_CONFIG_MASS_OVERFLOW (Failed)                 FND
+	  3 - FND_CONVERSION (Failed)                           FND
+	  4 - FND_BIRTH_COMMIT (Failed)                         FND
+	  5 - FND_OPENING_BOUT (Failed)                         FND
+	  6 - FND_DEATH_PRIORITY (Failed)                       FND
+	  7 - FND_LARVA_CAP (Failed)                            FND
+	  8 - FND_PUPAL_MARGIN (Failed)                         FND
+	  9 - FND_LOCAL_FEED (Failed)                           FND
+	 10 - FND_FOLLOW_UP (Failed)                            FND
+	 11 - FND_EXACT_RESTORE (Failed)                        FND
+	 12 - FND_CORRUPT_OR_UNSUPPORTED (Failed)               FND
+	 13 - FND_BOUNDED_COST (Failed)                         FND
+	 14 - FND_R1_REPEAT_DISTRIBUTION (Failed)               FND
+	 15 - FND_R1_EXPIRY_UNAVAILABLE (Failed)                FND
+	 16 - FND_R1_FUNDED_WALL (Failed)                       FND
+	 17 - FND_R1_COMPETITION_INTERRUPT (Failed)             FND
+	 18 - FND_R1_RESTORE_FAULT (Failed)                     FND
+	 19 - FND_R1_FORMAT_ZERO (Failed)                       FND
+	 20 - FND_R2_HATCH_WALL (Failed)                        FND
+	 21 - FND_R2_MOBILIZATION (Failed)                      FND
+	 22 - FND_R2_HATCH_CUE (Failed)                         FND
+	 23 - FND_R2_RESTORE_FAULT_FORMAT (Failed)              FND
+	 24 - FND_R2_FINITE_WATER (Failed)                      FND
+	 25 - FND_IF_COMPONENTS (Failed)                        FND
+	 26 - FND_IF_COLONY (Failed)                            FND
+	 27 - FND_IF_NO_SOURCE (Failed)                         FND
+	 28 - FND_IF_BOUNDARY_COMPONENTS (Failed)               FND
+	 29 - FND_IF_BOUNDARY_COLONY (Failed)                   FND
+	 30 - FND_IF_LOCAL_RESUPPLY (Failed)                    FND
+	 31 - FND_IF_CANONICAL_WORDS (Failed)                   FND
+	 32 - S6_4_RM02_transfers (Failed)                      RM02
+	 33 - S6_4_RM02_failures (Failed)                       RM02
+	 34 - S6_4_RM02_lifecycle (Failed)                      RM02
+	 35 - S6_4_RM02_opportunities (Failed)                  RM02
+	 36 - S6_4_RM02_recovery (Failed)                       RM02
+	 37 - S6_4_RM02_faults (Failed)                         RM02
+	 38 - S6_4_RM02_wp2_scope (Failed)                      RM02
+	 39 - S6_4_RM02_wp3_scope (Failed)                      RM02
+	 40 - S6_4_WP4_adverse-clock (Failed)                   WP4
+	 41 - S6_4_WP4_sentinel (Failed)                        WP4
+	 42 - S6_4_WP4_energy-tie (Failed)                      WP4
+	 43 - S6_4_WP4_water-tie (Failed)                       WP4
+	 44 - S6_4_WP4_interrupted (Failed)                     WP4
+	 45 - S6_4_WP4_pulse-before (Failed)                    WP4
+	 46 - S6_4_WP4_pulse-on (Failed)                        WP4
+	 47 - S6_4_WP4_brood (Failed)                           WP4
+	 48 - S6_4_WP4_founders (Failed)                        WP4
+	 49 - S6_4_WP5_founder-on (Failed)                      WP5
+	 50 - S6_4_WP5_founder-off (Failed)                     WP5
+	 51 - S6_4_WP5_compact (Failed)                         WP5
+	 52 - S6_4_WP5_isolated (Failed)                        WP5
+	 53 - S6_4_WP5_shielded (Failed)                        WP5
+	 54 - S6_4_WP5_joint (Failed)                           WP5
+	 55 - S6_4_WP5_gate (Failed)                            WP5
+	 56 - S6_4_WP3_factorial (Failed)                       WP3
+	 57 - S6_4_WP3_scout (Failed)                           WP3
+	 58 - S6_4_WP3_density (Failed)                         WP3
+	 59 - S6_4_WP3_wall (Failed)                            WP3
+	 60 - S6_4_WP3_deplete (Failed)                         WP3
+	 61 - S6_4_WP3_prepared (Failed)                        WP3
+	 62 - S6_4_WP2_b01 (Failed)                             WP2
+	 63 - S6_4_WP2_b02 (Failed)                             WP2
+	 64 - S6_4_WP2_integrated (Failed)                      WP2
+	 65 - S6_4_WP2_activity (Failed)                        WP2
+	 66 - S6_3_2_AUDIT_SMOKE (Exit code 0xc0000135
+)        S6.3.2
+	 67 - S6_4_RM01_PROFILE (Exit code 0xc0000135
+)         RM01
+	 68 - S6_3_1_OBSERVER (Exit code 0xc0000135
+)           S6.3.1
+	 69 - S6_3_1_FUNDING (Exit code 0xc0000135
+)            S6.3.1
+	 70 - S6_3_1_PULSE (Exit code 0xc0000135
+)              S6.3.1
+	 71 - S6_3_1_BARRIER (Exit code 0xc0000135
+)            S6.3.1
+	 72 - S6_3_1_CORRUPTION (Exit code 0xc0000135
+)         S6.3.1
+	 73 - S6_3_1_CONTROLS (Exit code 0xc0000135
+)           S6.3.1
+	 74 - S6_3_1_VALIDATION (Exit code 0xc0000135
+)         S6.3.1
+	 75 - S6_3_DURABLE (Failed)                             S6.3
+	 76 - S6_3_BIRTH (Exit code 0xc0000135
+)                S6.3
+	 77 - S6_3_SHORTFALL (Exit code 0xc0000135
+)            S6.3
+	 78 - S6_3_QUEEN_DEATH (Exit code 0xc0000135
+)          S6.3
+	 79 - S6_3_RESERVE (Exit code 0xc0000135
+)              S6.3
+	 80 - S6_3_REMAINDER (Exit code 0xc0000135
+)            S6.3
+	 81 - S6_3_RECYCLE (Exit code 0xc0000135
+)              S6.3
+	 82 - S6_3_ROLLBACK (Exit code 0xc0000135
+)             S6.3
+	 83 - S6_3_MONTH (Exit code 0xc0000135
+)                S6.3
+	 84 - S6_3_CORRUPTION (Exit code 0xc0000135
+)           S6.3
+	 85 - S6_3_RETURN_VISIT (Exit code 0xc0000135
+)         S6.3
+	 86 - S6_3_CONTACT_SEQUENCE (Exit code 0xc0000135
+)     S6.3
+	 87 - S6_3_NO_RECIPIENT (Exit code 0xc0000135
+)         S6.3
+	 88 - S6_3_SPACE_RESPONSE (Exit code 0xc0000135
+)       S6.3
+	 89 - S6_3_PENDING_INDEX (Exit code 0xc0000135
+)        S6.3
+	 90 - S6_2_NUTRITION_OBSERVER (Failed)                  S6.2
+	 91 - S6_2_CHOICE_OBSERVER (Failed)                     S6.2
+	 92 - S6_1_GIFT_PRIORITY (Exit code 0xc0000135
+)        S6.1
+	 93 - S6_1_SELF_MAINTENANCE (Exit code 0xc0000135
+)     S6.1
+	 94 - S6_1_LOCAL_CONTINUATION (Exit code 0xc0000135
+)   S6.1
+	 95 - S6_1_RELEASE_CUE (Exit code 0xc0000135
+)          S6.1
+	 96 - S6_1_CONTROLS (Exit code 0xc0000135
+)             S6.1
+	 97 - S6_1_PARTITION (Exit code 0xc0000135
+)            S6.1
+	 98 - S6_1_LOCALITY (Exit code 0xc0000135
+)             S6.1
+	 99 - S6_1_CORRUPTION (Exit code 0xc0000135
+)           S6.1
+	100 - S6_1_CONTACT_LINKS (Exit code 0xc0000135
+)        S6.1
+	101 - S6_DEMAND (Exit code 0xc0000135
+)                 S6
+	102 - S6_CONCURRENT (Exit code 0xc0000135
+)             S6
+	103 - S6_CONTACTS (Exit code 0xc0000135
+)               S6
+	104 - S6_CONTACT_INDEX (Exit code 0xc0000135
+)          S6
+	105 - S6_CONTACT_WALL (Exit code 0xc0000135
+)           S6
+	106 - S6_SURPLUS (Exit code 0xc0000135
+)                S6
+	107 - S6_AUTONOMY_CONTROL (Exit code 0xc0000135
+)       S6
+	108 - S6_MIXED_SPACE (Exit code 0xc0000135
+)            S6
+	109 - S6_OFF_PLANE (Exit code 0xc0000135
+)              S6
+	110 - S6_SEALED (Exit code 0xc0000135
+)                 S6
+	111 - S6_DETERMINISM (Exit code 0xc0000135
+)            S6
+	112 - S6_LIMITS (Exit code 0xc0000135
+)                 S6
+	113 - S6_CORRUPTION (Exit code 0xc0000135
+)             S6
+	114 - S6_LOCALITY (Exit code 0xc0000135
+)               S6
+	115 - S6_DURABLE_INTEGRATION (Exit code 0xc0000135
+)    S6
+	116 - S6_1_DURABLE_INTEGRATION (Exit code 0xc0000135
+)  S6.1
+	117 - S5_ARCHIVE_CLI (Failed)                           S5
+	118 - S5_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)       S5
+	119 - S5_HISTORY_STORAGE_SMOKE (Exit code 0xc0000135
+)  S5
+	120 - S5_IO_FAILURE (Exit code 0xc0000135
+)             S5
+	121 - S5_WAL_CRASH (Failed)                             S5
+	122 - S5_ATOMIC (Exit code 0xc0000135
+)                 S5
+	123 - S5_COMMANDS (Exit code 0xc0000135
+)               S5
+	124 - S5_ISOLATION (Exit code 0xc0000135
+)              S5
+	125 - S5_METRICS (Exit code 0xc0000135
+)                S5
+	126 - S5_WINDOWS (Exit code 0xc0000135
+)                S5
+	127 - S5_CORRUPTION (Exit code 0xc0000135
+)             S5
+	128 - S5_UINT64 (Exit code 0xc0000135
+)                 S5
+	129 - S5_GEOMETRY (Exit code 0xc0000135
+)               S5
+	130 - S5_EQUIVALENCE (Exit code 0xc0000135
+)            S5
+	131 - S5_HISTORY (Exit code 0xc0000135
+)                S5
+	132 - S5_BEHAVIORS (Exit code 0xc0000135
+)              S5
+	133 - S5_STORAGE_LIMITS (Exit code 0xc0000135
+)         S5
+	134 - S5_CRASH (Failed)                                 S5
+	135 - S4_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)       S4
+	136 - S4_INITIAL (Exit code 0xc0000135
+)                S4
+	137 - S4_MATERIAL (Exit code 0xc0000135
+)               S4
+	138 - S4_OVERLAP (Exit code 0xc0000135
+)                S4
+	139 - S4_CONSTRAINTS (Exit code 0xc0000135
+)            S4
+	140 - S4_SDF (Exit code 0xc0000135
+)                    S4
+	141 - S4_NAVIGATION (Exit code 0xc0000135
+)             S4
+	142 - S4_CLEARANCE (Exit code 0xc0000135
+)              S4
+	143 - S4_CONTACT (Exit code 0xc0000135
+)                S4
+	144 - S4_AUTONOMY (Exit code 0xc0000135
+)               S4
+	145 - S4_ROLLBACK (Exit code 0xc0000135
+)               S4
+	146 - S4_FILL_NAVIGATION (Exit code 0xc0000135
+)        S4
+	147 - S4_NEIGHBORHOOD (Exit code 0xc0000135
+)           S4
+	148 - S4_CORRUPTION (Exit code 0xc0000135
+)             S4
+	149 - S4_BUDGETS (Exit code 0xc0000135
+)                S4
+	150 - S4_CONNECTIVITY (Exit code 0xc0000135
+)           S4
+	151 - S4_SURFACE_BARRIER (Exit code 0xc0000135
+)        S4
+	152 - S3_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)       S3
+	153 - S3_INITIALIZATION (Exit code 0xc0000135
+)         S3
+	154 - S3_INTEGRATION (Exit code 0xc0000135
+)            S3
+	155 - S3_EXCHANGE (Exit code 0xc0000135
+)               S3
+	156 - S3_CONSTRAINTS (Exit code 0xc0000135
+)            S3
+	157 - S3_INGESTION (Exit code 0xc0000135
+)              S3
+	158 - S3_THRESHOLDS (Exit code 0xc0000135
+)             S3
+	159 - S3_LIFECYCLE (Exit code 0xc0000135
+)              S3
+	160 - S3_BEHAVIOR (Exit code 0xc0000135
+)               S3
+	161 - S3_REPLAY (Exit code 0xc0000135
+)                 S3
+	162 - S3_ROLLBACK (Exit code 0xc0000135
+)               S3
+	163 - S3_LOCALITY (Exit code 0xc0000135
+)               S3
+	164 - S3_CORRUPTION (Exit code 0xc0000135
+)             S3
+	165 - S3_ALLOCATION_LIMIT (Exit code 0xc0000135
+)       S3
+	166 - S2_2_MODEL (Exit code 0xc0000135
+)                S2.2
+	167 - S2_2_LOCALITY (Exit code 0xc0000135
+)             S2.2
+	168 - S2_2_CONTINUOUS (Exit code 0xc0000135
+)           S2.2
+	169 - S2_2_REPLAY (Exit code 0xc0000135
+)               S2.2
+	170 - S2_2_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)     S2.2
+	171 - S2_1_BIAS (Exit code 0xc0000135
+)                 S2.1
+	172 - S2_1_RUNTIME_BIAS (Exit code 0xc0000135
+)         S2.1
+	173 - S2_1_RESPONSE (Exit code 0xc0000135
+)             S2.1
+	174 - S2_1_CONTINUITY (Exit code 0xc0000135
+)           S2.1
+	175 - S2_1_ACTIVATION (Exit code 0xc0000135
+)           S2.1
+	176 - S2_1_SOCIAL (Exit code 0xc0000135
+)               S2.1
+	177 - S2_1_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)     S2.1
+	178 - S2_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)       S2
+	179 - S2_SURFACE (Exit code 0xc0000135
+)                S2
+	180 - S2_LOCALITY (Exit code 0xc0000135
+)               S2
+	181 - S2_LOOP (Exit code 0xc0000135
+)                   S2
+	182 - S2_ORDER (Exit code 0xc0000135
+)                  S2
+	183 - S2_MEMORY (Exit code 0xc0000135
+)                 S2
+	184 - S2_TRAILS (Exit code 0xc0000135
+)                 S2
+	185 - S2_REPLAY (Exit code 0xc0000135
+)                 S2
+	186 - S2_ROLLBACK (Exit code 0xc0000135
+)               S2
+	187 - S2_SCHEDULING (Exit code 0xc0000135
+)             S2
+	188 - S2_MULTISEED (Exit code 0xc0000135
+)              S2
+	189 - S2_MODEL (Exit code 0xc0000135
+)                  S2
+	190 - S2_COLONIES (Exit code 0xc0000135
+)               S2
+	191 - S2_CORRUPTION (Exit code 0xc0000135
+)             S2
+	192 - S6_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S6
+	193 - S5_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S5
+	194 - S4_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S4
+	195 - S3_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S3
+	196 - S6_1_ALLOCATION_FAILURE (Exit code 0xc0000135
+)   S6.1
+	197 - S6_3_ALLOCATION_FAILURE (Exit code 0xc0000135
+)   S6.3
+	198 - S6_3_1_ALLOCATION_FAILURE (Exit code 0xc0000135
+) S6.3.1
+	199 - S6_3_3_ALLOCATION_FAILURE (Exit code 0xc0000135
+) S6.3.3
+	200 - S6_3_3_1_ALLOCATION_FAILURE (Exit code 0xc0000135
+) S6.3.3.1
+	201 - S6_3_3_2_ALLOCATION_FAILURE (Exit code 0xc0000135
+) S6.3.3.2
+	202 - S1_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S1
+	203 - S2_ALLOCATION_FAILURE (Exit code 0xc0000135
+)     S2
+	204 - S2_1_ALLOCATION_FAILURE (Exit code 0xc0000135
+)   S2.1
+	205 - S1_ENTITIES (Exit code 0xc0000135
+)               S1
+	206 - S1_MOVEMENT (Exit code 0xc0000135
+)               S1
+	207 - S1_COMPETITION (Exit code 0xc0000135
+)            S1
+	208 - S1_FAILURES (Exit code 0xc0000135
+)               S1
+	209 - S1_FAIRNESS (Exit code 0xc0000135
+)               S1
+	210 - S1_LIFECYCLE (Exit code 0xc0000135
+)              S1
+	211 - S1_PHASES (Exit code 0xc0000135
+)                 S1
+	212 - S1_ROLLBACK (Exit code 0xc0000135
+)               S1
+	213 - S1_PERSISTENCE (Exit code 0xc0000135
+)            S1
+	214 - S1_ARITHMETIC (Exit code 0xc0000135
+)             S1
+	215 - S1_BUDGETS (Exit code 0xc0000135
+)                S1
+	216 - T00 (Exit code 0xc0000135
+)
+	217 - T01 (Exit code 0xc0000135
+)
+	218 - T02 (Exit code 0xc0000135
+)
+	219 - T03 (Exit code 0xc0000135
+)
+	220 - T04 (Exit code 0xc0000135
+)
+	221 - T05 (Exit code 0xc0000135
+)
+	222 - T06 (Exit code 0xc0000135
+)
+	223 - T07 (Exit code 0xc0000135
+)
+	224 - T08 (Exit code 0xc0000135
+)
+	225 - T09 (Exit code 0xc0000135
+)
+	226 - T10 (Exit code 0xc0000135
+)
+	227 - T12 (Exit code 0xc0000135
+)
+	228 - T11 (Failed)
+	229 - T13 (Failed)
+	230 - CLI_VALIDATION (Failed)
+	231 - CORE_EDGE_CASES (Exit code 0xc0000135
+)
+	232 - S6_3_3_CAPABILITY (Exit code 0xc0000135
+)         S6.3.3
+	233 - S6_3_3_LOCALITY (Exit code 0xc0000135
+)           S6.3.3
+	234 - S6_3_3_REVERSIBILITY (Exit code 0xc0000135
+)      S6.3.3
+	235 - S6_3_3_STAGES (Exit code 0xc0000135
+)             S6.3.3
+	236 - S6_3_3_DURATION (Exit code 0xc0000135
+)           S6.3.3
+	237 - S6_3_3_INTERRUPTION (Exit code 0xc0000135
+)       S6.3.3
+	238 - S6_3_3_WORKER (Exit code 0xc0000135
+)             S6.3.3
+	239 - S6_3_3_QUERY (Exit code 0xc0000135
+)              S6.3.3
+	240 - S6_3_3_ROLLBACK (Exit code 0xc0000135
+)           S6.3.3
+	241 - S6_3_3_TRANSPORT (Exit code 0xc0000135
+)          S6.3.3
+	242 - S6_3_3_COMPETITION (Exit code 0xc0000135
+)        S6.3.3
+	243 - S6_3_3_CORRUPTION (Exit code 0xc0000135
+)         S6.3.3
+	244 - S6_3_3_OBSERVATION_ONLY (Exit code 0xc0000135
+)   S6.3.3
+	245 - S6_3_3_TARGET_LIFECYCLE (Exit code 0xc0000135
+)   S6.3.3
+	246 - S6_3_3_GEOMETRY_CLOSURE (Exit code 0xc0000135
+)   S6.3.3
+	247 - S6_3_3_STORAGE (Failed)
+	248 - S6_3_3_1_PERSISTENCE (Exit code 0xc0000135
+)      S6.3.3.1
+	249 - S6_3_3_1_LOCALITY (Exit code 0xc0000135
+)         S6.3.3.1
+	250 - S6_3_3_1_CONTACT (Exit code 0xc0000135
+)          S6.3.3.1
+	251 - S6_3_3_1_CONFLICT (Exit code 0xc0000135
+)         S6.3.3.1
+	252 - S6_3_3_1_GEOMETRY (Exit code 0xc0000135
+)         S6.3.3.1
+	253 - S6_3_3_1_STORAGE (Failed)                         S6.3.3.1
+	254 - S6_3_3_2_FOREIGN (Exit code 0xc0000135
+)          S6.3.3.2
+	255 - S6_3_3_2_COMPETING (Exit code 0xc0000135
+)        S6.3.3.2
+	256 - S6_3_3_2_GEOMETRY (Exit code 0xc0000135
+)         S6.3.3.2
+	257 - S6_3_3_2_LIFECYCLE (Exit code 0xc0000135
+)        S6.3.3.2
+	258 - S6_3_3_2_AUTONOMY (Exit code 0xc0000135
+)         S6.3.3.2
+	259 - S6_3_3_2_REPRODUCTION (Exit code 0xc0000135
+)     S6.3.3.2
+	260 - S6_3_3_2_MOTION (Failed)                          S6.3.3.2
+	261 - S6_4_RM01_short (Failed)                          RM01
+	262 - S6_4_RM01_legacy (Failed)                         RM01
+	263 - S6_4_RM01_warm (Failed)                           RM01
+	264 - S6_3_4_CODEC (Failed)                             S6.3.4
+	265 - S6_3_4_LIVE (Failed)                              S6.3.4
+	266 - S6_3_4_PRESSURE (Failed)                          S6.3.4
+	267 - S6_3_4_MIGRATION (Failed)                         S6.3.4
+	268 - S6_3_4_CORRUPT (Failed)                           S6.3.4
+	269 - S6_3_4_CRASH (Failed)                             S6.3.4
+	270 - S6_3_4_custody (Failed)                           S6.3.4
+	271 - S6_3_4_connectivity (Failed)                      S6.3.4
+	272 - S6_3_4_ECO_SMOKE (Failed)                         S6.3.4
+	273 - S6_3_4_IO_FAILURE (Exit code 0xc0000135
+)         S6.3.4
+	274 - S6_3_4_WAL_CRASH (Failed)                         S6.3.4
+	275 - S6_3_3_3_smoke (Failed)                           S6.3.3.3
+	276 - S6_3_3_3_probes (Failed)                          S6.3.3.3
+	277 - S6_3_3_3_R1_motion (Failed)                       S6.3.3.3-R1
+	278 - S6_3_3_3_R1_custody (Failed)                      S6.3.3.3-R1
+	279 - S6_3_3_3_R1_connectivity (Failed)                 S6.3.3.3-R1
+	280 - S6_3_3_3_R1_integration (Failed)                  S6.3.3.3-R1
+	281 - S6_3_3_EXPERIMENT_SMOKE (Exit code 0xc0000135
+)   S6.3.3
+[ERROR_MESSAGE] 
+Errors while running CTest
+

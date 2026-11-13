@@ -1,0 +1,453 @@
+{
+  "binary_sha256": "d05dc4ca55d817f28ec0264d15a23bc947d70d14df551ae4a6e7d0c633d0b9ef",
+  "cases": [
+    {
+      "case": "borisovka-03-primary-1-on",
+      "counts_and_costs": {
+        "advance_ms": "13.588799999999994",
+        "checkpoint_ms": "6.0523999999999996",
+        "cut_ms": "2.8127000000000013",
+        "events": "10054",
+        "facts_bytes": "1853002",
+        "frame_bytes": "27094",
+        "midpoint_restore_ms": "50.104199999999999",
+        "midpoint_save_ms": "40.101799999999997",
+        "peak_rss_bytes": "14602240",
+        "peak_sampled_queue": "23",
+        "setup_ms": "0.064399999999999999"
+      },
+      "hashes": {
+        "facts.bin": "39bdf79667c9c945d4b9b25a454febb3b752c297996e2c955a78e92b20691dd0",
+        "final.frame": "4befa6b8606dc679a19316d4cbd6c1146813a67f9d7c781f98e83d74c72d9757",
+        "initial.chk": "0f938e71c2019a1c28af632da527259da6fcb6bca9a7a22beabe6709d53e9a96"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 601552,
+          "sha256": "926a6c963c6775a551ab563ab354c89621c978a0e306e8bfdc48e095fc6c372c"
+        }
+      },
+      "mode": "h1",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-03-primary-1-on",
+      "counts_and_costs": {
+        "advance_ms": "13.969100000000003",
+        "checkpoint_ms": "9.6056000000000008",
+        "cut_ms": "0.0047999999999999996",
+        "events": "10054",
+        "facts_bytes": "1853002",
+        "frame_bytes": "27094",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "13668352",
+        "peak_sampled_queue": "23",
+        "setup_ms": "0.0683"
+      },
+      "hashes": {
+        "facts.bin": "39bdf79667c9c945d4b9b25a454febb3b752c297996e2c955a78e92b20691dd0",
+        "final.frame": "4befa6b8606dc679a19316d4cbd6c1146813a67f9d7c781f98e83d74c72d9757",
+        "initial.chk": "0f938e71c2019a1c28af632da527259da6fcb6bca9a7a22beabe6709d53e9a96"
+      },
+      "mode": "h1",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "st_petersburg-00-primary-1-off",
+      "counts_and_costs": {
+        "advance_ms": "6.3945000000000061",
+        "checkpoint_ms": "0.98770000000000002",
+        "cut_ms": "2.4837999999999987",
+        "events": "4084",
+        "facts_bytes": "665692",
+        "frame_bytes": "22842",
+        "midpoint_restore_ms": "5.9870000000000001",
+        "midpoint_save_ms": "21.1691",
+        "peak_rss_bytes": "11124736",
+        "peak_sampled_queue": "24",
+        "setup_ms": "0.090700000000000003"
+      },
+      "hashes": {
+        "facts.bin": "21636a8233008759b6ab9afc9106abd0e536c4378ff69e9c94de0d7c260cad59",
+        "final.frame": "bec148f831220114ccdd932f9b9d2515d88e5af959e05c73d613bb4e8071fb2c",
+        "initial.chk": "d66513704e9e793c1244aba147a6bb852d4d48ea63733cdc8f1f53d5062005b5"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 222512,
+          "sha256": "9ac717518926e74ccfbf65a408cec4d92541ca70339a3c75cef57558dd15d852"
+        }
+      },
+      "mode": "h1",
+      "treatment": "durable"
+    },
+    {
+      "case": "st_petersburg-00-primary-1-off",
+      "counts_and_costs": {
+        "advance_ms": "5.4146000000000027",
+        "checkpoint_ms": "3.7503000000000002",
+        "cut_ms": "0.0029999999999999988",
+        "events": "4084",
+        "facts_bytes": "665692",
+        "frame_bytes": "22842",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "9445376",
+        "peak_sampled_queue": "24",
+        "setup_ms": "0.052900000000000003"
+      },
+      "hashes": {
+        "facts.bin": "21636a8233008759b6ab9afc9106abd0e536c4378ff69e9c94de0d7c260cad59",
+        "final.frame": "bec148f831220114ccdd932f9b9d2515d88e5af959e05c73d613bb4e8071fb2c",
+        "initial.chk": "d66513704e9e793c1244aba147a6bb852d4d48ea63733cdc8f1f53d5062005b5"
+      },
+      "mode": "h1",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1",
+      "counts_and_costs": {
+        "advance_ms": "31.940099999999997",
+        "checkpoint_ms": "8.6355000000000004",
+        "cut_ms": "3.5729000000000002",
+        "events": "15220",
+        "facts_bytes": "2849692",
+        "frame_bytes": "30238",
+        "midpoint_restore_ms": "69.755799999999994",
+        "midpoint_save_ms": "43.4452",
+        "peak_rss_bytes": "17002496",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.085800000000000001"
+      },
+      "hashes": {
+        "facts.bin": "94d3f9801ea652a1149069bb0b6644144b2e6d7c3cf088cab18e90d617a777eb",
+        "final.frame": "f28acc94850df613bccdc7dbc78465ac7a49c6e95f3b34d66d0b1b1654391bbb",
+        "initial.chk": "16e6b35a316716d28b71d22c2e3934de91da6b6ddf280371e999ed96c669f5e3"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 683952,
+          "sha256": "3610e84d592c64d14f6577a67e2a44d3ab0b3213bf6c3439c076bdfe095f1123"
+        }
+      },
+      "mode": "h2",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1",
+      "counts_and_costs": {
+        "advance_ms": "27.54039999999998",
+        "checkpoint_ms": "16.183",
+        "cut_ms": "0.0041999999999999997",
+        "events": "15220",
+        "facts_bytes": "2849692",
+        "frame_bytes": "30238",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "16887808",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.0591"
+      },
+      "hashes": {
+        "facts.bin": "94d3f9801ea652a1149069bb0b6644144b2e6d7c3cf088cab18e90d617a777eb",
+        "final.frame": "f28acc94850df613bccdc7dbc78465ac7a49c6e95f3b34d66d0b1b1654391bbb",
+        "initial.chk": "16e6b35a316716d28b71d22c2e3934de91da6b6ddf280371e999ed96c669f5e3"
+      },
+      "mode": "h2",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "borisovka-03-primary-1-on",
+      "counts_and_costs": {
+        "advance_ms": "30.627400000000002",
+        "checkpoint_ms": "8.7799999999999994",
+        "cut_ms": "3.3174999999999994",
+        "events": "16384",
+        "facts_bytes": "3083845",
+        "frame_bytes": "31463",
+        "midpoint_restore_ms": "61.4649",
+        "midpoint_save_ms": "40.626399999999997",
+        "peak_rss_bytes": "15876096",
+        "peak_sampled_queue": "23",
+        "setup_ms": "0.091300000000000006"
+      },
+      "hashes": {
+        "facts.bin": "b507b17f84b09929ea0a1c9012e47a96f2d74f5d6d1700744677c9024ba12a77",
+        "final.frame": "32803dec7c0b9346398c3abf159589845887d43a81685175f4488bbe2cc07b0b",
+        "initial.chk": "936c5babca5d13ce7153e13417262a7070eee2af48fff08d57cec747f684774b"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 663352,
+          "sha256": "5d7956501cb5f4e3b2e04130d10d20be613bbc86a0832c3bd851dbf091da6fc4"
+        }
+      },
+      "mode": "both",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-03-primary-1-on",
+      "counts_and_costs": {
+        "advance_ms": "34.571700000000021",
+        "checkpoint_ms": "19.558800000000002",
+        "cut_ms": "0.0075000000000000023",
+        "events": "16384",
+        "facts_bytes": "3083845",
+        "frame_bytes": "31463",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "15691776",
+        "peak_sampled_queue": "23",
+        "setup_ms": "0.17530000000000001"
+      },
+      "hashes": {
+        "facts.bin": "b507b17f84b09929ea0a1c9012e47a96f2d74f5d6d1700744677c9024ba12a77",
+        "final.frame": "32803dec7c0b9346398c3abf159589845887d43a81685175f4488bbe2cc07b0b",
+        "initial.chk": "936c5babca5d13ce7153e13417262a7070eee2af48fff08d57cec747f684774b"
+      },
+      "mode": "both",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "st_petersburg-00-primary-1-off",
+      "counts_and_costs": {
+        "advance_ms": "8.8448000000000047",
+        "checkpoint_ms": "1.1917",
+        "cut_ms": "3.8613000000000013",
+        "events": "4084",
+        "facts_bytes": "665692",
+        "frame_bytes": "22842",
+        "midpoint_restore_ms": "9.5824999999999996",
+        "midpoint_save_ms": "26.6556",
+        "peak_rss_bytes": "11128832",
+        "peak_sampled_queue": "24",
+        "setup_ms": "0.0608"
+      },
+      "hashes": {
+        "facts.bin": "dd483e9bd2c63cfa986f80a37415b0d45c5dd628229ad8bdbc46ed81cae59a83",
+        "final.frame": "0e02a6835cedf4d997c29c558c6068e19bd91f2333ab82cce1532dbd9253eeb4",
+        "initial.chk": "17469b9b410aa5ac5598723ff559628925b7d38f2a36997ad4e6d5254586e339"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 222512,
+          "sha256": "4e3ad570b864c274d0706ae5e4a8fbb02743e4b6980f13c2194202dad76305d0"
+        }
+      },
+      "mode": "both",
+      "treatment": "durable"
+    },
+    {
+      "case": "st_petersburg-00-primary-1-off",
+      "counts_and_costs": {
+        "advance_ms": "6.7023000000000073",
+        "checkpoint_ms": "4.3047000000000004",
+        "cut_ms": "0.0040999999999999977",
+        "events": "4084",
+        "facts_bytes": "665692",
+        "frame_bytes": "22842",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "8114176",
+        "peak_sampled_queue": "24",
+        "setup_ms": "0.088200000000000001"
+      },
+      "hashes": {
+        "facts.bin": "dd483e9bd2c63cfa986f80a37415b0d45c5dd628229ad8bdbc46ed81cae59a83",
+        "final.frame": "0e02a6835cedf4d997c29c558c6068e19bd91f2333ab82cce1532dbd9253eeb4",
+        "initial.chk": "17469b9b410aa5ac5598723ff559628925b7d38f2a36997ad4e6d5254586e339"
+      },
+      "mode": "both",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-blocked",
+      "counts_and_costs": {
+        "advance_ms": "25.137999999999991",
+        "checkpoint_ms": "7.3799999999999999",
+        "cut_ms": "3.8459999999999996",
+        "events": "12511",
+        "facts_bytes": "2319079",
+        "frame_bytes": "28088",
+        "midpoint_restore_ms": "67.061800000000005",
+        "midpoint_save_ms": "45.978299999999997",
+        "peak_rss_bytes": "16138240",
+        "peak_sampled_queue": "26",
+        "setup_ms": "179.86420000000001"
+      },
+      "hashes": {
+        "facts.bin": "b6cf9186cf94fa63a4cb339ae441aebad0739c033c332f08ab4d2752864b9fb8",
+        "final.frame": "dcfe7d24ffb6a3ae808ea1087e77ab75d110ccada284ddee8a80be203abed423",
+        "initial.chk": "e3cc1d91433370cdacacd64eb2ed497db5c71beba357638dbfe428813a64c3c0"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 618032,
+          "sha256": "3d35027ce4e28becc0f459591f2afaf150d6e2b75c08e119d9ad53a1f78776d8"
+        }
+      },
+      "mode": "water-r1",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-blocked",
+      "counts_and_costs": {
+        "advance_ms": "23.789499999999993",
+        "checkpoint_ms": "14.731400000000001",
+        "cut_ms": "0.0064000000000000038",
+        "events": "12511",
+        "facts_bytes": "2319079",
+        "frame_bytes": "28088",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "14114816",
+        "peak_sampled_queue": "26",
+        "setup_ms": "183.66820000000001"
+      },
+      "hashes": {
+        "facts.bin": "b6cf9186cf94fa63a4cb339ae441aebad0739c033c332f08ab4d2752864b9fb8",
+        "final.frame": "dcfe7d24ffb6a3ae808ea1087e77ab75d110ccada284ddee8a80be203abed423",
+        "initial.chk": "e3cc1d91433370cdacacd64eb2ed497db5c71beba357638dbfe428813a64c3c0"
+      },
+      "mode": "water-r1",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-reachable",
+      "counts_and_costs": {
+        "advance_ms": "22.771799999999971",
+        "checkpoint_ms": "8.6149000000000004",
+        "cut_ms": "3.9504999999999995",
+        "events": "11297",
+        "facts_bytes": "2086823",
+        "frame_bytes": "26547",
+        "midpoint_restore_ms": "86.997100000000003",
+        "midpoint_save_ms": "51.224800000000002",
+        "peak_rss_bytes": "16830464",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.14699999999999999"
+      },
+      "hashes": {
+        "facts.bin": "5c3d034996c785838f66df16448d47488b339300ecb887282f502add75bd813e",
+        "final.frame": "81d28d4e7ab9487a1f210e703dea300d2ab4ce9b8908c5ea70b15707ce9679b0",
+        "initial.chk": "abf83142610730c932dab0a65c695378d173d1e0cfdda139833c4a5baa8ade6e"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 683952,
+          "sha256": "b555d8922b75879a57def3c2b4acd5ada824e69e3ca5c81e6676414a1ecbadc7"
+        }
+      },
+      "mode": "water-both",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-reachable",
+      "counts_and_costs": {
+        "advance_ms": "20.040099999999985",
+        "checkpoint_ms": "13.3714",
+        "cut_ms": "0.0033999999999999985",
+        "events": "11297",
+        "facts_bytes": "2086823",
+        "frame_bytes": "26547",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "14680064",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.068599999999999994"
+      },
+      "hashes": {
+        "facts.bin": "5c3d034996c785838f66df16448d47488b339300ecb887282f502add75bd813e",
+        "final.frame": "81d28d4e7ab9487a1f210e703dea300d2ab4ce9b8908c5ea70b15707ce9679b0",
+        "initial.chk": "abf83142610730c932dab0a65c695378d173d1e0cfdda139833c4a5baa8ade6e"
+      },
+      "mode": "water-both",
+      "treatment": "unobserved"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-absent",
+      "counts_and_costs": {
+        "advance_ms": "27.027299999999997",
+        "checkpoint_ms": "10.297599999999999",
+        "cut_ms": "3.5393999999999992",
+        "events": "13810",
+        "facts_bytes": "2576716",
+        "frame_bytes": "29038",
+        "midpoint_restore_ms": "81.144400000000005",
+        "midpoint_save_ms": "57.1633",
+        "peak_rss_bytes": "17309696",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.063700000000000007"
+      },
+      "hashes": {
+        "facts.bin": "875e51ad564c44c40d4b4eebcf4063caf03fc566fdfe5cf11700c3b05c927fcf",
+        "final.frame": "1ffc574bfc1004e82dca68b3edd910c71862c7e7cae7ee8b5331752e20399693",
+        "initial.chk": "5ab2d0c7464a76ce79e9fdae5b37a23cf645189cf452b8b68f27d87b0e249876"
+      },
+      "midpoint_files": {
+        "midpoint.sqlite": {
+          "bytes": 147456,
+          "sha256": "3eaebca32a062207333e155c06fd68d60b2887d73697f62862097c2657d30630"
+        },
+        "midpoint.sqlite-wal": {
+          "bytes": 683952,
+          "sha256": "224d6b426ba8236c6b757ab7cfe1bb70bd8a897a95b0a1238248f85a36bdce28"
+        }
+      },
+      "mode": "water-both",
+      "treatment": "durable"
+    },
+    {
+      "case": "borisovka-micro-nominal-0-1-water-absent",
+      "counts_and_costs": {
+        "advance_ms": "28.235899999999983",
+        "checkpoint_ms": "16.433499999999999",
+        "cut_ms": "0.0056000000000000025",
+        "events": "13810",
+        "facts_bytes": "2576716",
+        "frame_bytes": "29038",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "15986688",
+        "peak_sampled_queue": "26",
+        "setup_ms": "0.089899999999999994"
+      },
+      "hashes": {
+        "facts.bin": "875e51ad564c44c40d4b4eebcf4063caf03fc566fdfe5cf11700c3b05c927fcf",
+        "final.frame": "1ffc574bfc1004e82dca68b3edd910c71862c7e7cae7ee8b5331752e20399693",
+        "initial.chk": "5ab2d0c7464a76ce79e9fdae5b37a23cf645189cf452b8b68f27d87b0e249876"
+      },
+      "mode": "water-both",
+      "treatment": "unobserved"
+    }
+  ]
+}

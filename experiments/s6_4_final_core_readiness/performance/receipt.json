@@ -1,0 +1,43 @@
+{
+  "original": {
+    "closure_inherited": {
+      "cells": 30,
+      "passed": 22
+    },
+    "closure_v7": {
+      "cells": 4,
+      "passed": 4
+    },
+    "integrated_inherited": {
+      "cells": 30,
+      "passed": 23
+    },
+    "integrated_v7": {
+      "cells": 4,
+      "passed": 4
+    },
+    "r1": {
+      "cells": 20,
+      "passed": 17
+    },
+    "r2": {
+      "cells": 30,
+      "passed": 29
+    }
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "script_sha256": "4502b90bdacea9ee5a0c73102f191f6adf1133bc1f191e1b8ac3a6acb88dd59a",
+  "synthetic": {
+    "draws": 399,
+    "numpy": "2.3.5",
+    "seed": 640941,
+    "trials_per_scenario": 240,
+    "windows": [
+      3,
+      32,
+      64,
+      96
+    ]
+  }
+}

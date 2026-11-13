@@ -1,0 +1,4 @@
+CMake Error at cpp/tests/test_s6_4_wp6b.cmake:8 (message):
+  FND_IF_BOUNDARY_COLONY failed with no such file or directory
+
+

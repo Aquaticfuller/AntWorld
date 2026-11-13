@@ -1,0 +1,28 @@
+{
+  "equal": [
+    {
+      "case": "borisovka-1-shaft-fast-marked-unobserved",
+      "equal": true,
+      "reference": "borisovka-1-shaft-fast-marked"
+    },
+    {
+      "case": "borisovka-1-shaft-fast-marked-durable-split",
+      "equal": true,
+      "reference": "borisovka-1-shaft-fast-marked"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-marked-unobserved",
+      "equal": true,
+      "reference": "st_petersburg-1-shaft-fast-marked"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-marked-durable-split",
+      "equal": true,
+      "reference": "st_petersburg-1-shaft-fast-marked"
+    }
+  ],
+  "failures": [],
+  "primary": 24,
+  "repeats": 4,
+  "verified": 24
+}

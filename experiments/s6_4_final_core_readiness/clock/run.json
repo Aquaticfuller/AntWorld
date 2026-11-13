@@ -1,0 +1,170 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "8000000",
+    "15"
+  ],
+  "binary_sha256": "365f608b7c69c9aeee374073a3504922f151b76ae287544ef58beef43bb16197",
+  "collector_sha256": "ce4e1f5a6c870a606e75f46235f702f8da88ea19c89944a035accbc17dbf980b",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "b6c26ff563f8ced1110900742fe2da5631b10993",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "084f71f5d4f50e447c69e62cdf7317ec5b6a6d4eae37303a5b48c1c85a596320",
+  "python": "3.12.14",
+  "reference": "73e801946a2419bf33eb78e5240f8af0923ff31a",
+  "roster": [
+    {
+      "case": "borisovka-1-shaft-fast-marked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-shaft-fast-blocked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-shaft-fast-marked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-shaft-fast-blocked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-shaft-fast-marked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-shaft-fast-blocked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-shaft-fast-marked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-shaft-fast-blocked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-shaft-fast-marked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-shaft-fast-blocked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-shaft-fast-marked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-shaft-fast-blocked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-marked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-blocked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-shaft-fast-marked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-shaft-fast-blocked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-shaft-fast-marked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-shaft-fast-blocked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-shaft-fast-marked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-shaft-fast-blocked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-shaft-fast-marked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-shaft-fast-blocked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-shaft-fast-marked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-shaft-fast-blocked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-shaft-fast-marked-unobserved",
+      "identity": 100961,
+      "mode": "unobserved"
+    },
+    {
+      "case": "borisovka-1-shaft-fast-marked-durable-split",
+      "identity": 100961,
+      "mode": "durable-split"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-marked-unobserved",
+      "identity": 101447,
+      "mode": "unobserved"
+    },
+    {
+      "case": "st_petersburg-1-shaft-fast-marked-durable-split",
+      "identity": 101447,
+      "mode": "durable-split"
+    }
+  ],
+  "source": "77cc30f7bc6bc5e4fe727bc91248aafc74e4c3e0",
+  "started_ns": 1794563107834833300
+}

@@ -1,0 +1,16 @@
+{
+  "original": null,
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "script_sha256": "d688150ff99bbb206b6d9ff062b8d8ff1a5d778151fa09c329c3305f91f0f886",
+  "synthetic": {
+    "draws": 399,
+    "numpy": "2.3.5",
+    "seed": 640943,
+    "trials_per_scenario": 240,
+    "windows": [
+      3,
+      96
+    ]
+  }
+}

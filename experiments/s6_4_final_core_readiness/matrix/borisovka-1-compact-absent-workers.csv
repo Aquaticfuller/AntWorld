@@ -1,0 +1,4 @@
+ant,eclose_ms,birth_ms,death_ms,death_cause,first_collection_ms,first_delivery_ms,first_carb_ms,first_water_ms,trips,moves,care_acts,carb_ug,water_ug,collected_ug,delivered_ug,terminal_age_ms,distinct_delivery_days,censored,paused_residence_ms,program_changes,committed_rests,rest_residence_ms,local_cues,trail_labels,memory_labels,path_m,marked_moves,forage_residence_ms
+3,3922560000,345600000,4019400000,2,,,,,0,242,242,0,0,0,0,96840000,0,0,1,4,10,43200000,0,0,0,2.173000000000001,0,53639999
+16,4354560000,777600000,4451400000,2,,,,,0,182,182,0,0,0,0,96840000,0,0,1,2,15,55979816,0,0,0,1.6300000000000008,0,40860183
+20,5045760000,1468800000,5142600000,2,,,,,0,226,226,0,0,0,0,96840000,0,0,1,4,10,43200000,0,0,0,2.0130000000000043,0,53639999

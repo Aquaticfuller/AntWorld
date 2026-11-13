@@ -1,0 +1,16 @@
+first,second,common,first_fail,second_fail,both_fail,either_fail,same
+r1,r2,20,3,1,0,4,16
+r1,integrated_inherited,20,3,5,2,6,16
+r1,closure_inherited,20,3,7,1,9,12
+r1,integrated_v7,0,0,0,0,0,0
+r1,closure_v7,0,0,0,0,0,0
+r2,integrated_inherited,30,1,7,0,8,22
+r2,closure_inherited,30,1,8,1,8,23
+r2,integrated_v7,0,0,0,0,0,0
+r2,closure_v7,0,0,0,0,0,0
+integrated_inherited,closure_inherited,30,7,8,3,12,21
+integrated_inherited,integrated_v7,0,0,0,0,0,0
+integrated_inherited,closure_v7,0,0,0,0,0,0
+closure_inherited,integrated_v7,0,0,0,0,0,0
+closure_inherited,closure_v7,0,0,0,0,0,0
+integrated_v7,closure_v7,4,0,0,0,0,4

@@ -1,0 +1,16 @@
+{
+  "files": {
+    "experiments/s6_4_founding_qualification/b06/census_diagnosis.csv": "fddf6218c2abde9c160a612e1ac7a0ab73fa1579cb392d343a6894e6c6bd66d3",
+    "experiments/s6_4_founding_qualification/b06/stage_exposures.csv.gz": "eeabe07646b328fead2c80dd6a4e6065bd65441ee5b138d38073d93b97e6af00",
+    "experiments/s6_4_integrated_founding/analysis/resupply-closed/censuses.csv": "be38591a99cc199296d484c93bc29d497b1c5b4d73eaf85905381d93a040b126",
+    "experiments/s6_4_integrated_founding/analysis/resupply-closed/stages.csv": "8eed5beaad86cd9824f72b9bb5bd3848fdea2e4afdc386e605bd8657185c15a4",
+    "experiments/s6_4_integrated_founding/analysis/resupply-factorial/censuses.csv": "6d845c76d66c6d040be0d68f95d1429647766d6f9f85fa714c9a027c56addfe5",
+    "experiments/s6_4_integrated_founding/analysis/resupply-factorial/stages.csv": "c1a705b68fc3cf8665ebc9b704adff5bbd71f26023c080711a349259d93486c1",
+    "experiments/s6_4_integrated_founding/analysis/resupply-nominal/censuses.csv": "97d384695409463d5720377126622dea7a8bc343b4cc7e2ac4d9b58db5a2cc0c",
+    "experiments/s6_4_integrated_founding/analysis/resupply-nominal/stages.csv": "b4bb26cbdeee971e9dd3e12fa2894b1535709e94708008a3752fee904e059ed5"
+  },
+  "first_census_larvae": 1686,
+  "old_readers_preserved": true,
+  "original_b06_status": "INSUFFICIENT",
+  "worlds": 444
+}

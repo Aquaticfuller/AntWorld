@@ -1,0 +1,88 @@
+{
+  "equal": [
+    {
+      "case": "borisovka-1-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-1-balanced"
+    },
+    {
+      "case": "borisovka-7-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-7-balanced"
+    },
+    {
+      "case": "borisovka-19-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-19-balanced"
+    },
+    {
+      "case": "borisovka-42-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-42-balanced"
+    },
+    {
+      "case": "borisovka-43-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-43-balanced"
+    },
+    {
+      "case": "borisovka-97-roomy",
+      "equal": true,
+      "reference": "borisovka-micro-nominal-0-97-balanced"
+    },
+    {
+      "case": "st_petersburg-1-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-1-balanced"
+    },
+    {
+      "case": "st_petersburg-7-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-7-balanced"
+    },
+    {
+      "case": "st_petersburg-19-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-19-balanced"
+    },
+    {
+      "case": "st_petersburg-42-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-42-balanced"
+    },
+    {
+      "case": "st_petersburg-43-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-43-balanced"
+    },
+    {
+      "case": "st_petersburg-97-roomy",
+      "equal": true,
+      "reference": "st_petersburg-micro-nominal-0-97-balanced"
+    },
+    {
+      "case": "borisovka-1-compact-marked-unobserved",
+      "equal": true,
+      "reference": "borisovka-1-compact-marked"
+    },
+    {
+      "case": "borisovka-1-compact-marked-durable-split",
+      "equal": true,
+      "reference": "borisovka-1-compact-marked"
+    },
+    {
+      "case": "st_petersburg-1-compact-marked-unobserved",
+      "equal": true,
+      "reference": "st_petersburg-1-compact-marked"
+    },
+    {
+      "case": "st_petersburg-1-compact-marked-durable-split",
+      "equal": true,
+      "reference": "st_petersburg-1-compact-marked"
+    }
+  ],
+  "failures": [],
+  "primary": 84,
+  "repeats": 4,
+  "verified": 84
+}

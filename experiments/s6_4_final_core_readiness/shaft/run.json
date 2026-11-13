@@ -1,0 +1,230 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "8000000",
+    "15"
+  ],
+  "binary_sha256": "d05dc4ca55d817f28ec0264d15a23bc947d70d14df551ae4a6e7d0c633d0b9ef",
+  "collector_sha256": "ebab8215155e0a5ad3b733034c0dcbe3fffdd90c2d7263349aae4705eab4a19e",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cpp_tree": "c0761ecc86f7f08b559b84a5447c54018f09ec3f",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "protocol_sha256": "73f90677f25eeb8fcbc48428b223648701bbc82c1fc0096628b969072c89288d",
+  "python": "3.12.14",
+  "reference": "73e801946a2419bf33eb78e5240f8af0923ff31a",
+  "roster": [
+    {
+      "case": "borisovka-1-shaft-marked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-shaft-blind",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-shaft-blocked",
+      "identity": 100961,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-shaft-marked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-shaft-blind",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-7-shaft-blocked",
+      "identity": 100962,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-shaft-marked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-shaft-blind",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-19-shaft-blocked",
+      "identity": 100963,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-shaft-marked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-shaft-blind",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-42-shaft-blocked",
+      "identity": 100964,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-shaft-marked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-shaft-blind",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-43-shaft-blocked",
+      "identity": 100965,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-shaft-marked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-shaft-blind",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-97-shaft-blocked",
+      "identity": 100966,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-shaft-marked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-shaft-blind",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-1-shaft-blocked",
+      "identity": 101447,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-shaft-marked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-shaft-blind",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-7-shaft-blocked",
+      "identity": 101448,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-shaft-marked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-shaft-blind",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-19-shaft-blocked",
+      "identity": 101449,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-shaft-marked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-shaft-blind",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-42-shaft-blocked",
+      "identity": 101450,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-shaft-marked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-shaft-blind",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-43-shaft-blocked",
+      "identity": 101451,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-shaft-marked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-shaft-blind",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "st_petersburg-97-shaft-blocked",
+      "identity": 101452,
+      "mode": "observed"
+    },
+    {
+      "case": "borisovka-1-shaft-marked-unobserved",
+      "identity": 100961,
+      "mode": "unobserved"
+    },
+    {
+      "case": "borisovka-1-shaft-marked-durable-split",
+      "identity": 100961,
+      "mode": "durable-split"
+    },
+    {
+      "case": "st_petersburg-1-shaft-marked-unobserved",
+      "identity": 101447,
+      "mode": "unobserved"
+    },
+    {
+      "case": "st_petersburg-1-shaft-marked-durable-split",
+      "identity": 101447,
+      "mode": "durable-split"
+    }
+  ],
+  "source": "50794b3ad709c2a6b5a056658573a005df947ce2",
+  "started_ns": 1794562093697396000
+}
