@@ -11,6 +11,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from analyze_s6_4_wp6b import check
+from diagnose_ecological_care import run as diagnose_care
 from founding_qualification_witnesses import COMMAND
 from run_ecological_closure import roster
 from run_s6_4_wp6b import ROOT, run_one, sha, write_json
@@ -195,6 +196,13 @@ def verify(output, joint_executable, scout_executable):
                 compare(path,scratch/name)
         check(summary["joint-original"]["failures"]==17 and summary["joint-expanded"]["joint_gate"]=="FAIL",
               "preserved engineering failures changed")
+        diagnosis = scratch/"founder-feeding"
+        diagnose_care(EVIDENCE/"care",diagnosis,True)
+        table = "founder_feeding_by_larva.csv"
+        by_id = {(r["case"],r["ant"]):r for r in csv_rows(EVIDENCE/"care/analysis"/table)}
+        for row in csv_rows(diagnosis/table):
+            check(all(by_id[row["case"],row["ant"]][k]==v for k,v in row.items()),
+                  "first feeding diagnosis differs from raw public witness")
         verify_timing(EVIDENCE/"timing")
         if joint_executable and scout_executable:
             replay(scratch,joint_executable,scout_executable)

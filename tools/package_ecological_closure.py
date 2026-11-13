@@ -41,7 +41,7 @@ def publish(scratch, local, output):
             target = destination/"analysis"/artifact.name
             if artifact.stem in {"larvae","receivers","stages"}:
                 with target.with_suffix(".csv.gz").open("xb") as compressed, artifact.open("rb") as stream:
-                    with gzip.GzipFile(fileobj=compressed,filename="",mtime=0) as archive:
+                    with gzip.GzipFile(fileobj=compressed,mode="wb",filename="",mtime=0) as archive:
                         shutil.copyfileobj(stream,archive)
             else:
                 shutil.copyfile(artifact,target)

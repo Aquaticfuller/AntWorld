@@ -28,6 +28,7 @@ python tools/run_ecological_closure.py care build/ecological-release/antworld_s6
 python tools/run_ecological_closure.py scout build/ecological-release/antworld_ecological_recruitment out/closure-scout
 python tools/verify_ecological_closure.py joint out/closure-joint out/closure-joint-analysis
 python tools/verify_ecological_closure.py care out/closure-care out/closure-care-analysis
+python tools/diagnose_ecological_care.py out/closure-care out/closure-founder-feeding
 python tools/verify_ecological_closure.py scout out/closure-scout out/closure-scout-analysis
 python tools/verify_ecological_publication.py out/closure-public-audit --joint-binary build/ecological-release/antworld_s6_4_wp6b --scout-binary build/ecological-release/antworld_ecological_recruitment
 python tools/verify_final_core_evidence.py out/closure-inherited-audit
