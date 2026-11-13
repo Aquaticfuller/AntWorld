@@ -1,5 +1,25 @@
 # AntWorld
 
+## Watch a real colony with OP0
+
+On Windows, install [Python 3.11 or later](https://www.python.org/downloads/windows/) and Git. Open PowerShell and run:
+
+~~~powershell
+git clone --branch codex/op0-observation-preview --single-branch --depth 1 https://github.com/Aquaticfuller/AntWorld.git
+Set-Location AntWorld
+.\tools\start_op0.ps1
+~~~
+
+The browser opens the **Founding colony** archive. The first view is the queen in her underground chamber on day 0. Click **First collection** to see a worker at the food source, **First excavation** to see a real geometry edit, or **Play** to watch the archive advance to day 150. Open a second PowerShell in the same folder and run the following command for the terminal viewer.
+
+~~~powershell
+.\tools\start_op0.ps1 -Terminal
+~~~
+
+See the [OP0 guide](op0/README.md) for installation, importing another world, replaying the failures, comparing the historical feeding correction and reproducing the checks. OP0 is an offline archive viewer. The displayed models remain engineering previews.
+
+## Core development
+
 An autonomous ant ecosystem simulation with an authoritative headless C++ core, a future Unity/C# client and an evidence-based Game Master. **S6.3.1 queen provisioning and reproductive allocation validation is complete for independent review.** All 153 inherited tests and earlier evidence remain, with eight new regressions and 432 frozen experiment executions. A local maternal-maintenance rule prevents unsafe egg debits in the tested fixtures. Sustained 180-day reproduction occurs in the adequate-access 32-worker control; small colonies and ordinary-access queens still fail, and SD-08 remains open. All biological parameters remain ENGINEERING_FIXTURE. See [results](S6_3_1_RESULTS.md), [protocol](docs/44_S6_3_1_Frozen_Protocol.md), [evidence-led correction](docs/46_S6_3_1_Correction_Protocol.md), [raw data and reproduction](experiments/s6_3_1/README.md) and [remaining debts](docs/08_Open_Questions.md). Calibrated ecology is not established. S6.4 and Unity are not authorized.
 
 The new performance batch does not pass the unchanged pooled wall-time gate (6.315x dense contact growth, 8.154x birth growth). All samples and substantial host uncertainty remain visible; paired ratios do not substitute for the frozen criterion. No algorithm or acceptance threshold was adjusted.

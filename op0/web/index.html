@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AntWorld · Observation Preview</title>
+  <link rel="stylesheet" href="/viewer.css">
+  <script src="/viewer.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <a class="wordmark" href="/" aria-label="AntWorld home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>AntWorld</a>
+    <nav aria-label="Viewer">
+      <button id="observe-tab" class="top-tab active" aria-pressed="true">Observe</button>
+      <button id="compare-tab" class="top-tab" aria-pressed="false">Compare worlds</button>
+    </nav>
+    <div class="top-right"><span class="status-dot"></span> Local archive <span class="version">OP0</span></div>
+  </header>
+  <main>
+    <section class="world-heading">
+      <div>
+        <div class="eyebrow">COLONY OBSERVATORY</div>
+        <h1 id="title">Opening AntWorld</h1>
+        <p id="subtitle">Checking the local archive catalogue…</p>
+      </div>
+      <div class="world-select"><label for="archive">WORLD ARCHIVE</label><select id="archive" aria-label="World archive"></select>
+        <select id="archived-world" aria-label="World within selected store" hidden></select>
+        <details id="identity"><summary>Version, conditions &amp; integrity</summary><div id="identity-content"></div></details>
+      </div>
+    </section>
+    <p id="notice" class="notice" role="status" hidden></p>
+    <div id="viewer" class="workspace" hidden>
+      <section class="population" aria-label="Population at the playback cursor">
+        <div><span class="metric-label">QUEEN</span><strong id="queen-state">—</strong><small id="queen-mass"></small></div>
+        <div><span class="metric-label"><i class="worker"></i>WORKERS</span><strong id="workers">0</strong><small>Eclosed and alive</small></div>
+        <div><span class="metric-label"><i class="egg"></i>EGGS</span><strong id="eggs">0</strong><small>Alive</small></div>
+        <div><span class="metric-label"><i class="larva"></i>LARVAE</span><strong id="larvae">0</strong><small>Alive</small></div>
+        <div><span class="metric-label"><i class="pupa"></i>PUPAE</span><strong id="pupae">0</strong><small>Alive</small></div>
+      </section>
+      <div class="observation">
+        <section class="panel space" aria-labelledby="space-title">
+          <div class="panel-head"><div><h2 id="space-title">World space</h2><p id="space-caption">Committed positions and ordered geometry edits</p></div>
+            <div class="segmented" aria-label="Spatial view"><button id="surface-button" class="active" aria-pressed="true">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
+          </div>
+          <div class="map-tools">
+            <label id="plane-controls" hidden>Section <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
+              <input id="layer" type="range" aria-label="Section depth"><output id="layer-value"></output></label>
+            <label id="clearance-control" hidden><input id="clearance" type="checkbox"> Body clearance</label>
+            <label id="view-controls">Drag to pan · Scroll to zoom</label>
+            <div class="zoom"><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
+          </div>
+          <canvas id="map" tabindex="0" aria-label="World map. Individual positions are also available through the individual panel."></canvas>
+          <div id="map-legend" class="legend"></div>
+        </section>
+        <aside class="panel inspect" aria-label="Individual and event details">
+          <div class="panel-head"><div class="plain-tabs"><button id="individual-tab" class="active" aria-pressed="true">Individual</button><button id="events-tab" aria-pressed="false">Events</button></div></div>
+          <section id="individual-panel">
+            <form id="ant-form"><label class="sr-only" for="ant-id">Ant ID</label><input id="ant-id" type="text" inputmode="numeric" placeholder="Enter ant ID" pattern="[0-9]+"><button type="submit">Find</button><button id="follow" type="button" aria-pressed="false">Follow</button></form>
+            <div id="individual-content"></div>
+          </section>
+          <section id="event-panel" hidden>
+            <div class="event-controls"><select id="filter" aria-label="Event category">
+              <option value="highlights">Key events</option><option value="birth">Birth</option><option value="stage">Life stage</option><option value="death">Death</option>
+              <option value="nutrition">Nutrition</option><option value="care">Brood care</option><option value="food">Food &amp; deliveries</option>
+              <option value="recruitment">Recruitment</option><option value="soil">Excavation &amp; soil</option><option value="movement">Movement</option>
+              <option value="rejected">Rejected actions</option><option value="tasks">Task state</option><option value="all">All facts</option>
+            </select><select id="event-range" aria-label="Event range"><option value="day">This day</option><option value="all">Entire archive</option></select></div>
+            <div id="event-detail" hidden></div>
+            <div id="event-list"></div>
+            <button id="more-events" hidden>Next page</button>
+          </section>
+        </aside>
+      </div>
+      <section class="panel timeline" aria-labelledby="timeline-label">
+        <div class="timeline-top"><div><h2 id="timeline-label">Colony timeline</h2><div id="time-note">Day 0</div></div>
+          <div class="transport"><button id="back" aria-label="Previous day">−1 day</button><button id="play" aria-pressed="false">▶ Play</button><button id="next" aria-label="Next day">+1 day</button>
+            <label for="speed" class="sr-only">Playback speed</label><select id="speed"><option value="1">1 day/s</option><option value="5" selected>5 days/s</option><option value="15">15 days/s</option><option value="30">30 days/s</option></select>
+          </div>
+        </div>
+        <canvas id="timeline-chart" height="90" aria-label="Population by day, with the active time cursor"></canvas>
+        <label for="time" class="sr-only">Simulation time</label><input id="time" type="range" min="0" value="0" step="1">
+        <div class="quick"><div id="days" aria-label="Jump to day"></div><div id="milestones" aria-label="Jump to event"></div></div>
+      </section>
+      <section class="panel dashboard" aria-labelledby="dashboard-label">
+        <div class="panel-head"><div><h2 id="dashboard-label">Colony ledger</h2><p>Stock and committed activity at the selected time</p></div>
+          <label class="sr-only" for="chart-series">History series</label><select id="chart-series"><option value="resources">Food inventory</option><option value="activity">Committed actions</option><option value="deaths">Deaths by cause</option><option value="soil">Excavation volume</option><option value="queen">Queen physiology</option></select>
+        </div>
+        <div id="ledger" class="ledger"></div>
+        <canvas id="ledger-chart" height="170" aria-label="Selected history series at archive cuts"></canvas>
+        <div id="ledger-legend" class="legend"></div>
+      </section>
+    </div>
+    <section id="comparison" class="panel comparison" hidden>
+      <div class="panel-head"><div><h2>Compare worlds</h2><p>Same timeline, independently recorded worlds</p></div>
+        <div class="reference-picker"><label><span class="sr-only">Reference archive</span><select id="reference"></select></label>
+          <select id="reference-world" aria-label="Reference world within selected store" hidden></select></div></div>
+      <div id="compare-status"></div>
+      <div class="compare-time"><label for="compare-time">Aligned time</label><input id="compare-time" type="range" min="0" step="1"><button id="compare-play" aria-pressed="false">▶ Play</button><output id="compare-stamp"></output></div>
+      <div id="compare-cards"></div>
+      <canvas id="compare-chart" height="180" aria-label="Worker populations on a shared time axis"></canvas>
+      <details open><summary>Input alignment</summary><div id="compare-config"></div></details>
+    </section>
+  </main>
+  <footer>AntWorld Observation Preview <span>·</span> Read-only replay of Simulation Core facts <span>·</span> Ant identities are scoped to the opened archive.</footer>
+</body>
+</html>
