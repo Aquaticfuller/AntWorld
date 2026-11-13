@@ -1,0 +1,5 @@
+# Prespecified soil disposition correction
+
+The first frozen execution recorded cuts and loaded return movement but repeatedly refused depot drops with TooFast. The scheduler used the configured handling clock and the commit path still applied the cut-work minimum. Keep the complete first execution, the old negative reference, and the independent four-million-fact run already in progress.
+
+Re-run the same entire joint roster with the corrected minimum on owned autonomous drop actions. The prospective correction should eliminate the false TooFast result for a legally owned drop. External soil commands, actual cuts, the resource model and all scientific/engineering outcome thresholds remain the same. Add a direct regression test that fails if an actual cut and loaded return are followed by TooFast instead of a depot drop. Require the true cut/move/drop parcel and actor to be traceable through a checkpoint. Verify that the first complete correction run includes all populations, seeds and both low-reserve configurations. Make the original and corrected outcomes reviewable separately.
