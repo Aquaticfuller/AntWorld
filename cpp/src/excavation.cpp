@@ -63,7 +63,11 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
     const auto ant = s.ants.get(s.ants.index.at(e.actor));
     const auto q = quantized(ant.position,c);
     const auto view = geometry_view(s, limits_);
-    if (e.key.time.milliseconds - e.issued_at.milliseconds < c.work_duration.milliseconds) {
+    const auto automatic=s.excavators.find(e.actor);
+    const auto duration = s.ecological && s.ecological->distance_clock && request.kind==SoilAction::Drop &&
+        automatic!=s.excavators.end() && automatic->second.action==e.id
+        ? s.ecological->soil_handling : c.work_duration;
+    if (e.key.time.milliseconds - e.issued_at.milliseconds < duration.milliseconds) {
         f.outcome = Outcome::TooFast;
         return;
     }

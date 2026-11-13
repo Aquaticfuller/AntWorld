@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter, defaultdict
 import csv
+from hashlib import sha256
 from itertools import groupby
 import json
 import math
@@ -15,6 +16,7 @@ from analyze_integrated_founding import located_facts, observe_chain
 from analyze_s6_4_wp6b import assess, check, facts, rows, RANGES
 from run_integrated_founding import DAY
 from run_s6_4_wp6b import input_bytes, sha, write_json
+from s6_4_wp5_geometry import Grid
 from verify_final_core_integration import check_identity, verify_midpoint
 
 
@@ -42,8 +44,7 @@ def read_archives(path, witnesses_only):
             members = {name: bundle.read(name) for name in bundle.namelist()}
         check(json.loads(members["receipt.json"])==row["receipt"], "archive receipt differs")
         for name, value in row["receipt"]["artifacts"].items():
-            import hashlib
-            check(len(members[name])==value["bytes"] and hashlib.sha256(members[name]).hexdigest()==value["sha256"],
+            check(len(members[name])==value["bytes"] and sha256(members[name]).hexdigest()==value["sha256"],
                   f"original member changed: {archive.name}/{name}")
         yield row, members
 
@@ -99,13 +100,22 @@ def scout_chain(raw, receivers):
     return markers, seen, chain
 
 
-def material_and_activity(raw, cuts, case):
-    available, release, cargo, poses, loads, opened = {}, {}, {}, {}, {}, {}
+def material_and_activity(raw, cuts, case, edits):
+    available, release, cargo, poses, opened = {}, {}, {}, {}, {}
     soil_travel, soil = {}, {}
     selected = {}
     totals = Counter()
     larvae, offered, chosen, started, fed, absorbed = set(), set(), set(), set(), set(), set()
     care_rows = defaultdict(dict)
+    layout = (((12,6,14),(25,10,18)),((21,6,14),(25,10,27)),((21,6,23),(25,16,27))) if case["layout"]=="dogleg" else (
+        ((14,6,14),(18,16,18)),)
+    if case["treatment"]=="wallwater":
+        layout += (((19,7,15),(21,9,17)),)
+    boxes = [("solid", (0,0,0), (32,16,32)), *(("void",a,b) for a,b in layout)]
+    grid = Grid([dict(kind=kind, **{f"{edge}_{axis}_q":value for edge,point in (("min",low),("max",high))
+                                   for axis,value in zip("xyz",point,strict=True)}) for kind,low,high in boxes])
+    edits = {int(row["event"]): row for row in edits}
+    remaining, carried, deposited = len(grid.soil), 0, 0
     cuts = iter(cuts)
     cut = next(cuts)
     terminal = case["horizon_ms"]
@@ -115,6 +125,8 @@ def material_and_activity(raw, cuts, case):
         while cut and int(cut["cursor"])<cursor:
             check(tuple(sum(a[i] for a in available.values()) for i in range(4))==
                   tuple(int(cut[f"available_{k}"]) for k in "cpwo"), "source inventory differs at cut")
+            check((remaining,carried,deposited)==tuple(int(cut[k]) for k in ("remaining_q3","carried_q3","deposited_q3")),
+                  "soil accounting differs at cut")
             cut = next(cuts,None)
 
     def change(store, key, dose, sign=1):
@@ -155,10 +167,20 @@ def material_and_activity(raw, cuts, case):
             change(cargo,actor,mass,-1)
         elif kind==23:
             check(payload not in soil,"parcel identity reused")
-            soil[payload]=actor
+            edit=edits.pop(i)
+            amount=int(edit["volume_q3"])
+            check((int(edit["source"]),int(edit["actor"]),int(edit["parcel"]))==(source,actor,payload) and
+                  grid.edit(edit,True)==amount,"soil geometry and fact disagree")
+            soil[payload]=(actor,amount)
+            remaining -= amount
+            carried += amount
             soil_travel[actor]=payload
+            totals["excavated_q3"] += amount
         elif kind==24:
-            check(soil.get(payload)==actor,"soil drop lacks original excavator")
+            miner, amount=soil[payload]
+            check(miner==actor and abs(soil_travel.get(actor,0))==payload,"soil drop lacks original excavator")
+            carried -= amount
+            deposited += amount
             if soil_travel.pop(actor,None)==-payload:
                 totals["soil_parcels"] += 1
         elif kind==OBSERVATION_KIND:
@@ -178,7 +200,8 @@ def material_and_activity(raw, cuts, case):
             if phase in (3,4) and known and act!=0:
                 totals["timed_care_ms"] += time-begin
         elif kind==MOVED:
-            distance=math.dist(position,poses[actor])
+            origin=poses[actor]
+            distance=math.dist(position,origin)
             totals["path_m"] += distance
             poses[actor]=position
             parcel=soil_travel.get(actor,0)
@@ -193,6 +216,9 @@ def material_and_activity(raw, cuts, case):
                 rate=.0025 if loaded else .005
                 predicted=distance*1000/rate
                 check(-1e-7<=time-begin-predicted<=1+1e-7,"distance/load and elapsed movement disagree")
+                q=lambda p: tuple(round((v+.008)/.0005) for v in p)
+                check(all(abs(v-(n*.0005-.008))<1e-11 for p in (origin,position) for v,n in zip(p,q(p),strict=True)) and
+                      grid.swept(q(origin),q(position),2 if loaded else 1),"actual move crosses original or edited geometry")
                 totals["loaded_move_ms" if loaded else "unloaded_move_ms"] += time-begin
                 totals["loaded_moves" if loaded else "unloaded_moves"] += 1
         elif kind==ACTIVITY:
@@ -223,6 +249,7 @@ def material_and_activity(raw, cuts, case):
         elif kind==16 and stage==3 and mass[2]:
             totals["adult_water_absorption_ug"] += mass[2]
     reconciled(2**64)
+    check(cut is None and not edits,"unreconciled ecology cut or geometry edit")
     for actor in tuple(opened):
         close(actor,terminal)
         totals["paid_right_censored"] += 1
@@ -278,7 +305,7 @@ def run(panel, directory, output, witnesses_only):
         sample = case | dict(arm="integrated-"+case["source"],early_access_mask=3,carbohydrate_yield_nj_per_ug=8_000_000)
         cuts = rows(blobs["cuts.csv"])
         result, stages, paths, cohorts=assess(sample,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],7,ecological=True)
-        activity, care_rows=material_and_activity(raw,cuts,case)
+        activity, care_rows=material_and_activity(raw,cuts,case,rows(blobs["geometry_edits.csv"]))
         if panel=="joint" and case["treatment"]=="joint" and case["software_seed"]==1 and case["source"]=="balanced" and case["parameters"]["maternal_lipid"]==5500:
             references[name]=(receipt,cuts,summary,raw)
         by_id={r["ant"]: r for r in paths}
@@ -291,6 +318,8 @@ def run(panel, directory, output, witnesses_only):
                 if time in (120*DAY,150*DAY):
                     snapshots[time//DAY].append(ant)
             chain, _, _, _=observe_chain(raw,sample,int(summary["queen"]),paths,snapshots,maximum=WATER)
+            if case["source"]=="no-protein":
+                check(chain["worker_protein_assimilated_lower_bound_ug"]==0,"protein entered a protein-free arm")
             result |= dict(chain) | dict(joint=int(chain["complete"] and activity.get("soil_parcels",0)>0))
         result |= activity
         result |= {f"{c['rule']}_{key}":c[key] for c in cohorts for key in ("k","egg_d","larva_d","pupa_d","total_d")}

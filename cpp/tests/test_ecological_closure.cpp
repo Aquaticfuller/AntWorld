@@ -119,6 +119,43 @@ void paid_motion() {
             w.query_physiology(a)->dissipated_energy_nj==1000 &&
             w.query_ant(a)->position==PositionM{},"death boundary did not cancel work exactly");
 }
+
+void soil_handling() {
+    WorldConfig cfg;
+    cfg.continuous_spatial_motion=true;
+    WorldRuntime w({54,55},11,cfg);
+    EcologicalClosureConfig ecology;
+    ecology.distance_clock=true;
+    ecology.soil_handling={5};
+    w.configure_ecological_closure(ecology);
+    GeometryConfig geometry;
+    geometry.origin_m={-.008,-.008,-.008};
+    geometry.initial_solid={{0,0,0},{32,16,32}};
+    geometry.work_duration={500};
+    geometry.move_duration={30*60*1000};
+    const std::array voids{BoxQ{{14,6,14},{18,16,18}}};
+    w.configure_geometry(geometry,voids);
+    const PositionM depot{0,-.004,0};
+    const auto colony=w.seed_colony(depot);
+    const auto worker=w.seed_ant(colony,{depot});
+    w.enable_physiology(worker);
+    w.set_behavior(worker,IndividualBehavior::Excavate);
+    w.advance_to({700});
+    const auto saved=w.checkpoint();
+    WorldRuntime restarted({54,55},11);
+    restarted.restore(saved);
+    restarted.advance_to({1500});
+    w.advance_to({1500});
+    require(w.checkpoint()==restarted.checkpoint(),"soil disposition changed after recovery");
+    const auto facts=w.committed_events();
+    const auto first_dig=std::find_if(facts.begin(),facts.end(),[](const auto& f) { return f.kind==FactKind::SoilExcavated; });
+    require(first_dig!=facts.end(),"worker did not cut actual soil");
+    const auto returned=std::find_if(first_dig,facts.end(),[](const auto& f) { return f.kind==FactKind::SoilDropped; });
+    require(returned!=facts.end() && returned->actor==worker.id && returned->payload==first_dig->payload &&
+            std::any_of(first_dig,returned,[](const auto& f) { return f.kind==FactKind::Moved; }) &&
+            returned->time.milliseconds-first_dig->time.milliseconds<geometry.work_duration.milliseconds,
+            "loaded return did not commit the independent handling time");
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -129,6 +166,7 @@ int main(int argc,char** argv) {
         else if (name=="scout") local_causality();
         else if (name=="restore") authority();
         else if (name=="activity") paid_motion();
+        else if (name=="soil") soil_handling();
         else return 1;
         return 0;
     } catch (const std::exception& error) {
