@@ -17,3 +17,5 @@ experiments/s6_4_wp6b_r1/** -text whitespace=blank-at-eol,blank-at-eof,space-bef
 experiments/s6_4_wp6b_r1/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 experiments/s6_4_wp6b_r2/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_wp6b_r2/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+experiments/s6_4_integrated_founding/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/s6_4_integrated_founding/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

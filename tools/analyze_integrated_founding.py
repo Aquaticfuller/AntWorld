@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter, defaultdict
 import csv
+import gzip
 from hashlib import sha256
 import json
 import math
@@ -10,8 +11,9 @@ from pathlib import Path
 from struct import unpack_from
 import zipfile
 
-from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, F_BOUNDARY_UPTAKE, F_RATION,
-                              GIFT, MOVED, OBSERVATION, OBS_COMPLETED, STAGE, UPTAKE, assess, check, evaluate, facts, rows)
+from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, F_BOUNDARY_UPTAKE, F_DIETARY_EGG,
+                              F_NEST_MEAL, F_RATION, GIFT, MOVED, NEST, OBSERVATION, OBS_COMPLETED, RECYCLED, STAGE, UPTAKE,
+                              assess, check, evaluate, facts, rows)
 from run_integrated_founding import DAY, MODELS, SENSITIVITIES, environments
 from run_s6_4_wp6b import input_bytes, sha, write_json
 
@@ -80,6 +82,8 @@ def observe_chain(raw, case, queen, paths, snapshots):
     maternal_protein, forced_worker_protein = defaultdict(int), defaultdict(int)
     work_days, completed_days, trips = set(), defaultdict(set), []
     stages, previous = {}, {}
+    dietary_eggs, flows, carb_deliveries = set(), [], []
+    nest_carb, stock_depletions, empty_since, empty_intervals = 0, 0, None, []
     attempts = Counter()
     world = dict(first_delivery_ms=None, first_queen_gift_ms=None, first_queen_carb_ms=None, first_queen_water_ms=None,
                  first_larval_worker_protein_ms=None, first_larval_worker_uptake_ms=None)
@@ -91,6 +95,23 @@ def observe_chain(raw, case, queen, paths, snapshots):
             previous[ant] = position
         if kind in (ANT_SEEDED, BIRTH, STAGE, DIED):
             stages[ant] = stage
+        if kind == F_DIETARY_EGG:
+            dietary_eggs.add(payload)
+        if kind in (DELIVERED, RECYCLED, NEST, F_NEST_MEAL) and amount[0]:
+            old_stock=nest_carb
+            nest_carb += amount[0] if kind in (DELIVERED, RECYCLED) else -amount[0]
+            check(nest_carb>=0,"negative depot carbohydrate")
+            if old_stock and not nest_carb:
+                empty_since=t
+                stock_depletions+=1
+            elif nest_carb and empty_since is not None:
+                empty_intervals.append(t-empty_since)
+                empty_since=None
+        if kind in (GIFT, F_RATION, F_DIETARY_EGG, F_NEST_MEAL, UPTAKE, F_BOUNDARY_UPTAKE) and (any(amount) or kind in (F_RATION,F_DIETARY_EGG)):
+            target = payload if kind in (GIFT,F_RATION,F_DIETARY_EGG) else ant
+            if ant==queen or target==queen or stages.get(target)==1:
+                flows.append(dict(event=event_id,time_ms=t,kind=kind,actor=ant,recipient=target,stage=stages[target],
+                                  c=amount[0],p=amount[1],w=amount[2],o=amount[3]))
         if kind == STAGE and stage == 3:
             check(ant in birth and ant not in adults, "adult identity lacks an actual birth")
             adults[ant] = dict(ant=ant, eclose_ms=t, birth_ms=birth[ant], death_ms=None, death_cause=None,
@@ -123,6 +144,9 @@ def observe_chain(raw, case, queen, paths, snapshots):
                     world["first_larval_worker_uptake_ms"] = world["first_larval_worker_uptake_ms"] or t
         if kind == DIED and ant == queen:
             queen_death = t
+            world["depot_c_at_queen_death_ug"]=nest_carb
+            if empty_since is not None:
+                world["depot_c_empty_before_death_ms"]=t-empty_since
         if ant not in adults:
             continue
         individual = adults[ant]
@@ -143,6 +167,8 @@ def observe_chain(raw, case, queen, paths, snapshots):
                 individual["trips"] += 1
                 completed_days[ant].add(t//DAY)
                 trips.append(dict(ant=ant, delivery_event=event_id, delivery_ms=t, c=amount[0], p=amount[1], w=amount[2]))
+                if amount[0] and queen_death is None:
+                    carb_deliveries.append(t)
             individual["first_delivery_ms"] = individual["first_delivery_ms"] or t
             individual["delivered_ug"] += sum(amount)
             world["first_delivery_ms"] = world["first_delivery_ms"] or t
@@ -177,6 +203,8 @@ def observe_chain(raw, case, queen, paths, snapshots):
     sustained = [w for w in adults.values() if w["terminal_age_ms"] >= 7*DAY and w["distinct_delivery_days"] >= 2
                  and w["carb_ug"] and w["water_ug"]]
     work_span = max(work_days)-min(work_days) if work_days else 0
+    terminal = queen_death or case["horizon_ms"]
+    gaps=[b-a for a,b in zip(carb_deliveries,carb_deliveries[1:])]
     gates = (first_adult is not None and first_adult <= 90*DAY, bool(trips), bool(sustained),
              world["first_queen_gift_ms"] is not None, paired_uptake is not None, bool(larva_uptake), bool(late),
              all(n and q for n, q in alive.values()), len(work_days) >= 4 and work_span >= 14)
@@ -188,32 +216,41 @@ def observe_chain(raw, case, queen, paths, snapshots):
                  adults_120=alive[120][0], adults_150=alive[150][0], queen_alive_120=int(alive[120][1]),
                  queen_alive_150=int(alive[150][1]), work_days=len(work_days), work_span_days=work_span, valid_loaded_trips=len(trips),
                  late_born_adults=len(late), late_first_worker_ms=min((w["eclose_ms"] for w in late), default=None),
+                 late_adults_from_dietary_eggs=sum(w["ant"] in dietary_eggs for w in late),
+                 preterminal_carb_delivery_gaps=len(gaps), preterminal_max_carb_gap_ms=max(gaps,default=None),
+                 terminal_gap_since_carb_delivery_ms=terminal-carb_deliveries[-1] if carb_deliveries else None,
+                 depot_c_depletions=stock_depletions, depot_c_max_observed_empty_ms=max(empty_intervals,default=None),
                  workers_with_adult_cw=sum(w["carb_ug"] > 0 and w["water_ug"] > 0 for w in adults.values()),
                  workers_alive_7d=sum(w["terminal_age_ms"] >= 7*DAY for w in adults.values()),
                  workers_censored=sum(w["censored"] for w in adults.values()), larvae_fed_by_workers=len(larva_paid),
                  larvae_with_worker_protein_uptake=len(larva_uptake), worker_protein_assimilated_lower_bound_ug=sum(forced_worker_protein.values()),
                  **attempts)
-    return world, adults.values(), trips
+    return world, adults.values(), trips, flows
 
 
-def dump(path, records):
+def dump(path, records, compress=False):
     if records:
-        with path.open("x", encoding="utf-8", newline="") as output:
+        open_output = gzip.open if compress else open
+        with open_output(path,"xt",encoding="utf-8",newline="") as output:
             columns = list(dict.fromkeys(k for row in records for k in row))
             writer = csv.DictWriter(output, columns, lineterminator="\n")
             writer.writeheader()
             writer.writerows(records)
 
 
-def verify(archive, output):
+def verify(archive, output, cases=()):
     meta, completed = (json.loads((archive/name).read_text(encoding="utf-8")) for name in ("run.json", "completed.json"))
     model, matrix = meta.get("model", "r2"), meta["matrix"]
     universe = {c["case"]: (identity,c) for identity,c in environments(matrix)}
     expect = [name for name in universe if model not in SENSITIVITIES or name.endswith("-balanced")]
+    check(completed["attempts"]==len(meta["cases"])==len(set(meta["cases"])), "attempt count differs from the frozen inputs")
     if not meta["selected_subset"]:
         check(meta["cases"] == expect, "frozen world coverage changed")
     check(set(meta["cases"]) == completed["statuses"].keys() and meta["arguments"][4:] == list(MODELS[model]), "input/model coverage mismatch")
-    all_worlds, workers, trips, census_rows, stage_rows = [], [], [], [], []
+    selected = set(cases) if cases else set(meta["cases"])
+    check(selected <= set(meta["cases"]),"unknown representative case")
+    check(not cases or matrix!="closed","closed-stock qualification requires its full denominator")
+    all_worlds, workers, trips, census_rows, stage_rows, offspring, flows = [], [], [], [], [], [], []
     checked_files = checked_facts = 0
     seen = set()
     for filename, digest in sorted(completed["archives"].items()):
@@ -224,6 +261,8 @@ def verify(archive, output):
             for name in sorted(x.split("/")[0] for x in members if x.endswith("/receipt.json")):
                 check(name not in seen and name in completed["statuses"], f"unknown or duplicate world: {name}")
                 seen.add(name)
+                if name not in selected:
+                    continue
                 prefix = name + "/"
                 receipt = json.loads(bundle.read(prefix+"receipt.json"))
                 identity, case = universe[name]
@@ -238,7 +277,8 @@ def verify(archive, output):
                 check(blobs["parameters.txt"]==input_bytes(identity,case), "changed resolved input")
                 common = dict(model=model,matrix=matrix,case=name,arm=case["arm"].removeprefix("integrated-"),
                               population=case["population"],group=case["group"],care=int(case["care_enabled"]),
-                              profile=case.get("profile_index"),seed=case["software_seed"],status=receipt["status"])
+                              profile=case.get("profile_index"),seed=case["software_seed"],status=receipt["status"],
+                              process_wall_ms=receipt["elapsed_ms"],exit_code=receipt["exit_code"])
                 if receipt["status"] != "COMPLETE":
                     all_worlds.append(common | dict(complete=0))
                     continue
@@ -250,25 +290,30 @@ def verify(archive, output):
                 checked_facts += measure["source_facts"]
                 census_rows.extend(common | r for r in censuses)
                 stage_rows.extend(common | r for r in lives)
+                offspring.extend(common | r for r in paths)
                 if matrix == "closed":
                     all_worlds.append(common | measure | dict(complete=0))
                     continue
                 cuts, people = rows(blobs["cuts.csv"]), rows(blobs["individuals.csv"])
                 snapshots = {d: [r for r in people if int(r["time_ms"]) == d*DAY] for d in (120,150)}
                 source = verify_sources(raw,case,cuts)
-                observed, histories, loads = observe_chain(raw,case,int(summary["queen"]),paths,snapshots)
+                observed, histories, loads, meals = observe_chain(raw,case,int(summary["queen"]),paths,snapshots)
                 workers.extend(common | r for r in histories)
                 trips.extend(common | r for r in loads)
+                flows.extend(common | r for r in meals)
                 all_worlds.append(common | measure | observed | source | dict(
                     archive_file=filename, canonical_sha256=receipt["artifacts"]["facts.bin"]["sha256"],
                     **{k:summary[k] for k in ("advance_ms","peak_rss_bytes","midpoint_save_ms","midpoint_restore_ms","facts_bytes","frame_bytes")}))
     check(seen == completed["statuses"].keys(), "incomplete archive")
     output.mkdir(parents=True)
-    for key, dataset in (("worlds",all_worlds),("workers",workers),("loaded_trips",trips),("censuses",census_rows),("stages",stage_rows)):
+    for key, dataset in (("worlds",all_worlds),("workers",workers),("loaded_trips",trips),("censuses",census_rows),
+                         ("stages",stage_rows),("offspring",offspring)):
         dump(output/f"{key}.csv",dataset)
+    dump(output/"nutrition.csv.gz",flows,compress=True)
     if matrix == "closed":
         evaluate(output,all_worlds,stage_rows,census_rows)
-    result = dict(model=model, matrix=matrix, input_attempts=len(seen), complete_worlds=sum(r["complete"] for r in all_worlds),
+    result = dict(model=model, matrix=matrix, input_attempts=len(seen), audited_attempts=len(selected),
+                  complete_worlds=sum(r["complete"] for r in all_worlds),
                   checked_files=checked_files, checked_facts=checked_facts, profile_pass={}, group_rows=[])
     for population, arm in sorted({(r["population"],r["arm"]) for r in all_worlds}):
         group = [r for r in all_worlds if (r["population"],r["arm"])==(population,arm)]
@@ -286,5 +331,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--case",action="append",default=[])
     args = parser.parse_args()
-    verify(args.archive, args.output)
+    verify(args.archive, args.output,args.case)
