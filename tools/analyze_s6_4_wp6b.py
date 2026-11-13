@@ -59,7 +59,7 @@ def facts(data, max_kind=F_RATION):
         prior_time = time
 
 
-def compare_cut(cut, people, stocks, flows, initial_energy, profile):
+def compare_cut(cut, people, stocks, flows, initial_energy, profile, carbohydrate_yield=1_000_000, nest=None):
     check(all(cut[f"introduced_{k}"] == cut[f"accounted_{k}"] for k in "cpwo"), "cut material imbalance")
     check(int(cut["energy_input_nj"]) == int(cut["body_energy_nj"]) + int(cut["dissipated_nj"]), "cut body energy imbalance")
     check(int(cut["initial_q3"]) == sum(int(cut[k]) for k in ("remaining_q3", "carried_q3", "deposited_q3")), "cut soil imbalance")
@@ -80,10 +80,12 @@ def compare_cut(cut, people, stocks, flows, initial_energy, profile):
                     int(row["crop_p"]) + int(row["tissue_protein_ug"]) + mobile,
                     int(row["crop_w"]) + int(row["hydration_ug"]) + int(row["lost_water_ug"]), int(row["crop_o"]))
         check(tuple(flows[ant]) == expected, "identity's material flows differ from its compartments")
-        energy = initial_energy.get(ant, 0) + spent * profile["lipid_yield"] + 1_000_000 * int(row["oxidized_carb_ug"])
+        energy = initial_energy.get(ant, 0) + spent * profile["lipid_yield"] + carbohydrate_yield * int(row["oxidized_carb_ug"])
         check(energy == int(row["energy_nj"]) + int(row["dissipated_nj"]), "identity's realized energy differs from funded input")
     check(tuple(totals) == tuple(int(cut[k]) for k in ("owned_lipid_ug", "spent_lipid_ug", "mobile_protein_ug")), "reserve sum differs")
     check(totals[0] + totals[1] == profile["maternal_lipid"], "world lipid did not close")
+    if nest is not None:
+        check(tuple(nest) == tuple(int(cut[f"nest_{k}"]) for k in "cpwo"), "observed depot differs from actual deliveries and withdrawals")
 
 
 def census(sets, exact):
@@ -101,6 +103,8 @@ def census(sets, exact):
 
 def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
     profile, queen = case["parameters"], int(summary["queen"])
+    carbohydrate_yield = case.get("carbohydrate_yield_nj_per_ug", 1_000_000)
+    nest = [0, 0, 0, 0] if case["arm"].startswith("integrated-") else None
     cut_rows = rows(cut_data)
     daily = [(int(time), list(group)) for time, group in groupby(rows(individual_data), lambda r: r["time_ms"])]
     check([t for t, _ in daily] == list(range(0, case["horizon_ms"]+1, DAY_MS)) == [int(c["time_ms"]) for c in cut_rows],
@@ -128,9 +132,9 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             if recipient is not None:
                 flows[recipient][i] += value
 
-    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, F_CUE if profile_version == 3 else F_RATION):
+    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, F_CUE if profile_version >= 3 else F_RATION):
         while current_cut < len(cut_rows) and int(cut_rows[current_cut]["cursor"]) < event:
-            compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile)
+            compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile, carbohydrate_yield, nest)
             current_cut += 1
         last = event
         counts[f"fact_{kind}"] += 1
@@ -218,12 +222,16 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
                 matches.update(i for i, start in enumerate(scan_starts) if began < start + 10_000 and time > start)
         if kind in (COLLECTED, DELIVERED):
             counts[f"food_mass_{kind}"] += sum(mass)
+        if nest is not None and kind in (DELIVERED, NEST, RECYCLED):
+            for i, amount in enumerate(mass):
+                nest[i] += (-1 if kind == NEST else 1) * amount
+                check(nest[i]>=0, "unfunded nest withdrawal")
         if kind in (MOVED, COLLECTED, DELIVERED, RESTED, GIFT, NEST, CARGO, RECYCLED) and actor in child and stages[actor] == 3:
             child[actor]["adult_actions"] += 1
 
     while current_cut < len(cut_rows):
         check(int(cut_rows[current_cut]["cursor"]) == last, "snapshot has unrecorded terminal facts")
-        compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile)
+        compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile, carbohydrate_yield, nest)
         current_cut += 1
     check(last == int(summary["events"]) and counts["fact_44"] == counts["fact_45"] == 1 and
           counts["fact_46"] == len(child), "incomplete committed record")
@@ -236,7 +244,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
         pupation = next((event for stage, _, event in chain if stage == 2), None)
         meal = next((event for _, event, _, p, _ in record["rations"] if p), None)
         uptake = next((event for _, event, _, p, _, _ in record["uptake"] if p and meal and event > meal), None)
-        if pupation and case["externally_seeded_workers"] == 0 and not case.get("arm") == "contact-blocked":
+        if pupation and case["externally_seeded_workers"] == 0 and case.get("arm") != "contact-blocked" and nest is None:
             check(meal and uptake and meal < uptake < pupation, "unfunded non-worker pupation")
         for index, (stage, time, origin) in enumerate(chain):
             if index + 1 < len(chain):
