@@ -87,12 +87,13 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   const auto* founding = founding_foundress(e.actor) ? &s.founding->profile : nullptr;
   // Only this individual's current body reserves and maintenance rates enter.
   // A deferred attempt spends nothing; unmet needs can still cause death.
+  const auto fuel=founding ? founding_egg_fuel(*founding,p,s.founding_reserves.at(e.actor)) : FoundingEggFuel::None;
   const bool funded =
-      (founding ? funds_founding_egg(*founding, p, s.founding_reserves.at(e.actor)) : reproductive_resources(c, p)) &&
+      (founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p)) &&
       spatially_clear(mother.position, mother.position,
                       s.geometry ? s.geometry->config.body_half_q : 0);
   EntityId child;
-  std::uint64_t converted{};
+  std::uint64_t converted{}, crop_protein{};
   if (funded) {
     if (integrated_care(s) && care_owned(s,mother.id)) {
       interrupt_care(tx,mother.id,Outcome::InvalidTransition,true);
@@ -102,7 +103,8 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     child = {take(s.m.next_entity)};
     if (founding) {
       auto maternal = s.founding_reserves.at(e.actor);
-      debit_founding_egg(*founding, p, maternal);
+      if (fuel==FoundingEggFuel::Body) crop_protein=debit_dietary_egg(*founding,p,maternal);
+      else debit_founding_egg(*founding, p, maternal);
       tx.set_founding(e.actor, maternal);
     } else {
       p.crop.protein_ug -= c.egg_protein_ug;
@@ -129,8 +131,12 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     PhysiologyState q;
     if (founding) {
       q = initial_founding_physiology(*founding, false, s.m.now, e.actor);
-      FoundingReserve reserve{founding->egg_lipid_ug};
-      converted = convert_founding_lipid(*founding, q, reserve, LifeStage::Egg, false);
+      FoundingReserve reserve;
+      if (fuel==FoundingEggFuel::Body) q.body_energy_nj=c.egg_energy_nj;
+      else {
+        reserve.lipid_ug=founding->egg_lipid_ug;
+        converted = convert_founding_lipid(*founding, q, reserve, LifeStage::Egg, false);
+      }
       q.initial.body_energy_nj = q.body_energy_nj;
       tx.set_founding(child, reserve);
     } else {
@@ -169,17 +175,18 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
     f.stage = LifeStage::Egg;
     f.payload = mother.id.value;
     f.transferred = {0, c.egg_protein_ug, c.egg_water_ug, 0};
-    f.random_value = founding ? 0 : c.egg_energy_nj;
+    f.random_value = !founding || fuel==FoundingEggFuel::Body ? c.egg_energy_nj : 0;
     tx.fact(f);
     if (founding) {
-      f.kind = FactKind::FoundingEggFunded;
+      f.kind = fuel==FoundingEggFuel::Body ? FactKind::FoundingDietaryEggFunded : FactKind::FoundingEggFunded;
       f.actor = mother.id;
       f.stage = mother.stage;
       f.payload = child.value;
-      f.random_value = founding->egg_lipid_ug;
-      f.transferred = {};
+      f.random_value = fuel==FoundingEggFuel::Body ? c.egg_energy_nj : founding->egg_lipid_ug;
+      f.transferred = {0,crop_protein,0,0};
       tx.fact(f);
-      tx.fact(lipid_conversion(*founding, s.ants.get(s.ants.index.at(child)), e.id, converted));
+      if (fuel==FoundingEggFuel::Lipid)
+        tx.fact(lipid_conversion(*founding, s.ants.get(s.ants.index.at(child)), e.id, converted));
     }
     change_autonomy(tx, {s.world, child}, true);
   }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "physiology_internal.hpp"
+#include "social_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::uint64_t founding_day_ms = 86'400'000;
@@ -8,6 +9,7 @@ inline constexpr std::uint32_t founding_schema_version = 15, founding_physics_ve
 inline constexpr std::uint32_t founding_persistence_schema_version = 16, founding_persistence_physics_version = 18;
 inline constexpr std::uint32_t founding_access_schema_version = 17, founding_access_physics_version = 19;
 inline constexpr std::uint32_t founding_provisioning_schema_version = 18, founding_provisioning_physics_version = 20;
+inline constexpr std::uint32_t founding_dietary_schema_version = 19, founding_dietary_physics_version = 21;
 inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEERING_FIXTURE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
@@ -17,6 +19,7 @@ struct FoundingRation {
     FoodMass crop;
     bool operator==(const FoundingRation&) const = default;
 };
+enum class FoundingEggFuel { None, Lipid, Body };
 
 inline std::uint64_t ceil_div(std::uint64_t n, std::uint64_t d) { return n/d + (n%d != 0); }
 
@@ -134,6 +137,11 @@ inline void validate_founding(const FoundingProfile& f) {
          f.worker.carbohydrate_yield_nj_per_ug != 8'000'000 && f.worker.carbohydrate_yield_nj_per_ug != 12'000'000) ||
         (!f.provisioning->local_exchange && f.worker.carbohydrate_yield_nj_per_ug == 1'000'000)))
         throw std::invalid_argument("invalid F1 provisioning and sugar profile");
+    if (f.dietary && (!f.provisioning || !f.provisioning->local_exchange ||
+        f.worker.carbohydrate_yield_nj_per_ug <= 1'000'000 ||
+        !(f.dietary->local_nest_intake || f.dietary->dietary_eggs) ||
+        (f.dietary->dietary_eggs && multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug)>f.worker.energy_capacity_nj)))
+        throw std::invalid_argument("invalid dietary founding profile");
     for (const auto& b : f.brood) {
         if (!b.basal_nj_per_day || !b.water_ug_per_day) throw std::invalid_argument("missing F1 stage cost");
         auto carry = founding_day_ms - 1;
@@ -230,11 +238,48 @@ inline FoundingRates maintenance_cost(const FoundingProfile& f, const FoundingRe
     return {integrate_founding(f.basal_nj_per_day, horizon, e), integrate_founding(f.water_ug_per_day, horizon, w)};
 }
 
-inline bool funds_founding_egg(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
+inline FoundingRates dietary_maintenance(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
+    auto e=r.energy_remainder, w=r.water_remainder;
+    const auto horizon=static_cast<std::uint64_t>(p.config.absorption_period.milliseconds)*2;
+    const auto rates=founding_rates(f,p,LifeStage::Adult,true,true);
+    return {integrate_founding(rates.energy,horizon,e),integrate_founding(rates.water,horizon,w)};
+}
+
+inline FoodMass foundress_nest_meal(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r, FoodMass stock) {
+    if (!p.body_energy_nj || !p.hydration_ug) return {};
+    const auto floor=dietary_maintenance(f,p,r);
+    const auto y=p.config.carbohydrate_yield_nj_per_ug;
+    const auto refill=f.dietary->dietary_eggs ? add(multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug),f.lay_overhead_nj) : 0;
+    const auto energy_target=std::min(p.config.energy_capacity_nj,add(floor.energy,refill));
+    const auto body_carbs=energy_target>p.body_energy_nj ? ceil_div(energy_target-p.body_energy_nj,y) : 0;
+    const auto water_target=std::min(p.config.hydration_capacity_ug,add(floor.water,f.egg_water_ug));
+    const auto body_water=water_target>p.hydration_ug ? water_target-p.hydration_ug : 0;
+    const FoodMass deficit{body_carbs>p.crop.carbs_ug ? body_carbs-p.crop.carbs_ug : 0,
+        f.dietary->dietary_eggs && f.egg_protein_ug>p.crop.protein_ug ? f.egg_protein_ug-p.crop.protein_ug : 0,
+        body_water>p.crop.water_ug ? body_water-p.crop.water_ug : 0,0};
+    const auto supply=ingredient_min(stock,deficit);
+    if (!supply.total_ug() || p.crop.total_ug()==p.config.crop_capacity_ug) return {};
+    return portion(supply,std::min({supply.total_ug(),p.config.transfer_limit_ug,p.config.crop_capacity_ug-p.crop.total_ug()}));
+}
+
+inline FoundingEggFuel founding_egg_fuel(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
+    if (f.dietary && f.dietary->dietary_eggs && p.oxidized_carbs_ug) {
+        const auto floor=dietary_maintenance(f,p,r);
+        const auto egg=multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug);
+        const auto cost=add(egg,f.lay_overhead_nj);
+        if (p.body_energy_nj>cost && p.hydration_ug>add(f.egg_water_ug,floor.water) &&
+            add(p.crop.protein_ug,r.mobile_protein_ug)>=f.egg_protein_ug &&
+            founding_energy(f,p,r)>add(cost,floor.energy)) return FoundingEggFuel::Body;
+    }
     const auto floor = maintenance_cost(f, r);
-    return p.body_energy_nj > f.lay_overhead_nj && r.lipid_ug >= f.egg_lipid_ug && r.mobile_protein_ug >= f.egg_protein_ug &&
+    const bool funded=p.body_energy_nj > f.lay_overhead_nj && r.lipid_ug >= f.egg_lipid_ug && r.mobile_protein_ug >= f.egg_protein_ug &&
            p.hydration_ug > add(f.egg_water_ug, floor.water) &&
            founding_energy(f, p, r) > add(add(multiply(f.egg_lipid_ug, f.lipid_yield_nj_per_ug), f.lay_overhead_nj), floor.energy);
+    return funded ? FoundingEggFuel::Lipid : FoundingEggFuel::None;
+}
+
+inline bool funds_founding_egg(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
+    return founding_egg_fuel(f,p,r)!=FoundingEggFuel::None;
 }
 
 inline void debit_founding_egg(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r) {
@@ -243,6 +288,18 @@ inline void debit_founding_egg(const FoundingProfile& f, PhysiologyState& p, Fou
     p.hydration_ug -= f.egg_water_ug;
     p.body_energy_nj -= f.lay_overhead_nj;
     p.dissipated_energy_nj = add(p.dissipated_energy_nj, f.lay_overhead_nj);
+}
+
+inline std::uint64_t debit_dietary_egg(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r) {
+    const auto from_crop=std::min(f.egg_protein_ug,p.crop.protein_ug);
+    const auto egg=multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug);
+    p.crop.protein_ug-=from_crop;
+    r.mobile_protein_ug-=f.egg_protein_ug-from_crop;
+    p.hydration_ug-=f.egg_water_ug;
+    p.body_energy_nj-=add(egg,f.lay_overhead_nj);
+    p.exported_energy_nj=add(p.exported_energy_nj,egg);
+    p.dissipated_energy_nj=add(p.dissipated_energy_nj,f.lay_overhead_nj);
+    return from_crop;
 }
 
 inline SimTime founding_lay_after(const FoundingProfile& f, SimTime at) {

@@ -130,7 +130,27 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
                 schedule_autonomy(tx,e.actor,local_founding_provisioning(s,e.actor)?SimTime{1}:SimTime{});
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
-        if (emitted_pulse && !advance_stage) return;
+        if (emitted_pulse && !advance_stage) {
+            if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake) {
+                const auto j=s.colonies.index.at(ant.colony);
+                auto& colony=s.colonies.rows[j];
+                if (within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position)) {
+                    const auto meal=foundress_nest_meal(s.founding->profile,p,*reserve,colony.nest_food);
+                    if (meal.total_ug()) {
+                        tx.touch_colony(j);
+                        colony.nest_food=subtract(colony.nest_food,meal);
+                        s.m.ledger.stored=subtract(s.m.ledger.stored,meal);
+                        p=s.physiology.at(e.actor);
+                        p.crop=sum(p.crop,meal);
+                        tx.physiology.set(e.actor,p);
+                        f.kind=FactKind::FoundressNestMeal;
+                        f.transferred=meal;
+                        tx.fact(f);
+                    }
+                }
+            }
+            return;
+        }
     }
     tx.fact(f);
     if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve &&

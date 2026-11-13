@@ -11,14 +11,14 @@ from struct import unpack_from
 import zipfile
 
 from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, GIFT, MOVED, OBSERVATION,
-                              OBS_COMPLETED, STAGE, UPTAKE, assess, check, facts, rows)
-from run_integrated_founding import DAY, MODELS, environments
+                              OBS_COMPLETED, STAGE, UPTAKE, assess, check, evaluate, facts, rows)
+from run_integrated_founding import DAY, MODELS, SENSITIVITIES, environments
 from run_s6_4_wp6b import input_bytes, sha, write_json
 
 
 def located_facts(raw):
     offset = 0
-    for event in facts(raw, 50):
+    for event in facts(raw, 52):
         resource, x, y, z = unpack_from("<Qddd", raw, offset + 86)
         yield event, resource, (x, y, z)
         size, = unpack_from("<I", raw, offset)
@@ -200,7 +200,7 @@ def verify(archive, output):
     meta, completed = (json.loads((archive/name).read_text(encoding="utf-8")) for name in ("run.json", "completed.json"))
     model, matrix = meta.get("model", "r2"), meta["matrix"]
     universe = {c["case"]: (identity,c) for identity,c in environments(matrix)}
-    expect = [name for name in universe if model not in ("low-yield","high-yield") or name.endswith("-balanced")]
+    expect = [name for name in universe if model not in SENSITIVITIES or name.endswith("-balanced")]
     if not meta["selected_subset"]:
         check(meta["cases"] == expect, "frozen world coverage changed")
     check(set(meta["cases"]) == completed["statuses"].keys() and meta["arguments"][4:] == list(MODELS[model]), "input/model coverage mismatch")
@@ -227,21 +227,26 @@ def verify(archive, output):
                     check(receipt["artifacts"][key] == dict(bytes=len(blob),sha256=sha256(blob).hexdigest()), f"bad artifact checksum: {name}/{key}")
                 checked_files += len(blobs)
                 check(blobs["parameters.txt"]==input_bytes(identity,case), "changed resolved input")
-                common = dict(model=model,matrix=matrix,case=name,arm=case["arm"][11:],population=case["population"],
+                common = dict(model=model,matrix=matrix,case=name,arm=case["arm"].removeprefix("integrated-"),
+                              population=case["population"],group=case["group"],care=int(case["care_enabled"]),
                               profile=case.get("profile_index"),seed=case["software_seed"],status=receipt["status"])
                 if receipt["status"] != "COMPLETE":
                     all_worlds.append(common | dict(complete=0))
                     continue
                 raw, summary = blobs["facts.bin"], receipt["summary"]
                 case = case | dict(early_access_mask=3, carbohydrate_yield_nj_per_ug=int(MODELS[model][1]) if MODELS[model] else 1_000_000)
-                measure, lives, paths, censuses = assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],3 if model=="r2" else 4)
+                version = 3 if model=="r2" else 4 if len(MODELS[model])==2 else 5
+                measure, lives, paths, censuses = assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],version)
                 checked_facts += measure["source_facts"]
+                census_rows.extend(common | r for r in censuses)
+                stage_rows.extend(common | r for r in lives)
+                if matrix == "closed":
+                    all_worlds.append(common | measure | dict(complete=0))
+                    continue
                 cuts, people = rows(blobs["cuts.csv"]), rows(blobs["individuals.csv"])
                 snapshots = {d: [r for r in people if int(r["time_ms"]) == d*DAY] for d in (120,150)}
                 source = verify_sources(raw,case,cuts)
                 observed, histories, loads = observe_chain(raw,case,int(summary["queen"]),paths,snapshots)
-                census_rows.extend(common | r for r in censuses)
-                stage_rows.extend(common | r for r in lives)
                 workers.extend(common | r for r in histories)
                 trips.extend(common | r for r in loads)
                 all_worlds.append(common | measure | observed | source | dict(
@@ -251,6 +256,8 @@ def verify(archive, output):
     output.mkdir(parents=True)
     for key, dataset in (("worlds",all_worlds),("workers",workers),("loaded_trips",trips),("censuses",census_rows),("stages",stage_rows)):
         dump(output/f"{key}.csv",dataset)
+    if matrix == "closed":
+        evaluate(output,all_worlds,stage_rows,census_rows)
     result = dict(model=model, matrix=matrix, input_attempts=len(seen), complete_worlds=sum(r["complete"] for r in all_worlds),
                   checked_files=checked_files, checked_facts=checked_facts, profile_pass={}, group_rows=[])
     for population, arm in sorted({(r["population"],r["arm"]) for r in all_worlds}):

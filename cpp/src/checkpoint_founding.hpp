@@ -8,6 +8,7 @@ inline constexpr auto founding_magic = UINT64_C(0x4654504b435741); // AWCKPTF
 inline constexpr auto founding_persistence_magic = UINT64_C(0x4754504b435741); // AWCKPTG
 inline constexpr auto founding_access_magic = UINT64_C(0x4854504b435741); // AWCKPTH
 inline constexpr auto founding_provisioning_magic = UINT64_C(0x4954504b435741); // AWCKPTI
+inline constexpr auto founding_dietary_magic = UINT64_C(0x4a54504b435741); // AWCKPTJ
 inline constexpr std::array founding_times{
     &FoundingProfile::first_lay, &FoundingProfile::opening_width, &FoundingProfile::opening_spacing,
     &FoundingProfile::later_spacing, &FoundingProfile::maintenance_floor};
@@ -39,6 +40,10 @@ inline void write_founding_profile(Writer& w, EntityId founder, const FoundingPr
         w.put(access->local_hatch_cue, 1);
     }
     if (const auto& provision = p.provisioning) w.put(provision->local_exchange, 1);
+    if (const auto& dietary = p.dietary) {
+        w.put(dietary->local_nest_intake,1);
+        w.put(dietary->dietary_eggs,1);
+    }
 }
 
 template<class S> void write_founding(Writer& w, const S& s, bool frame) {
@@ -75,7 +80,8 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     for (const auto member : founding_values) p.*member = r.get();
     if (persistence) p.feeding_persistence = FoundingFeedingPersistence{r.time(), static_cast<std::uint32_t>(r.get(4))};
     if (early_access) p.early_access = FoundingEarlyAccess{r.flag(), r.flag()};
-    if (version==FoundingProfile::provisioning_version) p.provisioning = FoundingProvisioning{r.flag()};
+    if (version>=FoundingProfile::provisioning_version) p.provisioning = FoundingProvisioning{r.flag()};
+    if (version==FoundingProfile::dietary_version) p.dietary = FoundingDietaryAccess{r.flag(),r.flag()};
     validate_founding(p);
     ensure(s.long_term && s.social && s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy &&
            s.ants.index.contains(setup.founder) && s.reproduction.contains(setup.founder) &&
@@ -95,7 +101,8 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
         const auto& physiology = s.physiology.at(id);
         const auto stage = s.ants.get(s.ants.index.at(id)).stage;
         ensure(physiology.config == founding_physiology(p, id==setup.founder) && !physiology.water_loss_remainder &&
-               !physiology.exported_energy_nj && (stage==LifeStage::Dead || physiology.stage_progress <= stage_duration(physiology.config,stage)),
+               ((p.dietary && p.dietary->dietary_eggs && id==setup.founder) || !physiology.exported_energy_nj) &&
+               (stage==LifeStage::Dead || physiology.stage_progress <= stage_duration(physiology.config,stage)),
                "invalid F1 physiological bounds");
         lipid = add(lipid, add(row.lipid_ug, row.spent_lipid_ug));
         s.founding_reserves.emplace(id, row);

@@ -21,6 +21,7 @@ COLLECTED, DELIVERED, UPTAKE, CARGO, NEST, GIFT = 5, 12, 16, 19, 20, 21
 AUTONOMY, LAY, BIRTH, RECYCLED, OBSERVATION = 31, 34, 35, 38, 42
 F_CONFIG, F_SEED, F_EGG, F_CONVERT, F_RATION = range(44, 49)
 F_MOBILIZE, F_CUE = 49, 50
+F_NEST_MEAL, F_DIETARY_EGG = 51, 52
 OBS_SELECTED, OBS_STARTED, OBS_COMPLETED, OBS_INTERRUPTED = 1, 2, 3, 4
 FEED = 7
 MASS = struct.Struct("<QQQQ")
@@ -59,7 +60,8 @@ def facts(data, max_kind=F_RATION):
         prior_time = time
 
 
-def compare_cut(cut, people, stocks, flows, initial_energy, profile, carbohydrate_yield=1_000_000, nest=None):
+def compare_cut(cut, people, stocks, flows, initial_energy, profile, carbohydrate_yield=1_000_000, nest=None,
+                exported_energy=None):
     check(all(cut[f"introduced_{k}"] == cut[f"accounted_{k}"] for k in "cpwo"), "cut material imbalance")
     check(int(cut["energy_input_nj"]) == int(cut["body_energy_nj"]) + int(cut["dissipated_nj"]), "cut body energy imbalance")
     check(int(cut["initial_q3"]) == sum(int(cut[k]) for k in ("remaining_q3", "carried_q3", "deposited_q3")), "cut soil imbalance")
@@ -81,7 +83,8 @@ def compare_cut(cut, people, stocks, flows, initial_energy, profile, carbohydrat
                     int(row["crop_w"]) + int(row["hydration_ug"]) + int(row["lost_water_ug"]), int(row["crop_o"]))
         check(tuple(flows[ant]) == expected, "identity's material flows differ from its compartments")
         energy = initial_energy.get(ant, 0) + spent * profile["lipid_yield"] + carbohydrate_yield * int(row["oxidized_carb_ug"])
-        check(energy == int(row["energy_nj"]) + int(row["dissipated_nj"]), "identity's realized energy differs from funded input")
+        exported = exported_energy.get(ant, 0) if exported_energy else 0
+        check(energy == int(row["energy_nj"]) + int(row["dissipated_nj"]) + exported, "identity's realized energy differs from funded input")
     check(tuple(totals) == tuple(int(cut[k]) for k in ("owned_lipid_ug", "spent_lipid_ug", "mobile_protein_ug")), "reserve sum differs")
     check(totals[0] + totals[1] == profile["maternal_lipid"], "world lipid did not close")
     if nest is not None:
@@ -117,6 +120,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             flows[ant] = [int(row["crop_c"]), int(row["crop_p"]) + int(row["tissue_protein_ug"]),
                           int(row["crop_w"]) + int(row["hydration_ug"]), int(row["crop_o"])]
     stocks, stages, child, counts = {}, {}, {}, Counter()
+    exported_energy = defaultdict(int)
     firsts = {}
     current_cut = 0
     prior_ration = None
@@ -132,9 +136,11 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             if recipient is not None:
                 flows[recipient][i] += value
 
-    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, F_CUE if profile_version >= 3 else F_RATION):
+    maximum = F_DIETARY_EGG if profile_version == 5 else F_CUE if profile_version >= 3 else F_RATION
+    for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, maximum):
         while current_cut < len(cut_rows) and int(cut_rows[current_cut]["cursor"]) < event:
-            compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile, carbohydrate_yield, nest)
+            compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile,
+                        carbohydrate_yield, nest, exported_energy)
             current_cut += 1
         last = event
         counts[f"fact_{kind}"] += 1
@@ -152,8 +158,8 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             stocks[actor] = [payload, 0, mass[1]]
             transfer(None, actor, mass)
         elif kind == BIRTH:
-            check(payload == queen and value == 0 and mass == (0, profile["egg_protein"], profile["egg_water"], 0), "unexpected source of egg material")
-            child[actor] = dict(birth=time, egg=event, stages=[(0, time, event)], death=None, rations=[], uptake=[], adult_decisions=0,
+            check(payload == queen and (not value or profile_version == 5) and mass == (0, profile["egg_protein"], profile["egg_water"], 0), "unexpected source of egg material")
+            child[actor] = dict(birth=time, egg=event, stages=[(0, time, event)], death=None, rations=[], uptake=[], adult_decisions=0, egg_energy=value,
                                 adult_actions=0)
             transfer(queen, actor, mass)
         elif kind == F_EGG:
@@ -161,6 +167,15 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             stocks[actor][0] -= value
             stocks[actor][2] -= profile["egg_protein"]
             stocks[payload] = [value, 0, 0]
+        elif kind == F_DIETARY_EGG:
+            check(actor == queen and payload in child and value == child[payload]["egg_energy"] ==
+                  profile["egg_lipid"] * profile["lipid_yield"] and 0 <= mass[1] <= profile["egg_protein"], "invalid dietary egg payment")
+            initial_energy[payload] = value
+            exported_energy[actor] += value
+            stocks[actor][2] -= profile["egg_protein"] - mass[1]
+            stocks[payload] = [0, 0, 0]
+            counts["dietary_exported_energy_nj"] += value
+            counts["dietary_egg_crop_protein_ug"] += mass[1]
         elif kind in (F_CONVERT, F_MOBILIZE):
             check(actor in stocks and payload > 0 and value == payload * profile["lipid_yield"], "lipid conversion is unbacked")
             if kind == F_MOBILIZE:
@@ -185,7 +200,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             counts[f"worker_to_{label}"] += 1
             for nutrient, amount in zip("cpwo", mass, strict=True):
                 counts[f"worker_to_{label}_{nutrient}"] += amount
-        elif kind in (CARGO, NEST):
+        elif kind in (CARGO, NEST, F_NEST_MEAL):
             transfer(None, actor, mass)
         elif kind == RECYCLED:
             transfer(actor, None, mass)
@@ -222,19 +237,20 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
                 matches.update(i for i, start in enumerate(scan_starts) if began < start + 10_000 and time > start)
         if kind in (COLLECTED, DELIVERED):
             counts[f"food_mass_{kind}"] += sum(mass)
-        if nest is not None and kind in (DELIVERED, NEST, RECYCLED):
+        if nest is not None and kind in (DELIVERED, NEST, RECYCLED, F_NEST_MEAL):
             for i, amount in enumerate(mass):
-                nest[i] += (-1 if kind == NEST else 1) * amount
+                nest[i] += (-1 if kind in (NEST,F_NEST_MEAL) else 1) * amount
                 check(nest[i]>=0, "unfunded nest withdrawal")
         if kind in (MOVED, COLLECTED, DELIVERED, RESTED, GIFT, NEST, CARGO, RECYCLED) and actor in child and stages[actor] == 3:
             child[actor]["adult_actions"] += 1
 
     while current_cut < len(cut_rows):
         check(int(cut_rows[current_cut]["cursor"]) == last, "snapshot has unrecorded terminal facts")
-        compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile, carbohydrate_yield, nest)
+        compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile,
+                    carbohydrate_yield, nest, exported_energy)
         current_cut += 1
     check(last == int(summary["events"]) and counts["fact_44"] == counts["fact_45"] == 1 and
-          counts["fact_46"] == len(child), "incomplete committed record")
+          counts["fact_46"] + counts["fact_52"] == len(child), "incomplete committed record")
 
     final = {int(row["id"]): row for row in daily[-1][1]}
     timeline = []
@@ -296,6 +312,10 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
                        *(f"queen_feed_phase_{i}" for i in range(1, 5)), f"food_mass_{COLLECTED}", f"food_mass_{DELIVERED}",
                        *(f"worker_to_{role}{suffix}" for role in ("queen", "larva", "adult_worker") for suffix in ("", "_c", "_p", "_w", "_o")))},
                   actual_rations=counts["fact_48"], source_facts=last)
+    if profile_version==5:
+        result.update(dietary_eggs=counts["fact_52"], foundress_nest_meals=counts["fact_51"],
+                      dietary_exported_energy_nj=counts["dietary_exported_energy_nj"],
+                      dietary_egg_crop_protein_ug=counts["dietary_egg_crop_protein_ug"])
     return result, timeline, paths, matched
 
 

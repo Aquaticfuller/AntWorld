@@ -66,6 +66,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
     std::set<EntityId> active_foragers;
     FoodMass introduced = s.m.ledger.introduced;
     std::uint64_t initial_energy = 0, max_yield = 0;
+    std::map<ColonyId, FoodMass> nest;
     FoodMass accounted = sum(sum(s.m.ledger.available, s.m.ledger.carried), s.m.ledger.stored);
     for (const auto& [id,r]:s.resource_cycles) { (void)id; accounted=sum(accounted,r.remaining); }
     std::optional<WorldEvent> mobilized;
@@ -82,6 +83,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
         if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) positions[e.actor] = e.position;
         if (e.kind == FactKind::ForagingStarted) active_foragers.insert(e.actor);
+        const bool dietary=s.founding && s.founding->profile.dietary.has_value();
+        if (dietary && (e.kind==FactKind::FoodDelivered || e.kind==FactKind::ProteinRecycled))
+            nest[e.colony]=sum(nest[e.colony],e.transferred);
+        if (dietary && e.kind==FactKind::NestIngested) nest[e.colony]=subtract(nest[e.colony],e.transferred);
         if (e.kind == FactKind::PhysiologyEnabled || e.kind==FactKind::AntBorn) {
             ensure(s.physiology.contains(e.actor) && !audit.contains(e.actor), "missing/duplicate physiology initialization");
             const auto& saved = s.physiology.at(e.actor); PhysiologyState p; p.config = saved.config; p.initial = saved.initial;
@@ -188,6 +193,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 }
                 p.crop = subtract(p.crop, e.transferred); recipient.crop = sum(recipient.crop, e.transferred);
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");
+            } else if (e.kind == FactKind::FoundressNestMeal) {
+                ensure(dietary && e.position==positions.at(e.actor), "invalid foundress meal actor or profile");
+                founding.nest_meal(p,e,nest[e.colony]);
+                nest[e.colony]=subtract(nest[e.colony],e.transferred);
             } else if (e.kind == FactKind::FoundingRation) {
                 const EntityId target{e.payload};
                 auto& recipient = audit.at(target);
@@ -254,7 +263,8 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
         }
         max_yield = std::max(max_yield, saved.config.carbohydrate_yield_nj_per_ug);
         accounted = sum(accounted, sum(saved.crop, {saved.oxidized_carbs_ug, saved.tissue_protein_ug, add(saved.hydration_ug, saved.lost_water_ug), 0}));
-        const auto seed_energy = enrolled ? multiply(s.founding_reserves.at(id).spent_lipid_ug, founding.profile().lipid_yield_nj_per_ug) :
+        const auto seed_energy = enrolled ? add(multiply(s.founding_reserves.at(id).spent_lipid_ug, founding.profile().lipid_yield_nj_per_ug),
+                                                 founding.dietary_energy(id)) :
             saved.initial.body_energy_nj;
         ensure(add(seed_energy, multiply(saved.oxidized_carbs_ug, saved.config.carbohydrate_yield_nj_per_ug)) ==
             add(add(saved.body_energy_nj, saved.dissipated_energy_nj),saved.exported_energy_nj), "energy ledger mismatch");

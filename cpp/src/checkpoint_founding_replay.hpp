@@ -22,11 +22,13 @@ template<class S> class FoundingReplay {
     ScheduledId repeated_wake;
     bool repeated_contact{};
     std::optional<WorldEvent> last_hatch, hatch_cue;
+    std::optional<WorldEvent> last_pulse;
     SimTime last_cue;
     EntityId cue_target;
     ScheduledId cue_wake;
     std::optional<WorldEvent> opened_care;
     bool cue_contact{}, founder_autonomous{}, founder_caring{};
+    std::map<EntityId, std::uint64_t> dietary_eggs;
 
     void expect(WorldEvent e) {
         ensure(pending < expected.size(), "too many F1 facts in one physiological boundary");
@@ -121,6 +123,10 @@ public:
     bool founder(EntityId id) const { return world.founding && id == world.founding->founder; }
     bool enrolled(EntityId id) const { return world.founding && world.founding_reserves.contains(id); }
     const FoundingProfile& profile() const { return world.founding->profile; }
+    std::uint64_t dietary_energy(EntityId id) const {
+        const auto it=dietary_eggs.find(id);
+        return it==dietary_eggs.end()?0:it->second;
+    }
 
     bool before(const WorldEvent& e) {
         if (!world.founding) return false;
@@ -150,7 +156,8 @@ public:
         if (e.kind==FactKind::FoundingHatchCue)
             ensure(profile().early_access && profile().early_access->local_hatch_cue, "R2 hatch cue is disabled");
         if (profile().early_access && profile().early_access->local_hatch_cue) review_hatch(e);
-        if (e.kind == FactKind::FoundingReserveSeeded || e.kind == FactKind::FoundingEggFunded || e.kind == FactKind::FoundingLipidConverted)
+        if (e.kind == FactKind::FoundingReserveSeeded || e.kind == FactKind::FoundingEggFunded ||
+            e.kind == FactKind::FoundingDietaryEggFunded || e.kind == FactKind::FoundingLipidConverted)
             ensure(required, "unattributed F1 material fact");
         return required;
     }
@@ -191,7 +198,7 @@ public:
         const auto& f = profile();
         ensure(declared && !reserves.contains(e.actor) && (is_founder ? !mother && e.kind == FactKind::PhysiologyEnabled &&
                e.time == SimTime{} && e.stage == LifeStage::Adult && e.transferred == FoodMass{} : mother && e.kind == FactKind::AntBorn &&
-               e.payload == world.founding->founder.value && !e.random_value && e.transferred == FoodMass{0, f.egg_protein_ug, f.egg_water_ug, 0}),
+               e.payload == world.founding->founder.value && e.transferred == FoodMass{0, f.egg_protein_ug, f.egg_water_ug, 0}),
                "invalid F1 physiology origin");
         p = initial_founding_physiology(f, is_founder, e.time, is_founder ? EntityId{} : EntityId{e.payload});
         WorldEvent packet = e;
@@ -205,15 +212,25 @@ public:
             reserves.emplace(e.actor, FoundingReserve{f.lipid_ug, 0, f.protein_ug});
         } else {
             auto& maternal = reserves.at({e.payload});
-            ensure(funds_founding_egg(f, *mother, maternal), "F1 birth lacks maternal headroom");
-            debit_founding_egg(f, *mother, maternal);
-            packet.kind = FactKind::FoundingEggFunded;
+            const auto fuel=founding_egg_fuel(f,*mother,maternal);
+            const bool body=fuel==FoundingEggFuel::Body;
+            const auto energy=multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug);
+            ensure(fuel!=FoundingEggFuel::None && e.random_value==(body?energy:0), "F1 birth lacks maternal headroom");
+            const auto protein=body?debit_dietary_egg(f,*mother,maternal):0;
+            if (!body) debit_founding_egg(f,*mother,maternal);
+            packet.kind = body ? FactKind::FoundingDietaryEggFunded : FactKind::FoundingEggFunded;
             packet.actor = {e.payload};
             packet.stage = LifeStage::Adult;
             packet.payload = e.actor.value;
-            packet.random_value = f.egg_lipid_ug;
-            packet.transferred = {};
-            reserves.emplace(e.actor, FoundingReserve{f.egg_lipid_ug});
+            packet.random_value = body ? energy : f.egg_lipid_ug;
+            packet.transferred = {0,protein,0,0};
+            reserves.emplace(e.actor, FoundingReserve{body?0:f.egg_lipid_ug});
+            if (body) {
+                p.initial.body_energy_nj=p.body_energy_nj=energy;
+                dietary_eggs.emplace(e.actor,energy);
+                expect(packet);
+                return;
+            }
         }
         expect(packet);
         convert(p, e.actor, e.stage, e, true);
@@ -229,6 +246,7 @@ public:
         if (e.time == p.next_absorption) {
             ensure(e.transferred == absorb(p, stage), "invalid F1 crop uptake");
             convert(p, e.actor, stage, e, false);
+            if (founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake) last_pulse=e;
             if (founding_develops(profile(), p, reserves.at(e.actor), stage)) {
                 auto transition = e;
                 transition.kind = FactKind::StageChanged;
@@ -238,6 +256,18 @@ public:
             }
         } else ensure(stage == LifeStage::Larva && p.stage_progress == p.config.larva_duration && e.transferred == FoodMass{} &&
                       !founding_develops(profile(), p, reserves.at(e.actor), stage), "unexpected F1 developmental wait");
+    }
+
+    void nest_meal(PhysiologyState& p, const WorldEvent& e, FoodMass stock) {
+        ensure(founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake &&
+               last_pulse && last_pulse->source==e.source && last_pulse->time==e.time,
+               "foundress meal lacks its physiological pulse");
+        const auto nest=world.colonies.rows[world.colonies.index.at(e.colony)].nest_position;
+        ensure(within_contact(e.position,nest,world.config) && clear(e.position,nest,0,e.id) &&
+               foundress_nest_meal(profile(),p,reserves.at(e.actor),stock)==e.transferred,
+               "foundress meal lacks reachable local stock or crop room");
+        p.crop=sum(p.crop,e.transferred);
+        last_pulse.reset();
     }
 
     void ration(PhysiologyState& p, PhysiologyState& receiver, const WorldEvent& e, PositionM b, LifeStage stage) {

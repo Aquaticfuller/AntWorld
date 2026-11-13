@@ -18,6 +18,7 @@ Digest anchor_digest(const SaveToken& token,SimTime time,std::span<const std::ui
 FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
     if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
+    if (bytes[14]=='J') return FactSchema::FoundingDietary;
     if (bytes[14]=='I') return FactSchema::FoundingProvisioning;
     if (bytes[14]=='H') return FactSchema::FoundingEarlyAccess;
     if (bytes[14]=='G') return FactSchema::FoundingPersistence;
