@@ -12,6 +12,7 @@ constexpr std::uint64_t access_block_magic=UINT64_C(0x3430544341465741); // AWFA
 constexpr std::uint64_t provisioning_block_magic=UINT64_C(0x3530544341465741); // AWFACT05
 constexpr std::uint64_t dietary_block_magic=UINT64_C(0x3630544341465741); // AWFACT06
 constexpr std::uint64_t uptake_block_magic=UINT64_C(0x3730544341465741); // AWFACT07
+constexpr std::uint64_t resupply_block_magic=UINT64_C(0x3830544341465741); // AWFACT08
 constexpr std::size_t hashed_header=104, header_size=136;
 
 void put(std::vector<std::uint8_t>& bytes,std::uint64_t value,unsigned width) {
@@ -28,7 +29,7 @@ std::uint64_t get(std::span<const std::uint8_t> bytes,std::size_t& cursor,unsign
 void validate_event(const WorldEvent& event,const BlockHeader& header,EventId expected,
                     SimTime previous_time,std::uint64_t previous_revision) {
     require(event.id==expected && event.world==header.world &&
-            event.kind<=(header.fact_schema==7?FactKind::FoundingBoundaryUptake:header.fact_schema==6?FactKind::FoundingDietaryEggFunded:header.fact_schema>=4?FactKind::FoundingHatchCue:
+            event.kind<=(header.fact_schema>=7?FactKind::FoundingBoundaryUptake:header.fact_schema==6?FactKind::FoundingDietaryEggFunded:header.fact_schema>=4?FactKind::FoundingHatchCue:
                          header.fact_schema>=2?FactKind::FoundingRation:FactKind::BroodMoved) &&
             (!founding_fact(event.kind) || valid_founding_payload(event)) &&
             (event.kind!=FactKind::FoundingConfigured || event.random_value==header.fact_schema-1) &&
@@ -67,7 +68,7 @@ EventBlock seal_block(std::span<const WorldEvent> facts,const Digest& previous,F
     header.compressed_bytes=packed.size();
     std::vector<std::uint8_t> bytes(0);
     bytes.reserve(header_size+packed.size());
-    put(bytes,schema==FactSchema::FoundingUptake ? uptake_block_magic : schema==FactSchema::FoundingDietary ? dietary_block_magic : schema==FactSchema::FoundingProvisioning ? provisioning_block_magic : schema==FactSchema::FoundingEarlyAccess ? access_block_magic : schema==FactSchema::FoundingPersistence ? persistence_block_magic :
+    put(bytes,schema==FactSchema::FoundingResupply ? resupply_block_magic : schema==FactSchema::FoundingUptake ? uptake_block_magic : schema==FactSchema::FoundingDietary ? dietary_block_magic : schema==FactSchema::FoundingProvisioning ? provisioning_block_magic : schema==FactSchema::FoundingEarlyAccess ? access_block_magic : schema==FactSchema::FoundingPersistence ? persistence_block_magic :
         schema==FactSchema::Founding ? founding_block_magic : block_magic,8);
     for (unsigned value:{header.fact_schema,1U,header.fact_schema,0U}) put(bytes,value,2); // Block, codec, fact schema, reserved.
     for (const auto value:{first.world.high,first.world.low,first.id.value,last.id.value,
@@ -86,7 +87,7 @@ BlockHeader inspect_block(std::span<const std::uint8_t> bytes) {
     require(bytes.size()>=header_size && bytes.size()<=block_encoded_limit,"invalid event block length");
     std::size_t cursor=0;
     const auto magic=get(bytes,cursor,8);
-    const unsigned schema=magic==uptake_block_magic?7U:magic==dietary_block_magic?6U:magic==provisioning_block_magic?5U:magic==access_block_magic?4U:magic==persistence_block_magic?3U:magic==founding_block_magic?2U:1U;
+    const unsigned schema=magic==resupply_block_magic?8U:magic==uptake_block_magic?7U:magic==dietary_block_magic?6U:magic==provisioning_block_magic?5U:magic==access_block_magic?4U:magic==persistence_block_magic?3U:magic==founding_block_magic?2U:1U;
     require((schema>1 || magic==block_magic) && get(bytes,cursor,2)==schema && get(bytes,cursor,2)==1 &&
             get(bytes,cursor,2)==schema && get(bytes,cursor,2)==0,"unsupported canonical event block");
     BlockHeader header{};

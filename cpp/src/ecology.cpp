@@ -184,6 +184,22 @@ void WorldRuntime::resolve_autonomy_wakes(
           crop_work = true;
       }
       bool forage = at_depot && can_forage(ant);
+      bool refill = false;
+      if (forage && local_founding_provisioning(s,ant.id) && s.founding->profile.dietary &&
+          s.founding->profile.dietary->local_resupply && s.foragers.contains(ant.id) && s.foragers.at(ant.id).collections) {
+        const auto& profile=s.founding->profile;
+        const auto understocked=[&](EntityId id,const PhysiologyState& local) {
+          const auto deficit=founding_resupply_shortfall(profile,local,s.founding_reserves.at(id),
+                               s.founding->founder==id,config.decision_interval);
+          return ingredient_min(deficit,stock)!=deficit;
+        };
+        refill=understocked(ant.id,p);
+        for (const auto other : sample.ants) {
+          if (refill) break;
+          if (s.founding_reserves.contains(other.id) && query_ant(other)->stage==LifeStage::Adult)
+            refill=understocked(other.id,*query_physiology(other));
+        }
+      }
       bool soil = false;
       if (at_depot && s.geometry && sample.ants.size()>=2 && quantized(ant.position,s.geometry->config)) {
         const auto &g = s.geometry->config;
@@ -214,6 +230,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (urgent &&
           ingredient_min(stock, nutrient_demand(p, ant.stage)).total_ug())
         choice.behavior = IndividualBehavior::Rest;
+      else if (refill)
+        choice.behavior = IndividualBehavior::Forage;
       else if (config.local_work_continuation && !urgent &&
                config.exchange_enabled && crop_work &&
                p.behavior == IndividualBehavior::Nurse)

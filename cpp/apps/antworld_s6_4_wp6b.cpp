@@ -302,8 +302,8 @@ int main(int argc, char** argv) {
         }
         if (argc==11) {
             const auto flags=integer(argv[10]);
-            require((flags>=1 && flags<=3) || flags==7,"invalid dietary assay mask");
-            c.profile.dietary=FoundingDietaryAccess{(flags&1)!=0,(flags&2)!=0,(flags&4)!=0};
+            require((flags>=1 && flags<=3) || flags==7 || flags==15,"invalid dietary assay mask");
+            c.profile.dietary=FoundingDietaryAccess{(flags&1)!=0,(flags&2)!=0,(flags&4)!=0,(flags&8)!=0};
         }
         std::filesystem::create_directories(argv[2]);
         run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved", mode=="durable" || profile, profile);

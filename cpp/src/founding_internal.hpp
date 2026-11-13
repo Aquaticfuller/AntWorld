@@ -11,6 +11,7 @@ inline constexpr std::uint32_t founding_access_schema_version = 17, founding_acc
 inline constexpr std::uint32_t founding_provisioning_schema_version = 18, founding_provisioning_physics_version = 20;
 inline constexpr std::uint32_t founding_dietary_schema_version = 19, founding_dietary_physics_version = 21;
 inline constexpr std::uint32_t founding_uptake_schema_version = 20, founding_uptake_physics_version = 22;
+inline constexpr std::uint32_t founding_resupply_schema_version = 21, founding_resupply_physics_version = 23;
 inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEERING_FIXTURE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
@@ -145,6 +146,7 @@ inline void validate_founding(const FoundingProfile& f) {
     if (f.dietary && (!f.provisioning || !f.provisioning->local_exchange ||
         f.worker.carbohydrate_yield_nj_per_ug <= 1'000'000 ||
         !(f.dietary->local_nest_intake || f.dietary->dietary_eggs) ||
+        (f.dietary->local_resupply && !f.dietary->adult_boundary_uptake) ||
         (f.dietary->adult_boundary_uptake && !(f.dietary->local_nest_intake && f.dietary->dietary_eggs)) ||
         (f.dietary->dietary_eggs && multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug)>f.worker.energy_capacity_nj)))
         throw std::invalid_argument("invalid dietary founding profile");
@@ -209,6 +211,19 @@ inline SimTime next_founding_physiology(const FoundingProfile& f, const Physiolo
 
 inline std::uint64_t founding_energy(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
     return add(p.body_energy_nj, multiply(r.lipid_ug, f.lipid_yield_nj_per_ug));
+}
+
+inline FoodMass founding_resupply_shortfall(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r,
+                                           bool queen, SimTime decision_interval) {
+    const auto rates=founding_rates(f,p,LifeStage::Adult,queen,true);
+    auto ec=founding_day_ms-1, wc=ec;
+    const auto span=2*static_cast<std::uint64_t>(decision_interval.milliseconds);
+    const auto needed_energy=integrate_founding(rates.energy,span,ec);
+    const auto needed_water=integrate_founding(rates.water,span,wc);
+    const auto energy=founding_energy(f,p,r);
+    const auto water=add(p.hydration_ug,p.crop.water_ug);
+    const auto carb=needed_energy>energy?ceil_div(needed_energy-energy,p.config.carbohydrate_yield_nj_per_ug):0;
+    return {carb>p.crop.carbs_ug?carb-p.crop.carbs_ug:0,0,needed_water>water?needed_water-water:0,0};
 }
 
 inline FoodMass founding_pulse(PhysiologyState& p, FoundingUptakeClock& clock, LifeStage stage) {

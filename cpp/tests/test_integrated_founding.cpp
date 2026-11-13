@@ -16,14 +16,14 @@ template<class F> void rejects(F operation) {
     throw std::runtime_error("expected founding transaction to fail");
 }
 
-Case founding_case(std::string arm="balanced", bool intake=true, bool eggs=true, bool uptake=false) {
+Case founding_case(std::string arm="balanced", bool intake=true, bool eggs=true, bool uptake=false, bool refill=false) {
     auto f=nominal();
     f.feeding_persistence=FoundingFeedingPersistence{{2*day_ms},750'000};
     f.early_access=FoundingEarlyAccess{true,true};
     f.provisioning=FoundingProvisioning{true};
     f.worker.behavior_interval={hour_ms};
     f.worker.carbohydrate_yield_nj_per_ug=8'000'000;
-    f.dietary=FoundingDietaryAccess{intake,eggs,uptake};
+    f.dietary=FoundingDietaryAccess{intake,eggs,uptake,refill};
     const FoodMass stock=arm=="absent"?FoodMass{}:FoodMass{6000,3000,18000,0};
     return {201,1,std::move(arm),true,0,stock,f,{150*day_ms},true};
 }
@@ -169,6 +169,38 @@ void boundary_colony(const std::filesystem::path& folder) {
     require(w.checkpoint()==restored.checkpoint(),"boundary uptake changed under partitioned durable recovery");
     check_ledgers(w);
 }
+
+void local_resupply(const std::filesystem::path& folder) {
+    auto control=setup(founding_case("balanced",true,true,true));
+    auto treatment=setup(founding_case("balanced",true,true,true,true));
+    auto blocked=setup(founding_case("blocked",true,true,true,true));
+    const auto& f=*treatment.world.founding_profile();
+    auto p=initial_founding_physiology(f,true,{});
+    const auto deficit=founding_resupply_shortfall(f,p,{},true,{6*hour_ms});
+    require(deficit.carbs_ug && !deficit.water_ug,"available water was treated as an energy resource");
+    const FoundingReserve owned{500};
+    require(!founding_resupply_shortfall(f,p,owned,true,{6*hour_ms}).total_ug(),"usable lipid was ignored");
+    constexpr SimTime cut{85*day_ms};
+    control.world.advance_to(cut);
+    treatment.world.advance_to(cut);
+    blocked.world.advance_to(cut);
+    const auto has_delivery=[](const WorldRuntime& world) {
+        const auto facts=world.committed_events();
+        return std::any_of(facts.begin(),facts.end(),[](const auto& e) { return e.kind==FactKind::FoodDelivered; });
+    };
+    require(has_delivery(control.world) && has_delivery(treatment.world) && !has_delivery(blocked.world),"resupply ignored the accessible source");
+    const auto checkpoint=treatment.world.checkpoint();
+    require(checkpoint[6]=='L',"resupply has no unique format identity");
+    storage::Store store(folder/"exact.sqlite",s6_3_1_fixture::limits(),storage::StoreFormat::Segmented);
+    const auto token=store.save(treatment.world);
+    rejects([&] { (void)store.save(control.world,token); });
+    auto loaded=store.load(treatment.world.summary().world).world;
+    require(loaded.checkpoint()==checkpoint,"resupply did not replay its own history");
+    treatment.world.advance_to({91*day_ms});
+    loaded.advance_to({88*day_ms+1}); loaded.advance_to({91*day_ms});
+    require(loaded.checkpoint()==treatment.world.checkpoint(),"resupply continuation changed across cuts");
+    check_ledgers(loaded);
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -180,6 +212,7 @@ int main(int argc,char** argv) {
         else if (mode=="IF_NO_SOURCE") no_local_source();
         else if (mode=="IF_BOUNDARY_COMPONENTS") boundary_components();
         else if (mode=="IF_BOUNDARY_COLONY") boundary_colony(argv[2]);
+        else if (mode=="IF_LOCAL_RESUPPLY") local_resupply(argv[2]);
         else throw std::invalid_argument("unknown integrated founding test");
         return 0;
     } catch (const std::exception& e) {

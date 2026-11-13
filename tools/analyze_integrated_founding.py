@@ -244,7 +244,8 @@ def verify(archive, output):
                     continue
                 raw, summary = blobs["facts.bin"], receipt["summary"]
                 case = case | dict(early_access_mask=3, carbohydrate_yield_nj_per_ug=int(MODELS[model][1]) if MODELS[model] else 1_000_000)
-                version = 3 if model=="r2" else 4 if len(MODELS[model])==2 else 6 if model.startswith("uptake") else 5
+                version = (7 if model.startswith("resupply") else 6 if model.startswith("uptake") else
+                           3 if model=="r2" else 4 if len(MODELS[model])==2 else 5)
                 measure, lives, paths, censuses = assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],version)
                 checked_facts += measure["source_facts"]
                 census_rows.extend(common | r for r in censuses)

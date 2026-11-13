@@ -35,8 +35,8 @@ def main():
         native.sensor_tail, native.extract = log.tail, log.extract
     if args.scope=="integrated":
         assay.workload = integrated_workload
-        assay.MODEL_ARGUMENTS = {"uptake": (*assay.NOMINAL,3,*MODELS["uptake"])}
-        assay.MODEL_VERSIONS = {"uptake":6}
+        assay.MODEL_ARGUMENTS = {"resupply": (*assay.NOMINAL,3,*MODELS["resupply"])}
+        assay.MODEL_VERSIONS = {"resupply":7}
     else:
         assay.MODEL_ARGUMENTS["both"] = (*assay.NOMINAL,3)
         assay.MODEL_VERSIONS["both"] = 3

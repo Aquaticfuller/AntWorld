@@ -32,7 +32,7 @@ struct FoundingProvisioning {
 
 struct FoundingDietaryAccess {
     bool local_nest_intake{}, dietary_eggs{};
-    bool adult_boundary_uptake{};
+    bool adult_boundary_uptake{}, local_resupply{};
     bool operator==(const FoundingDietaryAccess&) const = default;
 };
 
@@ -45,6 +45,7 @@ struct FoundingProfile {
     static constexpr std::uint32_t provisioning_version = 4;
     static constexpr std::uint32_t dietary_version = 5;
     static constexpr std::uint32_t uptake_version = 6;
+    static constexpr std::uint32_t resupply_version = 7;
     FoundingPopulation population{};
     std::array<FoundingStageProfile, 3> brood;
     PhysiologyConfig worker;
@@ -59,7 +60,7 @@ struct FoundingProfile {
     std::optional<FoundingProvisioning> provisioning;
     std::optional<FoundingDietaryAccess> dietary;
     [[nodiscard]] std::uint32_t model_version() const {
-        if (dietary) return dietary->adult_boundary_uptake ? uptake_version : dietary_version;
+        if (dietary) return dietary->local_resupply ? resupply_version : dietary->adult_boundary_uptake ? uptake_version : dietary_version;
         if (provisioning) return provisioning_version;
         if (early_access) return early_access_version;
         return feeding_persistence ? persistence_version : version;

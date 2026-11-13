@@ -29,6 +29,7 @@ MODELS = {
     "nest": ("1", "8000000", "1"), "eggs": ("1", "8000000", "2"), "diet": ("1", "8000000", "3"),
     "diet-low": ("1", "4000000", "3"), "diet-high": ("1", "12000000", "3"),
     "uptake": ("1", "8000000", "7"), "uptake-low": ("1", "4000000", "7"), "uptake-high": ("1", "12000000", "7"),
+    "resupply": ("1", "8000000", "15"), "resupply-low": ("1", "4000000", "15"), "resupply-high": ("1", "12000000", "15"),
 }
 PROVISIONING_FREEZE = "bec5a01"
 PROVISIONING_PROTOCOL = PROTOCOL.with_name("PROVISIONING_AND_YIELD_FREEZE.md")
@@ -36,7 +37,9 @@ DIETARY_FREEZE = "b1a0d96"
 DIETARY_PROTOCOL = PROTOCOL.with_name("DIETARY_FOUNDRESS_FREEZE.md")
 UPTAKE_FREEZE = "945b1a2"
 UPTAKE_PROTOCOL = PROTOCOL.with_name("UPTAKE_TIMING_FREEZE.md")
-SENSITIVITIES = ("low-yield","high-yield","diet-low","diet-high","uptake-low","uptake-high")
+REFILL_FREEZE = "82811db"
+REFILL_PROTOCOL = PROTOCOL.with_name("LOCAL_REFILL_FREEZE.md")
+SENSITIVITIES = tuple(model for model in MODELS if model.startswith(("low", "high")) or model.endswith(("-low", "-high")))
 
 
 def environments(matrix):
@@ -75,10 +78,14 @@ def collect(args):
         original = subprocess.check_output(["git", "show", f"{DIETARY_FREEZE}:{DIETARY_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
         if original != DIETARY_PROTOCOL.read_bytes():
             raise ValueError("dietary ablations differ from their prospective freeze")
-    if args.model.startswith("uptake"):
+    if args.model.startswith(("uptake", "resupply")):
         original = subprocess.check_output(["git", "show", f"{UPTAKE_FREEZE}:{UPTAKE_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
         if original != UPTAKE_PROTOCOL.read_bytes():
             raise ValueError("uptake timing differs from its prospective freeze")
+    if args.model.startswith("resupply"):
+        original = subprocess.check_output(["git", "show", f"{REFILL_FREEZE}:{REFILL_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
+        if original != REFILL_PROTOCOL.read_bytes():
+            raise ValueError("local resupply differs from its prospective freeze")
     selected = environments(args.matrix)
     if args.model in SENSITIVITIES:
         if args.matrix != "nominal":
@@ -94,7 +101,7 @@ def collect(args):
     cpp_tree = git("rev-parse", "HEAD:cpp")
     if args.source_receipt:
         previous = json.loads(args.source_receipt.read_text(encoding="utf-8"))
-        if args.model not in ("diet", "diet-low", "diet-high") or previous["model"] != "diet" or \
+        if previous["model"] not in ("diet", "uptake") or args.model not in tuple(previous["model"]+suffix for suffix in ("", "-low", "-high")) or \
                 previous["binary_sha256"] != executable_hash or git("rev-parse", f"{previous['source']}:cpp") != previous["cpp_tree"]:
             raise ValueError("saved dietary executable identity does not match its original run receipt")
         source, cpp_tree = previous["source"], previous["cpp_tree"]
@@ -106,7 +113,8 @@ def collect(args):
         protocol_sha256=sha(PROTOCOL), binary=binary.name, binary_sha256=executable_hash, mode=args.mode,
         executable_receipt_sha256=sha(args.source_receipt) if args.source_receipt else None,
         arguments=list(arguments), matrix=args.matrix, model=args.model, selected_subset=bool(args.case), runner_sha256=sha(Path(__file__)),
-        candidate_protocol_sha256=sha(UPTAKE_PROTOCOL) if args.model.startswith("uptake") else
+        candidate_protocol_sha256=sha(REFILL_PROTOCOL) if args.model.startswith("resupply") else
+            sha(UPTAKE_PROTOCOL) if args.model.startswith("uptake") else
             sha(DIETARY_PROTOCOL) if len(MODELS[args.model])>=3 else
             sha(PROVISIONING_PROTOCOL) if args.model != "r2" else None,
         configuration="Release", compiler=subprocess.check_output([args.compiler.resolve(), "--version"], text=True).splitlines(),
