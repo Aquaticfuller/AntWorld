@@ -4,14 +4,18 @@ import argparse
 from collections import Counter
 import csv
 import gzip
+from hashlib import sha256
 import json
 import math
 from pathlib import Path
+from statistics import median
 import subprocess
 from tempfile import TemporaryDirectory
+from zipfile import ZipFile
 
 from analyze_s6_4_wp6b import check
 from diagnose_ecological_care import run as diagnose_care
+from ecological_field_precision import original_difference
 from founding_qualification_witnesses import COMMAND
 from run_ecological_closure import roster
 from run_s6_4_wp6b import ROOT, run_one, sha, write_json
@@ -77,17 +81,28 @@ def verify_matrix(path, panel):
         counts = Counter(r["arm"] for r in worlds if int(r["complete"])>0)
         check(counts["scout"]>=8 and not counts.keys()-{"scout"},"SC-06 delivery decision differs")
         check(all(not int(r["activated"]) for r in worlds if r["arm"] in {"sham","disabled","naive"}) and
-              all(not int(r["collections"]) for r in worlds if r["arm"] == "blocked"),"adverse scout arm responded")
+              all(not int(r["collections"]) for r in worlds if r["arm"] == "blocked") and
+              all(not int(r["deliveries"]) for r in worlds if r["arm"] == "depleted"),
+              "adverse scout arm responded")
     else:
         expected = {name for name in names if by_case[name]["mode"]=="observed" and by_case[name]["status"]=="COMPLETE"}
         check({row["case"] for row in worlds} == expected and len(worlds)==len(expected),"incomplete biological denominator")
         check(all(int(by_case[r["case"]]["summary"]["events"])==int(r["source_facts"]) for r in worlds),
               "reported case has a different fact count")
-        check(all(not int(r.get("collection") or 0) for r in worlds if r["source"] in {"blocked","absent"}),
-              "collection at a blocked or absent food source")
+        check(all(not int(r.get(key) or 0) for r in worlds if r["source"] in {"blocked","absent"}
+                  for key in ("collection","deliveries")),"food transfer from a blocked or absent source")
         if panel == "care":
             check(all(not int(r["actual_rations"]) for r in worlds if r["treatment"]=="careoff"),
                   "care-off paid a maternal ration")
+            check(all(int(r.get("water_sipped_ug") or 0)==int(r["queen_absorbed_w"])==
+                      (1200 if r["treatment"]=="water" else 0) for r in worlds),
+                  "maternal water control does not match the recorded source and uptake")
+            for population in ("borisovka","st_petersburg"):
+                first, control = ([int(r["maternal_protein_receivers"]) for r in worlds
+                                   if r["population"]==population and r["treatment"]==arm]
+                                  for arm in ("first","clock"))
+                check(len(first)==len(control)==6 and median(first)>median(control),
+                      "first-meal arm does not meet the frozen per-population breadth endpoint")
         else:
             check(all(not int(r["worker_protein_assimilated_lower_bound_ug"]) for r in worlds if r["source"]=="no-protein"),
                   "protein entered the protein-free arm")
@@ -129,53 +144,55 @@ def verify_timing(path):
             check(authorities[0]==authorities[1],"row writer changed authority or observations")
 
 
+def verify_original_portability_failure(precision):
+    root = EVIDENCE/"portable-physics/original-linux-divergence"
+    digests = json.loads((root/"digests.json").read_bytes())
+    check(set(digests)=={"first-observed.zip","first-durable-split.zip"},"original Linux failure modes missing")
+    windows = EVIDENCE/"joint-repaired/borisovka-1-shaft-joint-balanced-5500.zip"
+    with ZipFile(windows) as archive:
+        expected = archive.read("facts.bin")
+    for name,digest in digests.items():
+        archive = root/name
+        check(sha(archive)==digest,"original Linux divergence archive changed")
+        with ZipFile(archive) as data:
+            for key,prior in precision["old"]["linux"].items():
+                raw = data.read(key)
+                check(sha256(raw).hexdigest()==prior["sha256"] and len(raw)==prior["bytes"],
+                      "original Linux authority differs")
+            if name=="first-observed.zip":
+                check(original_difference(expected,data.read("facts.bin"))==precision["original_difference"],
+                      "original native replay discrepancy changed")
+
+
 def exe_path(path):
     if not path.is_file():
         path = path.parent/"Release"/(path.stem+".exe")
     return path.resolve(strict=True)
 
 
-def replay_platform_probe(output, joint_executable, scout_executable, precision):
-    name = "borisovka-1-shaft-joint-balanced-5500"
-    identity,case,_ = next((i,c,m) for i,c,m in roster("joint") if c["case"]==name)
-    candidate = case | {"arm":case["arm"].replace("ecology-","ecology5-",1)}
-    durable = run_one(exe_path(joint_executable),output/name,identity,candidate,"durable-split",COMMAND)
-    check(durable["status"]=="COMPLETE","portable platform probe did not finish")
-    check(all(durable["artifacts"][k]==precision["portable"]["portable"]["windows"][k] for k in AUTHORITY),
-          "portable joint probe changed authority")
-    scout=output/"portable-scout"
-    subprocess.run([exe_path(scout_executable),"1","scout",scout,"durable","portable"],check=True)
-    check(all(sha(scout/k)==precision["portable"]["portable-scout"]["windows"][k]["sha256"] for k in AUTHORITY),
-          "portable scout probe changed authority")
-
-
-def replay(output, joint_executable, scout_executable, *, portable=False):
+def replay(output, joint_executable, scout_executable):
     binary = exe_path(joint_executable)
-    for panel,folder,observed in (
-        ("joint","joint-repaired","borisovka-1-shaft-joint-balanced-5500"),
-        ("care","care","borisovka-1-shaft-water-absent-5500"),
-        ("care","care","borisovka-1-shaft-wallwater-absent-5500"),
+    for panel,observed in (
+        ("joint","borisovka-1-shaft-joint-balanced-5500"),
+        ("joint","st_petersburg-1-dogleg-joint-balanced-5500"),
+        ("care","borisovka-1-shaft-water-absent-5500"),
+        ("care","borisovka-1-shaft-wallwater-absent-5500"),
     ):
         identity,case,_ = next((i,c,m) for i,c,m in roster(panel) if c["case"]==observed)
-        if portable:
-            folder = f"portable-physics/{panel}"
-        original = next(r["receipt"] for r in manifest(EVIDENCE/folder) if r["case"]==observed)
-        if portable or panel=="joint":
-            prefix = "ecology5-" if portable else "ecology4-"
-            case = case | {"arm":case["arm"].replace("ecology-",prefix,1)}
+        original = next(r["receipt"] for r in manifest(EVIDENCE/"portable-physics"/panel) if r["case"]==observed)
+        case = case | {"arm":case["arm"].replace("ecology-","ecology5-",1)}
         durable = run_one(binary,output/observed,identity,case,"durable-split",COMMAND)
         check(durable["status"]=="COMPLETE","fresh ecological recovery failed")
         check_identity(original,durable,observed)
     scout = output/"fresh-scout"
-    options = ["durable","portable"] if portable else ["durable"]
-    subprocess.run([exe_path(scout_executable),"1","scout",scout,*options],check=True)
-    source = EVIDENCE/("portable-physics/scout" if portable else "scout")
+    subprocess.run([exe_path(scout_executable),"1","scout",scout,"durable","portable"],check=True)
+    source = EVIDENCE/"portable-physics/scout"
     reference = next(r["receipt"] for r in manifest(source) if r["case"]=="scout-1-observed")
     check(all(sha(scout/k)==reference["artifacts"][k]["sha256"] for k in AUTHORITY),
           "fresh scout recovery changed canonical authority")
 
 
-def verify(output, joint_executable, scout_executable, *, run_portable=True):
+def verify(output, joint_executable, scout_executable):
     output.mkdir(parents=True)
     summary = {}
     matrix = csv_rows(ROOT/"research/s6_4_ecological_mechanism_closure/BR_READINESS_MATRIX.csv")
@@ -185,17 +202,17 @@ def verify(output, joint_executable, scout_executable, *, run_portable=True):
               r["DirectGrade"] in {"A","B"} and r["HypothesisGrade"]=="C" and
               set(r["SourceContexts"].split(";")) <= contexts and
               r["Readiness"] in {"ENGINEERING_ONLY","NOT_READY"} for r in matrix),"biological gate changed")
-    panels = [("scout","scout"),("care","care"),("joint-original","joint"),
-              ("joint-expanded","joint"),("joint-repaired","joint")]
-    archive_audit = json.loads((EVIDENCE/"local_archive_hash_audit.json").read_bytes())
+    panels = (("scout","scout"),("care","care"),("joint-original","joint"),
+              ("joint-expanded","joint"),("joint-repaired","joint"),
+              *((f"portable-physics/{panel}",panel) for panel in ("scout","care","joint")))
+    archive_audit = json.loads((EVIDENCE/"local_archive_hash_audit.json").read_bytes()) | json.loads(
+        (EVIDENCE/"portable-physics/local_archive_hash_audit.json").read_bytes())
     precision = json.loads((EVIDENCE/"portable-physics/platform_comparison.json").read_bytes())
     check(precision["original_difference"]["different_deposits"]==1 and
           precision["original_difference"]["first"]["event"]==421676 and
           all(d["windows"]==d["linux"] for d in precision["portable"].values()),
           "old numerical failure or new byte comparison changed")
-    if run_portable:
-        panels.extend((f"portable-physics/{panel}",panel) for panel in ("scout","care","joint"))
-        archive_audit.update(json.loads((EVIDENCE/"portable-physics/local_archive_hash_audit.json").read_bytes()))
+    verify_original_portability_failure(precision)
     tests = json.loads((EVIDENCE/"tests/receipt.json").read_bytes())
     for name,entry in tests["local_ctest"].items():
         log = EVIDENCE/"tests"/name
@@ -205,6 +222,17 @@ def verify(output, joint_executable, scout_executable, *, run_portable=True):
     check(len(tests["local_ctest"])==3 and tests["core_ci"]["status"]=="success" and
           len(tests["core_ci"]["jobs"])==5 and all(r["conclusion"]=="success" for r in tests["core_ci"]["jobs"]),
           "test receipt has an incomplete matrix")
+    new_tests = EVIDENCE/"portable-physics/tests"
+    portable_ctest = json.loads((new_tests/"receipt.json").read_bytes())["local_ctest"]
+    check({k:v["tests"] for k,v in portable_ctest.items()}=={"portable-linux-tests.log":6,
+          "portable-debug-tests.log":287,"portable-release-tests.log":287,"portable-sanitizer-tests.log":287},
+          "portable local test matrix is incomplete")
+    for name,entry in portable_ctest.items():
+        log = new_tests/name
+        count = entry["tests"]
+        check(sha(log)==entry["sha256"] and entry["exit_code"]==0 and
+              f"100% tests passed, 0 tests failed out of {count}" in log.read_text(encoding="utf-8"),
+              "portable local test receipt differs from the raw log")
     with TemporaryDirectory(dir=output) as temp:
         scratch = Path(temp)
         for name,panel in panels:
@@ -224,6 +252,8 @@ def verify(output, joint_executable, scout_executable, *, run_portable=True):
                 compare(path,scratch/name)
         check(summary["joint-original"]["failures"]==17 and summary["joint-expanded"]["joint_gate"]=="FAIL",
               "preserved engineering failures changed")
+        check(all(summary[name]["failures"]==0 and summary[name]["joint_gate"]=="PASS"
+                  for name in ("joint-repaired","portable-physics/joint")),"corrected joint matrix fails the frozen gate")
         diagnosis = scratch/"founder-feeding"
         diagnose_care(EVIDENCE/"care",diagnosis,True)
         table = "founder_feeding_by_larva.csv"
@@ -231,26 +261,35 @@ def verify(output, joint_executable, scout_executable, *, run_portable=True):
         for row in csv_rows(diagnosis/table):
             check(all(by_id[row["case"],row["ant"]][k]==v for k,v in row.items()),
                   "first feeding diagnosis differs from raw public witness")
-        for panel in (("joint","scout","care") if run_portable else ()):
+        for panel in ("joint","scout","care"):
             directory = EVIDENCE/"portable-physics"/panel
             comparisons = csv_rows(directory/"comparison/policy_comparison.csv")
             check([r["case"] for r in comparisons]==frozen_names(panel),"portable policy comparison omits a case")
             data = json.loads((directory/"comparison/policy_summary.json").read_bytes())
+            changed = Counter(key for row in comparisons
+                              for key in (row.get("changed_observed_endpoints") or "").split(";") if key)
             check(data["attempts"]==len(comparisons) and
+                  data["old_failures"]==sum(r["before_status"]!="COMPLETE" for r in comparisons) and
+                  data["new_failures"]==sum(r["after_status"]!="COMPLETE" for r in comparisons) and
                   data["raw_facts_equal"]==sum(int(r.get("raw_facts_sha_equal") or 0) for r in comparisons) and
+                  data["frame_equal"]==sum(int(r.get("final_frame_sha_equal") or 0) for r in comparisons) and
+                  data["aligned_only_trail"]==sum(r.get("aligned")=="True" and
+                      not int(r.get("other_different_facts") or 0) for r in comparisons) and
                   data["non_trail_fact_difference"]==sum(bool(int(r.get("other_different_facts") or 0)) or
-                      r.get("aligned")=="False" for r in comparisons),"portable comparison totals differ")
-        native = (("joint","portable","borisovka-1-shaft-joint-balanced-5500"),("scout","portable-scout","scout-1-durable"))
-        for panel,label,case in (native if run_portable else ()):
+                      r.get("aligned")=="False" for r in comparisons) and
+                  data["changed_observed_endpoints"]==changed,"portable comparison totals differ")
+        dogleg="st_petersburg-1-dogleg-joint-balanced-5500"
+        water="borisovka-1-shaft-water-absent-5500"
+        wallwater="borisovka-1-shaft-wallwater-absent-5500"
+        for panel,label,case in (("joint","portable","borisovka-1-shaft-joint-balanced-5500"),
+                                 ("scout","portable-scout","scout-1-durable"),("joint",dogleg,dogleg),
+                                 ("care",water,water),("care",wallwater,wallwater)):
             collected = next(r["receipt"] for r in manifest(EVIDENCE/"portable-physics"/panel) if r["case"]==case)
             check(all(collected["artifacts"][k]==precision["portable"][label]["windows"][k] for k in AUTHORITY),
                   "portable platform comparison differs from formal archive authority")
         verify_timing(EVIDENCE/"timing")
         if joint_executable and scout_executable:
-            if run_portable:
-                replay(scratch,joint_executable,scout_executable,portable=True)
-            else:
-                replay_platform_probe(scratch,joint_executable,scout_executable,precision)
+            replay(scratch,joint_executable,scout_executable)
     write_json(output/"public_verification.json",summary | {"fresh_replay":bool(joint_executable),"timing_processes":18})
     print(summary)
 
@@ -260,8 +299,7 @@ if __name__=="__main__":
     parser.add_argument("output",type=Path)
     parser.add_argument("--joint-binary",type=Path)
     parser.add_argument("--scout-binary",type=Path)
-    parser.add_argument("--platform-probe",action="store_true")
     args=parser.parse_args()
     if bool(args.joint_binary)!=bool(args.scout_binary):
         parser.error("provide both replay executables")
-    verify(args.output,args.joint_binary,args.scout_binary,run_portable=not args.platform_probe)
+    verify(args.output,args.joint_binary,args.scout_binary)

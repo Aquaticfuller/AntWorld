@@ -1,0 +1,8 @@
+arm,worlds,sum_complete,sum_collections,sum_activated,sum_deliveries,sum_signals,sum_exposures,median_complete,median_collections,median_activated,median_deliveries,median_signals,median_exposures
+blocked,12,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0
+depleted,12,0,12,26,0,12,86,0.0,1.0,2.0,0.0,1.0,7.5
+disabled,12,0,418,0,0,412,1464,0.0,37.0,0.0,0.0,36.0,120.0
+existing,12,0,68,0,36,68,1,0.0,6.0,0.0,3.0,6.0,0.0
+naive,12,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0
+scout,12,36,460,36,36,458,119,3.0,39.0,3.0,3.0,39.0,11.0
+sham,12,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0

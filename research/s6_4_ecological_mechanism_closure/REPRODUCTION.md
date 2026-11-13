@@ -34,6 +34,8 @@ python tools/verify_ecological_publication.py out/closure-public-audit --joint-b
 python tools/verify_final_core_evidence.py out/closure-inherited-audit
 ```
 
+Add `--portable-field` to the collection commands for the physics-25 roster. Both policies remain readable. The portable run still uses the 4,000,000-fact limit and the same original cases. `tools/compare_ecological_policies.py OLD_RAW NEW_RAW OLD_ANALYSIS NEW_ANALYSIS OUTPUT` emits complete pair comparisons without changing either archive. The full native collections from the experiment host are under `out/ecological-closure/native-archives`, with `portable-physics/{joint,care,scout}` for the portable panel. The public verification and native replay exercise the new policy. The older local replays retain their version-specific records. [Versioned numerical repair](PORTABLE_REPLAY.md)
+
 The timing collector requires the existing timing-enabled storage build.
 
 ```sh
@@ -42,6 +44,6 @@ cmake --build build/ecological-timing --target antworld_s6_4_wp6b --parallel 4
 python tools/measure_ecological_output.py build/ecological-timing/antworld_s6_4_wp6b out/closure-output-diagnostic
 ```
 
-The public audit checks the exact frozen roster, archive/member hashes, conserved quantities and negative outcomes. It rebuilds the published fixed raw endpoints and verifies the SQLite midpoint anchor, block chain and bytes against the uninterrupted facts. With executables supplied it also generates a fresh scout, 150-day joint durable replay, and the accessible/blocked founding water pair, independently requiring the same canonical output. Absolute timing will differ by host and cannot stand in for admission. Both performance modes perform actual SQLite save/reopen and output synchronization.
+The public audit checks the exact frozen roster, archive/member hashes, conserved quantities and negative outcomes. It rebuilds the published fixed raw endpoints and verifies the SQLite midpoint anchor, block chain and bytes against the uninterrupted facts. With executables supplied it also generates a fresh scout, one 150-day durable replay per layout, and the accessible and blocked founding water pair. It requires the same canonical output in each. Absolute timing is host-specific and requires the separate admission procedure. Both performance modes perform actual SQLite save/reopen and output synchronization.
 
 Raw stage identities, larvae and receiver episodes are supplied as gzip-compressed CSV. Missing values mean unobserved or inapplicable under that assay, with censoring and terminal outcomes in their own columns. `archives.jsonl` identifies host failures and completed runs, including paired observation and restoration. Each ZIP member is independently hashed. The earliest stopped historical witness predates a host feature that writes a final native frame and its matched facts on failure. It retains the complete artifacts that its original runner wrote. [Bounded archive follow-up](FROZEN_HOST_FOLLOWUP.md)

@@ -9,6 +9,7 @@ import json
 import math
 from pathlib import Path
 from statistics import median
+from struct import unpack_from
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
@@ -63,6 +64,7 @@ def read_archives(path, witnesses_only, panel, selection=None):
     manifest = [json.loads(line) for line in (path/"archives.jsonl").read_text(encoding="utf-8").splitlines()]
     names = frozen_names(panel)
     run_receipt = json.loads((path/"run.json").read_bytes())
+    portable = run_receipt.get("portable_field",False)
     check(run_receipt["cases"] == names and [row["case"] for row in manifest] == names and
           all(r["archive"] == r["case"] + ".zip" for r in manifest), "frozen roster identity or denominator changed")
     if witnesses_only:
@@ -81,6 +83,13 @@ def read_archives(path, witnesses_only, panel, selection=None):
         for name, value in row["receipt"]["artifacts"].items():
             check(len(members[name])==value["bytes"] and sha256(members[name]).hexdigest()==value["sha256"],
                   f"original member changed: {archive.name}/{name}")
+        if "initial.chk" in members:
+            header = members["initial.chk"]
+            if "-legacy-" in row["case"]:
+                check(header[:7]!=b"AWCKPTM","legacy control has ecological physics")
+            else:
+                check(header[:7]==b"AWCKPTM" and unpack_from("<II",header,8)==(22,25 if portable else 24),
+                      "archive uses the wrong ecological arithmetic version")
         yield row, members
 
 

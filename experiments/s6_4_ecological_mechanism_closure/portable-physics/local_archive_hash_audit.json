@@ -1,0 +1,14 @@
+{
+  "portable-physics/care": {
+    "manifest_sha256": "d5f0d037e6e30d6709aefe0f53768c4787713169e64441f72489554207c08603",
+    "verified_archives": 72
+  },
+  "portable-physics/joint": {
+    "manifest_sha256": "4068a0254f6f04f50e067d5fc41418580aa5b4faad7be4c5a7dd9eff9beba263",
+    "verified_archives": 224
+  },
+  "portable-physics/scout": {
+    "manifest_sha256": "ea1a3a9f461713185bd5c6c5ab556ba8241f02199625bc0f4e04f1fdcb34d41e",
+    "verified_archives": 85
+  }
+}

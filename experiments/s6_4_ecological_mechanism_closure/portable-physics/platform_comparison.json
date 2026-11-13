@@ -49,6 +49,66 @@
     }
   },
   "portable": {
+    "borisovka-1-shaft-wallwater-absent-5500": {
+      "linux": {
+        "facts.bin": {
+          "bytes": 2727040,
+          "sha256": "811f1bdcd5c373a7fc94a426c30c4f6f8bfd3588cc47ac197f586bee160b29a5"
+        },
+        "final.frame": {
+          "bytes": 25752,
+          "sha256": "94224ed14c68389450926820dac902345cb25a7a7cb569c58ca75b419ee2168a"
+        },
+        "initial.chk": {
+          "bytes": 5421,
+          "sha256": "14e6bdbd28e6ce672dbcf8b35b1ac0dbfca1c21fd82cc957fcb3fd00eb29dda8"
+        }
+      },
+      "windows": {
+        "facts.bin": {
+          "bytes": 2727040,
+          "sha256": "811f1bdcd5c373a7fc94a426c30c4f6f8bfd3588cc47ac197f586bee160b29a5"
+        },
+        "final.frame": {
+          "bytes": 25752,
+          "sha256": "94224ed14c68389450926820dac902345cb25a7a7cb569c58ca75b419ee2168a"
+        },
+        "initial.chk": {
+          "bytes": 5421,
+          "sha256": "14e6bdbd28e6ce672dbcf8b35b1ac0dbfca1c21fd82cc957fcb3fd00eb29dda8"
+        }
+      }
+    },
+    "borisovka-1-shaft-water-absent-5500": {
+      "linux": {
+        "facts.bin": {
+          "bytes": 3004334,
+          "sha256": "298b394af362fd75f226480455a4ae08c29d4847367fb68ca1092bf7fa0ca552"
+        },
+        "final.frame": {
+          "bytes": 26073,
+          "sha256": "d9d42b7b5349b8b000d31867ba9c20cbbaec21793303bbc211468ece190064cc"
+        },
+        "initial.chk": {
+          "bytes": 5397,
+          "sha256": "a9e38819c3846428671361f4c88d509c1f7e66908a8cc05b528e7fb0177fd8b5"
+        }
+      },
+      "windows": {
+        "facts.bin": {
+          "bytes": 3004334,
+          "sha256": "298b394af362fd75f226480455a4ae08c29d4847367fb68ca1092bf7fa0ca552"
+        },
+        "final.frame": {
+          "bytes": 26073,
+          "sha256": "d9d42b7b5349b8b000d31867ba9c20cbbaec21793303bbc211468ece190064cc"
+        },
+        "initial.chk": {
+          "bytes": 5397,
+          "sha256": "a9e38819c3846428671361f4c88d509c1f7e66908a8cc05b528e7fb0177fd8b5"
+        }
+      }
+    },
     "portable": {
       "linux": {
         "facts.bin": {
@@ -106,6 +166,36 @@
         "initial.chk": {
           "bytes": 8174,
           "sha256": "688fb10fb8910f030ca33ddc869a97b54b731e7aee79bd69963e2cbba2a66192"
+        }
+      }
+    },
+    "st_petersburg-1-dogleg-joint-balanced-5500": {
+      "linux": {
+        "facts.bin": {
+          "bytes": 175156974,
+          "sha256": "b1b96a01840888c00ff464a51a1c65d777f8297439299b1422a9b45eecabe82a"
+        },
+        "final.frame": {
+          "bytes": 161278,
+          "sha256": "2f1caf138472045c1cd15b5d03d76d6a4ee9348842f51f2addb48b6c34e57b47"
+        },
+        "initial.chk": {
+          "bytes": 5900,
+          "sha256": "8f9a8dba1dbb5a94cec21e102cd892cfda7e32cfe80827fba39e1aadb2e74257"
+        }
+      },
+      "windows": {
+        "facts.bin": {
+          "bytes": 175156974,
+          "sha256": "b1b96a01840888c00ff464a51a1c65d777f8297439299b1422a9b45eecabe82a"
+        },
+        "final.frame": {
+          "bytes": 161278,
+          "sha256": "2f1caf138472045c1cd15b5d03d76d6a4ee9348842f51f2addb48b6c34e57b47"
+        },
+        "initial.chk": {
+          "bytes": 5900,
+          "sha256": "8f9a8dba1dbb5a94cec21e102cd892cfda7e32cfe80827fba39e1aadb2e74257"
         }
       }
     }

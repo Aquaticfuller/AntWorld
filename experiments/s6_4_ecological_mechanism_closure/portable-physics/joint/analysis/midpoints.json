@@ -1,0 +1,50 @@
+[
+  {
+    "anchor": "c19a51e419f577be9533ba4b36bdaf87c28e20854df56aa53f0b46a5aeba290b",
+    "canonical_bytes": 10590924,
+    "canonical_sha256": "d8848f61fe3bb89e53346a87988f659860ff6b5a1019877af9da0db6a530b52b",
+    "case": "borisovka-1-shaft-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "663ba0121616264d4c4cae66eddb75be70495253a98f437909ea1a5fd0b6161c",
+    "cursor": 54117,
+    "revision": 69316,
+    "tail": "00df77dfd3b560d33405fb907490d858fe5c4beba42ce17ca6fccc5e47bc8fdb",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "9c26f1877e72d17e055760c5e458c34fbb42d9e06d5d1b0ecd8e8072d82263ec",
+    "canonical_bytes": 11126198,
+    "canonical_sha256": "b3ec7d61a1baee78ff65fd55158b1a1bee28c07f900d1ccb0b0de6a14c7e564c",
+    "case": "borisovka-1-dogleg-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "b0b33c3b0406e74cc04ddd27b46e0be14ed63412763784fc8b6c99e27869ce08",
+    "cursor": 56879,
+    "revision": 72350,
+    "tail": "c85ce252087468640fbc9e7683565c42978dec65cb4d99913e74a451073ce6f1",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "bd896bb5ddb9d6f0b91321fa4cca6515d5ecc44f335f8308c62a8e8224a321b4",
+    "canonical_bytes": 16520367,
+    "canonical_sha256": "f32822db465f5d8b90799863b346b24e9160ffda09a82f8716123a97d80d91c2",
+    "case": "st_petersburg-1-shaft-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "267d88c3cac7b7676d788442a99a5fa212a4d46269bccc87660a89e57bfca836",
+    "cursor": 83751,
+    "revision": 104900,
+    "tail": "43ebb12c46d23c5c1df75670e9b2878a4ba02d97ab576d2817b36df77a05f7a4",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  },
+  {
+    "anchor": "7745ea9ffac6872d8fc699869e2ba057b6a6b0711a573f1f0f9adbf2a575850e",
+    "canonical_bytes": 17409369,
+    "canonical_sha256": "cec79949ae2513883894f37d47fb44a2b6de5d0c6b63d739d242eb2ab3716322",
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split",
+    "checkpoint_sha256": "f328a080147644bbba08b943265d55d713a233a78fd2a20a796227887ce791dd",
+    "cursor": 88236,
+    "revision": 109714,
+    "tail": "4839267612ec1440ed2e24df23980ddf7bb481e469e23d9d6a8e68de0c4837bd",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  }
+]

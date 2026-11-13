@@ -213,7 +213,6 @@ jobs:
           python tools/verify_ecological_publication.py build/ecological-closure
           --joint-binary build/ci/antworld_s6_4_wp6b
           --scout-binary build/ci/antworld_ecological_recruitment
-          --platform-probe
 
   sanitizers:
     runs-on: ubuntu-24.04

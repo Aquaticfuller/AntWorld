@@ -1,0 +1,10 @@
+{
+  "aligned_only_trail": 116,
+  "attempts": 224,
+  "changed_observed_endpoints": {},
+  "frame_equal": 24,
+  "new_failures": 0,
+  "non_trail_fact_difference": 0,
+  "old_failures": 0,
+  "raw_facts_equal": 108
+}

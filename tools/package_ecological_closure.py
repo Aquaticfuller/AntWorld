@@ -62,6 +62,7 @@ def publish_portable(raw, analysis, destination):
     destination.mkdir(parents=True,exist_ok=True)
     for panel in ("joint","scout","care"):
         publish_panel(destination/panel,raw/panel,analysis/panel,panel,fixed_witnesses(panel))
+        shutil.copytree(analysis/(panel+"-comparison"),destination/panel/"comparison")
     write_json(destination/"local_archive_hash_audit.json",{
         f"portable-physics/{panel}": {"manifest_sha256":sha(destination/panel/"archives.jsonl"),
                "verified_archives":len(frozen_names(panel))}

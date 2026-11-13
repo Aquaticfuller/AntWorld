@@ -9,27 +9,29 @@ from struct import unpack_from
 from zipfile import ZipFile
 
 from analyze_s6_4_wp6b import check
-from run_s6_4_wp6b import write_json
+from run_s6_4_wp6b import sha, write_json
 from verify_ecological_publication import csv_rows, manifest
 
 
 def raw_difference(before, after):
-    a=b=0
-    changes=Counter()
-    while a<len(before) and b<len(after):
-        length, = unpack_from("<I",before,a)
-        other, = unpack_from("<I",after,b)
-        stop,next_stop = a+4+length,b+4+other
-        if length!=other:
-            return {"aligned":False}
-        if before[a:stop]!=after[b:next_stop]:
-            if (before[a+69]==4 and before[a:a+154]==after[b:b+154] and
-                    before[a+162:stop]==after[b+162:next_stop]):
-                changes["trail_concentration_facts"]+=1
+    offset = 0
+    changes = Counter()
+    available = min(len(before), len(after))
+    while offset + 4 <= available:
+        length, = unpack_from("<I", before, offset)
+        other, = unpack_from("<I", after, offset)
+        end = offset + 4 + length
+        if length != other or end > available:
+            return {"aligned": False} | dict(changes)
+        if before[offset:end] != after[offset:end]:
+            if (length >= 158 and before[offset+69] == 4 and
+                    before[offset:offset+154] == after[offset:offset+154] and
+                    before[offset+162:end] == after[offset+162:end]):
+                changes["trail_concentration_facts"] += 1
             else:
-                changes["other_different_facts"]+=1
-        a,b=stop,next_stop
-    return {"aligned":a==len(before) and b==len(after)} | dict(changes)
+                changes["other_different_facts"] += 1
+        offset = end
+    return {"aligned": offset == len(before) == len(after)} | dict(changes)
 
 
 def compare_panel(old, new, previous, current, dest):
@@ -45,6 +47,8 @@ def compare_panel(old, new, previous, current, dest):
             row["raw_facts_sha_equal"]=int(x["artifacts"]["facts.bin"]==y["artifacts"]["facts.bin"])
             row["final_frame_sha_equal"]=int(x["artifacts"]["final.frame"]==y["artifacts"]["final.frame"])
             if x["artifacts"]["facts.bin"]!=y["artifacts"]["facts.bin"]:
+                check(sha(old/a["archive"])==a["sha256"] and sha(new/b["archive"])==b["sha256"],
+                      f"{case}: numerical policy input archive changed")
                 with ZipFile(old/a["archive"]) as first, ZipFile(new/b["archive"]) as second:
                     delta=raw_difference(first.read("facts.bin"),second.read("facts.bin"))
                 row |= delta

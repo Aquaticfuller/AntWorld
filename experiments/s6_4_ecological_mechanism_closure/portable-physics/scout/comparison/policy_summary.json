@@ -1,0 +1,13 @@
+{
+  "aligned_only_trail": 37,
+  "attempts": 85,
+  "changed_observed_endpoints": {
+    "activated": 1,
+    "exposures": 1
+  },
+  "frame_equal": 0,
+  "new_failures": 0,
+  "non_trail_fact_difference": 1,
+  "old_failures": 0,
+  "raw_facts_equal": 47
+}

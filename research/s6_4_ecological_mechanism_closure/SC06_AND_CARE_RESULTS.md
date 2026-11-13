@@ -2,6 +2,8 @@
 
 ## SC-06
 
+The table reports physics 24. The complete physics-25 replay preserves all 36 linked receiver returns and the 12/12 qualifying worlds. The depleted control changes from 88 to 86 observations and from 28 to 26 activated receivers. Both policies yield zero depleted receiver deliveries. All 72 care/water histories below are byte-identical across the two numerical policies. [Versioned repeat and raw comparison](PORTABLE_REPLAY.md)
+
 All 84 isolated observed worlds and the prespecified SQLite restart completed. At least one receiver completed a linked recruitment episode in all 12 scout-return worlds, above the preregistered 8/12 floor. All 36 receivers in that arm complete the chain. The independently rebuilt episode keeps the same receiver, actual selected source and positive material load from activation to deposit. A changed program without a resulting trip remains a separate outcome. The binary durable repeat retains the same initial authority, final authority and fact bytes. [Raw witnesses and complete per-world outcomes](../../experiments/s6_4_ecological_mechanism_closure/scout)
 
 | Arm, 12 worlds each | Positive collection events, all actors | Committed cues | Receiver cue observations | Activated receivers | Receivers delivering any food | Completed cue-to-delivery receivers |

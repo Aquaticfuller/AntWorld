@@ -1,0 +1,13 @@
+population,layout,treatment,source,reserve,worlds,sum_joint,sum_complete,sum_hatch,sum_pupation,sum_eclosed,sum_collection,sum_soil_parcels,sum_maternal_protein_receivers,sum_water_sipped_ug,sum_paid_ms,sum_loaded_move_ms,sum_unloaded_move_ms,sum_exact_timing_match,sum_at_least_timing_match,median_joint,median_complete,median_hatch,median_pupation,median_eclosed,median_collection,median_soil_parcels,median_maternal_protein_receivers,median_water_sipped_ug,median_paid_ms,median_loaded_move_ms,median_unloaded_move_ms,median_exact_timing_match,median_at_least_timing_match
+borisovka,shaft,careoff,absent,5500,6,0,0,168,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0,28.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+borisovka,shaft,clock,absent,5500,6,0,0,168,16,11,0,0,24,0,0,0,6329596,0,0,0.0,0.0,28.0,2.5,2.0,0.0,0.0,3.5,0.0,0.0,0.0,1202292.0,0.0,0.0
+borisovka,shaft,cost,absent,5500,6,0,0,168,16,11,0,0,24,0,7185596,0,6329596,0,0,0.0,0.0,28.0,2.5,2.0,0.0,0.0,3.5,0.0,1340292.0,0.0,1202292.0,0.0,0.0
+borisovka,shaft,first,absent,5500,6,0,0,168,21,12,0,0,81,0,0,0,7981972,0,0,0.0,0.0,28.0,3.0,2.0,0.0,0.0,13.5,0.0,0.0,0.0,1271309.0,0.0,0.0
+borisovka,shaft,wallwater,absent,5500,6,0,0,168,21,12,0,0,81,0,0,0,6919832,0,0,0.0,0.0,28.0,3.0,2.0,0.0,0.0,13.5,0.0,0.0,0.0,1278337.0,0.0,0.0
+borisovka,shaft,water,absent,5500,6,0,0,168,22,12,0,0,84,7200,0,0,6919832,0,0,0.0,0.0,28.0,3.5,2.0,0.0,0.0,14.0,1200.0,0.0,0.0,1278337.0,0.0,0.0
+st_petersburg,shaft,careoff,absent,5500,6,0,0,174,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0,29.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+st_petersburg,shaft,clock,absent,5500,6,0,0,174,20,13,0,0,29,0,0,0,7641988,0,0,0.0,0.0,29.0,3.5,2.0,0.0,0.0,4.5,0.0,0.0,0.0,1233324.0,0.0,0.0
+st_petersburg,shaft,cost,absent,5500,6,0,0,174,20,13,0,0,29,0,8513988,0,7641988,0,0,0.0,0.0,29.0,3.5,2.0,0.0,0.0,4.5,0.0,1379324.0,0.0,1233324.0,0.0,0.0
+st_petersburg,shaft,first,absent,5500,6,0,0,173,28,19,0,0,83,0,0,0,9618572,0,0,0.0,0.0,29.0,5.0,3.0,0.0,0.0,13.5,0.0,0.0,0.0,1587438.0,0.0,0.0
+st_petersburg,shaft,wallwater,absent,5500,6,0,0,173,28,19,0,0,83,0,0,0,8106198,0,0,0.0,0.0,29.0,5.0,3.0,0.0,0.0,13.5,0.0,0.0,0.0,1635453.0,0.0,0.0
+st_petersburg,shaft,water,absent,5500,6,0,0,173,28,19,0,0,86,7200,0,0,8106198,0,0,0.0,0.0,29.0,5.0,3.0,0.0,0.0,14.5,1200.0,0.0,0.0,1635453.0,0.0,0.0
