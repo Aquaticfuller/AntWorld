@@ -136,7 +136,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 boundary_fact=e;
             } else if (e.kind == FactKind::FoundingBoundaryUptake) {
                 ensure(enrolled && founding_boundary_enabled(founding.profile(),prior_stage) &&
-                       founding_boundary_uptake(founding.profile(),p,founding.reserves.at(e.actor),prior_stage)==e.transferred,
+                       founding_boundary_uptake(p,founding.clocks[e.actor])==e.transferred,
                        "unfunded or misplaced adult crop uptake");
                 boundary_fact=e;
             } else if (e.kind == FactKind::PhysiologyUpdated) {
@@ -156,8 +156,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(p.body_energy_nj && p.hydration_ug && ready &&
                     (!enrolled || e.time != p.next_absorption), "unearned development evidence"); p.stage_progress = {};
                 if (enrolled && founding_boundary_enabled(founding.profile(),e.stage)) {
-                    auto& reserve=founding.reserves.at(e.actor);
-                    reserve.carb_assimilated_at=reserve.water_assimilated_at=e.time;
+                    founding.clocks[e.actor]={e.time,e.time};
                 }
             } else if (e.kind == FactKind::AntDied) {
                 if (enrolled && e.payload) {
@@ -165,8 +164,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     auto reserves=founding.reserves.at(e.actor);
                     ensure(!mobilize_founding_larval_lipid(founding.profile(),probe,reserves,prior_stage),
                            "R2 death omitted payable larval mobilization");
-                    ensure(!founding_boundary_uptake(founding.profile(),probe,reserves,prior_stage).total_ug(),
-                           "adult death omitted payable crop uptake");
+                    if (founding_boundary_enabled(founding.profile(),prior_stage)) {
+                        auto clock=founding.clocks.contains(e.actor)?founding.clocks.at(e.actor):FoundingUptakeClock{};
+                        ensure(!founding_boundary_uptake(probe,clock).total_ug(),"adult death omitted payable crop uptake");
+                    }
                 }
                 p.death_cause = e.payload ? static_cast<DeathCause>(e.payload) : DeathCause::Fixture;
                 ensure((p.death_cause == DeathCause::Fixture && e.payload == 0) ||
@@ -229,6 +230,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
     }
     ensure(!boundary_fact, "unterminated founding physiological boundary");
     founding.finish();
+    ensure(founding.clocks==s.founding_uptake_clocks,"founding uptake clock disagrees with history");
     ensure(audit.size() == s.physiology.size(), "missing physiology evidence");
     for (const auto& [id, saved] : s.physiology) {
         const auto ant = s.ants.get(s.ants.index.at(id)); auto expected = audit.at(id); auto actual = saved;

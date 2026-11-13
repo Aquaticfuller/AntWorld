@@ -15,6 +15,10 @@ inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
 struct FoundingRates { std::uint64_t energy, water; };
+struct FoundingUptakeClock {
+    SimTime carb{}, water{};
+    bool operator==(const FoundingUptakeClock&) const = default;
+};
 struct FoundingRation {
     std::uint64_t lipid_ug{};
     FoodMass crop;
@@ -211,38 +215,37 @@ inline std::uint64_t founding_energy(const FoundingProfile& f, const PhysiologyS
     return add(p.body_energy_nj, multiply(r.lipid_ug, f.lipid_yield_nj_per_ug));
 }
 
-inline FoodMass founding_pulse(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r, LifeStage stage) {
-    if (!founding_boundary_enabled(f,stage)) return absorb(p,stage);
+inline FoodMass founding_pulse(PhysiologyState& p, FoundingUptakeClock& clock, LifeStage stage) {
     const auto now=p.updated_at;
-    const SimTime carb{now.milliseconds-r.carb_assimilated_at.milliseconds};
-    const SimTime water{now.milliseconds-r.water_assimilated_at.milliseconds};
-    r.carb_assimilated_at=r.water_assimilated_at=now;
+    const SimTime carb{now.milliseconds-clock.carb.milliseconds};
+    const SimTime water{now.milliseconds-clock.water.milliseconds};
+    clock={now,now};
     return absorb(p,stage,carb,water);
 }
 
-inline FoodMass founding_boundary_uptake(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r, LifeStage stage) {
+inline FoodMass founding_boundary_uptake(PhysiologyState& p, FoundingUptakeClock& clock) {
     const bool energy=!p.body_energy_nj, water=!p.hydration_ug;
-    if (!founding_boundary_enabled(f,stage) || !(energy || water)) return {};
+    if (!(energy || water)) return {};
     const auto now=p.updated_at;
     const auto& c=p.config;
     auto carb_remainder=p.carb_remainder, water_remainder=p.water_remainder;
     FoodMass dose;
     if (energy) dose.carbs_ug=std::min({p.crop.carbs_ug,c.energy_capacity_nj/c.carbohydrate_yield_nj_per_ug,
-        pulse_allowance(c.carb_absorption_ug_per_s,{now.milliseconds-r.carb_assimilated_at.milliseconds},carb_remainder)});
+        pulse_allowance(c.carb_absorption_ug_per_s,{now.milliseconds-clock.carb.milliseconds},carb_remainder)});
     if (water) dose.water_ug=std::min({p.crop.water_ug,c.hydration_capacity_ug,
-        pulse_allowance(c.water_absorption_ug_per_s,{now.milliseconds-r.water_assimilated_at.milliseconds},water_remainder)});
+        pulse_allowance(c.water_absorption_ug_per_s,{now.milliseconds-clock.water.milliseconds},water_remainder)});
     if ((energy && !dose.carbs_ug) || (water && !dose.water_ug)) return {};
     p.crop=subtract(p.crop,dose);
     if (energy) {
         p.body_energy_nj=multiply(dose.carbs_ug,c.carbohydrate_yield_nj_per_ug);
         p.oxidized_carbs_ug=add(p.oxidized_carbs_ug,dose.carbs_ug);
         p.carb_remainder=carb_remainder;
-        r.carb_assimilated_at=now;
+        clock.carb=now;
     }
     if (water) {
         p.hydration_ug=dose.water_ug;
         p.water_remainder=water_remainder;
-        r.water_assimilated_at=now;
+        clock.water=now;
     }
     return dose;
 }

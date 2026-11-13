@@ -118,6 +118,7 @@ template<class S> class FoundingReplay {
     }
 public:
     std::map<EntityId, FoundingReserve> reserves;
+    std::map<EntityId, FoundingUptakeClock> clocks;
 
     FoundingReplay(const S& s, const RuntimeLimits& l) : world(s), limits(l), next_edit(s.geometry_edits.begin()) {}
     bool founder(EntityId id) const { return world.founding && id == world.founding->founder; }
@@ -244,7 +245,8 @@ public:
     void pulse(PhysiologyState& p, const WorldEvent& e, LifeStage stage) {
         ensure(p.body_energy_nj && p.hydration_ug, "F1 uptake after exhaustion");
         if (e.time == p.next_absorption) {
-            ensure(e.transferred == founding_pulse(profile(),p,reserves.at(e.actor),stage), "invalid F1 crop uptake");
+            const auto amount=founding_boundary_enabled(profile(),stage)?founding_pulse(p,clocks[e.actor],stage):absorb(p,stage);
+            ensure(e.transferred == amount, "invalid F1 crop uptake");
             convert(p, e.actor, stage, e, false);
             if (founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake) last_pulse=e;
             if (founding_develops(profile(), p, reserves.at(e.actor), stage)) {

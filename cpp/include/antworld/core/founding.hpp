@@ -70,7 +70,6 @@ struct FoundingProfile {
 struct FoundingReserve {
     std::uint64_t lipid_ug{}, spent_lipid_ug{}, mobile_protein_ug{};
     std::uint64_t energy_remainder{}, water_remainder{};
-    SimTime carb_assimilated_at{}, water_assimilated_at{};
     bool operator==(const FoundingReserve&) const = default;
 };
 

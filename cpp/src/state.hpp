@@ -202,6 +202,8 @@ struct WorldRuntime::State {
     std::shared_ptr<const FoundingSetup> founding;
     using FoundingReserves = std::map<EntityId, FoundingReserve>;
     FoundingReserves founding_reserves;
+    using FoundingUptakeClocks = std::map<EntityId, detail::FoundingUptakeClock>;
+    FoundingUptakeClocks founding_uptake_clocks;
     ResourceCycles resource_cycles;
     std::shared_ptr<const SpeciesCareProfile> care_profile;
     EnvironmentCareProfile care_environment;
@@ -270,6 +272,7 @@ class WorldRuntime::Transaction {
     std::shared_ptr<const LongTermConfig> long_term_before;
     std::shared_ptr<const State::FoundingSetup> founding_before;
     std::optional<detail::MapJournal<State::FoundingReserves>> founding_undo;
+    std::optional<detail::MapJournal<State::FoundingUptakeClocks>> founding_uptake_undo;
     std::shared_ptr<const SpeciesCareProfile> care_profile_before;
     EnvironmentCareProfile care_environment_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
@@ -346,12 +349,17 @@ public:
         commands.commit();
         reproduction.commit(); resource_cycles.commit();
         if (founding_undo) founding_undo->commit();
+        if (founding_uptake_undo) founding_uptake_undo->commit();
         pending_conflicts.commit();
         care.commit(); care_locks.commit();
     }
     void set_founding(EntityId id, const FoundingReserve& reserve) {
         if (!founding_undo) founding_undo.emplace(s.founding_reserves);
         founding_undo->set(id, reserve);
+    }
+    void set_founding_uptake(EntityId id, detail::FoundingUptakeClock clock) {
+        if (!founding_uptake_undo) founding_uptake_undo.emplace(s.founding_uptake_clocks);
+        founding_uptake_undo->set(id,clock);
     }
     void touch_ant(std::size_t i) { ant_undo.emplace_back(i, s.ants.get(i)); }
     void touch_food(std::size_t i) { food_undo.emplace_back(i, s.foods.rows[i]); }

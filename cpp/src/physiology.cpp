@@ -103,12 +103,15 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         }
     }
     WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.position = ant.position; f.stage = ant.stage;
-    if (reserve) {
-        const auto dose=founding_boundary_uptake(s.founding->profile,p,*reserve,ant.stage);
+    std::optional<FoundingUptakeClock> clock;
+    if (reserve && founding_boundary_enabled(s.founding->profile,ant.stage)) {
+        const auto it=s.founding_uptake_clocks.find(e.actor);
+        clock=it==s.founding_uptake_clocks.end()?FoundingUptakeClock{}:it->second;
+        const auto dose=founding_boundary_uptake(p,*clock);
         if (dose.total_ug()) {
             f.kind=FactKind::FoundingBoundaryUptake;
             f.transferred=dose;
-            tx.set_founding(e.actor,*reserve);
+            tx.set_founding_uptake(e.actor,*clock);
             tx.fact(f);
             f.transferred={};
         }
@@ -123,7 +126,8 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     } else {
         const bool emitted_pulse = reserve && s.m.now == p.next_absorption;
         if (emitted_pulse) {
-            f.transferred = founding_pulse(s.founding->profile,p,*reserve,ant.stage);
+            f.transferred = clock ? founding_pulse(p,*clock,ant.stage) : absorb(p,ant.stage);
+            if (clock) tx.set_founding_uptake(e.actor,*clock);
             tx.fact(f);
             const auto amount = convert_founding_lipid(s.founding->profile, p, *reserve, ant.stage, queen);
             if (amount) tx.fact(lipid_conversion(s.founding->profile, ant, e.id, amount));
@@ -137,10 +141,8 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
             f.transferred = {};
             if (ant.stage==LifeStage::Adult) {
-                if (reserve && founding_boundary_enabled(s.founding->profile,ant.stage)) {
-                    reserve->carb_assimilated_at=reserve->water_assimilated_at=s.m.now;
-                    tx.set_founding(e.actor,*reserve);
-                }
+                if (reserve && founding_boundary_enabled(s.founding->profile,ant.stage))
+                    tx.set_founding_uptake(e.actor,{s.m.now,s.m.now});
                 schedule_autonomy(tx,e.actor,local_founding_provisioning(s,e.actor)?SimTime{1}:SimTime{});
             }
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);

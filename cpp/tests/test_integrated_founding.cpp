@@ -128,21 +128,20 @@ void boundary_components() {
     p.updated_at=slice;
     p.crop={100,5,0,0};
     p.body_energy_nj=p.hydration_ug=0;
-    FoundingReserve r{};
+    FoundingUptakeClock clock{};
     const auto unchanged=p;
-    require(founding_boundary_uptake(f,p,r,LifeStage::Adult)==FoodMass{} && p==unchanged && r==FoundingReserve{},
+    require(founding_boundary_uptake(p,clock)==FoodMass{} && p==unchanged && clock==FoundingUptakeClock{},
             "a missing component changed an exhausted adult");
     p.crop.water_ug=100;
     const auto brood=p;
-    require(founding_boundary_uptake(f,p,r,LifeStage::Larva)==FoodMass{} && p==brood,
-            "adult crop boundary was applied to brood");
-    const auto first=founding_boundary_uptake(f,p,r,LifeStage::Adult);
+    require(!founding_boundary_enabled(f,LifeStage::Larva),"adult crop boundary was enabled for brood");
+    const auto first=founding_boundary_uptake(p,clock);
     require(first.carbs_ug && first.water_ug && p.crop==subtract(brood.crop,first) && p.crop.protein_ug==5 &&
-            r.carb_assimilated_at==slice && r.water_assimilated_at==slice,"crop boundary failed to debit the real stock");
-    require(founding_pulse(f,p,r,LifeStage::Adult)==FoodMass{},"the aligned pulse spent the same allowance twice");
+            clock.carb==slice && clock.water==slice,"crop boundary failed to debit the real stock");
+    require(founding_pulse(p,clock,LifeStage::Adult)==FoodMass{},"the aligned pulse spent the same allowance twice");
     p.body_energy_nj=0;
     const auto same_time=p;
-    require(founding_boundary_uptake(f,p,r,LifeStage::Adult)==FoodMass{} && p==same_time,
+    require(founding_boundary_uptake(p,clock)==FoodMass{} && p==same_time,
             "a second zero-elapsed uptake was accepted");
 }
 

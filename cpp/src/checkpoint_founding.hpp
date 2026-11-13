@@ -55,7 +55,9 @@ template<class S> void write_founding(Writer& w, const S& s, bool frame) {
         w.put(row.lipid_ug); w.put(row.spent_lipid_ug); w.put(row.mobile_protein_ug);
         w.put(row.energy_remainder); w.put(row.water_remainder);
         if (s.founding->profile.model_version()==FoundingProfile::uptake_version) {
-            w.time(row.carb_assimilated_at); w.time(row.water_assimilated_at);
+            const auto it=s.founding_uptake_clocks.find(id);
+            const auto clock=it==s.founding_uptake_clocks.end()?FoundingUptakeClock{}:it->second;
+            w.time(clock.carb); w.time(clock.water);
         }
     }
     if (frame) w.put(s.m.founding_trace);
@@ -99,21 +101,22 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     std::uint64_t lipid = 0;
     for (std::size_t i = 0; i < count; ++i) {
         const EntityId id{r.get()};
-        FoundingReserve row{r.get(), r.get(), r.get(), r.get(), r.get()};
-        if (uptake) { row.carb_assimilated_at=r.time(); row.water_assimilated_at=r.time(); }
+        const FoundingReserve row{r.get(), r.get(), r.get(), r.get(), r.get()};
+        const auto clock=uptake ? FoundingUptakeClock{r.time(),r.time()} : FoundingUptakeClock{};
         ensure(id > previous && s.physiology.contains(id) && row.energy_remainder < founding_day_ms && row.water_remainder < founding_day_ms &&
                (id == setup.founder ? row.mobile_protein_ug <= p.protein_ug : !row.mobile_protein_ug && s.physiology.at(id).mother == setup.founder),
                "invalid F1 reserve row");
         const auto& physiology = s.physiology.at(id);
         const auto stage = s.ants.get(s.ants.index.at(id)).stage;
         ensure(physiology.config == founding_physiology(p, id==setup.founder) && !physiology.water_loss_remainder &&
-               row.carb_assimilated_at <= physiology.updated_at && row.water_assimilated_at <= physiology.updated_at &&
-               (stage==LifeStage::Adult || stage==LifeStage::Dead || (row.carb_assimilated_at==SimTime{} && row.water_assimilated_at==SimTime{})) &&
+               clock.carb <= physiology.updated_at && clock.water <= physiology.updated_at &&
+               (stage==LifeStage::Adult || stage==LifeStage::Dead || clock==FoundingUptakeClock{}) &&
                ((p.dietary && p.dietary->dietary_eggs && id==setup.founder) || !physiology.exported_energy_nj) &&
                (stage==LifeStage::Dead || physiology.stage_progress <= stage_duration(physiology.config,stage)),
                "invalid F1 physiological bounds");
         lipid = add(lipid, add(row.lipid_ug, row.spent_lipid_ug));
         s.founding_reserves.emplace(id, row);
+        if (clock!=FoundingUptakeClock{}) s.founding_uptake_clocks.emplace(id,clock);
         previous = id;
     }
     ensure(s.founding_reserves.contains(setup.founder) && lipid == p.lipid_ug, "F1 ledger lacks seeded material");
