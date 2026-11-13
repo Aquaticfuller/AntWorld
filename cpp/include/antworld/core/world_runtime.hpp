@@ -164,7 +164,7 @@ private:
     void index_contact(Transaction&, EntityId, std::optional<PositionM>);
     void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {}, bool care_motor = false);
     void change_autonomy(Transaction&, AntRef, bool);
-    void schedule_autonomy(Transaction&, EntityId);
+    void schedule_autonomy(Transaction&, EntityId, SimTime delay = {});
     void stop_autonomy(Transaction&, EntityId);
     void resolve_autonomy_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;

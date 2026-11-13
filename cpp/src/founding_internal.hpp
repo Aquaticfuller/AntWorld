@@ -7,6 +7,7 @@ inline constexpr std::uint64_t founding_day_ms = 86'400'000;
 inline constexpr std::uint32_t founding_schema_version = 15, founding_physics_version = 17;
 inline constexpr std::uint32_t founding_persistence_schema_version = 16, founding_persistence_physics_version = 18;
 inline constexpr std::uint32_t founding_access_schema_version = 17, founding_access_physics_version = 19;
+inline constexpr std::uint32_t founding_provisioning_schema_version = 18, founding_provisioning_physics_version = 20;
 inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEERING_FIXTURE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
@@ -18,6 +19,11 @@ struct FoundingRation {
 };
 
 inline std::uint64_t ceil_div(std::uint64_t n, std::uint64_t d) { return n/d + (n%d != 0); }
+
+inline bool local_founding_provisioning(const auto& world, EntityId id) {
+    return world.founding && world.founding->profile.provisioning && world.founding->profile.provisioning->local_exchange &&
+           world.founding_reserves.contains(id) && world.founding->founder!=id;
+}
 
 // Split both factors at the fixed denominator to keep the sub-day product bounded.
 inline std::uint64_t integrate_founding(std::uint64_t rate, std::uint64_t elapsed, std::uint64_t& carry) {
@@ -122,6 +128,12 @@ inline void validate_founding(const FoundingProfile& f) {
     if (f.early_access && (!f.feeding_persistence ||
         !(f.early_access->mobilize_larval_lipid || f.early_access->local_hatch_cue)))
         throw std::invalid_argument("invalid F1-R2 early access profile");
+    if (f.provisioning && (!f.early_access || !f.early_access->mobilize_larval_lipid || !f.early_access->local_hatch_cue ||
+        f.worker.behavior_interval.milliseconds != (f.provisioning->local_exchange ? 3'600'000 : 21'600'000) ||
+        (f.worker.carbohydrate_yield_nj_per_ug != 1'000'000 && f.worker.carbohydrate_yield_nj_per_ug != 4'000'000 &&
+         f.worker.carbohydrate_yield_nj_per_ug != 8'000'000 && f.worker.carbohydrate_yield_nj_per_ug != 12'000'000) ||
+        (!f.provisioning->local_exchange && f.worker.carbohydrate_yield_nj_per_ug == 1'000'000)))
+        throw std::invalid_argument("invalid F1 provisioning and sugar profile");
     for (const auto& b : f.brood) {
         if (!b.basal_nj_per_day || !b.water_ug_per_day) throw std::invalid_argument("missing F1 stage cost");
         auto carry = founding_day_ms - 1;
@@ -183,6 +195,22 @@ inline SimTime next_founding_physiology(const FoundingProfile& f, const Physiolo
 
 inline std::uint64_t founding_energy(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
     return add(p.body_energy_nj, multiply(r.lipid_ug, f.lipid_yield_nj_per_ug));
+}
+
+// Keep the part of owned crop needed for the next normal uptake cycle.
+inline FoodMass founding_gift_supply(const FoundingProfile& f, const PhysiologyState& donor) {
+    const auto rates = founding_rates(f, donor, LifeStage::Adult, false, true);
+    const auto until_pulse = static_cast<std::uint64_t>(donor.next_absorption.milliseconds-donor.updated_at.milliseconds);
+    const auto interval = static_cast<std::uint64_t>(donor.config.absorption_period.milliseconds);
+    auto e = founding_day_ms - 1, w = e;
+    const auto energy = integrate_founding(rates.energy, add(until_pulse, interval), e);
+    const auto water = integrate_founding(rates.water, add(until_pulse, interval), w);
+    auto result = donor.crop;
+    const auto carbs = energy>donor.body_energy_nj ?
+        ceil_div(energy-donor.body_energy_nj,donor.config.carbohydrate_yield_nj_per_ug) : 0;
+    result.carbs_ug -= std::min(result.carbs_ug,carbs);
+    result.water_ug -= std::min(result.water_ug,water>donor.hydration_ug ? water-donor.hydration_ug : 0);
+    return result;
 }
 
 inline bool founding_develops(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r, LifeStage stage) {

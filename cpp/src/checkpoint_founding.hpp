@@ -7,6 +7,7 @@ namespace antworld::detail {
 inline constexpr auto founding_magic = UINT64_C(0x4654504b435741); // AWCKPTF
 inline constexpr auto founding_persistence_magic = UINT64_C(0x4754504b435741); // AWCKPTG
 inline constexpr auto founding_access_magic = UINT64_C(0x4854504b435741); // AWCKPTH
+inline constexpr auto founding_provisioning_magic = UINT64_C(0x4954504b435741); // AWCKPTI
 inline constexpr std::array founding_times{
     &FoundingProfile::first_lay, &FoundingProfile::opening_width, &FoundingProfile::opening_spacing,
     &FoundingProfile::later_spacing, &FoundingProfile::maintenance_floor};
@@ -37,6 +38,7 @@ inline void write_founding_profile(Writer& w, EntityId founder, const FoundingPr
         w.put(access->mobilize_larval_lipid, 1);
         w.put(access->local_hatch_cue, 1);
     }
+    if (const auto& provision = p.provisioning) w.put(provision->local_exchange, 1);
 }
 
 template<class S> void write_founding(Writer& w, const S& s, bool frame) {
@@ -59,7 +61,7 @@ template<class S> void write_founding(Writer& w, const S& s, bool frame) {
 template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limits, bool frame, std::uint32_t version) {
     ensure(r.get(4) == version, "unsupported F1 profile version");
     const bool persistence=version>=FoundingProfile::persistence_version;
-    const bool early_access=version==FoundingProfile::early_access_version;
+    const bool early_access=version>=FoundingProfile::early_access_version;
     typename S::FoundingSetup setup;
     auto& p = setup.profile;
     p.population = static_cast<FoundingPopulation>(r.get(1));
@@ -73,6 +75,7 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     for (const auto member : founding_values) p.*member = r.get();
     if (persistence) p.feeding_persistence = FoundingFeedingPersistence{r.time(), static_cast<std::uint32_t>(r.get(4))};
     if (early_access) p.early_access = FoundingEarlyAccess{r.flag(), r.flag()};
+    if (version==FoundingProfile::provisioning_version) p.provisioning = FoundingProvisioning{r.flag()};
     validate_founding(p);
     ensure(s.long_term && s.social && s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy &&
            s.ants.index.contains(setup.founder) && s.reproduction.contains(setup.founder) &&

@@ -176,6 +176,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(prior_stage == LifeStage::Adult && (a.caste == Caste::Worker || (s.care_profile && a.caste==Caste::Queen && s.care.contains(e.actor))) &&
                     (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.social && s.geometry ? nullptr : s.surface.get()),
                     "transfer has no living local contact evidence");
+                if (local_founding_provisioning(s,e.actor))
+                    ensure(founding.clear(a.position,b.position,0,e.id) &&
+                           ingredient_min(founding_gift_supply(founding.profile(),p),e.transferred)==e.transferred,
+                           "founding gift exceeds the locally payable crop");
                 if (s.social) {
                     ensure(s.social->exchange_enabled,"transfer in a no-response control");
                     if (s.social->demand_sensitive)

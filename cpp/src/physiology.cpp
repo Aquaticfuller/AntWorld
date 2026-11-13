@@ -126,7 +126,8 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
             f.transferred = {};
-            if (ant.stage==LifeStage::Adult) schedule_autonomy(tx,e.actor);
+            if (ant.stage==LifeStage::Adult)
+                schedule_autonomy(tx,e.actor,local_founding_provisioning(s,e.actor)?SimTime{1}:SimTime{});
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
         if (emitted_pulse && !advance_stage) return;
@@ -217,7 +218,8 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
         if (!contact(ant, recipient, s.config, s.social && s.geometry ? nullptr : s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
-        room = receiver->config.crop_capacity_ug-receiver->crop.total_ug(); supply = p.crop;
+        room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
+        supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
         if (s.social && s.social->demand_sensitive)
             supply = ingredient_min(supply,nutrient_demand(*receiver,recipient.stage));
@@ -298,6 +300,8 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         auto choose_gift = [&] {
             if (p.behavior != IndividualBehavior::Nurse || !p.crop.total_ug() ||
                 (gift_priority && !s.social->exchange_enabled)) return;
+            const auto supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
+            if (!supply.total_ug()) return;
             auto rng = individual_rng(s.seed ^ UINT64_C(0x53334e55525345), ant.id, p.decisions);
             std::uint64_t seen = 0;
             // Geometry worlds use a spatial index; legacy worlds retain their canonical candidate order.
@@ -316,12 +320,12 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                 const auto other = s.ants.get(s.ants.index.at(id));
                 if (id == ant.id || !other.alive() || !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get())) continue;
                 const auto q = *query_physiology({s.world, id});
-                const bool hungry_larva = other.stage == LifeStage::Larva && p.crop.protein_ug &&
+                const bool hungry_larva = other.stage == LifeStage::Larva && supply.protein_ug &&
                     add(q.tissue_protein_ug, q.crop.protein_ug) < q.config.larval_protein_requirement_ug;
                 const bool hungry_adult = other.stage == LifeStage::Adult &&
                     (q.body_energy_nj < q.config.energy_capacity_nj/4 || q.hydration_ug < q.config.hydration_capacity_ug/4);
                 const bool demand=s.social && s.social->demand_sensitive;
-                if (demand ? (!ingredient_min(p.crop,signaled_need(q,other.stage,s.long_term!=nullptr)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
+                if (demand ? (!ingredient_min(supply,signaled_need(q,other.stage,s.long_term!=nullptr)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
                     ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2)) continue;
                 ++seen; if (bounded_draw(rng, seen) == 0) { action.kind = ScheduledEvent::Kind::Trophallaxis; action.payload = id.value; }
             }

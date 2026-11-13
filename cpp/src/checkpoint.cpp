@@ -95,10 +95,11 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const bool spatial=s.config.continuous_spatial_motion;
     const bool persistence=s.founding && s.founding->profile.feeding_persistence.has_value();
     const bool early_access=s.founding && s.founding->profile.early_access.has_value();
+    const bool provisioning=s.founding && s.founding->profile.provisioning.has_value();
     if (frame) w.put(frame_magic);
-    w.put(early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
-    w.put(early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    w.put(provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
+    w.put(provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(provisioning ? founding_provisioning_physics_version : early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     if (s.founding) w.put(spatial ? spatial_magic : base);
     if (spatial) w.put(base);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
@@ -151,7 +152,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool frame=header==frame_magic;
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
-    const bool early_access=header==founding_access_magic;
+    const bool provisioning=header==founding_provisioning_magic;
+    const bool early_access=provisioning || header==founding_access_magic;
     const bool persistence=early_access || header==founding_persistence_magic;
     const bool founding=header==founding_magic || persistence;
     const auto encoded_schema=r.get(4),encoded_physics=r.get(4),rng=r.get(4);
@@ -166,8 +168,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
     const auto schema=motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version;
     const auto physics=motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version;
-    ensure(encoded_schema==(early_access?founding_access_schema_version:persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
-        encoded_physics==(early_access?founding_access_physics_version:persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
+    ensure(encoded_schema==(provisioning?founding_provisioning_schema_version:early_access?founding_access_schema_version:persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
+        encoded_physics==(provisioning?founding_provisioning_physics_version:early_access?founding_access_physics_version:persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
         (!founding || motion),"unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -273,7 +275,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_long_term(r,*s,guarded,founding);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
     read_connectors(r,*s,limits);
-    if (founding) read_founding(r, *s, limits, frame, early_access ? FoundingProfile::early_access_version :
+    if (founding) read_founding(r, *s, limits, frame, provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
                                persistence ? FoundingProfile::persistence_version : FoundingProfile::version);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }

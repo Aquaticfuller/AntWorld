@@ -25,12 +25,18 @@ struct FoundingEarlyAccess {
     bool operator==(const FoundingEarlyAccess&) const = default;
 };
 
+struct FoundingProvisioning {
+    bool local_exchange{};
+    bool operator==(const FoundingProvisioning&) const = default;
+};
+
 // Warm protected founding experiment. All uncalibrated inputs are ENGINEERING_FIXTURE.
 // Stage order is egg, larva, prepupa plus pupa. The population identifies the clock context.
 struct FoundingProfile {
     static constexpr std::uint32_t version = 1;
     static constexpr std::uint32_t persistence_version = 2;
     static constexpr std::uint32_t early_access_version = 3;
+    static constexpr std::uint32_t provisioning_version = 4;
     FoundingPopulation population{};
     std::array<FoundingStageProfile, 3> brood;
     PhysiologyConfig worker;
@@ -42,7 +48,9 @@ struct FoundingProfile {
     std::uint64_t ration_lipid_ug{}, ration_protein_ug{}, ration_water_ug{};
     std::optional<FoundingFeedingPersistence> feeding_persistence;
     std::optional<FoundingEarlyAccess> early_access;
+    std::optional<FoundingProvisioning> provisioning;
     [[nodiscard]] std::uint32_t model_version() const {
+        if (provisioning) return provisioning_version;
         if (early_access) return early_access_version;
         return feeding_persistence ? persistence_version : version;
     }

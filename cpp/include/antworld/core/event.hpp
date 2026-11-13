@@ -105,7 +105,7 @@ struct WorldEvent {
     switch (e.kind) {
     case FactKind::FoundingConfigured:
         return !e.actor.value && !e.colony.value && !e.source.value && e.time == SimTime{} &&
-               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value >= 1 && e.random_value <= 3 &&
+               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value >= 1 && e.random_value <= 4 &&
                e.transferred == FoodMass{};
     case FactKind::FoundingReserveSeeded:
         return e.actor.value && e.colony.value && !e.source.value && e.time == SimTime{} && e.stage == LifeStage::Adult &&

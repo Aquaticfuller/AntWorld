@@ -1,6 +1,7 @@
 #include "behavior_rng.hpp"
 #include "care_internal.hpp"
 #include "social_internal.hpp"
+#include "founding_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -60,7 +61,7 @@ std::optional<AutonomyState> WorldRuntime::query_autonomy(AntRef ref) const {
     return {};
   return s.autonomy.at(ref.id);
 }
-void WorldRuntime::schedule_autonomy(Transaction &tx, EntityId id) {
+void WorldRuntime::schedule_autonomy(Transaction &tx, EntityId id, SimTime delay) {
   auto &s = *state_;
   if (!s.autonomy.contains(id))
     return;
@@ -72,7 +73,7 @@ void WorldRuntime::schedule_autonomy(Transaction &tx, EntityId id) {
   e.actor = id;
   e.kind = ScheduledEvent::Kind::AutonomyWake;
   e.issued_at = s.m.now;
-  e.key = {after(s.m.now, s.social->decision_interval.milliseconds),
+  e.key = {after(s.m.now, delay.milliseconds ? delay.milliseconds : s.social->decision_interval.milliseconds),
            Phase::Reschedule, 0, 0, 0};
   a.wake = tx.insert(e);
   tx.autonomy.set(id, a);
@@ -136,7 +137,24 @@ void WorldRuntime::resolve_autonomy_wakes(
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && wake.payload==1 && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
-      inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
+      ContactSample local;
+      if (at_depot && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
+        const auto available = sum(colony.nest_food,founding_gift_supply(s.founding->profile,p));
+        if (available.total_ug()) {
+          local = sample_contacts({s.world,ant.id},a.decisions ^ UINT64_C(0x45434f4c4f4759));
+          choice.sample = {0,local.candidates_examined,local.bucket_queries,local.tree_visits,0};
+          for (const auto other : local.ants) {
+            const auto receiver = query_physiology(other);
+            const auto stage = query_ant(other)->stage;
+            if (receiver && receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
+                ingredient_min(available,signaled_need(*receiver,stage,true)).total_ug()) {
+              choice.behavior=IndividualBehavior::Nurse;
+              break;
+            }
+          }
+        }
+      }
+      inspect_decision(wake,local,1,static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && ready) {
       const auto sample = sample_contacts(
           {s.world, ant.id}, a.decisions ^ UINT64_C(0x45434f4c4f4759));

@@ -264,8 +264,8 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc!=4 && argc!=6 && argc!=7 && argc!=8) {
-        std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT MODE [WINDOW_MS REPEAT_PPM [AFFINITY_MASK [EARLY_ACCESS_MASK]]]\n";
+    if (argc!=4 && argc!=6 && argc!=7 && argc!=8 && argc!=10) {
+        std::cerr << "Usage: antworld_s6_4_wp6b CASE OUTPUT MODE [WINDOW_MS REPEAT_PPM [AFFINITY_MASK [EARLY_ACCESS_MASK [LOCAL_EXCHANGE SUGAR_YIELD]]]]\n";
         return 1;
     }
     const std::string_view mode = argv[3];
@@ -288,10 +288,17 @@ int main(int argc, char** argv) {
             if (window) c.profile.feeding_persistence=FoundingFeedingPersistence{
                 {static_cast<std::int64_t>(window)},static_cast<std::uint32_t>(ppm)};
         }
-        if (argc==8) {
+        if (argc>=8) {
             const auto flags=integer(argv[7]);
             require(flags>=1 && flags<=3 && c.profile.feeding_persistence,"invalid F1-R2 option");
             c.profile.early_access=FoundingEarlyAccess{(flags&1)!=0,(flags&2)!=0};
+        }
+        if (argc==10) {
+            const auto exchange=integer(argv[8]);
+            require(c.integrated_assay && exchange<=1,"provisioning requires an explicit integrated assay");
+            c.profile.provisioning=FoundingProvisioning{exchange!=0};
+            c.profile.worker.carbohydrate_yield_nj_per_ug=integer(argv[9]);
+            if (exchange) c.profile.worker.behavior_interval={hour_ms};
         }
         std::filesystem::create_directories(argv[2]);
         run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved", mode=="durable" || profile, profile);

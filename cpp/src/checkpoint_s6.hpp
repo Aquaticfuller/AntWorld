@@ -1,6 +1,7 @@
 #pragma once
 #include "checkpoint_codec.hpp"
 #include "social_internal.hpp"
+#include "founding_internal.hpp"
 
 namespace antworld::detail {
 template <class S> void write_social(Writer &w, const S &s) {
@@ -116,6 +117,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   typename S::Autonomy audit;
   std::map<EntityId, LifeStage> stages;
   std::map<EntityId, PositionM> positions;
+  std::map<EntityId, SimTime> emergence;
   std::map<ScheduledId, WorldEvent> switches;
   for (const auto &e : s.journal) {
     if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
@@ -126,6 +128,8 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       positions[e.actor] = e.position;
     if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
       stages[e.actor] = e.stage;
+    if (e.kind == FactKind::StageChanged && e.stage == LifeStage::Adult && local_founding_provisioning(s,e.actor))
+      emergence.emplace(e.actor,e.time);
     if (e.kind == FactKind::AutonomyChanged) {
       ensure(s.social && s.autonomy.contains(e.actor) && e.payload <= 1 &&
                  !e.source.value && !e.random_value &&
@@ -181,10 +185,11 @@ template <class S> void validate_autonomy_evidence(const S &s) {
     if (scheduled) {
       ensure(s.queue_index.contains(a.wake), "missing automatic wake");
       const auto &e = s.queue.at(s.queue_index.at(a.wake));
+      const bool first_adult_wake=!a.decisions && emergence.contains(id) && emergence.at(id)==e.issued_at;
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::AutonomyWake &&
                  e.key.phase == Phase::Reschedule &&
                  e.key.time == after(e.issued_at,
-                                     e.payload==1 && s.long_term ? 1 : s.social->decision_interval.milliseconds),
+                                     first_adult_wake || (e.payload==1 && s.long_term) ? 1 : s.social->decision_interval.milliseconds),
              "wrong automatic wake schedule");
     }
   }
