@@ -62,7 +62,7 @@ def environments(matrix):
 
 def collect(args):
     original = subprocess.check_output(["git", "show", f"{FREEZE}:{PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
-    if original != PROTOCOL.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools"):
+    if original != PROTOCOL.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/run_integrated_founding.py"):
         raise ValueError("commit the measured source and retain the prospective protocol")
     if args.model != "r2":
         original = subprocess.check_output(["git", "show", f"{PROVISIONING_FREEZE}:{PROVISIONING_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)

@@ -258,6 +258,17 @@ if(ANTWORLD_STORAGE)
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_4_wp6b.cmake)
             set_tests_properties(FND_${mode} PROPERTIES LABELS FND TIMEOUT 180)
         endforeach()
+        add_executable(antworld_integrated_founding_tests tests/test_integrated_founding.cpp)
+        target_include_directories(antworld_integrated_founding_tests PRIVATE apps src storage)
+        target_link_libraries(antworld_integrated_founding_tests PRIVATE antworld_storage)
+        antworld_checks(antworld_integrated_founding_tests)
+        foreach(mode IF_COMPONENTS IF_COLONY IF_NO_SOURCE)
+            add_test(NAME FND_${mode}
+                COMMAND ${CMAKE_COMMAND} -DTEST=$<TARGET_FILE:antworld_integrated_founding_tests>
+                -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output -DMODE=${mode}
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_s6_4_wp6b.cmake)
+            set_tests_properties(FND_${mode} PROPERTIES LABELS FND TIMEOUT 180)
+        endforeach()
         add_executable(antworld_s6_4_rm02_tests tests/test_s6_4_rm02.cpp)
         target_include_directories(antworld_s6_4_rm02_tests PRIVATE storage)
         target_link_libraries(antworld_s6_4_rm02_tests PRIVATE antworld_rm02_observer antworld_storage antworld_sqlite)
