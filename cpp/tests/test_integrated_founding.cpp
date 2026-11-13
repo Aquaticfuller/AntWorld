@@ -174,7 +174,7 @@ void local_resupply(const std::filesystem::path& folder) {
     auto control=setup(founding_case("balanced",true,true,true));
     auto treatment=setup(founding_case("balanced",true,true,true,true));
     auto blocked=setup(founding_case("blocked",true,true,true,true));
-    const auto& f=*treatment.world.founding_profile();
+    const auto f=*treatment.world.founding_profile();
     auto p=initial_founding_physiology(f,true,{});
     const auto deficit=founding_resupply_shortfall(f,p,{},true,{6*hour_ms});
     require(deficit.carbs_ug && !deficit.water_ug,"available water was treated as an energy resource");
