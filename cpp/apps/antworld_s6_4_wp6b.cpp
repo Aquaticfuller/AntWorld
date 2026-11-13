@@ -53,6 +53,7 @@ Case read_case(const Path& path) {
         require(end!=std::string::npos,"invalid ecological treatment");
         const auto treatment=arm.substr(first+1,end-first-1);
         require(layout=="shaft" || layout=="dogleg","invalid ecological layout");
+        const bool protected_profile=portable_field && treatment=="protected";
         c.arm=arm.substr(end+1);
         c.dogleg=layout=="dogleg";
         c.compact=true; c.shaft=true; c.qualification=true;
@@ -60,9 +61,9 @@ Case read_case(const Path& path) {
         auto& e=*c.ecological;
         e.portable_field=portable_field;
         e.distance_clock=true;
-        e.floor_space=treatment=="joint" || treatment=="silent";
-        e.recruitment=treatment=="joint";
-        e.activity_cost=treatment=="joint" || treatment=="cost";
+        e.floor_space=treatment=="joint" || treatment=="silent" || protected_profile;
+        e.recruitment=treatment=="joint" || protected_profile;
+        e.activity_cost=treatment=="joint" || treatment=="cost" || protected_profile;
         e.cue_lifetime={6*hour_ms};
         if (treatment=="joint" || treatment=="first" || treatment=="water" || treatment=="wallwater")
             e.first_ration_ppm=500000;
@@ -83,7 +84,7 @@ Case read_case(const Path& path) {
             e.suppress_foundress_hatch_cue=treatment[5]=='0';
             c.blocked_water=treatment[4]=='b';
         } else {
-            require(treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
+            require(protected_profile || treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
                     treatment=="first" || treatment=="water" || treatment=="wallwater" || treatment=="cost",
                     "invalid ecological treatment");
             if (treatment=="legacy") { c.ecological.reset(); c.trail_treatment=TrailTreatment::Marked; }

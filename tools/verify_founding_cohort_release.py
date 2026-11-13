@@ -68,7 +68,7 @@ def follow_first(raw, stage_rows, people, queen, horizon, case):
                 row[label+"_event"]=event
                 if kind==8:
                     row["death_cause"]=payload
-            elif kind in (42,48,50) and actor==queen and time>=hatches[recipient]:
+            elif kind in (42,48,50) and actor==queen and time>=hatches[recipient] and (kind!=42 or obs[0]==0 or stage==3):
                 row.setdefault("first_"+name+"_ms",time)
                 row.setdefault("first_"+name+"_event",event)
                 row[name+"_count"]=row.get(name+"_count",0)+1
@@ -152,7 +152,7 @@ def paired_effects(panel, worlds):
     return expanded,results
 
 
-def verify(panel, directory, output, public=False):
+def verify(panel, directory, output, public=False, packed_summary=None):
     output.mkdir(parents=True)
     selected=list(roster(panel))
     expected={case["case"]:(identity,case,mode) for identity,case,mode,_ in selected}
@@ -181,12 +181,13 @@ def verify(panel, directory, output, public=False):
             continue
         check(raw["initial.chk"][:7]==b"AWCKPTM" and unpack_from("<II",raw["initial.chk"],8)==(22,25 if case["hatch_cue"] else 26),
               "wrong biological contract")
-        if mode=="durable-split":
+        if mode!="observed":
             reference=comparisons[case["observed_case"]]
             check_identity(reference,receipt,case["case"])
-            with ZipFile(directory/(case["observed_case"]+".zip")) as original, TemporaryDirectory(dir=output) as scratch:
-                midpoints.append(dict(case=case["case"],**verify_midpoint(raw["midpoint.sqlite"],raw["facts.bin"],receipt["summary"],
-                                           rows(original.read("cuts.csv")),Path(scratch),fact_schema=9)))
+            if mode=="durable-split":
+                with ZipFile(directory/(case["observed_case"]+".zip")) as original, TemporaryDirectory(dir=output) as scratch:
+                    midpoints.append(dict(case=case["case"],**verify_midpoint(raw["midpoint.sqlite"],raw["facts.bin"],receipt["summary"],
+                                               rows(original.read("cuts.csv")),Path(scratch),fact_schema=9)))
             continue
         sample=case | dict(arm="integrated-"+case["source"],early_access_mask=3,carbohydrate_yield_nj_per_ug=8_000_000)
         summary=receipt["summary"]
@@ -205,7 +206,7 @@ def verify(panel, directory, output, public=False):
             data |= {f"{name}_{key}":rule[key] for key in ("k","egg_d","larva_d","pupa_d","total_d")}
             data[f"{name}_timing_match"]=int(all(rule[k] is not None and a<=rule[k]<=b for k,(a,b) in
                 zip(("egg_d","larva_d","pupa_d","total_d"),RANGES[case["population"]],strict=True)))
-        if panel=="extended":
+        if panel in ("extended","correction"):
             snapshots=defaultdict(list)
             for row in people:
                 t=int(row["time_ms"])//DAY
@@ -225,6 +226,15 @@ def verify(panel, directory, output, public=False):
         trajectories.extend(track)
         if selected_events:
             write_csv(event_output/(case["case"]+".csv"),selected_events)
+    if packed_summary:
+        def keyed(table,keys):
+            return {tuple(r[key] for key in keys):r for r in rows((packed_summary/(table+".csv")).read_bytes())}
+        for table,computed,keys in (("worlds",worlds,("case",)),("first_cohort",trajectories,("case","ant"))):
+            saved=keyed(table,keys)
+            for r in computed:
+                prior=saved[tuple(str(r[key]) for key in keys)]
+                check(all(prior[key]==("" if value is None else str(value)) for key,value in r.items()),
+                      f"public {table} differs from reconstructed original events")
     for name, data in (("worlds",worlds),("first_cohort",trajectories)):
         if data: write_csv(output/(name+".csv"),data)
     write_json(output/"failures.json",failures)
@@ -242,5 +252,6 @@ if __name__=="__main__":
     parser.add_argument("input",type=Path)
     parser.add_argument("output",type=Path)
     parser.add_argument("--public",action="store_true")
+    parser.add_argument("--packed-summary",type=Path)
     args=parser.parse_args()
-    verify(args.panel,args.input,args.output,args.public)
+    verify(args.panel,args.input,args.output,args.public,args.packed_summary)

@@ -1,6 +1,7 @@
 #pragma once
 #include "event_block.hpp"
 #include "store_internal.hpp"
+#include <mutex>
 
 namespace antworld::storage {
 struct SaveFrame {
@@ -42,6 +43,9 @@ private:
     WorldId world_;
     std::size_t size_;
     Digest tail_;
+    mutable std::mutex cache_lock_;
+    mutable Digest decoded_digest_{};
+    mutable std::vector<WorldEvent> decoded_;
 };
 
 // Visits an authoritative contiguous suffix ending at a published block boundary.

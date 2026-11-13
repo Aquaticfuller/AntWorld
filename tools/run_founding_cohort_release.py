@@ -5,6 +5,7 @@ from itertools import product
 import json
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -18,8 +19,9 @@ from run_s6_4_wp6b import ROOT, git, run_one, sha, write_json
 REFERENCE = "ae1fdfdd0b29c831840f9147ccaabf19e8277f8b"
 FREEZE = "b376217f70bbaa3fde2e98cb9470fc724e79fd53"
 PROTOCOL = Path("research/s6_4_founding_cohort_release/FROZEN_COHORT_PROTOCOL.md")
+CORRECTION_PROTOCOL = PROTOCOL.with_name("PROTECTED_PROFILE_CONFIRMATION.md")
 WATER = {"n": "absent", "b": "blocked", "r": "reachable"}
-COUNTS = {"primary": 384, "hatch": 96, "extended": 292}
+COUNTS = {"primary": 384, "hatch": 96, "extended": 292, "correction": 148}
 
 
 def cohort_case(c, name, flags, repeat, horizon):
@@ -47,6 +49,15 @@ def roster(panel):
         elif panel == "hatch" and ordinary and mode == "observed":
             for hatch, repeat in product((0, 1), repeat=2):
                 yield identity, cohort_case(c, panel, (1, 1, 1, "n", hatch), repeat, 55), mode, arguments(repeat)
+        elif panel == "correction":
+            if mode == "observed" or (c["population"],c["layout"]) in {("borisovka","shaft"),("st_petersburg","dogleg")}:
+                case=cohort_case(c,"protected",(0,1,1,"n",1),1,150)
+                case["case"]=case["case"].replace("-protected-", "-corrected-")
+                case["arm"]=f"ecology5-{c['layout']}-protected-{c['source']}"
+                case["cohort_assay"]=False
+                if mode!="observed":
+                    case["observed_case"]=case["case"].replace("-"+mode,"")
+                yield identity,case,mode,arguments(1)
         elif panel == "extended":
             if mode == "observed":
                 yield identity, cohort_case(c, "conservative", (0, 1, 1, "n", 1), 1, 150), mode, arguments(1)
@@ -63,10 +74,13 @@ def manifest(path):
     return [json.loads(line) for line in (path / "archives.jsonl").read_bytes().splitlines()]
 
 
-def collect(panel, binary, directory, scratch, binary_receipt=None):
+def collect(panel, binary, directory, scratch, binary_receipt=None, resume_from=None):
     frozen = subprocess.check_output(["git", "show", f"{FREEZE}:{PROTOCOL.as_posix()}"], cwd=ROOT)
     if frozen != (ROOT / PROTOCOL).read_bytes():
         raise ValueError("retain the prospective protocol")
+    if panel=="correction" and subprocess.check_output(["git","show",f"7929576:{CORRECTION_PROTOCOL.as_posix()}"],cwd=ROOT)!=\
+       (ROOT/CORRECTION_PROTOCOL).read_bytes():
+        raise ValueError("retain the protected-profile confirmation freeze")
     source = git("rev-parse", "HEAD")
     if binary_receipt:
         receipt=json.loads(binary_receipt.read_bytes())
@@ -82,12 +96,28 @@ def collect(panel, binary, directory, scratch, binary_receipt=None):
         raise ValueError("changed frozen roster")
     directory.mkdir(parents=True)
     scratch.mkdir(parents=True, exist_ok=True)
+    preceding = []
+    if resume_from:
+        original=json.loads((resume_from/"run.json").read_bytes())
+        if (original["cases"]!=names or original["binary_sha256"]!=sha(binary) or original["source"]!=source or
+            original["protocol_sha256"]!=sha(ROOT/PROTOCOL)):
+            raise ValueError("collection prefix does not match the frozen executable and roster")
+        preceding=manifest(resume_from)
+        if [row["case"] for row in preceding]!=names[:len(preceding)]:
+            raise ValueError("collection prefix changed order")
+        for row in preceding:
+            archive=resume_from/row["archive"]
+            if sha(archive)!=row["sha256"]: raise ValueError("collection prefix archive changed")
+            shutil.copyfile(archive,directory/archive.name)
     write_json(directory / "run.json", dict(source=source, reference=REFERENCE,
                cpp_tree=git("rev-parse", f"{source}:cpp"), protocol_sha256=sha(ROOT / PROTOCOL),
                binary_sha256=sha(binary), collector_sha256=sha(Path(__file__)), python=platform.python_version(),
-               platform=platform.platform(), panel=panel, cases=names))
+               platform=platform.platform(), panel=panel, cases=names, retained_prefix=len(preceding),
+               correction_protocol_sha256=sha(ROOT/CORRECTION_PROTOCOL) if panel=="correction" else None))
     with (directory / "archives.jsonl").open("x", newline="\n", encoding="utf-8") as index:
-        for identity, case, mode, extra in selected:
+        for row in preceding:
+            print(json.dumps(row,sort_keys=True),file=index,flush=True)
+        for identity, case, mode, extra in selected[len(preceding):]:
             with TemporaryDirectory(dir=scratch) as temporary:
                 work = Path(temporary) / "case"
                 receipt = run_one(binary, work, identity, case, mode, extra)
@@ -106,5 +136,7 @@ if __name__ == "__main__":
     for name in ("binary", "output", "scratch"):
         parser.add_argument(name, type=Path)
     parser.add_argument("--binary-receipt",type=Path)
+    parser.add_argument("--resume-from",type=Path)
     args = parser.parse_args()
-    collect(args.panel, args.binary.resolve(strict=True), args.output.resolve(), args.scratch.resolve(), args.binary_receipt)
+    collect(args.panel, args.binary.resolve(strict=True), args.output.resolve(), args.scratch.resolve(), args.binary_receipt,
+            args.resume_from)

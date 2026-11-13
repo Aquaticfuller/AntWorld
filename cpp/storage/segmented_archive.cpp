@@ -110,13 +110,19 @@ std::vector<WorldEvent> SqlEventPrefix::read(EventId after,std::size_t limit) co
     std::vector<WorldEvent> out(0);
     if (after.value>=size_ || !limit) return out;
     const auto count=std::min<std::size_t>(limit,size_-static_cast<std::size_t>(after.value));
+    const std::lock_guard lock(cache_lock_);
     BlockCursor cursor(db_.get(),world_,after,{size_});
     while (out.size()<count) {
         const auto block=cursor.next();
         require(block.has_value(),"short durable history range");
         if (block->header.last.value==size_) require(block->header.digest==tail_,"durable prefix tail changed");
-        auto facts=read_block(block->bytes,block->header);
-        if (out.empty() && block->header.first.value==after.value+1 && facts.size()==count) return facts;
+        // The cursor checked the stored envelope, digest and chain above.
+        // Keep only one decoded block, for an adjacent partial-page read.
+        if (decoded_.empty() || decoded_digest_!=block->header.digest) {
+            decoded_=read_block(block->bytes,block->header);
+            decoded_digest_=block->header.digest;
+        }
+        const auto& facts=decoded_;
         if (out.empty()) out.reserve(count);
         const auto skip=after.value>=block->header.first.value?after.value-block->header.first.value+1:0;
         const auto take=std::min(count-out.size(),facts.size()-skip);
