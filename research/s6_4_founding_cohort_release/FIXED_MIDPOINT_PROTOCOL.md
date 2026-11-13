@@ -1,0 +1,3 @@
+# Fixed single-publication phase comparison
+
+Before timing, select the two cases and three adjacent AB/BA/AB pairs from the [long-history protocol](FROZEN_COHORT_PROTOCOL.md). Use the existing observed 151-cut workload. Compare the previous implementation and the cached implementation at the existing day-75 publication and validated reopen. Keep common and observation output sync, exact inputs, all timing rows and raw authority. This phase checks whether reduced block decoding makes an observable difference within the historical save schedule. It is separate from the 720-sample hardware-admitted qualification and does not modify a release threshold.

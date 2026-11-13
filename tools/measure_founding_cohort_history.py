@@ -71,9 +71,50 @@ def collect(binary, directory, scratch):
     write_csv(directory/"samples.csv",stats)
 
 
+def compare_midpoint(before, after, directory, scratch):
+    """Run the same existing single-publication assay with both restore implementations."""
+    frozen={r["case"]:r["receipt"] for r in manifest(ORIGINAL)}
+    directory.mkdir(parents=True)
+    scratch.mkdir(parents=True,exist_ok=True)
+    identities={case["case"]:(identity,case) for identity,case,mode in roster("joint") if mode=="observed"}
+    binaries={"reference":before,"cache":after}
+    write_json(directory/"run.json",dict(cases=FIXED,pairs=3,sha256={k:sha(v) for k,v in binaries.items()},
+               scope="fixed single publication and validated reopening; diagnostic"))
+    stats=[]
+    for name in FIXED:
+        identity,case=identities[name]
+        case=case | {"arm":case["arm"].replace("ecology-","ecology5-",1)}
+        for pair in range(1,4):
+            order=("reference","cache") if pair!=2 else ("cache","reference")
+            for policy in order:
+                target=directory/f"{name}-{pair}-{policy}"
+                target.mkdir()
+                with TemporaryDirectory(dir=scratch) as location:
+                    work=Path(location)/"case"
+                    receipt=run_one(binaries[policy],work,identity,case,"profile-observed",COMMAND)
+                    for filename in MEASURED:
+                        if (work/filename).exists(): (target/filename).write_bytes((work/filename).read_bytes())
+                    record=dict(case=name,pair=pair,mode=policy,status=receipt["status"],wall_ms=receipt["elapsed_ms"])
+                    if receipt["status"]=="COMPLETE":
+                        check_identity(frozen[name],receipt,name)
+                        check(all(receipt["artifacts"][key]==frozen[name]["artifacts"][key] for key in AUTHORITY),
+                              "midpoint optimization changed observation bytes")
+                        phases=rows((target/"phases.csv").read_bytes())[0]
+                        record |= phases | receipt["summary"]
+                        record["database_bytes"]=(work/"midpoint.sqlite").stat().st_size
+                    stats.append(record)
+                    write_json(target/"sample.json",record)
+                    print(json.dumps(record,sort_keys=True),flush=True)
+    write_csv(directory/"samples.csv",stats)
+
+
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     for key in ("binary","output","scratch"):
         parser.add_argument(key,type=Path)
+    parser.add_argument("--midpoint-before",type=Path)
     a=parser.parse_args()
-    collect(a.binary.resolve(strict=True),a.output.resolve(),a.scratch.resolve())
+    if a.midpoint_before:
+        compare_midpoint(a.midpoint_before.resolve(strict=True),a.binary.resolve(strict=True),a.output.resolve(),a.scratch.resolve())
+    else:
+        collect(a.binary.resolve(strict=True),a.output.resolve(),a.scratch.resolve())
