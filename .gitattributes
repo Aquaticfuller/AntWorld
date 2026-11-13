@@ -28,3 +28,5 @@ experiments/s6_4_final_core_readiness/tests/*.log whitespace=-blank-at-eol,-blan
 experiments/s6_4_ecological_mechanism_closure/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_ecological_mechanism_closure/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 experiments/s6_4_ecological_mechanism_closure/portable-physics/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+experiments/s6_4_founding_cohort_release/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/s6_4_founding_cohort_release/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

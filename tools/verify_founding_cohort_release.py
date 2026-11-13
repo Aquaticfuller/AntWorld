@@ -2,9 +2,11 @@
 
 import argparse
 from collections import Counter, defaultdict
+import gzip
 from hashlib import sha256
 from itertools import combinations
 import json
+from math import isclose
 from pathlib import Path
 from random import Random
 from statistics import mean
@@ -17,7 +19,7 @@ from analyze_s6_4_wp6b import assess, check, facts, rows, RANGES
 from final_core_b06_cohorts import stage_occupancy
 from run_founding_cohort_release import COUNTS, manifest, roster
 from run_integrated_founding import DAY
-from run_s6_4_wp6b import input_bytes, sha, write_json
+from run_s6_4_wp6b import input_bytes, run_one, sha, write_json
 from verify_ecological_closure import WATER, cohort_endpoints, material_and_activity, write_csv
 from verify_final_core_integration import check_identity, verify_midpoint
 
@@ -29,6 +31,7 @@ PHASES = ("opportunity", "selected", "started", "completed", "interrupted")
 FACTS = {7:"stage", 8:"death", 16:"absorption", 35:"birth", 47:"lipid_conversion", 48:"maternal_ration",
          49:"lipid_mobilization", 50:"hatch_cue", 51:"foundress_nest_meal", 53:"boundary_uptake",
          57:"paid_activity", 58:"water_ingested"}
+PAID_CARE = 57
 
 
 def follow_first(raw, stage_rows, people, queen, horizon, case):
@@ -43,6 +46,7 @@ def follow_first(raw, stage_rows, people, queen, horizon, case):
             slices[actor][int(row["time_ms"])] = {key:row[key] for key in STATE_COLUMNS}
     event_rows, last_ration = [], set()
     maternal = Counter()
+    paid_work=None
     for event,time,source,kind,actor,payload,value,stage,outcome,mass,obs in facts(raw,WATER):
         recipient = obs[2] if kind==42 else payload if kind in (48,50) else actor
         name = FACTS.get(kind)
@@ -68,7 +72,7 @@ def follow_first(raw, stage_rows, people, queen, horizon, case):
                 row[label+"_event"]=event
                 if kind==8:
                     row["death_cause"]=payload
-            elif kind in (42,48,50) and actor==queen and time>=hatches[recipient] and (kind!=42 or obs[0]==0 or stage==3):
+            elif kind in (42,48,50) and actor==queen and time>=hatches[recipient]:
                 row.setdefault("first_"+name+"_ms",time)
                 row.setdefault("first_"+name+"_event",event)
                 row[name+"_count"]=row.get(name+"_count",0)+1
@@ -89,6 +93,17 @@ def follow_first(raw, stage_rows, people, queen, horizon, case):
             if kind==58: maternal["local_water_ug"]+=mass[2]
             if kind in (16,53): maternal["assimilated_water_ug"]+=mass[2]
             if kind==48: maternal["total_ration_water_ug"]+=mass[2]
+            if kind==PAID_CARE:
+                if payload:
+                    check(paid_work is None,"overlapping maternal work")
+                    paid_work=(source,time)
+                else:
+                    check(paid_work is not None and paid_work[0]==source,"unmatched maternal work")
+                    maternal["paid_maternal_work_ms"]+=time-paid_work[1]
+                    paid_work=None
+            if kind==8 and paid_work is not None:
+                maternal["paid_maternal_work_ms"]+=time-paid_work[1]
+                paid_work=None
         if recipient in first or (actor==queen and kind in (7,8,34,47,48,51,53,57,58)) or recipient==queen:
             entry = dict(case=case,event=event,time_ms=time,source=source,kind=name,actor=actor,recipient=recipient,
                          stage=stage,outcome=outcome,payload=payload,value=value,carbs_ug=mass[0],protein_ug=mass[1],water_ug=mass[2])
@@ -100,6 +115,8 @@ def follow_first(raw, stage_rows, people, queen, horizon, case):
                 if preceding in slices.get(identity,{}) and (key=="queen" or identity in first):
                     entry.update({f"{key}_prior_{field}":slices[identity][preceding][field] for field in STATE_COLUMNS})
             event_rows.append(entry)
+    if paid_work is not None:
+        maternal["paid_maternal_work_ms"]+=horizon-paid_work[1]
     for identity, row in track.items():
         row["larval_outcome"]=("PUPATED" if "pupa_ms" in row else f"DEATH_{row['death_cause']}" if "death_cause" in row else "RIGHT_CENSORED")
         row["adult_outcome"]=("ECLOSED" if "adult_ms" in row else f"DEATH_{row['death_cause']}" if "death_cause" in row else "RIGHT_CENSORED")
@@ -152,12 +169,34 @@ def paired_effects(panel, worlds):
     return expanded,results
 
 
-def verify(panel, directory, output, public=False, packed_summary=None):
+def replay_correction(binary, selected, comparisons, output):
+    binary = binary.resolve(strict=True)
+    replayed = []
+    for identity, case, mode, args in selected:
+        if mode != "durable-split":
+            continue
+        with TemporaryDirectory(dir=output) as scratch:
+            rerun = run_one(binary, Path(scratch) / "rerun", identity, case, mode, args)
+            check(rerun["status"] == "COMPLETE", "native protected-profile replay failed")
+            original = comparisons[case["observed_case"]]
+            check_identity(original, rerun, case["case"])
+            for name in ("cuts.csv", "individuals.csv", "geometry_edits.csv", "space_cuts.csv"):
+                check(original["artifacts"][name] == rerun["artifacts"][name], f"native replay changed {name}")
+            replayed.append({"case": case["case"], "events": rerun["summary"]["events"],
+                             "facts_sha256": rerun["artifacts"]["facts.bin"]["sha256"]})
+    check(len(replayed) == 2, "changed native protected-profile replay roster")
+    write_json(output / "fresh_replay.json", {"binary_sha256": sha(binary), "cases": replayed})
+
+
+def verify(panel, directory, output, public=False, packed_summary=None, binary=None):
     output.mkdir(parents=True)
     selected=list(roster(panel))
     expected={case["case"]:(identity,case,mode) for identity,case,mode,_ in selected}
     archived=manifest(directory)
     check(list(expected)==[r["case"] for r in archived] and len(archived)==COUNTS[panel],"frozen denominator differs")
+    if public:
+        from publish_founding_cohort_release import witnesses
+        check({p.stem for p in directory.glob("*.zip")}==set(witnesses(panel)),"public witness roster changed")
     worlds,trajectories,failures,midpoints=[],[],[],[]
     event_output=output/"events"
     event_output.mkdir()
@@ -219,21 +258,31 @@ def verify(panel, directory, output, public=False, packed_summary=None):
         for label,key in (("first","first_cohort_eclosed"),("energy","first_cohort_energy_deaths"),("water","first_cohort_water_deaths"),
                           ("no_ration","first_cohort_no_ration")):
             data[f"{label}_rate"]=data[key]/denominator if denominator else None
+        maternal["paid_maternal_energy_nj"]=maternal.get("paid_maternal_work_ms",0)*case["parameters"]["queen_active"]
         worlds.append(dict(case=case["case"],reference_case=case["reference_case"],panel=case["panel"],population=case["population"],
                            layout=case["layout"],seed=case["software_seed"],reserve=case["parameters"]["maternal_lipid"],source=case["source"],
                            **{k:case[k] for k in ("first_meal","activity_charge","recruitment","water_access","hatch_cue","repeat_feeding")},
                            **data,**(maternal | {"maternal_ration_water":maternal.get("total_ration_water_ug",0)})))
         trajectories.extend(track)
         if selected_events:
-            write_csv(event_output/(case["case"]+".csv"),selected_events)
+            csv_file=event_output/(case["case"]+".csv")
+            write_csv(csv_file,selected_events)
+            with csv_file.open("rb") as data, csv_file.with_suffix(".csv.gz").open("xb") as target:
+                with gzip.GzipFile(fileobj=target,filename="",mode="wb",mtime=0) as archive:
+                    archive.write(data.read())
+            csv_file.unlink()
     if packed_summary:
         def keyed(table,keys):
             return {tuple(r[key] for key in keys):r for r in rows((packed_summary/(table+".csv")).read_bytes())}
+        def matches(prior,value):
+            if isinstance(value,float):
+                return bool(prior) and isclose(float(prior),value,rel_tol=1e-13,abs_tol=1e-13)
+            return prior==("" if value is None else str(value))
         for table,computed,keys in (("worlds",worlds,("case",)),("first_cohort",trajectories,("case","ant"))):
             saved=keyed(table,keys)
             for r in computed:
                 prior=saved[tuple(str(r[key]) for key in keys)]
-                check(all(prior[key]==("" if value is None else str(value)) for key,value in r.items()),
+                check(all(matches(prior[key],value) for key,value in r.items()),
                       f"public {table} differs from reconstructed original events")
     for name, data in (("worlds",worlds),("first_cohort",trajectories)):
         if data: write_csv(output/(name+".csv"),data)
@@ -243,6 +292,9 @@ def verify(panel, directory, output, public=False, packed_summary=None):
         blocks,effects=paired_effects(panel,worlds)
         write_csv(output/"paired_blocks.csv",blocks)
         write_csv(output/"paired_effects.csv",effects)
+    if binary:
+        check(panel == "correction", "native replay is defined for the protected-profile panel")
+        replay_correction(binary, selected, comparisons, output)
     print(f"{panel}: {len(worlds)} observed, {len(failures)} failures, {len(midpoints)} exact durable prefixes")
 
 
@@ -253,5 +305,6 @@ if __name__=="__main__":
     parser.add_argument("output",type=Path)
     parser.add_argument("--public",action="store_true")
     parser.add_argument("--packed-summary",type=Path)
+    parser.add_argument("--binary",type=Path)
     args=parser.parse_args()
-    verify(args.panel,args.input,args.output,args.public,args.packed_summary)
+    verify(args.panel,args.input,args.output,args.public,args.packed_summary,args.binary)
