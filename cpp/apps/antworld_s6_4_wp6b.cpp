@@ -40,12 +40,27 @@ Case read_case(const Path& path) {
         (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
-    c.integrated_assay=scope || c.arm.starts_with("integrated-");
+    c.qualification=c.arm.starts_with("readiness-");
+    c.integrated_assay=scope || c.qualification || c.arm.starts_with("integrated-");
     require(c.horizon.milliseconds==(scope?180:c.integrated_assay?150:90)*day_ms,"invalid F1 assay horizon");
     if (c.integrated_assay) {
         if (scope) {
             c.release_days=c.arm=="scope-balanced-60"?60U:120U;
             c.arm="balanced";
+        } else if (c.qualification) {
+            const auto layout = c.arm.substr(10);
+            c.compact = layout != "roomy";
+            if (layout == "roomy" || layout == "compact-silent") {
+                c.arm = "balanced";
+            } else if (layout == "compact-blind") {
+                c.arm = "balanced";
+                c.trail_treatment = TrailTreatment::Blind;
+            } else {
+                require(layout == "compact-marked" || layout == "compact-blocked" ||
+                        layout == "compact-no-protein" || layout == "compact-absent", "invalid qualification layout");
+                c.arm = layout == "compact-marked" ? "balanced" : layout.substr(8);
+                c.trail_treatment = TrailTreatment::Marked;
+            }
         } else c.arm.erase(0,11);
         require(!c.workers && c.care,"the integrated assay begins with one active queen");
         const std::map<std::string,FoodMass> inputs{
@@ -215,6 +230,33 @@ void write_facts(const WorldRuntime& w, std::ofstream& stream) {
     }
 }
 
+void observe_space(const wp5::Scene& scene, std::ostream& stream) {
+    const auto& world = scene.world;
+    const auto s = world.summary();
+    const auto g = world.geometry_snapshot();
+    const auto f = world.surface_snapshot();
+    const auto& c = f.counters;
+    CsvRow row;
+    row.add(s.now.milliseconds,s.committed_events,g.geometry_revision,g.parcels,g.ledger.excavated_q3,g.ledger.filled_q3,
+            static_cast<unsigned>(world.spatially_clear({0,-.004,0},{0,.001,0},2)),
+            static_cast<unsigned>(world.spatially_clear({0,.001,0},{scene.target.x,.001,scene.target.z},2)),
+            f.active_trail_cells,f.trail_units,c.deposited_units,c.trips_started,c.decisions,c.explore_moves,
+            c.trail_moves,c.memory_moves,c.return_moves,c.collections,c.deliveries,c.failed_actions);
+    row.write(stream);
+}
+
+void write_geometry(const WorldRuntime& world, const Path& dir) {
+    auto stream = output(dir/"geometry_edits.csv");
+    stream << "id,source,event,actor,parcel,kind,time_ms,volume_q3,min_x_q,min_y_q,min_z_q,max_x_q,max_y_q,max_z_q\n";
+    for (const auto& e : world.geometry_edits()) {
+        CsvRow row;
+        row.add(e.id.value,e.source.value,e.event.value,e.actor.value,e.parcel.value,static_cast<unsigned>(e.kind),
+                e.time.milliseconds,e.volume_q3,e.box.min.x,e.box.min.y,e.box.min.z,e.box.max.x,e.box.max.y,e.box.max.z);
+        row.write(stream);
+    }
+    stream.close();
+}
+
 [[noreturn]] void interrupt_publication(WorldRuntime& world, storage::Store& store, const storage::SaveToken& saved,
                                        const Path& directory, SimTime next) {
     auto frame=output(directory/"published.frame");
@@ -310,7 +352,7 @@ struct DiagnosticTiming {
 };
 #endif
 
-void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile, bool interrupted) {
+void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile, bool interrupted, bool split) {
     const auto start = Clock::now();
 #ifdef ANTWORLD_STORAGE_TIMING
     DiagnosticTiming diagnostic(profile);
@@ -331,6 +373,13 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
               "carried_p,carried_w,carried_o,enrolled,lipid_ug,spent_lipid_ug,mobile_protein_ug,energy_carry,water_carry\n";
     auto timings = output(dir/"timings.csv");
     timings << "time_ms,advance_ms,cut_ms,committed,pending\n";
+    std::ofstream space;
+    if (c.qualification && observation) {
+        space = output(dir/"space_cuts.csv");
+        space << "time_ms,cursor,geometry_revision,parcels,excavated_q3,filled_q3,shaft_open,strip_open,"
+                 "trail_cells,trail_units,deposited_units,trips_started,foraging_decisions,explore_moves,trail_moves,"
+                 "memory_moves,return_moves,collections,deliveries,failed_actions\n";
+    }
     {
         auto initial = output(dir/"initial.chk");
 #ifdef ANTWORLD_STORAGE_TIMING
@@ -345,6 +394,7 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
     double advance{}, capture{}, durable_ms{}, restore_ms{};
     for (Time at = 0; at <= c.horizon.milliseconds; at += day_ms) {
         const auto before = Clock::now();
+        if (split && at > c.horizon.milliseconds/2) w.advance_to({at-day_ms+1});
         w.advance_to({at});
         const auto elapsed = ms(before);
         advance += elapsed;
@@ -356,6 +406,7 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
                                 , diagnostic.observation_state, diagnostic.observation_csv
 #endif
                                 );
+        if (space.is_open()) observe_space(scene, space);
         const auto cut_time = ms(observe_start);
         capture += cut_time;
         timings << at << ',' << elapsed << ',' << cut_time << ',' << s.committed_events << ',' << s.pending_events << '\n';
@@ -400,6 +451,10 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
     const auto closing=Clock::now();
 #endif
     cuts.close(); people.close(); inputs.close(); timings.close();
+    if (space.is_open()) {
+        space.close();
+        write_geometry(w,dir);
+    }
 #ifdef ANTWORLD_STORAGE_TIMING
     diagnostic.output_close=ms(closing);
 #endif
@@ -456,7 +511,8 @@ int main(int argc, char** argv) {
     try {
         const bool profile=mode=="profile-observed" || mode=="profile-unobserved";
         const bool interrupted=mode=="interrupt-save", resume=mode=="resume-save";
-        require((profile || mode=="observed" || mode=="unobserved" || mode=="durable" || interrupted || resume) &&
+        const bool split=mode=="durable-split";
+        require((profile || mode=="observed" || mode=="unobserved" || mode=="durable" || interrupted || resume || split) &&
                 ((argc==12)==resume),"unknown F1 observation mode or recovery path");
         if (argc>=7) {
             const auto mask=integer(argv[6]);
@@ -495,8 +551,12 @@ int main(int argc, char** argv) {
         if (resume || interrupted)
             require(c.integrated_assay && c.horizon==SimTime{150*day_ms} && c.profile.model_version()==FoundingProfile::resupply_version,
                     "recovery witness requires the frozen 150-day model");
+        if (c.qualification || split)
+            require(c.qualification && c.profile.model_version()==FoundingProfile::resupply_version,
+                    "qualification requires the version 7 model");
         if (resume) resume_interrupted(c,argv[11],argv[2]);
-        else run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved", mode=="durable" || profile || interrupted, profile, interrupted);
+        else run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved" && !split,
+                 mode=="durable" || profile || interrupted || split, profile, interrupted, split);
         return 0;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

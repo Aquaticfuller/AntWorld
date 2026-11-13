@@ -29,6 +29,8 @@ inline FoundingProfile nominal(FoundingPopulation population = FoundingPopulatio
     return f;
 }
 
+enum class TrailTreatment { Silent, Marked, Blind };
+
 struct Case {
     std::uint64_t identity, seed;
     std::string arm;
@@ -39,6 +41,8 @@ struct Case {
     SimTime horizon{90 * day_ms};
     bool integrated_assay{};
     unsigned release_days{120}; // ENGINEERING_FIXTURE. Only the scope assay selects another finite budget.
+    bool qualification{}, compact{};
+    TrailTreatment trail_treatment{TrailTreatment::Silent};
 };
 
 inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
@@ -48,15 +52,28 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
     if (c.arm == "blocked")
         for (int z=0; z<5; ++z) blocked.push_back({4 + side*2, z});
     BehaviorConfig behavior;
-    behavior.trails_enabled = false;
+    behavior.trails_enabled = c.trail_treatment != TrailTreatment::Silent;
     behavior.step_duration = {30'000}; // ENGINEERING_FIXTURE.
+    if (behavior.trails_enabled) behavior.field_interval = {6 * hour_ms}; // ENGINEERING_FIXTURE cleanup cadence.
+    if (c.trail_treatment == TrailTreatment::Blind) behavior.trail_weight = 0;
     w.configure_surface({{-.04, 0, -.02}, 9, 5, .01}, blocked, behavior);
-    closure::chamber(w);
+    if (c.compact) {
+        scene.geometry.origin_m = {-.008, -.008, -.008};
+        scene.geometry.initial_solid = {{0, 0, 0}, {32, 16, 32}};
+        // ENGINEERING_FIXTURE clocks reused from the WP-5 joint assay.
+        scene.geometry.work_duration = {hour_ms / 2};
+        scene.geometry.move_duration = scene.geometry.work_duration;
+        scene.geometry.decision_delay = {60'000};
+        scene.voids = {{{14,4,14},{18,16,18}}, {{12,5,14},{20,11,18}}};
+        w.configure_geometry(scene.geometry, scene.voids);
+    } else closure::chamber(w);
     scene.target = {.03*side, 0, 0};
     const PositionM outside{scene.target.x,.001,scene.target.z};
     require(!w.spatially_clear(nest,scene.target) &&
             w.spatially_clear({0,.001,0},outside,2)==(c.arm!="blocked"),
             "integrated source access does not match the closed or open strip");
+    if (c.qualification)
+        require(w.spatially_clear(nest, {0,.001,0}, 2), "qualification shaft lacks loaded clearance");
 }
 
 inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixture::limits(),
