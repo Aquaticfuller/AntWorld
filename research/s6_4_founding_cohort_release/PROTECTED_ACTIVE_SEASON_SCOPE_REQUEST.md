@@ -1,0 +1,26 @@
+# Protected active-season simulation scope request
+
+**A separate, bounded simulation-use gate is submitted for independent decision.** The proposal carries forward the existing B06 scope request and adds a prospectively frozen first-cohort guard. The accepted F1_GATE and both B06 daily count readers remain in force. [Original scope request](../s6_4_ecological_mechanism_closure/B06_SCOPE_CHANGE_REQUEST.md)
+
+## Declared use
+
+The candidate starts with one mated *Lasius niger* foundress and no workers, in a warm protected active-season environment for 150 game days. It covers the Borisovka and St. Petersburg reference profiles, two physically modeled 0.5 mm 3D layouts (shaft and offset dogleg), both frozen maternal reserves (5,250 and 5,500 µg lipid) and the six paired software seeds per cell. Eggs, larvae, pupae, and new workers retain their birth identity. Physical action times depend on movement, handling, and work. Food is finite and released from a declared source in the first 120 days. Days 121–150 depend on real remaining material and prior storage. The corrected configuration uses physics 25 with first-ration preference disabled. It keeps the H2 cue, R1 feeding persistence, larval lipid mobilization, paid activity, autonomous excavation and local recruitment. [Exact inputs and qualification](FROZEN_COHORT_PROTOCOL.md) [Confirmation freeze](PROTECTED_PROFILE_CONFIRMATION.md)
+
+The two short layouts and validated connector routes bound the intended 3D claim. Arbitrary obstruction detours, variable soils, natural microclimates, winter, mature colonies and multiyear demography need their own evidence. No survival probability is inferred for natural colonies. The first-ration effect is an intervention on a particular implementation and reserve context. Quantitative treatment probabilities, water and reserve values remain `ENGINEERING_FIXTURE`.
+
+## Candidate acceptance contract
+
+| Scale | Required evidence |
+|---|---|
+| Individual | Committed birth and identity; actual reachable care opportunity, selection, start, dose and assimilation; stage or competing death; legal motion and handling with energy and source accounting. Report the first daily larval census membership, its earlier losses, no-dose larvae and all censored outcomes. |
+| Early cohort | In each population at nominal reserve, the pooled day-55 eclosion fraction among the first-census identities must reach the matched clock-only fraction. Every population/layout cell must have at least one first-census eclosion. Do not substitute later brood or omit zero, death or censored observations. |
+| Group | Positive true-source collection and a loaded, moved return; maternal carbohydrate/water uptake and subsequent funded eggs, worker-protein uptake by larvae, later eclosion, real work across at least four days and a 14-day span, and joint adult/foundress survival at days 120 and 150. The independent SC-06 scout intervention retains passive/naive, disabled, sham, existing-autonomy, blocked and depleted controls. |
+| Environment | Actual autonomous cut, loaded motion and disposition of the same soil parcel with conserved mass, geometry edit identity and retained motion and load checks. |
+| Robustness | All eight balanced population/layout/reserve cells must reach at least 4/6 original joint successes. Preserve blocked and absent zero offsite acquisition/delivery, protein-free zero worker-derived larval protein, all limited-supply outcomes and exact restore/observer controls. |
+| Release | Validate legacy and experiment readers, canonical facts, live and restored state, mass, energy, water, soil, cross-platform replay and independently qualified application performance. A bounded scenario decision cannot waive release qualification. |
+
+## Scientific distinction
+
+B06 measured living colony counts in dark 40 mm laboratory chambers with regularly moistened cotton and no added food. The observations are approximately daily. The published stage intervals apply to selected cohorts and population/temperature groups, with different sample counts across assays. The required longitudinal, independent raw daily records and individually resolved losses are still unavailable. The protected environment has external food and water, different geometry, and no cotton moisture or humidity model. The separate finite founder-water experiment tests a legal contact intake against an inaccessible equal stock. It does not reconstruct cotton renewal or water potential. [B06 methods, pp. 166–167 and Tables 1–2](https://doi.org/10.1023/B:JOEY.0000033808.45455.75) [Frozen B06 reconstruction](../s6_4_final_core_readiness/B06_CONDITIONS_AND_COHORTS.md)
+
+The original `exact` and `at_least` algorithms keep their threshold, denominators, interval definitions and `INSUFFICIENT` decision. Stage intervals among successful individuals and the time when a living group reaches a given count are separate measurements. Incomplete early cohorts, resource-associated deaths and later-born substitutions remain visible. The candidate adds an independent, named protected-use decision only after approval. A positive decision would apply to this game-use envelope and leave every historical `BIOLOGICAL_BLOCKED` status and all prior performance results intact. [Recalculation and proposed endpoints](../../experiments/s6_4_founding_cohort_release)

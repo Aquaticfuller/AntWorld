@@ -170,6 +170,8 @@ def paired_effects(panel, worlds):
 
 
 def replay_correction(binary, selected, comparisons, output):
+    if not binary.is_file():
+        binary = binary.parent / "Release" / (binary.stem + ".exe")
     binary = binary.resolve(strict=True)
     replayed = []
     for identity, case, mode, args in selected:
@@ -197,6 +199,11 @@ def verify(panel, directory, output, public=False, packed_summary=None, binary=N
     if public:
         from publish_founding_cohort_release import witnesses
         check({p.stem for p in directory.glob("*.zip")}==set(witnesses(panel)),"public witness roster changed")
+        indexed = json.loads((directory.parent / "publication.json").read_bytes())[panel]
+        check(indexed["verified_archives"] == len(archived) and indexed["public_witnesses"] == len(set(witnesses(panel)))
+              and indexed["manifest_sha256"] == sha(directory / "archives.jsonl")
+              and indexed["canonical_facts"] == sum(int(r["receipt"].get("summary", {}).get("events", 0)) for r in archived),
+              "public archive identity receipt changed")
     worlds,trajectories,failures,midpoints=[],[],[],[]
     event_output=output/"events"
     event_output.mkdir()
@@ -251,6 +258,7 @@ def verify(panel, directory, output, public=False, packed_summary=None, binary=N
                 t=int(row["time_ms"])//DAY
                 if t in (120,150): snapshots[t].append(row)
             chain,*_=observe_chain(raw["facts.bin"],sample,queen,paths,snapshots,maximum=WATER)
+            chain = {"collections": 0, "deliveries": 0, "queen_gifts": 0} | chain
             data |= chain | {"joint":int(chain["complete"] and activity.get("soil_parcels",0)>0)}
             check(case["source"] not in ("absent","blocked") or not (chain["collections"] or chain["deliveries"]),"offsite stock crosses a control")
             check(case["source"]!="no-protein" or not chain["worker_protein_assimilated_lower_bound_ug"],"protein-free control acquired protein")
@@ -284,6 +292,12 @@ def verify(panel, directory, output, public=False, packed_summary=None, binary=N
                 prior=saved[tuple(str(r[key]) for key in keys)]
                 check(all(matches(prior[key],value) for key,value in r.items()),
                       f"public {table} differs from reconstructed original events")
+        prior_events = packed_summary / "events"
+        check({p.name for p in event_output.iterdir()} == {p.name for p in prior_events.iterdir()},
+              "public event witness missing")
+        for file in event_output.iterdir():
+            check(gzip.decompress(file.read_bytes()) == gzip.decompress((prior_events / file.name).read_bytes()),
+                  "public event chain changed")
     for name, data in (("worlds",worlds),("first_cohort",trajectories)):
         if data: write_csv(output/(name+".csv"),data)
     write_json(output/"failures.json",failures)

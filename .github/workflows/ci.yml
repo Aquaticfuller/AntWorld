@@ -219,7 +219,9 @@ jobs:
           python tools/verify_founding_cohort_release.py primary experiments/s6_4_founding_cohort_release/primary build/founding-cohort-primary --public --packed-summary experiments/s6_4_founding_cohort_release/primary/analysis
           python tools/verify_founding_cohort_release.py hatch experiments/s6_4_founding_cohort_release/hatch build/founding-cohort-hatch --public --packed-summary experiments/s6_4_founding_cohort_release/hatch/analysis
           python tools/verify_founding_cohort_release.py extended experiments/s6_4_founding_cohort_release/extended build/founding-cohort-extended --public --packed-summary experiments/s6_4_founding_cohort_release/extended/analysis
-          python tools/verify_founding_cohort_release.py correction experiments/s6_4_founding_cohort_release/correction build/founding-cohort-correction --public --packed-summary experiments/s6_4_founding_cohort_release/correction/analysis --binary build/ci/antworld_s6_4_wp6b${{ runner.os == 'Windows' && '.exe' || '' }}
+          python tools/verify_founding_cohort_release.py correction experiments/s6_4_founding_cohort_release/correction build/founding-cohort-correction --public --packed-summary experiments/s6_4_founding_cohort_release/correction/analysis --binary build/ci/antworld_s6_4_wp6b
+          python tools/summarize_founding_cohort_release.py experiments/s6_4_founding_cohort_release experiments/s6_4_founding_cohort_release/decision --check
+          python tools/summarize_founding_history_cost.py experiments/s6_4_founding_cohort_release/performance experiments/s6_4_founding_cohort_release/performance/storage_diagnostics.json --check
 
   sanitizers:
     runs-on: ubuntu-24.04

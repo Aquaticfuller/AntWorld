@@ -31,7 +31,8 @@ def witnesses(panel):
 
 
 def publish(source, output):
-    output.mkdir(parents=True)
+    output.mkdir(parents=True, exist_ok=True)
+    check(not (output/"publication.json").exists(),"publication already exists")
     receipt={}
     for panel,count in COUNTS.items():
         dest=output/panel
@@ -61,6 +62,8 @@ def publish(source, output):
             if path.exists():
                 shutil.copyfile(path,event_samples/path.name)
         receipt[panel]=dict(verified_archives=len(index),public_witnesses=len(chosen),
+                            canonical_facts=sum(int(row["receipt"].get("summary",{}).get("events",0)) for row in index),
+                            archive_bytes=sum((source/panel/row["archive"]).stat().st_size for row in index),
                             manifest_sha256=sha(dest/"archives.jsonl"),failures=json.loads((analysis/"failures.json").read_bytes()))
     write_json(output/"publication.json",receipt)
 
