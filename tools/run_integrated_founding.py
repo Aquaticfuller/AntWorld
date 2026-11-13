@@ -28,12 +28,15 @@ MODELS = {
     "low-yield": ("1", "4000000"), "high-yield": ("1", "12000000"),
     "nest": ("1", "8000000", "1"), "eggs": ("1", "8000000", "2"), "diet": ("1", "8000000", "3"),
     "diet-low": ("1", "4000000", "3"), "diet-high": ("1", "12000000", "3"),
+    "uptake": ("1", "8000000", "7"), "uptake-low": ("1", "4000000", "7"), "uptake-high": ("1", "12000000", "7"),
 }
 PROVISIONING_FREEZE = "bec5a01"
 PROVISIONING_PROTOCOL = PROTOCOL.with_name("PROVISIONING_AND_YIELD_FREEZE.md")
 DIETARY_FREEZE = "b1a0d96"
 DIETARY_PROTOCOL = PROTOCOL.with_name("DIETARY_FOUNDRESS_FREEZE.md")
-SENSITIVITIES = ("low-yield","high-yield","diet-low","diet-high")
+UPTAKE_FREEZE = "945b1a2"
+UPTAKE_PROTOCOL = PROTOCOL.with_name("UPTAKE_TIMING_FREEZE.md")
+SENSITIVITIES = ("low-yield","high-yield","diet-low","diet-high","uptake-low","uptake-high")
 
 
 def environments(matrix):
@@ -72,6 +75,10 @@ def collect(args):
         original = subprocess.check_output(["git", "show", f"{DIETARY_FREEZE}:{DIETARY_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
         if original != DIETARY_PROTOCOL.read_bytes():
             raise ValueError("dietary ablations differ from their prospective freeze")
+    if args.model.startswith("uptake"):
+        original = subprocess.check_output(["git", "show", f"{UPTAKE_FREEZE}:{UPTAKE_PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
+        if original != UPTAKE_PROTOCOL.read_bytes():
+            raise ValueError("uptake timing differs from its prospective freeze")
     selected = environments(args.matrix)
     if args.model in SENSITIVITIES:
         if args.matrix != "nominal":
@@ -81,15 +88,26 @@ def collect(args):
         selected = [(identity, case) for identity, case in selected if case["case"] in args.case]
         if len(selected) != len(set(args.case)):
             raise ValueError("unknown frozen case selection")
+    binary = args.binary.resolve(strict=True)
+    executable_hash = sha(binary)
+    source = git("rev-parse", "HEAD")
+    cpp_tree = git("rev-parse", "HEAD:cpp")
+    if args.source_receipt:
+        previous = json.loads(args.source_receipt.read_text(encoding="utf-8"))
+        if args.model not in ("diet", "diet-low", "diet-high") or previous["model"] != "diet" or \
+                previous["binary_sha256"] != executable_hash or git("rev-parse", f"{previous['source']}:cpp") != previous["cpp_tree"]:
+            raise ValueError("saved dietary executable identity does not match its original run receipt")
+        source, cpp_tree = previous["source"], previous["cpp_tree"]
     args.out.mkdir(parents=True)
     args.scratch.mkdir(parents=True, exist_ok=True)
-    binary = args.binary.resolve(strict=True)
     arguments = (*map(str, NOMINAL), "0", "3", *MODELS[args.model])
     write_json(args.out / "run.json", dict(
-        source=git("rev-parse", "HEAD"), cpp_tree=git("rev-parse", "HEAD:cpp"), frozen=FREEZE,
-        protocol_sha256=sha(PROTOCOL), binary=binary.name, binary_sha256=sha(binary), mode=args.mode,
+        source=source, cpp_tree=cpp_tree, runner_source=git("rev-parse", "HEAD"), frozen=FREEZE,
+        protocol_sha256=sha(PROTOCOL), binary=binary.name, binary_sha256=executable_hash, mode=args.mode,
+        executable_receipt_sha256=sha(args.source_receipt) if args.source_receipt else None,
         arguments=list(arguments), matrix=args.matrix, model=args.model, selected_subset=bool(args.case), runner_sha256=sha(Path(__file__)),
-        candidate_protocol_sha256=sha(DIETARY_PROTOCOL) if len(MODELS[args.model])>=3 else
+        candidate_protocol_sha256=sha(UPTAKE_PROTOCOL) if args.model.startswith("uptake") else
+            sha(DIETARY_PROTOCOL) if len(MODELS[args.model])>=3 else
             sha(PROVISIONING_PROTOCOL) if args.model != "r2" else None,
         configuration="Release", compiler=subprocess.check_output([args.compiler.resolve(), "--version"], text=True).splitlines(),
         platform=platform.platform(), python=platform.python_version(), started_ns=time.time_ns(),
@@ -122,4 +140,5 @@ if __name__ == "__main__":
     parser.add_argument("--model", choices=MODELS, default="r2")
     parser.add_argument("--mode", choices=("observed", "durable", "unobserved"), default="observed")
     parser.add_argument("--case", action="append", default=[])
+    parser.add_argument("--source-receipt", type=Path)
     raise SystemExit(collect(parser.parse_args()))

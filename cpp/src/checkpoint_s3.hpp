@@ -69,16 +69,16 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
     std::map<ColonyId, FoodMass> nest;
     FoodMass accounted = sum(sum(s.m.ledger.available, s.m.ledger.carried), s.m.ledger.stored);
     for (const auto& [id,r]:s.resource_cycles) { (void)id; accounted=sum(accounted,r.remaining); }
-    std::optional<WorldEvent> mobilized;
+    std::optional<WorldEvent> boundary_fact;
     for (const auto& e : s.journal) {
         const bool expected_founding_fact = founding.before(e);
-        const bool follows_mobilization=mobilized.has_value();
-        if (follows_mobilization) {
-            const auto& paid=*mobilized;
+        const bool follows_boundary=boundary_fact.has_value();
+        if (follows_boundary) {
+            const auto& paid=*boundary_fact;
             ensure(e.source==paid.source && e.actor==paid.actor && e.time==paid.time &&
                    e.kind==FactKind::PhysiologyUpdated,
-                   "R2 mobilization lacks its physiological outcome");
-            mobilized.reset();
+                   "founding boundary lacks its physiological outcome");
+            boundary_fact.reset();
         }
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) { stages[e.actor] = e.stage; positions[e.actor] = e.position; }
         if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved) positions[e.actor] = e.position;
@@ -122,20 +122,26 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
         } else if (audit.contains(e.actor)) {
             auto& p = audit.at(e.actor); const auto prior_stage = stages.at(e.actor);
             const bool enrolled = founding.enrolled(e.actor);
-            if (enrolled && !expected_founding_fact && !follows_mobilization &&
+            if (enrolled && !expected_founding_fact && !follows_boundary &&
                 (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind==FactKind::FoundingLipidMobilized ||
+                e.kind==FactKind::FoundingBoundaryUptake ||
                 (e.kind == FactKind::AntDied && e.payload)))
                 ensure(e.time == founding.next(e.actor, p, prior_stage), "F1 fact is outside its physiological boundary");
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || (e.kind == FactKind::ActionRejected && e.payload))
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || e.kind==FactKind::FoundingBoundaryUptake || (e.kind == FactKind::ActionRejected && e.payload))
                 founding.settle(e.actor, p, prior_stage, e.time);
             if (e.kind == FactKind::FoundingLipidMobilized) {
                 ensure(enrolled, "R2 mobilization outside a funded lineage");
                 founding.mobilize(p,e,prior_stage);
-                mobilized=e;
+                boundary_fact=e;
+            } else if (e.kind == FactKind::FoundingBoundaryUptake) {
+                ensure(enrolled && founding_boundary_enabled(founding.profile(),prior_stage) &&
+                       founding_boundary_uptake(founding.profile(),p,founding.reserves.at(e.actor),prior_stage)==e.transferred,
+                       "unfunded or misplaced adult crop uptake");
+                boundary_fact=e;
             } else if (e.kind == FactKind::PhysiologyUpdated) {
-                if (enrolled && follows_mobilization && e.time!=p.next_absorption)
-                    ensure(e.transferred==FoodMass{}, "R2 mobilization granted early absorption");
+                if (enrolled && follows_boundary && e.time!=p.next_absorption)
+                    ensure(e.transferred==FoodMass{}, "founding boundary duplicated an uptake");
                 else if (enrolled) founding.pulse(p, e, prior_stage);
                 else ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
                     "invalid absorption evidence");
@@ -149,12 +155,18 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     developing(p, prior_stage) && p.stage_progress == stage_duration(p.config, prior_stage);
                 ensure(p.body_energy_nj && p.hydration_ug && ready &&
                     (!enrolled || e.time != p.next_absorption), "unearned development evidence"); p.stage_progress = {};
+                if (enrolled && founding_boundary_enabled(founding.profile(),e.stage)) {
+                    auto& reserve=founding.reserves.at(e.actor);
+                    reserve.carb_assimilated_at=reserve.water_assimilated_at=e.time;
+                }
             } else if (e.kind == FactKind::AntDied) {
                 if (enrolled && e.payload) {
                     auto probe=p;
                     auto reserves=founding.reserves.at(e.actor);
                     ensure(!mobilize_founding_larval_lipid(founding.profile(),probe,reserves,prior_stage),
                            "R2 death omitted payable larval mobilization");
+                    ensure(!founding_boundary_uptake(founding.profile(),probe,reserves,prior_stage).total_ug(),
+                           "adult death omitted payable crop uptake");
                 }
                 p.death_cause = e.payload ? static_cast<DeathCause>(e.payload) : DeathCause::Fixture;
                 ensure((p.death_cause == DeathCause::Fixture && e.payload == 0) ||
@@ -215,7 +227,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
         } else ensure(e.kind < FactKind::PhysiologyEnabled || e.kind >= FactKind::GeometryConfigured, "physiology fact without initialization");
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied) stages[e.actor] = e.stage;
     }
-    ensure(!mobilized, "unterminated R2 physiological boundary");
+    ensure(!boundary_fact, "unterminated founding physiological boundary");
     founding.finish();
     ensure(audit.size() == s.physiology.size(), "missing physiology evidence");
     for (const auto& [id, saved] : s.physiology) {

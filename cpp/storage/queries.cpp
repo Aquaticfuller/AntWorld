@@ -13,7 +13,7 @@ std::optional<WorldCoverage> Store::coverage(WorldId world) const {
 }
 std::vector<HistoryRecord> Store::history(const HistoryFilter &filter) const {
     range(filter.begin, filter.end, filter.limit);
-    if (filter.kind && *filter.kind > FactKind::FoundingDietaryEggFunded)
+    if (filter.kind && *filter.kind > FactKind::FoundingBoundaryUptake)
         throw std::invalid_argument("invalid fact kind");
     if (format()==StoreFormat::Segmented) return segmented_history(filter);
     std::string sql = "SELECT ";

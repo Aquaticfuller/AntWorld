@@ -262,7 +262,7 @@ if(ANTWORLD_STORAGE)
         target_include_directories(antworld_integrated_founding_tests PRIVATE apps src storage)
         target_link_libraries(antworld_integrated_founding_tests PRIVATE antworld_storage)
         antworld_checks(antworld_integrated_founding_tests)
-        foreach(mode IF_COMPONENTS IF_COLONY IF_NO_SOURCE)
+        foreach(mode IF_COMPONENTS IF_COLONY IF_NO_SOURCE IF_BOUNDARY_COMPONENTS IF_BOUNDARY_COLONY)
             add_test(NAME FND_${mode}
                 COMMAND ${CMAKE_COMMAND} -DTEST=$<TARGET_FILE:antworld_integrated_founding_tests>
                 -DROOT=${CMAKE_CURRENT_BINARY_DIR}/test-output -DMODE=${mode}

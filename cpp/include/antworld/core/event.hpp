@@ -56,7 +56,7 @@ enum class FactKind : std::uint8_t {
     ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled,
     BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
     FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation,
-    FoundingLipidMobilized, FoundingHatchCue, FoundressNestMeal, FoundingDietaryEggFunded
+    FoundingLipidMobilized, FoundingHatchCue, FoundressNestMeal, FoundingDietaryEggFunded, FoundingBoundaryUptake
 };
 // F1-R1 CareWake annotation. Selection and material transfer are separate facts.
 enum class FoundingCareWake : std::uint8_t { Ordinary, Expired, Unavailable, Repeat };
@@ -83,7 +83,7 @@ struct WorldEvent {
     bool operator==(const WorldEvent&) const = default;
 };
 [[nodiscard]] constexpr bool founding_fact(FactKind kind) {
-    return kind >= FactKind::FoundingConfigured && kind <= FactKind::FoundingDietaryEggFunded;
+    return kind >= FactKind::FoundingConfigured && kind <= FactKind::FoundingBoundaryUptake;
 }
 [[nodiscard]] constexpr bool founding_early_fact(FactKind kind) {
     return kind == FactKind::FoundingLipidMobilized || kind == FactKind::FoundingHatchCue;
@@ -106,7 +106,7 @@ struct WorldEvent {
     switch (e.kind) {
     case FactKind::FoundingConfigured:
         return !e.actor.value && !e.colony.value && !e.source.value && e.time == SimTime{} &&
-               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value >= 1 && e.random_value <= 5 &&
+               e.stage == LifeStage::Egg && e.position == PositionM{} && e.random_value >= 1 && e.random_value <= 6 &&
                e.transferred == FoodMass{};
     case FactKind::FoundingReserveSeeded:
         return e.actor.value && e.colony.value && !e.source.value && e.time == SimTime{} && e.stage == LifeStage::Adult &&
@@ -132,6 +132,9 @@ struct WorldEvent {
     case FactKind::FoundingDietaryEggFunded:
         return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
                e.payload != e.actor.value && e.random_value && dry_packet && !e.transferred.water_ug;
+    case FactKind::FoundingBoundaryUptake:
+        return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult &&
+               !e.payload && !e.random_value && !e.transferred.protein_ug && !e.transferred.other_ug && e.transferred.total_ug();
     default: return false;
     }
 }

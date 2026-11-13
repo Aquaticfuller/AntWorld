@@ -63,13 +63,13 @@ inline std::uint64_t pulse_allowance(std::uint64_t rate, SimTime period, std::ui
     const auto total = add(multiply(rate, static_cast<std::uint64_t>(period.milliseconds)), remainder);
     remainder = total%1000; return total/1000;
 }
-inline FoodMass absorb(PhysiologyState& p, LifeStage stage) {
+inline FoodMass absorb(PhysiologyState& p, LifeStage stage, SimTime carb_period, SimTime water_period) {
     const auto& c = p.config; FoodMass used;
     if (stage == LifeStage::Adult || stage == LifeStage::Larva) {
         used.carbs_ug = std::min({p.crop.carbs_ug, (c.energy_capacity_nj-p.body_energy_nj)/c.carbohydrate_yield_nj_per_ug,
-            pulse_allowance(c.carb_absorption_ug_per_s, c.absorption_period, p.carb_remainder)});
+            pulse_allowance(c.carb_absorption_ug_per_s, carb_period, p.carb_remainder)});
         used.water_ug = std::min({p.crop.water_ug, c.hydration_capacity_ug-p.hydration_ug,
-            pulse_allowance(c.water_absorption_ug_per_s, c.absorption_period, p.water_remainder)});
+            pulse_allowance(c.water_absorption_ug_per_s, water_period, p.water_remainder)});
         if (stage == LifeStage::Larva) used.protein_ug = std::min({p.crop.protein_ug,
             c.larval_protein_requirement_ug-p.tissue_protein_ug,
             pulse_allowance(c.protein_absorption_ug_per_s, c.absorption_period, p.protein_remainder)});
@@ -80,6 +80,9 @@ inline FoodMass absorb(PhysiologyState& p, LifeStage stage) {
     }
     p.next_absorption = after(p.next_absorption, c.absorption_period.milliseconds);
     return used;
+}
+inline FoodMass absorb(PhysiologyState& p, LifeStage stage) {
+    return absorb(p,stage,p.config.absorption_period,p.config.absorption_period);
 }
 inline SimTime next_physiology(const PhysiologyState& p, LifeStage stage) {
     auto dt = p.next_absorption.milliseconds-p.updated_at.milliseconds;

@@ -244,7 +244,7 @@ public:
     void pulse(PhysiologyState& p, const WorldEvent& e, LifeStage stage) {
         ensure(p.body_energy_nj && p.hydration_ug, "F1 uptake after exhaustion");
         if (e.time == p.next_absorption) {
-            ensure(e.transferred == absorb(p, stage), "invalid F1 crop uptake");
+            ensure(e.transferred == founding_pulse(profile(),p,reserves.at(e.actor),stage), "invalid F1 crop uptake");
             convert(p, e.actor, stage, e, false);
             if (founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake) last_pulse=e;
             if (founding_develops(profile(), p, reserves.at(e.actor), stage)) {

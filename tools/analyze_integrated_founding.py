@@ -10,15 +10,15 @@ from pathlib import Path
 from struct import unpack_from
 import zipfile
 
-from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, GIFT, MOVED, OBSERVATION,
-                              OBS_COMPLETED, STAGE, UPTAKE, assess, check, evaluate, facts, rows)
+from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, F_BOUNDARY_UPTAKE, F_RATION,
+                              GIFT, MOVED, OBSERVATION, OBS_COMPLETED, STAGE, UPTAKE, assess, check, evaluate, facts, rows)
 from run_integrated_founding import DAY, MODELS, SENSITIVITIES, environments
 from run_s6_4_wp6b import input_bytes, sha, write_json
 
 
 def located_facts(raw):
     offset = 0
-    for event in facts(raw, 52):
+    for event in facts(raw, F_BOUNDARY_UPTAKE):
         resource, x, y, z = unpack_from("<Qddd", raw, offset + 86)
         yield event, resource, (x, y, z)
         size, = unpack_from("<I", raw, offset)
@@ -77,6 +77,7 @@ def verify_sources(raw, case, cuts):
 def observe_chain(raw, case, queen, paths, snapshots):
     adults, birth = {}, {p["ant"]: p["birth_ms"] for p in paths}
     larva_paid, larva_uptake, queen_uptake = set(), set(), {}
+    maternal_protein, forced_worker_protein = defaultdict(int), defaultdict(int)
     work_days, completed_days, trips = set(), defaultdict(set), []
     stages, previous = {}, {}
     attempts = Counter()
@@ -104,15 +105,22 @@ def observe_chain(raw, case, queen, paths, snapshots):
             if stages[payload] == 1 and amount[1]:
                 larva_paid.add(payload)
                 world["first_larval_worker_protein_ms"] = world["first_larval_worker_protein_ms"] or t
-        if kind == UPTAKE:
+        if kind == F_RATION:
+            maternal_protein[payload] += amount[1]
+        if kind in (UPTAKE, F_BOUNDARY_UPTAKE):
             if ant == queen and world["first_delivery_ms"] is not None:
                 for label, qty in (("carb", amount[0]), ("water", amount[2])):
                     if qty and label not in queen_uptake:
                         queen_uptake[label] = t
                         world[f"first_queen_{label}_ms"] = t
-            elif ant in larva_paid and stages[ant] == 1 and amount[1]:
-                larva_uptake.add(ant)
-                world["first_larval_worker_uptake_ms"] = world["first_larval_worker_uptake_ms"] or t
+            elif stages[ant] == 1 and amount[1]:
+                # Spending all possible maternal crop first gives a conservative lower bound.
+                other = min(amount[1], maternal_protein[ant])
+                maternal_protein[ant] -= other
+                forced_worker_protein[ant] += amount[1] - other
+                if ant in larva_paid and forced_worker_protein[ant]:
+                    larva_uptake.add(ant)
+                    world["first_larval_worker_uptake_ms"] = world["first_larval_worker_uptake_ms"] or t
         if kind == DIED and ant == queen:
             queen_death = t
         if ant not in adults:
@@ -143,7 +151,7 @@ def observe_chain(raw, case, queen, paths, snapshots):
             attempts["deliveries"] += 1
         elif kind == CARGO:
             attempts["cargo_uses"] += 1
-        elif kind == UPTAKE:
+        elif kind in (UPTAKE, F_BOUNDARY_UPTAKE):
             individual["carb_ug"] += amount[0]
             individual["water_ug"] += amount[2]
             if amount[0] and individual["first_carb_ms"] is None:
@@ -183,7 +191,8 @@ def observe_chain(raw, case, queen, paths, snapshots):
                  workers_with_adult_cw=sum(w["carb_ug"] > 0 and w["water_ug"] > 0 for w in adults.values()),
                  workers_alive_7d=sum(w["terminal_age_ms"] >= 7*DAY for w in adults.values()),
                  workers_censored=sum(w["censored"] for w in adults.values()), larvae_fed_by_workers=len(larva_paid),
-                 larvae_with_worker_protein_uptake=len(larva_uptake), **attempts)
+                 larvae_with_worker_protein_uptake=len(larva_uptake), worker_protein_assimilated_lower_bound_ug=sum(forced_worker_protein.values()),
+                 **attempts)
     return world, adults.values(), trips
 
 
@@ -235,7 +244,7 @@ def verify(archive, output):
                     continue
                 raw, summary = blobs["facts.bin"], receipt["summary"]
                 case = case | dict(early_access_mask=3, carbohydrate_yield_nj_per_ug=int(MODELS[model][1]) if MODELS[model] else 1_000_000)
-                version = 3 if model=="r2" else 4 if len(MODELS[model])==2 else 5
+                version = 3 if model=="r2" else 4 if len(MODELS[model])==2 else 6 if model.startswith("uptake") else 5
                 measure, lives, paths, censuses = assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],version)
                 checked_facts += measure["source_facts"]
                 census_rows.extend(common | r for r in censuses)

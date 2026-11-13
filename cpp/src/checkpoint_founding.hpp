@@ -9,6 +9,7 @@ inline constexpr auto founding_persistence_magic = UINT64_C(0x4754504b435741); /
 inline constexpr auto founding_access_magic = UINT64_C(0x4854504b435741); // AWCKPTH
 inline constexpr auto founding_provisioning_magic = UINT64_C(0x4954504b435741); // AWCKPTI
 inline constexpr auto founding_dietary_magic = UINT64_C(0x4a54504b435741); // AWCKPTJ
+inline constexpr auto founding_uptake_magic = UINT64_C(0x4b54504b435741); // AWCKPTK
 inline constexpr std::array founding_times{
     &FoundingProfile::first_lay, &FoundingProfile::opening_width, &FoundingProfile::opening_spacing,
     &FoundingProfile::later_spacing, &FoundingProfile::maintenance_floor};
@@ -53,6 +54,9 @@ template<class S> void write_founding(Writer& w, const S& s, bool frame) {
         w.put(id.value);
         w.put(row.lipid_ug); w.put(row.spent_lipid_ug); w.put(row.mobile_protein_ug);
         w.put(row.energy_remainder); w.put(row.water_remainder);
+        if (s.founding->profile.model_version()==FoundingProfile::uptake_version) {
+            w.time(row.carb_assimilated_at); w.time(row.water_assimilated_at);
+        }
     }
     if (frame) w.put(s.m.founding_trace);
     if (s.founding->profile.feeding_persistence) {
@@ -81,7 +85,8 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
     if (persistence) p.feeding_persistence = FoundingFeedingPersistence{r.time(), static_cast<std::uint32_t>(r.get(4))};
     if (early_access) p.early_access = FoundingEarlyAccess{r.flag(), r.flag()};
     if (version>=FoundingProfile::provisioning_version) p.provisioning = FoundingProvisioning{r.flag()};
-    if (version==FoundingProfile::dietary_version) p.dietary = FoundingDietaryAccess{r.flag(),r.flag()};
+    const bool uptake=version==FoundingProfile::uptake_version;
+    if (version>=FoundingProfile::dietary_version) p.dietary = FoundingDietaryAccess{r.flag(),r.flag(),uptake};
     validate_founding(p);
     ensure(s.long_term && s.social && s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy &&
            s.ants.index.contains(setup.founder) && s.reproduction.contains(setup.founder) &&
@@ -89,18 +94,21 @@ template<class S> void read_founding(Reader& r, S& s, const RuntimeLimits& limit
            s.ants.get(s.ants.index.at(setup.founder)).caste == Caste::Queen, "invalid F1 founder ownership");
     for (const auto& [id, reproduction] : s.reproduction)
         if (id != setup.founder) validate_reproduction(reproduction.config, s.physiology.at(id).config);
-    const auto count = r.count(limits.entities, 48);
+    const auto count = r.count(limits.entities, uptake ? 64 : 48);
     EntityId previous;
     std::uint64_t lipid = 0;
     for (std::size_t i = 0; i < count; ++i) {
         const EntityId id{r.get()};
-        const FoundingReserve row{r.get(), r.get(), r.get(), r.get(), r.get()};
+        FoundingReserve row{r.get(), r.get(), r.get(), r.get(), r.get()};
+        if (uptake) { row.carb_assimilated_at=r.time(); row.water_assimilated_at=r.time(); }
         ensure(id > previous && s.physiology.contains(id) && row.energy_remainder < founding_day_ms && row.water_remainder < founding_day_ms &&
                (id == setup.founder ? row.mobile_protein_ug <= p.protein_ug : !row.mobile_protein_ug && s.physiology.at(id).mother == setup.founder),
                "invalid F1 reserve row");
         const auto& physiology = s.physiology.at(id);
         const auto stage = s.ants.get(s.ants.index.at(id)).stage;
         ensure(physiology.config == founding_physiology(p, id==setup.founder) && !physiology.water_loss_remainder &&
+               row.carb_assimilated_at <= physiology.updated_at && row.water_assimilated_at <= physiology.updated_at &&
+               (stage==LifeStage::Adult || stage==LifeStage::Dead || (row.carb_assimilated_at==SimTime{} && row.water_assimilated_at==SimTime{})) &&
                ((p.dietary && p.dietary->dietary_eggs && id==setup.founder) || !physiology.exported_energy_nj) &&
                (stage==LifeStage::Dead || physiology.stage_progress <= stage_duration(physiology.config,stage)),
                "invalid F1 physiological bounds");

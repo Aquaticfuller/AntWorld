@@ -21,7 +21,7 @@ COLLECTED, DELIVERED, UPTAKE, CARGO, NEST, GIFT = 5, 12, 16, 19, 20, 21
 AUTONOMY, LAY, BIRTH, RECYCLED, OBSERVATION = 31, 34, 35, 38, 42
 F_CONFIG, F_SEED, F_EGG, F_CONVERT, F_RATION = range(44, 49)
 F_MOBILIZE, F_CUE = 49, 50
-F_NEST_MEAL, F_DIETARY_EGG = 51, 52
+F_NEST_MEAL, F_DIETARY_EGG, F_BOUNDARY_UPTAKE = 51, 52, 53
 OBS_SELECTED, OBS_STARTED, OBS_COMPLETED, OBS_INTERRUPTED = 1, 2, 3, 4
 FEED = 7
 MASS = struct.Struct("<QQQQ")
@@ -136,7 +136,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             if recipient is not None:
                 flows[recipient][i] += value
 
-    maximum = F_DIETARY_EGG if profile_version == 5 else F_CUE if profile_version >= 3 else F_RATION
+    maximum = F_BOUNDARY_UPTAKE if profile_version >= 6 else F_DIETARY_EGG if profile_version == 5 else F_CUE if profile_version >= 3 else F_RATION
     for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, maximum):
         while current_cut < len(cut_rows) and int(cut_rows[current_cut]["cursor"]) < event:
             compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile,
@@ -158,7 +158,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             stocks[actor] = [payload, 0, mass[1]]
             transfer(None, actor, mass)
         elif kind == BIRTH:
-            check(payload == queen and (not value or profile_version == 5) and mass == (0, profile["egg_protein"], profile["egg_water"], 0), "unexpected source of egg material")
+            check(payload == queen and (not value or profile_version >= 5) and mass == (0, profile["egg_protein"], profile["egg_water"], 0), "unexpected source of egg material")
             child[actor] = dict(birth=time, egg=event, stages=[(0, time, event)], death=None, rations=[], uptake=[], adult_decisions=0, egg_energy=value,
                                 adult_actions=0)
             transfer(queen, actor, mass)
@@ -204,7 +204,12 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             transfer(None, actor, mass)
         elif kind == RECYCLED:
             transfer(actor, None, mass)
-        elif kind == UPTAKE:
+        elif kind in (UPTAKE, F_BOUNDARY_UPTAKE):
+            if kind == F_BOUNDARY_UPTAKE:
+                check(stages[actor] == 3 and (mass[0] or mass[2]) and not (mass[1] or mass[3]), "invalid adult crop boundary")
+                counts["boundary_carb_ug"] += mass[0]
+                counts["boundary_water_ug"] += mass[2]
+                counts["queen_boundary_uptake"] += actor == queen
             if actor in child and stages[actor] == 1 and any(mass):
                 child[actor]["uptake"].append((time, event, *mass))
             if actor == queen:
@@ -312,10 +317,13 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
                        *(f"queen_feed_phase_{i}" for i in range(1, 5)), f"food_mass_{COLLECTED}", f"food_mass_{DELIVERED}",
                        *(f"worker_to_{role}{suffix}" for role in ("queen", "larva", "adult_worker") for suffix in ("", "_c", "_p", "_w", "_o")))},
                   actual_rations=counts["fact_48"], source_facts=last)
-    if profile_version==5:
+    if profile_version>=5:
         result.update(dietary_eggs=counts["fact_52"], foundress_nest_meals=counts["fact_51"],
                       dietary_exported_energy_nj=counts["dietary_exported_energy_nj"],
                       dietary_egg_crop_protein_ug=counts["dietary_egg_crop_protein_ug"])
+    if profile_version>=6:
+        result.update(boundary_uptakes=counts["fact_53"], queen_boundary_uptakes=counts["queen_boundary_uptake"],
+                      boundary_carb_ug=counts["boundary_carb_ug"], boundary_water_ug=counts["boundary_water_ug"])
     return result, timeline, paths, matched
 
 

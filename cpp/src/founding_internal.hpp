@@ -10,6 +10,7 @@ inline constexpr std::uint32_t founding_persistence_schema_version = 16, foundin
 inline constexpr std::uint32_t founding_access_schema_version = 17, founding_access_physics_version = 19;
 inline constexpr std::uint32_t founding_provisioning_schema_version = 18, founding_provisioning_physics_version = 20;
 inline constexpr std::uint32_t founding_dietary_schema_version = 19, founding_dietary_physics_version = 21;
+inline constexpr std::uint32_t founding_uptake_schema_version = 20, founding_uptake_physics_version = 22;
 inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEERING_FIXTURE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
@@ -26,6 +27,10 @@ inline std::uint64_t ceil_div(std::uint64_t n, std::uint64_t d) { return n/d + (
 inline bool local_founding_provisioning(const auto& world, EntityId id) {
     return world.founding && world.founding->profile.provisioning && world.founding->profile.provisioning->local_exchange &&
            world.founding_reserves.contains(id) && world.founding->founder!=id;
+}
+
+inline bool founding_boundary_enabled(const FoundingProfile& f, LifeStage stage) {
+    return f.dietary && f.dietary->adult_boundary_uptake && stage==LifeStage::Adult;
 }
 
 // Split both factors at the fixed denominator to keep the sub-day product bounded.
@@ -140,6 +145,7 @@ inline void validate_founding(const FoundingProfile& f) {
     if (f.dietary && (!f.provisioning || !f.provisioning->local_exchange ||
         f.worker.carbohydrate_yield_nj_per_ug <= 1'000'000 ||
         !(f.dietary->local_nest_intake || f.dietary->dietary_eggs) ||
+        (f.dietary->adult_boundary_uptake && !(f.dietary->local_nest_intake && f.dietary->dietary_eggs)) ||
         (f.dietary->dietary_eggs && multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug)>f.worker.energy_capacity_nj)))
         throw std::invalid_argument("invalid dietary founding profile");
     for (const auto& b : f.brood) {
@@ -203,6 +209,42 @@ inline SimTime next_founding_physiology(const FoundingProfile& f, const Physiolo
 
 inline std::uint64_t founding_energy(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
     return add(p.body_energy_nj, multiply(r.lipid_ug, f.lipid_yield_nj_per_ug));
+}
+
+inline FoodMass founding_pulse(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r, LifeStage stage) {
+    if (!founding_boundary_enabled(f,stage)) return absorb(p,stage);
+    const auto now=p.updated_at;
+    const SimTime carb{now.milliseconds-r.carb_assimilated_at.milliseconds};
+    const SimTime water{now.milliseconds-r.water_assimilated_at.milliseconds};
+    r.carb_assimilated_at=r.water_assimilated_at=now;
+    return absorb(p,stage,carb,water);
+}
+
+inline FoodMass founding_boundary_uptake(const FoundingProfile& f, PhysiologyState& p, FoundingReserve& r, LifeStage stage) {
+    const bool energy=!p.body_energy_nj, water=!p.hydration_ug;
+    if (!founding_boundary_enabled(f,stage) || !(energy || water)) return {};
+    const auto now=p.updated_at;
+    const auto& c=p.config;
+    auto carb_remainder=p.carb_remainder, water_remainder=p.water_remainder;
+    FoodMass dose;
+    if (energy) dose.carbs_ug=std::min({p.crop.carbs_ug,c.energy_capacity_nj/c.carbohydrate_yield_nj_per_ug,
+        pulse_allowance(c.carb_absorption_ug_per_s,{now.milliseconds-r.carb_assimilated_at.milliseconds},carb_remainder)});
+    if (water) dose.water_ug=std::min({p.crop.water_ug,c.hydration_capacity_ug,
+        pulse_allowance(c.water_absorption_ug_per_s,{now.milliseconds-r.water_assimilated_at.milliseconds},water_remainder)});
+    if ((energy && !dose.carbs_ug) || (water && !dose.water_ug)) return {};
+    p.crop=subtract(p.crop,dose);
+    if (energy) {
+        p.body_energy_nj=multiply(dose.carbs_ug,c.carbohydrate_yield_nj_per_ug);
+        p.oxidized_carbs_ug=add(p.oxidized_carbs_ug,dose.carbs_ug);
+        p.carb_remainder=carb_remainder;
+        r.carb_assimilated_at=now;
+    }
+    if (water) {
+        p.hydration_ug=dose.water_ug;
+        p.water_remainder=water_remainder;
+        r.water_assimilated_at=now;
+    }
+    return dose;
 }
 
 // Keep the part of owned crop needed for the next normal uptake cycle.

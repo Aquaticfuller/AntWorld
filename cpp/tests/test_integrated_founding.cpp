@@ -16,14 +16,14 @@ template<class F> void rejects(F operation) {
     throw std::runtime_error("expected founding transaction to fail");
 }
 
-Case founding_case(std::string arm="balanced", bool intake=true, bool eggs=true) {
+Case founding_case(std::string arm="balanced", bool intake=true, bool eggs=true, bool uptake=false) {
     auto f=nominal();
     f.feeding_persistence=FoundingFeedingPersistence{{2*day_ms},750'000};
     f.early_access=FoundingEarlyAccess{true,true};
     f.provisioning=FoundingProvisioning{true};
     f.worker.behavior_interval={hour_ms};
     f.worker.carbohydrate_yield_nj_per_ug=8'000'000;
-    f.dietary=FoundingDietaryAccess{intake,eggs};
+    f.dietary=FoundingDietaryAccess{intake,eggs,uptake};
     const FoodMass stock=arm=="absent"?FoodMass{}:FoodMass{6000,3000,18000,0};
     return {201,1,std::move(arm),true,0,stock,f,{150*day_ms},true};
 }
@@ -61,7 +61,7 @@ void real_colony(const std::filesystem::path& folder) {
     const auto checkpoint=w.checkpoint();
     const auto id=w.summary().world;
     require(checkpoint[6]=='J' && w.founding_profile()->model_version()==5,"wrong dietary checkpoint identity");
-    storage::Store store(folder/"founding.sqlite",s6_3_1_fixture::limits(),storage::StoreFormat::Segmented);
+    storage::Store store(folder/"exact.sqlite",s6_3_1_fixture::limits(),storage::StoreFormat::Segmented);
     const auto saved=store.save(w);
     auto recovery=store.load(id).world;
     require(recovery.checkpoint()==checkpoint,"dietary checkpoint failed after normal publication");
@@ -120,6 +120,56 @@ void no_local_source() {
         s.world.restore(s.world.checkpoint());
     }
 }
+
+void boundary_components() {
+    const auto f=founding_case("balanced",true,true,true).profile;
+    auto p=initial_founding_physiology(f,false,{});
+    const SimTime slice{1000};
+    p.updated_at=slice;
+    p.crop={100,5,0,0};
+    p.body_energy_nj=p.hydration_ug=0;
+    FoundingReserve r{};
+    const auto unchanged=p;
+    require(founding_boundary_uptake(f,p,r,LifeStage::Adult)==FoodMass{} && p==unchanged && r==FoundingReserve{},
+            "a missing component changed an exhausted adult");
+    p.crop.water_ug=100;
+    const auto brood=p;
+    require(founding_boundary_uptake(f,p,r,LifeStage::Larva)==FoodMass{} && p==brood,
+            "adult crop boundary was applied to brood");
+    const auto first=founding_boundary_uptake(f,p,r,LifeStage::Adult);
+    require(first.carbs_ug && first.water_ug && p.crop==subtract(brood.crop,first) && p.crop.protein_ug==5 &&
+            r.carb_assimilated_at==slice && r.water_assimilated_at==slice,"crop boundary failed to debit the real stock");
+    require(founding_pulse(f,p,r,LifeStage::Adult)==FoodMass{},"the aligned pulse spent the same allowance twice");
+    p.body_energy_nj=0;
+    const auto same_time=p;
+    require(founding_boundary_uptake(f,p,r,LifeStage::Adult)==FoodMass{} && p==same_time,
+            "a second zero-elapsed uptake was accepted");
+}
+
+void boundary_colony(const std::filesystem::path& folder) {
+    auto s=setup(founding_case("balanced",true,true,true));
+    auto& w=s.world;
+    w.advance_to({150*day_ms});
+    const auto checkpoint=w.checkpoint();
+    require(checkpoint[6]=='K' && w.founding_profile()->model_version()==6,"wrong boundary-uptake checkpoint identity");
+    storage::Store store(folder/"exact.sqlite",s6_3_1_fixture::limits(),storage::StoreFormat::Segmented);
+    store.save(w);
+    auto restored=store.load(w.summary().world).world;
+    require(restored.checkpoint()==checkpoint,"boundary uptake was not durable");
+    const auto events=w.committed_events();
+    const auto witness=std::find_if(events.begin(),events.end(),[](const auto& e) { return e.kind==FactKind::FoundingBoundaryUptake; });
+    require(witness!=events.end(),"integrated case did not exercise boundary crop uptake");
+    require(std::next(witness)!=events.end() && std::next(witness)->kind==FactKind::PhysiologyUpdated &&
+            witness->source==std::next(witness)->source && witness->time==std::next(witness)->time,"boundary witness lacked the scheduled outcome");
+    using Schema=storage::detail::FactSchema;
+    rejects([&] { (void)storage::detail::seal_block(std::span<const WorldEvent>(&*witness,1),{},Schema::FoundingDietary); });
+    const auto block=storage::detail::seal_block(std::span<const WorldEvent>(&*witness,1),{},Schema::FoundingUptake);
+    require(storage::detail::inspect_block(block.bytes).fact_schema==7,"boundary event block has the wrong schema");
+    w.advance_to({159*day_ms});
+    restored.advance_to({153*day_ms+1}); restored.advance_to({159*day_ms});
+    require(w.checkpoint()==restored.checkpoint(),"boundary uptake changed under partitioned durable recovery");
+    check_ledgers(w);
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -129,6 +179,8 @@ int main(int argc,char** argv) {
         if (mode=="IF_COMPONENTS") funded_components();
         else if (mode=="IF_COLONY") real_colony(argv[2]);
         else if (mode=="IF_NO_SOURCE") no_local_source();
+        else if (mode=="IF_BOUNDARY_COMPONENTS") boundary_components();
+        else if (mode=="IF_BOUNDARY_COLONY") boundary_colony(argv[2]);
         else throw std::invalid_argument("unknown integrated founding test");
         return 0;
     } catch (const std::exception& e) {

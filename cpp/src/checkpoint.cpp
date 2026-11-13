@@ -50,7 +50,7 @@ std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
 }
 WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
     Reader reader{bytes}; auto event = read_fact(reader);
-    ensure(event.kind <= FactKind::FoundingDietaryEggFunded && (!founding_fact(event.kind) || valid_founding_payload(event)),
+    ensure(event.kind <= FactKind::FoundingBoundaryUptake && (!founding_fact(event.kind) || valid_founding_payload(event)),
            "unsupported or invalid canonical fact");
     ensure(reader.cursor == bytes.size(), "trailing fact payload bytes"); return event;
 }
@@ -97,10 +97,11 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const bool early_access=s.founding && s.founding->profile.early_access.has_value();
     const bool provisioning=s.founding && s.founding->profile.provisioning.has_value();
     const bool dietary=s.founding && s.founding->profile.dietary.has_value();
+    const bool uptake=dietary && s.founding->profile.dietary->adult_boundary_uptake;
     if (frame) w.put(frame_magic);
-    w.put(dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
-    w.put(dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
-    w.put(dietary ? founding_dietary_physics_version : provisioning ? founding_provisioning_physics_version : early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
+    w.put(uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
+    w.put(uptake ? founding_uptake_schema_version : dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
+    w.put(uptake ? founding_uptake_physics_version : dietary ? founding_dietary_physics_version : provisioning ? founding_provisioning_physics_version : early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
     if (s.founding) w.put(spatial ? spatial_magic : base);
     if (spatial) w.put(base);
     w.put(s.world.high); w.put(s.world.low); w.put(s.seed); w.time(m.now); w.put(m.revision);
@@ -153,7 +154,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool frame=header==frame_magic;
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
-    const bool dietary=header==founding_dietary_magic;
+    const bool uptake=header==founding_uptake_magic;
+    const bool dietary=uptake || header==founding_dietary_magic;
     const bool provisioning=dietary || header==founding_provisioning_magic;
     const bool early_access=provisioning || header==founding_access_magic;
     const bool persistence=early_access || header==founding_persistence_magic;
@@ -170,8 +172,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(extended || magic==UINT64_C(0x3854504b435741), "unsupported checkpoint magic");
     const auto schema=motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : care_contract ? care_schema_version : guarded ? allocation_schema_version : extended ? long_term_schema_version : schema_version;
     const auto physics=motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : care_contract ? care_physics_version : guarded ? allocation_physics_version : extended ? long_term_physics_version : physics_version;
-    ensure(encoded_schema==(dietary?founding_dietary_schema_version:provisioning?founding_provisioning_schema_version:early_access?founding_access_schema_version:persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
-        encoded_physics==(dietary?founding_dietary_physics_version:provisioning?founding_provisioning_physics_version:early_access?founding_access_physics_version:persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
+    ensure(encoded_schema==(uptake?founding_uptake_schema_version:dietary?founding_dietary_schema_version:provisioning?founding_provisioning_schema_version:early_access?founding_access_schema_version:persistence?founding_persistence_schema_version:founding?founding_schema_version:spatial?spatial_schema_version:schema) &&
+        encoded_physics==(uptake?founding_uptake_physics_version:dietary?founding_dietary_physics_version:provisioning?founding_provisioning_physics_version:early_access?founding_access_physics_version:persistence?founding_persistence_physics_version:founding?founding_physics_version:spatial?spatial_physics_version:physics) && rng==1 &&
         (!founding || motion),"unsupported schema, physics or RNG version");
     const WorldId world{r.get(), r.get()}; ensure(world != WorldId{}, "nil checkpoint world");
     auto s = std::make_unique<State>(world, r.get()); auto& m = s->m;
@@ -222,7 +224,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source)) ||
             founding_fact(e.kind) || (founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source));
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= (dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= (uptake ? FactKind::FoundingBoundaryUptake : dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
@@ -277,7 +279,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_long_term(r,*s,guarded,founding);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
     read_connectors(r,*s,limits);
-    if (founding) read_founding(r, *s, limits, frame, dietary ? FoundingProfile::dietary_version : provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
+    if (founding) read_founding(r, *s, limits, frame, uptake ? FoundingProfile::uptake_version : dietary ? FoundingProfile::dietary_version : provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
                                persistence ? FoundingProfile::persistence_version : FoundingProfile::version);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
@@ -410,6 +412,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::FoundingConfigured: case FactKind::FoundingReserveSeeded: case FactKind::FoundingEggFunded:
         case FactKind::FoundingLipidConverted: case FactKind::FoundingRation:
         case FactKind::FoundingLipidMobilized: case FactKind::FoundingHatchCue: case FactKind::FoundingDietaryEggFunded:
+        case FactKind::FoundingBoundaryUptake:
             ensure(s->founding && (!e.actor.value || (seeded_ants.contains(e.actor) && e.stage==stages.at(e.actor) &&
                    e.position==positions.at(e.actor))), "F1 fact lacks live spatial identity");
             if (const auto related=related_individual(e); related.value)
