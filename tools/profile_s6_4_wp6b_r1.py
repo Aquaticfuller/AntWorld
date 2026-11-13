@@ -90,7 +90,7 @@ def collect(args, folder, archive, probe, logical, admission):
         try:
             for item in read(folder / "schedule.csv"):
                 identity, case = cases[item["case"]]
-                window, strength, access = MODEL_ARGUMENTS[item["model"]]
+                window, strength, access, *additional = MODEL_ARGUMENTS[item["model"]]
                 with TemporaryDirectory(dir=archive) as temp:
                     location = Path(temp)
                     params, output = location / "parameters.txt", location / "assay"
@@ -99,6 +99,7 @@ def collect(args, folder, archive, probe, logical, admission):
                            str(window), str(strength), str(1 << logical)]
                     if access:
                         cmd.append(str(access))
+                    cmd.extend(map(str, additional))
                     log.write(f"{item['sample']} {item['case']} {item['model']} {item['treatment']}\n".encode())
                     log.flush()
                     launch = time.perf_counter_ns()
@@ -227,7 +228,7 @@ def analyze(raw, output):
         cuts.extend(read(folder / "cuts.csv"))
     rng = Random(640601)
     results = []
-    for case in workload():
+    for case, (_, inputs) in workload().items():
         for model in MODEL_ARGUMENTS:
             group = [r for r in samples if r["case"] == case and r["model"] == model]
             capture = [float(r["cut_ms"]) for r in cuts if r["case"] == case and r["model"] == model and r["treatment"] == "on"]
@@ -236,7 +237,8 @@ def analyze(raw, output):
                 continue
             signatures = ("parameters_sha256", "initial_sha256", "frame_sha256", "facts_sha256", "events", "rng")
             assert len({tuple(r[k] for k in signatures) for r in group}) == 1
-            assert len(capture) == 546 and all(int(r["model_version"]) == MODEL_VERSIONS[model] for r in group)
+            assert len(capture) == 6*(inputs["horizon_ms"]//86_400_000+1) and all(
+                int(r["model_version"]) == MODEL_VERSIONS[model] for r in group)
             on = [r for r in group if r["treatment"] == "on"]
             off = [r for r in group if r["treatment"] == "off"]
             rss = [median(int(r["peak_rss_bytes"]) for r in on if r["session"] == s) -
