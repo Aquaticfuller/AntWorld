@@ -15,6 +15,10 @@
 #include <type_traits>
 
 namespace antworld::detail {
+struct FoundingUptakeClock {
+    SimTime carb{}, water{};
+    bool operator==(const FoundingUptakeClock&) const = default;
+};
 inline void bump(std::uint64_t& n) {
     if (n == UINT64_MAX) throw std::overflow_error("monotonic counter exhausted");
     ++n;

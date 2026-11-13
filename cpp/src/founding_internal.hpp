@@ -15,10 +15,6 @@ inline constexpr std::int64_t founding_hatch_cooldown_ms = 3'600'000; // ENGINEE
 std::uint64_t founding_profile_hash(EntityId founder, const FoundingProfile&);
 
 struct FoundingRates { std::uint64_t energy, water; };
-struct FoundingUptakeClock {
-    SimTime carb{}, water{};
-    bool operator==(const FoundingUptakeClock&) const = default;
-};
 struct FoundingRation {
     std::uint64_t lipid_ug{};
     FoodMass crop;
