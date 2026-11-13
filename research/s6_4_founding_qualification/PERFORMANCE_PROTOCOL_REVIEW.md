@@ -30,6 +30,25 @@ The largest measured process-minus-application residual is 70.94 ms, in a disabl
 
 All nine diagnostic cells fall inside the numerical A/A and A/B ratio bands in this separate collection. The diagnostic altered the instrument and sampled a fixed subset. Its improved repeatability is additional evidence of session dependence and does not satisfy full application qualification.
 
+## Single formal inherited reassessment
+
+The frozen uninstrumented collector completed all 720 samples in three qualified sessions. The first attempt at session 3 was rejected at selected-core P95 23.585% and its prescribed retry was admitted. The full inherited verdict is `FAIL`, with 22/30 passing cells. Only three cells fail both this run and the original 23/30 run. The eight failures below are the union across requirements in the new run. Ratios are rounded here and tested on unrounded samples.
+
+| Frozen cell | Model | Out-of-bound measurement |
+|---|---|---|
+| Borisovka nominal | R1 | Application P95 1.2654× and disabled/disabled 1.1318×. Process disabled/disabled 1.1259×. |
+| Borisovka empty, 8 workers | v1 | Application P50 1.1407× and process P50 1.1440×. |
+| St. Petersburg nominal | R1 | Application P50 1.1074×. |
+| St. Petersburg depot, 8 workers | v1 | Application disabled/disabled 1.2137× and process disabled/disabled 1.1981×. |
+| St. Petersburg depot, 8 workers | R1 | Application disabled/disabled 0.8661× and process disabled/disabled 0.8658×. Maximum foreground capture 30.4863 ms. |
+| St. Petersburg depot, 8 workers | R2 H1+H2 | Application P50 1.1750× and process P50 1.1635×. |
+| St. Petersburg empty, 8 workers | v1 | Application P95 1.2033×. |
+| St. Petersburg empty, 32 workers | v1 | Application disabled/disabled 1.1431× and process disabled/disabled 1.1422×. |
+
+Of 16,380 observed daily cuts, one exceeds 20 ms. It occurs at game day 86 in session 1 sample 159 for the St. Petersburg R1 eight-worker depot. The two cuts before it take 0.1667 and 0.1038 ms. The two cuts after it take 0.1180 and 0.1336 ms. Its same-session counterpart at the same game time takes 0.0643 ms. It is included in the original maximum test. The measurement surface cannot distinguish descheduling from a short-lived stall inside observation or output buffering. The application total includes this time and all of its durable output. The presence of A/A excursions and a foreground violation requires two different diagnoses.
+
+All 720 positions match the historical inputs, state, frame, RNG, trace and canonical fact bytes. Among the 30 observed cell medians the median candidate-to-original ratio is 0.997 for advance, 0.901 for midpoint save, 0.958 for midpoint restore, 0.948 for total application and 0.953 for process time. Midpoint save improves in 27 cells and restore in 22. St. Petersburg v1 empty-32 remains at about 2.61 s for midpoint restore and its worst restore grows from 2.74 to 3.43 s. These are same-authority observations across different collection windows. They support reduced common encoding work with substantial residual recovery cost and variability. The measurements cannot isolate a wall-clock codec effect from host conditions. No new timing rerun is used to supersede this outcome. [Raw application archive](../../experiments/s6_4_founding_qualification/performance/application-inherited) [Frozen decisions](../../experiments/s6_4_founding_qualification/performance/application-inherited-analysis) [Matched phase comparisons](../../experiments/s6_4_founding_qualification/performance/application-inherited-paired-codec.csv)
+
 ## Candidate for separate approval
 
 Keep the effect-size budgets, exact workloads, sample persistence, environmental admission and two independent timing surfaces. For any future redesign, freeze a measurement-system study with substantially more independent windows and paired blocks before qualification. Randomize treatment order within each block under a balanced per-cell schedule. Collect the required repeated 45-day durable runs on the same host configuration over multiple admitted windows. Use at least 60 repetitions per arm as a floor for tail observation, because `1 - 0.95^60` is about 95.4% under independence. A separate pilot should set the final block and session counts for estimation precision, including correlated host activity. It cannot serve as the qualification result.

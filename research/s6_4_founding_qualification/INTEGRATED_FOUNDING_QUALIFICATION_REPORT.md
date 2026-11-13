@@ -1,0 +1,38 @@
+# Integrated founding qualification closure
+
+## Scope of the decision
+
+The accepted parent is `a0dc086f6d1b8f5601d743dbcbc1274d073e252e`. The candidate Core tree is `d8dfa5740762d6f3d9440bd363b151fb9cfaac14`. The bounded early founding capability remains eligible for engineering acceptance in the frozen 150-day supplied fixture. The full application performance gate still fails and the original B06 timing criterion remains `INSUFFICIENT`. This evidence supports `ENGINEERING_ONLY` for the bounded founding capability under the project's policy. The package does not support a request for `SIMULATION_CONDITIONALLY_ACCEPTED` or progression to final S6.4 Core Readiness. [Accepted parent results](../s6_4_integrated_founding/INTEGRATED_FOUNDING_READINESS_REPORT.md) [Biological modeling policy](../../BIOLOGICAL_MODELING_POLICY.md)
+
+| Decision | Closure evidence |
+|---|---|
+| Frozen 150-day protected founding capability | `PASS` in the accepted assay. All 12 balanced nominal worlds and 42/48 balanced factorial worlds meet the complete chain. Source exclusion and ingredient deficits retain their original failures. |
+| Closed-stock first-worker robustness | Historical `PASS` for both populations under the original parameter and seed requirements. Adult dehydration and other negative results remain. |
+| Complete application performance | `FAIL`. The earlier inherited application result is 23/30. The single exact-work candidate reassessment is 22/30 under the unchanged limits. |
+| Original B06 census timing | `INSUFFICIENT`. Both readers find 0/192 complete cases per population in the primary care-on closed-stock cohort. Partial matches and the supplied-arm comparisons retain their actual timing. |
+| Independent biological validation | All nine roots remain `BIOLOGICAL_BLOCKED`. |
+| Simulation readiness | `ENGINEERING_ONLY` for the bounded opt-in capability. This is a proposed qualification outcome for independent review. |
+
+## Implementation and authority
+
+The codec reads fixed-width little-endian fields at any byte alignment and preallocates the exact existing length of each canonical fact encoding. It preserves the bounds and validation checks, event format, existing versions, hashes, single-writer ownership and transactional recovery. All biological rules and parameters are inherited from the accepted parent. The phase profiler is a separate build that forwards SQLite I/O and records host phases. The ordinary candidate disables its probes. New host modes run the prospective finite reserve assays and a real interruption of SQLite publication. [Prospective change and rejection criteria](PROSPECTIVE_CODEC_CHANGE.md) [Frozen scenarios](FROZEN_CLOSURE_PROTOCOL.md)
+
+The new checkpoint codec regression checks unaligned fixed-width words and both fact lengths, including truncated input rejection. The 18 focused ordinary observer/durable replays and the 720 inherited timing positions match the original initial checkpoint, final frame, canonical facts, state, trace, RNG and event count. See the test and replay receipts for inherited save and transaction coverage. [Engineering receipts](../../experiments/s6_4_founding_qualification)
+
+## Performance result and remaining gate
+
+In the 216 diagnostic observations, costly common phases are restoration and index/authority checks, with contributions from encoding, event export and simulation advance. The observed sample with the largest median recovery spends roughly 2.56 s restoring its midpoint. Its entire sequence of 91 observed cuts takes 4.38 ms at the median. The process-minus-application residual includes process start, exit and work outside the application interval. It cannot identify the time spent in host scheduling. SQLite synchronization was forwarded and measured separately in the diagnostic build. The original total still contains all durable output and restore work.
+
+The controlled candidate reassessment preserves a single 30.4863 ms foreground tail as well as four disabled/disabled excursions. Same-authority median times generally improve, but the new sample again fails the frozen decision. Both results are retained. The separate protocol review describes limited P95 precision at six samples per arm and a prospective paired design for separate approval. Future qualification needs an accepted decision rule and adequate precision, including a treatment of the real foreground tail that respects the current maximum. Another selected rerun would add no reliable closure evidence. [Performance protocol and actual results](PERFORMANCE_PROTOCOL_REVIEW.md)
+
+## Biological time versus simultaneous colony count
+
+The reanalysis follows individual stage entries, transitions, competitive losses and right censoring across all 960 closed-stock and 276 supplied worlds. It independently applies the original two census readers to archived daily cuts and retains the first larval target count. A single first worker and the first census with the target number of living workers are distinct endpoints. In the closed-stock primary care-on cases, only 27 Borisovka and 16 St. Petersburg worlds reach their target number of simultaneous pupae. None complete the worker endpoint. Larval deaths, inadequate protein and inadequate hydration contribute to the measured deficit. The frozen stage durations are input values and cannot independently corroborate the clocks.
+
+B06 observed unfed single queens in darkness with regularly moistened cotton and repeated daily observations. The simulator's original no-feed arm is a finite-water stress. Its supplied 150-day chamber also introduces offsite nutrients after real worker emergence. The stage clocks use warm population-specific values without an observed temperature or humidity trajectory. Later supplied cohorts can satisfy a same-count endpoint after the first cohort has turned over. Individual onset and duration, peak concurrent counts and the interval since first larval census therefore remain separate comparisons. [Source, experimental comparability and data gaps](B06_SOURCE_AND_ASSAY_CROSSWALK.md) [Primary B06 article, pp. 166–169](https://doi.org/10.1023/B:JOEY.0000033808.45455.75)
+
+Resolving the data gap requires foundress-level dated egg, larva, pupa and worker counts, first-larval target and any overshoots, exposure and watering records, brood loss and observation end. A new warm founding study would need separate matched access and known-age measurements before changing the clock or identifying physiological rates. The current model limitation is directly visible as high immature mortality and sparse overlap under its closed-stock assumptions. The size of that limitation in B06's physical water exposure remains unidentified. The historical data set informs development and is already exposed.
+
+## Reproduction and review
+
+Use the [reproduction and file index](REPRODUCE_QUALIFICATION.md) for executable commands and public raw records. Original assays and negative measurements remain at their accepted paths. The original full archive is retained on the experiment host, with public membership and hash receipts. Independent validation of reproduction, trophallaxis, brood care, development, energy, foraging, recruitment, survival and excavation stays open at the recorded conditions. [Nine-root evidence register](../s6_4_integrated_founding/BIOLOGICAL_SCOPE_AND_OPEN_GATES.csv)
