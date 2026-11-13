@@ -1,0 +1,14 @@
+{
+  "both_index_sha256": "ef56a9f62928b6ca40d6738e1232056e5af3ef96511cf9dc4d4d7e812ff641f7",
+  "canonical_match": true,
+  "case_models": 30,
+  "fields": [
+    "initial_sha256",
+    "frame_sha256",
+    "facts_sha256",
+    "parameters_sha256"
+  ],
+  "r1_index_sha256": "69eb3a6ecb4714df8aafa85b07104de168598a15b79c039d9c9183d21abb6fbf",
+  "samples": 720,
+  "v1_index_sha256": "2ec1472a76162b5dd0ca2e01eff85606fca9cf97492bd5493c21ae4dedc5601d"
+}

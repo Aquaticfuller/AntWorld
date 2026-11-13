@@ -55,10 +55,11 @@ if __name__ == "__main__":
 
             options = argparse.ArgumentParser(add_help=False)
             options.add_argument("--append-layout", action="store_true")
-            options.add_argument("--hwinfo-csv", required=True, type=lambda value: Path(value).resolve())
+            options.add_argument("--hwinfo-csv", required=True, type=Path)
             source, _ = options.parse_known_args()
             sys.argv.remove("--append-layout")
-            adapter = AppendLog(source.hwinfo_csv, native.load(APPEND_LAYOUT), native.load(MAPPING))
+            path = source.hwinfo_csv.resolve() if kind == "application" else source.hwinfo_csv
+            adapter = AppendLog(path, native.load(APPEND_LAYOUT), native.load(MAPPING))
             native.sensor_tail = adapter.tail
             native.extract = adapter.extract
         dependencies = native.dependencies
