@@ -101,7 +101,7 @@ def collect(args):
     cpp_tree = git("rev-parse", "HEAD:cpp")
     if args.source_receipt:
         previous = json.loads(args.source_receipt.read_text(encoding="utf-8"))
-        if previous["model"] not in ("diet", "uptake") or args.model not in tuple(previous["model"]+suffix for suffix in ("", "-low", "-high")) or \
+        if previous["model"] not in ("diet", "uptake", "resupply") or args.model not in tuple(previous["model"]+suffix for suffix in ("", "-low", "-high")) or \
                 previous["binary_sha256"] != executable_hash or git("rev-parse", f"{previous['source']}:cpp") != previous["cpp_tree"]:
             raise ValueError("saved dietary executable identity does not match its original run receipt")
         source, cpp_tree = previous["source"], previous["cpp_tree"]

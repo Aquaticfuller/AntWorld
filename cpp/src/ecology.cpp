@@ -187,9 +187,9 @@ void WorldRuntime::resolve_autonomy_wakes(
       bool refill = false;
       if (forage && local_founding_provisioning(s,ant.id) && s.founding->profile.dietary &&
           s.founding->profile.dietary->local_resupply && s.foragers.contains(ant.id) && s.foragers.at(ant.id).collections) {
-        const auto& profile=s.founding->profile;
+        const auto& founding=s.founding->profile;
         const auto understocked=[&](EntityId id,const PhysiologyState& local) {
-          const auto deficit=founding_resupply_shortfall(profile,local,s.founding_reserves.at(id),
+          const auto deficit=founding_resupply_shortfall(founding,local,s.founding_reserves.at(id),
                                s.founding->founder==id,config.decision_interval);
           return ingredient_min(deficit,stock)!=deficit;
         };
