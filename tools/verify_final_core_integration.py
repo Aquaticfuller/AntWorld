@@ -2,19 +2,26 @@
 
 import argparse
 from collections import Counter, defaultdict
+from contextlib import closing
 import csv
+from hashlib import sha256
 import json
 import math
 from pathlib import Path
-from struct import unpack_from
+from struct import pack, unpack_from
 from tempfile import TemporaryDirectory
+import uuid
+from zipfile import ZipFile
+import zlib
 
 from analyze_integrated_founding import located_facts, observe_chain, verify_sources
-from analyze_s6_4_wp6b import assess, check, rows
+from analyze_s6_4_wp6b import ANT_SEEDED, BIRTH, COLLECTED, DELIVERED, DIED, MOVED, OBSERVATION, RESTED, STAGE, assess, check, rows
 from final_core_integration import PANELS, REFERENCE, cases
 from founding_qualification_witnesses import COMMAND, archive_members, table
 from run_integrated_founding import DAY
 from run_s6_4_wp6b import ROOT, input_bytes, run_one, sha, write_json
+from s6_4_wp5_geometry import Grid
+from verify_s6_3_4_archive import BLOCK, MAX_RAW, ZERO, fnv, key, open_readonly
 
 
 PUBLISHED = ROOT / "experiments/s6_4_final_core_readiness"
@@ -22,6 +29,7 @@ INHERITED = ROOT / "experiments/s6_4_integrated_founding/raw_index/world_receipt
 AUTHORITY = ("initial.chk", "final.frame", "facts.bin")
 SOIL = {23, 24, 25, 26}
 EXCAVATE, DROP_SOIL, PICK_UP_SOIL, FILL_SOIL, EXCAVATION_DECISION = range(23, 28)
+REJECTED, FORAGING_STARTED, FORAGING_DECISION, BEHAVIOR_CHANGED, BROOD_MOVED = 6, 10, 11, 17, 43
 PROGRAMS = {0: "paused", 1: "rest", 2: "nurse", 3: "forage", 4: "excavate"}
 DEPOT = (0., -.004, 0.)
 
@@ -50,11 +58,72 @@ def replay_witness(directory, output, binary, panel):
     write_json(output/"fresh_replay.json",dict(reference=original, rerun=actual, binary_sha256=sha(binary)))
 
 
+def verify_midpoint(database, original, summary, cuts, work):
+    """Check the actual published midpoint and its facts against the uninterrupted world."""
+    cut = next(row for row in cuts if int(row["time_ms"]) == 75*DAY)
+    db_path = work/"midpoint.sqlite"
+    db_path.write_bytes(database)
+    world, now, cursor = summary["world"], int(cut["time_ms"]), int(cut["cursor"])
+    identity = uuid.UUID(world).int
+    tail, fact, consumed = ZERO, 0, 0
+    with closing(open_readonly(db_path)) as db:
+        check(db.execute("PRAGMA quick_check").fetchall() == [("ok",)] and not db.execute("PRAGMA foreign_key_check").fetchall(),
+              "midpoint database failed SQLite integrity")
+        manifest, = db.execute("SELECT world,generation,revision,time_ms,cursor,checkpoint_hash FROM worlds").fetchall()
+        check((manifest[0],key(manifest[1]),manifest[3],key(manifest[4])) == (world,1,now,cursor), "wrong durable cut")
+        revision = key(manifest[2])
+        for first_id,last_id,at_start,at_end,raw_bytes,index_digest,envelope in db.execute(
+                "SELECT first_id,last_id,begin_ms,end_ms,raw_bytes,digest,envelope FROM fact_blocks WHERE world=? ORDER BY last_id",(world,)):
+            fields = BLOCK.unpack_from(envelope)
+            magic, version, codec, schema, flags, hi, lo, first, last, begin, end, count, packed, predecessor, digest = fields
+            content = envelope[BLOCK.size:]
+            check((magic,version,codec,schema,flags) == (b"AWFACT08",8,1,8,0) and (hi<<64 | lo)==identity and
+                  (first,last)==(key(first_id),key(last_id)) and first==fact+1 and begin<=end<=now and
+                  (begin,end,count,digest)==(at_start,at_end,raw_bytes,index_digest) and
+                  0<count<=MAX_RAW and packed==len(content) and tail==predecessor and
+                  digest==sha256(envelope[:104]+content).digest(), "invalid midpoint block identity")
+            inflate=zlib.decompressobj()
+            raw=inflate.decompress(content,count+1)
+            check(len(raw)==count and inflate.eof and not inflate.unused_data and not inflate.unconsumed_tail and
+                  raw==original[consumed:consumed+count], "midpoint bytes differ from canonical uninterrupted prefix")
+            tail, fact, consumed = digest,last,consumed+count
+        checkpoint, = db.execute("SELECT generation,revision,cursor,checkpoint_hash,time_ms,checkpoint,parent,tail,digest "
+                                 "FROM generations JOIN history_anchors USING(world,generation) WHERE world=?",(world,)).fetchall()
+        generation,frame_revision,frame_cursor,frame_hash = map(key,checkpoint[:4])
+        at,frame,parent,anchor_tail,anchor = checkpoint[4:]
+        check((generation,frame_revision,frame_cursor,frame_hash,at)==(1,revision,cursor,key(manifest[5]),now) and
+              parent==ZERO and anchor_tail==tail and frame[:8]==b"AWSTATE1" and fnv(frame)==frame_hash and
+              fnv(frame[:-8])==int.from_bytes(frame[-8:],"little"),"midpoint checkpoint is not bound to its facts")
+        header = pack("<8s7Q",b"AWANCH01",identity>>64,identity%2**64,generation,revision,cursor,frame_hash,now)
+        check(sha256(header+parent+anchor_tail+frame).digest()==anchor,"invalid midpoint anchor")
+    check(fact==cursor and (consumed==len(original) or unpack_from("<Q",original,consumed+28)[0]>now),
+          "midpoint prefix does not stop at the complete committed cut")
+    return dict(time_ms=now,cursor=cursor,revision=revision,world=world,canonical_bytes=consumed,
+                canonical_sha256=sha256(original[:consumed]).hexdigest(),tail=tail.hex(),anchor=anchor.hex(),
+                checkpoint_sha256=sha256(frame).hexdigest())
+
+
+def initial_geometry(name):
+    def layout(kind, minimum, maximum):
+        return dict(kind=kind, **{f"{label}_{axis}_q":value for label,point in (("min",minimum),("max",maximum))
+                                for axis,value in zip("xyz",point,strict=True)})
+
+    if "-shaft-" in name:
+        voids = (((14,6,14),(18,16,18)),)
+    elif name.endswith("-roomy"):
+        voids = (((8,4,8),(24,12,24)),((12,4,12),(20,16,20)))
+    else:
+        voids = (((14,4,14),(18,16,18)),((12,5,14),(20,11,18)))
+    return Grid([layout("solid",(0,0,0),(32,16,32)),*(layout("void",low,high) for low,high in voids)])
+
+
 def verify_actions(raw, cuts, space, edits, name):
     """Replay soil parcels and separate real actions from labels and opportunities."""
     cut_iter = iter(zip(cuts, space, strict=True))
     cut = next(cut_iter)
     initial_soil = int(cuts[0]["initial_q3"])
+    geometry = initial_geometry(name)
+    check(initial_soil == len(geometry.soil), "initial material differs from the frozen geometric fixture")
     remaining, carried, deposited = initial_soil, 0, 0
     parcels, holds, dig_starts = {}, {}, set()
     excavation_q3, fill_q3, revision, deposit_units = 0, 0, 0, 0.
@@ -67,6 +136,7 @@ def verify_actions(raw, cuts, space, edits, name):
     exact_start = {}
     trail_labeled, naive_first_choices, naive_first_delivery = set(), set(), set()
     eclosed, early_adult_deaths = set(), set()
+    adult_exposure = 0
     is_blocked = name.endswith("-blocked")
     is_silent = name.endswith(("roomy", "compact-silent"))
 
@@ -81,6 +151,7 @@ def verify_actions(raw, cuts, space, edits, name):
                   ("geometry_revision", "parcels", "excavated_q3", "filled_q3")), "soil fact-to-edit history differs")
             check(math.isclose(deposit_units, float(sample["deposited_units"]), abs_tol=1e-12), "trail deposit sum differs")
             check(int(sample["shaft_open"]) and bool(int(sample["strip_open"])) != is_blocked, "assay access changed")
+            check(geometry.swept((16,8,16),(16,18,16),2), "independent loaded shaft replay is blocked")
             if is_silent:
                 check(not deposit_units and not int(sample["trail_cells"]), "signal in disabled control")
             cut = next(cut_iter, None)
@@ -89,20 +160,23 @@ def verify_actions(raw, cuts, space, edits, name):
     for event, resource, position in located_facts(raw):
         event_id, time, source, kind, actor, target, _, stage, result, amount, obs = event
         _, reason, units = unpack_from("<BBd", raw, offset + 152)
-        offset += 4 + (210 if kind == 42 else 159)
+        offset += 4 + (210 if kind == OBSERVATION else 159)
         reconcile(event_id)
         previous = positions.get(actor)
         row = activity[actor] if actor else None
-        if kind in (2, 35):
+        if kind in (ANT_SEEDED, BIRTH, BROOD_MOVED):
             positions[actor] = position
-        if kind == 7 and stage == 3:
+        if kind == STAGE and stage == 3:
             eclosed.add(actor)
             positions[actor] = position
             programs[actor], entries[actor] = 0, time
-        if kind in (17, 8) and actor in eclosed:
-            program = programs.pop(actor) if actor in programs else 0
-            row[PROGRAMS[program] + "_residence_ms"] += time - entries.pop(actor, time)
-            if kind == 17:
+        if kind in (BEHAVIOR_CHANGED, DIED) and actor in eclosed:
+            program = programs.pop(actor)
+            duration = time - entries.pop(actor)
+            check(duration >= 0, "negative program residence")
+            row[PROGRAMS[program] + "_residence_ms"] += duration
+            adult_exposure += duration
+            if kind == BEHAVIOR_CHANGED:
                 programs[actor], entries[actor] = target, time
                 row["program_changes"] += 1
             else:
@@ -110,9 +184,9 @@ def verify_actions(raw, cuts, space, edits, name):
         if kind == EXCAVATION_DECISION:
             dig_starts.add(actor)
             row["dig_decisions"] += 1
-        if kind == 10:
+        if kind == FORAGING_STARTED:
             starts.add(actor)
-        if kind == 11:
+        if kind == FORAGING_DECISION:
             row["local_cues"] += bool(resource)
             row["trail_labels"] += reason == 3
             row["memory_labels"] += reason == 4
@@ -120,7 +194,7 @@ def verify_actions(raw, cuts, space, edits, name):
                 trail_labeled.add(actor)
                 if actor not in ready:
                     naive_first_choices.add(actor)
-        if kind == 4:
+        if kind == MOVED:
             check(previous is not None, "move has no authority origin")
             distance = math.dist(position, previous)
             row["moves"] += distance > 0
@@ -136,19 +210,17 @@ def verify_actions(raw, cuts, space, edits, name):
                 first_marker = (event_id, time, actor)
             deposit_units += units
             row["marked_moves"] += units > 0
-        if kind == 43:
-            positions[target] = position
-        if kind in (5, 12):
-            row["collections" if kind == 5 else "deliveries"] += 1
-            if kind == 5:
+        if kind in (COLLECTED, DELIVERED):
+            row["collections" if kind == COLLECTED else "deliveries"] += 1
+            if kind == COLLECTED:
                 ready.add(actor)
             elif actor in naive_first_choices:
                 naive_first_delivery.add(actor)
-        if kind == 13:
+        if kind == RESTED:
             row["committed_rests"] += 1
-        if kind == 6:
+        if kind == REJECTED:
             outcome[result] += 1
-        if kind == 42 and obs[1] in (2, 3, 4, 5, 6, 7, 16, 17):
+        if kind == OBSERVATION and obs[1] in (2, 3, 4, 5, 6, 7, 16, 17):
             phases[obs[0]] += 1
             if obs[0] == 3 and result <= 1:
                 row["care_completed"] += 1
@@ -164,8 +236,7 @@ def verify_actions(raw, cuts, space, edits, name):
             check(tuple(int(edit[k]) for k in ("id", "source", "actor", "parcel", "kind", "time_ms")) ==
                   (revision, source, actor, target, 0 if kind == EXCAVATE else 3, time), "geometry edit does not match its fact")
             volume = int(edit["volume_q3"])
-            box_volume = math.prod(int(edit[f"max_{k}_q"]) - int(edit[f"min_{k}_q"]) for k in "xyz")
-            check(0 < volume <= box_volume, "invalid edited soil volume")
+            check(volume == geometry.edit(edit,kind==EXCAVATE), "edited volume differs from reconstructed material")
         if kind == EXCAVATE:
             check(target not in parcels and actor in dig_starts and actor not in holds,
                   f"{name}, event {event_id}: unfunded or overlapping excavation")
@@ -202,11 +273,13 @@ def verify_actions(raw, cuts, space, edits, name):
     reconcile(event_id + 1)
     check(cut is None and not soil_edits and offset == len(raw), "incomplete geometry or fact evidence")
     for actor, program in programs.items():
-        activity[actor][PROGRAMS[program] + "_residence_ms"] += 150*DAY - entries[actor]
+        duration = 150*DAY - entries[actor]
+        check(duration >= 0,"negative final program residence")
+        activity[actor][PROGRAMS[program] + "_residence_ms"] += duration
+        adult_exposure += duration
     totals = Counter()
     for actor in eclosed:
         totals.update(activity[actor])
-    check(sum(totals[f"{program}_residence_ms"] for program in PROGRAMS.values()) >= 0, "negative activity exposure")
     return dict(soil_edits=revision, excavated_q3=excavation_q3, filled_q3=fill_q3, completed_soil_parcels=len(completed),
                 eclosed_workers=len(eclosed), worker_deaths=len(early_adult_deaths), forager_activations=len(starts),
                 observed_departures=len(exact_start), departures_after_other_mark=sum(marker is not None and actor != marker[2]
@@ -217,7 +290,7 @@ def verify_actions(raw, cuts, space, edits, name):
                 **{f"care_phase_{i}": phases[i] for i in range(5)},
                 **{f"worker_{k}": totals[k] for k in ("moves", "path_m", "committed_rests", "program_changes", "care_completed",
                    "care_known_ms", "dig_decisions", "soil_carry_moves", "local_cues", "trail_labels", "memory_labels")},
-                **{f"worker_{k}_residence_ms": totals[f"{k}_residence_ms"] for k in PROGRAMS.values()}), activity
+                **{f"worker_{k}_residence_ms": totals[f"{k}_residence_ms"] for k in PROGRAMS.values()}), activity, adult_exposure
 
 
 def analyze_case(identity, case, record, blobs):
@@ -243,10 +316,11 @@ def analyze_case(identity, case, record, blobs):
             cargo[time][int(ant["id"])] = mass
     material = verify_sources(raw, case, cuts, observed_cargo=cargo)
     chain, adults, trips, flows = observe_chain(raw, case, int(summary["queen"]), offspring, snapshots)
-    actions, activity = verify_actions(raw, cuts, rows(blobs["space_cuts.csv"]), rows(blobs["geometry_edits.csv"]), case["case"])
+    actions, activity, exposure = verify_actions(raw, cuts, rows(blobs["space_cuts.csv"]), rows(blobs["geometry_edits.csv"]), case["case"])
     if case["arm"] == "integrated-no-protein":
         check(chain["worker_protein_assimilated_lower_bound_ug"] == 0, "worker-derived protein entered a protein-free assay")
     check(len(adults) == actions["eclosed_workers"], "inconsistent number of workers")
+    check(sum(w["terminal_age_ms"] for w in adults) == exposure, "adult exposure and life history disagree")
     check(len(first_census) == matched[1]["k"], "first larval census changed")
     row = dict(case=case["case"], population=case["population"], seed=case["software_seed"],
                events=result["source_facts"], births=result["births"], hatch=result["hatch"], pupation=result["pupation"],
@@ -302,6 +376,15 @@ def verify(directory, output, witness_only=False, panel="primary"):
         path = directory / manifest["archive"]
         check(sha(path) == manifest["archive_sha256"], f"{name}: archive SHA-256 changed")
         blobs = archive_members(path, name, record)
+        if is_saved_witness:
+            observed = records[name.removesuffix("-durable-split")]
+            with ZipFile(directory/observed["archive"]) as archive:
+                cuts = rows(archive.read(observed["receipt"]["case"]+"/cuts.csv"))
+            with TemporaryDirectory(dir=output) as scratch:
+                audit = verify_midpoint(blobs["midpoint.sqlite"],blobs["facts.bin"],record["summary"],cuts,Path(scratch))
+            if witness_only:
+                check(audit==json.loads((directory/"durable_prefix.json").read_bytes()),"published midpoint evidence changed")
+            write_json(output/"durable_prefix.json",audit)
         if mode == "observed" and record["status"] == "COMPLETE":
             row, detail = analyze_case(identity, case, record, blobs)
             result.append(row)

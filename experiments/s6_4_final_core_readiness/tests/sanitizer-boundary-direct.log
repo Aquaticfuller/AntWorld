@@ -1,0 +1,4 @@
+S6.4 boundary assertions executed directly with ASan and UBSan
+Started: 2026-11-13T10:57:37.3180676+01:00
+Finished: 2026-11-13T11:02:16.4894535+01:00
+Exit status: 0
