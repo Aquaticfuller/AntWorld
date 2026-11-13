@@ -56,3 +56,9 @@ python tools/summarize_s6_4_wp6b_r1_costs.py --raw out/r2-application-public --v
 ```
 
 `$r2Release` is the Release build, `$r2Birth` is `antworld_s6_3_1_birth_benchmark.exe`, and `$r2Observer` is `antworld_s6_4_wp5_benchmark.exe`. The three private archive paths must be fresh. `$r2Sensors` is the live HWiNFO CSV. A failed admission, partial timing session or failed gate remains part of the record. The three historical F1 failures and the 693 ms observation remain in the [R1 performance report](../../research/s6_4_wp6b_r1/R1_PERFORMANCE_QUALIFICATION.md).
+
+The archived append-stream branch of the instrument accepts `--append-layout` only with the exact original prefix. It continues the untimed application batch from its prior failed admission and can freeze a separate native `--kind births` batch. Use the documented initial source and untouched binary identities for a collection. The raw localized prefix is retained on the original host. Recompute the published analyses and all 720 application identity comparisons on Windows with:
+
+```powershell
+python tools/verify_s6_4_wp6b_r2_performance.py experiments/s6_4_wp6b_r2/performance
+```

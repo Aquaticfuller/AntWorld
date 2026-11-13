@@ -1,0 +1,4 @@
+kind,session,attempt,admitted,pdh_invalid,system_busy_pct_complete,system_busy_pct_p50,system_busy_pct_p95,processor_busy_pct_complete,processor_busy_pct_p50,processor_busy_pct_p95,native_intervals_valid,power_valid,sensors_valid
+births,session1,1,True,2,True,1.5023527160932482,7.643952250409755,True,0.0,4.6851881155323785,True,True,True
+births,session2,1,True,1,True,1.4706009567556813,2.465783217464996,True,0.0,0.0,True,True,True
+births,session3,1,True,0,True,1.4135864135864136,3.9083496412263483,True,0.0,1.5627506264700084,True,True,True
