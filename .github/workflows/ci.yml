@@ -187,6 +187,7 @@ jobs:
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_integrated_founding/performance/contacts --out experiments/s6_4_integrated_founding/performance/contacts-analysis --check
           python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_integrated_founding/performance/births --out experiments/s6_4_integrated_founding/performance/births-analysis --check
           python tools/s6_4_wp6b_r2_protected_observer.py --analyze experiments/s6_4_integrated_founding/performance/protected experiments/s6_4_integrated_founding/performance/protected-analysis.json --check
+          python tools/verify_integrated_founding_application.py experiments/s6_4_integrated_founding/performance
 
   sanitizers:
     runs-on: ubuntu-24.04

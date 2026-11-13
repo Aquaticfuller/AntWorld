@@ -31,6 +31,18 @@ Mechanism evidence has been updated with the source's experimental unit and cros
 
 All 12 balanced colonies retain a living queen and at least one working adult at both planned census cuts. The witnesses include the same worker delivering on separate days, self-uptake of both water and carbon, actual positive gifts, queen uptake, worker protein incorporated into larvae, later funded eggs and work over multiple weeks. The conservative crop-flow attribution requires at least 34,822 µg of assimilated larval protein from worker gifts over these twelve worlds after accounting for available maternal ration protein. It does not identify which identical molecules came from a particular load. At day 150 there are 537 right-censored eclosed workers in the balanced nominal cases, 533 with recorded adult uptake of both carbon and water. Each limited-arm queen dies of energy depletion, despite real trips and continued brood. Carbohydrate-only queens die of dehydration and water-only queens die of energy depletion. In no-protein worlds some later eggs can draw on initial mobile protein. There is zero positive worker-to-larva protein, so none qualifies as a complete chain. All endpoint zeros and time-to-event exposure are preserved.
 
+| First observed endpoint in balanced nominal worlds (game days, median) | Borisovka, 6/6 observed | St. Petersburg, 6/6 observed |
+|---|---:|---:|
+| Adult eclosion | 45.692 | 44.192 |
+| Actual external delivery | 45.829 | 44.571 |
+| Positive worker-to-queen gift | 47.093 | 46.679 |
+| Queen carbohydrate uptake after delivery | 46.250 | 44.875 |
+| Queen water uptake after delivery | 47.250 | 47.125 |
+| Larval assimilation of worker protein | 47.000 | 45.375 |
+| Eclosion from an egg laid after both queen uptake endpoints | 90.400 | 87.900 |
+
+These are medians of separate event times. A meal withdrawn from the worker-filled depot can account for queen uptake before the first direct worker gift. In the nominal cohorts actual first collection was recorded for 123 of 265 Borisovka adults and 150 of 272 St. Petersburg adults. Among those reaching collection the median age was 5.752 and 6.008 days. Among adults recorded taking each nutrient, the median first carbohydrate and water uptake age was 0.350 days in each population. The worker tables retain eclosion, death, last observed age, first uptake and first trip for every adult. [Nominal cohorts](../../experiments/s6_4_integrated_founding/analysis/resupply-nominal)
+
 ## Supplied factorial envelope
 
 The independent fact audit verified 70,118,100 facts across 192 worlds. Forty-two balanced worlds complete the entire chain. The original three-of-four profile criterion in each population is met. All low-performing profiles and all six seeds in each profile remain included.
@@ -42,6 +54,8 @@ The independent fact audit verified 70,118,100 facts across 192 worlds. Forty-tw
 
 With U alone, 9/24 Borisovka and 10/24 St. Petersburg balanced worlds complete the chain. Adding F increases completion by 37.5 percentage points for Borisovka and 58.3 points for St. Petersburg. The paired profile-then-seed bootstrap 95% intervals are +4.2 to +79.2 and +12.5 to +100.0 points respectively, using 4,096 resamples and seed 640602. There are only four profile clusters per population. These intervals describe simulation uncertainty over the declared profiles and seeds.
 
+Adding F increases total verified loaded trips from 1,168 to 1,432 in Borisovka and from 1,382 to 1,719 in St. Petersburg. For worlds with a measured refill after an empty depot interval, the median of each world's longest such interval falls from 64.21 to 24.92 hours in Borisovka (21 and 22 observed worlds) and from 73.01 to 40.34 hours in St. Petersburg (24 in each). Longest gaps between deliveries themselves do not decrease consistently. Different survival windows, amounts delivered and remaining stocks matter. The raw tables preserve zero collection, terminal stock and queen death alongside these intervals. [Factorial paired outcomes](../../experiments/s6_4_integrated_founding/comparison/paired_effects.csv)
+
 Borisovka profile 10 illustrates why survival alone is an inadequate gate. Three of six queens and adult workers coexist at both census cuts, but just one world satisfies every endpoint. Seeds 7 and 19 have no first pupa before the queen's depletion at day 54.516, so no worker can begin resupply. Seed 43 does obtain offsite food and lays paid eggs before the queen's energy death at day 103.130. Seeds 42 and 97 retain working adults but miss the post-uptake eclosion endpoint. Borisovka profile 21 seed 42 misses joint survival. Their trajectories are retained. The simulation result is restricted to these 150-day balanced, physically accessible assay conditions. The same reachability is insufficient under smaller or composition-limited inputs.
 
 The prespecified 4 and 12 million nJ/µg sensitivity endpoints both complete all twelve nominal balanced cases. The low-yield cases make 1,593 actual loaded trips and the high-yield cases make 712, versus 866 at the nominal 8 million nJ/µg. Their respective dietary-funded late eclosions are 261, 369 and 369 for low, high and nominal yield. This tests two local points around the nominal mechanism. It does not qualify the entire sensitivity envelope under every factorial corner or identify a biological yield.
@@ -51,6 +65,8 @@ The prespecified 4 and 12 million nJ/µg sensitivity endpoints both complete all
 The implementation keeps the WorldRuntime transaction, keyed decision sources and real 3D movement. The candidate adds no global food query or seeded worker. It commits the same kinds of physical delivery and local nutrient exchanges, with separate evidence for nest meal, dietary egg funding and adult uptake at exhaustion. Earlier formats use their original bytes and 40-byte reserve record. The internal adult uptake clock uses a separate transaction journal. Read-only observation and segmented recovery preserve the exact state, history and random state in the reference comparisons.
 
 The selected representative worlds compare observed, unobserved and day-75 SQLite recovery. Saved midpoint databases and their original WAL files, where present, allow independent reopening. The reproduction of v1 and R1 reran 1,092 cases each against their archived authority with 2,184 exact matches. Eight representative R2 worlds were reopened in sixteen durable or observer-disabled replays. The new tests include body-stock boundaries, missing ingredients, geometry exclusion, format mismatch, republishing rollback, legacy row size, absence of remote credits and deterministic recovery.
+
+The archive index records 4,692 scenario attempts in 25 batches. It provides the input and output identities for every attempt and the SHA-256 of each of 391 original archives, totaling 6,774,038,098 bytes. The full archives are held on the experiment host under `out/integrated-founding`. Git contains the full case index, all analysis tables for the final primary cohorts, 16 byte-identical case witnesses, the 84-case R2 environmental comparison and the exact continuation receipts. The reproduction script rebuilds a complete archive from the frozen input. [Public archive index](../../experiments/s6_4_integrated_founding/raw_index)
 
 The cross-platform compiler warning was a shadowed local name in the new policy and was corrected without changing its rule. A Debug regression exposed legacy row-size growth in a draft. A sparse opt-in clock restored the accepted size. A sanitizer report exposed a reference to a temporary in a new test. The test now copies the queried profile before using it. Preserve these failures and the corrected verification.
 
@@ -71,7 +87,10 @@ The [nine-root scope register](BIOLOGICAL_SCOPE_AND_OPEN_GATES.csv) records the 
 | Protected early founding loop | `PASS` within the frozen supplied geometry, diet and software parameter envelope. |
 | Inherited closed-stock first-worker robustness | `PASS`. All original denominators and factor thresholds were applied. |
 | B06 count-based development timing | `INSUFFICIENT`. Zero complete matching cases in either reference population. |
+| Engineering correctness | `PASS` proposed. Debug and Release each pass 280 CTests, hosted ASan/UBSan passes, and representative state, facts, RNG and recovery comparisons are exact. |
+| Native and protected observer performance | `PASS`. TD-01 is 5.458× and TD-08 is 4.253× against their 6× limits. The protected observer passes with 504 samples. |
+| F1 application performance | Profile 7 passes all four cells with 96 samples. The inherited v1/R1/R2 matrix fails seven of thirty cells with 720 samples. Package-wide performance remains open. |
 | Independent biological validation | `BIOLOGICAL_BLOCKED` for all nine roots. |
 | Default model replacement | Requires a separate decision. The tested profile is an experimental opt-in. |
 
-The [engineering qualification](PERFORMANCE_AND_COMPATIBILITY.md) reports controlled performance, actual test and CI outcomes separately. The final Core Readiness decision remains a review outcome.
+The supplied early founding loop qualifies for review within the frozen assay. This package does not recommend `SIMULATION_CONDITIONALLY_ACCEPTED` while the inherited application gate fails and the original B06 timing endpoint has insufficient support. The focused next tests are independent known-age founder cohort observation with controlled watering, plus identical-history storage phase attribution for the inherited application tails. [Engineering qualification](PERFORMANCE_AND_COMPATIBILITY.md)

@@ -1,0 +1,8 @@
+{"kind": "application-integrated", "session": "session1", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 4.207937218986943, "system_busy_pct_p95": 13.632441596119275, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 9.37222389739588, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session1: 32/32 samples, qualified telemetry True
+{"kind": "application-integrated", "session": "session2", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.6410818496317727, "system_busy_pct_p95": 12.097949784894508, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 1.7186224335923943, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session2: 32/32 samples, qualified telemetry True
+{"kind": "application-integrated", "session": "session3", "attempt": 1, "admitted": false, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.6373777521168615, "system_busy_pct_p95": 25.353294595223872, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 16.321580067984396, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+{"kind": "application-integrated", "session": "session3", "attempt": 2, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.5961899304502196, "system_busy_pct_p95": 8.732325825527477, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 0.07809026544992344, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session3: 32/32 samples, qualified telemetry True
+COLLECTION_FINISHED

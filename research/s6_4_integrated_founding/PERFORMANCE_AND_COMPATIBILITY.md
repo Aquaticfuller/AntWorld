@@ -31,6 +31,35 @@ The protected observer is `PASS` under the original reconciled criteria. All 504
 
 All five [Core CI jobs for code and archive revision `361d238`](https://github.com/Aquaticfuller/AntWorld/actions/runs/43358756144) passed, including Windows/Linux Debug and Release, the Linux ASan/UBSan run and the integrated witness and recovery checks. The GitHub run's hosted tests are distinct from local controlled wall-time qualification. The source-only MSVC name correction and sanitizer test timeout correction do not change the measured model. Native contact and birth source freezes remain separately identified.
 
+## Current inherited application qualification
+
+The 720-row v1, R1 and R2 H1+H2 application qualification completed all three sessions with qualified telemetry. The first admission was rejected at system P50/P95 11.29%/41.78% and selected-core P95 68.83%. All original results and the admission record are retained. The current application verdict is `FAIL`, with 23 of 30 cells meeting every criterion. All cuts and RSS checks passed, with a worst cell cut P95 of 0.167 ms, worst observed cut of 5.941 ms and largest per-session median RSS increment of 4.473 MiB. Each on/off pair has identical input, initial state, final frame, canonical facts, event count and RNG.
+
+| Population and case | Model | Frozen ratios outside the limit |
+|---|---|---|
+| Borisovka nominal | R1 | Application/process A/A 1.10465/1.10284 |
+| Borisovka 8-worker depot | v1 | Application/process P95 1.25730/1.24787 |
+| Borisovka 32-worker depot | R2 H1+H2 | Application/process A/A 0.86446/0.86694 |
+| St. Petersburg nominal | v1 | Application/process P50 1.15807/1.13620 |
+| St. Petersburg nominal | R2 H1+H2 | Process P50 1.12288 |
+| St. Petersburg 8-worker depot | v1 | Application/process P95 1.22349/1.22813 and A/A 1.12826/1.10893 |
+| St. Petersburg 32-worker empty | v1 | Application/process A/A 1.12851/1.12951 |
+
+Four cells exceed the A/A band with capture disabled in both arms. This component cannot be caused by the optional capture code. For the St. Petersburg v1 nominal cell the on/off application medians are 128.032/110.556 ms. The on arm has median summed capture 1.893 ms and median optional sync 0.926 ms. Those medians locate the measured capture burden, but correlated phase times cannot be subtracted from independent medians to assign the remaining difference. The largest observed Borisovka v1 depot-8 application took 1,269.201 ms. Its advance, midpoint save and midpoint restore took 387.610, 179.863 and 449.156 ms, with 12.709 ms summed capture. An A/A sample in that cell took 1,399.674 ms with no capture. The corresponding St. Petersburg v1 depot-8 maximum took 1,547.917 ms with 7.479 ms summed capture and 611.540 ms in restore. These measurements do not establish a repeatable extra cost of the opt-in memory rules. They do show that common simulation and durable recovery costs can dominate sample variability. A storage follow-up should isolate checkpoint frame generation, compression, page commit/sync and recovery decode on identical fact streams before attempting an optimization. [Recomputed cells](../../experiments/s6_4_integrated_founding/performance/application-inherited-analysis/cells.csv) [Per-phase tails](../../experiments/s6_4_integrated_founding/performance/application-inherited-phase-diagnosis/cell_tails.csv)
+
+## Integrated 150-day application qualification
+
+All 96 samples and all four frozen cells pass on profile 7. Session three first failed admission with system P95 25.35%. After the prescribed wait the retry qualified at system P95 8.73%. All three timed sessions qualify. The largest observed foreground cut is 14.074 ms, the worst cell cut P95 is 0.148 ms, and the largest median RSS increase is 0.031 MiB. Identity and event counts are exact across observation treatments. A ratio below one under paired wall-time variability carries no claim that enabling observation accelerates the simulation.
+
+| Population and exposure | Facts | Application P50 / P95 ratio | Process P50 / P95 ratio | Application paired median interval |
+|---|---:|---:|---:|---:|
+| Borisovka balanced | 641,002 | 0.96488 / 0.93533 | 0.96159 / 0.93466 | 0.96533–0.97139 |
+| Borisovka blocked | 15,074 | 1.08244 / 1.10065 | 1.06234 / 1.03738 | 1.02460–1.09079 |
+| St. Petersburg balanced | 631,100 | 0.92414 / 0.96577 | 0.92435 / 0.96634 | 0.83726–1.09355 |
+| St. Petersburg blocked | 15,108 | 1.04277 / 1.00094 | 0.98864 / 0.99497 | 1.00694–1.04277 |
+
+The interval uses the three frozen session blocks. In the two balanced on cells the advance medians are 926.725 and 949.763 ms. Midpoint save medians are 178.236 and 194.869 ms, restore medians are 404.183 and 405.747 ms, and absolute peak RSS medians are 257.129 and 257.965 MiB. The corresponding midpoint SQLite files are 4,808,704 and 4,382,720 bytes. The phase tables record P50, P95, P99 and maxima with all four treatments. Protected observer and profile-7 application qualification pass. The inherited v1/R1/R2 application gate remains open with its actual `FAIL`, which prevents a package-wide performance pass. [Integrated cells](../../experiments/s6_4_integrated_founding/performance/application-integrated-analysis/cells.csv) [Full phase percentiles](../../experiments/s6_4_integrated_founding/performance/application-integrated-phase-diagnosis/phase_percentiles.csv)
+
 ## Retained F1 application tails
 
 All 480 original R1 and 720 R2 raw samples remain reproducible. In the R2 rerun's failed R1 St. Petersburg eight-worker depot cell, the longest observed process took 1,186.626 ms. The child recorded 1,164.841 ms total, 629.683 ms through the midpoint save measurement, 217.513 ms through restore, 1.679 ms mandatory output sync and 0.159 ms optional sync. The residual outside the measured application was 21.784 ms. The corresponding cell's longest unobserved process took 659.503 ms, with 96.005 ms in the midpoint save measurement. The midpoint save measurement includes checkpoint encoding and SQLite publication, so these data do not partition the delay into disk sync, encoding or scheduling. They do localize much of this specific tail to the save boundary. Separately, the R1 1,790.069 ms process sample has a 1,161.523 ms residual that the recorded phases cannot attribute. The original prequalification 693.177 ms sample also remains in place. Its recorded advance, capture and checkpoint costs were 13.58, 12.68 and 8.88 ms. None of these samples was excluded. [R2 reanalysis](../../experiments/s6_4_integrated_founding/performance/r2-application-phase-diagnosis) [R1 admitted reanalysis](../../experiments/s6_4_integrated_founding/performance/r1-admitted-phase-diagnosis) [Original receipts](../s6_4_wp6b_r1/R1_PERFORMANCE_QUALIFICATION.md)
