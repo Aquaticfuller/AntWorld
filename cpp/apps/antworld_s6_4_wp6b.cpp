@@ -40,9 +40,10 @@ Case read_case(const Path& path) {
         (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
-    const bool ecology=c.arm.starts_with("ecology-");
+    c.expanded_history=c.arm.starts_with("ecology4-");
+    const bool ecology=c.arm.starts_with("ecology-") || c.expanded_history;
     if (ecology) {
-        const auto arm=c.arm.substr(8);
+        const auto arm=c.arm.substr(c.expanded_history?9:8);
         const auto first=arm.find('-');
         require(first!=std::string::npos,"invalid ecological layout");
         const auto layout=arm.substr(0,first);
@@ -151,6 +152,12 @@ public:
         stream.write(row_.data(),static_cast<std::streamsize>(row_.size()));
         row_.clear();
     }
+    void append_to(std::string& buffer) {
+        row_.push_back('\n');
+        buffer.append(row_);
+        row_.clear();
+    }
+    [[nodiscard]] std::size_t size() const { return row_.size()+1; }
 private:
     std::string row_;
     template<class Number> void number(Number value) {
@@ -194,9 +201,9 @@ void synchronize_output(const Path& path) {
 
 void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
 #ifdef ANTWORLD_STORAGE_TIMING
-             , double& state_ms, double& csv_ms
+             , double& state_ms, double& csv_ms, std::uint64_t& writes
 #endif
-             ) {
+             , bool buffered = false) {
 #ifdef ANTWORLD_STORAGE_TIMING
     auto phase_start=Clock::now();
 #endif
@@ -224,6 +231,17 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
     phase_start=Clock::now();
 #endif
     const auto ants=w.ant_states();
+    std::string buffered_people;
+    constexpr std::size_t batch_capacity=32*1024;
+    if (buffered) buffered_people.reserve(batch_capacity);
+    const auto flush_people=[&] {
+        if (buffered_people.empty()) return;
+        people.write(buffered_people.data(),static_cast<std::streamsize>(buffered_people.size()));
+        buffered_people.clear();
+#ifdef ANTWORLD_STORAGE_TIMING
+        ++writes;
+#endif
+    };
 #ifdef ANTWORLD_STORAGE_TIMING
     state_ms+=ms(phase_start);
 #endif
@@ -246,7 +264,25 @@ void observe(WorldRuntime& w, std::ostream& cuts, std::ostream& people
         row.mass(p.crop); row.mass(a.carried_food); row.add(static_cast<unsigned>(r.has_value()));
         if (r) row.add(r->lipid_ug,r->spent_lipid_ug,r->mobile_protein_ug,r->energy_remainder,r->water_remainder);
         else row.empty(5);
-        row.write(people);
+        if (buffered && row.size()<=batch_capacity) {
+            if (buffered_people.size()+row.size()>batch_capacity) flush_people();
+            row.append_to(buffered_people);
+        } else {
+            flush_people();
+            row.write(people);
+#ifdef ANTWORLD_STORAGE_TIMING
+            ++writes;
+#endif
+        }
+#ifdef ANTWORLD_STORAGE_TIMING
+        csv_ms+=ms(phase_start);
+#endif
+    }
+    if (buffered && !buffered_people.empty()) {
+#ifdef ANTWORLD_STORAGE_TIMING
+        phase_start=Clock::now();
+#endif
+        flush_people();
 #ifdef ANTWORLD_STORAGE_TIMING
         csv_ms+=ms(phase_start);
 #endif
@@ -364,6 +400,7 @@ struct DiagnosticTiming {
     std::optional<qualification::TimedVfs> vfs;
     double cpu_start{}, initial_encode{}, observation_state{}, observation_csv{}, midpoint_encode{},
         sqlite_open{}, save{}, restore{}, restore_encode{}, sqlite_close{}, output_close{}, final_frame{}, fact_export{};
+    std::uint64_t individual_writes{};
 
     explicit DiagnosticTiming(bool enabled) {
         if (enabled) {
@@ -379,24 +416,25 @@ struct DiagnosticTiming {
         stream << "thread_cpu_ms,initial_encode_ms,observation_state_ms,observation_csv_ms,midpoint_encode_ms,sqlite_open_ms,save_ms,restore_ms,"
                   "restore_encode_ms,sqlite_close_ms,output_close_ms,final_frame_ms,fact_export_ms";
         for (const auto name:storage::timing::names) stream << ',' << name << "_ms," << name << "_calls";
-        stream << ",vfs_read_ms,vfs_read_calls,vfs_read_bytes,vfs_write_ms,vfs_write_calls,vfs_written_bytes,vfs_sync_ms,vfs_sync_calls\n";
+        stream << ",vfs_read_ms,vfs_read_calls,vfs_read_bytes,vfs_write_ms,vfs_write_calls,vfs_written_bytes,vfs_sync_ms,vfs_sync_calls,individual_writes\n";
         stream << cpu << ',' << initial_encode << ',' << observation_state << ',' << observation_csv << ',' << midpoint_encode
                << ',' << sqlite_open << ',' << save << ',' << restore << ',' << restore_encode << ',' << sqlite_close
                << ',' << output_close << ',' << final_frame << ',' << fact_export;
         for (const auto& item:storage) stream << ',' << static_cast<double>(item.ns)/1e6 << ',' << item.calls;
         stream << ',' << static_cast<double>(sqlite.read.ns)/1e6 << ',' << sqlite.read.calls << ',' << sqlite.read_bytes
                << ',' << static_cast<double>(sqlite.write.ns)/1e6 << ',' << sqlite.write.calls << ',' << sqlite.written_bytes
-               << ',' << static_cast<double>(sqlite.sync.ns)/1e6 << ',' << sqlite.sync.calls << '\n';
+               << ',' << static_cast<double>(sqlite.sync.ns)/1e6 << ',' << sqlite.sync.calls << ',' << individual_writes << '\n';
     }
 };
 #endif
 
-void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile, bool interrupted, bool split) {
+void run(const Case& c, const Path& dir, bool observation, bool durable, bool profile, bool interrupted, bool split,
+         bool buffered) {
     const auto start = Clock::now();
 #ifdef ANTWORLD_STORAGE_TIMING
     DiagnosticTiming diagnostic(profile);
 #endif
-    auto scene = setup(c);
+    auto scene = setup(c,assay_limits(c));
     auto& w = scene.world;
     const auto setup_ms = ms(start);
     const auto id = w.summary().world;
@@ -431,6 +469,7 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
     }
     std::uint64_t peak_queue{};
     double advance{}, capture{}, durable_ms{}, restore_ms{};
+    try {
     for (Time at = 0; at <= c.horizon.milliseconds; at += day_ms) {
         const auto before = Clock::now();
         if (split && at > c.horizon.milliseconds/2) w.advance_to({at-day_ms+1});
@@ -442,15 +481,15 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
         const auto observe_start = Clock::now();
         if (observation) observe(w,cuts,people
 #ifdef ANTWORLD_STORAGE_TIMING
-                                , diagnostic.observation_state, diagnostic.observation_csv
+                                , diagnostic.observation_state, diagnostic.observation_csv, diagnostic.individual_writes
 #endif
-                                );
+                                ,buffered);
         if (space.is_open()) observe_space(scene, space);
         const auto cut_time = ms(observe_start);
         capture += cut_time;
         timings << at << ',' << elapsed << ',' << cut_time << ',' << s.committed_events << ',' << s.pending_events << '\n';
         if (durable && at==c.horizon.milliseconds/2) {
-            const auto limits = s6_3_1_fixture::limits();
+            const auto limits = assay_limits(c);
             const auto save_start = Clock::now();
             const auto bytes = w.checkpoint();
 #ifdef ANTWORLD_STORAGE_TIMING
@@ -485,6 +524,15 @@ void run(const Case& c, const Path& dir, bool observation, bool durable, bool pr
             diagnostic.sqlite_close=ms(close_start);
 #endif
         }
+    }
+    } catch (...) {
+        if (c.expanded_history) {
+            auto frame=output(dir/"last_committed.frame");
+            write_bytes(frame,w.checkpoint_frame());
+            auto partial=output(dir/"facts.bin");
+            write_facts(w,partial);
+        }
+        throw;
     }
 #ifdef ANTWORLD_STORAGE_TIMING
     const auto closing=Clock::now();
@@ -548,7 +596,8 @@ int main(int argc, char** argv) {
     }
     const std::string_view mode = argv[3];
     try {
-        const bool profile=mode=="profile-observed" || mode=="profile-unobserved";
+        const bool buffered=mode=="profile-buffered";
+        const bool profile=mode=="profile-observed" || mode=="profile-unobserved" || buffered;
         const bool interrupted=mode=="interrupt-save", resume=mode=="resume-save";
         const bool split=mode=="durable-split";
         require((profile || mode=="observed" || mode=="unobserved" || mode=="durable" || interrupted || resume || split) &&
@@ -595,7 +644,7 @@ int main(int argc, char** argv) {
                     "qualification requires the version 7 model");
         if (resume) resume_interrupted(c,argv[11],argv[2]);
         else run(c, argv[2], mode!="unobserved" && mode!="profile-unobserved" && !split,
-                 mode=="durable" || profile || interrupted || split, profile, interrupted, split);
+                 mode=="durable" || profile || interrupted || split, profile, interrupted, split, buffered);
         return 0;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

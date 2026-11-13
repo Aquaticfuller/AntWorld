@@ -60,7 +60,7 @@ def scout(binary, work, arm, seed, mode):
     return receipt
 
 
-def collect(binary, output, panel):
+def collect(binary, output, panel, expanded):
     frozen = subprocess.check_output(["git", "show", f"26110c0:{PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
     if frozen != PROTOCOL.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/run_ecological_closure.py"):
         raise ValueError("commit the collection source and retain the frozen protocol")
@@ -69,11 +69,14 @@ def collect(binary, output, panel):
                     for mode in (("observed", "durable") if seed == 1 and arm == "scout" else ("observed",))]
     else:
         selected = [(c["case"], (identity, c, mode)) for identity, c, mode in roster(panel)]
+        if expanded:
+            selected = [(name, (identity, c | dict(arm=c["arm"].replace("ecology-","ecology4-",1)), mode))
+                        for name, (identity,c,mode) in selected]
     output.mkdir(parents=True)
     write_json(output/"run.json", dict(reference=REFERENCE, source=git("rev-parse", "HEAD"),
         cpp_tree=git("rev-parse", "HEAD:cpp"), protocol_sha256=sha(PROTOCOL), binary_sha256=sha(binary),
         collector_sha256=sha(Path(__file__)), platform=platform.platform(), python=platform.python_version(),
-        panel=panel, cases=[name for name, _ in selected], arguments=COMMAND if panel != "scout" else []))
+        panel=panel, expanded=expanded, cases=[name for name, _ in selected], arguments=COMMAND if panel != "scout" else []))
     with (output/"archives.jsonl").open("x", encoding="utf-8", newline="\n") as index:
         for name, args in selected:
             with TemporaryDirectory(dir=output) as temp:
@@ -93,5 +96,6 @@ if __name__ == "__main__":
     parser.add_argument("panel", choices=("joint", "care", "scout"))
     parser.add_argument("binary", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--expanded", action="store_true")
     args = parser.parse_args()
-    collect(args.binary.resolve(strict=True), args.output.resolve(), args.panel)
+    collect(args.binary.resolve(strict=True), args.output.resolve(), args.panel, args.expanded)

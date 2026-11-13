@@ -45,7 +45,14 @@ struct Case {
     TrailTreatment trail_treatment{TrailTreatment::Silent};
     bool dogleg{}, blocked_water{};
     std::optional<EcologicalClosureConfig> ecological;
+    bool expanded_history{};
 };
+
+inline RuntimeLimits assay_limits(const Case& c) {
+    auto limits=s6_3_1_fixture::limits();
+    if (c.expanded_history) limits.committed_events=4'000'000;
+    return limits;
+}
 
 inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
     auto& w = scene.world;

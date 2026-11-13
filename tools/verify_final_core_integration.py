@@ -61,7 +61,7 @@ def replay_witness(directory, output, binary, panel):
     write_json(output/"fresh_replay.json",dict(reference=original, rerun=actual, binary_sha256=sha(binary)))
 
 
-def verify_midpoint(database, original, summary, cuts, work):
+def verify_midpoint(database, original, summary, cuts, work, *, fact_schema=8):
     """Check the actual published midpoint and its facts against the uninterrupted world."""
     cut = next(row for row in cuts if int(row["time_ms"]) == 75*DAY)
     db_path = work/"midpoint.sqlite"
@@ -80,7 +80,7 @@ def verify_midpoint(database, original, summary, cuts, work):
             fields = BLOCK.unpack_from(envelope)
             magic, version, codec, schema, flags, hi, lo, first, last, begin, end, count, packed, predecessor, digest = fields
             content = envelope[BLOCK.size:]
-            check((magic,version,codec,schema,flags) == (b"AWFACT08",8,1,8,0) and (hi<<64 | lo)==identity and
+            check((magic,version,codec,schema,flags) == (f"AWFACT{fact_schema:02}".encode(),fact_schema,1,fact_schema,0) and (hi<<64 | lo)==identity and
                   (first,last)==(key(first_id),key(last_id)) and first==fact+1 and begin<=end<=now and
                   (begin,end,count,digest)==(at_start,at_end,raw_bytes,index_digest) and
                   0<count<=MAX_RAW and packed==len(content) and tail==predecessor and

@@ -22,6 +22,7 @@ AUTONOMY, LAY, BIRTH, RECYCLED, OBSERVATION = 31, 34, 35, 38, 42
 F_CONFIG, F_SEED, F_EGG, F_CONVERT, F_RATION = range(44, 49)
 F_MOBILIZE, F_CUE = 49, 50
 F_NEST_MEAL, F_DIETARY_EGG, F_BOUNDARY_UPTAKE = 51, 52, 53
+FOUNDRESS_WATER = 58
 OBS_SELECTED, OBS_STARTED, OBS_COMPLETED, OBS_INTERRUPTED = 1, 2, 3, 4
 FEED = 7
 MASS = struct.Struct("<QQQQ")
@@ -104,7 +105,7 @@ def census(sets, exact):
                 first_worker_ms=first_worker, pupa_overshoot=max(0, pupae-k), worker_overshoot=max(0, workers-k))
 
 
-def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
+def assess(case, summary, raw, cut_data, individual_data, profile_version=1, *, ecological=False):
     profile, queen = case["parameters"], int(summary["queen"])
     carbohydrate_yield = case.get("carbohydrate_yield_nj_per_ug", 1_000_000)
     nest = [0, 0, 0, 0] if case.get("arm", "").startswith(("integrated-", "scope-")) else None
@@ -137,6 +138,8 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
                 flows[recipient][i] += value
 
     maximum = F_BOUNDARY_UPTAKE if profile_version >= 6 else F_DIETARY_EGG if profile_version == 5 else F_CUE if profile_version >= 3 else F_RATION
+    if ecological:
+        maximum = FOUNDRESS_WATER
     for event, time, source, kind, actor, payload, value, stage, outcome, mass, obs in facts(raw, maximum):
         while current_cut < len(cut_rows) and int(cut_rows[current_cut]["cursor"]) < event:
             compare_cut(cut_rows[current_cut], daily[current_cut][1], stocks, flows, initial_energy, profile,
@@ -200,7 +203,7 @@ def assess(case, summary, raw, cut_data, individual_data, profile_version=1):
             counts[f"worker_to_{label}"] += 1
             for nutrient, amount in zip("cpwo", mass, strict=True):
                 counts[f"worker_to_{label}_{nutrient}"] += amount
-        elif kind in (CARGO, NEST, F_NEST_MEAL):
+        elif kind in (CARGO, NEST, F_NEST_MEAL, FOUNDRESS_WATER):
             transfer(None, actor, mass)
         elif kind == RECYCLED:
             transfer(actor, None, mass)

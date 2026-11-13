@@ -19,9 +19,9 @@ from run_integrated_founding import DAY, MODELS, SENSITIVITIES, environments
 from run_s6_4_wp6b import input_bytes, sha, write_json
 
 
-def located_facts(raw):
+def located_facts(raw, maximum=F_BOUNDARY_UPTAKE):
     offset = 0
-    for event in facts(raw, F_BOUNDARY_UPTAKE):
+    for event in facts(raw, maximum):
         resource, x, y, z = unpack_from("<Qddd", raw, offset + 86)
         yield event, resource, (x, y, z)
         size, = unpack_from("<I", raw, offset)
@@ -82,7 +82,7 @@ def verify_sources(raw, case, cuts, source_observer=None, observed_cargo=None):
     return dict(zip(("delivered_c", "delivered_p", "delivered_w", "delivered_o"), totals, strict=True))
 
 
-def observe_chain(raw, case, queen, paths, snapshots):
+def observe_chain(raw, case, queen, paths, snapshots, *, maximum=F_BOUNDARY_UPTAKE):
     adults, birth = {}, {p["ant"]: p["birth_ms"] for p in paths}
     larva_paid, larva_uptake, queen_uptake = set(), set(), {}
     maternal_protein, forced_worker_protein = defaultdict(int), defaultdict(int)
@@ -94,7 +94,7 @@ def observe_chain(raw, case, queen, paths, snapshots):
     world = dict(first_delivery_ms=None, first_queen_gift_ms=None, first_queen_carb_ms=None, first_queen_water_ms=None,
                  first_larval_worker_protein_ms=None, first_larval_worker_uptake_ms=None)
     queen_death = None
-    for event, _, position in located_facts(raw):
+    for event, _, position in located_facts(raw, maximum):
         event_id, t, _, kind, ant, payload, _, stage, outcome, amount, obs = event
         if kind == ANT_SEEDED:
             check(ant == queen and stage == 3 and not previous, "an ant was pre-seeded beyond the foundress")
