@@ -29,6 +29,15 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     return bytes[14]=='F' ? FactSchema::Founding : FactSchema::Legacy;
 }
 
+bool compatible_frame_contract(std::span<const std::uint8_t> a,std::span<const std::uint8_t> b) {
+    const auto schema=frame_fact_schema(a);
+    if (!compatible_fact_schema(schema,frame_fact_schema(b))) return false;
+    if (schema!=FactSchema::EcologicalClosure) return true;
+    // Both policies use AWFACT09. Each world's AWCKPTM schema and physics
+    // fields still bind its checkpoint chain to one numerical policy.
+    return a.size()>=24 && b.size()>=24 && std::equal(a.begin()+16,a.begin()+24,b.begin()+16);
+}
+
 SaveFrame capture_frame(const WorldRuntime& world) {
     timing::Scope phase(timing::Phase::CaptureFrame);
     return {world.summary(),world.checkpoint_frame(),world.capture_history(),observe(world),

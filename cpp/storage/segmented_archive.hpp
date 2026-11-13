@@ -63,6 +63,7 @@ private:
 [[nodiscard]] Digest block_tail(sqlite3*,WorldId,EventId);
 [[nodiscard]] Digest append_blocks(sqlite3*,WorldId,const HistoryCapture&,EventId from,EventId through,FactSchema = FactSchema::Legacy);
 [[nodiscard]] FactSchema frame_fact_schema(std::span<const std::uint8_t>);
+[[nodiscard]] bool compatible_frame_contract(std::span<const std::uint8_t>,std::span<const std::uint8_t>);
 [[nodiscard]] constexpr bool compatible_fact_schema(FactSchema a,FactSchema b) {
     // Keep the existing legacy/first-F1 compatibility and isolate both later candidates.
     return a==b || (a<FactSchema::FoundingPersistence && b<FactSchema::FoundingPersistence);

@@ -182,6 +182,29 @@ void portable_field() {
         a.world.advance_to({120000});
         require(a.world.checkpoint()==restored.checkpoint(),"field arithmetic changed on restoration");
     }
+
+    const auto directory=std::filesystem::path("ecological-test-saves");
+    std::filesystem::create_directories(directory);
+    const auto db=directory/"field-policy.sqlite";
+    for (const auto policy:{false,true}) {
+        auto base=ecological_assay::recruitment(1,"scout",{},policy);
+        auto other=ecological_assay::recruitment(1,"scout",{},!policy);
+        std::filesystem::remove(db);
+        storage::Store store(db,{},storage::StoreFormat::Segmented);
+        const auto initial=store.save(base.world);
+        other.world.advance_to({1});
+        const auto prefix=other.world.events_after({},initial.cursor);
+        require(prefix==base.world.committed_events() && other.world.summary().now>base.world.summary().now,
+                "alternate policy fixture does not share the original history prefix");
+        rejects([&] { (void)store.save(other.world,initial); });
+        require(store.load(base.scout.world).world.checkpoint()==base.world.checkpoint(),
+                "rejected numerical policy changed the published world");
+        base.world.advance_to({1});
+        const auto next=store.save(base.world,initial);
+        require(store.recover(base.scout.world,initial.generation,next.generation).world.checkpoint()==base.world.checkpoint(),
+                "save or recovery rejected its original numerical policy");
+    }
+    std::filesystem::remove(db);
 }
 } // namespace
 

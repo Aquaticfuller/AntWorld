@@ -35,6 +35,9 @@ HistoryAnchor verified_anchor(sqlite3* db,WorldId world,std::uint64_t generation
         require(current.parent==parent && (!last || (current.token.generation==last->token.generation+1 &&
                 current.token.cursor>=last->token.cursor && current.token.revision>=last->token.revision &&
                 current.time>=last->time)),"invalid checkpoint anchor chain");
+        if (last && frame_fact_schema(last->frame)==FactSchema::EcologicalClosure &&
+            frame_fact_schema(current.frame)==FactSchema::EcologicalClosure)
+            require(compatible_frame_contract(last->frame,current.frame),"checkpoint chain changes its ecological physics");
         parent=current.digest;
         last=std::move(current);
     }
@@ -131,8 +134,8 @@ SaveToken Store::save_segmented(const SaveFrame& frame,std::optional<SaveToken> 
                 "stale or divergent world state");
         start={previous->cursor};
         parent=durable.digest;
-        require(compatible_fact_schema(frame_fact_schema(frame.checkpoint),frame_fact_schema(durable.frame)),
-                "experimental founding models require independent published histories");
+        require(compatible_frame_contract(frame.checkpoint,durable.frame),
+                "experimental models require independent published histories");
         if (state.now==durable.time && state.revision==previous->revision) {
             const auto retry_parent=preceding_token(db,world,previous->generation);
             require((expected==previous || (expected==retry_parent && (retry_parent || previous->generation==1))) &&

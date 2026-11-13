@@ -1,0 +1,9 @@
+Windows MinGW Clang 23.1.5, Release, CMake 3.31.10
+Reference storage commit: 0e7b0df7f8c7d428b3e6f5f323cd04b20031a438
+Applied only the paired-policy regression from test_ecological_closure.cpp.
+Command: ctest --test-dir build/s6_3_4-release -R ^ECO_CLOSURE_portable$ --output-on-failure
+Exit status: 8
+1/1 Test #6: ECO_CLOSURE_portable .............***Failed    0.54 sec
+expected ecological transaction to fail
+
+0% tests passed, 1 tests failed out of 1
