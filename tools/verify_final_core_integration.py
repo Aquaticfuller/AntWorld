@@ -48,11 +48,14 @@ def check_identity(left, right, label):
 
 
 def replay_witness(directory, output, binary, panel):
+    if not binary.is_file():
+        binary = binary.parent/"Release"/(binary.stem+".exe")
+    binary = binary.resolve(strict=True)
     name = "borisovka-1-" + PANELS[panel][3]
     identity, case, _ = next((i,c,m) for i,c,m in cases(panel) if c["case"] == name)
     original = next(r["receipt"] for r in jsonl(directory / "archives.jsonl") if r["receipt"]["case"] == name)
     with TemporaryDirectory(dir=output) as scratch:
-        actual = run_one(binary.resolve(strict=True), Path(scratch)/name, identity, case, "durable-split", COMMAND)
+        actual = run_one(binary, Path(scratch)/name, identity, case, "durable-split", COMMAND)
         check(actual["status"] == "COMPLETE", "fresh durable witness replay failed")
         check_identity(actual, original, name)
     write_json(output/"fresh_replay.json",dict(reference=original, rerun=actual, binary_sha256=sha(binary)))
