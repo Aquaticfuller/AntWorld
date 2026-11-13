@@ -22,6 +22,8 @@ The table reports mean ± error and numbers of brood individuals in parentheses.
 
 The original daily algorithms retain their first positive larval count and their separate exact and at-least tests. An individual moving to pupa at its configured age establishes clock execution in that world. It cannot establish the paper's first same-count pupal observation. Actual developmental scarcity can keep the model's simultaneous counts below the target even when many individuals start, hatch or eventually eclose. This is a model outcome. Its quantitative attribution to inappropriate physiological parameters in the real experiment requires matched watering and colony-level data. Development-reference agreement, mechanistic plausibility, bounded simulation readiness and independent biological validation remain different claims.
 
+The reference describes 2–8 days from setup to laying across its treatments and usually more than ten eggs within the first day after laying starts. In the displayed simulated care-on cohorts the first egg is laid on day 4 exactly. The first positive fixed census contains one egg in each world. Each lays 12 eggs in the first 24 hours after the exact first birth. Fixed alignment of the first lay with a daily cut explains the two simulated counts. The original reference does not expose each foundress's clock offset, so neither observation can identify a laying-bout distribution or justify changing the frozen daily reader.
+
 | v7 comparison | Complete exact count | Complete at-least count | Count-attainment medians in days, egg / larva / pupa / total |
 |---|---:|---:|---|
 | Borisovka original closed, primary care-on | 0/192 | 0/192 | 17 / 21 / unavailable / unavailable |

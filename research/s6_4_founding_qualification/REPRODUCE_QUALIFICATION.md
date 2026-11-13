@@ -22,6 +22,8 @@ On a single-configuration Linux build use the executable name without `.exe`. Th
 
 To republish the same eight cases from the original full local archive, pass `--local-originals out/integrated-founding` and use a fresh witness destination. The existing three witnesses are read from their accepted Git paths by hash. Other original member bytes, including `initial.chk`, `final.frame`, `facts.bin`, `cuts.csv`, `individuals.csv`, `parameters.txt` and `case.json`, are preserved.
 
+The reused ZIPs are [Borisovka balanced](../../experiments/s6_4_integrated_founding/raw_index/resupply-nominal/borisovka-micro-nominal-0-1-balanced.zip), [St. Petersburg balanced](../../experiments/s6_4_integrated_founding/raw_index/resupply-nominal/st_petersburg-micro-nominal-0-1-balanced.zip) and [Borisovka blocked](../../experiments/s6_4_integrated_founding/raw_index/resupply-nominal/borisovka-micro-nominal-0-1-blocked.zip). The [witness directory](../../experiments/s6_4_founding_qualification/witnesses) holds the other original case ZIPs and the separate interrupted publication.
+
 ## Source exhaustion and B06
 
 ```powershell

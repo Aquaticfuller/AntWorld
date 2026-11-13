@@ -194,9 +194,12 @@ jobs:
       - name: Recompute founding application qualification and timing tails
         if: runner.os == 'Windows' && matrix.configuration == 'Release'
         run: python tools/verify_integrated_founding_application.py experiments/s6_4_founding_qualification/performance
-      - name: Verify founding qualification provenance and reconstructed cohort outcomes
-        if: matrix.configuration == 'Release'
+      - name: Verify founding qualification provenance and reconstructed cohort outcomes (Linux)
+        if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: python tools/verify_founding_qualification.py experiments/s6_4_founding_qualification
+      - name: Verify founding evidence and recompute native and protected timings (Windows)
+        if: runner.os == 'Windows' && matrix.configuration == 'Release'
+        run: python tools/verify_founding_qualification.py experiments/s6_4_founding_qualification --native
 
   sanitizers:
     runs-on: ubuntu-24.04

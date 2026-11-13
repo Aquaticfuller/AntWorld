@@ -1,0 +1,27 @@
+{
+  "source_prefix_bytes": 38638546,
+  "source_prefix_sha256": "32a8fa8e16575dd233eb601b6011bd49f51fb347fbab138e417336e5813abeb0",
+  "mapping_sha256": "d773a5442e4d09851e43005927f6730d5a9f2a655c5b08b5f86b6a5cb3c55bd8",
+  "append_layout": {
+    "observed_header_sha256": "35276a32b38dbf842821c33edc5ebe29763685f856e3b3347cfbddf38de5da63",
+    "reference_header_sha256": "bba41bc1bf8c38100c181e6eb7a18fd26cf398e29fbd2f250712729774ad1334",
+    "observed_header_columns": 471,
+    "reference_header_columns": 472,
+    "reference_extra_column_index": 193,
+    "reference_extra_column_label_sha256": "e879bab86e0214aacb504ac8311d98cd5593809f5170a91270bcf824e3159406",
+    "maximum_used_cpu_column": 187,
+    "matching_cpu_columns": 30,
+    "first_wider_source_line": 2111,
+    "first_wider_date": "13.11.2026",
+    "first_wider_time": "0:12:27.027",
+    "pinned_prefix_bytes": 4490553,
+    "pinned_prefix_sha256": "5d70eeca6e010889cfcff1c0201fe856e877be692052fb34e4cc18aa7fd2e1e6",
+    "rationale": "Both observed widths contain the identical reviewed leading CPU columns. The one-column difference in the verified headers begins after all mapped channels."
+  },
+  "retained_rows": 58,
+  "incomplete_rows": 0,
+  "first_utc_ns": 1794557631709000192,
+  "last_utc_ns": 1794557745792999936,
+  "timezone_offset_minutes": 60,
+  "selection": "All CPU rows in the timed interval and its three-second brackets. No values imputed."
+}
