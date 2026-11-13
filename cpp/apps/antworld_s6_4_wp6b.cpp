@@ -40,14 +40,46 @@ Case read_case(const Path& path) {
         (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
+    const bool ecology=c.arm.starts_with("ecology-");
+    if (ecology) {
+        const auto arm=c.arm.substr(8);
+        const auto first=arm.find('-');
+        require(first!=std::string::npos,"invalid ecological layout");
+        const auto layout=arm.substr(0,first);
+        const auto end=arm.find('-',first+1);
+        require(end!=std::string::npos,"invalid ecological treatment");
+        const auto treatment=arm.substr(first+1,end-first-1);
+        require(layout=="shaft" || layout=="dogleg","invalid ecological layout");
+        c.arm=arm.substr(end+1);
+        c.dogleg=layout=="dogleg";
+        c.compact=true; c.shaft=true; c.qualification=true;
+        c.ecological.emplace();
+        auto& e=*c.ecological;
+        e.distance_clock=true;
+        e.floor_space=treatment=="joint" || treatment=="silent";
+        e.recruitment=treatment=="joint";
+        e.activity_cost=treatment=="joint" || treatment=="cost";
+        e.cue_lifetime={6*hour_ms};
+        if (treatment=="joint" || treatment=="first" || treatment=="water" || treatment=="wallwater")
+            e.first_ration_ppm=500000;
+        if (treatment=="water" || treatment=="wallwater") e.water_sip_ug=25;
+        c.blocked_water=treatment=="wallwater";
+        c.trail_treatment=treatment=="silent"?TrailTreatment::Blind:TrailTreatment::Marked;
+        require(treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
+                treatment=="first" || treatment=="water" || treatment=="wallwater" || treatment=="cost",
+                "invalid ecological treatment");
+        if (treatment=="legacy") { c.ecological.reset(); c.trail_treatment=TrailTreatment::Marked; }
+    }
     c.qualification=c.arm.starts_with("readiness-");
+    c.qualification=c.qualification || ecology;
     c.integrated_assay=scope || c.qualification || c.arm.starts_with("integrated-");
-    require(c.horizon.milliseconds==(scope?180:c.integrated_assay?150:90)*day_ms,"invalid F1 assay horizon");
+    require(c.horizon.milliseconds==(scope?180:c.integrated_assay?150:90)*day_ms ||
+            (ecology && c.horizon.milliseconds==55*day_ms),"invalid F1 assay horizon");
     if (c.integrated_assay) {
         if (scope) {
             c.release_days=c.arm=="scope-balanced-60"?60U:120U;
             c.arm="balanced";
-        } else if (c.qualification) {
+        } else if (c.qualification && !ecology) {
             const auto layout = c.arm.substr(10);
             c.compact = layout != "roomy";
             c.shaft = layout.starts_with("shaft-");
@@ -67,8 +99,9 @@ Case read_case(const Path& path) {
                 else c.arm = layout.substr(8);
                 c.trail_treatment = TrailTreatment::Marked;
             }
-        } else c.arm.erase(0,11);
-        require(!c.workers && c.care,"the integrated assay begins with one active queen");
+        } else if (!ecology) c.arm.erase(0,11);
+        require(!c.workers && (c.care || (ecology && c.horizon.milliseconds==55*day_ms)),
+                "the integrated assay begins with one queen");
         const std::map<std::string,FoodMass> inputs{
             {"balanced",{6000,3000,18000,0}},{"limited",{752,376,2252,0}},{"water",{0,0,18000,0}},
             {"carbohydrate",{6000,0,0,0}},{"no-protein",{6000,0,18000,0}},{"blocked",{6000,3000,18000,0}},{"absent",{}}};

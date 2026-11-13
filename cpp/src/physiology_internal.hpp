@@ -41,8 +41,12 @@ inline SimTime stage_duration(const PhysiologyConfig& c, LifeStage stage) {
 inline bool developing(const PhysiologyState& p, LifeStage stage) {
     return stage < LifeStage::Adult && (stage != LifeStage::Larva || p.tissue_protein_ug >= p.config.larval_protein_requirement_ug);
 }
+inline bool active_expenditure(const PhysiologyState& p) {
+    return p.active_work ? p.active_work->value != 0 : p.behavior == IndividualBehavior::Forage ||
+        p.behavior == IndividualBehavior::Nurse || p.behavior == IndividualBehavior::Excavate;
+}
 inline std::uint64_t expenditure(const PhysiologyState& p, LifeStage stage) {
-    const auto active = stage == LifeStage::Adult && (p.behavior == IndividualBehavior::Forage || p.behavior == IndividualBehavior::Nurse || p.behavior == IndividualBehavior::Excavate);
+    const auto active = stage == LifeStage::Adult && active_expenditure(p);
     return add(p.config.basal_nj_per_ms, active ? p.config.active_nj_per_ms : 0);
 }
 // Exact integration of the declared piecewise-constant model, independent of host calls.

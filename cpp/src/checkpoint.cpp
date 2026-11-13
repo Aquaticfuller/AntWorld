@@ -9,6 +9,7 @@
 #include "checkpoint_care.hpp"
 #include "checkpoint_spatial.hpp"
 #include "checkpoint_founding.hpp"
+#include "checkpoint_ecological.hpp"
 #include <bit>
 #include <set>
 
@@ -53,7 +54,8 @@ std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
 }
 WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
     Reader reader{bytes}; auto event = read_fact(reader);
-    ensure(event.kind <= FactKind::FoundingBoundaryUptake && (!founding_fact(event.kind) || valid_founding_payload(event)),
+    ensure(event.kind <= FactKind::FoundressWaterIngested && (!founding_fact(event.kind) || valid_founding_payload(event)) &&
+           (!ecological_fact(event.kind) || valid_ecological_payload(event)),
            "unsupported or invalid canonical fact");
     ensure(reader.cursor == bytes.size(), "trailing fact payload bytes"); return event;
 }
@@ -103,6 +105,10 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const bool uptake=dietary && s.founding->profile.dietary->adult_boundary_uptake;
     const bool resupply=uptake && s.founding->profile.dietary->local_resupply;
     if (frame) w.put(frame_magic);
+    if (s.ecological) {
+        w.put(ecological_magic);
+        w.put(ecological_schema,4); w.put(ecological_physics,4);
+    }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
     w.put(resupply ? founding_resupply_schema_version : uptake ? founding_uptake_schema_version : dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
     w.put(resupply ? founding_resupply_physics_version : uptake ? founding_uptake_physics_version : dietary ? founding_dietary_physics_version : provisioning ? founding_provisioning_physics_version : early_access ? founding_access_physics_version : persistence ? founding_persistence_physics_version : s.founding ? founding_physics_version : spatial?spatial_physics_version:motion ? care_motion_physics_version : retrieval ? retrieval_physics_version : s.care_profile ? care_physics_version : guarded ? allocation_physics_version : s.long_term ? long_term_physics_version : physics_version, 4); w.put(1, 4);
@@ -124,6 +130,7 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
         profiling::record_work(profiling::Category::CheckpointHistory,s.journal.size());
     }
     w.position(s.config.min_m); w.position(s.config.max_m); w.real(s.config.max_speed_m_per_s); w.real(s.config.contact_distance_m);
+    if (s.ecological) write_ecological(w,*s.ecological);
     w.put(m.watermark.has_value(), 1); if (m.watermark) w.key(*m.watermark);
     w.put(m.executed); w.put(m.living); w.mass(m.ledger.introduced); w.mass(m.ledger.available); w.mass(m.ledger.carried); w.mass(m.ledger.stored);
     w.put(s.colonies.rows.size());
@@ -158,6 +165,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool frame=header==frame_magic;
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
+    const bool ecological = header==ecological_magic;
+    if (ecological) {
+        ensure(r.get(4)==ecological_schema && r.get(4)==ecological_physics,"unsupported ecological closure contract");
+        header=r.get();
+    }
     const bool resupply=header==founding_resupply_magic;
     const bool uptake=resupply || header==founding_uptake_magic;
     const bool dietary=uptake || header==founding_dietary_magic;
@@ -227,14 +239,18 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (founding && e.kind==FactKind::PhysiologyUpdated) founding_pulses.insert(e.source);
         const bool auxiliary=((e.kind==FactKind::BehaviorChanged || e.kind==FactKind::AntBorn) && e.source.value) ||
             e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source)) ||
-            founding_fact(e.kind) || (founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source));
+            founding_fact(e.kind) || ecological_fact(e.kind) || (founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source));
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= (uptake ? FactKind::FoundingBoundaryUptake : dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= (ecological ? FactKind::FoundressWaterIngested : uptake ? FactKind::FoundingBoundaryUptake : dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            (!ecological_fact(e.kind) || (ecological && valid_ecological_payload(e))) &&
+            (!founding_fact(e.kind) || (founding && e.kind <= (uptake ? FactKind::FoundingBoundaryUptake : dietary ?
+                FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : FactKind::FoundingRation))) &&
             e.mode <= BehaviorMode::Rest && e.reason <= DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units >= 0 &&
             e.revision > previous_revision && e.revision <= m.revision && finite(e.position) &&
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
                 (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || founding_fact(e.kind) ||
-                (persistence && e.kind==FactKind::CareTick) || e.random_value == 0) &&
+                (persistence && e.kind==FactKind::CareTick) || ecological_fact(e.kind) ||
+                (ecological && e.kind==FactKind::ForagingDecision && e.random_value<=7) || e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         if (founding) {
@@ -246,6 +262,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (!frame) s->journal.push_back(e);
     }
     s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
+    if (ecological) s->ecological=read_ecological(r,s->config);
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();
     m.executed = r.get(); m.living = r.get(); m.ledger = {r.mass(), r.mass(), r.mass(), r.mass()};
@@ -374,10 +391,15 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     std::map<EntityId, std::uint64_t> moves; std::map<EntityId, FoodMass> cargo;
     std::map<ResourceId, FoodMass> transferred;
     std::map<ColonyId, FoodMass> delivered;
+    std::map<EntityId, WorldEvent> scout_deliveries;
+    std::map<EntityId, WorldEvent> cue_observations;
+    std::set<EntityId> collected_workers;
+    std::map<EntityId, IndividualBehavior> programs;
+    std::map<EntityId, ScheduledId> cue_activations;
     std::uint64_t executed_now = 0;
     for (const auto& e : s->journal) {
         if (e.source.value && e.time == m.now && e.kind!=FactKind::BehaviorChanged && e.kind!=FactKind::AntBorn &&
-            e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) &&
+            e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) && !ecological_fact(e.kind) &&
             !(founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source)) &&
             (!care_ticks.contains(e.source) || e.kind==FactKind::CareTick)) ++executed_now;
         ensure((!e.actor.value || s->ants.index.contains(e.actor)) && (!e.colony.value || s->colonies.index.contains(e.colony)) &&
@@ -424,10 +446,51 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 ensure(seeded_ants.contains(related) && s->ants.get(s->ants.index.at(related)).colony==e.colony,
                        "F1 fact lacks same-colony recipient");
             break;
+        case FactKind::RecruitmentCue: {
+            ensure(s->ecological->recruitment && scout_deliveries.contains(e.actor), "signal without scout delivery");
+            const auto& delivery = scout_deliveries.at(e.actor);
+            ensure(e.payload == delivery.id.value && e.source == delivery.source && e.time == delivery.time &&
+                   e.position == delivery.position && delivery.transferred.carbs_ug >= s->ecological->cue_minimum_carbs_ug,
+                   "invalid signal provenance");
+            s->recruitment_signals[e.actor] = {e.id, e.time, e.position};
+            break;
+        }
+        case FactKind::RecruitmentObserved: case FactKind::RecruitmentActivated: {
+            const EntityId scout{e.payload};
+            const auto cue=s->recruitment_signals.find(scout);
+            ensure(s->ecological->recruitment && cue!=s->recruitment_signals.end() &&
+                   cue->second.fact.value==e.random_value && stages[e.actor]==LifeStage::Adult &&
+                   s->ants.get(s->ants.index.at(e.actor)).caste==Caste::Worker &&
+                   stages[scout]==LifeStage::Adult && s->ants.get(s->ants.index.at(scout)).colony==e.colony &&
+                   e.time.milliseconds-cue->second.time.milliseconds<s->ecological->cue_lifetime.milliseconds &&
+                   e.position==positions[e.actor] && within_contact(e.position,cue->second.position,s->config) &&
+                   within_contact(e.position,positions[scout],s->config) && !collected_workers.contains(e.actor) &&
+                   programs[e.actor]!=IndividualBehavior::Forage, "invalid local recruitment observation");
+            if (e.kind==FactKind::RecruitmentObserved) cue_observations[e.actor]=e;
+            else {
+                const auto prior=cue_observations.find(e.actor);
+                ensure(prior!=cue_observations.end() && prior->second.id.value+1==e.id.value &&
+                       prior->second.source==e.source && prior->second.random_value==e.random_value &&
+                       s->ecological->cue_response_ppm && cue_activations.emplace(e.actor,e.source).second,
+                       "activation lacks its observed local cue");
+            }
+            break;
+        }
+        case FactKind::ActivityChanged:
+            ensure(timed_activity(*s) && s->physiology.contains(e.actor) &&
+                   stages[e.actor]==LifeStage::Adult && positions[e.actor]==e.position, "invalid activity boundary");
+            break;
+        case FactKind::FoundressWaterIngested:
+            ensure(seeded_food.contains(e.resource) && s->founding && s->founding->founder==e.actor,
+                   "water draw has no world source or founder");
+            transferred[e.resource]=sum(transferred[e.resource],e.transferred);
+            break;
         case FactKind::FoodCollected:
             ensure(seeded_ants.contains(e.actor) && seeded_food.contains(e.resource) && stages[e.actor] == LifeStage::Adult &&
                 e.transferred.total_ug() > 0 && (e.outcome == Outcome::Success || e.outcome == Outcome::Partial), "invalid collection fact");
-            cargo[e.actor] = sum(cargo[e.actor], e.transferred); transferred[e.resource] = sum(transferred[e.resource], e.transferred); break;
+            cargo[e.actor] = sum(cargo[e.actor], e.transferred); transferred[e.resource] = sum(transferred[e.resource], e.transferred);
+            if (s->ecological && s->ecological->recruitment) collected_workers.insert(e.actor);
+            break;
         case FactKind::StageChanged:
             ensure(seeded_ants.contains(e.actor) && e.stage != LifeStage::Dead &&
                 static_cast<unsigned>(e.stage) == static_cast<unsigned>(stages[e.actor])+1, "invalid stage fact");
@@ -441,7 +504,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult && e.transferred.total_ug() &&
                 within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
                 "invalid physical delivery fact");
-            cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred); break;
+            cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred);
+            if (s->ecological && s->ecological->recruitment) scout_deliveries[e.actor]=e;
+            break;
         case FactKind::Rested:
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult, "invalid rest fact"); break;
         case FactKind::CargoIngested:
@@ -459,9 +524,18 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::ReproductionAttempt:
         case FactKind::ResourceCycleConfigured:
         case FactKind::ResourceReleased: ensure(s->long_term!=nullptr,"long-term fact without authority"); break;
+        case FactKind::BehaviorChanged:
+            if (s->ecological && s->ecological->recruitment) {
+                programs[e.actor]=static_cast<IndividualBehavior>(e.payload);
+                if (const auto pending=cue_activations.find(e.actor); pending!=cue_activations.end()) {
+                    ensure(e.source==pending->second && programs[e.actor]==IndividualBehavior::Forage,
+                           "activated worker did not choose its forage program");
+                    cue_activations.erase(pending);
+                }
+            }
+            break;
         case FactKind::PhysiologyEnabled:
         case FactKind::PhysiologyUpdated:
-        case FactKind::BehaviorChanged:
         case FactKind::NutritionDecision:
         case FactKind::NutritionTransferred: break;
         case FactKind::SocialConfigured: ensure(s->social != nullptr,"social fact without policy"); break;
@@ -481,13 +555,13 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (nutrition_fact(e.kind)) ensure(e.transferred.total_ug() && e.outcome <= Outcome::Partial, "invalid nutrition transfer fact");
         if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodPlaced && e.kind != FactKind::FoodDelivered &&
             !nutrition_fact(e.kind) && e.kind != FactKind::PhysiologyEnabled && e.kind != FactKind::PhysiologyUpdated &&
-            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind))
+            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) && e.kind!=FactKind::FoundressWaterIngested)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
         if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind) && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation)
             ensure(e.outcome == Outcome::Success, "unexpected fact outcome");
     }
     ensure(seeded_colonies.size() == colonies && seeded_ants.size() == ants && seeded_food.size() == foods &&
-        executed_now == m.executed, "missing seed evidence or execution count mismatch");
+        executed_now == m.executed && cue_activations.empty(), "missing seed, activation or execution evidence");
     for (std::size_t i = 0; i < ants; ++i) {
         const auto a = s->ants.get(i);
         ensure(stages[a.id] == a.stage && positions[a.id] == a.position && moves[a.id] == a.position_revision &&

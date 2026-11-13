@@ -3,6 +3,7 @@
 
 #include "antworld/core/event.hpp"
 #include "antworld/core/founding.hpp"
+#include "antworld/core/ecological_closure.hpp"
 #include "antworld/core/command.hpp"
 #include "antworld/core/history.hpp"
 #include "antworld/core/social.hpp"
@@ -58,6 +59,8 @@ public:
     ScheduledId submit(const ActionProposal& proposal);
     ScheduledId schedule_lifecycle(AntRef actor, SimTime at, LifeStage stage);
     void configure_surface(const SurfaceConfig&, std::span<const Cell> blocked, const BehaviorConfig& = {});
+    void configure_ecological_closure(const EcologicalClosureConfig&);
+    [[nodiscard]] std::optional<EcologicalClosureConfig> ecological_closure() const;
     void start_foraging(AntRef actor);
     void enable_physiology(AntRef, const PhysiologySeed& = {}, const PhysiologyConfig& = {});
     void set_behavior(AntRef, IndividualBehavior);
@@ -167,6 +170,9 @@ private:
     void schedule_autonomy(Transaction&, EntityId, SimTime delay = {});
     void stop_autonomy(Transaction&, EntityId);
     void resolve_autonomy_wakes(Transaction&, const std::vector<ScheduledEvent>&);
+    void record_recruitment_cue(Transaction&, const WorldEvent&);
+    void set_activity_work(Transaction&, EntityId, ScheduledId);
+    void draw_founding_water(Transaction&, const ScheduledEvent&, const AntState&);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit,bool frame = false);

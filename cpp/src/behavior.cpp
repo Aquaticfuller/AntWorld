@@ -13,7 +13,7 @@ std::uint64_t bounded(Rng& rng, std::uint64_t n) {
 }
 }
 BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carrying,
-    const ForagerState& state, const LocalObservation& local, const BehaviorConfig& config) {
+    const ForagerState& state, const LocalObservation& local, const BehaviorConfig& config, bool weighted_labels) {
     if (!actor.value || !state.path_size || config.sensing_radius_cells < 1 || config.sensing_radius_cells > 3 ||
         config.route_capacity < 2 || config.route_capacity > route_storage_capacity ||
         state.path_size > config.route_capacity || state.memory_size > config.route_capacity ||
@@ -46,6 +46,9 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
             throw std::invalid_argument("duplicate local food cue");
     }
     BehaviorDecision choice;
+    if (weighted_labels && config.trails_enabled)
+        for (std::uint32_t i = 0; i < local.step_count; ++i)
+            if (local.steps[i].trail_units >= config.trail_cutoff_units) choice.trail_evidence |= 1;
     auto walk = [&](Cell cell, BehaviorMode mode, DecisionReason reason) {
         for (std::uint32_t i = 0; i < local.step_count; ++i) if (local.steps[i].cell == cell) {
             choice.action = ActionKind::Move; choice.destination = cell; choice.mode = mode; choice.reason = reason; return;
@@ -118,7 +121,7 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
         if (excluded(local.steps[i])) continue;
         if (local.steps[i].trail_units >= config.trail_cutoff_units) scale = UINT64_C(1) << 20;
     }
-    std::array<std::uint64_t, 4> weights{}; std::uint64_t total = 0;
+    std::array<std::uint64_t, 4> weights{}, trail_weights{}; std::uint64_t total = 0;
     for (std::uint32_t i = 0; i < local.step_count; ++i) {
         const auto& step = local.steps[i];
         if (excluded(step)) continue;
@@ -126,15 +129,20 @@ BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carryi
         for (std::uint32_t j = 0; j < state.path_size; ++j) if (state.path[j] == step.cell) visited = true;
         auto weight = (visited ? std::uint64_t{1} : config.explore_weight)*scale;
         if (step.direction == state.heading) weight += std::uint64_t{config.persistence_weight}*scale;
-        if (config.trails_enabled && step.trail_units >= config.trail_cutoff_units) weight += static_cast<std::uint64_t>(
-            std::clamp(step.trail_units/config.trail_cap_units, 0.0, 1.0)*config.trail_weight*static_cast<double>(scale));
+        if (config.trails_enabled && step.trail_units >= config.trail_cutoff_units)
+            trail_weights[i] = static_cast<std::uint64_t>(
+                std::clamp(step.trail_units/config.trail_cap_units, 0.0, 1.0)*config.trail_weight*static_cast<double>(scale));
+        weight += trail_weights[i];
+        if (weighted_labels && (trail_weights[i] || allow_correction)) choice.trail_evidence |= 2;
         weights[i] = weight; total += weight;
     }
     auto rng = detail::individual_rng(seed, actor, state.decisions);
     auto pick = bounded(rng, total);
     for (std::uint32_t i = 0; i < local.step_count; ++i) {
         if (pick < weights[i]) {
-            const auto trail = config.trails_enabled && local.steps[i].trail_units >= config.trail_cutoff_units;
+            const auto trail = weighted_labels ? trail_weights[i] != 0 :
+                config.trails_enabled && local.steps[i].trail_units >= config.trail_cutoff_units;
+            if (weighted_labels && trail) choice.trail_evidence |= 4;
             walk(local.steps[i].cell, trail ? BehaviorMode::FollowTrail : BehaviorMode::Explore,
                 trail ? DecisionReason::Trail : DecisionReason::Search);
             return choice;

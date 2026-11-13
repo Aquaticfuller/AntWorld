@@ -102,6 +102,9 @@ void WorldRuntime::resolve_autonomy_wakes(
     IndividualBehavior behavior;
     ContactWork sample;
     bool care{};
+    EntityId scout;
+    EventId cue;
+    bool recruited{};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -111,7 +114,9 @@ void WorldRuntime::resolve_autonomy_wakes(
     const auto p = *query_physiology({s.world, ant.id});
     if (!a.enabled || a.wake != wake.id || ant.stage != LifeStage::Adult)
       throw std::logic_error("invalid autonomy ownership");
-    Choice choice{wake, p.behavior, {}};
+    Choice choice{};
+    choice.event = wake;
+    choice.behavior = p.behavior;
     const auto &colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
     // Ongoing journeys and carried resources remain owned by that worker.
     // Stationary workers may nurse locally away from the depot; only a real
@@ -184,6 +189,7 @@ void WorldRuntime::resolve_autonomy_wakes(
           crop_work = true;
       }
       bool forage = at_depot && can_forage(ant);
+      const bool forage_possible = forage;
       bool refill = false;
       if (forage && local_founding_provisioning(s,ant.id) && s.founding->profile.dietary &&
           s.founding->profile.dietary->local_resupply && s.foragers.contains(ant.id) && s.foragers.at(ant.id).collections) {
@@ -265,6 +271,29 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
           draw -= weight;
         }
+        if (s.ecological && s.ecological->recruitment && forage_possible && !urgent &&
+            p.behavior != IndividualBehavior::Forage &&
+            (!s.foragers.contains(ant.id) || !s.foragers.at(ant.id).collections)) {
+          for (const auto other : sample.ants) {
+            const auto cue = s.recruitment_signals.find(other.id);
+            if (cue == s.recruitment_signals.end() ||
+                s.m.now.milliseconds - cue->second.time.milliseconds >= s.ecological->cue_lifetime.milliseconds ||
+                !within_contact(ant.position, cue->second.position, s.config) ||
+                !spatially_clear(ant.position, cue->second.position)) continue;
+            if (cue->second.fact > choice.cue) {
+              choice.scout = other.id;
+              choice.cue = cue->second.fact;
+            }
+          }
+          if (choice.cue.value && choice.behavior != IndividualBehavior::Forage) {
+            auto response = individual_rng(s.seed ^ UINT64_C(0x524543525549544d), ant.id, a.decisions);
+            if (bounded_draw(response, 1000000) < s.ecological->cue_response_ppm) {
+              choice.behavior = IndividualBehavior::Forage;
+              choice.care = false;
+              choice.recruited = true;
+            }
+          }
+        }
       }
       inspect_decision(wake, sample, 1, static_cast<std::uint64_t>(choice.behavior));
     } else {
@@ -283,6 +312,19 @@ void WorldRuntime::resolve_autonomy_wakes(
     a.wake = {};
     bump(a.decisions);
     tx.autonomy.set(id, a);
+    if (choice.cue.value) {
+      const auto ant = s.ants.get(s.ants.index.at(id));
+      WorldEvent signal;
+      signal.kind = FactKind::RecruitmentObserved;
+      signal.actor = id; signal.colony = ant.colony; signal.stage = ant.stage;
+      signal.position = ant.position; signal.source = choice.event.id;
+      signal.payload = choice.scout.value; signal.random_value = choice.cue.value;
+      tx.fact(signal);
+      if (choice.recruited) {
+        signal.kind = FactKind::RecruitmentActivated;
+        tx.fact(signal);
+      }
+    }
     if (choice.care)
       start_autonomous_care(tx,{s.world,id},choice.event.id);
     else if (choice.behavior != s.physiology.at(id).behavior)

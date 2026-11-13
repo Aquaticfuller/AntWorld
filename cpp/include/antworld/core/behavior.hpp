@@ -74,11 +74,12 @@ struct BehaviorDecision {
     Cell destination;
     ResourceId resource;
     bool forget_memory{};
+    std::uint8_t trail_evidence{}; // Opt-in: seen (1), weighted (2), selected weighted edge (4).
     bool operator==(const BehaviorDecision&) const = default;
 };
 // Pure individual model. Randomness is keyed by seed, identity and decision count.
 BehaviorDecision choose_behavior(std::uint64_t seed, EntityId actor, bool carrying,
-    const ForagerState&, const LocalObservation&, const BehaviorConfig&);
+    const ForagerState&, const LocalObservation&, const BehaviorConfig&, bool weighted_labels = false);
 
 struct TrailSample {
     ColonyId colony;

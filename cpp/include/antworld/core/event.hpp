@@ -56,7 +56,8 @@ enum class FactKind : std::uint8_t {
     ReproductionAttempt, AntBorn, ResourceCycleConfigured, ResourceReleased, ProteinRecycled,
     BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
     FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation,
-    FoundingLipidMobilized, FoundingHatchCue, FoundressNestMeal, FoundingDietaryEggFunded, FoundingBoundaryUptake
+    FoundingLipidMobilized, FoundingHatchCue, FoundressNestMeal, FoundingDietaryEggFunded, FoundingBoundaryUptake,
+    RecruitmentCue, RecruitmentObserved, RecruitmentActivated, ActivityChanged, FoundressWaterIngested
 };
 // F1-R1 CareWake annotation. Selection and material transfer are separate facts.
 enum class FoundingCareWake : std::uint8_t { Ordinary, Expired, Unavailable, Repeat };
@@ -88,14 +89,36 @@ struct WorldEvent {
 [[nodiscard]] constexpr bool founding_early_fact(FactKind kind) {
     return kind == FactKind::FoundingLipidMobilized || kind == FactKind::FoundingHatchCue;
 }
+[[nodiscard]] constexpr bool ecological_fact(FactKind kind) {
+    return kind >= FactKind::RecruitmentCue && kind <= FactKind::FoundressWaterIngested;
+}
 // A participant ID, as opposed to a numeric dose, material quantity or fingerprint.
 [[nodiscard]] inline EntityId related_individual(const WorldEvent& e) {
     if (e.kind == FactKind::BiologicalObservation) return e.observation.target;
     switch (e.kind) {
     case FactKind::NutritionTransferred: case FactKind::AntBorn: case FactKind::BroodMoved:
     case FactKind::FoundingEggFunded: case FactKind::FoundingRation: case FactKind::FoundingHatchCue:
-    case FactKind::FoundingDietaryEggFunded: return {e.payload};
+    case FactKind::FoundingDietaryEggFunded: case FactKind::RecruitmentObserved:
+    case FactKind::RecruitmentActivated: return {e.payload};
     default: return {};
+    }
+}
+[[nodiscard]] inline bool valid_ecological_payload(const WorldEvent& e) {
+    if (!e.actor.value || !e.colony.value || !e.source.value || e.stage != LifeStage::Adult ||
+        e.outcome != Outcome::Success || e.action != DiagnosticAction::Record || e.deposited_units != 0 ||
+        e.forgot_memory || e.mode != BehaviorMode::Explore || e.reason != DecisionReason::None) return false;
+    switch (e.kind) {
+    case FactKind::RecruitmentCue:
+        return e.payload && e.payload < e.id.value && !e.random_value && !e.resource.value && e.transferred == FoodMass{};
+    case FactKind::RecruitmentObserved: case FactKind::RecruitmentActivated:
+        return e.payload && e.payload != e.actor.value && e.random_value && e.random_value < e.id.value &&
+               !e.resource.value && e.transferred == FoodMass{};
+    case FactKind::ActivityChanged:
+        return e.payload <= 1 && !e.random_value && !e.resource.value && e.transferred == FoodMass{};
+    case FactKind::FoundressWaterIngested:
+        return !e.payload && !e.random_value && e.resource.value && e.transferred.water_ug &&
+               e.transferred.total_ug() == e.transferred.water_ug;
+    default: return false;
     }
 }
 [[nodiscard]] inline bool valid_founding_payload(const WorldEvent& e) {

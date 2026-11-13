@@ -4,6 +4,7 @@
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
 #include "checkpoint_founding_replay.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array physiology_config_times{
@@ -31,6 +32,7 @@ template <typename S> void write_physiology(Writer& w, const S& s) {
         w.time(p.updated_at); w.time(p.next_absorption); w.time(p.stage_progress);
         w.put(p.physiology_event.value); w.put(p.behavior_event.value);
         w.put(static_cast<std::uint8_t>(p.behavior), 1); w.put(static_cast<std::uint8_t>(p.death_cause), 1);
+        if (timed_activity(s)) w.put(p.active_work->value);
     }
 }
 template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits& limits) {
@@ -45,6 +47,7 @@ template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits&
         p.updated_at = r.time(); p.next_absorption = r.time(); p.stage_progress = r.time();
         p.physiology_event = {r.get()}; p.behavior_event = {r.get()};
         p.behavior = static_cast<IndividualBehavior>(r.get(1)); p.death_cause = static_cast<DeathCause>(r.get(1));
+        if (timed_activity(s)) p.active_work=ScheduledId{r.get()};
         validate_physiology(p.initial, p.config);
         ensure(s.long_term || (p.config.absorption_period.milliseconds<=60000 && p.config.behavior_interval.milliseconds<=60000),"legacy physiology interval exceeds its contract");
         ensure(s.ants.index.contains(id) && p.crop.total_ug() <= p.config.crop_capacity_ug &&
@@ -118,6 +121,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 mother.exported_energy_nj=add(mother.exported_energy_nj,c.egg_energy_nj);
                 mother.dissipated_energy_nj=add(mother.dissipated_energy_nj,c.dissipated_energy_nj);
             } else ensure(e.time == SimTime{} && e.transferred == p.crop && !p.mother.value, "invalid physiology seed evidence");
+            if (timed_activity(s)) p.active_work=ScheduledId{};
             audit.emplace(e.actor, p);
         } else if (audit.contains(e.actor)) {
             auto& p = audit.at(e.actor); const auto prior_stage = stages.at(e.actor);
@@ -128,9 +132,22 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 (e.kind == FactKind::AntDied && e.payload)))
                 ensure(e.time == founding.next(e.actor, p, prior_stage), "F1 fact is outside its physiological boundary");
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || e.kind==FactKind::FoundingBoundaryUptake || (e.kind == FactKind::ActionRejected && e.payload))
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || e.kind==FactKind::FoundingBoundaryUptake || e.kind==FactKind::ActivityChanged || e.kind==FactKind::FoundressWaterIngested || (e.kind == FactKind::ActionRejected && e.payload))
                 founding.settle(e.actor, p, prior_stage, e.time);
-            if (e.kind == FactKind::FoundingLipidMobilized) {
+            if (e.kind == FactKind::ActivityChanged) {
+                ensure(timed_activity(s) && prior_stage==LifeStage::Adult &&
+                       (e.payload ? !p.active_work->value : *p.active_work==e.source), "invalid activity interval");
+                p.active_work=e.payload ? e.source : ScheduledId{};
+            } else if (e.kind == FactKind::FoundressWaterIngested) {
+                const auto& resource=s.foods.rows[s.foods.index.at(e.resource)];
+                const auto room=p.config.hydration_capacity_ug-p.hydration_ug;
+                ensure(founding.founder(e.actor) && sip_source(s,resource.position,resource.initial) &&
+                       positions.at(e.actor)==e.position && within_contact(e.position,resource.position,s.config) &&
+                       founding.clear(e.position,resource.position,0,e.id) && e.transferred.water_ug<=s.ecological->water_sip_ug &&
+                       p.crop.water_ug<=room && e.transferred.water_ug<=room-p.crop.water_ug,
+                       "founding water lacks a local funded source");
+                p.crop=sum(p.crop,e.transferred);
+            } else if (e.kind == FactKind::FoundingLipidMobilized) {
                 ensure(enrolled, "R2 mobilization outside a funded lineage");
                 founding.mobilize(p,e,prior_stage);
                 boundary_fact=e;
@@ -174,6 +191,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     (p.death_cause == DeathCause::EnergyDepleted && !p.body_energy_nj) ||
                     (p.death_cause == DeathCause::Dehydrated && p.body_energy_nj && !p.hydration_ug), "invalid physiological death evidence");
                 p.behavior = IndividualBehavior::Paused;
+                if (p.active_work) p.active_work=ScheduledId{};
             } else if (e.kind == FactKind::BehaviorChanged) {
                 ensure(e.payload <= static_cast<std::uint64_t>(IndividualBehavior::Excavate) && prior_stage != LifeStage::Dead,
                     "invalid behavior switch evidence"); p.behavior = static_cast<IndividualBehavior>(e.payload);
@@ -253,6 +271,14 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
             ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Physiology &&
                 e.key.time == founding.next(id, saved, ant.stage, enrolled ? &s.founding_reserves.at(id) : nullptr),
                 "wrong physiology threshold schedule");
+            if (saved.active_work && saved.active_work->value) {
+                ensure(s.queue_index.contains(*saved.active_work), "activity lacks a pending action");
+                const auto& work=s.queue.at(s.queue_index.at(*saved.active_work));
+                ensure(work.actor==id && work.key.phase==Phase::Resolution &&
+                       (work.kind==ScheduledEvent::Kind::Move || work.kind==ScheduledEvent::Kind::CollectFood ||
+                        work.kind==ScheduledEvent::Kind::DeliverFood || work.kind==ScheduledEvent::Kind::SoilAction ||
+                        work.kind==ScheduledEvent::Kind::CareEnd), "activity owns unrelated work");
+            }
         } else ensure(!saved.physiology_event.value && !saved.behavior_event.value && saved.behavior == IndividualBehavior::Paused,
             "dead physiology still scheduled");
         const bool caring=s.care.contains(id) && s.care.at(id).enabled;

@@ -2,6 +2,7 @@
 #include "checkpoint_codec.hpp"
 #include "surface_internal.hpp"
 #include "spatial_navigation.hpp"
+#include "ecological_internal.hpp"
 #include "behavior_rng.hpp"
 #include <algorithm>
 #include <map>
@@ -102,7 +103,8 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
         ensure(surface->locate(colony.nest_position).has_value(),"nest outside walkable surface");
     for (const auto& food : s.foods.rows) {
         const auto cell=ground_cell(*surface,food.position,s.config.continuous_spatial_motion);
-        ensure(cell && s.food_cells.emplace(*cell, food.id).second, "invalid surface food placement");
+        ensure(cell ? s.food_cells.emplace(*cell, food.id).second : sip_source(s,food.position,food.initial),
+               "invalid surface food placement");
     }
     ensure(p.trails_enabled == (s.m.maintenance.value != 0), "field schedule flag mismatch");
     if (p.trails_enabled) {
@@ -190,6 +192,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
         if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
         if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
+        if (e.kind==FactKind::FoundressWaterIngested) remaining[e.resource]=subtract(remaining[e.resource],e.transferred);
         if (e.kind == FactKind::ForagingStarted) {
             ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
             const auto home=connector?std::optional{connector_cell(e.payload)}:navigation_cell(s,e.position);
@@ -203,6 +206,12 @@ template <typename S> void validate_surface_evidence(const S& s) {
             f.heading = initial_heading(s.seed, e.actor); audit_visits.try_emplace(f.path[0], 0);
         }
         if (e.kind == FactKind::ForagingDecision) {
+            if (s.ecological) {
+                const auto seen=(e.random_value&1)!=0, weighted=(e.random_value&2)!=0, followed=(e.random_value&4)!=0;
+                ensure((!weighted || (seen && p.trails_enabled && p.trail_weight)) &&
+                       followed==(e.mode==BehaviorMode::FollowTrail) && followed==(e.reason==DecisionReason::Trail) &&
+                       (!followed || weighted), "inconsistent local trail evidence");
+            }
             ensure(audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled && e.position == positions[e.actor] &&
                 e.reason != DecisionReason::None, "invalid individual decision evidence");
             auto& f = audit_agents.at(e.actor); ++f.decisions; ++counts.decisions; f.mode = e.mode;

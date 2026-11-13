@@ -1,5 +1,6 @@
 #pragma once
 #include "antworld/core/entities.hpp"
+#include <optional>
 
 namespace antworld {
 // Every numeric default in this file is ENGINEERING_FIXTURE, not species calibration.
@@ -37,6 +38,7 @@ struct PhysiologyState {
     std::uint64_t decisions{};
     EntityId mother; // Nonzero means initial stores were funded by a birth, not external input.
     std::uint64_t exported_energy_nj{};
+    std::optional<ScheduledId> active_work; // Engaged with zero when the opt-in actor is between acts.
     [[nodiscard]] double body_energy_j() const { return static_cast<double>(body_energy_nj) / 1e9; }
     bool operator==(const PhysiologyState&) const = default;
 };

@@ -43,6 +43,8 @@ struct Case {
     unsigned release_days{120}; // ENGINEERING_FIXTURE. Only the scope assay selects another finite budget.
     bool qualification{}, compact{}, shaft{}, fast_connector{};
     TrailTreatment trail_treatment{TrailTreatment::Silent};
+    bool dogleg{}, blocked_water{};
+    std::optional<EcologicalClosureConfig> ecological;
 };
 
 inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
@@ -64,8 +66,10 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
         scene.geometry.work_duration = {hour_ms / 2};
         scene.geometry.move_duration = c.fast_connector ? SimTime{500} : scene.geometry.work_duration;
         scene.geometry.decision_delay = {60'000};
-        if (c.shaft) scene.voids = {{{14,6,14},{18,16,18}}};
+        if (c.dogleg) scene.voids = {{{12,6,14},{25,10,18}}, {{21,6,14},{25,10,27}}, {{21,6,23},{25,16,27}}};
+        else if (c.shaft) scene.voids = {{{14,6,14},{18,16,18}}};
         else scene.voids = {{{14,4,14},{18,16,18}}, {{12,5,14},{20,11,18}}};
+        if (c.blocked_water) scene.voids.push_back({{19,7,15},{21,9,17}});
         w.configure_geometry(scene.geometry, scene.voids);
     } else closure::chamber(w);
     scene.target = {.03*side, 0, 0};
@@ -73,8 +77,10 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
     require(!w.spatially_clear(nest,scene.target) &&
             w.spatially_clear({0,.001,0},outside,2)==(c.arm!="blocked"),
             "integrated source access does not match the closed or open strip");
-    if (c.qualification)
+    if (c.qualification && !c.dogleg)
         require(w.spatially_clear(nest, {0,.001,0}, 2), "qualification shaft lacks loaded clearance");
+    if (c.dogleg)
+        require(!w.spatially_clear(nest,{0,.001,0},2), "dogleg unexpectedly has a direct vertical route");
 }
 
 inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixture::limits(),
@@ -83,6 +89,7 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     config.continuous_spatial_motion = c.integrated_assay;
     wp5::Scene scene{WorldRuntime({646, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
     auto& w = scene.world;
+    if (c.ecological) w.configure_ecological_closure(*c.ecological);
     const PositionM nest{0,c.integrated_assay?-.004:0,0};
     w.configure_long_term();
     BehaviorConfig behavior;
@@ -121,6 +128,11 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         }
     }
     if (c.care) w.set_autonomy(scene.queen);
+    if (c.ecological && c.ecological->water_sip_ug) {
+        const auto water=c.blocked_water ? PositionM{.002,nest.y,0} : nest;
+        require(w.spatially_clear(nest,water)!=c.blocked_water,"wrong water contact treatment");
+        w.seed_food(water, {0,0,1200,0});
+    }
     for (unsigned i = 0; i < c.workers; ++i) {
         const auto worker = w.seed_ant(colony, {{}, LifeStage::Adult, Caste::Worker, 4000});
         w.enable_physiology(worker, wp5::adult, rm01::physiology_config(rm01::legacy_duration));

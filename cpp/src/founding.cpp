@@ -1,4 +1,5 @@
 #include "founding_internal.hpp"
+#include "ecological_internal.hpp"
 #include "care_internal.hpp"
 
 namespace antworld {
@@ -13,6 +14,7 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
         throw std::invalid_argument("F1 requires an unenrolled foundress at integrated world setup");
     validate_founding(profile);
     auto p = initial_founding_physiology(profile, true, {});
+    if (timed_activity(s)) p.active_work = ScheduledId{};
     FoundingReserve reserve{profile.lipid_ug, 0, profile.protein_ug};
     const auto converted = convert_founding_lipid(profile, p, reserve, LifeStage::Adult, true);
     p.initial.body_energy_nj = p.body_energy_nj;

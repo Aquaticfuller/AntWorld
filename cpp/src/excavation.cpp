@@ -1,5 +1,6 @@
 #include "state.hpp"
 #include "physiology_internal.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -316,6 +317,7 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
     struct Choice {
         ScheduledEvent action;
         SoilRequest soil;
+        bool stalled{};
     };
     std::vector<Choice> choices(0);
     for (const auto &wake : wakes) {
@@ -337,7 +339,10 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                 choice.soil = {ant.id, SoilAction::Drop, {}, carrier->second, s.m.geometry_revision, 0, {}};
             } else {
                 const auto previous = worker.path[worker.path_size - 2];
-                if (clear_sweep(geometry_view(s, limits_), p, previous, body_half(ant.id))) {
+                const bool clear=s.ecological && s.ecological->distance_clock
+                    ? spatially_clear(ant.position,physical(previous,c),body_half(ant.id))
+                    : clear_sweep(geometry_view(s, limits_), p, previous, body_half(ant.id));
+                if (clear) {
                     action.kind = ScheduledEvent::Kind::Move;
                     action.destination = physical(previous, c);
                 }
@@ -352,6 +357,8 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                 std::vector<PointQ> candidates(0);
                 std::int32_t best = -1;
                 for (auto q : portal_neighbors(geometry_view(s, limits_), p, c.loaded_half_q, s.config)) {
+                    if (s.ecological && s.ecological->distance_clock &&
+                        !spatially_clear(ant.position,physical(q,c),c.loaded_half_q)) continue;
                     const auto depot = worker.path[0];
                     const auto d = std::abs(q.x - depot.x) + std::abs(q.y - depot.y) + std::abs(q.z - depot.z);
                     if (d > best) {
@@ -370,8 +377,19 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                 }
             }
         }
-        if (action.kind == ScheduledEvent::Kind::Move)
-            action.key.time = after(s.m.now, c.move_duration.milliseconds);
+        const auto physical_clock = s.ecological && s.ecological->distance_clock;
+        if (action.kind == ScheduledEvent::Kind::Move) {
+            const auto duration = physical_clock ?
+                segment_duration(*s.ecological, ant.position, action.destination, carrier != s.carriers.end()) : c.move_duration;
+            action.key.time = after(s.m.now, duration.milliseconds);
+        } else if (physical_clock && action.kind == ScheduledEvent::Kind::SoilAction && choice.soil.kind == SoilAction::Drop)
+            action.key.time = after(s.m.now, s.ecological->soil_handling.milliseconds);
+        else if (physical_clock && action.kind==ScheduledEvent::Kind::Rest && worker.path_size==1) {
+            // At the depot an empty worker with no feasible frontier may
+            // reconsider at the ordinary task boundary.
+            choice.stalled=true;
+            if (s.social) action.key.time=after(s.m.now,s.social->decision_interval.milliseconds);
+        }
         choices.push_back(choice);
     }
     for (std::size_t i = 0; i < choices.size(); ++i) {
@@ -396,11 +414,17 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         f.position = ant.position;
         f.stage = ant.stage;
         tx.fact(f);
+        if (choice.stalled && s.autonomy.contains(ant.id) && s.autonomy.at(ant.id).enabled) {
+            change_behavior(tx,{s.world,ant.id},IndividualBehavior::Rest,wakes[i].id);
+            continue;
+        }
         if (s.care_profile) {
             const auto act=choice.action.kind==ScheduledEvent::Kind::Move?CareAct::Walk:choice.action.kind==ScheduledEvent::Kind::Rest?
                 CareAct::Inactive:choice.soil.kind==SoilAction::Excavate?CareAct::Excavate:CareAct::HandleSoil;
-            observe(tx,ant.id,wakes[i].id,{ObservationPhase::Selected,act,{},worker.action,s.m.now,false});
+            observe(tx,ant.id,wakes[i].id,{ObservationPhase::Selected,act,{},worker.action,s.m.now,false,
+                s.ecological && s.ecological->distance_clock && act==CareAct::Walk ? choice.action.destination : PositionM{}});
         }
+        if (choice.action.kind!=ScheduledEvent::Kind::Rest) set_activity_work(tx,ant.id,worker.action);
     }
 }
 void WorldRuntime::after_excavation_action(Transaction &tx, const ScheduledEvent &e, const WorldEvent &f,

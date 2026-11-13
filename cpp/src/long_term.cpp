@@ -1,6 +1,7 @@
 #include "long_term_internal.hpp"
 #include "care_internal.hpp"
 #include "founding_internal.hpp"
+#include "ecological_internal.hpp"
 #include <set>
 
 namespace antworld {
@@ -150,6 +151,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
       q.next_absorption = after(s.m.now, q.config.absorption_period.milliseconds);
       q.mother = e.actor;
     }
+    if (timed_activity(s)) q.active_work = ScheduledId{};
     tx.physiology.set(child, q);
     schedule_physiology(tx, child);
     bump(r.births);
@@ -301,6 +303,25 @@ bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
   const auto waypoint=quantized(ant->position,g);
   if (!waypoint) return false;
   const auto origin=*waypoint;
+  if (s.ecological && s.ecological->floor_space) {
+    // A contact-sized, reachable floor sample. Adjacent voxel centers overlap
+    // a loaded body and cannot all serve as independent places to work.
+    const auto spacing = 2 * g.loaded_half_q;
+    const auto half = g.loaded_half_q;
+    const auto view = geometry_view(s, limits_);
+    const auto room = [this, &g, &view, origin, half](PointQ center) {
+      const PointQ below{center.x, center.y - half - 1, center.z};
+      return material_at(view, below) != Material::Void &&
+             spatially_clear(physical(origin,g), physical(center,g), half);
+    };
+    std::size_t useful = room(origin) ? 1 : 0;
+    for (std::int32_t dx = -g.reach_q / spacing; dx <= g.reach_q / spacing; ++dx)
+      for (std::int32_t dz = -g.reach_q / spacing; dz <= g.reach_q / spacing; ++dz) {
+        if ((!dx && !dz) || (std::abs(dx) + std::abs(dz)) * spacing > g.reach_q) continue;
+        if (room({origin.x + dx * spacing, origin.y, origin.z + dz * spacing})) ++useful;
+      }
+    return useful < contacts + 1;
+  }
   constexpr std::array<PointQ, 6> directions{
       {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}}};
   // Bounded reachable free-space proxy, not packing volume or a nest blueprint.

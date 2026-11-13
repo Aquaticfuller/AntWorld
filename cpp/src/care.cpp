@@ -3,6 +3,7 @@
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
 #include "founding_internal.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -180,6 +181,7 @@ void WorldRuntime::interrupt_care(Transaction& tx, EntityId id, Outcome reason, 
     if (!s.care.contains(id) || !s.care.at(id).enabled) return;
     auto c=s.care.at(id);
     if (!disable && !c.active && !c.pending.value) return;
+    if (c.active && c.act!=CareAct::Inactive) set_activity_work(tx,id,{});
     if (c.active || c.bout.value) observe(tx,id,c.bout,{ObservationPhase::Interrupted,c.act,c.target,c.bout,c.active?c.began_at:s.m.now,c.active},{},reason);
     else if (c.carrying_brood) observe(tx,id,c.pending,{ObservationPhase::Interrupted,CareAct::PlaceBrood,
         c.retrieval.target,c.retrieval.pickup_bout,s.m.now,false},{},reason);
@@ -341,6 +343,25 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 }
                 c.target=repeat?remembered:c.retrieval.target.value?c.retrieval.target:
                     brood_candidates[static_cast<std::size_t>(bounded_draw(rng,brood_candidates.size()))].id;
+                bool first_meal = false;
+                if (s.ecological && s.ecological->first_ration_ppm && founding_foundress(a.id) && !continuing && !repeat) {
+                    auto preference=individual_rng(s.seed ^ UINT64_C(0x4649525354524154),a.id,c.decisions);
+                    if (bounded_draw(preference,1000000)<s.ecological->first_ration_ppm) {
+                        std::uint64_t eligible=0;
+                        for (const auto ref : brood_candidates) {
+                            const auto larva=*query_ant(ref);
+                            if (larva.stage!=LifeStage::Larva || larva.colony!=a.colony ||
+                                !within_contact(a.position,larva.position,s.config) ||
+                                !within_contact(larva.position,c.familiar_shelter,s.config) ||
+                                s.care_locks.contains(ref.id) || !can_feed_founding(a.id,ref.id,true)) continue;
+                            const auto receiver=*query_physiology(ref);
+                            if (receiver.crop.protein_ug || receiver.tissue_protein_ug!=receiver.initial.tissue_protein_ug) continue;
+                            if (!eligible || bounded_draw(preference,eligible+1)==0) c.target=ref.id;
+                            ++eligible;
+                        }
+                        first_meal = eligible!=0;
+                    }
+                }
                 const auto b=*query_ant({s.world,c.target});
                 const bool displaced=!within_contact(b.position,c.familiar_shelter,s.config);
                 if (cfg.local_retrieval && displaced && c.retrieval.target!=c.target) {
@@ -352,9 +373,9 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 } else if (displaced) {
                     if (cfg.motion) c.act=CareAct::PickUpBrood;
                     else { c.act=CareAct::TransportBrood; c.destination=toward(a.position,c.familiar_shelter,cfg.step_m); }
-                } else if (repeat) {
+                } else if (repeat || first_meal) {
                     c.act=CareAct::FeedBrood;
-                    annotations[n]=FoundingCareWake::Repeat;
+                    if (repeat) annotations[n]=FoundingCareWake::Repeat;
                 } else {
                     std::vector<CareAct> acts{CareAct::InspectBrood,CareAct::ArrangeBrood,CareAct::CleanBrood};
                     const auto receiver=query_physiology({s.world,b.id});
@@ -458,8 +479,11 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         ScheduledEvent e; e.actor=a.id; e.kind=ScheduledEvent::Kind::CareEnd; e.issued_at=s.m.now;
         e.key={after(s.m.now,duration.milliseconds),Phase::Resolution,0,0,0}; c.pending=tx.insert(e);
         tx.care.set(a.id,c); auto p=s.physiology.at(a.id); p.behavior_event=c.pending; tx.physiology.set(a.id,p);
-        observe(tx,a.id,event.id,{ObservationPhase::Started,c.act,c.target,c.bout,c.began_at,true,c.destination}); return;
+        observe(tx,a.id,event.id,{ObservationPhase::Started,c.act,c.target,c.bout,c.began_at,true,c.destination});
+        if (c.act!=CareAct::Inactive) set_activity_work(tx,a.id,c.pending);
+        return;
     }
+    if (c.active && c.act!=CareAct::Inactive) set_activity_work(tx,a.id,{});
     // Release ownership before applying this act's movements; external movement invalidates other acts.
     if (c.target.value && s.care_locks.contains(c.target) && s.care_locks.at(c.target)==a.id) tx.care_locks.erase(c.target);
     auto ended=c; ended.active=false; ended.pending={}; ended.target={}; ended.bout={}; tx.care.set(a.id,ended);

@@ -9,7 +9,7 @@ inline constexpr std::size_t block_raw_limit=block_records*214;
 inline constexpr std::size_t block_encoded_limit=block_raw_limit+4096;
 enum class FactSchema : unsigned {
     Legacy = 1, Founding = 2, FoundingPersistence = 3, FoundingEarlyAccess = 4, FoundingProvisioning = 5, FoundingDietary = 6,
-    FoundingUptake = 7, FoundingResupply = 8
+    FoundingUptake = 7, FoundingResupply = 8, EcologicalClosure = 9
 };
 struct BlockHeader {
     WorldId world;

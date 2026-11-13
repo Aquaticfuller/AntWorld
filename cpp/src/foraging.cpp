@@ -1,6 +1,7 @@
 #include "state.hpp"
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
+#include "ecological_internal.hpp"
 #include <algorithm>
 
 namespace antworld {
@@ -167,7 +168,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
         else {
             r.local=sense({s.world,e.actor});
-            r.decision=choose_behavior(s.seed,e.actor,loaded,f,r.local,config);
+            r.decision=choose_behavior(s.seed,e.actor,loaded,f,r.local,config,s.ecological.has_value());
             if (link && r.decision.action==ActionKind::DeliverFood) connector(true);
             else if (r.decision.action==ActionKind::Move) r.destination=navigation_waypoint(s,ant.id,r.decision.destination);
             else if (s.config.continuous_spatial_motion && r.decision.action==ActionKind::CollectFood) {
@@ -200,8 +201,11 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         if (r.decision.forget_memory) { f.memory_size = 0; f.memory = {}; bump(s.m.foraging.memory_failures); }
         ScheduledEvent action; action.actor = ant.id; action.issued_at = s.m.now;
         action.observed_position_revision = ant.position_revision;
-        auto duration=r.connector_clock?s.geometry->config.move_duration:config.step_duration;
-        if (s.config.continuous_spatial_motion && r.decision.action==ActionKind::Move) {
+        const auto physical_clock = s.ecological && s.ecological->distance_clock;
+        auto duration=r.connector_clock && !physical_clock?s.geometry->config.move_duration:config.step_duration;
+        if (physical_clock && r.decision.action==ActionKind::Move)
+            duration=segment_duration(*s.ecological,ant.position,r.destination,ant.carried_food.total_ug()!=0);
+        else if (s.config.continuous_spatial_motion && r.decision.action==ActionKind::Move) {
             const auto travel_ms=std::ceil(1000*distance(ant.position,r.destination)/s.config.max_speed_m_per_s);
             if (!std::isfinite(travel_ms) || travel_ms>=static_cast<double>(INT64_MAX))
                 throw std::overflow_error("spatial travel exceeds the simulation clock");
@@ -226,16 +230,20 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         fact.actor = ant.id; fact.colony = ant.colony; fact.position = ant.position; fact.stage = ant.stage;
         fact.mode = r.decision.mode; fact.reason = r.decision.reason; fact.payload = f.decisions;
         fact.forgot_memory = r.decision.forget_memory;
+        fact.random_value = r.decision.trail_evidence;
         // Count the explicitly recorded local food cue, never an unrecorded global discovery.
         fact.resource = r.decision.resource;
         if (s.care_profile) {
             const auto act=action.kind==ScheduledEvent::Kind::Move?CareAct::Walk:action.kind==ScheduledEvent::Kind::CollectFood?
                 CareAct::CollectFood:action.kind==ScheduledEvent::Kind::DeliverFood?CareAct::DeliverFood:CareAct::Inactive;
-            observe(tx,ant.id,r.event.id,{ObservationPhase::Selected,act,{},f.action,s.m.now,false});
+            observe(tx,ant.id,r.event.id,{ObservationPhase::Selected,act,{},f.action,s.m.now,false,
+                physical_clock && act==CareAct::Walk ? action.destination : PositionM{}});
         }
         if (!fact.resource.value && r.local.food_count) fact.resource = r.local.food[0].resource;
         if (fact.resource.value && !s.discoveries.contains(fact.resource)) tx.discoveries.set(fact.resource, {s.m.now, ant.id});
         tx.fact(fact);
+        if (action.kind==ScheduledEvent::Kind::Move || action.kind==ScheduledEvent::Kind::CollectFood ||
+            action.kind==ScheduledEvent::Kind::DeliverFood) set_activity_work(tx,ant.id,f.action);
     }
 }
 void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldEvent& fact, const AntState& before) {

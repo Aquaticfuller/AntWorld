@@ -1,4 +1,5 @@
 #include "state.hpp"
+#include "ecological_internal.hpp"
 #include <tuple>
 
 namespace antworld {
@@ -104,7 +105,8 @@ FoodRef WorldRuntime::seed_food(PositionM position, FoodMass mass) {
     std::optional<Cell> cell;
     if (s.surface) {
         cell = ground_cell(*s.surface,position,s.config.continuous_spatial_motion);
-        if (!cell || s.food_cells.contains(*cell)) throw std::invalid_argument("surface food requires a unique walkable cell");
+        if ((!cell && !(s.geometry && sip_source(s,position,mass))) || (cell && s.food_cells.contains(*cell)))
+            throw std::invalid_argument("surface food requires a unique walkable cell or an enabled local water source");
     }
     Transaction tx(s, limits_); tx.entity_budget(); const ResourceId id{take(s.m.next_entity)};
     s.foods.append({id, position, mass, mass});
@@ -163,6 +165,8 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
     else if (e.stage != LifeStage::Dead && static_cast<unsigned>(e.stage) != static_cast<unsigned>(ant.stage)+1)
         fact.outcome = Outcome::InvalidTransition;
     else {
+        if (timed_activity(s) && s.physiology.contains(e.actor) && s.physiology.at(e.actor).active_work->value)
+            set_activity_work(tx,e.actor,{});
         interrupt_care(tx,e.actor,Outcome::InvalidStage,e.stage==LifeStage::Dead);
         synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
@@ -194,6 +198,8 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         }
         const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i);
         const auto before = ant;
+        if (timed_activity(s) && s.physiology.contains(e.actor) && s.physiology.at(e.actor).active_work==e.id)
+            set_activity_work(tx,e.actor,{});
         WorldEvent f; f.source = e.id; f.actor = e.actor; f.colony = ant.colony; f.resource = e.resource;
         f.kind = FactKind::ActionRejected; f.position = ant.position; f.stage = ant.stage;
         if (e.key.sequence != first.at(e.actor)) f.outcome = Outcome::DuplicateAction;
@@ -269,6 +275,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
                 (s.long_term->complete_depot_visits || s.foragers.at(ant.id).mode==BehaviorMode::Return))))
             notify_return(tx,ant.id);
         tx.fact(f);
+        record_recruitment_cue(tx,f);
         if (f.kind==FactKind::SoilFilled || f.kind==FactKind::SoilExcavated) validate_active_care(tx);
         observe_legacy_action(tx,e,f);
     }

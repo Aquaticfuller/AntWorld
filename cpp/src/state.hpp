@@ -172,6 +172,14 @@ struct WorldRuntime::State {
     WorldId world;
     std::uint64_t seed;
     WorldConfig config;
+    std::optional<EcologicalClosureConfig> ecological;
+    struct RecruitmentSignal {
+        EventId fact;
+        SimTime time;
+        PositionM position;
+    };
+    using RecruitmentSignals = std::map<EntityId, RecruitmentSignal>;
+    RecruitmentSignals recruitment_signals; // Rebuilt from committed cue facts.
     using Queue = std::map<EventKey, ScheduledEvent>;
     using QueueIndex = std::map<ScheduledId, EventKey>;
     Queue queue;
@@ -277,8 +285,10 @@ class WorldRuntime::Transaction {
     std::shared_ptr<const State::FoundingSetup> founding_before;
     std::optional<detail::MapJournal<State::FoundingReserves>> founding_undo;
     std::optional<detail::MapJournal<State::FoundingUptakeClocks>> founding_uptake_undo;
+    std::optional<detail::MapJournal<State::RecruitmentSignals>> recruitment_undo;
     std::shared_ptr<const SpeciesCareProfile> care_profile_before;
     EnvironmentCareProfile care_environment_before;
+    std::optional<EcologicalClosureConfig> ecological_before;
     std::size_t ants_before, colonies_before, foods_before, journal_before;
     std::vector<QueueUndo> queue_undo = std::vector<QueueUndo>(0);
     std::vector<std::pair<std::size_t, AntState>> ant_undo = std::vector<std::pair<std::size_t, AntState>>(0);
@@ -314,7 +324,7 @@ public:
     detail::MapJournal<State::CareLocks> care_locks;
     Transaction(State& state, const RuntimeLimits& policy) : s(state), limits(policy), before(state.m), surface_before(state.surface),
         geometry_before(state.geometry), social_before(state.social), long_term_before(state.long_term), founding_before(state.founding),
-        care_profile_before(state.care_profile), care_environment_before(state.care_environment),
+        care_profile_before(state.care_profile), care_environment_before(state.care_environment), ecological_before(state.ecological),
         ants_before(s.ants.size()), colonies_before(s.colonies.rows.size()),
         foods_before(s.foods.rows.size()), journal_before(s.journal.size()), foragers(s.foragers), connectors(s.connectors), trails(s.trails),
         visits(s.visits), edges(s.edges), discoveries(s.discoveries), food_cells(s.food_cells), physiology(s.physiology),
@@ -343,6 +353,7 @@ public:
         s.long_term = long_term_before;
         s.founding = founding_before;
         s.care_profile = care_profile_before; s.care_environment = care_environment_before;
+        s.ecological = ecological_before;
     }
     void commit() noexcept {
         profiling::Scope profile(profiling::Category::Transaction);
@@ -355,7 +366,12 @@ public:
         if (founding_undo) founding_undo->commit();
         if (founding_uptake_undo) founding_uptake_undo->commit();
         pending_conflicts.commit();
+        if (recruitment_undo) recruitment_undo->commit();
         care.commit(); care_locks.commit();
+    }
+    void set_recruitment_signal(EntityId actor, State::RecruitmentSignal cue) {
+        if (!recruitment_undo) recruitment_undo.emplace(s.recruitment_signals);
+        recruitment_undo->set(actor,cue);
     }
     void set_founding(EntityId id, const FoundingReserve& reserve) {
         if (!founding_undo) founding_undo.emplace(s.founding_reserves);

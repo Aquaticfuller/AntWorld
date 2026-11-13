@@ -3,6 +3,7 @@
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
 #include "founding_internal.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -26,6 +27,7 @@ void WorldRuntime::enable_physiology(AntRef ref, const PhysiologySeed& seed, con
     p.config = config; p.initial = seed; p.crop = seed.crop; p.body_energy_nj = seed.body_energy_nj;
     p.hydration_ug = seed.hydration_ug; p.tissue_protein_ug = seed.tissue_protein_ug;
     p.next_absorption = config.absorption_period;
+    if (timed_activity(s)) p.active_work = ScheduledId{};
     if (s.foragers.contains(ref.id) && s.foragers.at(ref.id).enabled) p.behavior = IndividualBehavior::Forage;
     tx.physiology.set(ref.id, p); schedule_physiology(tx, ref.id);
     s.m.physiology_inputs = sum(s.m.physiology_inputs, sum(seed.crop, {0, seed.tissue_protein_ug, seed.hydration_ug, 0}));
@@ -77,6 +79,7 @@ void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause caus
     for (const auto event : {p.physiology_event, p.behavior_event})
         if (event.value && s.queue_index.contains(event)) tx.remove(s.queue_index.at(event));
     p.physiology_event = {}; p.behavior_event = {}; p.behavior = IndividualBehavior::Paused;
+    if (p.active_work) p.active_work = ScheduledId{};
     p.death_cause = cause; tx.physiology.set(id, p);
 }
 void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) {
@@ -118,6 +121,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     }
     f.kind = FactKind::PhysiologyUpdated;
     if (!p.body_energy_nj || !p.hydration_ug) {
+        if (p.active_work) p.active_work = ScheduledId{};
         p.death_cause = !p.body_energy_nj ? DeathCause::EnergyDepleted : DeathCause::Dehydrated;
         f.kind = FactKind::AntDied; f.stage = LifeStage::Dead; f.payload = static_cast<std::uint64_t>(p.death_cause);
         tx.touch_ant(i); ant.stage = LifeStage::Dead; s.ants.set(i, ant); --s.m.living;
@@ -148,6 +152,10 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
         if (emitted_pulse && !advance_stage) {
+            if (queen && s.ecological && s.ecological->water_sip_ug) {
+                draw_founding_water(tx, e, ant);
+                p = s.physiology.at(e.actor);
+            }
             if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake) {
                 const auto j=s.colonies.index.at(ant.colony);
                 auto& colony=s.colonies.rows[j];
@@ -198,6 +206,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
             (!s.excavators.contains(ref.id) || e.id != s.excavators.at(ref.id).action))
             throw std::invalid_argument("individual has an external pending action");
     }
+    if (timed_activity(s) && s.physiology.at(ref.id).active_work->value) set_activity_work(tx,ref.id,{});
     synchronize_physiology(tx, ref.id); auto p = s.physiology.at(ref.id);
     if (p.behavior_event.value && s.queue_index.contains(p.behavior_event)) tx.remove(s.queue_index.at(p.behavior_event));
     p.behavior_event = {};

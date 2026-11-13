@@ -233,7 +233,8 @@ LoadedWorld Store::recover(WorldId world,std::uint64_t base_generation,std::uint
         const auto target=verified_anchor(impl_->db,world,target_generation,impl_->limits.checkpoint_bytes);
         const auto schema=frame_fact_schema(target.frame);
         const auto base_profile=base.world.founding_profile();
-        const auto base_schema=base_profile ? static_cast<FactSchema>(base_profile->model_version()+1) : FactSchema::Legacy;
+        const auto base_schema=base.world.ecological_closure() ? FactSchema::EcologicalClosure :
+            base_profile ? static_cast<FactSchema>(base_profile->model_version()+1) : FactSchema::Legacy;
         require(compatible_fact_schema(schema,base_schema),"experimental recovery cannot cross model versions");
         verify_blocks(impl_->db,world,{base.token.cursor},{target.token.cursor},target.tail,schema);
         base.world.restore_frame(target.frame,std::make_shared<SqlEventPrefix>(impl_->path,world,

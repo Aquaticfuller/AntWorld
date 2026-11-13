@@ -50,8 +50,7 @@ inline FoundingRates founding_rates(const FoundingProfile& f, const PhysiologySt
         return {rates.basal_nj_per_day, rates.water_ug_per_day};
     }
     if (queen) {
-        const bool active = maximum || p.behavior == IndividualBehavior::Forage || p.behavior == IndividualBehavior::Nurse ||
-                            p.behavior == IndividualBehavior::Excavate;
+        const bool active = maximum || active_expenditure(p);
         return {add(f.basal_nj_per_day, active ? multiply(f.active_nj_per_ms, founding_day_ms) : 0), f.water_ug_per_day};
     }
     const auto adult = maximum ? add(p.config.basal_nj_per_ms, p.config.active_nj_per_ms) : expenditure(p, stage);
