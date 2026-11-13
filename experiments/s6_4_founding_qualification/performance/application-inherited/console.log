@@ -1,0 +1,8 @@
+{"kind": "application-inherited", "session": "session1", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 3.2233671757870246, "system_busy_pct_p95": 14.138762290365353, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 6.328857612948178, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session1: 240/240 samples, qualified telemetry True
+{"kind": "application-inherited", "session": "session2", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 2.5109389495839043, "system_busy_pct_p95": 16.857362219077686, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 8.281435759084781, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session2: 240/240 samples, qualified telemetry True
+{"kind": "application-inherited", "session": "session3", "attempt": 1, "admitted": false, "system_busy_pct_complete": true, "system_busy_pct_p50": 5.673302107728338, "system_busy_pct_p95": 14.795991313216488, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 23.585065356857264, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+{"kind": "application-inherited", "session": "session3", "attempt": 2, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.482602498006242, "system_busy_pct_p95": 4.576718634756729, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 0.0, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session3: 240/240 samples, qualified telemetry True
+COLLECTION_FINISHED

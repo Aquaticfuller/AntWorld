@@ -1,0 +1,33 @@
+{
+  "exit_code": 0,
+  "collector_error": "",
+  "rows": 240,
+  "telemetry_rows": 5820,
+  "started_utc_ns": 1794553275852156100,
+  "ended_utc_ns": 1794553858042288600,
+  "admission_attempt": 2,
+  "binary_sha256": "8da028b015c07e1850d7b8382fd174433d7ef8d8ada06d0885b8219a5661c5e3",
+  "telemetry_uncompressed_sha256": "8465a08c9f999f8744a3ab685eedae2cbd88a9a9116da31614c89f729f6d1b71",
+  "hwinfo_before_sha256": "d12715b8558da74d002b2c59768c1e69eb9171c59527cbe061f2728ad61244b1",
+  "hwinfo_after_sha256": "293115b295978834a3b38c456ef61a7d1d7079e76682e3c9ed0f33174ee97ea1",
+  "host_after": {
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "os": [
+      {
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "TotalVisibleMemorySize": 16494648
+      }
+    ],
+    "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "timezone_minutes": 60
+  },
+  "telemetry_qualified": true
+}

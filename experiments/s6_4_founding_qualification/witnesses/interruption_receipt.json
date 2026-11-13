@@ -1,0 +1,45 @@
+{
+  "archive_sha256": "845b392e57cd9be9fb728cff4760158a18895f67a773b2d5c676c670925e332b",
+  "artifacts": {
+    "interruption.csv": {
+      "bytes": 75,
+      "sha256": "229425a47e651cfb8ff2f1aa92b770ed1a074210d39c126231e9b554c8c6192a"
+    },
+    "midpoint.sqlite": {
+      "bytes": 4808704,
+      "sha256": "66696425ac524c8f689981045f561b26a3fd9e0f79dd04315bbcb801d1a8bae2"
+    },
+    "midpoint.sqlite-wal": {
+      "bytes": 4812192,
+      "sha256": "5d5d470d98ea0751b74f7e38f601323613906f14da7180c338ff84d6d16b1133"
+    },
+    "published.frame": {
+      "bytes": 44847,
+      "sha256": "92fb1c0101b11eaed5eb1b5e5f86dc98798cdf7cdce25a5d9858777497256adc"
+    }
+  },
+  "binary_sha256": "8da028b015c07e1850d7b8382fd174433d7ef8d8ada06d0885b8219a5661c5e3",
+  "case": "borisovka-micro-nominal-0-1-balanced",
+  "exit_code": 78,
+  "final": {
+    "facts.bin": "080d12c531b519bb61c5900b5d59ea33adbb31551c5b283242e9f48771157bda",
+    "final.frame": "9acb72560aeab96cd858a21ea3e35922ad08cd1c8da75c216ea0f5e8948494ad"
+  },
+  "marker": {
+    "attempted_time_ms": "6566400000",
+    "published_cursor": "46247",
+    "published_generation": "1"
+  },
+  "reference": "a0dc086f6d1b8f5601d743dbcbc1274d073e252e",
+  "result": {
+    "cursor": "46247",
+    "events": "641002",
+    "generation": "1",
+    "midpoint_ms": "6480000000",
+    "rng": "1",
+    "state_hash": "11683757506278170936",
+    "time_ms": "12960000000",
+    "trace_hash": "5495131897272427329"
+  },
+  "source": "f477add66a2bbda4e3879bee49d766ef11fe176f"
+}

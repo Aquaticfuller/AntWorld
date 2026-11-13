@@ -1,0 +1,1 @@
+event_id,time_ms,scheduled_id,kind,actor_id,resource_id,x_m,y_m,z_m,event_c_ug,event_p_ug,event_w_ug,event_o_ug,reserve_c_ug,reserve_p_ug,reserve_w_ug,reserve_o_ug,site_c_ug,site_p_ug,site_w_ug,site_o_ug,actor_cargo_c_ug,actor_cargo_p_ug,actor_cargo_w_ug,actor_cargo_o_ug

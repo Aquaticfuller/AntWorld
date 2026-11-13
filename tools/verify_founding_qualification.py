@@ -12,6 +12,7 @@ from tempfile import TemporaryDirectory
 from analyze_founding_qualification_b06 import summarize
 from analyze_founding_qualification_performance import by_cell, collect, key
 from analyze_s6_4_wp6b import check
+from check_s6_4_wp6b_r2_recovery import receipt as reference_recovery
 from compare_founding_qualification_runs import compare
 from founding_qualification_scope import cases
 from founding_qualification_witnesses import table
@@ -19,6 +20,7 @@ from profile_founding_qualification import CELLS
 from reconcile_s6_4_rm02_performance import verify_manifest
 from run_integrated_founding import DAY, environments
 from run_s6_4_wp6b import ROOT, input_bytes, sha
+from verify_s6_4_wp6b_r2 import REPRESENTATIVES
 from verify_s6_4_wp6b_r2_performance import compare_outputs, run
 
 
@@ -41,7 +43,7 @@ def cohorts(output):
             witness=observed[row["case"]]
             key="exact" if row["rule"]=="exact" else "at_least"
             check(witness["k"]==row["k"] and int(witness[f"{key}_complete"])==bool(row["total_d"]) and
-                  int(witness[f"pupa_{key}_seen"])==bool(row["larva_d"]) and
+                  int(witness[f"pupa_{key}_seen"])==bool(row["first_pupa_ms"]) and
                   all(witness[f"{key}_{endpoint}"]==row[endpoint] for endpoint in ("egg_d","larva_d","pupa_d","total_d")),
                   "original B06 match changed")
     for row in read(reference/"resupply-closed"/"timing_comparison.csv"):
@@ -101,6 +103,28 @@ def legacy(output):
                   row["status"]==earlier[case]["status"],"legacy replay does not match its historical authority")
 
 
+def r2_recovery(path):
+    root=ROOT/"experiments/s6_4_wp6b_r2"
+    expected={(mode,name) for mode,names in REPRESENTATIVES.items() for name in names}
+    receipt=json.loads(path.read_bytes())
+    seen=defaultdict(dict)
+    for row in receipt["cases"]:
+        pair=(row["mode"],row["case"])
+        treatment=row["treatment"]
+        check(pair in expected and treatment in ("durable","unobserved") and treatment not in seen[pair],
+              "unexpected R2 recovery case")
+        seen[pair][treatment]=row
+    check(seen.keys()==expected and all(len(treatments)==2 for treatments in seen.values()),"incomplete R2 recovery receipt")
+    with TemporaryDirectory() as scratch:
+        for (mode,name),treatments in seen.items():
+            _,_,original=reference_recovery(root/mode,name,Path(scratch))
+            for treatment,row in treatments.items():
+                check(all(row["hashes"][member]==original["artifacts"][member]["sha256"] for member in
+                          ("initial.chk","final.frame","facts.bin")) and
+                      row["counts_and_costs"]["events"]==original["summary"]["events"] and
+                      (treatment!="durable" or "midpoint.sqlite" in row["midpoint_files"]),"changed R2 recovery authority")
+
+
 def native(output):
     for kind in ("contacts","births","protected"):
         verify_manifest(output/kind)
@@ -136,6 +160,7 @@ def verify(root):
     cohorts(root/"b06")
     scope(root/"scope")
     legacy(root/"replay-legacy")
+    r2_recovery(root/"r2-recovery.json")
     performance=root/"performance"
     native(performance)
     experiments=ROOT/"experiments"
