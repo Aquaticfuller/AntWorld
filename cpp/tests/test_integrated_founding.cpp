@@ -31,11 +31,11 @@ Case founding_case(std::string arm="balanced", bool intake=true, bool eggs=true)
 void funded_components() {
     const auto f=founding_case().profile;
     auto donor=initial_founding_physiology(f,false,{});
-    donor.crop={9,3,20,0};
-    require(founding_gift_supply(f,donor)==FoodMass{3,3,20,0},
+    donor.crop={19,3,20,0};
+    require(founding_gift_supply(f,donor)==FoodMass{8,3,20,0},
             "gift did not protect its next two scheduled energy intervals");
     donor.hydration_ug=1;
-    require(founding_gift_supply(f,donor)==FoodMass{3,3,9,0},
+    require(founding_gift_supply(f,donor)==FoodMass{8,3,9,0},
             "gift did not protect its next two scheduled water intervals");
     auto q=initial_founding_physiology(f,true,{});
     q.body_energy_nj=1'995'000'000;
