@@ -50,15 +50,17 @@ Case read_case(const Path& path) {
         } else if (c.qualification) {
             const auto layout = c.arm.substr(10);
             c.compact = layout != "roomy";
+            c.shaft = layout.starts_with("shaft-");
             if (layout == "roomy" || layout == "compact-silent") {
                 c.arm = "balanced";
-            } else if (layout == "compact-blind") {
+            } else if (layout == "compact-blind" || layout == "shaft-blind") {
                 c.arm = "balanced";
                 c.trail_treatment = TrailTreatment::Blind;
             } else {
                 require(layout == "compact-marked" || layout == "compact-blocked" ||
-                        layout == "compact-no-protein" || layout == "compact-absent", "invalid qualification layout");
-                c.arm = layout == "compact-marked" ? "balanced" : layout.substr(8);
+                        layout == "compact-no-protein" || layout == "compact-absent" ||
+                        layout == "shaft-marked" || layout == "shaft-blocked", "invalid qualification layout");
+                c.arm = layout.ends_with("-marked") ? "balanced" : layout.substr(c.shaft ? 6 : 8);
                 c.trail_treatment = TrailTreatment::Marked;
             }
         } else c.arm.erase(0,11);

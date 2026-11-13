@@ -41,7 +41,7 @@ struct Case {
     SimTime horizon{90 * day_ms};
     bool integrated_assay{};
     unsigned release_days{120}; // ENGINEERING_FIXTURE. Only the scope assay selects another finite budget.
-    bool qualification{}, compact{};
+    bool qualification{}, compact{}, shaft{};
     TrailTreatment trail_treatment{TrailTreatment::Silent};
 };
 
@@ -64,7 +64,8 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
         scene.geometry.work_duration = {hour_ms / 2};
         scene.geometry.move_duration = scene.geometry.work_duration;
         scene.geometry.decision_delay = {60'000};
-        scene.voids = {{{14,4,14},{18,16,18}}, {{12,5,14},{20,11,18}}};
+        if (c.shaft) scene.voids = {{{14,6,14},{18,16,18}}};
+        else scene.voids = {{{14,4,14},{18,16,18}}, {{12,5,14},{20,11,18}}};
         w.configure_geometry(scene.geometry, scene.voids);
     } else closure::chamber(w);
     scene.target = {.03*side, 0, 0};

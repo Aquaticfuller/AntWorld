@@ -16,12 +16,15 @@ from run_s6_4_wp6b import ROOT, git, run_one, sha, write_json
 
 PROTOCOL = ROOT / "research/s6_4_final_core_readiness/FROZEN_FINAL_PROTOCOL.md"
 FREEZE = "d107384"
+SHAFT_PROTOCOL = PROTOCOL.with_name("FROZEN_SHAFT_DIAGNOSTIC.md")
+SHAFT_FREEZE = "82078ff"
 REFERENCE = "73e801946a2419bf33eb78e5240f8af0923ff31a"
 ARMS = {
     "roomy": "balanced", "compact-silent": "balanced", "compact-marked": "balanced",
     "compact-blind": "balanced", "compact-blocked": "blocked", "compact-no-protein": "no-protein",
     "compact-absent": "absent",
 }
+SHAFT_ARMS = {"shaft-marked": "balanced", "shaft-blind": "balanced", "shaft-blocked": "blocked"}
 SEEDS = (1, 7, 19, 42, 43, 97)
 POPULATIONS = ("borisovka", "st_petersburg")
 WITNESSES = {
@@ -29,43 +32,37 @@ WITNESSES = {
     ("borisovka", 1, "compact-blocked"), ("st_petersburg", 1, "compact-no-protein"),
     ("borisovka", 1, "compact-absent"),
 }
+SHAFT_WITNESSES = {(population, 1, "shaft-marked") for population in POPULATIONS} | {("borisovka", 1, "shaft-blocked")}
 
 
-def cases():
+def cases(shaft=False):
     base = environments("nominal")
     by_arm = {(c["population"], c["software_seed"], c["arm"]): (i, c) for i, c in base}
-    for population in POPULATIONS:
-        for seed in SEEDS:
-            for arm, source in ARMS.items():
-                identity, standard = by_arm[population, seed, "integrated-" + source]
-                case = standard | dict(case=f"{population}-{seed}-{arm}", arm="readiness-" + arm,
-                                       authority_reference=standard["case"], supply_arm=standard["arm"])
-                yield identity, case, "observed"
-    for population in POPULATIONS:
-        for identity, case, mode in cases_observed_marked(base, population):
-            yield identity, case, mode
-
-
-def cases_observed_marked(base, population):
-    identity, standard = next((i, c) for i, c in base if c["population"] == population
-                              and c["software_seed"] == SEEDS[0] and c["arm"] == "integrated-balanced")
-    for mode in ("unobserved", "durable-split"):
-        case = standard | dict(case=f"{population}-{SEEDS[0]}-compact-marked-{mode}", arm="readiness-compact-marked",
-                               authority_reference=standard["case"], supply_arm=standard["arm"])
+    arms = SHAFT_ARMS if shaft else ARMS
+    primary = [(p, s, a, "observed") for p in POPULATIONS for s in SEEDS for a in arms]
+    marked = "shaft-marked" if shaft else "compact-marked"
+    repeats = [(p, SEEDS[0], marked, m) for p in POPULATIONS for m in ("unobserved", "durable-split")]
+    for population, seed, arm, mode in primary + repeats:
+        identity, standard = by_arm[population, seed, "integrated-" + arms[arm]]
+        name = f"{population}-{seed}-{arm}"
+        if mode != "observed":
+            name += "-" + mode
+        case = standard | dict(case=name, arm="readiness-" + arm, authority_reference=standard["case"], supply_arm=standard["arm"])
         yield identity, case, mode
 
 
-def collect(binary, compiler, output):
-    frozen = subprocess.check_output(["git", "show", f"{FREEZE}:{PROTOCOL.relative_to(ROOT).as_posix()}"], cwd=ROOT)
-    if frozen != PROTOCOL.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/final_core_integration.py"):
+def collect(binary, compiler, output, shaft=False):
+    protocol, freeze = (SHAFT_PROTOCOL, SHAFT_FREEZE) if shaft else (PROTOCOL, FREEZE)
+    frozen = subprocess.check_output(["git", "show", f"{freeze}:{protocol.relative_to(ROOT).as_posix()}"], cwd=ROOT)
+    if frozen != protocol.read_bytes() or git("status", "--porcelain", "--", "cpp", "tools/final_core_integration.py"):
         raise ValueError("the protocol and collection source must be frozen before the run")
-    roster = list(cases())
+    roster = list(cases(shaft))
     output.mkdir(parents=True)
     write_json(output / "run.json", dict(source=git("rev-parse", "HEAD"), reference=REFERENCE,
         cpp_tree=git("rev-parse", "HEAD:cpp"), binary_sha256=sha(binary), arguments=COMMAND,
         configuration="Release", python=platform.python_version(), platform=platform.platform(),
         compiler=subprocess.check_output([compiler, "--version"], text=True).splitlines(), started_ns=time_ns(),
-        collector_sha256=sha(Path(__file__)), protocol_sha256=sha(PROTOCOL),
+        collector_sha256=sha(Path(__file__)), protocol_sha256=sha(protocol),
         roster=[dict(case=c["case"], identity=i, mode=m) for i, c, m in roster]))
     with (output / "archives.jsonl").open("x", encoding="utf-8", newline="\n") as receipts:
         for identity, case, mode in roster:
@@ -86,6 +83,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--compiler", type=Path, required=True)
+    parser.add_argument("--shaft", action="store_true")
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
-    collect(args.binary.resolve(strict=True), args.compiler.resolve(strict=True), args.output.resolve())
+    collect(args.binary.resolve(strict=True), args.compiler.resolve(strict=True), args.output.resolve(), args.shaft)
