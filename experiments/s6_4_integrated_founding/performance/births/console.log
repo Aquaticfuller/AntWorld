@@ -1,0 +1,7 @@
+{"kind": "births", "session": "session1", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.7070975870003986, "system_busy_pct_p95": 11.0675886389803, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 3.124592256834407, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+births/session1: exit=0; all measured rows retained
+{"kind": "births", "session": "session2", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.564810510629425, "system_busy_pct_p95": 8.013849585808867, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 1.562650385236712, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+births/session2: exit=0; all measured rows retained
+{"kind": "births", "session": "session3", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 1.5227045915414854, "system_busy_pct_p95": 3.6218617538439064, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 1.5622538202168248, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+births/session3: exit=0; all measured rows retained
+COLLECTION_FINISHED

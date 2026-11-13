@@ -1,0 +1,2 @@
+kind,status,qualified_sessions,required_sessions,raw_rows,planned_rows,batch
+births,INCONCLUSIVE,0,3,0,168,INTERRUPTED

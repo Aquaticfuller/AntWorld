@@ -1,0 +1,4 @@
+kind,session,admission_attempts,measured_rows,planned_rows,qualified,historical_workload_match,native_exit
+births,session1,0,0,56,False,True,
+births,session2,0,0,56,False,True,
+births,session3,0,0,56,False,True,

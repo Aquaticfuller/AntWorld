@@ -1,0 +1,40 @@
+{
+  "source_commit": "361d2382e8ff90fbd6a13c2c355dee7920792537",
+  "cpp_tree": "ef100a54ba986b114c8b7362f406c07c36b93c26",
+  "protocol_sha256": "8ac47f812fd5efc7ab89e18ff6c8f060d013c17f2b58ca9587c740cdf537a522",
+  "sensor_mapping_sha256": "d21bb38bf239b5980a5d9067176da3aa1647e1e157f2c01f69e6b6b8af9946d7",
+  "compiler": [
+    "clang version 23.1.5 (https://github.com/llvm/llvm-project.git 392dfff97d29b59d77e5cac6d4b6ef2585fe7117)",
+    "Target: x86_64-w64-windows-gnu",
+    "Thread model: posix",
+    "InstalledDir: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin",
+    "Configuration file: D:/Codex_workspace/AntWorld/.tools/llvm-mingw-20261104-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg"
+  ],
+  "configuration": "Release",
+  "cache_sha256": "ca2edaf00aba6f542ecf74aec4bd94f7d8f7b7610d18d4adebf4ba446666c45f",
+  "executable": "antworld_s6_4_wp5_benchmark.exe",
+  "binary_sha256": "b95904beb189ac29408565a6f1b3056450f1a382575a53edda38ae81a6668ab3",
+  "schedules": {
+    "session1": "3e5c3a55ad8568bf42d19d4d1092e5309b540baafd7018c8abe1a6bdef2f2601",
+    "session2": "e067428aeebaaebc18110a7b0f66b4468c0374859fc7d05d039c2df2db76b012",
+    "session3": "d2986ef7d11d19f5f2b2ce7f745a80a68d7d4f4d67b64a156d9dc141fe00861e"
+  },
+  "confirmation_sha256": "ae98ebc30aa513a2e10b8b3b04004e62ef8d3450082564b0a857c3ca2ecc449f",
+  "sources": {
+    "run_s6_3_3_1_performance.py": "df4f3034c3401ef8eff61c2070e47125181ba837357663623bec8c143290b94c",
+    "s6_3_3_1_processor_times.py": "b430327c4fb4f571ade6a14513597f78d17dd2e0bdd9d0681df3c9243d4bfbdc",
+    "s6_2_windows_telemetry.py": "4e32167b03dc83676fafb158b3ac202ebfe1a70b0d98556f7a694ae90a700540",
+    "diagnose_s6_3_2_counters.py": "fa19e9b0c1f2b114afc4402fa6cc9aec58da02fdac634e286c1f5ae2bb2d8fb5",
+    "run_s6_3_2_performance.py": "73232a32a61e21eb44b74e563fefd901eb4c58aa934be8ae2472e025aaf0e74c",
+    "run_s6_3_performance.py": "9cd91a64a6dcc02f7b76022799d0c29e06e0d5cf03dc1c43a3e157a447124907",
+    "run_s6_2_performance.py": "9a97adda7db340faf087ebbee1051fbd3610bff55230a3895eb9536e467d1594",
+    "extract_s6_2_hwinfo.py": "2ec10b56b4db41d55d4a23eab7780a475ce825b86e846129ac6cbfaf875e7157",
+    "verify_s6_3_3_1_reserve_workload.py": "e1c836c93687ada118f0b4e01782f96f3e84df9ece56f875e28e1c74c97532e0",
+    "run_s6_4_wp6b_r2_performance.py": "28ad376d51745b901e791fa78210fbbabdb79456651ea24b4b8028451666e116",
+    "s6_4_wp6b_r2_append_log.py": "2c2699510564f21fd78b11abd32a5e6296fdf07567ef62dc2fcf84eb91460714",
+    "hwinfo_append_layout.json": "33f8d12d1db07f457faa056dcab2ffcfc11af308e0ec2fbfa53dfe58ed522b19",
+    "run_s6_4_rm02_performance.py": "3d919b7b6d22d497f32a05844e00fa2236c9ab37b816cab2cc5d2ebe3ea3f934",
+    "s6_4_wp6b_r2_protected_observer.py": "d869f98fe3e1288a0d0f880026c261277dc20e2aca8704c228ebc17ce7bd3482"
+  },
+  "created_utc_ns": 1794540545687448800
+}

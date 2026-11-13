@@ -1,0 +1,4 @@
+kind,session,admission_attempts,measured_rows,planned_rows,qualified,historical_workload_match,native_exit
+contacts,session1,3,112,112,True,True,0
+contacts,session2,1,112,112,True,True,0
+contacts,session3,1,112,112,True,True,0

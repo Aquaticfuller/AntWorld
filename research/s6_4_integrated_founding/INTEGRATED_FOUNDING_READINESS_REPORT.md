@@ -61,3 +61,17 @@ The original B06 experiment used isolated water-supplied foundresses, repeated c
 In the 960 unchanged closed-stock primary and additional cases for each of N+E, U and F, the first-worker gate passes. Under F, 182/192 Borisovka and 192/192 St. Petersburg care-on primary cases have a true first worker. Both populations qualify in 32/32 primary combinations, all factor levels qualify in 16/16 and all additional combinations qualify in 8/8. No care-off world pupates. The separate B06 census gate remains `INSUFFICIENT` for both populations and both matching readers. Of 192 primary care-on cases per population, 27 and 16 respectively reach the first larval census size in simultaneously living pupae and zero complete the original worker census. First visible egg-to-larva counts take median 17 and 16 days. Among the incomplete matches reaching the pupal count, larva-to-pupa census time is median 21 and 24 days, outside the original 7–14 and 8.5–12.5 day reference bands. Report these partial comparisons with their denominators and retained `INSUFFICIENT` overall status. Neither the 150-day supplied success nor different adult survival modifies this result.
 
 BR-01 to BR-09 remain `BIOLOGICAL_BLOCKED`. The needed measurements include independently collected stage budgets, worker-to-queen volumes and timing, larval protein uptake, founders in comparable protected watering conditions, and paired whole-colony time series. No new direct evidence supports the fixed cue weights, liquid pool, crop time boundaries, exact diet efficiency, two-interval replenishment signal or natural survival rate.
+
+The [nine-root scope register](BIOLOGICAL_SCOPE_AND_OPEN_GATES.csv) records the next independent endpoint per blocker. Closed-stock adult mortality is still real in this model. In the F closed cases all 1,461 eclosed workers in the care-on cohorts die of dehydration. With balanced supply across the four corners, 1,712 of 1,715 eclosed workers are present at the last observation and three die of dehydration. A terminally living worker is right-censored at the fixed horizon. [Archived stage exposures](../../experiments/s6_4_integrated_founding/analysis)
+
+## Acceptance boundaries
+
+| Decision | Evidence |
+|---|---|
+| Protected early founding loop | `PASS` within the frozen supplied geometry, diet and software parameter envelope. |
+| Inherited closed-stock first-worker robustness | `PASS`. All original denominators and factor thresholds were applied. |
+| B06 count-based development timing | `INSUFFICIENT`. Zero complete matching cases in either reference population. |
+| Independent biological validation | `BIOLOGICAL_BLOCKED` for all nine roots. |
+| Default model replacement | Requires a separate decision. The tested profile is an experimental opt-in. |
+
+The [engineering qualification](PERFORMANCE_AND_COMPATIBILITY.md) reports controlled performance, actual test and CI outcomes separately. The final Core Readiness decision remains a review outcome.

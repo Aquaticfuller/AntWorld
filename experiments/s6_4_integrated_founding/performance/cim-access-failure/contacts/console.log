@@ -1,0 +1,29 @@
+Get-CimInstance : Access to a CIM resource was not available to the client.
+At line:1 char:49
++ ... ence='Stop'; [ordered]@{cpu=@(Get-CimInstance Win32_Processor | Selec ...
++                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-CimInstance], CimException
+    + FullyQualifiedErrorId : Microsoft.Management.Infrastructure.CimException,Microsoft.Management.Infrastructure.Cim 
+   Cmdlets.GetCimInstanceCommand
+ 
+INTERRUPTED
+Traceback (most recent call last):
+  File "D:\Codex_workspace\AntWorld\tools\run_s6_4_wp6b_r2_performance.py", line 72, in <module>
+    native.main()
+  File "D:\Codex_workspace\AntWorld\tools\run_s6_3_3_1_performance.py", line 303, in main
+    run(args)
+  File "D:\Codex_workspace\AntWorld\tools\run_s6_3_3_1_performance.py", line 249, in run
+    config = dict(kind=kind, source_commit=freeze['source_commit'], before=host(), topology=cores,
+                                                                           ^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\run_s6_2_performance.py", line 27, in host
+    return ps_json("$ErrorActionPreference='Stop'; [ordered]@{cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed);os=@(Get-CimInstance Win32_OperatingSystem | Select-Object Version,BuildNumber,TotalVisibleMemorySize);power_plan=(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power\\User\\PowerSchemes').ActivePowerScheme;timezone_minutes=[TimeZoneInfo]::Local.GetUtcOffset([DateTime]::Now).TotalMinutes;processes=@(Get-Process | Select-Object Id,ProcessName,CPU,WorkingSet)} | ConvertTo-Json -Depth 5")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\run_s6_2_performance.py", line 22, in ps_json
+    value = subprocess.check_output(['powershell', '-NoProfile', '-Command', script], encoding='utf-8-sig')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1112-611-0_26.1112.611.0_x64__3k8sg7r9htsxt\dependencies\python\Lib\subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1112-611-0_26.1112.611.0_x64__3k8sg7r9htsxt\dependencies\python\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['powershell', '-NoProfile', '-Command', "$ErrorActionPreference='Stop'; [ordered]@{cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed);os=@(Get-CimInstance Win32_OperatingSystem | Select-Object Version,BuildNumber,TotalVisibleMemorySize);power_plan=(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power\\User\\PowerSchemes').ActivePowerScheme;timezone_minutes=[TimeZoneInfo]::Local.GetUtcOffset([DateTime]::Now).TotalMinutes;processes=@(Get-Process | Select-Object Id,ProcessName,CPU,WorkingSet)} | ConvertTo-Json -Depth 5"]' returned non-zero exit status 1.

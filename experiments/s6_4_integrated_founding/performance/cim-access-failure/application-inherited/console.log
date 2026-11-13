@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\Codex_workspace\AntWorld\tools\profile_integrated_founding.py", line 47, in <module>
+    main()
+  File "D:\Codex_workspace\AntWorld\tools\profile_integrated_founding.py", line 43, in main
+    assay.main()
+  File "D:\Codex_workspace\AntWorld\tools\profile_s6_4_wp6b_r1.py", line 287, in main
+    on_run(args)
+  File "D:\Codex_workspace\AntWorld\tools\profile_s6_4_wp6b_r1.py", line 149, in run
+    assert freeze["sources"] == source_hashes() and freeze["protocol_sha256"] == sha(PROTOCOL)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

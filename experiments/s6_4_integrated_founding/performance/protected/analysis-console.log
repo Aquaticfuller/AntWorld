@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "D:\Codex_workspace\AntWorld\tools\s6_4_wp6b_r2_protected_observer.py", line 34, in <module>
+    main()
+  File "D:\Codex_workspace\AntWorld\tools\s6_4_wp6b_r2_protected_observer.py", line 20, in main
+    raise SystemExit(verifier.main())
+                     ^^^^^^^^^^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\analyze_s6_4_wp2_performance.py", line 62, in main
+    report = verify(args.archive)
+             ^^^^^^^^^^^^^^^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\analyze_s6_4_wp2_performance.py", line 18, in verify
+    manifest_hash = verify_manifest(root)
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\reconcile_s6_4_rm02_performance.py", line 40, in verify_manifest
+    rows = load(path)
+           ^^^^^^^^^^
+  File "D:\Codex_workspace\AntWorld\tools\analyze_s6_3_3_1_performance.py", line 24, in load
+    return json.loads(path.read_text(encoding='utf-8'))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1112-611-0_26.1112.611.0_x64__3k8sg7r9htsxt\dependencies\python\Lib\pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1112-611-0_26.1112.611.0_x64__3k8sg7r9htsxt\dependencies\python\Lib\pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'out\\integrated-founding\\perf-followup\\protected\\public_export_manifest.json'

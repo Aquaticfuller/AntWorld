@@ -1,0 +1,303 @@
+[
+  {
+    "path": "analysis-console.log",
+    "source_sha256": "826cffe24d4001c116998fc7d17daa8a2b9ef3a4b79a47ecba32defe40e132cb",
+    "public_sha256": "826cffe24d4001c116998fc7d17daa8a2b9ef3a4b79a47ecba32defe40e132cb",
+    "bytes": 474,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "batch_result.json",
+    "source_sha256": "0d01bf00aae0ccd888bff0bd4d289b445c7d62f4b222e9ddcd54efeae4460dbd",
+    "public_sha256": "0d01bf00aae0ccd888bff0bd4d289b445c7d62f4b222e9ddcd54efeae4460dbd",
+    "bytes": 215,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "batch_start.json",
+    "source_sha256": "54abc191f65ffe73b5ea23bb48cb2b6a3e49832f0a86383b354927b781cc027e",
+    "public_sha256": "54abc191f65ffe73b5ea23bb48cb2b6a3e49832f0a86383b354927b781cc027e",
+    "bytes": 135,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "console.log",
+    "source_sha256": "8657e4e3bcf54d2ad055eb3c1d9eeda4c8fbbe94bab3ee9acbf588304f75db28",
+    "public_sha256": "8657e4e3bcf54d2ad055eb3c1d9eeda4c8fbbe94bab3ee9acbf588304f75db28",
+    "bytes": 2115,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/configuration.json",
+    "source_sha256": "b284e6cce6fd394510b612ef9463d999047b08bd0544a594c4d2a2b0e3539046",
+    "public_sha256": "a5808bb5f808601cc6c16ce48dce5d82a3187a7b7964ca01ce3b5054239f490e",
+    "bytes": 2344,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session1/admission1.csv",
+    "source_sha256": "b8e792a8a70aca3472f343aea6481550573594efa3278026c98565733614f502",
+    "public_sha256": "b8e792a8a70aca3472f343aea6481550573594efa3278026c98565733614f502",
+    "bytes": 114554,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/admission1_receipt.json",
+    "source_sha256": "05409fb3de63b174718912fe5e0109493177213cce63207d6a5f2050239480b0",
+    "public_sha256": "296fe747897c42bd8e4bb626d99ca116155b765471a82cf0b92b7a0728ffc8b7",
+    "bytes": 1021,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session1/admission2.csv",
+    "source_sha256": "492485db6ab268cfc3d1364870aa299bc66132dea533be1505aed106659ffa07",
+    "public_sha256": "492485db6ab268cfc3d1364870aa299bc66132dea533be1505aed106659ffa07",
+    "bytes": 116372,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/admission2_receipt.json",
+    "source_sha256": "b45fb0ad0ef3e5cae13383fe7266b020474e34b8355e1f49df1e5b00c7117352",
+    "public_sha256": "420c2f2fd9aa7a654625d43e564683e531a0901178df958275a99d72e10cd642",
+    "bytes": 1019,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session1/admission3.csv",
+    "source_sha256": "d3b4b2a9a03f5c855b719c6b701c35bb627f8ec78f22d6b4723a1335ac710915",
+    "public_sha256": "d3b4b2a9a03f5c855b719c6b701c35bb627f8ec78f22d6b4723a1335ac710915",
+    "bytes": 112253,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/admission3_receipt.json",
+    "source_sha256": "d7c3157e027737dcbf2100a89fb14ac5a95f0de086817b709d74777a73b47937",
+    "public_sha256": "ed2579fe99b9bd529bcfedd50198f16867d59139e08d93e9b37af208d4982526",
+    "bytes": 1020,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session1/contacts.csv",
+    "source_sha256": "48ca0cb23999522661999e7ce6491154c11619e4a61268a2ee416b19ba0ebb77",
+    "public_sha256": "48ca0cb23999522661999e7ce6491154c11619e4a61268a2ee416b19ba0ebb77",
+    "bytes": 24886,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/hwinfo.csv",
+    "source_sha256": "2e7ec8ef1a229828a9d90ad5560a77b38b11d44ffafd4f648dc41aadb26d1c44",
+    "public_sha256": "2e7ec8ef1a229828a9d90ad5560a77b38b11d44ffafd4f648dc41aadb26d1c44",
+    "bytes": 5822,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/hwinfo_provenance.json",
+    "source_sha256": "0cc959d4e005e1a6e610302b4ac02ba46664ac5920f2a4b4c8b817317b8305b7",
+    "public_sha256": "0cc959d4e005e1a6e610302b4ac02ba46664ac5920f2a4b4c8b817317b8305b7",
+    "bytes": 1418,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/native.log",
+    "source_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "public_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "bytes": 75,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/phases.csv",
+    "source_sha256": "da47ddb240a3f810dc4fa57775a42bd1fc45486399c2aae75aaafe37712fc124",
+    "public_sha256": "da47ddb240a3f810dc4fa57775a42bd1fc45486399c2aae75aaafe37712fc124",
+    "bytes": 38553,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/profile.csv",
+    "source_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "public_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "bytes": 172631,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/receipt.json",
+    "source_sha256": "ce6020c8aca0fc1e83d312c69695226816650d85734f0561c2396b39ca5c06b9",
+    "public_sha256": "2b4bff35c63d6ad9ee2c94b983a12944e854f0e17b0ff4076aeebc2567855c72",
+    "bytes": 1028,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session1/schedule.csv",
+    "source_sha256": "f7d9d58db993eb65b2049443630b88680598c355a7e1a5193aa2eaa5ead25aac",
+    "public_sha256": "f7d9d58db993eb65b2049443630b88680598c355a7e1a5193aa2eaa5ead25aac",
+    "bytes": 3618,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session1/telemetry.csv.gz",
+    "source_sha256": "ddbaf4de93f5f431a01540c38d239d85db9200ab97d2eb9af4236f1ec5415def",
+    "public_sha256": "ddbaf4de93f5f431a01540c38d239d85db9200ab97d2eb9af4236f1ec5415def",
+    "bytes": 166706,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/admission1.csv",
+    "source_sha256": "7f52123036b477550c04f14febeadcd9e6a0149b37eb2eb9eeeacd96af9d7d02",
+    "public_sha256": "7f52123036b477550c04f14febeadcd9e6a0149b37eb2eb9eeeacd96af9d7d02",
+    "bytes": 112421,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/admission1_receipt.json",
+    "source_sha256": "9fac35169b2cd9cec2a364540bc3f3fca777629ab2db8527bba3184ff48e31d9",
+    "public_sha256": "39553f8ac7f59778437d7a5aee28c9c0b8d930853b3f348439b1e2c03ff0d19a",
+    "bytes": 1019,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session2/contacts.csv",
+    "source_sha256": "4c66c35535670b79c66e0a4972a8278771f2295ab5e7d3b22de5596505c1e176",
+    "public_sha256": "4c66c35535670b79c66e0a4972a8278771f2295ab5e7d3b22de5596505c1e176",
+    "bytes": 24792,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/hwinfo.csv",
+    "source_sha256": "9d50eceaf26e5fc09cb02c9bac6d6fd2bf6c287da00c679b5410809954e01b74",
+    "public_sha256": "9d50eceaf26e5fc09cb02c9bac6d6fd2bf6c287da00c679b5410809954e01b74",
+    "bytes": 5799,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/hwinfo_provenance.json",
+    "source_sha256": "e0ba3fa5262c07d65843bddf5b2b56e6e81baf3a7d5988861a770a0d097824e2",
+    "public_sha256": "e0ba3fa5262c07d65843bddf5b2b56e6e81baf3a7d5988861a770a0d097824e2",
+    "bytes": 1418,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/native.log",
+    "source_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "public_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "bytes": 75,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/phases.csv",
+    "source_sha256": "459aa2fc47b23010d73e22aae84d9ee8ea2c0dec1d39c88f43812444e39c91d8",
+    "public_sha256": "459aa2fc47b23010d73e22aae84d9ee8ea2c0dec1d39c88f43812444e39c91d8",
+    "bytes": 38487,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/profile.csv",
+    "source_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "public_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "bytes": 172631,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/receipt.json",
+    "source_sha256": "cfd4f2b3f7bc7d80516ae78abbaf74e831e200461bd652fbac673f1915b0707b",
+    "public_sha256": "a6272b56c4199414d26fdfa29c6004ddfa0625c236c7f6dbd5031c036b66452d",
+    "bytes": 1027,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session2/schedule.csv",
+    "source_sha256": "e742c85c7f615c7060235c17b61e730f0442ef8053d266750b448fb6eed786f6",
+    "public_sha256": "e742c85c7f615c7060235c17b61e730f0442ef8053d266750b448fb6eed786f6",
+    "bytes": 3618,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session2/telemetry.csv.gz",
+    "source_sha256": "a2bffe8aca8bd0bca38c5723ad1d9e294b2637d2980509a9d85a065506558fb7",
+    "public_sha256": "a2bffe8aca8bd0bca38c5723ad1d9e294b2637d2980509a9d85a065506558fb7",
+    "bytes": 163895,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/admission1.csv",
+    "source_sha256": "bf155441d5e1cd53418c204f6c4596ccedf802998c58f4ba42d4548539415cc6",
+    "public_sha256": "bf155441d5e1cd53418c204f6c4596ccedf802998c58f4ba42d4548539415cc6",
+    "bytes": 112537,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/admission1_receipt.json",
+    "source_sha256": "31e61dfc311c8e50594acccfffa2afba239eea7c6eca5eb129a1cac8428ec65b",
+    "public_sha256": "6d938251fb5941e78d38408dde3e02e1d4903b9f2317f50bce8374a4a4f28af9",
+    "bytes": 1020,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session3/contacts.csv",
+    "source_sha256": "10e0fde7a07e18a9b1c747b25e12afa28c74b47b30c8492245bca861032dd20a",
+    "public_sha256": "10e0fde7a07e18a9b1c747b25e12afa28c74b47b30c8492245bca861032dd20a",
+    "bytes": 24832,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/hwinfo.csv",
+    "source_sha256": "5c0af28117c7ddbcce99c6286ad4f03e0ae624234bf3ad70b796bae4e566a162",
+    "public_sha256": "5c0af28117c7ddbcce99c6286ad4f03e0ae624234bf3ad70b796bae4e566a162",
+    "bytes": 5818,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/hwinfo_provenance.json",
+    "source_sha256": "8ebfdbbe55cba6ec03d1883197d6e1addb93a7ca853d4b6eb075a6ec43889f4b",
+    "public_sha256": "8ebfdbbe55cba6ec03d1883197d6e1addb93a7ca853d4b6eb075a6ec43889f4b",
+    "bytes": 1418,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/native.log",
+    "source_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "public_sha256": "4c5f586f0e24ad95c9dc9af5d483052de8f55edda35a42554bf5327b3c928daf",
+    "bytes": 75,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/phases.csv",
+    "source_sha256": "129a12101816c65f9f0ef271fde6589427d1b82d2d48dfc59136de2401631763",
+    "public_sha256": "129a12101816c65f9f0ef271fde6589427d1b82d2d48dfc59136de2401631763",
+    "bytes": 38586,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/profile.csv",
+    "source_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "public_sha256": "88cce6be8d5c04acf219288395942180cc1413ec83d04dcc184054729a1829a2",
+    "bytes": 172631,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/receipt.json",
+    "source_sha256": "c9a50f233fec9215821e51be62d7a40d2bcfbbaa17a2622cc3c1a38dfc6a0e60",
+    "public_sha256": "7a26a91e616788c2c549740aa3c1d621b04af843435550442670f4c3debbd56b",
+    "bytes": 1028,
+    "process_inventory_removed": true
+  },
+  {
+    "path": "contacts/session3/schedule.csv",
+    "source_sha256": "28e80966427d8c9bba88d1902e63977712f5bb5fe0c3f92a05e2434b4ecf0e9f",
+    "public_sha256": "28e80966427d8c9bba88d1902e63977712f5bb5fe0c3f92a05e2434b4ecf0e9f",
+    "bytes": 3618,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "contacts/session3/telemetry.csv.gz",
+    "source_sha256": "140e31021c236926265a7564bfd3bf07013cdd7ffadaa51eb674e1f66fdb00d7",
+    "public_sha256": "140e31021c236926265a7564bfd3bf07013cdd7ffadaa51eb674e1f66fdb00d7",
+    "bytes": 165199,
+    "process_inventory_removed": false
+  },
+  {
+    "path": "freeze.json",
+    "source_sha256": "515f91e3a765da455713386ac7710d912f844e73374937ba33d9d312a2b54597",
+    "public_sha256": "515f91e3a765da455713386ac7710d912f844e73374937ba33d9d312a2b54597",
+    "bytes": 2860,
+    "process_inventory_removed": false
+  }
+]

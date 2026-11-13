@@ -181,6 +181,12 @@ jobs:
           python tools/verify_integrated_founding_public.py experiments/s6_4_integrated_founding/raw_index
           python tools/analyze_integrated_founding.py experiments/s6_4_integrated_founding/r2-nominal build/integrated-r2-audit --case borisovka-micro-nominal-0-1-balanced --case st_petersburg-micro-nominal-0-1-blocked
           python tools/verify_integrated_founding_replay.py build/ci/antworld_s6_4_wp6b build/integrated-replay --model r2 --model resupply
+      - name: Recompute integrated native performance qualification
+        if: runner.os == 'Windows' && matrix.configuration == 'Release'
+        run: |
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_integrated_founding/performance/contacts --out experiments/s6_4_integrated_founding/performance/contacts-analysis --check
+          python tools/analyze_s6_3_3_1_performance.py --raw experiments/s6_4_integrated_founding/performance/births --out experiments/s6_4_integrated_founding/performance/births-analysis --check
+          python tools/s6_4_wp6b_r2_protected_observer.py --analyze experiments/s6_4_integrated_founding/performance/protected experiments/s6_4_integrated_founding/performance/protected-analysis.json --check
 
   sanitizers:
     runs-on: ubuntu-24.04

@@ -1,0 +1,2 @@
+[{"kind": "contacts", "status": "PASS", "qualified_sessions": 3, "required_sessions": 3, "raw_rows": 336, "planned_rows": 336, "batch": "COLLECTION_FINISHED"}]
+[{"kind": "contacts", "layout": "dense", "phase": "advance", "ratio_of_p50": 5.4575516653909775, "pooled_ci_low": 5.383560072539701, "pooled_ci_high": 5.4997302917846875, "paired_median": 5.422494059334214, "paired_ci_low": 5.390240767439666, "paired_ci_high": 5.464141138229997, "status": "PASS", "target": 6}]

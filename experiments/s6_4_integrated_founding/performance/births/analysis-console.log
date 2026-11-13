@@ -1,0 +1,2 @@
+[{"kind": "births", "status": "PASS", "qualified_sessions": 3, "required_sessions": 3, "raw_rows": 168, "planned_rows": 168, "batch": "COLLECTION_FINISHED"}]
+[{"kind": "births", "layout": "dense", "phase": "birth_advance", "ratio_of_p50": 4.252696094848952, "pooled_ci_low": 4.154769858323086, "pooled_ci_high": 4.350437398430206, "paired_median": 4.286932219468197, "paired_ci_low": 4.203999796102153, "paired_ci_high": 4.366638556315882, "status": "PASS", "target": 6}]
