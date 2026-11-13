@@ -32,6 +32,8 @@ python tools/verify_final_core_evidence.py out/rebuilt-frozen-b06
 
 Public verification replays two fixed corrected worlds with daily observation and midpoint restore, and compares facts, frames, RNG, state and daily observations to the uninterrupted records. The archived split controls separately compare full authority with observations disabled. The independent SQLite check reconstructs and compares the canonical prefix at day 75. The complete old ecology verification includes both layouts, all seven SC-06 arms, intact historical failures and the previously accepted version 24/25 semantics. Both Release CI runners execute the native public witnesses and rerun all 84 SC-06 cases against their original authority hashes.
 
+The first Linux replay job reached the new scout guard and found an exact `identities.csv` file hash difference on the first case after the three authoritative byte checks passed. That companion file is written in native text mode. The verifier allows only LF/CRLF equivalence for its identity rows and still requires an archived hash and byte count after newline encoding. The same three authority files remain byte-exact. [Initial failed Linux job](https://github.com/Aquaticfuller/AntWorld/actions/runs/43468364421/job/132033449032)
+
 ## Complete collection and raw analysis
 
 ```powershell

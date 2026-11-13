@@ -204,11 +204,18 @@ def replay_scout_controls(binary, output):
         for arm in SCOUT_ARMS:
             for seed in range(1, 13):
                 name = f"{arm}-{seed}-observed"
-                current = scout(binary, Path(scratch) / name, arm, seed, "observed", portable=True)
+                work = Path(scratch) / name
+                current = scout(binary, work, arm, seed, "observed", portable=True)
                 prior = roster[name]
                 check(current["status"] == prior["status"] == "COMPLETE", f"scout replay failed: {name}")
-                for key in ("initial.chk", "final.frame", "facts.bin", "identities.csv"):
+                for key in ("initial.chk", "final.frame", "facts.bin"):
                     check(current["artifacts"][key] == prior["artifacts"][key], f"{name}: scout authority changed: {key}")
+                # The existing scout executable writes this companion as a native text stream.
+                identities = (work / "identities.csv").read_bytes().replace(b"\r\n", b"\n")
+                expected = prior["artifacts"]["identities.csv"]
+                check(any(len(data) == expected["bytes"] and sha256(data).hexdigest() == expected["sha256"]
+                          for data in (identities, identities.replace(b"\n", b"\r\n"))),
+                      f"{name}: scout identity rows changed")
                 results.append({"case": name, "facts_sha256": current["artifacts"]["facts.bin"]["sha256"]})
     write_json(output / "fresh_scout_controls.json", {"binary_sha256": sha(binary), "cases": results})
 
