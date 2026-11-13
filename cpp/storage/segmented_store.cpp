@@ -1,4 +1,5 @@
 #include "segmented_analytics.hpp"
+#include "storage_timing.hpp"
 #include <algorithm>
 
 namespace antworld::storage {
@@ -148,25 +149,36 @@ SaveToken Store::save_segmented(const SaveFrame& frame,std::optional<SaveToken> 
     const auto generation=previous?checked_add(previous->generation,1):1;
     const SaveToken result{world,generation,state.revision,state.committed_events,hash(frame.checkpoint)};
     hook(SaveStage::BeforeBlocks);
-    const auto tail=append_blocks(db,world,frame.history,start,{result.cursor},frame_fact_schema(frame.checkpoint));
+    const auto tail=[&] {
+        timing::Scope phase(timing::Phase::SealBlocks);
+        return append_blocks(db,world,frame.history,start,{result.cursor},frame_fact_schema(frame.checkpoint));
+    }();
     hook(SaveStage::AfterBlocks);
-    auto derived=collect_index([&](EventId after,std::size_t count){return frame.history.read(after,count);},
-                               start,{result.cursor},frame.geometry,frame.edits);
-    derived.observe(frame.observation);
-    hook(SaveStage::BeforeManifest);
-    put_world(db,result,state,frame.observation.geometry_quantum_m);
-    put_frame(db,result,state.now,frame.checkpoint);
-    put_anchor(db,result,state.now,frame.checkpoint,parent,tail);
-    hook(SaveStage::AfterCheckpoint);
-    put_geometry(db,world,frame.geometry,frame.edits,start);
-    put_people(db,world,derived,frame.ants);
-    put_receipts(db,world,frame.receipts,start);
-    hook(SaveStage::AfterHistory);
-    put_observation(db,frame.observation,generation);
-    merge_buckets(db,world,derived.buckets);
+    const auto derived=[&] {
+        timing::Scope phase(timing::Phase::DeriveIndexes);
+        auto index=collect_index([&](EventId after,std::size_t count){return frame.history.read(after,count);},
+                                 start,{result.cursor},frame.geometry,frame.edits);
+        index.observe(frame.observation);
+        return index;
+    }();
+    {
+        timing::Scope phase(timing::Phase::WriteIndexes);
+        hook(SaveStage::BeforeManifest);
+        put_world(db,result,state,frame.observation.geometry_quantum_m);
+        put_frame(db,result,state.now,frame.checkpoint);
+        put_anchor(db,result,state.now,frame.checkpoint,parent,tail);
+        hook(SaveStage::AfterCheckpoint);
+        put_geometry(db,world,frame.geometry,frame.edits,start);
+        put_people(db,world,derived,frame.ants);
+        put_receipts(db,world,frame.receipts,start);
+        hook(SaveStage::AfterHistory);
+        put_observation(db,frame.observation,generation);
+        merge_buckets(db,world,derived.buckets);
+    }
     hook(SaveStage::AfterManifest);
     hook(SaveStage::BeforeCommit);
     try {
+        timing::Scope phase(timing::Phase::Commit);
         tx.commit();
     } catch (const std::exception& error) {
         impl_->requires_recovery=true;
@@ -190,14 +202,23 @@ LoadedWorld Store::load_segmented(WorldId world,std::optional<std::uint64_t> req
     const auto anchor=verified_anchor(impl_->db,world,generation,impl_->limits.checkpoint_bytes);
     const bool newest=generation==current->generation;
     require(!newest || anchor.token==*current,"latest frame and manifest differ");
-    verify_blocks(impl_->db,world,{},{anchor.token.cursor},anchor.tail,frame_fact_schema(anchor.frame));
+    {
+        timing::Scope phase(timing::Phase::VerifyBlocks);
+        verify_blocks(impl_->db,world,{},{anchor.token.cursor},anchor.tail,frame_fact_schema(anchor.frame));
+    }
     WorldRuntime runtime(world,0,{},impl_->limits);
-    runtime.restore_frame(anchor.frame,std::make_shared<SqlEventPrefix>(impl_->path,world,
-        static_cast<std::size_t>(anchor.token.cursor),anchor.tail));
-    const auto observation=observe(runtime);
-    validate_manifest(impl_->db,anchor,runtime.summary(),observation.geometry_quantum_m,newest);
-    verify_observation(impl_->db,observation,generation);
-    if (validate_indexes) audit_indexes(impl_->db,runtime,anchor.token,newest);
+    {
+        timing::Scope phase(timing::Phase::RestoreFrame);
+        runtime.restore_frame(anchor.frame,std::make_shared<SqlEventPrefix>(impl_->path,world,
+            static_cast<std::size_t>(anchor.token.cursor),anchor.tail));
+    }
+    {
+        timing::Scope phase(timing::Phase::CheckIndexes);
+        const auto observation=observe(runtime);
+        validate_manifest(impl_->db,anchor,runtime.summary(),observation.geometry_quantum_m,newest);
+        verify_observation(impl_->db,observation,generation);
+        if (validate_indexes) audit_indexes(impl_->db,runtime,anchor.token,newest);
+    }
     return {std::move(runtime),anchor.token};
 }
 

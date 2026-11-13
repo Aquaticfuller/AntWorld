@@ -1,4 +1,5 @@
 #include "segmented_archive.hpp"
+#include "storage_timing.hpp"
 #include <algorithm>
 
 namespace antworld::storage::detail {
@@ -28,6 +29,7 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
 }
 
 SaveFrame capture_frame(const WorldRuntime& world) {
+    timing::Scope phase(timing::Phase::CaptureFrame);
     return {world.summary(),world.checkpoint_frame(),world.capture_history(),observe(world),
             world.geometry_snapshot(),world.geometry_edits(),world.ant_states(),world.command_receipts()};
 }

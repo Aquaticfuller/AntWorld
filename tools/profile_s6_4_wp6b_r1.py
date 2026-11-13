@@ -23,6 +23,7 @@ from run_s6_4_wp6b_r1 import NOMINAL, PROTOCOL
 MODEL_ARGUMENTS = {"v1": (0, 0, 0), "r1": (*NOMINAL, 0)}
 MODEL_VERSIONS = {"v1": 1, "r1": 2}
 ADDITIONAL_SOURCES = ()
+DIAGNOSTIC_STORAGE = False
 
 
 def workload():
@@ -111,6 +112,10 @@ def collect(args, folder, archive, probe, logical, admission):
                         break
                     summary, = read(output / "summary.csv")
                     costs, = read(output / "profile.csv")
+                    if DIAGNOSTIC_STORAGE:
+                        phases, = read(output / "phases.csv")
+                        assert not costs.keys() & phases.keys()
+                        costs.update(phases)
                     row = item | summary | costs | dict(process_ms=total, parameters_sha256=sha(params),
                            midpoint_sqlite_bytes=(output / "midpoint.sqlite").stat().st_size,
                            **{label+"_sha256": sha(output/file) for label, file in

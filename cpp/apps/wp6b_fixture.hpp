@@ -38,6 +38,7 @@ struct Case {
     FoundingProfile profile;
     SimTime horizon{90 * day_ms};
     bool integrated_assay{};
+    unsigned release_days{120}; // ENGINEERING_FIXTURE. Only the scope assay selects another finite budget.
 };
 
 inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
@@ -112,7 +113,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         const auto source=w.seed_food(scene.target,c.food);
         const auto daily = c.arm == "limited" ? FoodMass{188,94,563,0} :
             FoodMass{c.food.carbs_ug/4,c.food.protein_ug/4,c.food.water_ug/4,0};
-        w.configure_resource_cycle(source, {{daily.carbs_ug*120,daily.protein_ug*120,daily.water_ug*120,0},daily});
+        w.configure_resource_cycle(source, {{daily.carbs_ug*c.release_days,daily.protein_ug*c.release_days,
+                                              daily.water_ug*c.release_days,0},daily});
     } else if (!c.integrated_assay && c.food.total_ug()) {
         const bool blocked=c.arm=="blocked" || c.arm=="water-blocked";
         const PositionM depot = blocked ? PositionM{0, 0, .020} : PositionM{};
