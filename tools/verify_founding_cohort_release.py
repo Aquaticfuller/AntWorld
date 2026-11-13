@@ -19,7 +19,8 @@ from analyze_s6_4_wp6b import assess, check, facts, rows, RANGES
 from final_core_b06_cohorts import stage_occupancy
 from run_founding_cohort_release import COUNTS, manifest, roster
 from run_integrated_founding import DAY
-from run_s6_4_wp6b import input_bytes, run_one, sha, write_json
+from run_ecological_closure import SCOUT_ARMS, scout
+from run_s6_4_wp6b import ROOT, input_bytes, run_one, sha, write_json
 from verify_ecological_closure import WATER, cohort_endpoints, material_and_activity, write_csv
 from verify_final_core_integration import check_identity, verify_midpoint
 
@@ -169,10 +170,14 @@ def paired_effects(panel, worlds):
     return expanded,results
 
 
-def replay_correction(binary, selected, comparisons, output):
+def native_binary(binary):
     if not binary.is_file():
         binary = binary.parent / "Release" / (binary.stem + ".exe")
-    binary = binary.resolve(strict=True)
+    return binary.resolve(strict=True)
+
+
+def replay_correction(binary, selected, comparisons, output):
+    binary = native_binary(binary)
     replayed = []
     for identity, case, mode, args in selected:
         if mode != "durable-split":
@@ -188,6 +193,24 @@ def replay_correction(binary, selected, comparisons, output):
                              "facts_sha256": rerun["artifacts"]["facts.bin"]["sha256"]})
     check(len(replayed) == 2, "changed native protected-profile replay roster")
     write_json(output / "fresh_replay.json", {"binary_sha256": sha(binary), "cases": replayed})
+
+
+def replay_scout_controls(binary, output):
+    binary = native_binary(binary)
+    reference = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physics/scout"
+    roster = {r["case"]: r["receipt"] for r in manifest(reference)}
+    results = []
+    with TemporaryDirectory(dir=output) as scratch:
+        for arm in SCOUT_ARMS:
+            for seed in range(1, 13):
+                name = f"{arm}-{seed}-observed"
+                current = scout(binary, Path(scratch) / name, arm, seed, "observed", portable=True)
+                prior = roster[name]
+                check(current["status"] == prior["status"] == "COMPLETE", f"scout replay failed: {name}")
+                for key in ("initial.chk", "final.frame", "facts.bin", "identities.csv"):
+                    check(current["artifacts"][key] == prior["artifacts"][key], f"{name}: scout authority changed: {key}")
+                results.append({"case": name, "facts_sha256": current["artifacts"]["facts.bin"]["sha256"]})
+    write_json(output / "fresh_scout_controls.json", {"binary_sha256": sha(binary), "cases": results})
 
 
 def verify(panel, directory, output, public=False, packed_summary=None, binary=None):
@@ -320,5 +343,8 @@ if __name__=="__main__":
     parser.add_argument("--public",action="store_true")
     parser.add_argument("--packed-summary",type=Path)
     parser.add_argument("--binary",type=Path)
+    parser.add_argument("--scout-binary",type=Path)
     args=parser.parse_args()
     verify(args.panel,args.input,args.output,args.public,args.packed_summary,args.binary)
+    if args.scout_binary:
+        replay_scout_controls(args.scout_binary,args.output)

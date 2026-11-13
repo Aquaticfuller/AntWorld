@@ -1,0 +1,33 @@
+{
+  "exit_code": 0,
+  "collector_error": "",
+  "rows": 240,
+  "telemetry_rows": 4439,
+  "started_utc_ns": 1794588224232731400,
+  "ended_utc_ns": 1794588668217545500,
+  "admission_attempt": 2,
+  "binary_sha256": "ea844c196ecc43e9fcff8da5335341ef4a911b907265ef752ed90914f60b6bca",
+  "telemetry_uncompressed_sha256": "73fe89f0925b55156b5a1fb27fdf3fbf7648c386442659ef38afc6963f823e21",
+  "hwinfo_before_sha256": "74a2d69dc42663188971438614c4a5c131563fd5af2ebdb848e3208d41f8c94a",
+  "sensor_error": "ValueError('unrecognized sensor record layout')",
+  "host_after": {
+    "cpu": [
+      {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13620H",
+        "NumberOfCores": 10,
+        "NumberOfLogicalProcessors": 16,
+        "MaxClockSpeed": 2400
+      }
+    ],
+    "os": [
+      {
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "TotalVisibleMemorySize": 16494648
+      }
+    ],
+    "power_plan": "85d583c5-cf2e-4197-80fd-3789a227a72c",
+    "timezone_minutes": 60
+  },
+  "telemetry_qualified": false
+}

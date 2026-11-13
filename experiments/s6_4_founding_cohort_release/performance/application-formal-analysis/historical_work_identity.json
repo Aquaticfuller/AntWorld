@@ -1,0 +1,26 @@
+{
+  "checked_samples": 240,
+  "fields": [
+    "sample",
+    "session",
+    "model",
+    "case",
+    "block",
+    "slot",
+    "treatment",
+    "observation",
+    "world",
+    "seed",
+    "model_version",
+    "parameters_sha256",
+    "initial_sha256",
+    "frame_sha256",
+    "facts_sha256",
+    "events",
+    "rng",
+    "state_hash",
+    "trace_hash"
+  ],
+  "reference": "experiments/s6_4_founding_qualification/performance/application-inherited",
+  "scheduled": 720
+}

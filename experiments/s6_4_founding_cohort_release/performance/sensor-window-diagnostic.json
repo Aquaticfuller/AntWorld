@@ -1,0 +1,42 @@
+{
+  "bracketed": true,
+  "disposition": "DIAGNOSTIC_ONLY",
+  "malformed_rows": [
+    {
+      "columns": 797,
+      "expected_columns": 472,
+      "in_timed_window_with_brackets": false,
+      "line": 24397,
+      "local_time": "2026-11-13T12:35:44.119000+01:00"
+    }
+  ],
+  "max_window_gap_seconds": 2.027000064,
+  "parseable_window_rows": 225,
+  "row_widths": [
+    {
+      "columns": 471,
+      "in_timed_window_with_brackets": false,
+      "rows": 2109
+    },
+    {
+      "columns": 472,
+      "in_timed_window_with_brackets": false,
+      "rows": 31459
+    },
+    {
+      "columns": 472,
+      "in_timed_window_with_brackets": true,
+      "rows": 225
+    },
+    {
+      "columns": 797,
+      "in_timed_window_with_brackets": false,
+      "rows": 1
+    }
+  ],
+  "session_end_utc_ns": 1794588668217545500,
+  "session_start_utc_ns": 1794588224232731400,
+  "source_bytes": 70816982,
+  "source_sha256": "432400cd6b490da46e4247c8a0ccb3dbaa13cef5c54cd7b1d2b6fe9d0a438629",
+  "undated_or_partial_rows": []
+}

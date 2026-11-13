@@ -23,14 +23,14 @@ $scout = 'build/cohort-release/antworld_ecological_recruitment.exe'
 foreach ($panel in 'primary','hatch','extended') {
   python tools/verify_founding_cohort_release.py $panel "$evidence/$panel" "out/rebuilt-$panel" --public --packed-summary "$evidence/$panel/analysis"
 }
-python tools/verify_founding_cohort_release.py correction "$evidence/correction" out/rebuilt-correction --public --packed-summary "$evidence/correction/analysis" --binary $binary
+python tools/verify_founding_cohort_release.py correction "$evidence/correction" out/rebuilt-correction --public --packed-summary "$evidence/correction/analysis" --binary $binary --scout-binary $scout
 python tools/summarize_founding_cohort_release.py $evidence "$evidence/decision" --check
 python tools/summarize_founding_history_cost.py "$evidence/performance" "$evidence/performance/storage_diagnostics.json" --check
 python tools/verify_ecological_publication.py out/rebuilt-inherited-ecology --joint-binary $binary --scout-binary $scout
 python tools/verify_final_core_evidence.py out/rebuilt-frozen-b06
 ```
 
-Public verification replays two fixed corrected worlds with daily observation and midpoint restore, and compares facts, frames, RNG, state and daily observations to the uninterrupted records. The archived split controls separately compare full authority with observations disabled. The independent SQLite check reconstructs and compares the canonical prefix at day 75. The complete old ecology verification includes both layouts, all seven SC-06 arms, intact historical failures and the previously accepted version 24/25 semantics. Both Release CI runners execute the native public witnesses.
+Public verification replays two fixed corrected worlds with daily observation and midpoint restore, and compares facts, frames, RNG, state and daily observations to the uninterrupted records. The archived split controls separately compare full authority with observations disabled. The independent SQLite check reconstructs and compares the canonical prefix at day 75. The complete old ecology verification includes both layouts, all seven SC-06 arms, intact historical failures and the previously accepted version 24/25 semantics. Both Release CI runners execute the native public witnesses and rerun all 84 SC-06 cases against their original authority hashes.
 
 ## Complete collection and raw analysis
 
@@ -59,7 +59,7 @@ python tools/measure_founding_cohort_history.py $after out/diag-bounded-cache $s
 python tools/measure_founding_cohort_history.py $after out/diag-midpoint $scratch --midpoint-before $before
 ```
 
-The separate approved application procedure requires the original Windows host topology, live mapped HWiNFO CSV, native per-core counters and the frozen admission rules. Use the uninstrumented Release executable and the same argument vector for prepare and run. Keep private source telemetry on the measurement host and publish the approved CPU channels, complete admission rows and samples. Preparation freezes all 720 slots and the input sources before measurement. The analyzer retains every original limit and failure.
+The separate approved application procedure requires the original Windows host topology, live mapped HWiNFO CSV, native per-core counters and the frozen admission rules. Use the uninstrumented Release executable and the same argument vector for prepare and run. Keep the complete sensor source and process inventory on the measurement host. Publish the approved CPU channels, complete admission rows and timing samples. Preparation freezes all 720 slots and the input sources before measurement. The analyzer retains every original limit and failure.
 
 The final work-identity check compares each available sample with its approved archived counterpart: same order, inputs, model, initial and final authority, event count, RNG, and state and trace hashes. A complete but nonidentical collection cannot qualify.
 
@@ -67,4 +67,13 @@ The final work-identity check compares each available sample with its approved a
 python tools/qualify_founding_cohort_application.py --prepare --out $formal --archive $private --binary $binary --build build/cohort-release --compiler $clang --hwinfo-csv $sensors
 python tools/qualify_founding_cohort_application.py --out $formal --archive $private --binary $binary --build build/cohort-release --compiler $clang --hwinfo-csv $sensors
 python tools/qualify_founding_cohort_application.py --out $formal --analysis $analysis
+python tools/archive_s6_4_rm02_performance.py $formal $published
+python tools/verify_founding_cohort_application.py $published $analysis
+python tools/summarize_integrated_founding_performance.py $published $phaseSummary
+```
+
+The stopped session's sensor-format diagnosis is independent of qualification. Recalculate it from the original private sensor snapshot and the preserved run receipts. It publishes timestamps, widths, bracket coverage and the source hash without publishing the sensor log or accepting the session.
+
+```powershell
+python tools/diagnose_founding_sensor_window.py "$private/session1/hwinfo_after.raw" "$formal/session1/receipt.json" "$formal/configuration.json" out/sensor-window-diagnostic.json
 ```
