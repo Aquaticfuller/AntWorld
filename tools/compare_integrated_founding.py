@@ -48,7 +48,8 @@ def read(path):
 
 def compare(analysis, output, pairs):
     tables, grouped = {}, defaultdict(list)
-    for folder in sorted(analysis.glob("analysis-*")):
+    folders=sorted({folder.name:folder for root in analysis for folder in root.glob("analysis-*")}.values())
+    for folder in folders:
         if not (folder/"worlds.csv").is_file() or folder.name.endswith("-closed"):
             continue
         records = read(folder/"worlds.csv")
@@ -141,6 +142,7 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("analysis",type=Path)
     parser.add_argument("out",type=Path)
+    parser.add_argument("--additional-analysis",type=Path,action="append",default=[])
     parser.add_argument("--pair",action="append",default=[])
     args=parser.parse_args()
-    compare(args.analysis,args.out,[pair.split(":") for pair in args.pair])
+    compare([args.analysis,*args.additional_analysis],args.out,[pair.split(":") for pair in args.pair])

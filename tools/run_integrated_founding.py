@@ -134,6 +134,8 @@ def collect(args):
                     statuses[name] = receipt["status"]
                     print(name, receipt["status"], receipt["elapsed_ms"], flush=True)
         archives[path.name] = sha(path)
+        if sha(binary)!=executable_hash:
+            raise ValueError("executable changed during collection; retain the incomplete archive")
     write_json(args.out / "completed.json", dict(ended_ns=time.time_ns(), attempts=len(statuses),
                                                statuses=statuses, archives=archives))
     print(json.dumps(Counter(statuses.values())), flush=True)

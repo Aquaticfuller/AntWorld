@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import zipfile
 
 from analyze_integrated_founding import check
 from run_integrated_founding import MODELS, NOMINAL, environments
@@ -13,7 +14,7 @@ AUTHORITY = ("parameters.txt", "initial.chk", "final.frame", "facts.bin")
 SUMMARY = ("world", "seed", "queen", "state_hash", "trace_hash", "rng", "events", "time_ms")
 
 
-def verify(binary, root, models):
+def verify(binary, root, models, keep_midpoints=False):
     root.mkdir(parents=True)
     cases = [(i,c) for i,c in environments("nominal") if c["software_seed"]==1 and
              c["arm"] in ("integrated-balanced", "integrated-blocked")]
@@ -27,6 +28,13 @@ def verify(binary, root, models):
                     work = Path(scratch) / "case"
                     record = run_one(binary,work,identity,case,mode,command)
                     check(record["status"]=="COMPLETE", f"failed {model}/{case['case']}/{mode}: {record['status']}")
+                    if keep_midpoints and mode=="durable":
+                        witness=root/f"{model}-{case['case']}-midpoint.zip"
+                        with zipfile.ZipFile(witness,"x",zipfile.ZIP_DEFLATED,compresslevel=4) as bundle:
+                            for item in sorted(work.glob("midpoint.sqlite*")):
+                                if item.name in ("midpoint.sqlite","midpoint.sqlite-wal"):
+                                    bundle.write(item,item.name)
+                        record["midpoint_archive"] = dict(name=witness.name,sha256=sha(witness),bytes=witness.stat().st_size)
                     observations[mode] = record
             observed = observations["observed"]
             for mode, record in observations.items():
@@ -47,5 +55,6 @@ if __name__ == "__main__":
     parser.add_argument("binary",type=lambda p: Path(p).resolve(strict=True))
     parser.add_argument("out",type=Path)
     parser.add_argument("--model",choices=MODELS,action="append",required=True)
+    parser.add_argument("--keep-midpoints",action="store_true")
     args = parser.parse_args()
-    verify(args.binary,args.out,args.model)
+    verify(args.binary,args.out,args.model,args.keep_midpoints)

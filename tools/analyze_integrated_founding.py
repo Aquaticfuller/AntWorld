@@ -9,6 +9,7 @@ import json
 import math
 from pathlib import Path
 from struct import unpack_from
+from tempfile import TemporaryDirectory
 import zipfile
 
 from analyze_s6_4_wp6b import (ANT_SEEDED, BIRTH, CARGO, COLLECTED, DELIVERED, DIED, F_BOUNDARY_UPTAKE, F_DIETARY_EGG,
@@ -228,10 +229,9 @@ def observe_chain(raw, case, queen, paths, snapshots):
     return world, adults.values(), trips, flows
 
 
-def dump(path, records, compress=False):
+def dump(path, records):
     if records:
-        open_output = gzip.open if compress else open
-        with open_output(path,"xt",encoding="utf-8",newline="") as output:
+        with path.open("x",encoding="utf-8",newline="") as output:
             columns = list(dict.fromkeys(k for row in records for k in row))
             writer = csv.DictWriter(output, columns, lineterminator="\n")
             writer.writeheader()
@@ -239,6 +239,22 @@ def dump(path, records, compress=False):
 
 
 def verify(archive, output, cases=()):
+    with TemporaryDirectory(dir=output.parent if output.parent.is_dir() else None) as scratch:
+        path=Path(scratch)/"nutrition.csv.gz"
+        with gzip.open(path,"xt",encoding="utf-8",newline="") as stream:
+            columns=("model","matrix","case","arm","population","group","care","profile","seed","status","process_wall_ms","exit_code",
+                     "event","time_ms","kind","actor","recipient","stage","c","p","w","o")
+            writer=csv.DictWriter(stream,columns,lineterminator="\n")
+            writer.writeheader()
+            verify_events(archive,output,cases,writer)
+        if json.loads((archive/"run.json").read_text(encoding="utf-8"))["matrix"]!="closed":
+            # Use a streamed copy so the evidence is independent of temporary-file placement.
+            with path.open("rb") as source, (output/"nutrition.csv.gz").open("xb") as destination:
+                while block:=source.read(1024*1024):
+                    destination.write(block)
+
+
+def verify_events(archive, output, cases, nutrition_writer):
     meta, completed = (json.loads((archive/name).read_text(encoding="utf-8")) for name in ("run.json", "completed.json"))
     model, matrix = meta.get("model", "r2"), meta["matrix"]
     universe = {c["case"]: (identity,c) for identity,c in environments(matrix)}
@@ -250,7 +266,7 @@ def verify(archive, output, cases=()):
     selected = set(cases) if cases else set(meta["cases"])
     check(selected <= set(meta["cases"]),"unknown representative case")
     check(not cases or matrix!="closed","closed-stock qualification requires its full denominator")
-    all_worlds, workers, trips, census_rows, stage_rows, offspring, flows = [], [], [], [], [], [], []
+    all_worlds, workers, trips, census_rows, stage_rows, offspring = [], [], [], [], [], []
     checked_files = checked_facts = 0
     seen = set()
     for filename, digest in sorted(completed["archives"].items()):
@@ -275,7 +291,7 @@ def verify(archive, output, cases=()):
                     check(receipt["artifacts"][key] == dict(bytes=len(blob),sha256=sha256(blob).hexdigest()), f"bad artifact checksum: {name}/{key}")
                 checked_files += len(blobs)
                 check(blobs["parameters.txt"]==input_bytes(identity,case), "changed resolved input")
-                common = dict(model=model,matrix=matrix,case=name,arm=case["arm"].removeprefix("integrated-"),
+                common = dict(model=model,matrix=matrix,case=name,arm=case.get("arm","ordinary").removeprefix("integrated-"),
                               population=case["population"],group=case["group"],care=int(case["care_enabled"]),
                               profile=case.get("profile_index"),seed=case["software_seed"],status=receipt["status"],
                               process_wall_ms=receipt["elapsed_ms"],exit_code=receipt["exit_code"])
@@ -300,7 +316,7 @@ def verify(archive, output, cases=()):
                 observed, histories, loads, meals = observe_chain(raw,case,int(summary["queen"]),paths,snapshots)
                 workers.extend(common | r for r in histories)
                 trips.extend(common | r for r in loads)
-                flows.extend(common | r for r in meals)
+                nutrition_writer.writerows(common | r for r in meals)
                 all_worlds.append(common | measure | observed | source | dict(
                     archive_file=filename, canonical_sha256=receipt["artifacts"]["facts.bin"]["sha256"],
                     **{k:summary[k] for k in ("advance_ms","peak_rss_bytes","midpoint_save_ms","midpoint_restore_ms","facts_bytes","frame_bytes")}))
@@ -309,7 +325,6 @@ def verify(archive, output, cases=()):
     for key, dataset in (("worlds",all_worlds),("workers",workers),("loaded_trips",trips),("censuses",census_rows),
                          ("stages",stage_rows),("offspring",offspring)):
         dump(output/f"{key}.csv",dataset)
-    dump(output/"nutrition.csv.gz",flows,compress=True)
     if matrix == "closed":
         evaluate(output,all_worlds,stage_rows,census_rows)
     result = dict(model=model, matrix=matrix, input_attempts=len(seen), audited_attempts=len(selected),
