@@ -105,7 +105,7 @@ def analyze(matrix, case_name, original, blobs):
                  stage_exposures=len(stages),workers=len(workers),trips=len(trips),source_transactions=len(source_rows),
                  **{k:v for k,v in chain.items() if k.startswith("g_") or k in ("complete","queen_alive_150","workers_censored")},
                  **material)
-    return verdict, source_rows
+    return verdict, source_rows, stages
 
 
 def table(records, fields=None):
@@ -124,7 +124,7 @@ def witness_path(output, matrix, name):
 
 def witnesses(output, local=None):
     selected, index=reference_records()
-    records=[]
+    records, life_stages=[],[]
     for (matrix,name), row in sorted(selected.items()):
         batch=row["batch"]
         path=witness_path(output,matrix,name)
@@ -142,20 +142,22 @@ def witnesses(output, local=None):
                 for filename, content in sorted(blobs.items()):
                     archive.writestr(name+"/"+filename,content)
         blobs=archive_members(path,name,original)
-        verdict, source_rows=analyze(matrix,name,original,blobs)
+        verdict, source_rows, stages=analyze(matrix,name,original,blobs)
         record=dict(matrix=matrix,case=name,witness_sha256=sha(path),full_batch_archive=row["archive"],
                     full_batch_archive_sha256=source_digest,**{k:v for k,v in verdict.items() if k!="case"})
         records.append(record)
+        life_stages.extend(stages)
         transactions=output/f"{name}-source.csv"
         if local:
             transactions.write_bytes(table(source_rows,SOURCE_FIELDS))
         else:
             check(transactions.read_bytes()==table(source_rows,SOURCE_FIELDS),"reconstructed transactions differ")
-    summary=output/"cases.csv"
-    if local:
-        summary.write_bytes(table(records))
-    else:
-        check(summary.read_bytes()==table(records),"reconstructed witness outcomes differ")
+    for name,data in (("cases.csv",records),("life_stages.csv",life_stages)):
+        summary=output/name
+        if local:
+            summary.write_bytes(table(data))
+        else:
+            check(summary.read_bytes()==table(data),f"reconstructed {name} differs")
     print(f"{len(records)} original full witnesses, {sum(r['facts'] for r in records)} canonical facts and ledger checks passed")
 
 

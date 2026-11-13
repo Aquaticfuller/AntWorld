@@ -28,7 +28,7 @@ def located_facts(raw):
         offset += size + 4
 
 
-def verify_sources(raw, case, cuts, source_observer=None):
+def verify_sources(raw, case, cuts, source_observer=None, observed_cargo=None):
     empty = (0, 0, 0, 0)
     seeded, reserve, on_site, cargo = None, empty, empty, defaultdict(lambda: empty)
     totals = [0, 0, 0, 0]
@@ -40,6 +40,9 @@ def verify_sources(raw, case, cuts, source_observer=None):
         nonlocal cut
         while cut and int(cut["cursor"]) < event:
             check(tuple(int(cut[f"available_{k}"]) for k in "cpwo") == on_site, "physical food inventory drift")
+            if observed_cargo is not None:
+                actual = {ant: mass for ant, mass in cargo.items() if any(mass)}
+                check(observed_cargo[int(cut["time_ms"])] == actual, "carried food inventory drift")
             cut = next(cut_rows, None)
 
     def apply(stock, quantity, sign=1):

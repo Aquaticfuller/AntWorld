@@ -4,14 +4,19 @@ import argparse
 from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
+import platform
 from tempfile import TemporaryDirectory
+import time
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from analyze_integrated_founding import located_facts, verify_sources
 from analyze_s6_4_wp6b import BIRTH, COLLECTED, DELIVERED, F_BOUNDARY_UPTAKE, STAGE, UPTAKE, assess, check, rows
 from founding_qualification_witnesses import COMMAND, REFERENCE, archive_members, load, table
 from run_integrated_founding import DAY, environments
-from run_s6_4_wp6b import git, run_one, sha, write_json
+from run_s6_4_wp6b import ROOT, git, run_one, sha, write_json
+
+
+PROTOCOL = ROOT / "research/s6_4_founding_qualification/FROZEN_CLOSURE_PROTOCOL.md"
 
 
 def cases():
@@ -38,10 +43,13 @@ def reference_records():
 
 
 def collect(binary, output):
+    check(not git("status","--porcelain","--","cpp",Path(__file__).resolve().relative_to(ROOT).as_posix()),
+          "commit the scope collector and compiled sources before collecting cases")
     output.mkdir(parents=True)
     write_json(output/"run.json",dict(source=git("rev-parse","HEAD"),cpp_tree=git("rev-parse","HEAD:cpp"),
-        binary_sha256=sha(binary),arguments=COMMAND,protocol_sha256=sha(Path(__file__).resolve().parents[1]/
-        "research/s6_4_founding_qualification/FROZEN_CLOSURE_PROTOCOL.md"),cases=[c["case"] for _,_,c in cases()]))
+        binary_sha256=sha(binary),runner_sha256=sha(Path(__file__)),arguments=COMMAND,
+        configuration="Release",python=platform.python_version(),platform=platform.platform(),started_ns=time.time_ns(),
+        protocol_sha256=sha(PROTOCOL),cases=[c["case"] for _,_,c in cases()]))
     receipts=[]
     for matrix, identity, case in cases():
         name=case["case"]
@@ -68,7 +76,14 @@ def verify_case(case, summary, raw, blobs, original):
     case=case | dict(early_access_mask=3,carbohydrate_yield_nj_per_ug=8_000_000)
     measure,_,offspring,_=assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],7)
     cuts=rows(blobs["cuts.csv"])
-    material=verify_sources(raw,case,cuts)
+    people=rows(blobs["individuals.csv"])
+    observed_cargo=defaultdict(dict)
+    for person in people:
+        at=int(person["time_ms"])
+        cargo=tuple(int(person[f"carried_{part}"]) for part in "cpwo")
+        if any(cargo):
+            observed_cargo[at][int(person["id"])]=cargo
+    material=verify_sources(raw,case,cuts,observed_cargo=observed_cargo)
     positive_release=[]
     transfers=defaultdict(lambda: [0]*4)
     daily={}
@@ -93,7 +108,6 @@ def verify_case(case, summary, raw, blobs, original):
             elif kind==STAGE and stage==3:
                 transfers["eclosed"][0]+=1
     check(positive_release==[i*DAY for i in range(1,days+1)] and not any(reserve),"positive release did not stop at the funded limit")
-    people=rows(blobs["individuals.csv"])
     for day in age_cuts:
         at=day*DAY
         visible=[r for r in people if int(r["time_ms"])==at]
@@ -111,7 +125,8 @@ def verify_case(case, summary, raw, blobs, original):
             **{f"{store}_{nutrient}_ug":cut[f"{store}_{nutrient}"] for store in ("available","nest") for nutrient in "cpwo"},
             **{f"reserve_{nutrient}_ug":max(0,days-day)*daily_dose for nutrient,daily_dose in zip("cpwo",(1500,750,4500,0),strict=True)},
             **{f"queen_crop_{nutrient}_ug":queen[f"crop_{nutrient}"] for nutrient in "cpwo"},
-            **{f"living_crop_{nutrient}_ug":sum(int(r[f"crop_{nutrient}"]) for r in alive) for nutrient in "cpwo"})
+            **{f"living_crop_{nutrient}_ug":sum(int(r[f"crop_{nutrient}"]) for r in alive) for nutrient in "cpwo"},
+            **{f"carried_{nutrient}_ug":sum(mass[i] for mass in observed_cargo[at].values()) for i,nutrient in enumerate("cpwo")})
     return dict(case=case["case"],population=case["population"],seed=case["software_seed"],profile=case.get("profile_index"),
         release_days=days,last_positive_release_ms=positive_release[-1],first_worker_ms=measure["first_worker_ms"],
         queen_death_ms=measure["queen_death_ms"],queen_death_cause=measure["queen_death_cause"],
