@@ -178,8 +178,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         }
     }
     tx.fact(f);
-    if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve &&
-        s.founding->profile.early_access && s.founding->profile.early_access->local_hatch_cue)
+    if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve && hatch_cue_enabled(s))
         notify_local_hatch(tx, ant, e.id);
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {

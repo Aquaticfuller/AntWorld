@@ -3,6 +3,7 @@
 #include "checkpoint_codec.hpp"
 #include "founding_internal.hpp"
 #include "founding_memory.hpp"
+#include "ecological_internal.hpp"
 #include "spatial_navigation.hpp"
 #include "care_internal.hpp"
 
@@ -155,8 +156,8 @@ public:
         }
         if (profile().feeding_persistence) review_care(e);
         if (e.kind==FactKind::FoundingHatchCue)
-            ensure(profile().early_access && profile().early_access->local_hatch_cue, "R2 hatch cue is disabled");
-        if (profile().early_access && profile().early_access->local_hatch_cue) review_hatch(e);
+            ensure(hatch_cue_enabled(world), "R2 hatch cue is disabled");
+        if (hatch_cue_enabled(world)) review_hatch(e);
         if (e.kind == FactKind::FoundingReserveSeeded || e.kind == FactKind::FoundingEggFunded ||
             e.kind == FactKind::FoundingDietaryEggFunded || e.kind == FactKind::FoundingLipidConverted)
             ensure(required, "unattributed F1 material fact");

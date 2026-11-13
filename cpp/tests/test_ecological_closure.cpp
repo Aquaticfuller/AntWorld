@@ -206,6 +206,36 @@ void portable_field() {
     }
     std::filesystem::remove(db);
 }
+void founding_ablation() {
+    std::array<unsigned,2> counts{};
+    for (const bool suppress : {false,true}) {
+        auto profile=wp6b::nominal();
+        profile.feeding_persistence=FoundingFeedingPersistence{{172800000},750000};
+        profile.early_access=FoundingEarlyAccess{true,true};
+        wp6b::Case c{531,7,"absent",true,0,{},profile};
+        c.integrated_assay=c.qualification=c.compact=c.shaft=true;
+        c.ecological.emplace();
+        c.ecological->portable_field=true;
+        c.ecological->suppress_foundress_hatch_cue=suppress;
+        auto fixture=wp6b::setup(c);
+        fixture.world.advance_to({23*wp6b::day_ms});
+        const auto encoded=fixture.world.checkpoint();
+        require(encoded[12]==(suppress?26:25),"matched hatch comparison lost its physics identity");
+        WorldRuntime restored(fixture.queen.world,c.seed,{},wp6b::assay_limits(c));
+        restored.restore(encoded);
+        require(restored.ecological_closure()->suppress_foundress_hatch_cue==suppress &&
+                restored.founding_profile()->early_access->mobilize_larval_lipid,"hatch ablation changed larval mobilization");
+        restored.advance_to({25*wp6b::day_ms});
+        fixture.world.advance_to({25*wp6b::day_ms});
+        require(restored.checkpoint()==fixture.world.checkpoint(),"hatch ablation changed on restore");
+        const auto facts=restored.committed_events();
+        counts[suppress]=static_cast<unsigned>(std::count_if(facts.begin(),facts.end(),[](const auto& f) {
+            return f.kind==FactKind::FoundingHatchCue;
+        }));
+        wp6b::check_ledgers(restored);
+    }
+    require(counts[0]>0 && counts[1]==0,"matched hatch toggle did not isolate the local cue");
+}
 } // namespace
 
 int main(int argc,char** argv) {
@@ -218,6 +248,7 @@ int main(int argc,char** argv) {
         else if (name=="activity") paid_motion();
         else if (name=="soil") soil_handling();
         else if (name=="portable") portable_field();
+        else if (name=="founding_ablation") founding_ablation();
         else return 1;
         return 0;
     } catch (const std::exception& error) {

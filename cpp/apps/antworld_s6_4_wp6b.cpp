@@ -40,7 +40,8 @@ Case read_case(const Path& path) {
         (population != 1 && population != 2) ||
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
-    const bool portable_field=c.arm.starts_with("ecology5-");
+    c.cohort_assay=c.arm.starts_with("cohort25-");
+    const bool portable_field=c.arm.starts_with("ecology5-") || c.cohort_assay;
     c.expanded_history=c.arm.starts_with("ecology4-") || portable_field;
     const bool ecology=c.arm.starts_with("ecology-") || c.expanded_history;
     if (ecology) {
@@ -68,10 +69,25 @@ Case read_case(const Path& path) {
         if (treatment=="water" || treatment=="wallwater") e.water_sip_ug=25;
         c.blocked_water=treatment=="wallwater";
         c.trail_treatment=treatment=="silent"?TrailTreatment::Blind:TrailTreatment::Marked;
-        require(treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
-                treatment=="first" || treatment=="water" || treatment=="wallwater" || treatment=="cost",
-                "invalid ecological treatment");
-        if (treatment=="legacy") { c.ecological.reset(); c.trail_treatment=TrailTreatment::Marked; }
+        if (c.cohort_assay) {
+            require(treatment.size()==6 && treatment[0]=='c' &&
+                    (treatment[1]=='0' || treatment[1]=='1') && (treatment[2]=='0' || treatment[2]=='1') &&
+                    (treatment[3]=='0' || treatment[3]=='1') &&
+                    (treatment[4]=='n' || treatment[4]=='b' || treatment[4]=='r') &&
+                    (treatment[5]=='0' || treatment[5]=='1'),"invalid founding cohort treatment");
+            e.floor_space=true;
+            e.first_ration_ppm=treatment[1]=='1'?500000:0;
+            e.activity_cost=treatment[2]=='1';
+            e.recruitment=treatment[3]=='1';
+            e.water_sip_ug=treatment[4]=='n'?0:25;
+            e.suppress_foundress_hatch_cue=treatment[5]=='0';
+            c.blocked_water=treatment[4]=='b';
+        } else {
+            require(treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
+                    treatment=="first" || treatment=="water" || treatment=="wallwater" || treatment=="cost",
+                    "invalid ecological treatment");
+            if (treatment=="legacy") { c.ecological.reset(); c.trail_treatment=TrailTreatment::Marked; }
+        }
     }
     c.qualification=c.arm.starts_with("readiness-");
     c.qualification=c.qualification || ecology;

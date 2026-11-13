@@ -46,6 +46,7 @@ struct Case {
     bool dogleg{}, blocked_water{};
     std::optional<EcologicalClosureConfig> ecological{};
     bool expanded_history{};
+    bool cohort_assay{};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -76,7 +77,8 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
         if (c.dogleg) scene.voids = {{{12,6,14},{25,10,18}}, {{21,6,14},{25,10,27}}, {{21,6,23},{25,16,27}}};
         else if (c.shaft) scene.voids = {{{14,6,14},{18,16,18}}};
         else scene.voids = {{{14,4,14},{18,16,18}}, {{12,5,14},{20,11,18}}};
-        if (c.blocked_water) scene.voids.push_back({{19,7,15},{21,9,17}});
+        if (c.blocked_water && !c.cohort_assay) scene.voids.push_back({{19,7,15},{21,9,17}});
+        if (c.cohort_assay) scene.voids.push_back({{9,7,15},{11,9,17}});
         w.configure_geometry(scene.geometry, scene.voids);
     } else closure::chamber(w);
     scene.target = {.03*side, 0, 0};
@@ -136,8 +138,9 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     }
     if (c.care) w.set_autonomy(scene.queen);
     if (c.ecological && c.ecological->water_sip_ug) {
-        const auto water=c.blocked_water ? PositionM{.002,nest.y,0} : nest;
-        require(w.spatially_clear(nest,water)!=c.blocked_water,"wrong water contact treatment");
+        const auto water=c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
+        require(w.spatially_clear(nest,water)!=c.blocked_water && w.query_material(water)==Material::Void,
+                "wrong water contact treatment");
         w.seed_food(water, {0,0,1200,0});
     }
     for (unsigned i = 0; i < c.workers; ++i) {

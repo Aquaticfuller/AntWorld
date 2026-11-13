@@ -216,7 +216,9 @@ def material_and_activity(raw, cuts, case, edits, *, check_sources=False):
     care_rows = defaultdict(dict)
     layout = (((12,6,14),(25,10,18)),((21,6,14),(25,10,27)),((21,6,23),(25,16,27))) if case["layout"]=="dogleg" else (
         ((14,6,14),(18,16,18)),)
-    if case["treatment"]=="wallwater":
+    if case.get("cohort_assay"):
+        layout += (((9,7,15),(11,9,17)),)
+    elif case["treatment"]=="wallwater":
         layout += (((19,7,15),(21,9,17)),)
     boxes = [("solid", (0,0,0), (32,16,32)), *(("void",a,b) for a,b in layout)]
     grid = Grid([dict(kind=kind, **{f"{edge}_{axis}_q":value for edge,point in (("min",low),("max",high))
@@ -227,7 +229,8 @@ def material_and_activity(raw, cuts, case, edits, *, check_sources=False):
     cut = next(cuts)
     terminal = case["horizon_ms"]
     stock = tuple(case["external_food_components_ug"])
-    expected_sources = int(any(stock)) + int(case["treatment"] in {"water","wallwater"})
+    water_fixture = case.get("water_access", {"water":"reachable","wallwater":"blocked"}.get(case["treatment"],"absent"))
+    expected_sources = int(any(stock)) + int(water_fixture!="absent")
     daily_release = (188,94,563,0) if case["source"]=="limited" else tuple(m//4 for m in stock)
     food_positions = {}
 
@@ -273,9 +276,10 @@ def material_and_activity(raw, cuts, case, edits, *, check_sources=False):
             available[resource]=mass
             food_positions[resource]=position
             if check_sources:
-                expected_position = (.002 if case["treatment"]=="wallwater" else 0.,-.004,0.)
+                blocked_x = -.003 if case.get("cohort_assay") else .002
+                expected_position = (blocked_x if water_fixture=="blocked" else 0.,-.004,0.)
                 check(time==0 and ((position==expected_position and mass==(0,0,1200,0) and
-                      case["treatment"] in {"water","wallwater"}) or
+                      water_fixture!="absent") or
                       (any(stock) and abs(position[0])==.03 and position[1:]==(0.,0.) and mass==stock)),
                       "explicit source differs from frozen assay")
         elif kind==36:
@@ -301,6 +305,11 @@ def material_and_activity(raw, cuts, case, edits, *, check_sources=False):
                 totals["collection"] += 1
             else:
                 check(mass[2] and sum(mass)==mass[2],"invalid pure water dose")
+                if case.get("cohort_assay"):
+                    check(math.dist(position,food_positions[resource])<=.002+1e-14 and
+                          grid.swept(tuple(round((v+.008)/.0005) for v in position),
+                                     tuple(round((v+.008)/.0005) for v in food_positions[resource]),0),
+                          "foundress water debit lacks physical contact")
                 totals["water_sipped_ug"] += mass[2]
                 totals["water_sips"] += 1
         elif kind in (DELIVERED,19):

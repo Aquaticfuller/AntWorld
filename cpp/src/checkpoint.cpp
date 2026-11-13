@@ -108,7 +108,8 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     if (s.ecological) {
         w.put(ecological_magic);
         w.put(ecological_schema,4);
-        w.put(s.ecological->portable_field?portable_ecological_physics:ecological_physics,4);
+        w.put(s.ecological->suppress_foundress_hatch_cue ? suppressed_hatch_physics :
+              s.ecological->portable_field ? portable_ecological_physics : ecological_physics,4);
     }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
     w.put(resupply ? founding_resupply_schema_version : uptake ? founding_uptake_schema_version : dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
@@ -167,12 +168,13 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
     if (frame) header=r.get();
     const bool ecological = header==ecological_magic;
-    bool portable_field=false;
+    unsigned ecological_version{};
     if (ecological) {
         ensure(r.get(4)==ecological_schema,"unsupported ecological closure schema");
-        const auto physics=r.get(4);
-        ensure(physics==ecological_physics || physics==portable_ecological_physics,"unsupported ecological closure physics");
-        portable_field=physics==portable_ecological_physics;
+        const auto version=r.get(4);
+        ensure(version==ecological_physics || version==portable_ecological_physics || version==suppressed_hatch_physics,
+               "unsupported ecological closure physics");
+        ecological_version=static_cast<unsigned>(version);
         header=r.get();
     }
     const bool resupply=header==founding_resupply_magic;
@@ -269,7 +271,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
     if (ecological) {
         s->ecological=read_ecological(r,s->config);
-        s->ecological->portable_field=portable_field;
+        s->ecological->portable_field=ecological_version>=portable_ecological_physics;
+        s->ecological->suppress_foundress_hatch_cue=ecological_version==suppressed_hatch_physics;
     }
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();
@@ -331,8 +334,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 e.action==DiagnosticAction::Record && (queen ? (!e.resource.value && s->reproduction.contains(e.actor) && s->reproduction.at(e.actor).wake==e.id) :
                 (!e.actor.value && s->resource_cycles.contains(e.resource) && s->resource_cycles.at(e.resource).wake==e.id)),"invalid long-term scheduled event");
         } else if (e.kind>=ScheduledEvent::Kind::CareWake) {
-            const bool hatch=e.payload && e.kind==ScheduledEvent::Kind::CareWake && early_access &&
-                s->founding->profile.early_access->local_hatch_cue && e.actor==s->founding->founder &&
+            const bool hatch=e.payload && e.kind==ScheduledEvent::Kind::CareWake && hatch_cue_enabled(*s) &&
+                e.actor==s->founding->founder &&
                 s->founding_reserves.contains(EntityId{e.payload}) && e.issued_at==m.last_founding_hatch_cue &&
                 key.time.milliseconds-e.issued_at.milliseconds==1;
             ensure(care_contract && s->care.contains(e.actor) && s->care.at(e.actor).pending==e.id &&
