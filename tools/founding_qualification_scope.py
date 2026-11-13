@@ -11,6 +11,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 from analyze_integrated_founding import located_facts, verify_sources
 from analyze_s6_4_wp6b import BIRTH, COLLECTED, DELIVERED, F_BOUNDARY_UPTAKE, STAGE, UPTAKE, assess, check, rows
+from analyze_s6_4_wp6b import DIED, F_NEST_MEAL, NEST, RECYCLED
 from founding_qualification_witnesses import COMMAND, REFERENCE, archive_members, load, table
 from run_integrated_founding import DAY, environments
 from run_s6_4_wp6b import ROOT, git, run_one, sha, write_json
@@ -77,40 +78,51 @@ def verify_case(case, summary, raw, blobs, original):
     measure,_,offspring,_=assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],7)
     cuts=rows(blobs["cuts.csv"])
     people=rows(blobs["individuals.csv"])
+    by_day=defaultdict(list)
     observed_cargo=defaultdict(dict)
     for person in people:
         at=int(person["time_ms"])
+        by_day[at//DAY].append(person)
         cargo=tuple(int(person[f"carried_{part}"]) for part in "cpwo")
         if any(cargo):
             observed_cargo[at][int(person["id"])]=cargo
-    material=verify_sources(raw,case,cuts,observed_cargo=observed_cargo)
     positive_release=[]
     transfers=defaultdict(lambda: [0]*4)
     daily={}
     age_cuts=(60,120,150,180)
     reserve=(1500*days,750*days,4500*days,0)
+    material=verify_sources(raw,case,cuts,observed_cargo=observed_cargo)
+    first_delivery, queen_death_nest, nest = None, None, 0
     for event,_,_ in located_facts(raw):
         _,time,_,kind,actor,_,_,stage,_,amount,_=event
+        if kind==DELIVERED:
+            if first_delivery is None:
+                first_delivery=time
+        if kind in (DELIVERED, RECYCLED, NEST, F_NEST_MEAL):
+            nest+=amount[0] if kind in (DELIVERED,RECYCLED) else -amount[0]
+        if kind==DIED and actor==int(summary["queen"]):
+            queen_death_nest=nest
         if kind==37 and any(amount):
             positive_release.append(time)
             reserve=tuple(q-m for q,m in zip(reserve,amount,strict=True))
-        if time>days*DAY:
-            if kind in (COLLECTED,DELIVERED):
-                key="collected" if kind==COLLECTED else "delivered"
-                for i,m in enumerate(amount):
-                    transfers[key][i]+=m
-            elif kind in (UPTAKE,F_BOUNDARY_UPTAKE) and stage==3:
-                key="queen_uptake" if actor==int(summary["queen"]) else "worker_uptake"
-                for i,m in enumerate(amount):
-                    transfers[key][i]+=m
-            elif kind==BIRTH:
-                transfers["births"][0]+=1
-            elif kind==STAGE and stage==3:
-                transfers["eclosed"][0]+=1
+        if time<=days*DAY:
+            continue
+        if kind in (COLLECTED,DELIVERED):
+            key="collected" if kind==COLLECTED else "delivered"
+            for i,m in enumerate(amount):
+                transfers[key][i]+=m
+        elif kind in (UPTAKE,F_BOUNDARY_UPTAKE) and stage==3:
+            key="queen_uptake" if actor==int(summary["queen"]) else "worker_uptake"
+            for i,m in enumerate(amount):
+                transfers[key][i]+=m
+        elif kind==BIRTH:
+            transfers["births"][0]+=1
+        elif kind==STAGE and stage==3:
+            transfers["eclosed"][0]+=1
     check(positive_release==[i*DAY for i in range(1,days+1)] and not any(reserve),"positive release did not stop at the funded limit")
     for day in age_cuts:
         at=day*DAY
-        visible=[r for r in people if int(r["time_ms"])==at]
+        visible=by_day[day]
         queen=next(r for r in visible if r["id"]==summary["queen"])
         workers=[r for r in visible if r["stage"]=="3" and r["mother"]==summary["queen"]]
         alive=[r for r in visible if r["stage"]!="4"]
@@ -134,6 +146,7 @@ def verify_case(case, summary, raw, blobs, original):
         births=measure["births"],hatch=measure["hatch"],pupation=measure["pupation"],eclosed=measure["eclosed"],
         post_release_births=transfers["births"][0],post_release_eclosed=transfers["eclosed"][0],
         post_release_born_and_eclosed=sum(p["birth_ms"]>days*DAY and p["adult_ms"] is not None for p in offspring),
+        first_delivery_ms=first_delivery,depot_c_at_queen_death_ug=queen_death_nest,
         **{f"post_release_{name}_{part}_ug":mass for name in ("collected","delivered","queen_uptake","worker_uptake")
            for part,mass in zip("cpwo",transfers[name],strict=True)},
         day150_reference=same_authority,**material),daily.values()
