@@ -1,0 +1,37 @@
+{
+  "arguments": [
+    "172800000",
+    "750000",
+    "0",
+    "3",
+    "1",
+    "8000000",
+    "15"
+  ],
+  "asan_options": "detect_leaks=0:halt_on_error=1",
+  "assay_source": "77cc30f",
+  "authority_sha256": {
+    "facts.bin": "5ff52145adb712ae3d9e76a4b75f278257e4c82c6ac964091a3f053f755bcc6a",
+    "final.frame": "51281ca17c02fdc7f0935e07e5856b8ab049d5f0a53d7ad956bddcea10baa119",
+    "initial.chk": "b9091dd60ddf98408700f7dc77b56f7d72fdeac7ed8f1d7d35f167cf2116d5f9"
+  },
+  "case": "borisovka-1-shaft-fast-marked",
+  "configuration": "Debug",
+  "executable_sha256": "2a2dd8c6bf72c28836faaa1d41f135854512142a7cb8202ac2548691fd605c8f",
+  "exit_code": 0,
+  "mode": "durable-split",
+  "parameters_sha256": "493e56828ea9953e6678719acce6eab8935d6a2de57bbae46e763fae9e4b7127",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "summary": {
+    "events": "641068",
+    "rng": "1",
+    "state_hash": "15826801587879550655",
+    "time_ms": "12960000000",
+    "trace_hash": "9223340383481268229",
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  "ubsan_options": "halt_on_error=1:print_stacktrace=1"
+}
