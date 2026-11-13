@@ -50,3 +50,14 @@ python tools/archive_s6_4_rm02_performance.py out/qualification-timing out/quali
 Substitute the actual single-configuration executable path, compiler and existing HWiNFO CSV. The final qualification uses the ordinary uninstrumented Release executable. The instruments, exact-input hashes, original archived failures and raw session records remain available for comparing the outcome. The source-only collector is separate from the public read-only analyzer. Report SQLite VFS times as nested forwarded operations and the thread wall/CPU and outer-process differences as residuals.
 
 The published native and protected reports can be recomputed without new measurements by adding `--native` to `verify_founding_qualification.py`. On Windows, build the inherited `antworld_s6_2_benchmark`, `antworld_s6_3_1_birth_benchmark` and `antworld_s6_4_wp5_benchmark` targets, then run the original Windows workload commands against this Core tree to collect new samples. The live telemetry and hardware admissions apply to measurements. Public verification reads the retained samples and checks their original dispositions.
+
+## File index
+
+| Directory under `experiments/s6_4_founding_qualification` | Review material |
+|---|---|
+| `witnesses` | Representative complete original archives, exact archived member links, source transactions, life-stage timeline, and interrupted SQLite DB and WAL with receipt. |
+| `b06` | All 1,236 world-level census comparisons, compressed known-age exposures and recomputable grouped outcomes. |
+| `scope` | The frozen 48-case run receipt, every local archive/member identity, per-world flow totals and four reporting cuts per world. |
+| `replay-legacy` and `r2-recovery.json` | Exact prior-model replay receipts and persistence or observation-disabled comparisons. |
+| `performance` | Admitted and rejected attempts, schedules, selected telemetry, all timing samples, phase attribution and frozen analyses. |
+| `tests` | Complete Windows Debug, Release and sanitizer CTest logs. |

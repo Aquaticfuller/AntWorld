@@ -10,6 +10,16 @@ Linear interpolation of P95 with six observations places 75% weight on the maxim
 
 The original P50, P95, A/A, capture and RSS verdict is always reproduced on all rows. Leave-one-session values are sensitivity diagnostics. Every such calculation omits each session in turn, with no preferred subset. The paired bootstrap resamples the three complete session ratios for description, seed 640604 and 4,096 replicates. Its interval cannot replace the gate or establish independence beyond those sessions. Neither metric is adjusted by subtracting any process or I/O residual. A slow observation with correct inputs and qualified telemetry is evidence.
 
+| Original failed cell | Original out-of-band ratios, application / process | What the original evidence identifies |
+|---|---|---|
+| Borisovka nominal R1 | A/A 1.1046 / 1.1028 | Disabled runs differ. There is no original A/B failure. |
+| Borisovka depot v1, 8 workers | P95 1.2573 / 1.2479 | Both timing surfaces fail at the tail. No original A/A failure. |
+| Borisovka depot H1+H2, 32 workers | A/A 0.8645 / 0.8669 | Disabled runs differ. Recovery dominates the diagnostic even with capture disabled. |
+| St. Petersburg nominal v1 | P50 1.1581 / 1.1362 | Both timing surfaces fail at the median. Short absolute workloads amplify fixed and residual costs. |
+| St. Petersburg nominal H1+H2 | Process P50 1.1229 | The outside-process surface alone fails. Instrumented residuals are relatively large, with cause unresolved. |
+| St. Petersburg depot v1, 8 workers | P95 1.2235 / 1.2281, A/A 1.1283 / 1.1089 | Both observer and disabled controls exceed their limits. The observation effect cannot be isolated from repeatability. |
+| St. Petersburg empty v1, 32 workers | A/A 1.1285 / 1.1295 | Disabled runs differ. Diagnostics place the major absolute cost in history validation during restore. |
+
 ## Phase attribution on identical authority
 
 The three admitted sessions contain 216/216 rows and all nine frozen cells. One admission was rejected because system P95 was 21.40%. All recorded cell signatures match the original application runs, including the full canonical facts and RNG. The table gives the median of the six observation-enabled processes per cell. Capture is the sum over 91 daily cuts. The restore measure includes every recovery evidence check. The separate restore encoding checks exact original checkpoint bytes. Forwarded VFS synchronization is nested and includes database open, publication, recovery and close. It is distinct from the application output synchronization.
