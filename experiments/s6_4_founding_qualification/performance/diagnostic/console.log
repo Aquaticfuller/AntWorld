@@ -1,0 +1,8 @@
+{"kind": "timing", "session": "session1", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 7.299062671319882, "system_busy_pct_p95": 14.728229275665617, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 5.001009025430985, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session1: 72/72 samples, qualified telemetry True
+{"kind": "timing", "session": "session2", "attempt": 1, "admitted": false, "system_busy_pct_complete": true, "system_busy_pct_p50": 3.98570248230772, "system_busy_pct_p95": 21.398953325502443, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 3.2810709687150337, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+{"kind": "timing", "session": "session2", "attempt": 2, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 4.646204351494212, "system_busy_pct_p95": 13.613177940147219, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 9.374032091714662, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session2: 72/72 samples, qualified telemetry True
+{"kind": "timing", "session": "session3", "attempt": 1, "admitted": true, "system_busy_pct_complete": true, "system_busy_pct_p50": 2.8298291830276523, "system_busy_pct_p95": 14.328957680250783, "processor_busy_pct_complete": true, "processor_busy_pct_p50": 0.0, "processor_busy_pct_p95": 6.329808641976605, "native_intervals_valid": true, "power_valid": true, "sensors_valid": true}
+session3: 72/72 samples, qualified telemetry True
+COLLECTION_FINISHED

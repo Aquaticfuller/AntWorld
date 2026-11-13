@@ -42,6 +42,8 @@ EXPECTED = {
 }
 INTERRUPTED_CASE = "borisovka-micro-nominal-0-1-balanced"
 COMMAND = [*map(str, NOMINAL), "0", "3", *MODELS["resupply"]]
+SOURCE_FIELDS = ("event_id", "time_ms", "scheduled_id", "kind", "actor_id", "resource_id", "x_m", "y_m", "z_m",
+                 *(f"{label}_{ingredient}_ug" for label in ("event", "reserve", "site", "actor_cargo") for ingredient in "cpwo"))
 
 
 def load(data):
@@ -106,11 +108,11 @@ def analyze(matrix, case_name, original, blobs):
     return verdict, source_rows
 
 
-def table(records):
-    if not records:
+def table(records, fields=None):
+    if fields is None and not records:
         return b""
     text=StringIO(newline="")
-    out=csv.DictWriter(text,tuple(records[0]),lineterminator="\n")
+    out=csv.DictWriter(text,fields if fields is not None else tuple(records[0]),lineterminator="\n")
     out.writeheader()
     out.writerows(records)
     return text.getvalue().encode()
@@ -146,9 +148,9 @@ def witnesses(output, local=None):
         records.append(record)
         transactions=output/f"{name}-source.csv"
         if local:
-            transactions.write_bytes(table(source_rows))
+            transactions.write_bytes(table(source_rows,SOURCE_FIELDS))
         else:
-            check(transactions.read_bytes()==table(source_rows),"reconstructed transactions differ")
+            check(transactions.read_bytes()==table(source_rows,SOURCE_FIELDS),"reconstructed transactions differ")
     summary=output/"cases.csv"
     if local:
         summary.write_bytes(table(records))
@@ -207,7 +209,10 @@ def main():
     args.scratch.mkdir(parents=True,exist_ok=True)
     args.witnesses.mkdir(parents=True,exist_ok=True)
     witnesses(args.witnesses,args.local_originals)
-    binary=args.binary.resolve(strict=True)
+    binary=args.binary
+    if not binary.is_file():
+        binary=binary.parent/"Release"/(binary.stem+".exe")
+    binary=binary.resolve(strict=True)
     with TemporaryDirectory(dir=args.scratch) as folder:
         work=Path(folder)
         fresh=interrupted(binary,work,args.witnesses if args.local_originals else None)

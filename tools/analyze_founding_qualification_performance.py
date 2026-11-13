@@ -126,7 +126,7 @@ def diagnostics(archives):
             for metric in METRICS:
                 parts={s:{arm:[float(r[metric]) for r in group if r["session"]==s and r["treatment"]==arm]
                       for arm in ("on","off","off-a","off-b")} for s in sessions}
-                check(len(parts)==3 and all(len(x)==2 for p in parts.values() for x in p.values()),"incomplete historical pairs")
+                check(len(parts)==3 and all(len(x)==2 for p in parts.values() for x in p.values()),"incomplete diagnostic or historical pairs")
                 on,off=([n for p in parts.values() for n in p[arm]] for arm in ("on","off"))
                 aa,bb=([n for p in parts.values() for n in p[arm]] for arm in ("off-a","off-b"))
                 flips=[]
@@ -157,7 +157,10 @@ def main():
     samples,decision=check_inputs(args.diagnostic,args.historical[0])
     args.output.mkdir(parents=True)
     phases,tails=phase_tables(samples)
-    records=diagnostics((path.name,path) for path in args.historical)
+    archives=[(path.name,path) for path in args.historical]
+    if decision["status"]=="COMPLETE":
+        archives.append(("phase-attribution",args.diagnostic))
+    records=diagnostics(archives)
     for name,data in (("phases.csv",phases),("phase_tails.csv",tails),("repeatability.csv",records)):
         (args.output/name).write_bytes(table(data))
     write_json(args.output/"diagnostic_status.json",decision)

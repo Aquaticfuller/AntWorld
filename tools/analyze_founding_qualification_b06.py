@@ -97,6 +97,8 @@ def diagnose(case, world, data, stages, paths, earlier):
         pupa_exact_seen=int(rechecked["exact"]["pupa_d"] is not None),pupa_at_least_seen=int(rechecked["at_least"]["pupa_d"] is not None),
         eggs_first_census=world["first_eggs_census"],larvae_with_wait_cut=len(waits),
         **{f"peak_stage_{stage}_{source}":data[stage] for source,data in (("daily",found),("event",peak)) for stage in (0,1,2,3)})
+    for rule,result in rechecked.items():
+        line.update({f"{rule}_{endpoint}":result[endpoint] for endpoint in ("egg_d","larva_d","pupa_d","total_d")})
     grouped=dict(cohorts(world,paths,p))
     exposures=[]
     for row in stages:

@@ -63,6 +63,7 @@ def verify_case(case, summary, raw, blobs, original):
     if days==120:
         facts=original["artifacts"]["facts.bin"]
         check(sha256(memoryview(raw)[:facts["bytes"]]).hexdigest()==facts["sha256"],"150-day canonical prefix differs")
+        check(sha256(blobs["initial.chk"]).hexdigest()==original["artifacts"]["initial.chk"]["sha256"],"180-day control changed initial state")
         same_authority="FACT_PREFIX_EXACT"
     case=case | dict(early_access_mask=3,carbohydrate_yield_nj_per_ug=8_000_000)
     measure,_,offspring,_=assess(case,summary,raw,blobs["cuts.csv"],blobs["individuals.csv"],7)
@@ -129,6 +130,7 @@ def analyze(raw, output):
     check(len(expected)==len(manifest)==48,"scope assay denominator changed")
     references=reference_records()
     result, cuts=[],[]
+    authority={}
     for (matrix, identity, case), row in zip(expected,manifest,strict=True):
         receipt=row["receipt"]
         check(row["matrix"]==matrix and (receipt["case"],receipt["identity"])==(case["case"],identity),"scope case mismatch")
@@ -138,6 +140,13 @@ def analyze(raw, output):
         check(sha(file)==row["archive_sha256"],"scope archive bytes changed")
         blobs=archive_members(file,case["case"],receipt)
         check(load(blobs["case.json"])==case,"scope input changed")
+        stock_identity=(receipt["artifacts"]["initial.chk"]["sha256"],receipt["summary"]["world"])
+        key=case["scope_reference"]
+        if key in authority:
+            before=authority[key]
+            check(before[0]!=stock_identity[0] and before[1]==stock_identity[1],"scope pair lost its same-world reserve intervention")
+        else:
+            authority[key]=stock_identity
         world,daily=verify_case(case,receipt["summary"],blobs["facts.bin"],blobs,original)
         result.append(world | dict(matrix=matrix,archive_sha256=row["archive_sha256"]))
         cuts.extend(daily)

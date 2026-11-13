@@ -1,5 +1,11 @@
 # Open questions and experiments (historical v0.5 with v0.8 updates)
 
+## S6.4 integrated founding qualification
+
+- **BR-04 remains BIOLOGICAL_BLOCKED.** Keep the warm B06 founder-level reference and original exact and at-least daily readers. Known-age survival, real larval tissue and hydration shortages, and simultaneous count attainment answer separate questions. Request original daily counts and attrition, plus a genuinely independent cohort with documented moist-cotton and thermal exposure. [B06 scope and evidence](../research/s6_4_founding_qualification/B06_SOURCE_AND_ASSAY_CROSSWALK.md)
+- **TD-03/06 and application qualification remain separate.** The complete process, fixed daily observations, history validation, SQLite `FULL` sync and all timing tails remain in the record. Small-session A/A and tail repeatability need independent qualification under the original limits or separately approved statistical changes. [Protocol and phase review](../research/s6_4_founding_qualification/PERFORMANCE_PROTOCOL_REVIEW.md)
+- **The supported ecology remains bounded to the protected opt-in profile.** Finite external reserve exhaustion, physically blocked food, composition deficits and lower maternal reserve trajectories remain separate adverse controls. Neither the standard nor the extended scope diagnostic supplies evidence for a field season or a mature colony. [Original integrated scope and blockers](../research/s6_4_integrated_founding/INTEGRATED_FOUNDING_READINESS_REPORT.md)
+
 ## S6.4 WP-6B-R2 early-life resource access
 
 - **BR-01, BR-03 and BR-04 remain BIOLOGICAL_BLOCKED.** The historical closed-budget experiment separates failure to receive a first meal, delayed availability of a paid reserve, and unmet tissue or hydration requirements. An opt-in boundary conversion and a local hatch cue are separate candidate interventions. The original warm clock and adverse resource trials remain in the archive. Matching larval age, time to actual feeding and assimilation needs independent *Lasius niger* measurements.
