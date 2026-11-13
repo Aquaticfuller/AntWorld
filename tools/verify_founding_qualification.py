@@ -162,7 +162,6 @@ def verify(root):
     legacy(root/"replay-legacy")
     r2_recovery(root/"r2-recovery.json")
     performance=root/"performance"
-    native(performance)
     experiments=ROOT/"experiments"
     historical=(experiments/"s6_4_integrated_founding/performance/application-inherited",
                 experiments/"s6_4_wp6b_r2/performance/append-application",
@@ -178,10 +177,15 @@ def verify(root):
         baseline=experiments/"s6_4_integrated_founding/performance"/name
         rows=list(compare(baseline,performance/name))
         check((performance/f"{name}-paired-codec.csv").read_bytes()==table(rows),"codec comparison changed")
-    print("1236 B06 case pairs, 48 scope receipts, 2184 legacy replays and controlled timings verified")
+    print("1236 B06 case pairs, 48 scope receipts, 2184 legacy replays and application timings verified")
 
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("evidence",type=Path)
-    verify(parser.parse_args().evidence.resolve())
+    parser.add_argument("--native",action="store_true",help="also recompute the native and protected performance reports")
+    args=parser.parse_args()
+    root=args.evidence.resolve()
+    verify(root)
+    if args.native:
+        native(root/"performance")

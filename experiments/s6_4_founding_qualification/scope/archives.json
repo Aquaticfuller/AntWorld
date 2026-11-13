@@ -1,0 +1,3890 @@
+[
+  {
+    "archive": "borisovka-micro-nominal-0-1-balanced-dose-120.zip",
+    "archive_sha256": "2f3094836c2242cb4a2fcad41eb7403d35b6a60bf29c807c352db6073d3f954f",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1538,
+          "sha256": "86d91a63e9b6ab7b10f53ce07c21eeac84378b05b91e532eb0851b635d59d27f"
+        },
+        "cuts.csv": {
+          "bytes": 32879,
+          "sha256": "70d6b40745a5e530c4be1472f6e636e241189b3a159c90c5302619726b5b3f70"
+        },
+        "facts.bin": {
+          "bytes": 174133071,
+          "sha256": "3cd5bf4af8daa653eacae07fa4ba08b72b0c43bf813c4ffbb819ebead5419819"
+        },
+        "final.frame": {
+          "bytes": 99207,
+          "sha256": "53afccfa26e83ea348755146948748e705dd5c1b2ab321d9ac0d8c49b167b3e7"
+        },
+        "individuals.csv": {
+          "bytes": 1364366,
+          "sha256": "8b89a8f3cbc7f92c197e3d417c66c039899fda5081d0452db77b46b916d88b29"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "5e246b09f74217867133038fe4393d89bc30095e83e2e7db44fe6be3a6a4a69e"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "c46ada56ba23904a3e98cc2aac1abe81344996de13c697b983feaa1fa9e361ae"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 441,
+          "sha256": "67b0473fe6944ceeea4ed76cb4d657a54387e91300b14a5286c9364e49fba490"
+        },
+        "timings.csv": {
+          "bytes": 9618,
+          "sha256": "73952dd786e8209f5cd38b48d6456c14ebb07b51a4fc85d957d7e003a00bdde4"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-1-balanced-dose-120",
+      "elapsed_ms": 5144.097999989754,
+      "exit_code": 0,
+      "identity": 100961,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2258.7006000000001",
+        "checkpoint_ms": "1318.6739",
+        "cut_ms": "18.481300000000005",
+        "events": "858957",
+        "facts_bytes": "174133071",
+        "frame_bytes": "99207",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "561463296",
+        "peak_sampled_queue": "146",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "221212672",
+        "seed": "1",
+        "setup_ms": "0.14660000000000001",
+        "state_hash": "425648559417654072",
+        "time_ms": "15552000000",
+        "trace_hash": "1019244661366619818",
+        "world": "00000000-0000-0286-0000-000000018a61"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-1-balanced-dose-60.zip",
+    "archive_sha256": "cf64ed28cdedfd8dd8feecd19f34f9c05781fcfdff270f32ac10a0d3b17c40b2",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1535,
+          "sha256": "11082e91e6ace68f89b04633233c679e01be1f7b0889316b3c9198104614aba7"
+        },
+        "cuts.csv": {
+          "bytes": 32368,
+          "sha256": "63e0a07f4c21e7c55f385ad0fd0bbc47601ee49bfce9516bdc609f1f28d07aaf"
+        },
+        "facts.bin": {
+          "bytes": 187495206,
+          "sha256": "d24cfa650ab0c503c7e50746a76fc80aab47cfa01758ff4809ae9739435e7608"
+        },
+        "final.frame": {
+          "bytes": 96498,
+          "sha256": "890104b3c37266feeefd603e7e763fd7849862f3b145e1157f6554e4b9806322"
+        },
+        "individuals.csv": {
+          "bytes": 1365882,
+          "sha256": "3e3a38e87b0134a89b9e7664805c32cd13aad47e371d4ab9982c5bbdcb38a72f"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "06e2e861c2fdcbdc29346a417300665dabb640f7fecdcceaea453053df39d310"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "0ad66df82cbd76b18e0eea522e104b947017c8a4f33e6a2fcaadd671c570054c"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 440,
+          "sha256": "b8d8f5b9d2aced2b80b49cf06b03cb27954b5bc9a8eedfec1915b93094876f98"
+        },
+        "timings.csv": {
+          "bytes": 9556,
+          "sha256": "800eef248e9e0d2ec23d98772346e44b9a44a491023e6db9de9518f7d07fec56"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-1-balanced-dose-60",
+      "elapsed_ms": 4909.545300004538,
+      "exit_code": 0,
+      "identity": 100961,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2335.9076000000005",
+        "checkpoint_ms": "1287.9998000000001",
+        "cut_ms": "20.982900000000011",
+        "events": "919737",
+        "facts_bytes": "187495206",
+        "frame_bytes": "96498",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "602394624",
+        "peak_sampled_queue": "147",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "236408832",
+        "seed": "1",
+        "setup_ms": "0.1159",
+        "state_hash": "16041642054561025635",
+        "time_ms": "15552000000",
+        "trace_hash": "11613520094877368417",
+        "world": "00000000-0000-0286-0000-000000018a61"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-7-balanced-dose-120.zip",
+    "archive_sha256": "09a67800ca1c469507a1192bbdd89aadb41c68322628e7d2f675dc475118601d",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1538,
+          "sha256": "f14bece74a0037972640777402da9109bcc2a47d71bff3d10c77a7329fb3d44f"
+        },
+        "cuts.csv": {
+          "bytes": 32969,
+          "sha256": "cc40fd91ad55150bb3f513f5c9bddf3439d9493f324a3ee92595781ef60a0c68"
+        },
+        "facts.bin": {
+          "bytes": 206030342,
+          "sha256": "52db295ce974b13849a25002eff60aade799fdacce909a245c2cfed09a33db70"
+        },
+        "final.frame": {
+          "bytes": 93364,
+          "sha256": "1b14ba2c780cc81d03f7bd2411f6a7a9649e8cad5d233ca9a2e268a0f20c3c1e"
+        },
+        "individuals.csv": {
+          "bytes": 1367722,
+          "sha256": "1a6abad5a292a36f50afc0142ad8eade6e4e007b1ad5a911e07d74ade9afdcea"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "28b521678f9569291461d1234ef49089ac17df3f6bd107d4e415048790f6deff"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "dee52bbb2c8e9cc59b4327652a681cb3bbe92d8bb90714870e798c0c8a04e973"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 431,
+          "sha256": "aab69673db1138b8c409bba003f834aa714561b2c2ac905d1cb875dbe2d06fec"
+        },
+        "timings.csv": {
+          "bytes": 9464,
+          "sha256": "773338ca66a46e1023648187f7e724cb6a70ef7bd55daca7405117a3eaf90075"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-7-balanced-dose-120",
+      "elapsed_ms": 5095.184700010577,
+      "exit_code": 0,
+      "identity": 100962,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2067.3080999999997",
+        "checkpoint_ms": "1259.1558",
+        "cut_ms": "349.68800000000005",
+        "events": "1001480",
+        "facts_bytes": "206030342",
+        "frame_bytes": "93364",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "659922944",
+        "peak_sampled_queue": "118",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "256233472",
+        "seed": "7",
+        "setup_ms": "0.1444",
+        "state_hash": "8115725218820227920",
+        "time_ms": "15552000000",
+        "trace_hash": "14418324741937436852",
+        "world": "00000000-0000-0286-0000-000000018a62"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-7-balanced-dose-60.zip",
+    "archive_sha256": "d273cca954104bc580034a406adccb6dd1bae6a787bb237e38b336cbc872beb4",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1535,
+          "sha256": "1b4070b46c02be25cc8c3c7a1d3985bb34ef110ed087e73e5bf4c59144a0e2d7"
+        },
+        "cuts.csv": {
+          "bytes": 32440,
+          "sha256": "dfcbf4298ab10e44e5ce19c5688ef7dfa4fb7729bff59b80e757dbfa8a597eeb"
+        },
+        "facts.bin": {
+          "bytes": 204325669,
+          "sha256": "b4df30300488c100c2f1aabc0eb43974b4663e55ae47bb451ce1ba96a045f7db"
+        },
+        "final.frame": {
+          "bytes": 103650,
+          "sha256": "1a52e9bd63a8266218882c1b3a3dc950d7067942d256e08d7d2e488c6b3985d6"
+        },
+        "individuals.csv": {
+          "bytes": 1376391,
+          "sha256": "365e8e21b1015c2928cb181ae061a499345f841840928fd37b6950454acd720b"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "0ca43d34ea8d85fe01d50a218a390b4906553852f0b65e7758a2fe63a2879169"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "872cfa2462040f4c37b8ca922ac1800486f78d8478fcbb99254f98749317c143"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 443,
+          "sha256": "78d7a0292c83fcd2cb62c4664c69300b633eec19d200751d43cf75f8ed099714"
+        },
+        "timings.csv": {
+          "bytes": 9294,
+          "sha256": "34dce8ba307ab75b46b5007a41cfb1b8d7ada88169bb2f1bc9354c0d22c47b0b"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-7-balanced-dose-60",
+      "elapsed_ms": 5368.401100015035,
+      "exit_code": 0,
+      "identity": 100962,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2299.6256000000003",
+        "checkpoint_ms": "1345.8204000000001",
+        "cut_ms": "19.7424",
+        "events": "994585",
+        "facts_bytes": "204325669",
+        "frame_bytes": "103650",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "654356480",
+        "peak_sampled_queue": "149",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "254541824",
+        "seed": "7",
+        "setup_ms": "0.14530000000000001",
+        "state_hash": "12651968056397396405",
+        "time_ms": "15552000000",
+        "trace_hash": "14200817412087822266",
+        "world": "00000000-0000-0286-0000-000000018a62"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-19-balanced-dose-120.zip",
+    "archive_sha256": "99234e1f6af27c7af3c4ed65737933242f0c058cf2bf13b4d2f605bf6521326b",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1542,
+          "sha256": "ad03bd37f690a302c6981d7c4f9872fd62f6b22802a2e9e4618f273e0e773c05"
+        },
+        "cuts.csv": {
+          "bytes": 33094,
+          "sha256": "2383f565e33307843c4bf01210d13fd985220d3e0ec5de1f7e5c5e28f52b9cb3"
+        },
+        "facts.bin": {
+          "bytes": 201530404,
+          "sha256": "8ce289b1f565108a79483e4fd459fb252718546136c2dc09ef4696273bfb2055"
+        },
+        "final.frame": {
+          "bytes": 92696,
+          "sha256": "3d37e022962fd230f6d24719a60921b90e2794346af0e4b9216982894ab7cd08"
+        },
+        "individuals.csv": {
+          "bytes": 1376873,
+          "sha256": "cb182ad8e0dd4476b965762a362fa895977d70741915fe465d8b3b03b4b6b9c8"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "fddfd9e8e9f24762b61c4cc1e9b50e67862fe40f825c20b4cdffe97a519184a5"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "7912f4a3662ab10623bb1918f3270f98f927b4c101296b85ffdf01929f599c83"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 440,
+          "sha256": "bb03cc4d7b06dd9d0aee46cb3d4a3188d12365df39172741e1a2e0374ed504f9"
+        },
+        "timings.csv": {
+          "bytes": 9671,
+          "sha256": "96da9247cd8d36ee15303a4bff45628c77b068f9698b6df48ab3718da6221b25"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-19-balanced-dose-120",
+      "elapsed_ms": 5131.654600001639,
+      "exit_code": 0,
+      "identity": 100963,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2380.2912000000001",
+        "checkpoint_ms": "1351.9418000000001",
+        "cut_ms": "20.939700000000002",
+        "events": "979672",
+        "facts_bytes": "201530404",
+        "frame_bytes": "92696",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "645767168",
+        "peak_sampled_queue": "117",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "250937344",
+        "seed": "19",
+        "setup_ms": "0.1144",
+        "state_hash": "8154266182487547494",
+        "time_ms": "15552000000",
+        "trace_hash": "5637655936077080194",
+        "world": "00000000-0000-0286-0000-000000018a63"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-19-balanced-dose-60.zip",
+    "archive_sha256": "7d44371c9856687847d2aef53eb757fa0f191ccf4d5267bc273c52b650b60502",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1539,
+          "sha256": "7dd5cef32c81d98d0596d810cf3b542d431653704ec47770204b19bffe3cdabd"
+        },
+        "cuts.csv": {
+          "bytes": 32577,
+          "sha256": "0a7f25cad220d67acd1eebbcf8053af097fb35a683e6169c72a00104ba38353c"
+        },
+        "facts.bin": {
+          "bytes": 201482258,
+          "sha256": "b3f922936c8e1a85624eb48192376ce6d19897a490becd49d63512af119f6b4a"
+        },
+        "final.frame": {
+          "bytes": 92811,
+          "sha256": "12bdd8a2117db28ee103a9048e9bc34444cec5999e65919db89e82146976d987"
+        },
+        "individuals.csv": {
+          "bytes": 1376873,
+          "sha256": "2c6dc9654a622297807c1ff0b3c0ac625e3d48e480614f7559efa96ca84186c0"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "ca76f83485ce2eba6010df543adb0484880bcbf71d5709481fd8cacf4d20363d"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "b9419f572872343032083160766963516fdeaca2e07401614fdb54964654a793"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 455,
+          "sha256": "a5649e5bd9789616b07b925443088fdb7064531dfc7aa03a5be2dbce97b86f36"
+        },
+        "timings.csv": {
+          "bytes": 9444,
+          "sha256": "0084577b2a718af96e5c8b811d2c912c915d95253110db47061e36cc417e5294"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-19-balanced-dose-60",
+      "elapsed_ms": 4526.542000006884,
+      "exit_code": 0,
+      "identity": 100963,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2098.3573000000001",
+        "checkpoint_ms": "1247.5708999999999",
+        "cut_ms": "26.417699999999989",
+        "events": "979427",
+        "facts_bytes": "201482258",
+        "frame_bytes": "92811",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "645529600",
+        "peak_sampled_queue": "117",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "250769408",
+        "seed": "19",
+        "setup_ms": "0.080699999999999994",
+        "state_hash": "14632808604486407277",
+        "time_ms": "15552000000",
+        "trace_hash": "7708286415866163440",
+        "world": "00000000-0000-0286-0000-000000018a63"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-42-balanced-dose-120.zip",
+    "archive_sha256": "a92b67817bc058a6624d2f332226f80c9a1a6546aacec6c965574cf98f936f15",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1542,
+          "sha256": "8f0c361254d10ab337669a00b24824ef456c61f9820a1d469651aca321214cb2"
+        },
+        "cuts.csv": {
+          "bytes": 33122,
+          "sha256": "824ae1422929c744a34e47f556595e6ab5819b93ef664ce81e41aef47b6f3b14"
+        },
+        "facts.bin": {
+          "bytes": 198485626,
+          "sha256": "6b643ab7e285a73d7670852cc98449542b2c593c6139a0ea2a0f4b709386cd6c"
+        },
+        "final.frame": {
+          "bytes": 92731,
+          "sha256": "0d8765994e1af4296aa1f1146c2504ac16be9e8bbe0e21ad0899c9303fba85d7"
+        },
+        "individuals.csv": {
+          "bytes": 1346724,
+          "sha256": "8b488ab90611992cf17b6a20f06b0cdb7cbceefcc3ad0b5032105db7610cd779"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "a65e0e32f48643bea0b0f05c3c3289fd8aa0a17533bc0a7ca77fde4d4505599d"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "28d66b36a55322260755df33db120166ceeeed9044165153695db50aebe18b78"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 431,
+          "sha256": "f0190e24d01ec950baa86852da0d292ab9dc8fc85545c96df8cdf418484e332f"
+        },
+        "timings.csv": {
+          "bytes": 9762,
+          "sha256": "629a537a6068477fc1d635d7572506701ce97b909521a34a6799753f6299b51d"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-42-balanced-dose-120",
+      "elapsed_ms": 3798.749100009445,
+      "exit_code": 0,
+      "identity": 100964,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1648.7148999999995",
+        "checkpoint_ms": "1019.5337",
+        "cut_ms": "15.574699999999993",
+        "events": "965578",
+        "facts_bytes": "198485626",
+        "frame_bytes": "92731",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "636383232",
+        "peak_sampled_queue": "116",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "247721984",
+        "seed": "42",
+        "setup_ms": "0.1239",
+        "state_hash": "5436634757232307548",
+        "time_ms": "15552000000",
+        "trace_hash": "1985280133336033382",
+        "world": "00000000-0000-0286-0000-000000018a64"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-42-balanced-dose-60.zip",
+    "archive_sha256": "5022cd5ab0dcd768efa014c879f22cedc575532da9c46f827d43f83ab04847a6",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1539,
+          "sha256": "2ff2f851cf8e00e6affe81328dbcd8ea9b7dddab3d2702db9f267bfe1c5e4428"
+        },
+        "cuts.csv": {
+          "bytes": 32608,
+          "sha256": "dfc7be904db46542ea59bf7488a41728def795d7f65b3c568205d0304e517c7c"
+        },
+        "facts.bin": {
+          "bytes": 197623288,
+          "sha256": "a05706008b311a8b9817151726b7786e669499e699098dbf2e8c0aa11bd0aa5e"
+        },
+        "final.frame": {
+          "bytes": 91307,
+          "sha256": "2cf9f87aba31484034be4b958123deb7af04c2e30be404ffb8bb37f85bbfb34f"
+        },
+        "individuals.csv": {
+          "bytes": 1344302,
+          "sha256": "8e8b53e5c00cadceb754c8eff63fd032715857b46a69e9e60965e05e0a9759bd"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "ca951a5ba535be3343ec026c858fe88643953f9b1b6bb13b85cd14844d46a888"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "61bdd4cf4f747c93eb3440804ac7a6c95b2151745755631a3feb8664247a637c"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 455,
+          "sha256": "4775c1efc4b9b2b090d92b27b1c40181aad95ebd2c33e2a9947652cf7f66d089"
+        },
+        "timings.csv": {
+          "bytes": 9465,
+          "sha256": "0a61a4955d0aae96ff08e0974103ae1363de3130dc5cfd88589a5972899aec8b"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-42-balanced-dose-60",
+      "elapsed_ms": 3934.9299000168685,
+      "exit_code": 0,
+      "identity": 100964,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1682.2747000000004",
+        "checkpoint_ms": "1038.0664999999999",
+        "cut_ms": "15.331100000000001",
+        "events": "961495",
+        "facts_bytes": "197623288",
+        "frame_bytes": "91307",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "633753600",
+        "peak_sampled_queue": "114",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "246833152",
+        "seed": "42",
+        "setup_ms": "0.077200000000000005",
+        "state_hash": "2185278863840077834",
+        "time_ms": "15552000000",
+        "trace_hash": "10911919132320796107",
+        "world": "00000000-0000-0286-0000-000000018a64"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-43-balanced-dose-120.zip",
+    "archive_sha256": "5fd51bcd807050457f3f69bfa013431b7f4411541ee7e10b2aae3b40b1eabef6",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1542,
+          "sha256": "ac56dddcdb7d8a77cefede8fd8e4611206ea6397aef77f4328264e19854912f9"
+        },
+        "cuts.csv": {
+          "bytes": 33103,
+          "sha256": "8b649d1dff699105d16b394bf5389d7468a508ab09fd55cd6d1bf4eceb53cc78"
+        },
+        "facts.bin": {
+          "bytes": 212127602,
+          "sha256": "c61758171bdad9107615c0b7ae7f5935eab33de8747bdf68618c7bc04062943d"
+        },
+        "final.frame": {
+          "bytes": 98842,
+          "sha256": "e8c9fe6381756f87fccfc08a05a8f05462fbee2196e59587986bafd97e18d46d"
+        },
+        "individuals.csv": {
+          "bytes": 1380286,
+          "sha256": "73a9360f89625ad00a948af23843bd626020eeefd8e55374a681f934a80456a0"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "0ad20707a298e387a04ed461a849bfe6d6a990f2def2dacc02e5f89fd3993f13"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "d9a330af2cc2c12dad3004d016820bb450c153a28ae8f8ac4e6823056e644abb"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 456,
+          "sha256": "776a777cc06b5a199d265aea827d217ab3f738ae57c53517db6d195859d03219"
+        },
+        "timings.csv": {
+          "bytes": 9569,
+          "sha256": "47962d064a3f95c7671eb70817651c2f3fa1a189355b433384857ef2416089ef"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-43-balanced-dose-120",
+      "elapsed_ms": 4690.627599979052,
+      "exit_code": 0,
+      "identity": 100965,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2156.3815999999997",
+        "checkpoint_ms": "1193.4758999999999",
+        "cut_ms": "18.111600000000006",
+        "events": "1030775",
+        "facts_bytes": "212127602",
+        "frame_bytes": "98842",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "679243776",
+        "peak_sampled_queue": "147",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "264261632",
+        "seed": "43",
+        "setup_ms": "0.074800000000000005",
+        "state_hash": "4390366171452000539",
+        "time_ms": "15552000000",
+        "trace_hash": "10214319406527357242",
+        "world": "00000000-0000-0286-0000-000000018a65"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-43-balanced-dose-60.zip",
+    "archive_sha256": "5a061652a129c74f22f888b1d771cf98b76ed7b53c6ac3cc58ec7e85ee995427",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1539,
+          "sha256": "4493ed71b3a18e62bda218e2c63511031f7eae15f9d5be41b5cbc3a1f7aab6e8"
+        },
+        "cuts.csv": {
+          "bytes": 32585,
+          "sha256": "970cf92e59ef8a83b5e13c7105ad26d02239143a9eb89ee23ba467a57aa8ce06"
+        },
+        "facts.bin": {
+          "bytes": 204351097,
+          "sha256": "33bfbd89f644335041d9a0bf81792635e5f7d64d3855e11e27702a75fbad9094"
+        },
+        "final.frame": {
+          "bytes": 90792,
+          "sha256": "4bd293da95a365862855b3654f193159882197fdf4781abb70fd1843e56d7632"
+        },
+        "individuals.csv": {
+          "bytes": 1377566,
+          "sha256": "ca420e88bf7e5e7c5ca42e7cb9edcb7b6d8dfaa9b9a74772914a6674925bf061"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "94283b4601bb6d4f142b9495b82be01ee4e562ca6753b18d8affd033704efd17"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "5a38bb49cc05ed8b423782bdcc4dc685f8577bdbd6f83cc37ab992fae136fa35"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 434,
+          "sha256": "9ffb37fd2a5c336b3e1f85b34a195e1c8d2bc08c43e23460498faa0925cc8ab7"
+        },
+        "timings.csv": {
+          "bytes": 9462,
+          "sha256": "4fec9dcb17cf0a009ed26513d84e7079901c29d916fbaf05217027626178dd6f"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-43-balanced-dose-60",
+      "elapsed_ms": 4177.0028000173625,
+      "exit_code": 0,
+      "identity": 100965,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1950.9685000000002",
+        "checkpoint_ms": "1074.0524",
+        "cut_ms": "17.4939",
+        "events": "995047",
+        "facts_bytes": "204351097",
+        "frame_bytes": "90792",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "655163392",
+        "peak_sampled_queue": "147",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "255344640",
+        "seed": "43",
+        "setup_ms": "0.080699999999999994",
+        "state_hash": "5952445463883798732",
+        "time_ms": "15552000000",
+        "trace_hash": "6239487062213615787",
+        "world": "00000000-0000-0286-0000-000000018a65"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-97-balanced-dose-120.zip",
+    "archive_sha256": "28205e5f4a7c4209ea68c5a3e0fcf8b0143da7c78497e77e93b23db0b3f5647c",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1542,
+          "sha256": "8e20505826676ea9c293ec2e41be41fe0912533b6662ce86dd98e06e8ca6dc4b"
+        },
+        "cuts.csv": {
+          "bytes": 33148,
+          "sha256": "755006edd2cdc9f228ca4f78f37b70402d151f52acec8b6fb555c2155d6aa8e3"
+        },
+        "facts.bin": {
+          "bytes": 217840713,
+          "sha256": "3878ddb996513f00bc4b08c771be7cba703e76a6b23294b8fa1e5eea8255d025"
+        },
+        "final.frame": {
+          "bytes": 102529,
+          "sha256": "d6fdf8baa105848c80ac669445f49c7baec2c0e5f0f6edd437d573623d3471aa"
+        },
+        "individuals.csv": {
+          "bytes": 1378240,
+          "sha256": "65cfe4398111c719881de4e43d4dbcbcf66a7c4a405edeb95f8ba4330ca011c8"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "17464156b4366009e353e21f5bacf600d35d749ad0d835766993a50c8c5ddfbf"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "bb19128e59f27cd813de1508310cca42f703eba3320c21953cd1ce2f53062dcd"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 448,
+          "sha256": "26d6a22cdfab17ab8f9a4ef6879c45ba2f45a330a3c3cd0b8450ee82803cb110"
+        },
+        "timings.csv": {
+          "bytes": 9365,
+          "sha256": "f289f84b32526ab216f94103936844f933a4d35598ca1412cc63d5ab9faaeff0"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-97-balanced-dose-120",
+      "elapsed_ms": 4754.11300000269,
+      "exit_code": 0,
+      "identity": 100966,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2043.5898",
+        "checkpoint_ms": "1363.7098000000001",
+        "cut_ms": "16.93310000000001",
+        "events": "1058625",
+        "facts_bytes": "217840713",
+        "frame_bytes": "102529",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "697253888",
+        "peak_sampled_queue": "150",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "270884864",
+        "seed": "97",
+        "setup_ms": "0.081199999999999994",
+        "state_hash": "13771004279623134482",
+        "time_ms": "15552000000",
+        "trace_hash": "18350500604533085720",
+        "world": "00000000-0000-0286-0000-000000018a66"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-micro-nominal-0-97-balanced-dose-60.zip",
+    "archive_sha256": "e03a83a5b49c8a455324c93375734dd216dd95f57954fcfd1f9222d58c006569",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1539,
+          "sha256": "32180f2ed604f9ad11730f064fba014d070b988a840ddc66193be726ac709ae0"
+        },
+        "cuts.csv": {
+          "bytes": 32626,
+          "sha256": "b2b15a1af631d67742bbf9ee88c144b931aacd8d137a67484e8844c22422c1c7"
+        },
+        "facts.bin": {
+          "bytes": 218364484,
+          "sha256": "69f97a3845e852f7751559cc69675afd70bc301b749b48a970528357401c6da3"
+        },
+        "final.frame": {
+          "bytes": 97354,
+          "sha256": "bc1056a506ca8ee6de878f2bff07190a7a3b0973040a76c4cbce3488b6b6acaa"
+        },
+        "individuals.csv": {
+          "bytes": 1378229,
+          "sha256": "c8d1db4a09d7d76a3a983362dd1ea6913475ca4240eb589daca867c9823af965"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "2c28daf98a690e24a5e63e04aef1f485f258a7777af70be507157f3efbe65515"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "e5d16887a758a787d8034f357e300dd7628e8071f26ec44bd276e68b5d98430e"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 454,
+          "sha256": "3087202500452f29ac6305a5de0512daedc812292c59b6d3a8a5e3a9a0575f6a"
+        },
+        "timings.csv": {
+          "bytes": 9748,
+          "sha256": "5f2d7d1ea94cd967a22167e956debbda5572f9384a8bfada8d31fc630083cc6b"
+        }
+      },
+      "case": "borisovka-micro-nominal-0-97-balanced-dose-60",
+      "elapsed_ms": 4786.500700021861,
+      "exit_code": 0,
+      "identity": 100966,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2173.3882000000003",
+        "checkpoint_ms": "1381.9880000000001",
+        "cut_ms": "16.390599999999996",
+        "events": "1061272",
+        "facts_bytes": "218364484",
+        "frame_bytes": "97354",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "698056704",
+        "peak_sampled_queue": "150",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "270778368",
+        "seed": "97",
+        "setup_ms": "0.14449999999999999",
+        "state_hash": "6808028154532559725",
+        "time_ms": "15552000000",
+        "trace_hash": "7494161470702727883",
+        "world": "00000000-0000-0286-0000-000000018a66"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-1-balanced-dose-120.zip",
+    "archive_sha256": "7f965b417c67c18cb2a8884e4559a952f94162780c92809d75908a006c955331",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1554,
+          "sha256": "5603748a797d43ca12630fbbec415144857b70a54842c43cf35cdc9caed80f2d"
+        },
+        "cuts.csv": {
+          "bytes": 32967,
+          "sha256": "93824f07e83e60d5eea6d280d4c63fe398cc5f99e84ea01e26a6bd20e4920ea5"
+        },
+        "facts.bin": {
+          "bytes": 189642072,
+          "sha256": "6da46128ece5f329fd5e2c1da9dc45e6d3a4b2e60f1356b418f8573565a35db9"
+        },
+        "final.frame": {
+          "bytes": 101410,
+          "sha256": "904550f7f10fb5da7b11bacfc6017550d359969890358e76d640e789b4daf7d8"
+        },
+        "individuals.csv": {
+          "bytes": 1432065,
+          "sha256": "5126f37d17272b6424def447472e8846e0a89301437e5696969ed11570cf95cb"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "cd7e209925f1ef47951e3b7ad26f65c6548eb61e26ff1f2923b44d9e521a1f7d"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "d0a863abdabceafca525bf3c0165b1a5114e9220e1ea336cb0674e68c814974b"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 453,
+          "sha256": "5a1691622658b902f263cf3c81b6f20923fe1ed7b4828c3299fffa8ad876534b"
+        },
+        "timings.csv": {
+          "bytes": 9527,
+          "sha256": "8ac60045943a3bbaebb3fbad0e940388590b283fe4ee2e521ce330da87f4be87"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-1-balanced-dose-120",
+      "elapsed_ms": 3909.874700009823,
+      "exit_code": 0,
+      "identity": 101447,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1826.4699000000001",
+        "checkpoint_ms": "990.19039999999995",
+        "cut_ms": "17.104399999999998",
+        "events": "929832",
+        "facts_bytes": "189642072",
+        "frame_bytes": "101410",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "610336768",
+        "peak_sampled_queue": "156",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "239099904",
+        "seed": "1",
+        "setup_ms": "0.13639999999999999",
+        "state_hash": "9093804360288777203",
+        "time_ms": "15552000000",
+        "trace_hash": "17267129739903905308",
+        "world": "00000000-0000-0286-0000-000000018c47"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-1-balanced-dose-60.zip",
+    "archive_sha256": "f4e154fda2d32ee54af3a2bbbed358e071adb57306d649a1f0564ca8aad78ba1",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1551,
+          "sha256": "0132f0fac27b4af38c43efdc76bc06bd8c90cb25cf1e08b9162ed2258b4c9227"
+        },
+        "cuts.csv": {
+          "bytes": 32444,
+          "sha256": "46e456d3208cebe9a915baffbe85f7e4db9460dc1cba3ec66d84f8768773cdb9"
+        },
+        "facts.bin": {
+          "bytes": 189489441,
+          "sha256": "843f21cf3a598a36d8f41f36f53deae8cb10cd643e741c684109d2a803e45aa4"
+        },
+        "final.frame": {
+          "bytes": 102215,
+          "sha256": "a344b5614a29e03146f677ef5673b94290d5cceff0769825e814c0d83bdc64f2"
+        },
+        "individuals.csv": {
+          "bytes": 1432062,
+          "sha256": "43818bb34393478309c02e02e71ff50804c2f710a81a3746f662e962b7bdcc55"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "63234ef3364e0a9b8a9d43930c4615efe1e65131efd3cb4b3d34f5f24b5a6692"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "52ebaff2d479d9118fefb31e8155af2818ffcadd02b725acde2145aa40acd65a"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 444,
+          "sha256": "578f1fda1bb0a45633d868dbed08414b3d333a4d5863acab164cd965f4e8efaf"
+        },
+        "timings.csv": {
+          "bytes": 9346,
+          "sha256": "05fb45c8253bb6e43bd91d10b419f027cc5121f6ae8a7da7e8a99c5b1bce0b35"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-1-balanced-dose-60",
+      "elapsed_ms": 4397.723300004145,
+      "exit_code": 0,
+      "identity": 101447,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2000.6129999999998",
+        "checkpoint_ms": "1080.5634",
+        "cut_ms": "17.952299999999994",
+        "events": "929109",
+        "facts_bytes": "189489441",
+        "frame_bytes": "102215",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "608587776",
+        "peak_sampled_queue": "156",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "238993408",
+        "seed": "1",
+        "setup_ms": "0.20569999999999999",
+        "state_hash": "2866290038452971152",
+        "time_ms": "15552000000",
+        "trace_hash": "12865717717158699713",
+        "world": "00000000-0000-0286-0000-000000018c47"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-7-balanced-dose-120.zip",
+    "archive_sha256": "8a03eae8ce6bcd4f82d873a2c73230b25a83af95e2dc0f080c068ff57ed02e91",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1554,
+          "sha256": "2f274f328e5aef61e1a2de60f3e0942ca750707f7e3751bc652071bca566715e"
+        },
+        "cuts.csv": {
+          "bytes": 32858,
+          "sha256": "f90bd6e63f1902aaf3b551c041333ce8e407b9d595ead936b0c07ee495493a02"
+        },
+        "facts.bin": {
+          "bytes": 253559521,
+          "sha256": "3f028585139b9b6e0811bb20e222806fc633d37b0226cdffd18ebd33d428bc78"
+        },
+        "final.frame": {
+          "bytes": 102813,
+          "sha256": "ad7e0f4fe682ecef877ab39494cd0ec019d75659dd7ff8efbee74a2ae5804896"
+        },
+        "individuals.csv": {
+          "bytes": 1443170,
+          "sha256": "b4d9d2528faf035b504f2715e97e42e6d0a3c5e7efa15367dc440bd6cd04d7ff"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "1ebe651a06fc6d768dd9539a83a3ebd43f92e548ed303365eed2d19fa049f8b5"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "92365b3b3eca108da55f5ca0e736d15ceedd8052a360d1c3c38ab6f528128cd1"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 441,
+          "sha256": "682453585af090008a0fc0a639cf6d719c14a7b694d7cd0fe737285e9e919b1e"
+        },
+        "timings.csv": {
+          "bytes": 9620,
+          "sha256": "fd9649a84eaf27c61fa4e42b7299fabbd83cedfbb7b99a333ca46fa70e26cbfa"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-7-balanced-dose-120",
+      "elapsed_ms": 7261.682099982863,
+      "exit_code": 0,
+      "identity": 101448,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "3326.8625000000006",
+        "checkpoint_ms": "1871.5411999999999",
+        "cut_ms": "26.518599999999996",
+        "events": "1228612",
+        "facts_bytes": "253559521",
+        "frame_bytes": "102813",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "810631168",
+        "peak_sampled_queue": "136",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "314834944",
+        "seed": "7",
+        "setup_ms": "0.2455",
+        "state_hash": "18109370917315598667",
+        "time_ms": "15552000000",
+        "trace_hash": "8757212255965858316",
+        "world": "00000000-0000-0286-0000-000000018c48"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-7-balanced-dose-60.zip",
+    "archive_sha256": "0ca5c557c2c395abeec00e78f67db901b320077f6cc624393509ad3d77f120b6",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1551,
+          "sha256": "007a00ab8af986624e31628145b7593ba67298522dbb20dc3dda51cfa0eb4cd4"
+        },
+        "cuts.csv": {
+          "bytes": 32314,
+          "sha256": "367e5048ad2d5db20f74d15594c9e8ea6972a223c9d87f9c33ff0a9fdceaa231"
+        },
+        "facts.bin": {
+          "bytes": 265552012,
+          "sha256": "6ed36e5091fbed236d02e6f592ebe6827bfc80a9b4ce5b9419bf01eb96fe76bf"
+        },
+        "final.frame": {
+          "bytes": 111969,
+          "sha256": "f6744027401d0eb39762233ea9d0fee25349d2e343b1089f85316e4ffdf83516"
+        },
+        "individuals.csv": {
+          "bytes": 1473679,
+          "sha256": "72169237b33186c6e7e3ce9e0a4b1bdfa45d06ca3d084ce4cee1d2b3815c4060"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "ad5a290b899038a2009a741c33cf70323107625705f05d5fa1aaa8ab29488901"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "682a42042296f440068f9501aee70632e8e2ff460f65ad38b859b8377c280bf1"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 445,
+          "sha256": "61babf8698d574afef7b9916d9f4555bc4449fa6a61b67ccd31912e032c9b9c7"
+        },
+        "timings.csv": {
+          "bytes": 9542,
+          "sha256": "bbe46c7abf5809f265691583caf22a23a8490c316d9f9ec81ef4c658b484881a"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-7-balanced-dose-60",
+      "elapsed_ms": 7302.5599000102375,
+      "exit_code": 0,
+      "identity": 101448,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "3047.9759000000004",
+        "checkpoint_ms": "2122.8867",
+        "cut_ms": "23.393699999999985",
+        "events": "1285201",
+        "facts_bytes": "265552012",
+        "frame_bytes": "111969",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "847265792",
+        "peak_sampled_queue": "143",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "327598080",
+        "seed": "7",
+        "setup_ms": "0.14449999999999999",
+        "state_hash": "3514836753213131216",
+        "time_ms": "15552000000",
+        "trace_hash": "17799414118387912140",
+        "world": "00000000-0000-0286-0000-000000018c48"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-19-balanced-dose-120.zip",
+    "archive_sha256": "438e5f9c3adf45f74aca3a80d8bd23f5dfc2bb07fc5c6c407a954234918d6cde",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "e5f250946ed7b5a22a9605add39a4bc0142505cdf908d7901b5f6a78f7fc4921"
+        },
+        "cuts.csv": {
+          "bytes": 33194,
+          "sha256": "0c684876f5e5091b024e5368fc22a5576406bdbbfc27e9fad2dc21d0a89f0c06"
+        },
+        "facts.bin": {
+          "bytes": 242456341,
+          "sha256": "a07a2a0dd86296db9111f6a36c5c269717c1cd22ca71d9a4ef437e1d94d970b6"
+        },
+        "final.frame": {
+          "bytes": 108067,
+          "sha256": "26d74183e618f712f9ff9335a8f41035d531beb39d679bebd11e44c3e6050082"
+        },
+        "individuals.csv": {
+          "bytes": 1443418,
+          "sha256": "fbed2f7eff52479d04b519b57a3c1afa6f09f313992c5e986d9be9c4cd117b5d"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "3e6a9a1384c7fefdd87c97b6534f7640e2218c72a871d28d551ebdfd4975e2b7"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "ad29ad41e02ca6f0395ade16c244d0cb74e7ff71bf3059dfc6a1e1d285c46579"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 456,
+          "sha256": "5837a234c456f603104b3f98327b9c2476e15572657f01918203cf5cccf08b47"
+        },
+        "timings.csv": {
+          "bytes": 9659,
+          "sha256": "cb28ab52d0db9404a0aab3e496029306ecb35c75cda28b39d89771b2fe998355"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-19-balanced-dose-120",
+      "elapsed_ms": 6040.536499989685,
+      "exit_code": 0,
+      "identity": 101449,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2646.7060000000001",
+        "checkpoint_ms": "1618.4200000000001",
+        "cut_ms": "29.447099999999999",
+        "events": "1175320",
+        "facts_bytes": "242456341",
+        "frame_bytes": "108067",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "774770688",
+        "peak_sampled_queue": "133",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "299999232",
+        "seed": "19",
+        "setup_ms": "0.20000000000000001",
+        "state_hash": "4453427858950895762",
+        "time_ms": "15552000000",
+        "trace_hash": "16970909979905596205",
+        "world": "00000000-0000-0286-0000-000000018c49"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-19-balanced-dose-60.zip",
+    "archive_sha256": "ab6082805984c2f7936a6dff31bb985ce0a046d8e4c3db8a4380b69d65783005",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1555,
+          "sha256": "04962dfe77b3bc046b3efeb0e46ea0bdec05c6cb866171e9374e470c9e5c195a"
+        },
+        "cuts.csv": {
+          "bytes": 32671,
+          "sha256": "7eafaa31eaedbe84677ff2fe98c8ca30fc22b4b551fc173171933ea1e6cb06d1"
+        },
+        "facts.bin": {
+          "bytes": 242730487,
+          "sha256": "9a28487752356237af9a6492a8ddbd3151aa015ccbe53af4e6ceabd2015d5cd7"
+        },
+        "final.frame": {
+          "bytes": 107607,
+          "sha256": "3ec0a6c77d57f87c23cf8d6133d4b0f4a2a1f399fe5d06756c76746829c18206"
+        },
+        "individuals.csv": {
+          "bytes": 1443143,
+          "sha256": "fbdbccd00ada254c24bb26d917b19c2e4373211699f60e7df59f911896b295c7"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "31b6c5a0ee0fda8216a8d6f4dc79fdacfcd20f47d888a483fae379d8cdfaacec"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "271886ea32c4139126a4b9864639db3bbc0bdfc96f80a0895cbaad43bcb6bef2"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 444,
+          "sha256": "7fe9da29b0647c57ddfcc75e2f2df864052b0797c956d44655dacb1919231fba"
+        },
+        "timings.csv": {
+          "bytes": 9486,
+          "sha256": "3b41ff6bcd714996327fcb957bb2301ad14da420c40d4c72172f875393db443f"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-19-balanced-dose-60",
+      "elapsed_ms": 5490.632900007768,
+      "exit_code": 0,
+      "identity": 101449,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "2463.5582000000004",
+        "checkpoint_ms": "1515.8023000000001",
+        "cut_ms": "17.915300000000009",
+        "events": "1176643",
+        "facts_bytes": "242730487",
+        "frame_bytes": "107607",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "774475776",
+        "peak_sampled_queue": "134",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "298532864",
+        "seed": "19",
+        "setup_ms": "0.1469",
+        "state_hash": "15661271628682383617",
+        "time_ms": "15552000000",
+        "trace_hash": "15080056204934905133",
+        "world": "00000000-0000-0286-0000-000000018c49"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-42-balanced-dose-120.zip",
+    "archive_sha256": "9079c73b02e679f868fd257d2dabab927b9bed378ec72bfd86fce9fd39e0a5f0",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "e4f7fa8ae15e05abcff19ea460d6719d88087ebdfc80dd5fcf690f16e6628af8"
+        },
+        "cuts.csv": {
+          "bytes": 33194,
+          "sha256": "3180c4a55ab5a544ff1d2dbe082e1190f4993acb344c67f0a6f17a222d6e4821"
+        },
+        "facts.bin": {
+          "bytes": 230121097,
+          "sha256": "29eb5e5772ca8986fd4303bfff68ebd4005a86667da7c9a63d825d1b444c0c85"
+        },
+        "final.frame": {
+          "bytes": 118152,
+          "sha256": "c470b408fc81958c91c756c10953470fb87162ed36ea89d8bb5918786dc10e9d"
+        },
+        "individuals.csv": {
+          "bytes": 1467360,
+          "sha256": "dedef7b74798abff6f9fc4534b54b4c0642a66017c278aedf79a354e1b14551c"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "96d329ca744b5f30b02958380bc113c449314a266947afc4f5c04ac267ca1aeb"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "a07312c9e5cd44f21c17542e4d360346b14cfddcfddcb73973172a967242cd83"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 446,
+          "sha256": "90b76928a592a94606cf14c03a77d2970c88ecc8bcf8e128feb34bd2eb747079"
+        },
+        "timings.csv": {
+          "bytes": 9600,
+          "sha256": "ffd918edfd60b061bf6cc62f1a37036658d715c9dc25cf12a4274a5b2b94e6b5"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-42-balanced-dose-120",
+      "elapsed_ms": 4063.3715000003576,
+      "exit_code": 0,
+      "identity": 101450,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1786.9665000000007",
+        "checkpoint_ms": "1100.2194",
+        "cut_ms": "16.073599999999995",
+        "events": "1118131",
+        "facts_bytes": "230121097",
+        "frame_bytes": "118152",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "735531008",
+        "peak_sampled_queue": "170",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "285118464",
+        "seed": "42",
+        "setup_ms": "0.13439999999999999",
+        "state_hash": "16585347755331073792",
+        "time_ms": "15552000000",
+        "trace_hash": "977878854164764579",
+        "world": "00000000-0000-0286-0000-000000018c4a"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-42-balanced-dose-60.zip",
+    "archive_sha256": "b4e3d0a34f00811bea6edf2d45ee85e63622382dfba7733a794de2350ab67e7b",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1555,
+          "sha256": "89e8078361c15b7b733aa6365c9441dff11403b44420c26a0b87d2c15d84bd24"
+        },
+        "cuts.csv": {
+          "bytes": 32663,
+          "sha256": "c2f13968bd7a647aac3f5a828fefeb7a730f35e01fb39a561223d7ea2e8c95b5"
+        },
+        "facts.bin": {
+          "bytes": 240603354,
+          "sha256": "527e72e739764ee99ae995f2e7e614686ab05660ea3834bba505cdbe787d7278"
+        },
+        "final.frame": {
+          "bytes": 106077,
+          "sha256": "93959e13c5f21934e66526dcf5a4649874b64ef51ce148d8e2e13b0c9c305302"
+        },
+        "individuals.csv": {
+          "bytes": 1464239,
+          "sha256": "7ebc7ed270c62a08e0dfca5daf12691faf5c8a2e37ddade86cd6e8b7cea6d897"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "e5197e9914f01ddb3f2297f1c5a1749b14287d6ff2bdaa9ed20b878f68654eab"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "827f91640b02bcabd73127ff31431f229d9f90b1c356df0d883c81c46ac3d81e"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 442,
+          "sha256": "b5eb4dbd6793a638c1736893415922d3792f78e9721c46607b9c1c918c2f7f46"
+        },
+        "timings.csv": {
+          "bytes": 9450,
+          "sha256": "c28b263e50a6372a59e39daa0d753747b9f8fc0da35c61f8a4f630469cb1b758"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-42-balanced-dose-60",
+      "elapsed_ms": 4661.294000019552,
+      "exit_code": 0,
+      "identity": 101450,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1902.0734000000004",
+        "checkpoint_ms": "1249.7421999999999",
+        "cut_ms": "16.451799999999995",
+        "events": "1165956",
+        "facts_bytes": "240603354",
+        "frame_bytes": "106077",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "768618496",
+        "peak_sampled_queue": "130",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "298295296",
+        "seed": "42",
+        "setup_ms": "0.1268",
+        "state_hash": "5690639792722612010",
+        "time_ms": "15552000000",
+        "trace_hash": "7617692739169642259",
+        "world": "00000000-0000-0286-0000-000000018c4a"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-43-balanced-dose-120.zip",
+    "archive_sha256": "b2a1228bfc78a6c337ed2a2530c494f718acf50593c9290df4652c3c104b0946",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "c8be30a7f90600066ffe0d3d6109760f13f4d68d534d3087f67024ddf86b9dfe"
+        },
+        "cuts.csv": {
+          "bytes": 33189,
+          "sha256": "301f1e85c7a9408c16f61ec7d0a607472f1d254391cc2324688b8d32a788ec18"
+        },
+        "facts.bin": {
+          "bytes": 224363124,
+          "sha256": "949de71d944eccab75c4386bf8fd4a159a4c493cedbc6c6c429a429726075dfc"
+        },
+        "final.frame": {
+          "bytes": 104573,
+          "sha256": "77aee5e386fac5481664fcedc728cf5d091eb1afa68314baad4cf9e80af7451f"
+        },
+        "individuals.csv": {
+          "bytes": 1435562,
+          "sha256": "32123044fabfeae7798a9e4a6e8a783c7f76ca1d4a2934bd247cc8b10a92f144"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "46e60cd5b29652c2173d060dab9720850da9a2da06d43c06cc0a63d8b4ab6878"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "26779b44b27bef80032cf3333859e7e985edbf7581d874d6087023590cc58fd3"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 443,
+          "sha256": "08d8f61246d17b893569a178af85fa3b76f02385b1cd71680bd328cfad57b5d4"
+        },
+        "timings.csv": {
+          "bytes": 9312,
+          "sha256": "01fc8ecc79ba32ba6af91cb7644df76eb5fd322f94ae50c40a41194d0da25da8"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-43-balanced-dose-120",
+      "elapsed_ms": 4219.7245999996085,
+      "exit_code": 0,
+      "identity": 101451,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1853.4937000000004",
+        "checkpoint_ms": "1151.6225999999999",
+        "cut_ms": "15.669900000000009",
+        "events": "1092486",
+        "facts_bytes": "224363124",
+        "frame_bytes": "104573",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "718761984",
+        "peak_sampled_queue": "162",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "279388160",
+        "seed": "43",
+        "setup_ms": "0.1283",
+        "state_hash": "7444533418676044096",
+        "time_ms": "15552000000",
+        "trace_hash": "13382575804914141222",
+        "world": "00000000-0000-0286-0000-000000018c4b"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-43-balanced-dose-60.zip",
+    "archive_sha256": "b7d618f4ad01916baef92dc40ff4b031476e6ac2c6cf645352e8da58fb8bf719",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1555,
+          "sha256": "ee035d635192bfdcc556fa890a68c38fcc2619ca2594515e4035dfa085997af4"
+        },
+        "cuts.csv": {
+          "bytes": 32667,
+          "sha256": "ad2e9b9a5a2f70a15ffa9abc7def455772548cc497fbae6b5e6e23b9e0ebf26c"
+        },
+        "facts.bin": {
+          "bytes": 221360004,
+          "sha256": "8f70f74e1690ccddac2ee48264b45758c6c941b93ffc7cff05c330d0e1e274a2"
+        },
+        "final.frame": {
+          "bytes": 103653,
+          "sha256": "1442c9f532d726f9afccb5b5a46d4c10a546f6a0cf67012bdb429fd0deacc639"
+        },
+        "individuals.csv": {
+          "bytes": 1435180,
+          "sha256": "87b8932bb5efda98222bcc8af51f9e6f113974081cb2a6631433a0179dfc20de"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "338d41154dcd0cc7cec2e041e6ee1f6d1a47b9e3eda322790a9c96d7918f6d2a"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "d480461b184ccf481ebe7601a29746448f3f9e4f90c0ea3c9e374f2a5d234544"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 446,
+          "sha256": "7c73abcb9c152a6aa68b2e94ad03c1bc091c24fd43e5ff6b8db2362d4d38ba72"
+        },
+        "timings.csv": {
+          "bytes": 9285,
+          "sha256": "4baf5053efb7b6eeaddda03364a493361e0c958a7afa1dbd5a7ac0fcab1dd6c6"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-43-balanced-dose-60",
+      "elapsed_ms": 4141.943099995842,
+      "exit_code": 0,
+      "identity": 101451,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1925.8254999999999",
+        "checkpoint_ms": "1146.402",
+        "cut_ms": "16.536299999999997",
+        "events": "1078896",
+        "facts_bytes": "221360004",
+        "frame_bytes": "103653",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "709492736",
+        "peak_sampled_queue": "162",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "276283392",
+        "seed": "43",
+        "setup_ms": "0.13389999999999999",
+        "state_hash": "18306759670246271611",
+        "time_ms": "15552000000",
+        "trace_hash": "3979274773588667703",
+        "world": "00000000-0000-0286-0000-000000018c4b"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-97-balanced-dose-120.zip",
+    "archive_sha256": "3e6765c159960a020038e0e980bb6a1c07332cc6fb834cbc1eee2f80835233fc",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "c5b715d128b3a6fbe765f7c0e76050867a326f93d6413b843578b92aee8dc2cd"
+        },
+        "cuts.csv": {
+          "bytes": 33136,
+          "sha256": "5424a58f773a220450c4671c6056b0ffbd8e4e0d6a38c11d3f1e57a252aa7708"
+        },
+        "facts.bin": {
+          "bytes": 226341931,
+          "sha256": "56bc8e2055e676bc246e4b272016d7dcce1569e3c3a0ffba32b573692438c71e"
+        },
+        "final.frame": {
+          "bytes": 114788,
+          "sha256": "f5b254f179e054d22156c7f5d6e5016a9e11b13ff2753eec5324b5493d12c3c6"
+        },
+        "individuals.csv": {
+          "bytes": 1464472,
+          "sha256": "0514a88ec89dc76a44ca7688e3d71537136f09853b7229b5037fc02e28331b60"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "10f3171b8e0156da6157b6ef8ace5476ec0471ee6b2f4896dd25fe6d1a5b830e"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "c1428f3b5b4cd885815aadbc738fa015baba953d786b8504ac3c9b4bf9b467dc"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 434,
+          "sha256": "6ba24c51cca9dddc2915f1fd20bb367ebbed56ffbc1574b51b309a93a8af8b6c"
+        },
+        "timings.csv": {
+          "bytes": 9349,
+          "sha256": "f521495b6b14f1c1445b221b16ea1ba6e9d724e3877b8f58e1d2cdd4d1f829ab"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-97-balanced-dose-120",
+      "elapsed_ms": 4365.42049999116,
+      "exit_code": 0,
+      "identity": 101452,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1808.5788999999997",
+        "checkpoint_ms": "1129.6168",
+        "cut_ms": "15.549499999999997",
+        "events": "1098469",
+        "facts_bytes": "226341931",
+        "frame_bytes": "114788",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "723509248",
+        "peak_sampled_queue": "167",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "280686592",
+        "seed": "97",
+        "setup_ms": "0.1245",
+        "state_hash": "5576706166835038308",
+        "time_ms": "15552000000",
+        "trace_hash": "15978658942248689457",
+        "world": "00000000-0000-0286-0000-000000018c4c"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-micro-nominal-0-97-balanced-dose-60.zip",
+    "archive_sha256": "57023d98f88d559bc9fa6d7e95fa724c7ade084859ff47fd1babe79ced5710df",
+    "matrix": "nominal",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1555,
+          "sha256": "6978362f33710bae1647eed65680d7e9c324b6c15f3f5184165e05c4f99ed310"
+        },
+        "cuts.csv": {
+          "bytes": 32601,
+          "sha256": "8086e741ae1813eccba461c6c68cd83131495590d6c5f703b2f6479956a47875"
+        },
+        "facts.bin": {
+          "bytes": 227681042,
+          "sha256": "4ca8ac830936a1e4180d9a8ec40dd987403b18006c6db9df9c2b8110e59f2437"
+        },
+        "final.frame": {
+          "bytes": 109843,
+          "sha256": "531dfaa723c5f5a8674b8796aadb42a29b9e0add1bb339df8c704d2734da47aa"
+        },
+        "individuals.csv": {
+          "bytes": 1462605,
+          "sha256": "70b2eb85d8830e06af20ecc213e3c726e27e7c7bad59edb64d413f978275ecf1"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "9cbb8ce69cbf810655db0b50418365e22a31f41e8168db24ae823f0b7b4dc65d"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "5aab25b7393cc7ed0d72ecdc5d749eeaf0443238e1ae440b4acd0477db935757"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 444,
+          "sha256": "aa986c442b3aae7917088c1a6e4e431a62818b82b9f8f2f5a4cb58555eac273a"
+        },
+        "timings.csv": {
+          "bytes": 9400,
+          "sha256": "33f77da6f78c165ef8774814cfd1ea0620582b129838773e395414f8968cc678"
+        }
+      },
+      "case": "st_petersburg-micro-nominal-0-97-balanced-dose-60",
+      "elapsed_ms": 4456.891699985135,
+      "exit_code": 0,
+      "identity": 101452,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1819.5918000000004",
+        "checkpoint_ms": "1202.3690999999999",
+        "cut_ms": "16.467300000000002",
+        "events": "1104365",
+        "facts_bytes": "227681042",
+        "frame_bytes": "109843",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "728403968",
+        "peak_sampled_queue": "132",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "282357760",
+        "seed": "97",
+        "setup_ms": "0.1341",
+        "state_hash": "16359403531879475778",
+        "time_ms": "15552000000",
+        "trace_hash": "14249292137522673692",
+        "world": "00000000-0000-0286-0000-000000018c4c"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-1-on-balanced-dose-120.zip",
+    "archive_sha256": "935f929ea624a423936683b5f0d25f77c97ec5a04daed3315b81578553a2bba6",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1557,
+          "sha256": "cf0ca727ea14ea3ab92d31a700494647148f8eb0194212a3ccf33fdd3256a087"
+        },
+        "cuts.csv": {
+          "bytes": 32477,
+          "sha256": "8eab057cd7071286b0061992a91b6ac30c55ce8829d9863e5f14c1a099e5e575"
+        },
+        "facts.bin": {
+          "bytes": 16908399,
+          "sha256": "6e5f0b3e26a522495adfee245983bda1808a7ed2dbe504115325b4945e87d6a7"
+        },
+        "final.frame": {
+          "bytes": 33683,
+          "sha256": "d1574c5da1cd95ba6b86bc74056d4b200447ddd844f6dbbe6e104baf8aed2772"
+        },
+        "individuals.csv": {
+          "bytes": 956642,
+          "sha256": "0c0282dd9337c4efeee896080a515b2960983e3da61a8aa43f2760b7e46c4908"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "5420ea2374e208d3b4c9fb2e24fa06b1eca7e67bf360dc01ffaec870abdd941b"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "109390f64c4a8ca903a2288820b54d966b1114ac4a8930f417cfcb7ab3bea82a"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 434,
+          "sha256": "80bb10cdec10fcda874354f750cc98abec196dbf8fc11a4d0690a3e0232b5b44"
+        },
+        "timings.csv": {
+          "bytes": 9845,
+          "sha256": "2bc541fb46cba8913995cba9c76b0dfb745fa66eb1c0f933e68ae2d7b35fa3eb"
+        }
+      },
+      "case": "borisovka-10-primary-1-on-balanced-dose-120",
+      "elapsed_ms": 400.4706999985501,
+      "exit_code": 0,
+      "identity": 100145,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "209.45930000000001",
+        "checkpoint_ms": "83.989900000000006",
+        "cut_ms": "9.6127999999999982",
+        "events": "88119",
+        "facts_bytes": "16908399",
+        "frame_bytes": "33683",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "61329408",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "28467200",
+        "seed": "1",
+        "setup_ms": "0.1293",
+        "state_hash": "14969548018641611834",
+        "time_ms": "15552000000",
+        "trace_hash": "4070083469421351481",
+        "world": "00000000-0000-0286-0000-000000018731"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-1-on-balanced-dose-60.zip",
+    "archive_sha256": "208ec85d0d2ecd52995d698c4029c934801b482e7edddc9e91f0913df3174ced",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1554,
+          "sha256": "ca210cd892f6ef97f155c87f24f23c438f1b5e8aec0939d7340091592462ba76"
+        },
+        "cuts.csv": {
+          "bytes": 32002,
+          "sha256": "2d7d64c51bdf20b0c6ebb981d4d8d6a32d37668989c9fef759132c8ccd017a53"
+        },
+        "facts.bin": {
+          "bytes": 16908399,
+          "sha256": "e8ee9cf5cfbe0f2999b21613431ae1dfd65d1e5b2073c7412ba07bb6b9974002"
+        },
+        "final.frame": {
+          "bytes": 33683,
+          "sha256": "67b39a50c518dfbf4d517b2bad579e992501ad95707039f834ee5a6af766b717"
+        },
+        "individuals.csv": {
+          "bytes": 956642,
+          "sha256": "0c0282dd9337c4efeee896080a515b2960983e3da61a8aa43f2760b7e46c4908"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "fa8a510b07677f1579b4e1002ea9d5e0342e7aa8f7703ee9d3b7ebe884a202eb"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "e9c560dbc6716f9533d51fdd2f48b698ba8d7ac15c114086b0b94fc2c487fab7"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 447,
+          "sha256": "c046aa00a4a272b67f8a796a3ff95ef4e574bbde8fce224923cc9381d690b540"
+        },
+        "timings.csv": {
+          "bytes": 9885,
+          "sha256": "cb587138e50e05338bea15f1b03098f727882c7e1b5c29946fd6e3c2d5e3716b"
+        }
+      },
+      "case": "borisovka-10-primary-1-on-balanced-dose-60",
+      "elapsed_ms": 400.73120000306517,
+      "exit_code": 0,
+      "identity": 100145,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "201.17309999999995",
+        "checkpoint_ms": "84.941699999999997",
+        "cut_ms": "8.9194000000000084",
+        "events": "88119",
+        "facts_bytes": "16908399",
+        "frame_bytes": "33683",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "61345792",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "28475392",
+        "seed": "1",
+        "setup_ms": "0.13730000000000001",
+        "state_hash": "16252738641650744550",
+        "time_ms": "15552000000",
+        "trace_hash": "8901968146666389052",
+        "world": "00000000-0000-0286-0000-000000018731"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-7-on-balanced-dose-120.zip",
+    "archive_sha256": "85bec1244f64941c99218ab89a8a29d1b0f11059c3a5a9fe795df0e5481158c5",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1557,
+          "sha256": "35f2d3b4f37122c2fe1025addcf9fc4cec4916876fa240426cd9d3f09434e933"
+        },
+        "cuts.csv": {
+          "bytes": 29564,
+          "sha256": "a62debb9cecb2681db60749c693c9bdb23b3922e5db9d5d78d34b118f6aa5303"
+        },
+        "facts.bin": {
+          "bytes": 1444819,
+          "sha256": "462a25b0ca18ad3ee81b084a113d712cea285634be775de3a631c63c77ea791b"
+        },
+        "final.frame": {
+          "bytes": 21646,
+          "sha256": "69a4f55a5e016feefdcf14da889e492aa0d0e3c96dc4cd26c9854a5e8be29bdd"
+        },
+        "individuals.csv": {
+          "bytes": 809822,
+          "sha256": "7f468bffdc6208b02418e2e1baf76859a1488407c86872853b1a28fefdad7b93"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "8bd94bc3f4a2067f68f3ba0b8b3fb2f8a398ad5dc25c287d6d99794d914293c1"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "671ca0658920965083d7c680205860049d09da256bc37b9b1c58f691658a0afc"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 440,
+          "sha256": "c8df5a8c105d2ce483706bedfa0f575a45192f7babb47bf2b85624badc568964"
+        },
+        "timings.csv": {
+          "bytes": 9449,
+          "sha256": "84892cf6c07a07330564ab216e6b3e19af3b0abf94d37b5ee6f7467b03ab513b"
+        }
+      },
+      "case": "borisovka-10-primary-7-on-balanced-dose-120",
+      "elapsed_ms": 73.45530000748113,
+      "exit_code": 0,
+      "identity": 100147,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "11.197099999999962",
+        "checkpoint_ms": "9.2369000000000003",
+        "cut_ms": "5.438900000000003",
+        "events": "7807",
+        "facts_bytes": "1444819",
+        "frame_bytes": "21646",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "11124736",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "7393280",
+        "seed": "7",
+        "setup_ms": "0.13020000000000001",
+        "state_hash": "8197188665738565338",
+        "time_ms": "15552000000",
+        "trace_hash": "90189064957662677",
+        "world": "00000000-0000-0286-0000-000000018733"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-7-on-balanced-dose-60.zip",
+    "archive_sha256": "cda5bc8598f30c0f713b3d743895b34ae7529869691998405289400ed5fa6b96",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1554,
+          "sha256": "9085d04bae49ac7cf16228425b0b20738787d7fa8ec1add86602bd249ba1e1be"
+        },
+        "cuts.csv": {
+          "bytes": 29084,
+          "sha256": "a369eb7d49e703c9a6ca2692de40cb20aaed0bcea0e136605fdebf3b8a7e1179"
+        },
+        "facts.bin": {
+          "bytes": 1444819,
+          "sha256": "0a2a837108a30b0e33b5b7ec2a9f205c070f5b8f65cbf3332c352aed23c6f62d"
+        },
+        "final.frame": {
+          "bytes": 21646,
+          "sha256": "117cc9ffddd98bebef7354a7b5f19d5cc1fd23a7684fcea27b32856f511bb9d8"
+        },
+        "individuals.csv": {
+          "bytes": 809822,
+          "sha256": "7f468bffdc6208b02418e2e1baf76859a1488407c86872853b1a28fefdad7b93"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "05fb62bc6b56cb206532d97a3fc0118464d6072c655537561da0347363212182"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "9ac56b7794200e29e54c08b7dd9ea8418e56225a1a29ffaf24a378cd5f6dfb9e"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 443,
+          "sha256": "bebf6651e486ee18e8ab91613385b171215b68ea89ddb267a644719338948e70"
+        },
+        "timings.csv": {
+          "bytes": 9487,
+          "sha256": "84611adb1c835230d50aa97a439caa85c8b6591978a83f555d0cb8b406f7894b"
+        }
+      },
+      "case": "borisovka-10-primary-7-on-balanced-dose-60",
+      "elapsed_ms": 82.18379999743775,
+      "exit_code": 0,
+      "identity": 100147,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "14.428999999999972",
+        "checkpoint_ms": "8.6971000000000007",
+        "cut_ms": "7.966400000000001",
+        "events": "7807",
+        "facts_bytes": "1444819",
+        "frame_bytes": "21646",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "11124736",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "7393280",
+        "seed": "7",
+        "setup_ms": "0.18429999999999999",
+        "state_hash": "17676023623068557494",
+        "time_ms": "15552000000",
+        "trace_hash": "7131159748467648524",
+        "world": "00000000-0000-0286-0000-000000018733"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-19-on-balanced-dose-120.zip",
+    "archive_sha256": "22ef90c86e3352843e51766dfed030fe4da92dff96f0c34f604a16d00e60e114",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1561,
+          "sha256": "2a187b42327ba6dc15fcd255934d4a8834e1659f8f042bd175aafe4a11fe52d2"
+        },
+        "cuts.csv": {
+          "bytes": 29745,
+          "sha256": "a3e2e0e3b2eae8dd8d847c7678a1a9a34b068dd39e09dcd264960167b149c4ac"
+        },
+        "facts.bin": {
+          "bytes": 1421249,
+          "sha256": "ab1da0231e1b02c71e7f39fb66f7917101d4b2017b6c4891e902a4ed905775cb"
+        },
+        "final.frame": {
+          "bytes": 21646,
+          "sha256": "1d2b3ec8fd87f526af57dc0c6cc920e0cae9407a27434d22358b322d58b246b1"
+        },
+        "individuals.csv": {
+          "bytes": 809822,
+          "sha256": "108a31515e109c60e4f1ea8bc05ff5ea2207f5978246961a0b2c5ea22ae5d7ea"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "250d04b33943df40243ce9d555d20c5b88e0a989923040619e06376dd508d8f5"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "6f864401e672698e8e479c5cb832b5de2451599690b668fe9ccc167addaa4938"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 435,
+          "sha256": "26db94e1c8669e0c78492f455300d534e7efd08a9cf803aea1492bc7757749d1"
+        },
+        "timings.csv": {
+          "bytes": 9849,
+          "sha256": "ea7a7d58454725533a8418a5dbf5a2482f267328fa54a924bda200365b8e2703"
+        }
+      },
+      "case": "borisovka-10-primary-19-on-balanced-dose-120",
+      "elapsed_ms": 90.30609999899752,
+      "exit_code": 0,
+      "identity": 100149,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "12.049799999999989",
+        "checkpoint_ms": "12.1951",
+        "cut_ms": "7.5067999999999984",
+        "events": "7694",
+        "facts_bytes": "1421249",
+        "frame_bytes": "21646",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "10805248",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "8253440",
+        "seed": "19",
+        "setup_ms": "0.20669999999999999",
+        "state_hash": "17442755501836524614",
+        "time_ms": "15552000000",
+        "trace_hash": "9629785275233904456",
+        "world": "00000000-0000-0286-0000-000000018735"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-19-on-balanced-dose-60.zip",
+    "archive_sha256": "0581c93783c4e72f81d4487f3566df695cf433253df10930fa4ce4227d65a20d",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "6006196c8323980484d3394f82ba508dd1e160c199f9c9b0f5dfedc5e5241535"
+        },
+        "cuts.csv": {
+          "bytes": 29265,
+          "sha256": "c26767ece38f1dd06fde418a4f0624f4e47b8e7c0a251a25776547740518d0d2"
+        },
+        "facts.bin": {
+          "bytes": 1421249,
+          "sha256": "9ac4b9e5647a0f836454dd28450e790f2e29dad626ae639c67e6f03001f53118"
+        },
+        "final.frame": {
+          "bytes": 21646,
+          "sha256": "4d27975898fd0f4585434b71451bc9647c648ec08a7b0ac7797c050c641924f8"
+        },
+        "individuals.csv": {
+          "bytes": 809822,
+          "sha256": "108a31515e109c60e4f1ea8bc05ff5ea2207f5978246961a0b2c5ea22ae5d7ea"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "350572e8b558c853f32def8d86c13816b9d7ee6bddd2c14fb0c2a5d6576f74f2"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "9ead7212d8de257840f4404d5eee0125a2e8178cd4737880308e46baf723971d"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 446,
+          "sha256": "0ede0a8815eac497820fe1094b50437acce20c0774bc8a62fe95c30121660350"
+        },
+        "timings.csv": {
+          "bytes": 9609,
+          "sha256": "2fd0786e25d86378b678ba49eb544e9353289874a97b1740796035434c2f3de6"
+        }
+      },
+      "case": "borisovka-10-primary-19-on-balanced-dose-60",
+      "elapsed_ms": 91.4133999904152,
+      "exit_code": 0,
+      "identity": 100149,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "15.180699999999991",
+        "checkpoint_ms": "9.6313999999999993",
+        "cut_ms": "8.9015999999999984",
+        "events": "7694",
+        "facts_bytes": "1421249",
+        "frame_bytes": "21646",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "10788864",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "8245248",
+        "seed": "19",
+        "setup_ms": "0.23330000000000001",
+        "state_hash": "10445622951640888638",
+        "time_ms": "15552000000",
+        "trace_hash": "4522513405946343569",
+        "world": "00000000-0000-0286-0000-000000018735"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-42-on-balanced-dose-120.zip",
+    "archive_sha256": "f34b9882f337aca5161227048aa8d0c234077602c55335569e812c284466abb0",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1561,
+          "sha256": "72fcff7aa853f4468ecee18b38ce3e90029478dc49bccd4a1051d20a17c4a1c6"
+        },
+        "cuts.csv": {
+          "bytes": 32569,
+          "sha256": "34de23cdfba88dc87d9c08ea0849c1b3dc2aeff990663445b5e6735e33b1336f"
+        },
+        "facts.bin": {
+          "bytes": 17616148,
+          "sha256": "14dd189bbda7b3b65357640f4a64aaff7f41e920eb4e9a702abe722904b305ed"
+        },
+        "final.frame": {
+          "bytes": 31248,
+          "sha256": "5da7fcdcb22a3fd5a65a047bf55869de964335eb281d51924c20cd8e6ff0b9aa"
+        },
+        "individuals.csv": {
+          "bytes": 927884,
+          "sha256": "fac3c11e2179735b0966a2abfa9ae5771de84f32d75914d51aa665a0cf84918e"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "7f2d8536a5f7a3c73aa312c16e386dbbae8e46e03be8f6cf15a110eb9ed1a125"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "297c834c326b93575e7c5a02c75f1908a5570c51217c54fbb5ea5b223e49bce8"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 427,
+          "sha256": "492f6cb2b90447783c978826815e84249b4421c9a940a74a7945794035e3a4ee"
+        },
+        "timings.csv": {
+          "bytes": 9560,
+          "sha256": "5661b86d2645bae4a4cc10fb4b6f7bb594bed8b6a73d1388619f5d4ea06b58f5"
+        }
+      },
+      "case": "borisovka-10-primary-42-on-balanced-dose-120",
+      "elapsed_ms": 575.0637000019196,
+      "exit_code": 0,
+      "identity": 100151,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "315.64570000000009",
+        "checkpoint_ms": "105.2873",
+        "cut_ms": "12.5382",
+        "events": "91783",
+        "facts_bytes": "17616148",
+        "frame_bytes": "31248",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "62853120",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "29405184",
+        "seed": "42",
+        "setup_ms": "0.14599999999999999",
+        "state_hash": "9883433140916720065",
+        "time_ms": "15552000000",
+        "trace_hash": "6745881480457980460",
+        "world": "00000000-0000-0286-0000-000000018737"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-42-on-balanced-dose-60.zip",
+    "archive_sha256": "e70c9ec9683f5b2d5ebff379ad686baada04dc42dbd9e8d054532863759e4a05",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "6ce3dc1a615d86a03362f74f6a10f1ba9fe50fa73ff73589175bd295dfc65058"
+        },
+        "cuts.csv": {
+          "bytes": 32094,
+          "sha256": "82b96026fa19d1d012a68365145e9078979104a3ba613ffbd63c617c9758de98"
+        },
+        "facts.bin": {
+          "bytes": 17616148,
+          "sha256": "e04aca654fad90f3e387754aaecda8d45ae19f109e8e398ad48bd3d7a331735f"
+        },
+        "final.frame": {
+          "bytes": 31248,
+          "sha256": "0a16962177335d980e1571c68d55aa19321912ffc91cd7913eae8c48fe67ee92"
+        },
+        "individuals.csv": {
+          "bytes": 927884,
+          "sha256": "fac3c11e2179735b0966a2abfa9ae5771de84f32d75914d51aa665a0cf84918e"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "b44a075fe2ccf15a6cdb3d13b1db298cd8fef6be9bcda3c1e6e32192adb046e1"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "536d425b7f00180814fad842a10a35138826617284974874ec30b87b83a8e4bf"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 439,
+          "sha256": "265994cfe7bb7d0807c8afc1394cb211d86132a52318105ff81f256734dd076c"
+        },
+        "timings.csv": {
+          "bytes": 9771,
+          "sha256": "9cbf2948e4b3af0407936411da4dc54957ed162f5a2912d24dec0d6eafbb30f5"
+        }
+      },
+      "case": "borisovka-10-primary-42-on-balanced-dose-60",
+      "elapsed_ms": 585.2305000007618,
+      "exit_code": 0,
+      "identity": 100151,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "333.77350000000013",
+        "checkpoint_ms": "105.0313",
+        "cut_ms": "12.197500000000005",
+        "events": "91783",
+        "facts_bytes": "17616148",
+        "frame_bytes": "31248",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "62853120",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "29405184",
+        "seed": "42",
+        "setup_ms": "0.23519999999999999",
+        "state_hash": "6888376862601691071",
+        "time_ms": "15552000000",
+        "trace_hash": "15464425498602118735",
+        "world": "00000000-0000-0286-0000-000000018737"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-43-on-balanced-dose-120.zip",
+    "archive_sha256": "17c5006e56fa7399c0bcf2b574d59d7fa8bc0cd77303fc8ef9fbc2c870adf447",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1561,
+          "sha256": "2fb22c8e61e6b04a2e28cfc57531e8b5eefc67a5d3a7edef34b000275e9435b8"
+        },
+        "cuts.csv": {
+          "bytes": 32367,
+          "sha256": "faa0e5330ca4df5ba81d9d3c8f7f9103f00a6b023a3f163f885f876497806de6"
+        },
+        "facts.bin": {
+          "bytes": 8748661,
+          "sha256": "d13680465748548940b625298abebebba33cd94d2e9a2ad76b46c5b3671724d1"
+        },
+        "final.frame": {
+          "bytes": 30239,
+          "sha256": "a4a49c1087083c5362e0d1972a8107c2a4cb6a0ae3edc600dc64533a537d8e80"
+        },
+        "individuals.csv": {
+          "bytes": 955523,
+          "sha256": "2ff6b62d99f9ca755ea91ee72f97f6791209191729fd4523454c5b4add8da8af"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "ffdbac261b24c449c076b65286bf2c03e26d2a24f4a4674c29ec3d3f04fdc81d"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "bf30a3e4adbcf2a1a34a4356753b83d41c9a35326fd9f14a506815b51d1461ed"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 436,
+          "sha256": "aa86590979017b9536c87318c51a084b6b2c286f3ed58ab034baf804d5d59376"
+        },
+        "timings.csv": {
+          "bytes": 9910,
+          "sha256": "69ce9a052d427a1f6afff982687c77a6aca380511521e92e4bf5a350aed04622"
+        }
+      },
+      "case": "borisovka-10-primary-43-on-balanced-dose-120",
+      "elapsed_ms": 237.35170002328232,
+      "exit_code": 0,
+      "identity": 100153,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "106.19189999999998",
+        "checkpoint_ms": "47.715000000000003",
+        "cut_ms": "8.1714999999999964",
+        "events": "45958",
+        "facts_bytes": "8748661",
+        "frame_bytes": "30239",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "34050048",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "18219008",
+        "seed": "43",
+        "setup_ms": "0.1447",
+        "state_hash": "15413816970451135811",
+        "time_ms": "15552000000",
+        "trace_hash": "14033199025115141197",
+        "world": "00000000-0000-0286-0000-000000018739"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-43-on-balanced-dose-60.zip",
+    "archive_sha256": "bcde8569d652e7abcfc2087117b263d459c2933245a237a2192f4b107baccc8d",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "93e48668b6909604817498b3362da0167a03f97800cedf96e13d81339c81a5e2"
+        },
+        "cuts.csv": {
+          "bytes": 31891,
+          "sha256": "b550473ef7a51dd3413dde2158d1041d32434c3f74154a4f200410c530d88e74"
+        },
+        "facts.bin": {
+          "bytes": 8748661,
+          "sha256": "dc54bd1df139e5ddc5124edc23188f9d1279531fb22b0110174a0668a48e3f0e"
+        },
+        "final.frame": {
+          "bytes": 30239,
+          "sha256": "ce5b66c59462ebd6f8ed5c6f4f50ba8b11732d6e3e749367051b0836437fd1e3"
+        },
+        "individuals.csv": {
+          "bytes": 955523,
+          "sha256": "2ff6b62d99f9ca755ea91ee72f97f6791209191729fd4523454c5b4add8da8af"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "0556491e665f7de09c89b3522694d28fcb2d196bda710b0ae643c59650bafb65"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "9b56814916941809444e5e61c5b392933f22795e48a32197cf5034ddd7c41223"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 422,
+          "sha256": "b891e372060e76fbfe172fb1ef6d3267e19d79caafc55afb7a18b32bc909aaae"
+        },
+        "timings.csv": {
+          "bytes": 10021,
+          "sha256": "23eb86577ea5cbdb0ef99d3ba21706f646a26068f2528de50cdd74001cc7b057"
+        }
+      },
+      "case": "borisovka-10-primary-43-on-balanced-dose-60",
+      "elapsed_ms": 230.77919997740537,
+      "exit_code": 0,
+      "identity": 100153,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "101.52520000000001",
+        "checkpoint_ms": "47.933",
+        "cut_ms": "8.341700000000003",
+        "events": "45958",
+        "facts_bytes": "8748661",
+        "frame_bytes": "30239",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "34062336",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "18223104",
+        "seed": "43",
+        "setup_ms": "0.1424",
+        "state_hash": "10470857256618466963",
+        "time_ms": "15552000000",
+        "trace_hash": "4877245730039632120",
+        "world": "00000000-0000-0286-0000-000000018739"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-97-on-balanced-dose-120.zip",
+    "archive_sha256": "d14e00aea5ebbb151b103551218ee1b1db415862d998b992ecf54543d3d76941",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1561,
+          "sha256": "947630d0355169bc85aaf62458199178abe213ddc37cbe9708cd5e7735711389"
+        },
+        "cuts.csv": {
+          "bytes": 32645,
+          "sha256": "f2ea18b72e1dec419e557250f489f703f8d5767c0b3936411184197324fc981f"
+        },
+        "facts.bin": {
+          "bytes": 19131995,
+          "sha256": "fe311320b806a3f979fbb2338c03db85c552e4c5afd4eef1f3bff38234484379"
+        },
+        "final.frame": {
+          "bytes": 32484,
+          "sha256": "5a60ab9a0c9dba0c815499037abe60138e9379e37145fa1e6b111c765645c8c4"
+        },
+        "individuals.csv": {
+          "bytes": 937196,
+          "sha256": "a4f7175a7e367d5fbad9c2aedfc114ec36481cbe8cee5dc8d2f6f267fa4201b0"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "f91a7a3139bfd76c390587da8d4c5c49bc33cb682abf648299930c2fd7f28dd6"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "067c6955fee706fceca28cfd8c5eead2d79be88d3feb2572e76f2cf0401fe137"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 439,
+          "sha256": "fdf69e3576388011b7f47fe3fa270bc487a05a308652cd8286f7aa90b30984bf"
+        },
+        "timings.csv": {
+          "bytes": 9773,
+          "sha256": "8c9ba0a4fec8a78613fb69297c082072f4c2ed61081c0ca64590d73fd3a5e9ac"
+        }
+      },
+      "case": "borisovka-10-primary-97-on-balanced-dose-120",
+      "elapsed_ms": 544.2275999812409,
+      "exit_code": 0,
+      "identity": 100155,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "277.51179999999999",
+        "checkpoint_ms": "113.4577",
+        "cut_ms": "10.997999999999998",
+        "events": "99665",
+        "facts_bytes": "19131995",
+        "frame_bytes": "32484",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "68747264",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "31694848",
+        "seed": "97",
+        "setup_ms": "0.14169999999999999",
+        "state_hash": "10838029279458905567",
+        "time_ms": "15552000000",
+        "trace_hash": "6805423146367374166",
+        "world": "00000000-0000-0286-0000-00000001873b"
+      }
+    }
+  },
+  {
+    "archive": "borisovka-10-primary-97-on-balanced-dose-60.zip",
+    "archive_sha256": "446fa1b9fe862792fddcb7c5423f4cbe71ffe9aa989b001dd863e02611c4cb32",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1558,
+          "sha256": "d69264fbe53b28d14835f5cc8df62f3114f0e2f3adbf3ce49da15bb2673431b6"
+        },
+        "cuts.csv": {
+          "bytes": 32171,
+          "sha256": "5eab11353179771e08fe57dfbf2c03d8e3b1bbbe12624f4466cf78afbda7ff21"
+        },
+        "facts.bin": {
+          "bytes": 19131995,
+          "sha256": "072212b95f9ff3d25728536a20812ddf3512282d8720f298dce3e83e19da1bd1"
+        },
+        "final.frame": {
+          "bytes": 32484,
+          "sha256": "a7b99827008e8f5939944db52ef57cd4bf31df090e9090f2fe6c82da4acfbfb8"
+        },
+        "individuals.csv": {
+          "bytes": 937196,
+          "sha256": "a4f7175a7e367d5fbad9c2aedfc114ec36481cbe8cee5dc8d2f6f267fa4201b0"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "31e21f6ea2b6e4390c8cad42911c5c625a4f45b897a9cd6ca863deeb933258e7"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "ac0c57edb70d3aa436ecd63f34429ee9df77e9229fd9559e06cd74bb560e78c9"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 436,
+          "sha256": "f2d143a1e4384ff05edbe9e6fac351746fffdaed8a23ee51e15189f3e702df85"
+        },
+        "timings.csv": {
+          "bytes": 9838,
+          "sha256": "3d50b70ec5a16a21378fbde2a698a600c8144ac4c0908f745f88489dff7a9f8f"
+        }
+      },
+      "case": "borisovka-10-primary-97-on-balanced-dose-60",
+      "elapsed_ms": 538.7436999881174,
+      "exit_code": 0,
+      "identity": 100155,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "275.29169999999982",
+        "checkpoint_ms": "112.0056",
+        "cut_ms": "11.284500000000003",
+        "events": "99665",
+        "facts_bytes": "19131995",
+        "frame_bytes": "32484",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "68730880",
+        "peak_sampled_queue": "24",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "31657984",
+        "seed": "97",
+        "setup_ms": "0.13789999999999999",
+        "state_hash": "83073237041783687",
+        "time_ms": "15552000000",
+        "trace_hash": "4177694523861821999",
+        "world": "00000000-0000-0286-0000-00000001873b"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-1-on-balanced-dose-120.zip",
+    "archive_sha256": "6ed1f9569bfb3760450288f4b2d3b658e83a90a0b945e8f5bcdab2a568ebc4cc",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1573,
+          "sha256": "350eece851fdd5dcfc2cc1dc5110b9af0194bf7ac4f2f0d2386767b8d7fa8087"
+        },
+        "cuts.csv": {
+          "bytes": 32815,
+          "sha256": "e1f5a81a489ac5a12d4aaacec3edd8fa5afa18aa740731c91c3d1cbef2dff9a3"
+        },
+        "facts.bin": {
+          "bytes": 67561309,
+          "sha256": "64eb7a7ca48224c7a501c77e01b1d95c5379147b90ea0b0978fc412c94b21ee4"
+        },
+        "final.frame": {
+          "bytes": 43260,
+          "sha256": "94eb1cb53fde9b7417047680d6f8dd124d81b70a8b4467b1db050c48097206cd"
+        },
+        "individuals.csv": {
+          "bytes": 983472,
+          "sha256": "a7c59cc5424fde27bfa671755d8e69066a9a2a6e574e620bd0c1e67e82bf9f89"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "b560c730180f55410e6efbc018afb982c49cd40776c5cd5312da284bf7797e57"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "f4973946b24b6ae2d209937024e9b6904b7ee7ba9fbd8085129025b0261afb1b"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 435,
+          "sha256": "798bd38e946790c837905dc9d708f71efabaa46fac14f3403a14b10bf5a79045"
+        },
+        "timings.csv": {
+          "bytes": 9849,
+          "sha256": "d8f06f270ebd6ded1292480a3a99bec784e033dd9ae8118d6831cc173523f80a"
+        }
+      },
+      "case": "st_petersburg-10-primary-1-on-balanced-dose-120",
+      "elapsed_ms": 1790.2372000098694,
+      "exit_code": 0,
+      "identity": 100625,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1016.2204000000005",
+        "checkpoint_ms": "371.77859999999998",
+        "cut_ms": "12.733799999999988",
+        "events": "344059",
+        "facts_bytes": "67561309",
+        "frame_bytes": "43260",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "224546816",
+        "peak_sampled_queue": "59",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "92315648",
+        "seed": "1",
+        "setup_ms": "0.1419",
+        "state_hash": "8224743236408362159",
+        "time_ms": "15552000000",
+        "trace_hash": "8321510796108194645",
+        "world": "00000000-0000-0286-0000-000000018911"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-1-on-balanced-dose-60.zip",
+    "archive_sha256": "1e44bd66b414cbb51b0a74f87b47881e7d3f94cd3bbac064d1eaf7aa7c0ea03b",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1570,
+          "sha256": "07de1d31fd9f7f57fb451d76cb65190977cedba0b0a5324799f44f7366e81334"
+        },
+        "cuts.csv": {
+          "bytes": 32323,
+          "sha256": "1dfb55fb7f74b49817c57f27e12c3f8565d698bd20e170541c3e73e341823c59"
+        },
+        "facts.bin": {
+          "bytes": 67560667,
+          "sha256": "64fd0848a5621c6eb719f116919107f6e663cf39d552f58f20ebc7cd9e74d226"
+        },
+        "final.frame": {
+          "bytes": 43260,
+          "sha256": "5121b4b3f055622ba84cf20a2f7c88de8058cb77e0edbd6a88f4c4cb2fa43258"
+        },
+        "individuals.csv": {
+          "bytes": 983472,
+          "sha256": "b72ebabf188e402f5d0bd961e5f3854c7ded4973f125659664fa28f761bc6392"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "4069fe3f990872b167097741f2e54b6bcdd388a0bc8f24fc9d1a0694e66735e1"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "45e878a2d35ca72b8fe90dd73afe6a28f5913beec6a07c531a4a07fceb65f592"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 448,
+          "sha256": "426541cf7bc793cbe43ef0e8686501277b8491b03bc9f104048ed57250d3df47"
+        },
+        "timings.csv": {
+          "bytes": 9824,
+          "sha256": "287feb86369ecae3ec7f2ad9d540cee1484451afd7351214491b54dd3c116d49"
+        }
+      },
+      "case": "st_petersburg-10-primary-1-on-balanced-dose-60",
+      "elapsed_ms": 1920.544599997811,
+      "exit_code": 0,
+      "identity": 100625,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1056.6194999999998",
+        "checkpoint_ms": "405.86279999999999",
+        "cut_ms": "12.494300000000006",
+        "events": "344056",
+        "facts_bytes": "67560667",
+        "frame_bytes": "43260",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "224268288",
+        "peak_sampled_queue": "59",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "1",
+        "rss_bytes": "92336128",
+        "seed": "1",
+        "setup_ms": "0.14979999999999999",
+        "state_hash": "4399137525463135442",
+        "time_ms": "15552000000",
+        "trace_hash": "2307818056778088634",
+        "world": "00000000-0000-0286-0000-000000018911"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-7-on-balanced-dose-120.zip",
+    "archive_sha256": "1ee5f37b0d957fac8570cd591fea39da098de6d58ecf6db92c276a3012ce2bd6",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1573,
+          "sha256": "a7899e0a58118469e7a2cd2a49b221343d93fcd98b9549e134f87f8b28754620"
+        },
+        "cuts.csv": {
+          "bytes": 32813,
+          "sha256": "492a32c2652437dcb9af6ac3028442611969d88077e085691cf46e38623abecb"
+        },
+        "facts.bin": {
+          "bytes": 72389043,
+          "sha256": "c401a3a7a4bb862c553bea6d294dcc6da5ed71f95de2ab6b58c3b867ca55f689"
+        },
+        "final.frame": {
+          "bytes": 51759,
+          "sha256": "bdfe4e05af7c6a36f3aae20f6705669f7f6b328dd43f3288b71685a9bdfbe50d"
+        },
+        "individuals.csv": {
+          "bytes": 994053,
+          "sha256": "4a8f908c1d4063440b2c4a29f9d927fbd2ad3471c0cbd03070da7a5a3fc6985a"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "e1ceb17dbddfc04c100d8bbc76ec18773f6ac02660c4e879a4e30e20fb243272"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "d26cb6dac3cac6c27b828c96f4d268929e80c67fa3629e060fafef9ee51662ef"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 448,
+          "sha256": "6e4916f6813ca4c9da92ae599d37ded1877bb743c583ed2595a5946c2d3f1600"
+        },
+        "timings.csv": {
+          "bytes": 9884,
+          "sha256": "550c29535c08edbcaf2d9ec3895a9348901b95b656226c7ea076a16b097a1ac3"
+        }
+      },
+      "case": "st_petersburg-10-primary-7-on-balanced-dose-120",
+      "elapsed_ms": 1974.125600012485,
+      "exit_code": 0,
+      "identity": 100627,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1156.8910000000003",
+        "checkpoint_ms": "449.43880000000001",
+        "cut_ms": "13.639899999999997",
+        "events": "365109",
+        "facts_bytes": "72389043",
+        "frame_bytes": "51759",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "239345664",
+        "peak_sampled_queue": "65",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "97804288",
+        "seed": "7",
+        "setup_ms": "0.13919999999999999",
+        "state_hash": "728473818193043713",
+        "time_ms": "15552000000",
+        "trace_hash": "11862374383607259207",
+        "world": "00000000-0000-0286-0000-000000018913"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-7-on-balanced-dose-60.zip",
+    "archive_sha256": "a3d5da5483e99d9c34377f3479e4ec08fffe07ccfa1100a118b06075cb0eb44b",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1570,
+          "sha256": "94f1da870e879e925b2f9eb9aea9e9c4526d35ff4faa06c817e1b67aed78ac6a"
+        },
+        "cuts.csv": {
+          "bytes": 32317,
+          "sha256": "9a79a9e7be35af5c0bf0b8269c120ff8c7d0e7a25a364d284d05335c20869e45"
+        },
+        "facts.bin": {
+          "bytes": 72394189,
+          "sha256": "f7d80c192c581c67194cfbce6ddef62c7062d3c2d824ad0fcbdcd06e68a89d61"
+        },
+        "final.frame": {
+          "bytes": 51759,
+          "sha256": "b1af00e5d6db52ac1d41d42ba4fa6372bc95c336fa4ac0504c08d0388dcff178"
+        },
+        "individuals.csv": {
+          "bytes": 994053,
+          "sha256": "40838c85b051deb3cf4c72083df2fab497b554cf7f4c98b0e8786ee10729680f"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "625020cef7f463ba23926585a99f6a79964e6db19a8df1ccd5b9edce875de1b2"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 768,
+          "sha256": "def1633b1ec3398f565949b9eb08a42bf7a132d9db38c76e22128a47fd9a1df9"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 450,
+          "sha256": "8c22c9bc55eb78196c3a0a3286d2ef6e69431d8ed257010f32e35b6e5034185e"
+        },
+        "timings.csv": {
+          "bytes": 9570,
+          "sha256": "742e9abf0a6e7e80e9d99ac6a9965a8e62a1dbba13475430c2a6579ac759e3af"
+        }
+      },
+      "case": "st_petersburg-10-primary-7-on-balanced-dose-60",
+      "elapsed_ms": 2299.8623000166845,
+      "exit_code": 0,
+      "identity": 100627,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1322.4372999999996",
+        "checkpoint_ms": "493.39580000000001",
+        "cut_ms": "14.808300000000004",
+        "events": "365134",
+        "facts_bytes": "72394189",
+        "frame_bytes": "51759",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "239853568",
+        "peak_sampled_queue": "65",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "7",
+        "rss_bytes": "98918400",
+        "seed": "7",
+        "setup_ms": "0.083699999999999997",
+        "state_hash": "1810981150381540345",
+        "time_ms": "15552000000",
+        "trace_hash": "11006548663272041062",
+        "world": "00000000-0000-0286-0000-000000018913"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-19-on-balanced-dose-120.zip",
+    "archive_sha256": "2375defac240f4e588640810c1420e86c0677bff9cd0d8017cdc86287c8d0c9c",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1577,
+          "sha256": "fae29df156e2e15fabef4d5e05ff622d1e18ce9379d2fbbf294264cb6bf8c0a1"
+        },
+        "cuts.csv": {
+          "bytes": 33017,
+          "sha256": "c7d72ead686b6a1fd7bb0c126f3e09e0db9daaddec260e37a7d465c97f3c2f08"
+        },
+        "facts.bin": {
+          "bytes": 70375513,
+          "sha256": "6bc3bc185b4dda8fdbc35997bfeb4a2cc2caa829aeda3fcedc68f65da41ef0aa"
+        },
+        "final.frame": {
+          "bytes": 45153,
+          "sha256": "5f44a49e4ea60088092fbbca95eee5d4c3dfbac91dd3d71592fb27af4c1cd5c9"
+        },
+        "individuals.csv": {
+          "bytes": 984929,
+          "sha256": "b324c616f4290101c7386ad2cb91963756f8b1a45a139d7307a3bac03c68569b"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "f0f2d7c3be0c92ecac014a67bd062538721ce87b10a5d1e8d22b399706dbf562"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "66c7f7a09fb80c3baa6ef0d34bc6f6d2c808837526254c5cc61107ac8d0cc2f9"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 438,
+          "sha256": "6b7cf1cea812a11d0845efd3e948671a0dc8420dcb9c31b4ae5347c38fdd53d5"
+        },
+        "timings.csv": {
+          "bytes": 9488,
+          "sha256": "4b3177cddbef126b807d3983e17688796a380469377c4f6818a548fd4c9849f8"
+        }
+      },
+      "case": "st_petersburg-10-primary-19-on-balanced-dose-120",
+      "elapsed_ms": 2488.579500000924,
+      "exit_code": 0,
+      "identity": 100629,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1518.4417000000005",
+        "checkpoint_ms": "493.65629999999999",
+        "cut_ms": "16.268000000000001",
+        "events": "358525",
+        "facts_bytes": "70375513",
+        "frame_bytes": "45153",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "233713664",
+        "peak_sampled_queue": "62",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "96489472",
+        "seed": "19",
+        "setup_ms": "0.1193",
+        "state_hash": "5063364683939998318",
+        "time_ms": "15552000000",
+        "trace_hash": "17197024594742811370",
+        "world": "00000000-0000-0286-0000-000000018915"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-19-on-balanced-dose-60.zip",
+    "archive_sha256": "48339c0da7e1c82d54b18d4a3a28b2010e8de24f1fe0e395d0d5c08491d77f0f",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1574,
+          "sha256": "1c4322665211ce64c0f6293404421b4502bed49b67086fcfdd467020f7bc0280"
+        },
+        "cuts.csv": {
+          "bytes": 32523,
+          "sha256": "7ba9e63557061cda04c0421957c31e0118ab9ed1f927acf1f88ade01d0b98273"
+        },
+        "facts.bin": {
+          "bytes": 70375513,
+          "sha256": "41625a0a0f280a3a71cf9b9201166be80f36da54de50e10142c10f09dbd8d46a"
+        },
+        "final.frame": {
+          "bytes": 45153,
+          "sha256": "63be39a32a42ad2cdbab0c6cdeea7edd7baf3489e693610cdc5411e0111e99e4"
+        },
+        "individuals.csv": {
+          "bytes": 984929,
+          "sha256": "5a6cb9ce32e1491a2378b72d163e2509a62923c59cc36cb31de95ad3dc9499cf"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "d8b05d3136f53a64826d3648cf750d7dfa46b16f0458fe9be5155ce296813e4f"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "91cbead5a5c36c0f86617e19703a62d64eca4141fef40b897279f8a5cff20f99"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 416,
+          "sha256": "6cdd19a765c9532563668e74b9e1437859e615611f2ca9c89036347cf3b8eeb4"
+        },
+        "timings.csv": {
+          "bytes": 9726,
+          "sha256": "eacb9cf903abd092ada8d2cdd9028297617a7b12da9cea0ff8c28d12cbf4c560"
+        }
+      },
+      "case": "st_petersburg-10-primary-19-on-balanced-dose-60",
+      "elapsed_ms": 2045.701300026849,
+      "exit_code": 0,
+      "identity": 100629,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1240.077",
+        "checkpoint_ms": "397.24439999999998",
+        "cut_ms": "14.4663",
+        "events": "358525",
+        "facts_bytes": "70375513",
+        "frame_bytes": "45153",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "233037824",
+        "peak_sampled_queue": "62",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "19",
+        "rss_bytes": "96665600",
+        "seed": "19",
+        "setup_ms": "0.1971",
+        "state_hash": "3270921280769935055",
+        "time_ms": "15552000000",
+        "trace_hash": "1378414189628501260",
+        "world": "00000000-0000-0286-0000-000000018915"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-42-on-balanced-dose-120.zip",
+    "archive_sha256": "8ae7fbaffb72551f520bd6909c65ff819cc0ce59082721e7c304518ad7cf8359",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1577,
+          "sha256": "c81e3ff9a3c43a39894186cd4b03a9b4e947718e8079979be72745866e652fec"
+        },
+        "cuts.csv": {
+          "bytes": 32982,
+          "sha256": "b2947da910c22b49274d55e20cae9d8f1c2261533569933a304c96109ca51deb"
+        },
+        "facts.bin": {
+          "bytes": 46820764,
+          "sha256": "2f9334ad5f2967770bbc36432f90f7341c85db90e11c4c5422bc29cc9dedcc85"
+        },
+        "final.frame": {
+          "bytes": 39833,
+          "sha256": "a97ed33ddb966e4ab77d161349ad5fd3ef72b629ae50b102c6392ddd1a52f359"
+        },
+        "individuals.csv": {
+          "bytes": 965228,
+          "sha256": "6019dd30a4d8c0da97ce9d29a036462db54313527f62b899220be0d17a8626d5"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "2a26b55d9c404faf6dfdd8f50eb4672c87f978cf49b2fbc4e25204e118f81fd9"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "1b065efc54cc7736d45ff9e67f25b10e2ea9421fb6be9bbca43316bcea0c2761"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 452,
+          "sha256": "334f2f147bee904501a68ce8257ea4265b87954a4c582912e7e919835e0d095d"
+        },
+        "timings.csv": {
+          "bytes": 10109,
+          "sha256": "1d3ea97445d7171e08a5b6b93664750c3f4bb5ec3dbe516a8cc986383e9aceac"
+        }
+      },
+      "case": "st_petersburg-10-primary-42-on-balanced-dose-120",
+      "elapsed_ms": 1252.9705000051763,
+      "exit_code": 0,
+      "identity": 100631,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "734.59330000000023",
+        "checkpoint_ms": "240.51060000000001",
+        "cut_ms": "12.103300000000004",
+        "events": "238732",
+        "facts_bytes": "46820764",
+        "frame_bytes": "39833",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "158048256",
+        "peak_sampled_queue": "45",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "66576384",
+        "seed": "42",
+        "setup_ms": "0.088499999999999995",
+        "state_hash": "1810171210899346170",
+        "time_ms": "15552000000",
+        "trace_hash": "16385484550676515009",
+        "world": "00000000-0000-0286-0000-000000018917"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-42-on-balanced-dose-60.zip",
+    "archive_sha256": "4eee4adac0cb3976879fc172191f26192ab54ba0c72bb9f300b29e7b954ce27a",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1574,
+          "sha256": "afca63758cc3a804050f454689f666e4ee363cd7630bb988e9ff62c52e45fba5"
+        },
+        "cuts.csv": {
+          "bytes": 32499,
+          "sha256": "e3b7270f0bb71b0d6698ba66b235a494aea7f21e85232624ecc2740240df1cfe"
+        },
+        "facts.bin": {
+          "bytes": 46820764,
+          "sha256": "b58dddfbfaa05d94c190c23ef354cffe80ba53746c76274b0867b8bc76ab7c5c"
+        },
+        "final.frame": {
+          "bytes": 39833,
+          "sha256": "33734630d0147893ac69f5f19938ff863815a297a812557c35410ed5611f92dc"
+        },
+        "individuals.csv": {
+          "bytes": 965228,
+          "sha256": "6019dd30a4d8c0da97ce9d29a036462db54313527f62b899220be0d17a8626d5"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "b5d06b4476bdcb22787ba9fda2cdd645bbfb056fa5cba1fc7bc43ee0bbe91999"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "625a0767ebe8e677f91f732fe2aba4aba3be7b5b5c4d61f5d511664d563ec782"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 441,
+          "sha256": "e0ab91f425ef32509189c7a9076fef01f666702cdef0505a6609ef2ff65ce9e9"
+        },
+        "timings.csv": {
+          "bytes": 9861,
+          "sha256": "78d7637c0473006ef4687c58d6b31339feb0b38faf50d55bbed3bb87f0300fc9"
+        }
+      },
+      "case": "st_petersburg-10-primary-42-on-balanced-dose-60",
+      "elapsed_ms": 1527.0866999926511,
+      "exit_code": 0,
+      "identity": 100631,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "982.6161000000003",
+        "checkpoint_ms": "252.9949",
+        "cut_ms": "13.229400000000007",
+        "events": "238732",
+        "facts_bytes": "46820764",
+        "frame_bytes": "39833",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "157786112",
+        "peak_sampled_queue": "45",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "42",
+        "rss_bytes": "66260992",
+        "seed": "42",
+        "setup_ms": "0.10390000000000001",
+        "state_hash": "15467670914960337100",
+        "time_ms": "15552000000",
+        "trace_hash": "17397890178874465050",
+        "world": "00000000-0000-0286-0000-000000018917"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-43-on-balanced-dose-120.zip",
+    "archive_sha256": "42ef54d96f031e5904c65aac0d6b2494f1e5f901f5e8f91351513d9b10cf8b61",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1577,
+          "sha256": "a78891981983ed0c079a47c0481f11db249f80b8da748896ef5eab90c6b16bf6"
+        },
+        "cuts.csv": {
+          "bytes": 33017,
+          "sha256": "ac34c8dd74eb1eef9b8dc86a02a181812184cd6050420e9a38a7e1ee9ad2575a"
+        },
+        "facts.bin": {
+          "bytes": 61210609,
+          "sha256": "2c00e2ce0ac469ad2cffeb27800f1b2552ec0d117003063aedbe1ac6967ca0ff"
+        },
+        "final.frame": {
+          "bytes": 40179,
+          "sha256": "9db814e26b987fbe6f0cce1418f616a907d90ffd55a666bf366cd6c33de26f9e"
+        },
+        "individuals.csv": {
+          "bytes": 965113,
+          "sha256": "cb58c0ac1eb561aeaca5a4bc0cf801b3816eb3e8f88aec33d151d292f6081363"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "62a859ff1b047b9cd5706f6118e149a9a5d179123abeb3153096777d5325b58c"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "ace3b0bcf39e8957767e5edefb6c2c432b832ae43ef72da1ebdae1b15fb83e41"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 438,
+          "sha256": "3e92443aec2457dd683d9ba5055d91152f3f391b5d155298009ddcc31e7e08fd"
+        },
+        "timings.csv": {
+          "bytes": 9718,
+          "sha256": "cb5f7e6adb40db7b7d97d4339d687c22eaa1a3d301f6a2bc4d6a3bb22b3c2fd9"
+        }
+      },
+      "case": "st_petersburg-10-primary-43-on-balanced-dose-120",
+      "elapsed_ms": 1899.2787000024691,
+      "exit_code": 0,
+      "identity": 100633,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1158.0189999999998",
+        "checkpoint_ms": "350.81999999999999",
+        "cut_ms": "13.772699999999999",
+        "events": "311401",
+        "facts_bytes": "61210609",
+        "frame_bytes": "40179",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "204320768",
+        "peak_sampled_queue": "57",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "84332544",
+        "seed": "43",
+        "setup_ms": "0.1193",
+        "state_hash": "11723343454920026065",
+        "time_ms": "15552000000",
+        "trace_hash": "7043001004412509614",
+        "world": "00000000-0000-0286-0000-000000018919"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-43-on-balanced-dose-60.zip",
+    "archive_sha256": "7d5f7e9cdbbb9c325ed32fc3ffe6f4573508fe8b8a3be34f53c7a8b0f715c523",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1574,
+          "sha256": "69d03e577fc74b7265e347723de176c003f11a1d2d3f2ddb63773301395de362"
+        },
+        "cuts.csv": {
+          "bytes": 32528,
+          "sha256": "6fa7cb39210ce0e630666a1310485594244d2269f63fe8efecde7a9046b1c341"
+        },
+        "facts.bin": {
+          "bytes": 61210609,
+          "sha256": "e2cc5abc5663e936bbe5907301a3b9e9b7a1955a639e17f273fb2f7fb4bd8909"
+        },
+        "final.frame": {
+          "bytes": 40179,
+          "sha256": "70cd41d9df1a180ecfce3265e4902d99aa399d81da3cc54b81941dcd519060df"
+        },
+        "individuals.csv": {
+          "bytes": 965113,
+          "sha256": "a4a370d16722a6070c68a440dfa2fbc77a46278595d8b37fbc5a4a33b2c7cc98"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "24fe66b4157bbc8e7f1b0826b6674277b66112f7d4f142ad47398e34ecb65eda"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "0ff1294dbd17693df47c60009e6dd96fd269165436b51e3e95738cf1a2e3f084"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 449,
+          "sha256": "1138850e1bbbe241baebf1a86791b5438a368ded53146704d97b5125d7e67da0"
+        },
+        "timings.csv": {
+          "bytes": 9927,
+          "sha256": "528a60a7199eadf0fbbe9b0d186dba0be89df42bd66cb139af9be22405e27234"
+        }
+      },
+      "case": "st_petersburg-10-primary-43-on-balanced-dose-60",
+      "elapsed_ms": 2035.107200004859,
+      "exit_code": 0,
+      "identity": 100633,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1171.6026999999997",
+        "checkpoint_ms": "389.45909999999998",
+        "cut_ms": "14.124299999999995",
+        "events": "311401",
+        "facts_bytes": "61210609",
+        "frame_bytes": "40179",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "204087296",
+        "peak_sampled_queue": "57",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "43",
+        "rss_bytes": "84115456",
+        "seed": "43",
+        "setup_ms": "0.16619999999999999",
+        "state_hash": "332097516410488572",
+        "time_ms": "15552000000",
+        "trace_hash": "4999514199400173480",
+        "world": "00000000-0000-0286-0000-000000018919"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-97-on-balanced-dose-120.zip",
+    "archive_sha256": "258e87e80f53bc2aa6dcf5298861e8561ae9f530d23ac663585d15a31cfb9598",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1577,
+          "sha256": "9962bee938fb7d6098eeaa910f1b37f2c4b5ad8f32a7bf502b1463007e1a2635"
+        },
+        "cuts.csv": {
+          "bytes": 32930,
+          "sha256": "8248e0df5ffa21e836eca43ae39ede9a5ff000b4091dc4a094ca3682be57603f"
+        },
+        "facts.bin": {
+          "bytes": 52561002,
+          "sha256": "a5a3685cbc057414e9da27be54da17b7d8143371a2d39133f1be87a50ef78cd6"
+        },
+        "final.frame": {
+          "bytes": 38754,
+          "sha256": "767eb0a65bfa17dee8bd9b56e86e75efc400a890eb1910d138d8ac2056e2f3a5"
+        },
+        "individuals.csv": {
+          "bytes": 942469,
+          "sha256": "01986575101bf1ddb2df333c1bb935a55da730a6224ec65e4949bee2307fbac4"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "d77867aaea0adc33fdad73c5c74597f11567ea87230c53f8d6966ddc33ee378f"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 770,
+          "sha256": "6f146809370ed303aef85a446c7bf676310e6b811ea0c8058eb66667099f0e49"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 438,
+          "sha256": "fb9d3f17430c419e8de76b402a308c5f5f5efcf21d6be1db5c390cfb1f2e5595"
+        },
+        "timings.csv": {
+          "bytes": 9489,
+          "sha256": "551141d82ce741c1a1a6721fec55794005d07a3ca1e8d998d5a19ccf9b9991cc"
+        }
+      },
+      "case": "st_petersburg-10-primary-97-on-balanced-dose-120",
+      "elapsed_ms": 2193.1793999974616,
+      "exit_code": 0,
+      "identity": 100635,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1415.0662999999995",
+        "checkpoint_ms": "364.65039999999999",
+        "cut_ms": "17.651399999999999",
+        "events": "268647",
+        "facts_bytes": "52561002",
+        "frame_bytes": "38754",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "175607808",
+        "peak_sampled_queue": "47",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "72581120",
+        "seed": "97",
+        "setup_ms": "0.1255",
+        "state_hash": "8286679226435215427",
+        "time_ms": "15552000000",
+        "trace_hash": "13406194387295197838",
+        "world": "00000000-0000-0286-0000-00000001891b"
+      }
+    }
+  },
+  {
+    "archive": "st_petersburg-10-primary-97-on-balanced-dose-60.zip",
+    "archive_sha256": "e2f0207efab7d69e98ebea1e51fb9cc5c99225aa1456cbcbace5111876af1b9c",
+    "matrix": "factorial",
+    "receipt": {
+      "artifacts": {
+        "case.json": {
+          "bytes": 1574,
+          "sha256": "3250a95b63ee75db26bec892604f617d63e63527e85b615993c9f762124639f3"
+        },
+        "cuts.csv": {
+          "bytes": 32445,
+          "sha256": "439d1bd40dc476b265c4cc98c94a9807a92648e56a9d5f336443b0cd6f25efc7"
+        },
+        "facts.bin": {
+          "bytes": 52561002,
+          "sha256": "258e1da69f030d5523e2bffbdb57a9da85cfffa80bc2afcfcd63975fa1b7eef1"
+        },
+        "final.frame": {
+          "bytes": 38754,
+          "sha256": "fb9d0e8290054c049e4cf8eb16220d4212465b9b442c1ed2e77431e6464c636b"
+        },
+        "individuals.csv": {
+          "bytes": 942469,
+          "sha256": "9696de836aed04e9ad514f2b0df2d62d1a50b65d7aa8bcc161afdace64f858bc"
+        },
+        "initial.chk": {
+          "bytes": 5677,
+          "sha256": "86bb5c9a202e229fd3ef8324ccc6c78edea392ab858500880875c55ad2fdf973"
+        },
+        "interventions.csv": {
+          "bytes": 56,
+          "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+        },
+        "parameters.txt": {
+          "bytes": 769,
+          "sha256": "28598f41e6d754a4b7b3fec7ee0eaf09170a5fdcf8ceefa12344fe5057b8a8b1"
+        },
+        "program.log": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "summary.csv": {
+          "bytes": 451,
+          "sha256": "f42e83472139c0467d29ea1ade899d64de8bec03a7cc8b7ebc0cdedd4c090fa1"
+        },
+        "timings.csv": {
+          "bytes": 9600,
+          "sha256": "0981b53a07556fe97d289eb46769e58c7d0a2f702a65fe8aec9a98af7c921da1"
+        }
+      },
+      "case": "st_petersburg-10-primary-97-on-balanced-dose-60",
+      "elapsed_ms": 2051.026900007855,
+      "exit_code": 0,
+      "identity": 100635,
+      "mode": "observed",
+      "status": "COMPLETE",
+      "summary": {
+        "advance_ms": "1229.1145000000001",
+        "checkpoint_ms": "384.87670000000003",
+        "cut_ms": "15.577799999999993",
+        "events": "268647",
+        "facts_bytes": "52561002",
+        "frame_bytes": "38754",
+        "midpoint_restore_ms": "0",
+        "midpoint_save_ms": "0",
+        "peak_rss_bytes": "176693248",
+        "peak_sampled_queue": "47",
+        "queen": "2",
+        "reserve_record_bytes": "40",
+        "rng": "97",
+        "rss_bytes": "74248192",
+        "seed": "97",
+        "setup_ms": "0.15229999999999999",
+        "state_hash": "7349731440742726023",
+        "time_ms": "15552000000",
+        "trace_hash": "16962451901781547469",
+        "world": "00000000-0000-0286-0000-00000001891b"
+      }
+    }
+  }
+]
