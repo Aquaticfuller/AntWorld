@@ -1,0 +1,2 @@
+Reproduced both fixed B06 readers for 444 selected worlds and tracked 1686 first-census larvae
+{'reference': '73e801946a2419bf33eb78e5240f8af0923ff31a', 'original_application': 'FAIL', 'original_b06': 'INSUFFICIENT', 'recruitment': 'NOT_READY', 'all_br': 'BIOLOGICAL_BLOCKED', 'final_recommendation': 'FAIL', 'joint': {'primary': [0, 0], 'shaft': [1, 0], 'clock': [6, 6]}, 'archives': 156}

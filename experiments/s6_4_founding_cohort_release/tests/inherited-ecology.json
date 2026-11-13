@@ -1,0 +1,288 @@
+{
+  "care": {
+    "attempts": 72,
+    "failures": 0,
+    "observed": 72,
+    "public_witnesses": 10
+  },
+  "fresh_replay": true,
+  "joint-expanded": {
+    "attempts": 224,
+    "failures": 0,
+    "joint_cells": [
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      }
+    ],
+    "joint_gate": "FAIL",
+    "observed": 216,
+    "public_witnesses": 0
+  },
+  "joint-original": {
+    "attempts": 224,
+    "failures": 17,
+    "joint_cells": [
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 0,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 0,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      }
+    ],
+    "joint_gate": "FAIL",
+    "observed": 203,
+    "public_witnesses": 1
+  },
+  "joint-repaired": {
+    "attempts": 224,
+    "failures": 0,
+    "joint_cells": [
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      }
+    ],
+    "joint_gate": "PASS",
+    "observed": 216,
+    "public_witnesses": 11
+  },
+  "portable-physics/care": {
+    "attempts": 72,
+    "failures": 0,
+    "observed": 72,
+    "public_witnesses": 10
+  },
+  "portable-physics/joint": {
+    "attempts": 224,
+    "failures": 0,
+    "joint_cells": [
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "borisovka",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "shaft",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5500
+      },
+      {
+        "denominator": 6,
+        "layout": "dogleg",
+        "passed": 6,
+        "population": "st_petersburg",
+        "reserve_ug": 5250
+      }
+    ],
+    "joint_gate": "PASS",
+    "observed": 216,
+    "public_witnesses": 11
+  },
+  "portable-physics/scout": {
+    "attempts": 85,
+    "failures": 0,
+    "observed": 84,
+    "public_witnesses": 8
+  },
+  "scout": {
+    "attempts": 85,
+    "failures": 0,
+    "observed": 84,
+    "public_witnesses": 8
+  },
+  "timing_processes": 18
+}

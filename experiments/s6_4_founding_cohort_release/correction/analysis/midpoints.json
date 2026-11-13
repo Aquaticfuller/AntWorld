@@ -1,0 +1,26 @@
+[
+  {
+    "anchor": "14f26d8c8fee2769a5663718985c4bec251b6ccfcb1eb3c63044e496f159de4d",
+    "canonical_bytes": 9885969,
+    "canonical_sha256": "ce9ac7c16dc0aaf1585f5582a73f7a98e48207c4f2eb8bfbc47b33aea0c5276b",
+    "case": "borisovka-1-shaft-joint-balanced-5500-durable-split-corrected-c011n1-r1",
+    "checkpoint_sha256": "c9337429c2a6b7094d7f9d95290c504c9192a9f6d4e3c686840841624ac230dc",
+    "cursor": 50457,
+    "revision": 64525,
+    "tail": "ef4422843f8aa092b126e050777ec19fc5b2d3cc9378d7ebf3915a6932ae6d18",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "294771b31db4bc99ef5b086c455c3decef945aafb14f8ef136b22a034688017f",
+    "canonical_bytes": 10762356,
+    "canonical_sha256": "281b9c81e08cb0e0fc367992f59ba32435b3309b32094f13a781cbf277cd507e",
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split-corrected-c011n1-r1",
+    "checkpoint_sha256": "5b670aee79e0b8f3f196837e8ae50f1165ec5c8b4dedeb4eb8c21de2ab74f713",
+    "cursor": 55338,
+    "revision": 70928,
+    "tail": "a516007a604a8d1a07df9cae0a38301bf080da502c00004424ef62df89b6bc7c",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  }
+]

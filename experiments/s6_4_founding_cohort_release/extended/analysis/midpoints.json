@@ -1,0 +1,50 @@
+[
+  {
+    "anchor": "8378f1d57fb33e2d5ae86a28a6b5bb76aff334bd1d6bdd6e397c465af9487b8c",
+    "canonical_bytes": 9885969,
+    "canonical_sha256": "ce9ac7c16dc0aaf1585f5582a73f7a98e48207c4f2eb8bfbc47b33aea0c5276b",
+    "case": "borisovka-1-shaft-joint-balanced-5500-durable-split-conservative-c011n1-r1",
+    "checkpoint_sha256": "1f07b5de9ea10fa9a63925e30a4a0c4ff94b64500713b2ce16f192b249e2e581",
+    "cursor": 50457,
+    "revision": 64525,
+    "tail": "ef4422843f8aa092b126e050777ec19fc5b2d3cc9378d7ebf3915a6932ae6d18",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "5f3da0fd6c311ae6a44a94c850e48028ad247f14f38495fbbdc1f2f1afc12ed0",
+    "canonical_bytes": 11370020,
+    "canonical_sha256": "08d1da03b659ad64af35cfee2f15683394fd6fa0e7e8d65974f5d8dcebb8ced9",
+    "case": "borisovka-1-shaft-joint-balanced-5500-durable-split-hydrated-c111r1-r1",
+    "checkpoint_sha256": "4d2ae5fc004dcc9d749e31bdd32961eace683322213f2a45c6a772915b6eea57",
+    "cursor": 58097,
+    "revision": 74063,
+    "tail": "0e877a07d9b06445b25cee04777d04b2c0e998fdaee6884a13f2348471c6ff09",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018a61"
+  },
+  {
+    "anchor": "216776e7f508684262713c29798074698bd5b2751888797acc756b69b7201a2c",
+    "canonical_bytes": 10762356,
+    "canonical_sha256": "281b9c81e08cb0e0fc367992f59ba32435b3309b32094f13a781cbf277cd507e",
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split-conservative-c011n1-r1",
+    "checkpoint_sha256": "c5564db3c876cba202dc846c0a3c6181e2e75f23194691803c4aaa51b1e6f5aa",
+    "cursor": 55338,
+    "revision": 70928,
+    "tail": "a516007a604a8d1a07df9cae0a38301bf080da502c00004424ef62df89b6bc7c",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  },
+  {
+    "anchor": "8c8c706ff05fa4713dd9d5d3a9df2a443b21ecf99b252756cb452b7ad16e1082",
+    "canonical_bytes": 17190955,
+    "canonical_sha256": "b65be5e794de589d4ce42fa2fbfb66070c70536e38f2b3b2cb73542d95d0348b",
+    "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split-hydrated-c111r1-r1",
+    "checkpoint_sha256": "b58ce9e8614c676c57eec59ae9e076ab3da16a17f34c2ecaf940f8ad90c54209",
+    "cursor": 87274,
+    "revision": 108943,
+    "tail": "5d74b37d7206179878c7085acc5f47dbfee8a7bb0fe6c634b1ae63a23c360ca4",
+    "time_ms": 6480000000,
+    "world": "00000000-0000-0286-0000-000000018c47"
+  }
+]

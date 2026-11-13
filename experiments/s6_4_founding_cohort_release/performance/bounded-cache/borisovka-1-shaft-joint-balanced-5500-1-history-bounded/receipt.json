@@ -1,0 +1,112 @@
+{
+  "artifacts": {
+    "capture_phases.csv": {
+      "bytes": 16948,
+      "sha256": "2cc2af6ce27fd3cab14f82859d939d2f2e1f4c520609ee97c25b98472c12c231"
+    },
+    "case.json": {
+      "bytes": 1526,
+      "sha256": "8791e357be2f5ccbb771aabbf9d05c4ef7d84448be8b62a2b0fc2dd4afa46a04"
+    },
+    "cuts.csv": {
+      "bytes": 27409,
+      "sha256": "bcc3aaa3eb5539d429c99f393c74a999cc63e4d8bf6fab32961a4ce4291c42b0"
+    },
+    "facts.bin": {
+      "bytes": 120585156,
+      "sha256": "da1d4c162e2875d105447b36cf490700893a1ffb70f2cf0cab9e6882c0d67900"
+    },
+    "final.frame": {
+      "bytes": 127839,
+      "sha256": "0229975130595ae64b800f5df43a1bc2f475d24049d26ea041989f466c883050"
+    },
+    "geometry_edits.csv": {
+      "bytes": 3840,
+      "sha256": "01752eb5aa1684cebd4dd3fd1a0430eabd658fb5cf6c27eeaf92ac643d2d8de7"
+    },
+    "history_cost.csv": {
+      "bytes": 11464,
+      "sha256": "fe1112e200f15df101a436a2d1d1cea263f4d1989afc767086407110d7980e6b"
+    },
+    "individuals.csv": {
+      "bytes": 978526,
+      "sha256": "0bb5d65175c6c4a8fc2c6ce48e995d0be7497385977a253f5d3337bf3b5731bf"
+    },
+    "initial.chk": {
+      "bytes": 5852,
+      "sha256": "e206630b758a68ad636616ecda617ae0adc4bc6e851ddf7ab450f644b02d86ae"
+    },
+    "interventions.csv": {
+      "bytes": 56,
+      "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+    },
+    "parameters.txt": {
+      "bytes": 780,
+      "sha256": "ebe3ba988113f301ef4f2b54c33bfa8f169b99daf0a796c9f4d2f0845d7dd940"
+    },
+    "periodic.sqlite": {
+      "bytes": 38318080,
+      "sha256": "34ee4b954c74ad4aa2c78d7bd62c2de89bb2f0c4b1d1ccd898b804582880107c"
+    },
+    "periodic.sqlite-shm": {
+      "bytes": 32768,
+      "sha256": "12c1372a20c385baeda45f4f4351104786c4f75abee4b5fbfd40afc47861a2aa"
+    },
+    "periodic.sqlite-wal": {
+      "bytes": 7984592,
+      "sha256": "b66ec8903f14796589ea130ee601515a53fd01ec6862845eb79a6922de87c5c2"
+    },
+    "phases.csv": {
+      "bytes": 1104,
+      "sha256": "e801a6be2c9ad03c19891eab10e51cf5aaeea58358d7901584305a79b7036f7a"
+    },
+    "profile.csv": {
+      "bytes": 127,
+      "sha256": "a645eee8791dbddfd7575ef826bbec4956074ccc5241e9371d75fd4eec07a068"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "space_cuts.csv": {
+      "bytes": 10580,
+      "sha256": "a0c406e26ef3f9148e8a684e89854cd6678c398d677334a8f5b1d4d300333c51"
+    },
+    "summary.csv": {
+      "bytes": 438,
+      "sha256": "4fc2b516406831b53c29a10c3196f62c49dd8c07d6f9afa4c8acb2cd1990afbd"
+    },
+    "timings.csv": {
+      "bytes": 8045,
+      "sha256": "ac597e148d5cad0faaff6bc31e2d700fd6d231034b44bf5a652497fc199966d2"
+    }
+  },
+  "case": "borisovka-1-shaft-joint-balanced-5500",
+  "elapsed_ms": 21515.738299989607,
+  "exit_code": 0,
+  "identity": 100961,
+  "mode": "history-bounded",
+  "status": "COMPLETE",
+  "summary": {
+    "advance_ms": "4331.5790000000006",
+    "checkpoint_ms": "958.06399999999996",
+    "cut_ms": "21.612599999999997",
+    "events": "591390",
+    "facts_bytes": "120585156",
+    "frame_bytes": "127839",
+    "midpoint_restore_ms": "0",
+    "midpoint_save_ms": "0",
+    "peak_rss_bytes": "80990208",
+    "peak_sampled_queue": "105",
+    "queen": "2",
+    "reserve_record_bytes": "40",
+    "rng": "1",
+    "rss_bytes": "19709952",
+    "seed": "1",
+    "setup_ms": "0.2087",
+    "state_hash": "7094250790844000806",
+    "time_ms": "12960000000",
+    "trace_hash": "12751257948848224958",
+    "world": "00000000-0000-0286-0000-000000018a61"
+  }
+}

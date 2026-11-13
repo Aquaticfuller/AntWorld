@@ -1,0 +1,35 @@
+{
+  "conservative": {
+    "complete_count_matches": {
+      "at_least": 0,
+      "exact": 0
+    },
+    "controls": "PASS",
+    "first_cohort": "PASS",
+    "joint": "PASS",
+    "missing_worlds": 0,
+    "typical_work_span_days": 99.5
+  },
+  "hydrated": {
+    "complete_count_matches": {
+      "at_least": 0,
+      "exact": 0
+    },
+    "controls": "PASS",
+    "first_cohort": "FAIL",
+    "joint": "PASS",
+    "missing_worlds": 0,
+    "typical_work_span_days": 95.0
+  },
+  "protected": {
+    "complete_count_matches": {
+      "at_least": 0,
+      "exact": 0
+    },
+    "controls": "PASS",
+    "first_cohort": "PASS",
+    "joint": "PASS",
+    "missing_worlds": 0,
+    "typical_work_span_days": 99.5
+  }
+}

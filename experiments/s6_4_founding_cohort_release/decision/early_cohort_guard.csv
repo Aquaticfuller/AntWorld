@@ -1,0 +1,7 @@
+panel,model,population,day55_first_adults,first_census_larvae,clock_day55_first_adults,clock_first_census_larvae,day55_early_cohort_status
+extended,conservative,borisovka,6,48,6,48,PASS
+extended,conservative,st_petersburg,6,48,6,48,PASS
+extended,hydrated,borisovka,2,48,6,48,FAIL
+extended,hydrated,st_petersburg,0,48,6,48,FAIL
+correction,protected,borisovka,6,48,6,48,PASS
+correction,protected,st_petersburg,6,48,6,48,PASS

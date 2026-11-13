@@ -1,0 +1,2 @@
+world,seed,queen,state_hash,trace_hash,rng,events,time_ms,peak_sampled_queue,setup_ms,advance_ms,cut_ms,checkpoint_ms,midpoint_save_ms,midpoint_restore_ms,frame_bytes,facts_bytes,rss_bytes,peak_rss_bytes,reserve_record_bytes
+00000000-0000-0286-0000-000000018c47,1,2,4134428234592095616,3671359674606444904,1,2550393,12960000000,94,0.17150000000000001,11845.599399999988,30.144299999999994,4180.4219999999996,0,0,122765,474337896,18882560,321916928,40

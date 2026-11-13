@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "borisovka-1-shaft-joint-balanced-5500",
+    "st_petersburg-1-dogleg-joint-limited-5500"
+  ],
+  "pairs": 3,
+  "scope": "fixed single publication and validated reopening; diagnostic",
+  "sha256": {
+    "cache": "d8c66674fa7fed4905032ff380f149a2b15e7900655aa006b7c49c213fd4bc2a",
+    "reference": "9f89696de0551cf0b42c5d25b1cf91ee757ffa6cf90e4a6de754f84088471031"
+  }
+}

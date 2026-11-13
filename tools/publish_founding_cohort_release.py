@@ -38,6 +38,9 @@ def publish(source, output):
         dest=output/panel
         dest.mkdir()
         index=manifest(source/panel)
+        analysis=source/f"final-analysis-{panel}"
+        if not analysis.is_dir():
+            analysis=source/f"verified-{panel}"
         expected=[c["case"] for _,c,_,_ in roster(panel)]
         check(len(index)==count and [r["case"] for r in index]==expected,"cannot publish an incomplete roster")
         chosen=set(witnesses(panel))
@@ -48,9 +51,6 @@ def publish(source, output):
                 shutil.copyfile(native,dest/native.name)
         for name in ("run.json","archives.jsonl"):
             shutil.copyfile(source/panel/name,dest/name)
-        analysis=source/f"final-analysis-{panel}"
-        if not analysis.is_dir():
-            analysis=source/f"verified-{panel}"
         reduced=dest/"analysis"
         reduced.mkdir()
         for path in analysis.iterdir():
@@ -62,7 +62,7 @@ def publish(source, output):
             if path.exists():
                 shutil.copyfile(path,event_samples/path.name)
         receipt[panel]=dict(verified_archives=len(index),public_witnesses=len(chosen),
-                            canonical_facts=sum(int(row["receipt"].get("summary",{}).get("events",0)) for row in index),
+                            canonical_facts=sum(int((row["receipt"]["summary"] or {}).get("events",0)) for row in index),
                             archive_bytes=sum((source/panel/row["archive"]).stat().st_size for row in index),
                             manifest_sha256=sha(dest/"archives.jsonl"),failures=json.loads((analysis/"failures.json").read_bytes()))
     write_json(output/"publication.json",receipt)

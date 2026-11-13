@@ -1,0 +1,12 @@
+{
+  "binary_sha256": "ea38e0b5bb08fc25349fe4d8cb2a9b7374acdc5c2f0c1b733264a54b2cf410e8",
+  "cases": [
+    "borisovka-1-shaft-joint-balanced-5500",
+    "st_petersburg-1-dogleg-joint-limited-5500"
+  ],
+  "cpp_tree": "4e8f93652f3e7d4c75427881a6fc478412d15911",
+  "pairs": 3,
+  "protocol_sha256": "8c6ec2bebc5a9a2200baaac2142eaef4dc3b0a8825a7249af95fce58a25d4306",
+  "scope": "fixed work and real durable I/O; diagnostic, not an admitted application qualification",
+  "source": "64ce37a13ae1fc6d91d7606145a8eee6c6ed1696"
+}

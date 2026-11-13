@@ -1,0 +1,15 @@
+{
+  "binary_sha256": "ea844c196ecc43e9fcff8da5335341ef4a911b907265ef752ed90914f60b6bca",
+  "cases": [
+    {
+      "case": "borisovka-1-shaft-joint-balanced-5500-durable-split-corrected-c011n1-r1",
+      "events": "668720",
+      "facts_sha256": "ea07be520ff0bb30b9e423663897b385933e95114182c0ad2ae591c430b84a46"
+    },
+    {
+      "case": "st_petersburg-1-dogleg-joint-balanced-5500-durable-split-corrected-c011n1-r1",
+      "events": "715728",
+      "facts_sha256": "40c023ce0a88cef55dd95b394df7e8ed2771d12510f99a969639a8131f9e1338"
+    }
+  ]
+}

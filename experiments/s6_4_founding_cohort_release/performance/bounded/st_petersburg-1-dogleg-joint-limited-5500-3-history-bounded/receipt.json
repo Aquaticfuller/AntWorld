@@ -1,0 +1,112 @@
+{
+  "artifacts": {
+    "capture_phases.csv": {
+      "bytes": 17263,
+      "sha256": "652918db7d4a5e64ce869c0a985a206ade660d9343acb3d4dc3ffad0178c80cc"
+    },
+    "case.json": {
+      "bytes": 1534,
+      "sha256": "4bd33400f481aec82c526e47be68d13b9b2b688217aeb89249f1d35fa9756615"
+    },
+    "cuts.csv": {
+      "bytes": 25131,
+      "sha256": "08a2e53fed6bc91d4254bb2e2e37ace44e8360bb4c928ec7cd7ae89c0e27109e"
+    },
+    "facts.bin": {
+      "bytes": 474337896,
+      "sha256": "655d8601c12020ccd86b27da243a66cd9eb5cc40148a88f96b4577a449d6d14c"
+    },
+    "final.frame": {
+      "bytes": 122765,
+      "sha256": "a2cce8e3d535085f40204b6c463ffcaf8372c9e021d10400854c838b6cc7a4fd"
+    },
+    "geometry_edits.csv": {
+      "bytes": 3356,
+      "sha256": "e8c8150d02379c2131782e5a2457f8543c3a6749ec2b97f43f168893edde68ee"
+    },
+    "history_cost.csv": {
+      "bytes": 11765,
+      "sha256": "7825e2f2aa7eb6bace018f60b3902a0066e27cdecd185485120d11f67217648e"
+    },
+    "individuals.csv": {
+      "bytes": 914969,
+      "sha256": "ed8c7ec8a7597d1f7cc4827706e9cfa443a5cbd7d60114fbcad56b90a71c0425"
+    },
+    "initial.chk": {
+      "bytes": 5900,
+      "sha256": "375ce0f7b922991db197e7fa8041737d224d3a22e1b640aee606aa89a537cf07"
+    },
+    "interventions.csv": {
+      "bytes": 56,
+      "sha256": "ec442c4d6311de9afb242787ee2495ab2645270c7855601faa65b276b1a4c42c"
+    },
+    "parameters.txt": {
+      "bytes": 777,
+      "sha256": "962bf511290b2adaf2d22e588961288e137192ff62d8e675a00def31d033a7e2"
+    },
+    "periodic.sqlite": {
+      "bytes": 98566144,
+      "sha256": "3800c6a6979521542adbe72af09c7401ffc8c0abc001cc5934b902eb1d7e46d1"
+    },
+    "periodic.sqlite-shm": {
+      "bytes": 98304,
+      "sha256": "33281767be5300fa4e331fb39633ab02d7d962b681749c5a190e33b08118bee0"
+    },
+    "periodic.sqlite-wal": {
+      "bytes": 34570952,
+      "sha256": "7c24de76bc8850076ff86767d827f97555d07ce1fd89709d67e35e44080599d8"
+    },
+    "phases.csv": {
+      "bytes": 1102,
+      "sha256": "55036fbce135edb53f88282957698f1773c7e4066e80423a173cd3f42183a548"
+    },
+    "profile.csv": {
+      "bytes": 129,
+      "sha256": "d207fc483118562b14da7a93dc1bfe015325229b81f08b69aeba53bb80b4ec43"
+    },
+    "program.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "space_cuts.csv": {
+      "bytes": 10469,
+      "sha256": "462181009b07628a18caa6cc3cad955373af7d38c4a7cb70dd683e7a913fae94"
+    },
+    "summary.csv": {
+      "bytes": 438,
+      "sha256": "c52148cb1d4f2b3f650c8fbad2591d1390d498615f6e147c77ee5d982b13d359"
+    },
+    "timings.csv": {
+      "bytes": 8036,
+      "sha256": "ff7b09686f1416025f405fa19edc2573f3e3415a6c9eef6987f810ff03df455d"
+    }
+  },
+  "case": "st_petersburg-1-dogleg-joint-limited-5500",
+  "elapsed_ms": 64129.1121999966,
+  "exit_code": 0,
+  "identity": 101447,
+  "mode": "history-bounded",
+  "status": "COMPLETE",
+  "summary": {
+    "advance_ms": "7925.8287000000028",
+    "checkpoint_ms": "3514.8645999999999",
+    "cut_ms": "20.338199999999997",
+    "events": "2550393",
+    "facts_bytes": "474337896",
+    "frame_bytes": "122765",
+    "midpoint_restore_ms": "0",
+    "midpoint_save_ms": "0",
+    "peak_rss_bytes": "320610304",
+    "peak_sampled_queue": "94",
+    "queen": "2",
+    "reserve_record_bytes": "40",
+    "rng": "1",
+    "rss_bytes": "19013632",
+    "seed": "1",
+    "setup_ms": "0.1741",
+    "state_hash": "4134428234592095616",
+    "time_ms": "12960000000",
+    "trace_hash": "3671359674606444904",
+    "world": "00000000-0000-0286-0000-000000018c47"
+  }
+}

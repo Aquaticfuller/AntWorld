@@ -178,7 +178,7 @@ def replay_correction(binary, selected, comparisons, output):
         if mode != "durable-split":
             continue
         with TemporaryDirectory(dir=output) as scratch:
-            rerun = run_one(binary, Path(scratch) / "rerun", identity, case, mode, args)
+            rerun = run_one(binary, Path(scratch) / "rerun", identity, case, "durable", args)
             check(rerun["status"] == "COMPLETE", "native protected-profile replay failed")
             original = comparisons[case["observed_case"]]
             check_identity(original, rerun, case["case"])
@@ -202,7 +202,7 @@ def verify(panel, directory, output, public=False, packed_summary=None, binary=N
         indexed = json.loads((directory.parent / "publication.json").read_bytes())[panel]
         check(indexed["verified_archives"] == len(archived) and indexed["public_witnesses"] == len(set(witnesses(panel)))
               and indexed["manifest_sha256"] == sha(directory / "archives.jsonl")
-              and indexed["canonical_facts"] == sum(int(r["receipt"].get("summary", {}).get("events", 0)) for r in archived),
+              and indexed["canonical_facts"] == sum(int((r["receipt"]["summary"] or {}).get("events", 0)) for r in archived),
               "public archive identity receipt changed")
     worlds,trajectories,failures,midpoints=[],[],[],[]
     event_output=output/"events"

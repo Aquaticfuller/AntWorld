@@ -1,0 +1,4 @@
+FAIL 720/720 samples
+720 original process samples; 240 indexed tails
+PASS 96/96 samples
+96 original process samples; 32 indexed tails

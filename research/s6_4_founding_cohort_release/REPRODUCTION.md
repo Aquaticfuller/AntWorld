@@ -30,7 +30,7 @@ python tools/verify_ecological_publication.py out/rebuilt-inherited-ecology --jo
 python tools/verify_final_core_evidence.py out/rebuilt-frozen-b06
 ```
 
-Public verification replays two fixed corrected split worlds and compares facts, frames, RNG, state and daily observations to the recorded uninterrupted run. The independent SQLite check reconstructs and compares the canonical prefix at day 75. The complete old ecology verification includes both layouts, the seven SC-06 controls, intact historical failures and the previously accepted version 24/25 semantics. Both Release CI runners execute the native public witnesses.
+Public verification replays two fixed corrected worlds with daily observation and midpoint restore, and compares facts, frames, RNG, state and daily observations to the uninterrupted records. The archived split controls separately compare full authority with observations disabled. The independent SQLite check reconstructs and compares the canonical prefix at day 75. The complete old ecology verification includes both layouts, all seven SC-06 arms, intact historical failures and the previously accepted version 24/25 semantics. Both Release CI runners execute the native public witnesses.
 
 ## Complete collection and raw analysis
 
@@ -60,6 +60,8 @@ python tools/measure_founding_cohort_history.py $after out/diag-midpoint $scratc
 ```
 
 The separate approved application procedure requires the original Windows host topology, live mapped HWiNFO CSV, native per-core counters and the frozen admission rules. Use the uninstrumented Release executable and the same argument vector for prepare and run. Keep private source telemetry on the measurement host and publish the approved CPU channels, complete admission rows and samples. Preparation freezes all 720 slots and the input sources before measurement. The analyzer retains every original limit and failure.
+
+The final work-identity check compares each available sample with its approved archived counterpart: same order, inputs, model, initial and final authority, event count, RNG, and state and trace hashes. A complete but nonidentical collection cannot qualify.
 
 ```powershell
 python tools/qualify_founding_cohort_application.py --prepare --out $formal --archive $private --binary $binary --build build/cohort-release --compiler $clang --hwinfo-csv $sensors
