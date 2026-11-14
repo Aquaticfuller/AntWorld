@@ -7,10 +7,14 @@ from threading import Lock
 from urllib.parse import parse_qs, urlsplit
 import zlib
 
-from . import SCHEMA
+from . import DAY, SCHEMA
 from .codec import CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
 from .geometry import AXES, MAX_PIXELS, clear_centers, slice_at
 from .index import BLOCK_RECORDS, COUNTERS, LEDGER
+
+
+HOUR = 3_600_000
+REPLAY_OUTCOMES = (4, 5, 7, 8, 12, 19, 20, 21, 23, 24, 25, 26, 35, 38, 43, 48, 51, 53, 56, 58)
 
 
 def integer(options, name, default, low=0, high=(1 << 53) - 1):
@@ -183,6 +187,44 @@ class ReadAPI:
             event["origin_fact"] = event["auxiliary"]
         return event
 
+    def adjacent(self, db, meta, options):
+        """Find the next or previous matching fact without coalescing equal timestamps."""
+        _, cursor = cut_at(db, meta, options)
+        direction = options.get("direction", "next")
+        mode = options.get("mode", "outcomes")
+        require(direction in ("next", "previous"), "Unknown replay direction")
+        require(mode in ("outcomes", "movement"), "Unknown replay mode")
+        ant = sql_id(integer(options, "ant", 0, 1, MASK)) if "ant" in options else None
+        kinds = FACETS["movement"] if mode == "movement" else REPLAY_OUTCOMES
+        if direction == "next":
+            rows = records(db, cursor, meta["facts"], kinds, ant, 1, actors_only=mode == "movement")
+        else:
+            stop = cursor - ("event" in options)
+            rows = records(db, 0, stop, kinds, ant, 1, reverse=True, actors_only=mode == "movement")
+        return self.event(db, meta, {"id": rows[0][0]}) if rows else None
+
+    def nearby_motion(self, db, meta, options, stamp, cursor):
+        window = integer(options, "window_ms", 5 * 60_000, 1, HOUR)
+        limit = integer(options, "limit", 144, 1, 200)
+        start = cursor_at(db, max(0, stamp - window), inclusive=False)
+        rows = records(db, start, cursor, FACETS["movement"], limit=limit + 1, reverse=True)
+        points = [self.fact(db, meta, row).packet() for row in reversed(rows[:limit])]
+        return dict(points=points, truncated=len(rows) > limit, window_ms=window)
+
+    def activity_day(self, db, meta, options):
+        requested = integer(options, "day", 0, 0, meta["end_ms"] // DAY)
+        start = requested * DAY
+        hours = [dict(facts=0, moves=0, collections=0, deliveries=0, observations=0) for _ in range(24)]
+        keys = {4: "moves", 43: "moves", 5: "collections", 12: "deliveries", 42: "observations"}
+        for hour, kind, count in db.execute("""SELECT (time-?)/?,kind,count(*) FROM facts
+                WHERE time>=? AND time<? GROUP BY 1,2""", (start, HOUR, start, start + DAY)):
+            hours[hour]["facts"] += count
+            if kind in keys:
+                hours[hour][keys[kind]] += count
+        totals = {key: sum(row[key] for row in hours) for key in hours[0]}
+        return dict(day=requested, start_ms=start, end_ms=min(meta["end_ms"], start + DAY - 1),
+                    totals=totals, hours=hours)
+
     def ant(self, db, meta, options, stamp, cursor):
         aid = integer(options, "id", None, 1, MASK)
         ant = sql_id(aid)
@@ -322,6 +364,10 @@ class ReadAPI:
             return self.page(db, meta, options)
         if operation == "event":
             return self.event(db, meta, options)
+        if operation == "adjacent":
+            return self.adjacent(db, meta, options)
+        if operation == "activity":
+            return self.activity_day(db, meta, options)
         if operation == "series":
             return [dict(time_ms=stamp, cursor=str(cursor), **json.loads(value))
                     for stamp, cursor, value in db.execute("SELECT time,cursor,value FROM daily ORDER BY time")]
@@ -332,6 +378,8 @@ class ReadAPI:
             return self.ant(db, meta, options, stamp, cursor)
         if operation == "path":
             return self.track(db, meta, options, cursor)
+        if operation == "motion":
+            return self.nearby_motion(db, meta, options, stamp, cursor)
         if operation == "geometry":
             return self.geometry(db, meta, options, cursor)
         if operation == "cohort":

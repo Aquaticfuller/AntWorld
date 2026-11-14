@@ -42,17 +42,27 @@
       <div class="observation">
         <section class="panel space" aria-labelledby="space-title">
           <div class="panel-head"><div><h2 id="space-title">World space</h2><p id="space-caption">Committed positions and ordered geometry edits</p></div>
-            <div class="segmented" aria-label="Spatial view"><button id="surface-button" class="active" aria-pressed="true">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
+            <div class="segmented" aria-label="Spatial view"><button id="surface-button" aria-pressed="false">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
           </div>
           <div class="map-tools">
             <label id="plane-controls" hidden><span data-i18n>Section</span> <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
               <input id="layer" type="range" aria-label="Section depth"><output id="layer-value"></output></label>
             <label id="clearance-control" hidden><input id="clearance" type="checkbox"><span data-i18n>Body clearance</span></label>
             <label id="view-controls">Drag to pan · Scroll to zoom</label>
-            <div class="zoom"><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
+            <div class="zoom"><button id="show-occupants" type="button">Individuals in view</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>
           <canvas id="map" tabindex="0" aria-label="World map. Individual positions are also available through the individual panel."></canvas>
           <div id="map-legend" class="legend"></div>
+          <div class="map-readout">
+            <div class="map-summary-row"><p id="map-summary" aria-live="off"></p><button id="show-largest" type="button" hidden></button></div>
+            <p id="map-detail"></p>
+            <p id="map-time"></p>
+          </div>
+          <div id="location" class="location" hidden>
+            <div class="location-head"><div><h3 id="location-title"></h3><p id="location-note"></p></div>
+              <button id="close-location" type="button">Close</button></div>
+            <div id="location-list" class="location-list"></div>
+          </div>
         </section>
         <aside class="panel inspect" aria-label="Individual and event details">
           <div class="panel-head"><div class="plain-tabs"><button id="individual-tab" class="active" aria-pressed="true">Individual</button><button id="events-tab" aria-pressed="false">Events</button></div></div>
@@ -66,7 +76,7 @@
               <option value="nutrition">Nutrition</option><option value="care">Brood care</option><option value="food">Food &amp; deliveries</option>
               <option value="recruitment">Recruitment</option><option value="soil">Excavation &amp; soil</option><option value="movement">Movement</option>
               <option value="rejected">Rejected actions</option><option value="tasks">Task state</option><option value="all">All facts</option>
-            </select><select id="event-range" aria-label="Event range"><option value="day">This day</option><option value="all">Entire archive</option></select></div>
+            </select><select id="event-range" aria-label="Event range"><option value="day">This day</option><option value="hour">This hour</option><option value="all">Entire archive</option></select></div>
             <div id="event-detail" hidden></div>
             <div id="event-list"></div>
             <button id="more-events" hidden>Next page</button>
@@ -82,6 +92,31 @@
         <canvas id="timeline-chart" height="90" aria-label="Population by day, with the active time cursor"></canvas>
         <label for="time" class="sr-only">Simulation time</label><input id="time" type="range" min="0" value="0" step="1">
         <div class="quick"><div id="days" aria-label="Jump to day"></div><div id="milestones" aria-label="Jump to event"></div></div>
+        <div class="day-activity">
+          <div class="day-head">
+            <div><h3 id="day-title">Activity within the day</h3><p id="day-counts"></p></div>
+            <div class="event-transport">
+              <button id="previous-event">Previous event</button><button id="next-event">Next event</button>
+            </div>
+          </div>
+          <div class="replay-mode">
+            <label for="replay-mode">Replay mode</label>
+            <select id="replay-mode">
+              <option value="overview">Colony overview</option>
+              <option value="outcomes">Event by event</option>
+              <option value="movement">Movement only</option>
+            </select>
+            <span id="replay-note"></span>
+          </div>
+          <div class="hour-line">
+            <label class="sr-only" for="day-time">Time within the selected day</label>
+            <input id="day-time" type="range" min="0" max="86399999" value="0" step="1">
+            <output id="day-time-value"></output>
+          </div>
+          <div class="hour-ticks" aria-hidden="true"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+          <div id="hour-bins" aria-label="Hourly event counts"></div>
+          <p id="hour-note"></p>
+        </div>
       </section>
       <section class="panel dashboard" aria-labelledby="dashboard-label">
         <div class="panel-head"><div><h2 id="dashboard-label">Colony ledger</h2><p>Stock and committed activity at the selected time</p></div>

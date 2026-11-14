@@ -56,6 +56,13 @@ async function click(selector) {
         " const b = e.getBoundingClientRect(); return [b.left + b.width/2, b.top + b.height/2]; })()");
     await mouse(x, y);
 }
+async function clickMap(query) {
+    const position = await evaluate("(() => { const map = $('map'); map.scrollIntoView({block:'center'});" +
+        " const b = map.getBoundingClientRect(), a = app.hits.find(" + query + ");" +
+        " return a ? [b.left + a.x, b.top + a.y] : null; })()");
+    assert.ok(position, "Requested real position has a map marker");
+    await mouse(...position);
+}
 async function mouse(x, y) {
     await send("Input.dispatchMouseEvent", {type: "mousePressed", x, y, button: "left", clickCount: 1});
     await send("Input.dispatchMouseEvent", {type: "mouseReleased", x, y, button: "left", clickCount: 1});
@@ -64,8 +71,9 @@ async function select(id, value) {
     return evaluate("(() => { const e = $(" + JSON.stringify(id) + "); e.value = " + JSON.stringify(value) +
         "; e.dispatchEvent(new Event('change')); return e.value; })()");
 }
-async function screenshot(name) {
-    await evaluate("scrollTo(0, 0)");
+async function screenshot(name, includeHours = false) {
+    await evaluate(includeHours ?
+        "scrollTo(0, Math.max(0, $('hour-bins').getBoundingClientRect().bottom + scrollY - innerHeight + 45))" : "scrollTo(0, 0)");
     await sleep(250);
     const frame = await send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
     await writeFile(join(output, name + ".png"), Buffer.from(frame.data, "base64"));
@@ -114,6 +122,40 @@ try {
     assert.equal(await evaluate("app.hits.some(a => a.id === '2')"), true);
     await screenshot("founding-day-0");
 
+    await click("#milestones button[title^='First egg laid']");
+    await wait(() => evaluate("app.state.cursor === '84' && app.state.population.eggs === 1"), "First recorded egg");
+    await clickMap("hit => hit.ants.length === 2");
+    await wait(() => evaluate("$('location-list').textContent.includes('Egg #4') && $('location-list').textContent.includes('Queen #2')"),
+        "Both insects share an inspectable coordinate");
+    await click("#location-list [data-ant-id='4']");
+    await wait(() => evaluate("document.querySelector('#individual-content h3')?.textContent === 'Egg #4'"), "Select an egg from its shared marker");
+    await screenshot("first-egg-shared-location");
+    await click("#close-location");
+
+    await click("#days button[title='Jump to day 45']");
+    await wait(() => evaluate("$('day-counts').textContent.includes('400 committed records') && $('day-counts').textContent.includes('30 movements')"),
+        "Daily facts and movement counts");
+    assert.equal(await evaluate("$('hour-bins').children.length"), 24);
+    await click("#hour-bins button:nth-child(16)");
+    await wait(() => evaluate("app.state.time_ms === 45 * DAY + 15 * HOUR"), "Exact hour seek");
+    await select("replay-mode", "movement");
+    await click("#next-event");
+    await wait(() => evaluate("app.state.cursor === '9721' && $('day-time-value').textContent === '15:36:00.103'"), "First movement step");
+    await click("#next-event");
+    await wait(() => evaluate("app.state.cursor === '9728' && $('day-time-value').textContent === '15:36:00.204'"), "Second movement step");
+    await click("#previous-event");
+    await wait(() => evaluate("app.state.cursor === '9721'"), "Move one committed step backwards");
+    await click("#play");
+    await wait(() => evaluate("Number(app.state.cursor) >= 9728"), "Movement plays at subsecond simulation intervals");
+    await click("#play");
+    await select("replay-mode", "overview");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("$('day-counts').textContent.includes('400 \u6761\u63d0\u4ea4\u8bb0\u5f55')"), "Chinese intraday activity");
+    assert.equal(await evaluate("$('day-title').textContent"), "\u65e5\u5185\u6d3b\u52a8");
+    await screenshot("within-day-movement", true);
+    await select("locale", "en");
+    await wait(() => evaluate("$('day-counts').textContent.includes('400 committed records')"), "English intraday activity");
+
     await timed("jump_to_worker_ms", async () => {
         await click("#milestones button[title^='First worker eclosed']");
         await wait(() => evaluate("app.state.cursor === '9661' && $('event-detail').textContent.includes('Eclosed')"), "Worker eclosed");
@@ -124,11 +166,8 @@ try {
     await wait(() => evaluate("app.state.cursor === '9938' && $('event-detail').textContent.includes('Food delivered')"), "Food delivery");
     await click("#milestones button[title^='First food collection']");
     await wait(() => evaluate("app.state.cursor === '9826' && !$('event-detail').hidden"), "Source reached from a real fact");
-    const position = await evaluate("(() => { const b = $('map').getBoundingClientRect(), a = app.hits.find(h => h.id === '4');" +
-        " return a ? [b.left + a.x, b.top + a.y] : null; })()");
-    assert.ok(position, "Worker is visible at the real food source");
     await timed("select_ant_from_map_ms", async () => {
-        await mouse(...position);
+        await clickMap("h => h.id === '4'");
         await wait(() => evaluate("!$('individual-panel').hidden && document.querySelector('#individual-content h3')?.textContent === 'Worker #4'"), "Map selection");
     });
     await click("#follow");
@@ -223,6 +262,7 @@ try {
     result.archive_sha256 = await evaluate("app.meta.archive_sha256");
     result.chromium = (await send("Browser.getVersion")).product;
     result.localization = "English and Simplified Chinese switched at the same cut and comparison, persisted after reload";
+    result.within_day_replay = "Selected a real egg from a shared marker; observed 400 facts and 30 movements on day 45; stepped through the real 101 ms interval and back";
     result.date_utc = new Date().toISOString();
     result.status = "PASS";
     await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");

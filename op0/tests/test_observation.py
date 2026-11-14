@@ -121,6 +121,38 @@ class ObservationTests(unittest.TestCase):
         self.assertTrue(any(point["position_m"][1] == 0 for point in track["points"]))
         self.assertEqual([int(p["id"]) for p in track["points"]], sorted(int(p["id"]) for p in track["points"]))
 
+    def test_recorded_day_activity_and_step_order(self):
+        first_eggs = self.get("state", time_ms=5 * DAY)
+        self.assertEqual(first_eggs["population"]["eggs"], 12)
+        self.assertEqual(len(first_eggs["ants"]), 13)
+        self.assertEqual({tuple(ant["position_m"]) for ant in first_eggs["ants"]}, {(0, -.004, 0)})
+        day45 = self.get("activity", day=45)
+        self.assertEqual(day45["totals"], dict(facts=400, moves=30, collections=1, deliveries=1, observations=136))
+        self.assertEqual(len(day45["hours"]), 24)
+        self.assertEqual([i for i, hour in enumerate(day45["hours"]) if hour["moves"]], [15])
+        self.assertEqual(day45["hours"][15]["moves"], 30)
+        self.assertEqual(day45["totals"]["facts"], sum(h["facts"] for h in day45["hours"]))
+        self.assertEqual(self.get("activity", day=5)["totals"]["moves"], 0)
+        terminal = self.get("activity", day=150)
+        self.assertEqual(terminal["end_ms"], 150 * DAY)
+
+        first = self.get("adjacent", time_ms=45*DAY, mode="movement")
+        second = self.get("adjacent", event=first["id"], mode="movement")
+        self.assertEqual((first["id"], second["id"]), ("9721", "9728"))
+        self.assertEqual(second["time_ms"] - first["time_ms"], 101)
+        self.assertEqual(self.get("adjacent", event=second["id"], direction="previous", mode="movement")["id"], first["id"])
+        moves = self.get("motion", event=second["id"], limit=1)
+        self.assertEqual([f["id"] for f in moves["points"]], [second["id"]])
+        self.assertTrue(moves["truncated"])
+        self.assertEqual(self.get("motion", time_ms=46*DAY)["points"], [])
+        self.assertIsNone(self.get("adjacent", time_ms=150*DAY, mode="movement"))
+        # These two distinct facts share the same millisecond. The exact cut retains their order.
+        hatch = self.get("event", id=5432)
+        death = self.get("adjacent", event=hatch["id"])
+        self.assertEqual((death["id"], death["time_ms"]), ("5435", hatch["time_ms"]))
+        self.assertEqual(self.get("adjacent", event=death["id"], direction="previous")["id"], hatch["id"])
+        self.assertNotEqual(self.get("adjacent", time_ms=hatch["time_ms"])["id"], death["id"])
+
     def test_life_history_nonobserved_states_and_early_cohort(self):
         at = self.get("ant", event=5375, id=5)
         self.assertEqual((at["mother"], at["status"], at["death_cause"]), ("2", "Dead", "Energy depleted"))
@@ -282,11 +314,11 @@ class ObservationTests(unittest.TestCase):
 
     def test_terminal_with_real_world(self):
         result = subprocess.run([sys.executable, "-X", "utf8", "-m", "op0", "--cache", str(self.catalog.root), "tui", "--plain", "--language", "en"],
-                                input="1\nd 150\ne 5375\na 5\nf care\nw\n2\nd 150\nq\n", capture_output=True,
+                                input="1\nd 45\nh 15:36\nn\nn\np\nd 150\ne 5375\na 5\nf care\nw\n2\nd 150\nq\n", capture_output=True,
                                 text=True, encoding="utf-8", cwd=ROOT, timeout=100)
         self.assertEqual(result.returncode, 0, result.stderr)
-        for pattern in ("Founding colony", "45 workers", "Energy depleted", "Tracking #5", "No external supply",
-                        "0 workers", "VERIFIED_PUBLISHED"):
+        for pattern in ("Founding colony", "400 committed records", "30 movements", "Day 45 15:36:00.000",
+                        "45 workers", "Energy depleted", "Tracking #5", "No external supply", "0 workers", "VERIFIED_PUBLISHED"):
             self.assertIn(pattern, result.stdout)
         self.assertEqual(result.stderr, "")
 

@@ -82,11 +82,22 @@ h2 { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
 .map-tools label { display: flex; gap: 7px; align-items: center; }
 .map-tools select, .zoom button { min-height: 27px; padding: 2px 7px; }
 .zoom { display: flex; gap: 4px; }
-#map { display: block; width: 100%; height: clamp(312px, 42vh, 490px); touch-action: none; cursor: grab; background: #121d16; }
+#map { display: block; width: 100%; height: clamp(280px, 38vh, 440px); touch-action: none; cursor: grab; background: #121d16; }
 #map:active { cursor: grabbing; }
 .legend { min-height: 35px; color: var(--muted); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 8px 14px; font-size: 11px; }
 .legend i { margin-right: 5px; }
-.inspect { height: calc(clamp(312px, 42vh, 490px) + 146px); display: flex; flex-direction: column; }
+.inspect { height: calc(clamp(280px, 38vh, 440px) + 176px); display: flex; flex-direction: column; }
+.map-readout { display: grid; gap: 3px; padding: 0 14px 9px; font-size: 11px; color: var(--muted); min-height: 34px; }
+.map-summary-row { display: flex; align-items: center; gap: 8px; }
+.map-summary-row button { min-height: 23px; padding: 1px 6px; font-size: 10px; }
+#map-summary { color: var(--text); }
+.location { padding: 11px 14px; border-top: 1px solid var(--line); }
+.location-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.location h3 { font-size: 13px; }
+.location p { font-size: 11px; margin-top: 3px; color: var(--muted); }
+.location-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(114px, 1fr)); gap: 4px; max-height: 154px; overflow: auto; }
+.location-list button { text-align: left; font-size: 11px; min-height: 27px; }
+.location-list button[aria-pressed="true"] { border-color: var(--green); }
 .inspect .panel-head { min-height: 49px; align-items: stretch; padding: 0 14px; }
 .plain-tabs { display: flex; gap: 17px; }
 .plain-tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 0 4px; font-size: 13px; }
@@ -125,6 +136,22 @@ h2 { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
 .quick > div { display: flex; flex-wrap: wrap; gap: 4px; }
 .quick button { min-height: 24px; font-size: 11px; padding: 2px 7px; }
 .quick #milestones button { color: #c2d9a9; }
+.day-activity { border-top: 1px solid var(--line); margin-top: 11px; padding-top: 10px; }
+.day-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.day-head h3 { font-size: 13px; margin-bottom: 3px; }
+#day-counts, #replay-note, #hour-note { font-size: 11px; color: var(--muted); }
+.event-transport, .replay-mode, .hour-line { display: flex; gap: 6px; align-items: center; }
+.event-transport button, .replay-mode select { min-height: 28px; font-size: 11px; }
+.replay-mode { flex-wrap: wrap; padding: 7px 0; font-size: 11px; }
+.hour-line input { flex: 1; min-width: 0; margin: 1px 0; }
+.hour-line output { color: var(--green); font-variant-numeric: tabular-nums; font-size: 11px; min-width: 80px; text-align: right; }
+.hour-ticks { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); padding-right: 87px; }
+#hour-bins { display: grid; grid-template-columns: repeat(24, minmax(0,1fr)); gap: 2px; padding: 5px 87px 4px 0; }
+#hour-bins button { padding: 0; min-height: 25px; border-radius: 3px; background: #25332a; }
+#hour-bins .recorded { background: #52674a; }
+#hour-bins .moved { background: #25765e; border-color: #6faf94; }
+#hour-bins [aria-pressed=true] { outline: 1px solid var(--green); outline-offset: 1px; }
+#hour-bins :disabled { opacity: .2; }
 .ledger { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 13px 16px 7px; }
 .ledger > div, .compare-card { border: 1px solid var(--line); border-radius: 7px; padding: 10px; background: #1c2820; }
 .ledger strong { display: block; margin: 3px 0 0; font-size: 14px; }
@@ -162,4 +189,6 @@ footer span { padding: 0 5px; }
   .transport button, .transport select { min-height: 28px; padding: 3px 4px; }
   #play { min-width: 58px; }
   #compare-cards { grid-template-columns: 1fr; }
+  #hour-bins { padding-right: 0; }
+  .hour-ticks { padding-right: 0; }
 }

@@ -16,7 +16,7 @@ from .archive import pack, zip_terminal_frame
 from .codec import ArchiveError, require
 from .index import Catalog
 from .locale import LANGUAGES, translator
-from .query import ReadAPI
+from .query import HOUR, ReadAPI
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -92,7 +92,10 @@ def register_import(catalog, path):
 
 
 def stamp(ms, tr):
-    return tr("Day {number}", number=f"{ms / DAY:,.3f}")
+    hh, within = divmod(ms % DAY, HOUR)
+    mm, within = divmod(within, 60_000)
+    ss, milli = divmod(within, 1000)
+    return tr("Day {number}", number=ms // DAY) + f" {hh:02d}:{mm:02d}:{ss:02d}.{milli:03d}"
 
 
 def event_text(event, tr):
@@ -187,6 +190,8 @@ class Terminal:
             print(" " + tr("Life") + " · " + " | ".join(
                 f"{tr(e['stage'])} #{e['id']} ({stamp(e['time_ms'], tr)})" for e in ant["life_events"]))
         lo = (self.t // DAY) * DAY
+        daily = self.request("activity", day=lo // DAY)["totals"]
+        print("\n " + tr("{facts} committed records · {moves} movements · {collections} collections · {deliveries} deliveries", **daily))
         events = self.request("events", since_ms=lo, until_ms=min(lo+DAY-1, meta["end_ms"]),
                               after=self.after, group=self.group, limit=7, **({"ant": self.follow} if self.follow else {}))
         self.next_after = events["next_after"]
@@ -197,7 +202,16 @@ class Terminal:
             print(" " + tr("No matching events in this window."))
         print("\n " + tr("Milestones") + " · " + " · ".join(f"{tr(m['label'])} #{m['id']}" for m in meta["milestones"] if m["label"] in
               ("First hatch", "First worker eclosed", "First food delivered", "First excavation", "First recruitment activation", "Queen died")))
-        print(" " + tr("d <day>  +/-  play [days/s]  pause (Ctrl-C)  e <event>  f <category>  more  a <ant>  untrack  w  q  lang en|zh-CN"))
+        print(" " + tr("d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN"))
+
+    def seek_clock(self, arg):
+        parts = arg.split(":")
+        require(len(parts) in (2, 3) and all(p.isdecimal() for p in parts), "Use an hour as HH:MM or HH:MM:SS")
+        hh, mm = map(int, parts[:2])
+        ss = int(parts[2]) if len(parts) == 3 else 0
+        requested = self.t // DAY * DAY + hh * HOUR + mm * 60_000 + ss * 1000
+        require(hh < 24 and mm < 60 and ss < 60 and requested <= self.meta["end_ms"], "Time is outside the archived day")
+        self.seek(requested)
 
     def command(self, line):
         word, _, arg = line.strip().partition(" ")
@@ -243,6 +257,15 @@ class Terminal:
                 detail = self.request("event", id=int(arg))
                 self.seek(detail["time_ms"])
                 self.event = detail["id"]
+            elif word in ("n", "p"):
+                anchor = {"event": self.event} if self.event else {"time_ms": self.t}
+                detail = self.request("adjacent", direction="next" if word == "n" else "previous",
+                                      **anchor, **({"ant": self.follow} if self.follow else {}))
+                require(detail is not None, "No matching event in that direction.")
+                self.seek(detail["time_ms"])
+                self.event = detail["id"]
+            elif word == "h":
+                self.seek_clock(arg)
             elif word == "a":
                 cut = {"event": self.event} if self.event else {"time_ms": self.t}
                 self.follow = self.request("ant", id=int(arg), **cut)["id"]

@@ -11,6 +11,9 @@ English and Simplified Chinese are presentation preferences. The local message c
 | `world/{world}/meta` | Initial geometry, case inputs, source hashes, version IDs, final population and milestones |
 | `world/{world}/state` | `time_ms` or exact `event`, population, coordinates, resources, cumulative facts and last queen sample |
 | `world/{world}/event` | Exact `id`, including referenced recruitment facts and parcel edits when recorded |
+| `world/{world}/adjacent` | `event` or `time_ms`, `direction` (next/previous), `mode` (outcomes/movement), optional `ant`. Returns one matching fact or null. Equal timestamps retain distinct EventIds |
+| `world/{world}/activity` | `day`, zero-indexed. Returns 24 hourly bins and total committed records, moves, collections, deliveries and observation facts for the archived part of that day |
+| `world/{world}/motion` | `event` or `time_ms`. Recent committed movement points, with `window_ms` (up to one hour) and `limit` (up to 200), in commit order. A truncation flag identifies omitted earlier points in the requested window |
 | `world/{world}/events` | `after`, `since_ms`, `until_ms`, `group`, `ant`, `cut_event` and `limit` (1–200). Returns `next_after` when more records match |
 | `world/{world}/ant` | `id`, `time_ms` or `event`. Identity, stage, death if recorded by the cut, lifetime milestones and recent committed facts |
 | `world/{world}/path` | `id`, `time_ms` or `event`, `limit` (1–200). Returns bounded lists of actual position facts |
@@ -23,6 +26,7 @@ Time is integer simulation milliseconds. A clock query includes all facts commit
 
 - `COMMITTED_FACT` is a byte-decoded event. Source, actors, participants, result and quantities come from that event. Recruitment references lead to a preceding committed cue or scout delivery.
 - `RECONSTRUCTED` denotes a deterministic projection, such as a position through the selected cursor or geometry from the initial solid and ordered edits. Space shows soil, void and rock. Clearance tests the static unloaded body cube. It does not imply a navigable route.
+- The map groups coincident projected positions at the current zoom without moving or merging source individuals. The group can be opened to inspect its individual IDs, stages and states.
 - `CUT_SNAPSHOT` is a published physiology sample with its own time and cursor. The newest available sample can precede the requested time by hours or days. Positions and physiology are never interpolated.
 - `Not recorded` appears for absent fields and histories. Recorded zeroes stay zero. A first-census feeding record requires a positive transferred mass and does not establish subsequent absorption.
 

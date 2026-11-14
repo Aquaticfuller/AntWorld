@@ -21,6 +21,8 @@ Windows 11 x64, Python 3.15.2, SQLite 3.53.4, Chrome 157.0.8103.78 and Node.js 2
 | Compare the previous and corrected physics 25 | Both have the same recorded population source, seed, shaft geometry and initial maternal inputs. First-ration preference differs, 500,000 ppm before and 0 ppm after. The recorded day-150 worker counts are 43 and 45, respectively. Of four members in the first recorded larval census, zero eclosed before and one after. These are archive outcomes and do not establish an independent effect |
 | Reopen without changing the original source | Import verifies the original files. The browser reopened from its browse index with the same facts and source SHA-256. Native SQLite v1 and durable v2 with WAL were exercised. The DB and WAL source hashes remained identical. The v2 test ensures no SHM is created in the original directory |
 | Switch between English and Simplified Chinese | Chromium switched the larval profile and comparison in both directions without changing the active fact, identity or source hash. Reload restored the selected language. The terminal test switched languages while tracking the same larva and verified the preference in a new terminal session |
+| Inspect individuals with shared coordinates | Chromium opened the two-individual marker at the first egg commit #84 and selected egg #4 separately from queen #2. At the day-5 cut, the archive has 12 eggs and the queen at the exact same coordinates |
+| Inspect the simulation within one day | The day-45 record contains 400 facts, including 30 movements, one collection, one delivery and 136 biological observations. All 30 movements are in the 15:00 hour. Chromium stepped from movement #9721 at 15:36:00.103 to #9728 at 15:36:00.204, returned to #9721 and used the movement playback mode |
 
 ### Real screenshots
 
@@ -33,8 +35,10 @@ Windows 11 x64, Python 3.15.2, SQLite 3.53.4, Chrome 157.0.8103.78 and Node.js 2
 | Extinction at day 150 | [No external supply](evidence/no-external-supply.png) |
 | Feeding treatment comparison | [Physics 25 comparison](evidence/physics-25-comparison.png) |
 | Larva #5 with the same facts in Simplified Chinese | [Chinese life history](evidence/larval-life-history-zh.png) |
+| Egg #4 selected independently at a shared map position | [Shared marker](evidence/first-egg-shared-location.png) |
+| Chinese interface for 24-hour activity and real subsecond movement | [Intraday activity](evidence/within-day-movement.png) |
 
-These PNGs came from the running viewer. Spatial dots are recorded positions. Some adjacent facts have the same simulation timestamp. The inspector displays the exact event ID and cursor at those boundaries.
+These PNGs came from the running viewer. Spatial dots are recorded positions. Some adjacent facts have the same simulation timestamp. The inspector keeps them separate by exact event ID. The [intraday replay receipt](evidence/intraday-replay-receipt.json) records the shared-position and subsecond tests.
 
 ## Source identities
 

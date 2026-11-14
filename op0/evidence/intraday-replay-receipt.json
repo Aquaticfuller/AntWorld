@@ -1,0 +1,16 @@
+{
+  "shell_paint_ms": 288,
+  "world_ready_ms_after_navigation": 524.6000000238419,
+  "first_browser_view_ms": 540.23,
+  "jump_to_worker_ms": 173.93,
+  "select_ant_from_map_ms": 94.13,
+  "seek_day_90_ms": 73.85,
+  "reopen_browser_with_index_ms": 262.57,
+  "world": "00000000-0000-0286-0000-000000018a61",
+  "archive_sha256": "448d2a7db60487e98113cc27f70cce307b1452a26b0ab36edef48911745a80df",
+  "chromium": "Chrome/157.0.8103.78",
+  "localization": "English and Simplified Chinese switched at the same cut and comparison, persisted after reload",
+  "within_day_replay": "Selected a real egg from a shared marker; observed 400 facts and 30 movements on day 45; stepped through the real 101 ms interval and back",
+  "date_utc": "2026-11-14T01:14:54.778Z",
+  "status": "PASS"
+}

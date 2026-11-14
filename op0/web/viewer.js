@@ -1,6 +1,8 @@
 "use strict";
 
 const DAY = 86_400_000;
+const HOUR = DAY / 24;
+const MINUTE = HOUR / 60;
 const $ = id => document.getElementById(id);
 let language = "en", messages = {};
 let decimal = new Intl.NumberFormat("en", {maximumFractionDigits: 3});
@@ -9,6 +11,8 @@ let chineseCatalog;
 const colors = {worker: "#b7d98c", egg: "#f4e5b2", larva: "#eab17e", pupa: "#ccb1e5",
     queen: "#f2bf7d", food: "#83d4b7", entrance: "#bddba0", soil: "#a17c55", rock: "#899088",
     void: "#252f25", trace: "#baa6ef", Nurse: "#d5a7ce", Forage: "#86d6b4", Excavate: "#edb485", Rest: "#c5c8aa"};
+const mapStages = [["queen", "Queens"], ["worker", "Workers"], ["egg", "Eggs"], ["larva", "Larvae"],
+    ["pupa", "Pupae"], ["adult", "Other adults"]];
 const columns = {births: "Eggs laid", collections: "Collections", deliveries: "Deliveries",
     trophallaxis: "Trophallaxis", excavations: "Excavations", soil_drops: "Soil placements",
     maternal_rations: "Maternal rations", signals: "Scout cues", exposures: "Local exposures", activations: "Recruitment activations"};
@@ -18,7 +22,9 @@ const names = {physics: "Physics version", inner_physics: "Inner physics", seed:
     care_enabled: "Care enabled", initial_workers: "Seeded workers", population: "Population", layout: "Layout", supply: "Supply"};
 const app = {
     meta: null, series: [], state: null, geometry: null, catalog: [], time: 0, selectedFact: null, selected: null,
-    path: [], follow: false, section: "surface", hits: [], map: {zoom: 1, x: 0, y: 0}, drag: null,
+    path: [], recentMotion: null, follow: false, section: "surface", hits: [], visible: [], location: null,
+    visibleSummary: null,
+    map: {zoom: 1, x: 0, y: 0}, drag: null, activity: null, activityVersion: 0, playVersion: 0,
     eventAfter: null, eventListVersion: 0, seekVersion: 0, openVersion: 0, playback: null,
     compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0
 };
@@ -35,7 +41,7 @@ function preference() {
 }
 const staticStrings = [];
 function captureStaticStrings() {
-    const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
+    const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,#day-title,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
     const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play"]);
     for (const e of document.querySelectorAll(selectors)) {
         if (!dynamic.has(e.id) && e.children.length === 0 && e.textContent.trim() && !e.closest("#locale")) {
@@ -68,6 +74,7 @@ async function setLanguage(next, refresh = true) {
         if (attribute) element.setAttribute(attribute, tr(message));
         else element.textContent = tr(message);
     }
+    replaySettings();
     if (!refresh) return;
     if (!app.catalog.length) {
         showEmptyCatalog();
@@ -118,7 +125,13 @@ function show(message, error = false) {
 }
 function report(err) { show(tr(err.message || String(err)), true); }
 function day(ms) { return ms == null ? tr("Not recorded") : tr("Day {number}", {number: decimal.format(ms / DAY)}); }
-function exactTime(ms) { return day(ms) + " · " + ms.toLocaleString(language) + " ms"; }
+function clockTime(ms) {
+    const t = ms % DAY, hh = Math.floor(t / HOUR), mm = Math.floor(t % HOUR / MINUTE), ss = Math.floor(t % MINUTE / 1000);
+    return [hh, mm, ss].map(n => String(n).padStart(2, "0")).join(":") + "." + String(t % 1000).padStart(3, "0");
+}
+function exactTime(ms) {
+    return day(Math.floor(ms / DAY) * DAY) + " · " + clockTime(ms) + " · " + ms.toLocaleString(language) + " ms";
+}
 function withUnit(value, unit) { return value == null ? tr("Not recorded") : decimal.format(value) + " " + tr(unit); }
 function mass(value) {
     return value ? "[" + value.map(v => v == null ? "?" : decimal.format(v)).join(" / ") + "] µg" : tr("Not recorded");
@@ -179,8 +192,8 @@ function configure(meta, referenceKey = null) {
     for (const id of ["time", "compare-time"]) $(id).max = meta.end_ms;
     $("days").replaceChildren(...[0, 1, 20, 45, 90, 120, 150].filter(d => d * DAY <= meta.end_ms)
         .map(d => button(language === "en" ? "D" + d : tr("Day {number}", {number: d}),
-            () => seek(d * DAY).catch(report), tr("Jump to day {number}", {number: d}))));
-    const labels = {"First hatch": "Hatch", "First worker eclosed": "First worker", "First food collection": "First collection",
+            () => { stopPlay(); return seek(d * DAY).catch(report); }, tr("Jump to day {number}", {number: d}))));
+    const labels = {"First egg laid": "First eggs", "First hatch": "Hatch", "First worker eclosed": "First worker", "First food collection": "First collection",
         "First food delivered": "First delivery",
         "First excavation": "First excavation", "First recruitment activation": "Recruitment", "First larval death": "Larval death",
         "Queen died": "Queen death"};
@@ -215,6 +228,13 @@ async function openArchive(key, preferred) {
     app.follow = false;
     app.reference = null;
     app.path = [];
+    app.recentMotion = null;
+    app.activity = null;
+    ++app.activityVersion;
+    app.location = null;
+    app.visibleSummary = null;
+    $("show-largest").hidden = true;
+    $("hour-bins").replaceChildren();
     app.state = null;
     app.geometry = null;
     app.layer = null;
@@ -239,17 +259,18 @@ function setMode(compare) {
     $("comparison").hidden = !compare;
     toggle("compare-tab", compare);
     toggle("observe-tab", !compare);
+    replaySettings();
     if (!compare) requestAnimationFrame(draw);
 }
 
 async function seek(ms, exact = null) {
     if (!app.meta) return;
     const version = ++app.seekVersion;
-    const previousDay = Math.floor(app.time / DAY);
+    const previous = app.time;
     const end = app.compare && app.reference ? Math.max(app.meta.end_ms, app.reference.end_ms) : app.meta.end_ms;
     app.time = Math.max(0, Math.min(end, Math.round(ms)));
     app.selectedFact = exact;
-    if (!exact) $("event-detail").hidden = true;
+    if ($("event-detail").dataset.event !== exact?.id) $("event-detail").hidden = true;
     $("time").value = app.time;
     $("compare-time").value = app.time;
     updateClock();
@@ -257,11 +278,12 @@ async function seek(ms, exact = null) {
         await updateComparison();
         return;
     }
-    const [state, initialGeometry, ant, track] = await Promise.all([
+    const [state, initialGeometry, ant, track, motion] = await Promise.all([
         world("state", cut()),
         world("geometry", geometryOptions()),
         app.selected ? world("ant", {...cut(), id: app.selected}) : null,
-        app.selected ? world("path", {...cut(), id: app.selected, limit: 120}) : null
+        app.selected ? world("path", {...cut(), id: app.selected, limit: 120}) : null,
+        world("motion", {...cut(), window_ms: 5 * MINUTE, limit: 144})
     ]);
     if (version !== app.seekVersion) return;
     let geometry = initialGeometry;
@@ -276,19 +298,76 @@ async function seek(ms, exact = null) {
     app.state = state;
     app.geometry = geometry;
     app.path = track ? track.points : [];
+    app.recentMotion = motion;
     updateGeometryControls(geometry);
     updateState(state);
     renderAnt(ant);
     draw();
-    if (!$("event-panel").hidden && (previousDay !== Math.floor(app.time / DAY) || !$("event-list").childElementCount)) {
+    await loadActivity();
+    if (version !== app.seekVersion) return;
+    const eventWindow = $("event-range").value === "hour" ? HOUR : DAY;
+    if (!$("event-panel").hidden && (($("event-range").value !== "all" &&
+        Math.floor(previous / eventWindow) !== Math.floor(app.time / eventWindow)) || !$("event-list").childElementCount)) {
         await loadEvents(false);
     }
 }
 
 function updateClock() {
     const grain = app.selectedFact ? tr("Event #{id} cut", {id: app.selectedFact.id}) : tr("Committed through this time");
-    put("time-note", exactTime(app.time) + " · " + grain);
+    put("time-note", exactTime(app.time) + " · " + grain + (app.selectedFact ? " · " + eventLabel(app.selectedFact) : ""));
+    put("map-time", day(Math.floor(app.time / DAY) * DAY) + " · " + clockTime(app.time) +
+        (app.selectedFact ? " · " + eventLabel(app.selectedFact) : ""));
     put("compare-stamp", day(app.time));
+    const partial = Math.floor(app.time / DAY) * DAY;
+    const until = Math.min(DAY - 1, app.meta.end_ms - partial);
+    $("day-time").max = Math.max(0, until);
+    $("day-time").value = app.time - partial;
+    $("day-time").disabled = until <= 0;
+    $("day-time").setAttribute("aria-valuetext", clockTime(app.time));
+    put("day-time-value", clockTime(app.time));
+    if (app.activity?.day === Math.floor(app.time / DAY)) markHour();
+}
+
+function markHour() {
+    const hour = Math.floor(app.time % DAY / HOUR);
+    for (const [index, bin] of Array.from($("hour-bins").children).entries()) {
+        bin.setAttribute("aria-pressed", String(index === hour));
+    }
+}
+function renderActivity(activity) {
+    const t = activity.totals;
+    put("day-counts", tr("{facts} committed records · {moves} movements · {collections} collections · {deliveries} deliveries",
+        Object.fromEntries(Object.entries(t).map(([key, value]) => [key, decimal.format(value)]))));
+    put("hour-note", tr("Bright cells mark recorded movement. Readings cover the selected day, including events after the cursor."));
+    const bins = activity.hours.map((hour, i) => {
+        const stamp = activity.start_ms + i * HOUR;
+        const tip = tr("{clock} · {facts} records · {moves} movements", {clock: clockTime(stamp).slice(0, 5), ...hour});
+        const bin = button("", () => { stopPlay(); return seek(stamp).catch(report); }, tip);
+        bin.setAttribute("aria-label", tip);
+        bin.className = hour.moves ? "moved" : hour.facts ? "recorded" : "";
+        bin.disabled = stamp > activity.end_ms;
+        return bin;
+    });
+    $("hour-bins").replaceChildren(...bins);
+    markHour();
+}
+async function loadActivity() {
+    const at = Math.floor(app.time / DAY);
+    if (app.activity?.day === at) {
+        if (app.activityLanguage !== language || !$("hour-bins").childElementCount) {
+            app.activityLanguage = language;
+            renderActivity(app.activity);
+        }
+        return;
+    }
+    const version = ++app.activityVersion;
+    put("day-counts", tr("Reading recorded activity…"));
+    $("hour-bins").replaceChildren();
+    const result = await world("activity", {day: at});
+    if (version !== app.activityVersion || Math.floor(app.time / DAY) !== at) return;
+    app.activity = result;
+    app.activityLanguage = language;
+    renderActivity(result);
 }
 
 function updateState(state) {
@@ -362,6 +441,7 @@ function inspect(events) {
     toggle("individual-tab", !events);
 }
 async function selectAnt(id) {
+    stopPlay();
     const version = app.openVersion;
     const p = await world("ant", {...cut(), id});
     if (version !== app.openVersion) return;
@@ -390,6 +470,7 @@ function showEvent(e) {
         ...(e.mode ? [["Foraging mode", tr(e.mode)], ["Decision label", tr(e.reason)]] : []),
         ...(e.trail_deposited_units ? [["Deposited trail units", decimal.format(e.trail_deposited_units)]] : []), ...editList]));
     container.hidden = false;
+    container.dataset.event = e.id;
 }
 async function jumpEvent(id, ant = null) {
     stopPlay();
@@ -417,7 +498,10 @@ async function loadEvents(more) {
     if (!app.meta || app.compare) return;
     const request = ++app.eventListVersion;
     const low = Math.floor(app.time / DAY) * DAY;
-    const range = $("event-range").value === "all" ? {} : {since_ms: low, until_ms: Math.min(low + DAY - 1, app.meta.end_ms)};
+    const from = $("event-range").value;
+    const hour = Math.floor(app.time / HOUR) * HOUR;
+    const range = from === "all" ? {} : from === "hour" ? {since_ms: hour, until_ms: Math.min(hour + HOUR - 1, app.meta.end_ms)} :
+        {since_ms: low, until_ms: Math.min(low + DAY - 1, app.meta.end_ms)};
     const data = await world("events", {...range, after: more ? app.eventAfter : 0, group: $("filter").value, limit: 16,
         ...(app.follow && app.selected ? {ant: app.selected} : {})});
     if (request !== app.eventListVersion) return;
@@ -431,7 +515,10 @@ async function loadEvents(more) {
 function setSection(section) {
     const changed = app.section !== section;
     app.section = section;
-    if (changed) app.map = {zoom: 1, x: 0, y: 0};
+    if (changed) {
+        app.map = {zoom: 1, x: 0, y: 0};
+        app.location = null;
+    }
     toggle("surface-button", section === "surface");
     toggle("slice-button", section === "slice");
     $("plane-controls").hidden = section === "surface" || !app.meta?.settings.geometry;
@@ -522,6 +609,115 @@ function antTone(a) {
     return a.stage === "Adult" ? (a.caste === "Queen" ? colors.queen : colors[a.program] || colors.worker) :
         colors[a.stage.toLowerCase()] || colors.worker;
 }
+function stageKey(ant) {
+    if (ant.stage !== "Adult") return ant.stage.toLowerCase();
+    if (ant.caste === "Queen") return "queen";
+    return ant.caste === "Worker" ? "worker" : "adult";
+}
+function stageCounts(ants) {
+    const counts = new Map(mapStages.map(([key]) => [key, 0]));
+    for (const ant of ants) {
+        const key = stageKey(ant);
+        counts.set(key, (counts.get(key) || 0) + 1);
+    }
+    return counts;
+}
+function stageSummary(ants) {
+    const counts = stageCounts(ants);
+    return mapStages.filter(([key]) => counts.get(key)).map(([key, message]) =>
+        tr(message) + " " + decimal.format(counts.get(key))).join(" · ");
+}
+function markerShape(ctx, ant, x, y, selected) {
+    const tone = antTone(ant);
+    if (ant.stage === "Adult") {
+        if (ant.caste === "Queen") {
+            ctx.fillStyle = tone;
+            for (const [dx, dy, radius] of [[-4, 2, 4.7], [0, 0, 3.6], [4, -2, 3.0]]) {
+                circle(ctx, x + dx, y + dy, radius, tone, "#1c251d");
+            }
+        } else circle(ctx, x, y, 5, tone, "#1c251d");
+    } else {
+        ctx.beginPath();
+        ctx.ellipse(x, y, ant.stage === "Egg" ? 3.0 : 5, ant.stage === "Pupa" ? 2.8 : 2.2, -.65, 0, Math.PI * 2);
+        ctx.fillStyle = tone;
+        ctx.fill();
+        ctx.strokeStyle = "#1c251d";
+        ctx.stroke();
+    }
+    if (selected) {
+        ctx.strokeStyle = "#fffbd3";
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = "#fffbd3";
+        ctx.font = "11px monospace";
+        ctx.fillText("#" + ant.id, x + 13, y - 4);
+    }
+}
+function drawOccupants(ctx, visible, point) {
+    const markers = new Map();
+    for (const ant of visible) {
+        const [x, y] = point(ant.position_m);
+        // Only merge coincident projections. Membership retains original 3D coordinates.
+        const key = x + "," + y;
+        if (!markers.has(key)) markers.set(key, {x, y, ants: []});
+        markers.get(key).ants.push(ant);
+    }
+    app.hits = [];
+    for (const {x, y, ants} of markers.values()) {
+        if (ants.length === 1) {
+            markerShape(ctx, ants[0], x, y, ants[0].id === app.selected);
+            app.hits.push({id: ants[0].id, x, y, radius: 11, ants});
+            continue;
+        }
+        const selected = ants.some(a => a.id === app.selected);
+        circle(ctx, x, y, 12, "#152319", selected ? "#f8e9a1" : "#aab9a1");
+        const counts = stageCounts(ants);
+        let angle = -Math.PI / 2;
+        for (const [stage] of mapStages) {
+            if (!counts.get(stage)) continue;
+            const next = angle + counts.get(stage) / ants.length * Math.PI * 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 11, angle, next);
+            ctx.strokeStyle = colors[stage] || colors.worker;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            angle = next;
+        }
+        ctx.lineWidth = 1;
+        ctx.font = "bold 10px monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#f4efd7";
+        ctx.fillText(ants.length > 99 ? "99+" : String(ants.length), x, y + .5);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        app.hits.push({x, y, radius: 15, ants});
+    }
+}
+function renderLocation() {
+    $("location").hidden = !app.location;
+    if (!app.location) return;
+    const ants = app.location.all ? app.visible :
+        app.visible.filter(a => a.position_m[app.location.axes[0]] === app.location.at[0] &&
+            a.position_m[app.location.axes[1]] === app.location.at[1]);
+    put("location-title", tr(app.location.all ? "Individuals in view" : "Individuals at this marker"));
+    put("location-note", stageSummary(ants) || tr("No living individuals here at this time."));
+    const signature = JSON.stringify([language, app.selected, ants.map(a => [a.id, a.stage])]);
+    if ($("location-list").dataset.signature === signature) return;
+    $("location-list").dataset.signature = signature;
+    $("location-list").replaceChildren(...ants.map(a => {
+        const chip = button(tr(a.stage === "Adult" ? a.caste : a.stage) + " #" + a.id, () => selectAnt(a.id).catch(report));
+        chip.dataset.antId = a.id;
+        chip.setAttribute("aria-pressed", String(a.id === app.selected));
+        return chip;
+    }));
+}
+function showLocation(hit = null) {
+    const axes = app.section === "slice" && app.geometry?.slice ? app.geometry.slice.axes : [0, 2];
+    app.location = hit ? {axes, at: [hit.ants[0].position_m[axes[0]], hit.ants[0].position_m[axes[1]]]} : {all: true};
+    renderLocation();
+}
 function drawMap() {
     if (app.compare || !app.state) return;
     const canvas = canvasContext($("map"));
@@ -560,8 +756,9 @@ function drawMap() {
         }
         put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
             (app.geometry.cropped ? " · " + tr("Section cropped to first 480 quanta on each axis") : ""));
-        legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["larva", "Brood"],
-            ["worker", "Worker"], ["trace", "Recorded positions"],
+        legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["egg", "Eggs"],
+            ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["entrance", "Recent movement points"],
+            ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : []),
             ...(slice.unloaded_body_clear ? [["entrance", "Unloaded body fits here"]] : [])]);
     } else {
         const [lo, hi] = app.meta.bounds_m;
@@ -622,28 +819,36 @@ function drawMap() {
         put("space-caption", tr("Surface positions at this cut") + " · " +
             tr(openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
         legend("map-legend", [["entrance", "Opening / surface nest"], ["food", "Source"], ["worker", "Worker"],
-            ["trace", "Recorded positions"]]);
+            ["entrance", "Recent movement points"], ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : [])]);
     }
-    app.hits = [];
+    const motion = app.recentMotion;
+    const trail = (motion?.points || []).filter(move => fits(move.position_m));
+    for (const move of trail) circle(ctx, ...point(move.position_m), 1.8, "#93d4b07a");
     for (const move of app.path) {
         if (fits(move.position_m)) circle(ctx, ...point(move.position_m), 2, "#ad9ce18a");
     }
     const visible = state.ants.filter(a => fits(a.position_m));
-    for (const a of visible) {
-        const [x, y] = point(a.position_m);
-        const queen = a.caste === "Queen", selected = a.id === app.selected;
-        circle(ctx, x, y, queen ? 7 : a.stage === "Adult" ? 4.6 : 3.5, antTone(a), selected ? "#fffbd3" : "#1c251d");
-        if (selected) {
-            ctx.strokeStyle = "#fffbd3";
-            ctx.beginPath();
-            ctx.arc(x, y, 11, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.fillStyle = "#fffbd3";
-            ctx.font = "11px monospace";
-            ctx.fillText("#" + a.id, x + 13, y - 4);
-        }
-        app.hits.push({id: a.id, x, y});
+    app.visible = visible;
+    drawOccupants(ctx, visible, point);
+    const shared = app.hits.filter(hit => hit.ants.length > 1);
+    const largest = shared.reduce((best, item) => !best || item.ants.length > best.ants.length ? item : best, null);
+    app.visibleSummary = largest;
+    $("show-largest").hidden = !largest;
+    if (largest) put("show-largest", tr("At marker ({count})", {count: largest.ants.length}));
+    const name = underground ? "{count} in section" : "{count} on surface";
+    put("map-summary", tr(name, {count: visible.length}) + (visible.length ? " · " + stageSummary(visible) : ""));
+    const notes = [];
+    if (largest) notes.push(tr("Click a numbered marker to inspect individuals at that position."));
+    if (!visible.length && state.ants.length) notes.push(tr(underground ?
+        "No living individuals in this layer. Try another layer or the surface." :
+        "No living individuals on the surface at this time. Try the underground view."));
+    if (!underground && !visible.length && state.ants.length) {
+        notes.push(tr("{count} living outside this view.", {count: state.ants.length}));
     }
+    if (trail.length) notes.push(tr("{count} recorded movement points in this view over the last 5 simulated minutes.", {count: trail.length}));
+    if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
+    put("map-detail", notes.join(" "));
+    renderLocation();
     if (app.selectedFact && fits(app.selectedFact.position_m)) {
         const [x, y] = point(app.selectedFact.position_m);
         ctx.strokeStyle = "#ffe1a3";
@@ -652,8 +857,7 @@ function drawMap() {
     scaleMark(ctx, width, height, p, orientation);
     ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
     ctx.fillStyle = "#a9b6a7";
-    ctx.fillText(tr(underground ? "{count} in section" : "{count} on surface", {count: visible.length}) +
-        " · " + tr("{count} living", {count: state.ants.length}), 13, height - 13);
+    ctx.fillText(tr("{count} living", {count: state.ants.length}), 13, height - 13);
 }
 
 function graph(id, tracks, end, stamp, legendId = null) {
@@ -811,6 +1015,7 @@ async function updateComparison() {
 }
 
 function stopPlay() {
+    ++app.playVersion;
     if (app.playback) clearInterval(app.playback);
     app.playback = null;
     for (const id of ["play", "compare-play"]) {
@@ -818,27 +1023,68 @@ function stopPlay() {
         $(id).setAttribute("aria-pressed", "false");
     }
 }
+function replayMode() {
+    return $("replay-mode").value === "overview" ? "outcomes" : $("replay-mode").value;
+}
+function replaySettings() {
+    const showSpeed = app.compare || $("replay-mode").value === "overview";
+    $("speed").hidden = !showSpeed;
+    put("replay-note", tr(showSpeed ? "Overview skips ahead in simulated time." :
+        replayMode() === "movement" ? "Each recorded position is shown in commit order." :
+            "Steps through key outcomes and movements. See Events for all records."));
+}
+async function stepEvent(direction, generation = null) {
+    const mode = replayMode();
+    const version = app.seekVersion, open = app.openVersion;
+    const e = await world("adjacent", {...cut(), direction, mode, ant: app.follow ? app.selected : null});
+    if (version !== app.seekVersion || open !== app.openVersion || (generation !== null && generation !== app.playVersion)) return false;
+    if (!e) {
+        if (generation === null) show(tr("No matching event in that direction."));
+        return false;
+    }
+    show();
+    if (e.actor && ["Moved", "BroodMoved", "AntBorn", "StageChanged", "SoilExcavated", "FoodCollected", "FoodDelivered"].includes(e.kind)) {
+        preferView(e.position_m);
+    }
+    await seek(e.time_ms, e);
+    if (app.selectedFact === e) {
+        if (!$("event-panel").hidden) showEvent(e);
+    }
+    return true;
+}
 function togglePlay() {
     if (!app.meta) return;
     if (app.playback) { stopPlay(); return; }
     const end = app.compare && app.reference ? Math.max(app.meta.end_ms, app.reference.end_ms) : app.meta.end_ms;
-    if (app.time >= end) app.time = 0;
+    const inRealOrder = !app.compare && $("replay-mode").value !== "overview";
+    const generation = ++app.playVersion;
+    if (app.time >= end) {
+        app.time = 0;
+        app.selectedFact = null;
+        ++app.seekVersion;
+    }
     for (const id of ["play", "compare-play"]) {
         put(id, tr("Ⅱ Pause"));
         $(id).setAttribute("aria-pressed", "true");
     }
     let busy = false, previous = performance.now();
     app.playback = setInterval(async () => {
-        if (busy) return;
+        if (busy || generation !== app.playVersion) return;
         busy = true;
         const now = performance.now();
         const next = app.time + Number($("speed").value) * DAY * (now - previous) / 1000;
         previous = now;
-        try { await seek(next); }
+        try {
+            if (inRealOrder) {
+                if (!await stepEvent("next", generation) && generation === app.playVersion) stopPlay();
+            } else {
+                await seek(next);
+                if (app.time >= end && generation === app.playVersion) stopPlay();
+            }
+        }
         catch (err) { stopPlay(); report(err); }
         finally { busy = false; }
-        if (app.time >= end) stopPlay();
-    }, 135);
+    }, inRealOrder ? 220 : 135);
 }
 
 function bind() {
@@ -877,19 +1123,29 @@ function bind() {
         setSection("slice");
         drawMap();
     });
-    change("axis", () => { app.layer = null; return seek(app.time, app.selectedFact); });
+    change("axis", () => { app.location = null; app.layer = null; return seek(app.time, app.selectedFact); });
     change("clearance", () => seek(app.time, app.selectedFact));
-    $("layer").addEventListener("input", safe(() => { app.layer = Number($("layer").value); return seek(app.time, app.selectedFact); }));
+    $("layer").addEventListener("input", safe(() => { app.location = null; app.layer = Number($("layer").value); return seek(app.time, app.selectedFact); }));
     click("back", () => { stopPlay(); return seek(app.time - DAY); });
     click("next", () => { stopPlay(); return seek(app.time + DAY); });
     click("play", togglePlay);
     click("compare-play", togglePlay);
+    change("replay-mode", () => { stopPlay(); replaySettings(); });
+    click("previous-event", () => { stopPlay(); return stepEvent("previous"); });
+    click("next-event", () => { stopPlay(); return stepEvent("next"); });
+    $("day-time").addEventListener("input", safe(() => {
+        stopPlay();
+        return seek(Math.floor(app.time / DAY) * DAY + Number($("day-time").value));
+    }));
     for (const id of ["time", "compare-time"]) $(id).addEventListener("input", safe(() => { stopPlay(); return seek(Number($(id).value)); }));
     change("chart-series", dashboard);
     const zoom = factor => { app.map.zoom = Math.max(.25, Math.min(64, app.map.zoom * factor)); drawMap(); };
     click("zoom-in", () => zoom(1.25));
     click("zoom-out", () => zoom(.8));
     click("reset-map", () => { app.map = {zoom: 1, x: 0, y: 0}; drawMap(); });
+    click("show-occupants", () => showLocation());
+    click("show-largest", () => { if (app.visibleSummary) { stopPlay(); showLocation(app.visibleSummary); } });
+    click("close-location", () => { app.location = null; renderLocation(); });
     const map = $("map");
     map.addEventListener("wheel", e => { e.preventDefault(); zoom(e.deltaY > 0 ? .9 : 1.12); }, {passive: false});
     map.addEventListener("pointerdown", e => {
@@ -910,8 +1166,11 @@ function bind() {
         if (!d || d.moved) return;
         const rect = map.getBoundingClientRect();
         const closest = app.hits.map(hit => ({...hit, distance: Math.hypot(hit.x - (e.clientX - rect.left), hit.y - (e.clientY - rect.top))}))
-            .filter(hit => hit.distance < 12).sort((a, b) => a.distance - b.distance)[0];
-        if (closest) return selectAnt(closest.id);
+            .filter(hit => hit.distance < hit.radius).sort((a, b) => a.distance - b.distance)[0];
+        if (closest?.ants.length > 1) {
+            stopPlay();
+            showLocation(closest);
+        } else if (closest) return selectAnt(closest.id);
     }));
     map.addEventListener("pointercancel", () => { app.drag = null; });
     new ResizeObserver(draw).observe(document.querySelector("main"));
