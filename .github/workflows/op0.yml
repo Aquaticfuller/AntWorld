@@ -74,3 +74,17 @@ jobs:
           $status = $LASTEXITCODE
           Get-Content -Encoding utf8 "$env:RUNNER_TEMP\op0-terminal.txt"
           if ($status -ne 0 -or -not (Select-String -SimpleMatch "45 workers" "$env:RUNNER_TEMP\op0-terminal.txt")) { exit 1 }
+      - name: Open MicroWorld from the Windows launcher
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $inputPath = Join-Path $env:RUNNER_TEMP 'm0-input.txt'
+          $outputPath = Join-Path $env:RUNNER_TEMP 'm0-terminal.txt'
+          @('1', 'd 90', 'a 4', 'q') | Set-Content -Encoding ascii $inputPath
+          $process = Start-Process (Get-Command pwsh).Source `
+            -ArgumentList '-NoProfile -File tools/start_op0.ps1 -MicroWorld -Terminal -Language en' `
+            -RedirectStandardInput $inputPath -RedirectStandardOutput $outputPath `
+            -WindowStyle Hidden -PassThru -Wait
+          Get-Content -Encoding utf8 $outputPath
+          if ($process.ExitCode -ne 0 -or -not (Select-String -SimpleMatch '15 workers' $outputPath) `
+            -or -not (Select-String -SimpleMatch 'Tracking #4' $outputPath)) { exit 1 }

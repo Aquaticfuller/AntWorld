@@ -12,20 +12,22 @@ param(
 
 $ErrorActionPreference = "Stop"
 if (-not $Python) {
-    foreach ($candidate in @("py", "python")) {
-        if (Get-Command $candidate -ErrorAction SilentlyContinue) {
-            & $candidate -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>$null
+    foreach ($candidate in (Get-Command py, python -All -CommandType Application -ErrorAction SilentlyContinue)) {
+        try {
+            & $candidate.Source -B -c 'import sys; sys.exit(sys.version_info < (3, 11))' 2>$null
             if ($LASTEXITCODE -eq 0) {
-                $Python = $candidate
+                $Python = $candidate.Source
                 break
             }
+        } catch {
+            # Ignore unavailable Windows app execution aliases.
         }
     }
 }
 if (-not $Python) {
     throw "Python 3.11 or later is required. Install Python, reopen PowerShell and run this script again."
 }
-$options = @("-X", "utf8", "-m", "op0")
+$options = @("-B", "-X", "utf8", "-m", "op0")
 if ($MicroWorld) {
     $options += "--micro"
     if (-not $Cache) { $Cache = Join-Path $PSScriptRoot "../out/m0-op0-cache" }
