@@ -1,0 +1,9 @@
+{
+  "shell_paint_ms": 72476,
+  "world_ready_ms_after_navigation": 73663.20000004768,
+  "first_browser_view_ms": 73741.15,
+  "status": "PASS",
+  "chromium": "Chrome/157.0.8103.78",
+  "date_utc": "2026-11-14T22:25:08.829Z",
+  "archive_sha256": "dd37bd984f561dab82235f52d5afe45ed9639968d51c08b3cf3622f54145d7f2"
+}

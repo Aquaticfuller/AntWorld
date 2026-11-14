@@ -1,0 +1,13 @@
+{
+  "browse": {
+    "scan_ms": 496.5,
+    "index_ms": 69.17,
+    "cache_bytes": 9334784,
+    "total_import_ms": 602.65
+  },
+  "catalogue_ms": 131.82720000622794,
+  "first_open_ms": 602.6528999791481,
+  "re_open_ms": 0.4836000152863562,
+  "seek_day_45_ms": 28.177700005471706,
+  "archive_sha256": "f413dbe3608ed40f45327e37e42d02333caf30c285ba853a5efa1dea9ae5463a"
+}

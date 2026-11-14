@@ -2,11 +2,9 @@
 #include "care_internal.hpp"
 
 namespace antworld::detail {
-// ENGINEERING_FIXTURE. A floor layer reserves enough room for later growth.
-// Stage widths are display/shape proxies; competition uses the larger envelope.
+// ENGINEERING_FIXTURE. A floor layer reserves a common envelope for growth.
 inline constexpr double brood_pitch_m=0.00075;
 inline constexpr double brood_adjacency_m=0.0011;
-inline constexpr std::array<double,3> brood_width_m{0.00045,0.00060,0.00070};
 
 inline std::int32_t brood_half(const GeometryConfig& g) {
     return std::max(g.body_half_q,static_cast<std::int32_t>(std::ceil(brood_pitch_m/(2*g.quantum_m))));

@@ -1,0 +1,12 @@
+{
+  "binary_sha256": "9571fc5bbf596663a942a72a82029d580ccdb3a95e10e3be3b1cd32f57469383",
+  "cases": [
+    "borisovka-shaft-1-slots",
+    "st_petersburg-dogleg-1-slots"
+  ],
+  "cpp_tree": "dfa2c61d41a9484796012705a77b07b1c7dddf68",
+  "dirty": "M cpp/CMakeLists.txt\n M cpp/apps/antworld_s6_4_wp6b.cpp\n M cpp/apps/wp6b_fixture.hpp\n M cpp/include/antworld/core/ecological_closure.hpp\n M cpp/include/antworld/core/world_runtime.hpp\n M cpp/src/care.cpp\n M cpp/src/checkpoint.cpp\n M cpp/src/checkpoint_ecological.hpp\n M cpp/src/checkpoint_s3.hpp\n M cpp/src/checkpoint_s4.hpp\n M cpp/src/ecological_closure.cpp\n M cpp/src/ecological_internal.hpp\n M cpp/src/ecology.cpp\n M cpp/src/geometry.cpp\n M cpp/src/long_term.cpp\n M cpp/src/world_runtime.cpp\n?? cpp/src/brood_space.cpp\n?? cpp/src/brood_space.hpp\n?? tools/run_m0.py",
+  "mode": "durable",
+  "protocol_sha256": "ff1f675ca7a1bdb47907873c7834752cc111ccc36479034e58fd939ce6256415",
+  "source": "ef9e5f752f0de68f4106f4b81277313c527297fe"
+}

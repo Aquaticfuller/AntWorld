@@ -16,6 +16,7 @@ English and Simplified Chinese are presentation preferences. The local message c
 | `world/{world}/motion` | `event` or `time_ms`. Recent committed movement points, with `window_ms` (up to one hour) and `limit` (up to 200), in commit order. A truncation flag identifies omitted earlier points in the requested window |
 | `world/{world}/events` | `after`, `since_ms`, `until_ms`, `group`, `ant`, `cut_event` and `limit` (1–200). Returns `next_after` when more records match |
 | `world/{world}/ant` | `id`, `time_ms` or `event`. Identity, stage, death if recorded by the cut, lifetime milestones and recent committed facts |
+| `world/{world}/individual-window` | `id`, `begin_ms`, `end_ms` (at most seven days). Alive time, program residence, paid-work intervals, committed distance, matched movement duration, transfer totals and physiology cuts |
 | `world/{world}/path` | `id`, `time_ms` or `event`, `limit` (1–200). Returns bounded lists of actual position facts |
 | `world/{world}/series` | Population and resource series at daily or comparable bounded cuts. Recorded queen physiology is separate |
 | `world/{world}/geometry` | `time_ms` or `event`, `axis` (x/y/z), `layer_q`, optional `window=u0,v0,u1,v1` and `clearance=1` |
@@ -29,6 +30,7 @@ Time is integer simulation milliseconds. A clock query includes all facts commit
 - The map groups coincident projected positions at the current zoom without moving or merging source individuals. The group can be opened to inspect its individual IDs, stages and states.
 - `CUT_SNAPSHOT` is a published physiology sample with its own time and cursor. The newest available sample can precede the requested time by hours or days. Positions and physiology are never interpolated.
 - `Not recorded` appears for absent fields and histories. Recorded zeroes stay zero. A first-census feeding record requires a positive transferred mass and does not establish subsequent absorption.
+- The individual window uses `[begin_ms,end_ms)` for facts and clips durations to biological life within the window. Motion duration requires a matching paid-work boundary. Physiology samples retain their independent observation times and may include a sample at the ending boundary. Gaps and program residence are not inferred sleep or physical inactivity.
 
 ### Import and integrity
 
@@ -40,7 +42,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 ### Limits
 
-- OP0 replays archives with no live advancement or command API. Supported checkpoint families start at schema 8 and extend through 22. Local tests cover legacy physics 9, physics 24–26 and SQLite v1/v2. Unknown encodings fail explicitly.
+- OP0 replays archives with no live advancement or command API. Supported checkpoint families start at schema 8 and extend through 23. The new MicroWorld physics 27 and its cue-suppression comparison 28 retain the same canonical fact layout. Unknown encodings fail explicitly.
 - Event pages are bounded and share a 12-block cache. Validation streams facts. It loads native frames and sampled cuts during indexing, with a 768 MiB frame limit, 8 GiB member limit and 64 MiB limit per sample CSV. Temporary disk space is needed for a SQLite copy and its index.
-- Space is a set of axis-aligned slices of the quantized 3D material. OP0 does not reconstruct unknown trajectories, free-form chambers or an animated mesh. Large slices crop to the first 480 quanta along each displayed axis. The API can request a smaller window elsewhere. Roof openings show actual void at the top material. Surface-only nest markers use recorded Core locations.
+- Space uses axis-aligned slices of quantized 3D material. MicroWorld centers the default underground cut and roof inset on the nest. Large legacy cuts may show a bounded corner of the solid. The full surface grid remains visible. API callers can request another bounded window. OP0 does not reconstruct unknown trajectories or animated meshes.
 - Cross-world identities remain separate. Similar settings do not establish equality of all input fields. Physical and physiological observations describe a particular simulated world.

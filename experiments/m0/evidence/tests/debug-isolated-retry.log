@@ -1,0 +1,14 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/m0-debug
+Test project D:/Codex_workspace/AntWorld/build/m0-debug
+    Start 38: FND_IF_BOUNDARY_COLONY
+1/2 Test #38: FND_IF_BOUNDARY_COLONY ...........   Passed  129.26 sec
+    Start 71: S6_4_WP2_b01
+2/2 Test #71: S6_4_WP2_b01 .....................   Passed   44.79 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Label Time Summary:
+FND    = 129.26 sec*proc (1 test)
+WP2    =  44.79 sec*proc (1 test)
+
+Total Test time (real) = 174.18 sec

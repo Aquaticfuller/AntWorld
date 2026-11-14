@@ -6,7 +6,7 @@ import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {setTimeout as sleep} from "node:timers/promises";
 
-const [browser, host = "http://127.0.0.1:8765", output = "out/op0-browser"] = process.argv.slice(2);
+const [browser, host = "http://127.0.0.1:8765", output = "out/op0-browser", mode] = process.argv.slice(2);
 if (!browser) throw Error("Usage: node op0/tests/browser_smoke.mjs <chromium> [local viewer URL] [output]");
 const cache = await mkdtemp(join(tmpdir(), "antworld-op0-browser-"));
 await mkdir(output, {recursive: true});
@@ -87,6 +87,68 @@ async function timed(name, execute) {
     result[name] = +(clock() - start).toFixed(2);
 }
 
+async function microWorld() {
+    assert.equal(await evaluate("$('title').textContent"),"MicroWorld · shaft");
+    assert.equal(await evaluate("app.meta.settings.physics"),27);
+    assert.equal(await evaluate("app.state.ants.length"),1);
+    assert.equal(await evaluate("$('replay-mode').value"),"scenes");
+    await click("#play");
+    await wait(() => evaluate("app.selectedFact?.kind === 'AntBorn' && app.state.cursor === app.selectedFact.id"),"Overview pauses on the first real egg");
+    await click("#play");
+    await click("#action-replays button:nth-child(1)");
+    await wait(() => evaluate("app.selectedFact?.kind === 'AntBorn' && app.playback === null"),"Paid hatch-free egg placement replay");
+    await evaluate("seek(5 * DAY - 1)");
+    assert.ok(await evaluate("app.visible.filter(a => a.stage === 'Egg').length > 2 && new Set(app.visible.map(a => a.position_m.join(','))).size === app.visible.length"));
+    await screenshot("m0-egg-clutch");
+    await click("#action-replays button:nth-child(2)");
+    await wait(() => evaluate("app.selectedFact?.action?.act === 'Arrange brood' && app.selectedFact.action.phase === 'Completed' && app.playback === null"),"Timed brood arrangement");
+    await screenshot("m0-arrangement");
+    await select("locale","zh-CN");
+    const chinese = JSON.parse(await readFile(new URL("../locales/zh-CN.json", import.meta.url), "utf-8"));
+    const arrangementLabel = chinese["Watch brood arrangement"];
+    assert.ok(arrangementLabel && arrangementLabel !== "Watch brood arrangement");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('action-replays').textContent.includes(" +
+        JSON.stringify(arrangementLabel) + ")"),"Chinese MicroWorld actions");
+    await select("locale","en");
+    await wait(() => evaluate("document.documentElement.lang === 'en' && $('action-replays').textContent.includes('Watch brood arrangement')"),"English MicroWorld actions");
+    await click("#milestones button[title^='First larval death']");
+    await wait(() => evaluate("app.selectedFact?.kind === 'AntDied' && app.state.cursor === app.selectedFact.id && $('event-detail').dataset.event === app.selectedFact.id"),"Real larval death");
+    await click("#individual-tab");
+    assert.match(await evaluate("$('individual-content').textContent"),/Energy depleted|Dehydration/);
+    await screenshot("m0-larval-outcome");
+    await click("#watch-delivery");
+    await wait(() => evaluate("app.selectedFact?.kind === 'FoodCollected' && app.section === 'surface'"),"First worker reaches a food source");
+    await screenshot("m0-surface-food");
+    await wait(() => evaluate("app.selectedFact?.kind === 'FoodDelivered' && app.playback === null && app.section === 'slice'"),"First worker brings food underground");
+    await click("#individual-tab");
+    await click("#individual-content .individual-window summary");
+    await click("#individual-content .individual-window button:nth-child(2)");
+    await wait(() => evaluate("$('individual-content').textContent.includes('Paid work') && !!$('ant-energy_nj')"),"Individual time budget and samples");
+    await screenshot("m0-worker-window");
+    await click("#milestones button[title^='First excavation']");
+    await wait(() => evaluate("app.selectedFact?.kind === 'SoilExcavated' && $('event-detail').textContent.includes('Material edited')"),"Actual soil edit with parcel");
+    await screenshot("m0-excavation");
+    await click("#compare-tab");
+    const baseline = await evaluate("app.catalog.find(x => x.title === 'MicroWorld · reference placement').key");
+    await select("reference",baseline);
+    await wait(() => evaluate("$('compare-cards').children.length === 2 && $('compare-config').textContent.includes('brood_space')"),"Matched geometry across two physics versions");
+    await screenshot("m0-placement-comparison");
+    await click("#observe-tab");
+    const sealed = await evaluate("app.catalog.find(x => x.title === 'MicroWorld · sealed entrance').key");
+    await select("archive",sealed);
+    await wait(() => evaluate("$('title').textContent === 'MicroWorld · sealed entrance' && !!app.state"),"Sealed entrance control");
+    await click("#days button[title='Jump to day 90']");
+    await wait(() => evaluate("app.state.time_ms === 90 * DAY"),"Sealed negative at day 90");
+    assert.equal(await evaluate("app.state.cumulative.deliveries || 0"),0);
+    assert.deepEqual(exceptions,[]);
+    result.status="PASS";
+    result.chromium=(await send("Browser.getVersion")).product;
+    result.date_utc=new Date().toISOString();
+    result.archive_sha256=await evaluate("app.meta.archive_sha256");
+    await writeFile(join(output,"m0-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
+    console.log(JSON.stringify(result,null,2));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -116,6 +178,9 @@ try {
         result.shell_paint_ms = await evaluate("performance.getEntriesByType('paint').find(x => x.name === 'first-contentful-paint')?.startTime ?? null");
         result.world_ready_ms_after_navigation = await evaluate("performance.getEntriesByName('op0-world-ready')[0].startTime");
     });
+    if (mode === "micro") {
+        await microWorld();
+    } else {
     assert.equal(await evaluate("$('title').textContent"), "Founding colony");
     assert.equal(await evaluate("app.meta.facts"), 668720);
     assert.equal(await evaluate("app.state.time_ms"), 0);
@@ -277,7 +342,12 @@ try {
     result.status = "PASS";
     await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
     console.log(JSON.stringify(result, null, 2));
+    }
 } finally {
+    if (socket?.readyState===WebSocket.OPEN) {
+        socket.send(JSON.stringify({id:++sequence,method:"Browser.close"}));
+        await Promise.race([exited,sleep(1800)]);
+    }
     socket?.close();
     processHandle.kill();
     await Promise.race([exited, sleep(3000)]);

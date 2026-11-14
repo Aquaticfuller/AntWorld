@@ -1,0 +1,1320 @@
+{
+  "borisovka-shaft-1-slots": [
+    {
+      "begin_ms": 3922560000,
+      "completed_actions": {
+        "Collect food": 1,
+        "Deliver food": 1,
+        "Inactive": 1,
+        "Ingest food": 10,
+        "Return to care shelter": 2,
+        "Walk": 30
+      },
+      "completed_distance_m": 0.11106066017177986,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 4008960000,
+      "event_counts": {
+        "Committed moves": 32,
+        "Completed actions": 45,
+        "FoodCollected": 1,
+        "FoodDelivered": 1
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "4",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "paid_work_ms": 93116,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "8898",
+          "dissipated_nj": 1021933116,
+          "energy_nj": 682066884,
+          "hydration_ug": 636,
+          "lipid_ug": 10,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3974400000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Forage": 93041,
+        "Not recorded": 1,
+        "Nurse": 114,
+        "Paused": 43106844,
+        "Rest": 43200000
+      },
+      "timed_move_ms": 33116,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 3922560000,
+      "completed_actions": {
+        "Clean brood": 1,
+        "Collect food": 2,
+        "Deliver food": 2,
+        "Excavate": 1,
+        "Feed brood": 27,
+        "Handle soil": 1,
+        "Inactive": 1,
+        "Ingest food": 42,
+        "Inspect brood": 2,
+        "Return to care shelter": 2,
+        "Transfer nutrition": 5,
+        "Walk": 58
+      },
+      "completed_distance_m": 0.18206066017177985,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4268160000,
+      "event_counts": {
+        "Committed moves": 60,
+        "Completed actions": 144,
+        "FoodCollected": 2,
+        "FoodDelivered": 2,
+        "Nutrition sent": 32,
+        "SoilDropped": 1,
+        "SoilExcavated": 1
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "4",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        307,
+        138,
+        2227,
+        0
+      ],
+      "paid_work_ms": 1985420,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "8898",
+          "dissipated_nj": 1021933116,
+          "energy_nj": 682066884,
+          "hydration_ug": 636,
+          "lipid_ug": 10,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3974400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "9452",
+          "dissipated_nj": 1108333116,
+          "energy_nj": 859666884,
+          "hydration_ug": 879,
+          "lipid_ug": 10,
+          "lost_water_ug": 176,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4060800000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "9933",
+          "dissipated_nj": 1194737116,
+          "energy_nj": 1413262884,
+          "hydration_ug": 1275,
+          "lipid_ug": 10,
+          "lost_water_ug": 200,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4147200000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "10817",
+          "dissipated_nj": 1283041420,
+          "energy_nj": 1324958580,
+          "hydration_ug": 1251,
+          "lipid_ug": 10,
+          "lost_water_ug": 224,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4233600000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Excavate": 2045301,
+        "Forage": 174074,
+        "Not recorded": 1,
+        "Nurse": 127386749,
+        "Paused": 151193875,
+        "Rest": 64800000
+      },
+      "timed_move_ms": 54420,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4181760000,
+      "completed_actions": {
+        "Inactive": 3,
+        "Ingest food": 8,
+        "Return to care shelter": 2
+      },
+      "completed_distance_m": 0.0015,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 4268160000,
+      "event_counts": {
+        "Committed moves": 2,
+        "Completed actions": 13,
+        "Nutrition received": 2
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "16",
+      "nutrition_in_ug": [
+        24,
+        0,
+        176,
+        0
+      ],
+      "nutrition_out_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "paid_work_ms": 150,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "10817",
+          "dissipated_nj": 1021840150,
+          "energy_nj": 698159850,
+          "hydration_ug": 634,
+          "lipid_ug": 10,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4233600000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Not recorded": 1,
+        "Nurse": 156,
+        "Paused": 43199843,
+        "Rest": 43200000
+      },
+      "timed_move_ms": 150,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4181760000,
+      "completed_actions": {
+        "Collect food": 1,
+        "Deliver food": 1,
+        "Excavate": 2,
+        "Feed brood": 16,
+        "Handle soil": 2,
+        "Inactive": 7,
+        "Ingest food": 46,
+        "Return to care shelter": 2,
+        "Transfer nutrition": 13,
+        "Walk": 220
+      },
+      "completed_distance_m": 1.7075000000000002,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4527360000,
+      "event_counts": {
+        "Committed moves": 222,
+        "Completed actions": 310,
+        "FoodCollected": 1,
+        "FoodDelivered": 1,
+        "Interrupted actions": 6,
+        "Nutrition received": 2,
+        "Nutrition sent": 29,
+        "SoilDropped": 2,
+        "SoilExcavated": 2
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "16",
+      "nutrition_in_ug": [
+        24,
+        0,
+        176,
+        0
+      ],
+      "nutrition_out_ug": [
+        354,
+        91,
+        1217,
+        0
+      ],
+      "paid_work_ms": 4027040,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "10817",
+          "dissipated_nj": 1021840150,
+          "energy_nj": 698159850,
+          "hydration_ug": 634,
+          "lipid_ug": 10,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4233600000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "11833",
+          "dissipated_nj": 1110154764,
+          "energy_nj": 1489845236,
+          "hydration_ug": 1300,
+          "lipid_ug": 10,
+          "lost_water_ug": 176,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4320000000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "13993",
+          "dissipated_nj": 1196864840,
+          "energy_nj": 1835135160,
+          "hydration_ug": 1822,
+          "lipid_ug": 10,
+          "lost_water_ug": 200,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4406400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "15002",
+          "dissipated_nj": 1283264840,
+          "energy_nj": 1956735160,
+          "hydration_ug": 1889,
+          "lipid_ug": 10,
+          "lost_water_ug": 224,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4492800000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Excavate": 4571804,
+        "Forage": 415300,
+        "Not recorded": 1,
+        "Nurse": 146213053,
+        "Paused": 86399842,
+        "Rest": 108000000
+      },
+      "timed_move_ms": 357040,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4354560000,
+      "completed_actions": {
+        "Inactive": 1,
+        "Ingest food": 13,
+        "Return to care shelter": 2
+      },
+      "completed_distance_m": 0.0010606601717798214,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 4440960000,
+      "event_counts": {
+        "Committed moves": 2,
+        "Completed actions": 16,
+        "Interrupted actions": 3,
+        "Nutrition received": 2
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "17",
+      "nutrition_in_ug": [
+        32,
+        0,
+        162,
+        0
+      ],
+      "nutrition_out_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "paid_work_ms": 108,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "13993",
+          "dissipated_nj": 1021840108,
+          "energy_nj": 1258159892,
+          "hydration_ug": 778,
+          "lipid_ug": 16,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4406400000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Not recorded": 1,
+        "Nurse": 113,
+        "Paused": 21599887,
+        "Rest": 64799999
+      },
+      "timed_move_ms": 108,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4354560000,
+      "completed_actions": {
+        "Collect food": 1,
+        "Deliver food": 1,
+        "Feed brood": 10,
+        "Inactive": 7,
+        "Ingest food": 48,
+        "Inspect brood": 3,
+        "Return to care shelter": 2,
+        "Transfer nutrition": 11,
+        "Walk": 34
+      },
+      "completed_distance_m": 0.15106066017177966,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4700160000,
+      "event_counts": {
+        "Committed moves": 36,
+        "Completed actions": 117,
+        "FoodCollected": 1,
+        "FoodDelivered": 1,
+        "Interrupted actions": 10,
+        "Nutrition received": 2,
+        "Nutrition sent": 21
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "17",
+      "nutrition_in_ug": [
+        32,
+        0,
+        162,
+        0
+      ],
+      "nutrition_out_ug": [
+        167,
+        19,
+        1163,
+        0
+      ],
+      "paid_work_ms": 111112,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "13993",
+          "dissipated_nj": 1021840108,
+          "energy_nj": 1258159892,
+          "hydration_ug": 778,
+          "lipid_ug": 16,
+          "lost_water_ug": 152,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4406400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "15002",
+          "dissipated_nj": 1108242108,
+          "energy_nj": 1931757892,
+          "hydration_ug": 890,
+          "lipid_ug": 16,
+          "lost_water_ug": 176,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4492800000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "16950",
+          "dissipated_nj": 1194749112,
+          "energy_nj": 1997250888,
+          "hydration_ug": 1455,
+          "lipid_ug": 16,
+          "lost_water_ug": 200,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4579200000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "20140",
+          "dissipated_nj": 1281151112,
+          "energy_nj": 1990848888,
+          "hydration_ug": 2000,
+          "lipid_ug": 16,
+          "lost_water_ug": 224,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4665600000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Forage": 105041,
+        "Not recorded": 1,
+        "Nurse": 129606124,
+        "Paused": 129488834,
+        "Rest": 86400000
+      },
+      "timed_move_ms": 45112,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    }
+  ],
+  "st_petersburg-dogleg-1-slots": [
+    {
+      "begin_ms": 3814560000,
+      "completed_actions": {
+        "Collect food": 1,
+        "Deliver food": 1,
+        "Inactive": 6,
+        "Ingest food": 10,
+        "Return to care shelter": 2,
+        "Walk": 86
+      },
+      "completed_distance_m": 0.5209983972022486,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 3900960000,
+      "event_counts": {
+        "Committed moves": 88,
+        "Completed actions": 106,
+        "FoodCollected": 1,
+        "FoodDelivered": 1
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "7",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "paid_work_ms": 196034,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "8994",
+          "dissipated_nj": 1020136034,
+          "energy_nj": 683863966,
+          "hydration_ug": 632,
+          "lipid_ug": 10,
+          "lost_water_ug": 156,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3888000000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Forage": 195977,
+        "Not recorded": 1,
+        "Nurse": 151,
+        "Paused": 21599849,
+        "Rest": 64604022
+      },
+      "timed_move_ms": 136034,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 3814560000,
+      "completed_actions": {
+        "Collect food": 2,
+        "Deliver food": 2,
+        "Excavate": 3,
+        "Feed brood": 23,
+        "Handle soil": 3,
+        "Inactive": 7,
+        "Ingest food": 38,
+        "Inspect brood": 3,
+        "Return to care shelter": 2,
+        "Transfer nutrition": 4,
+        "Walk": 280
+      },
+      "completed_distance_m": 1.6470797156593207,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4160160000,
+      "event_counts": {
+        "Committed moves": 282,
+        "Completed actions": 367,
+        "FoodCollected": 2,
+        "FoodDelivered": 2,
+        "Interrupted actions": 7,
+        "Nutrition sent": 27,
+        "SoilDropped": 3,
+        "SoilExcavated": 3
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "7",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        302,
+        86,
+        1554,
+        0
+      ],
+      "paid_work_ms": 5918986,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "8994",
+          "dissipated_nj": 1020136034,
+          "energy_nj": 683863966,
+          "hydration_ug": 632,
+          "lipid_ug": 10,
+          "lost_water_ug": 156,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3888000000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "12629",
+          "dissipated_nj": 1108549314,
+          "energy_nj": 683450686,
+          "hydration_ug": 697,
+          "lipid_ug": 10,
+          "lost_water_ug": 180,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3974400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "14310",
+          "dissipated_nj": 1195059186,
+          "energy_nj": 988940814,
+          "hydration_ug": 1024,
+          "lipid_ug": 10,
+          "lost_water_ug": 204,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4060800000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "15252",
+          "dissipated_nj": 1285085986,
+          "energy_nj": 978914014,
+          "hydration_ug": 1000,
+          "lipid_ug": 10,
+          "lost_water_ug": 228,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4147200000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Excavate": 6617103,
+        "Forage": 496013,
+        "Not recorded": 1,
+        "Nurse": 122493044,
+        "Paused": 107993839,
+        "Rest": 108000000
+      },
+      "timed_move_ms": 377986,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 3843360000,
+      "completed_actions": {
+        "Feed brood": 5,
+        "Inactive": 1,
+        "Ingest food": 12,
+        "Return to care shelter": 2
+      },
+      "completed_distance_m": 0.0016770509831248424,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 3929760000,
+      "event_counts": {
+        "Committed moves": 2,
+        "Completed actions": 20,
+        "Nutrition sent": 5
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "11",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        71,
+        13,
+        316,
+        0
+      ],
+      "paid_work_ms": 168,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            44,
+            0,
+            356,
+            0
+          ],
+          "cursor": "8994",
+          "dissipated_nj": 991140168,
+          "energy_nj": 272859832,
+          "hydration_ug": 195,
+          "lipid_ug": 10,
+          "lost_water_ug": 148,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3888000000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Not recorded": 1,
+        "Nurse": 21600172,
+        "Paused": 21599827,
+        "Rest": 43200000
+      },
+      "timed_move_ms": 168,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 3843360000,
+      "completed_actions": {
+        "Collect food": 1,
+        "Deliver food": 1,
+        "Feed brood": 36,
+        "Inactive": 6,
+        "Ingest food": 57,
+        "Inspect brood": 2,
+        "Return to care shelter": 2,
+        "Walk": 310
+      },
+      "completed_distance_m": 2.0867583694402,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4188960000,
+      "event_counts": {
+        "Committed moves": 312,
+        "Completed actions": 415,
+        "FoodCollected": 1,
+        "FoodDelivered": 1,
+        "Interrupted actions": 7,
+        "Nutrition sent": 36
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "11",
+      "nutrition_in_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "nutrition_out_ug": [
+        494,
+        115,
+        2584,
+        0
+      ],
+      "paid_work_ms": 497252,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            44,
+            0,
+            356,
+            0
+          ],
+          "cursor": "8994",
+          "dissipated_nj": 991140168,
+          "energy_nj": 272859832,
+          "hydration_ug": 195,
+          "lipid_ug": 10,
+          "lost_water_ug": 148,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3888000000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "12629",
+          "dissipated_nj": 1077927378,
+          "energy_nj": 722072622,
+          "hydration_ug": 704,
+          "lipid_ug": 10,
+          "lost_water_ug": 172,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 3974400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "14310",
+          "dissipated_nj": 1164435252,
+          "energy_nj": 1259564748,
+          "hydration_ug": 1302,
+          "lipid_ug": 10,
+          "lost_water_ug": 196,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4060800000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            33,
+            0,
+            267,
+            0
+          ],
+          "cursor": "15252",
+          "dissipated_nj": 1250835252,
+          "energy_nj": 1445164748,
+          "hydration_ug": 1459,
+          "lipid_ug": 10,
+          "lost_water_ug": 220,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4147200000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Forage": 493399,
+        "Not recorded": 1,
+        "Nurse": 172804180,
+        "Paused": 85902420,
+        "Rest": 86400000
+      },
+      "timed_move_ms": 433252,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4224960000,
+      "completed_actions": {
+        "Inactive": 3,
+        "Ingest food": 14,
+        "Return to care shelter": 1
+      },
+      "completed_distance_m": 0.0007905694150420948,
+      "elapsed_alive_ms": 86400000,
+      "end_ms": 4311360000,
+      "event_counts": {
+        "Committed moves": 1,
+        "Completed actions": 18,
+        "Nutrition received": 4
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "17",
+      "nutrition_in_ug": [
+        48,
+        0,
+        343,
+        0
+      ],
+      "nutrition_out_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "paid_work_ms": 80,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "16618",
+          "dissipated_nj": 955140080,
+          "energy_nj": 118859920,
+          "hydration_ug": 133,
+          "lipid_ug": 19,
+          "lost_water_ug": 138,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4233600000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Not recorded": 1,
+        "Nurse": 83,
+        "Paused": 21599917,
+        "Rest": 64799999
+      },
+      "timed_move_ms": 80,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    },
+    {
+      "begin_ms": 4224960000,
+      "completed_actions": {
+        "Clean brood": 1,
+        "Excavate": 1,
+        "Feed brood": 2,
+        "Handle soil": 1,
+        "Inactive": 3,
+        "Ingest food": 29,
+        "Inspect brood": 2,
+        "Return to care shelter": 1,
+        "Transfer nutrition": 4,
+        "Walk": 140
+      },
+      "completed_distance_m": 0.9653312286435797,
+      "elapsed_alive_ms": 345600000,
+      "end_ms": 4570560000,
+      "event_counts": {
+        "Committed moves": 141,
+        "Completed actions": 184,
+        "Interrupted actions": 22,
+        "Nutrition received": 4,
+        "Nutrition sent": 6,
+        "SoilDropped": 1,
+        "SoilExcavated": 1
+      },
+      "evidence": "RECONSTRUCTED",
+      "id": "17",
+      "nutrition_in_ug": [
+        48,
+        0,
+        343,
+        0
+      ],
+      "nutrition_out_ug": [
+        217,
+        37,
+        0,
+        0
+      ],
+      "paid_work_ms": 2004550,
+      "physiology_samples": [
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "16618",
+          "dissipated_nj": 955140080,
+          "energy_nj": 118859920,
+          "hydration_ug": 133,
+          "lipid_ug": 19,
+          "lost_water_ug": 138,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4233600000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "19761",
+          "dissipated_nj": 1041540080,
+          "energy_nj": 1992459920,
+          "hydration_ug": 1580,
+          "lipid_ug": 19,
+          "lost_water_ug": 162,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4320000000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "20717",
+          "dissipated_nj": 1127942080,
+          "energy_nj": 1994057920,
+          "hydration_ug": 1556,
+          "lipid_ug": 19,
+          "lost_water_ug": 186,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4406400000,
+          "tissue_protein_ug": 85
+        },
+        {
+          "carried_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "cursor": "22916",
+          "dissipated_nj": 1216154580,
+          "energy_nj": 1937845420,
+          "hydration_ug": 1532,
+          "lipid_ug": 19,
+          "lost_water_ug": 210,
+          "mobile_protein_ug": 0,
+          "stage_progress_ms": 0,
+          "time_ms": 4492800000,
+          "tissue_protein_ug": 85
+        }
+      ],
+      "programs_ms": {
+        "Excavate": 2526501,
+        "Forage": 192101,
+        "Not recorded": 1,
+        "Nurse": 64806095,
+        "Paused": 148475302,
+        "Rest": 129600000
+      },
+      "timed_move_ms": 193550,
+      "untimed_moves": 0,
+      "work_clock_recorded": true
+    }
+  ]
+}

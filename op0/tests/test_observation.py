@@ -17,7 +17,7 @@ from zipfile import ZipFile
 
 from op0 import DAY, SCHEMA
 from op0.archive import file_hash, pack
-from op0.cli import DEMOS, ROOT, VERIFIED, api_get, default_catalog
+from op0.cli import DEMOS, MICRO_DEMOS, ROOT, VERIFIED, api_get, default_catalog
 from op0.codec import ArchiveError
 from op0.geometry import clear_centers, slice_at
 from op0.index import Catalog
@@ -67,7 +67,7 @@ class ObservationTests(unittest.TestCase):
         return api_get(self.api, f"world/{self.demo['key']}/{operation}", **params)
 
     def test_catalogue_physics_identity_and_initial_snapshot(self):
-        self.assertEqual(len(self.entries), 5)
+        self.assertEqual(len(self.entries), sum((folder / filename).is_file() for folder, filename, _, _ in DEMOS + MICRO_DEMOS))
         meta = self.get("meta")
         self.assertEqual((meta["world_id"], meta["settings"]["physics"], meta["settings"]["seed"]),
                          ("00000000-0000-0286-0000-000000018a61", 25, "1"))
@@ -321,6 +321,37 @@ class ObservationTests(unittest.TestCase):
                         "45 workers", "Energy depleted", "Tracking #5", "No external supply", "0 workers", "VERIFIED_PUBLISHED"):
             self.assertIn(pattern, result.stdout)
         self.assertEqual(result.stderr, "")
+
+    def test_micro_world_exact_brood_positions_and_paid_intervals(self):
+        folder, filename, title, _ = MICRO_DEMOS[0]
+        source = folder / filename
+        if not source.is_file():
+            self.skipTest("Missing published MicroWorld witness")
+        matching = next(entry for entry in self.entries if entry["title"] == title)
+        world = api_get(self.api, f"archive/{matching['key']}")["worlds"][0]
+
+        def at(operation, **options):
+            return api_get(self.api, f"world/{world['key']}/{operation}", **options)
+
+        meta = at("meta")
+        self.assertEqual((meta["settings"]["checkpoint_schema"], meta["settings"]["physics"], meta["end_ms"]), (23, 27, 90*DAY))
+        early = at("state", time_ms=5*DAY-1)
+        eggs = [a for a in early["ants"] if a["stage"] == "Egg"]
+        self.assertEqual((len(eggs), len({tuple(a["position_m"]) for a in eggs})), (12,12))
+        original = next(m for m in meta["milestones"] if m["label"] == "First egg laid")
+        facts, _, digest = selected_facts(source, {int(original["id"])})
+        birth = at("event", id=original["id"])
+        self.assertEqual(tuple(birth["position_m"]), next(iter(facts.values()))[5:8])
+        self.assertEqual(digest, meta["member_sha256"]["facts.bin"])
+        self.assertGreater(len(at("geometry", axis="y", layer_q=-8, time_ms=0)["openings"]),0)
+        worker = next(m for m in meta["milestones"] if m["label"] == "First worker eclosed")
+        budget = at("individual-window", id=worker["ant"], begin_ms=worker["time_ms"], end_ms=worker["time_ms"]+DAY)
+        self.assertEqual(sum(budget["programs_ms"].values()), budget["elapsed_alive_ms"])
+        self.assertGreater(budget["completed_distance_m"],0)
+        self.assertGreaterEqual(budget["paid_work_ms"], budget["timed_move_ms"])
+        self.assertGreater(budget["timed_move_ms"],0)
+        self.assertTrue(budget["physiology_samples"])
+        self.assertEqual(file_hash(source), meta["archive_sha256"])
 
     def test_terminal_switches_language_without_resetting_cursor(self):
         with TemporaryDirectory(dir=self.root) as tmp:

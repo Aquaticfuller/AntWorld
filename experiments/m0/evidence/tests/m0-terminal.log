@@ -1,0 +1,138 @@
+
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+  1  MicroWorld · shaft
+     One queen starts a protected 90-day colony in a shaft nest. The eggs occupy separate positions.
+     00000000-0000-0286-0000-000000041eb1 · Physics 27 · Seed 1 · Day 90 00:00:00.000 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+     End: 15 worker(s), 1 queen(s), 5 brood
+  2  MicroWorld · dogleg
+     A second founding profile uses a bent passage from chamber to surface.
+     00000000-0000-0286-0000-0000000449a9 · Physics 27 · Seed 1 · Day 0 00:00:00.000 to Day 90 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 16 worker(s) and 1 live queen(s) at the end
+  3  MicroWorld · reference placement
+     The same shaft fixture and seed with the older brood placement rule.
+     00000000-0000-0286-0000-000000041eb1 · Physics 25 · Seed 1 · Day 90 00:00:00.000 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+     End: 15 worker(s), 1 queen(s), 21 brood
+  4  MicroWorld · no external protein
+     The surface carries carbohydrate and water. The colony starts with finite maternal protein.
+     00000000-0000-0286-0000-000000042109 · Physics 27 · Seed 1 · Day 0 00:00:00.000 to Day 90 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 6 worker(s) and 1 live queen(s) at the end
+  5  MicroWorld · sealed entrance
+     The initial shaft is physically sealed. External food remains outside the nest.
+     00000000-0000-0286-0000-00000004216d · Physics 27 · Seed 1 · Day 90 00:00:00.000 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+     End: 0 worker(s), 0 queen(s), 0 brood
+  6  Founding colony
+     Borisovka · protected shaft · balanced supply. Follow the queen and her first foragers.
+     00000000-0000-0286-0000-000000018a61 · Physics 25 · Seed 1 · Day 0 00:00:00.000 to Day 150 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 45 worker(s) and 1 live queen(s) at the end
+  7  No external supply
+     Borisovka · same shaft and seed. Observe brood losses and colony decline without external resources.
+     00000000-0000-0286-0000-000000018a61 · Physics 25 · Seed 1 · Day 0 00:00:00.000 to Day 150 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 0 worker(s) and 0 live queen(s) at the end
+  8  Protein-limited colony
+     Borisovka · shaft · no external protein. A recorded nutritional control.
+     00000000-0000-0286-0000-000000018a61 · Physics 25 · Seed 1 · Day 0 00:00:00.000 to Day 150 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 4 worker(s) and 1 live queen(s) at the end
+  9  Limited supply · dogleg
+     St. Petersburg · dogleg · limited supply. A large history with recorded decline.
+     00000000-0000-0286-0000-000000018c47 · Physics 25 · Seed 1 · Day 0 00:00:00.000 to Day 150 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 0 worker(s) and 0 live queen(s) at the end
+ 10  Before the feeding correction
+     Borisovka · protected shaft · the reference run for inspecting the first-ration change.
+     00000000-0000-0286-0000-000000018a61 · Physics 25 · Seed 1 · Day 0 00:00:00.000 to Day 150 00:00:00.000 · FRAME_MATCHED · HISTORY NOT INDEXED · ENGINEERING_ONLY
+     Frame records 43 worker(s) and 1 live queen(s) at the end
+
+ Enter a world number, import <path>, or q. The source is verified when opened.
+ lang en | lang zh-CN
+
+ op0 >
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+ MicroWorld · shaft  ·  Day 0 00:00:00.000 / Day 90 00:00:00.000  ·  committed through #15
+ 00000000-0000-0286-0000-000000041eb1 · borisovka · Seed 1 · Physics 27 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+ Queen alive #2  |  0 workers  |  0 eggs  |  0 larvae  |  0 pupae
+ External [6000, 3000, 18000, 0] µg  |  Nest [0, 0, 0, 0] µg  (carbs, protein, water, other)
+ Collections 0  ·  Deliveries 0  ·  Trophallaxis 0  ·  Excavations 0  ·  Activations 0
+
+ 27 committed records · 0 movements · 0 collections · 0 deliveries
+
+ Committed events in day 0  [highlights]
+ No matching events in this window.
+
+ Milestones · First hatch #3418 · First worker eclosed #8400 · First food delivered #8744 · First excavation #9965 · First recruitment activation #52302
+ d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN
+
+ op0 >
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+ MicroWorld · shaft  ·  Day 5 00:00:00.000 / Day 90 00:00:00.000  ·  committed through #267
+ 00000000-0000-0286-0000-000000041eb1 · borisovka · Seed 1 · Physics 27 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+ Queen alive #2  |  0 workers  |  12 eggs  |  0 larvae  |  0 pupae
+ External [13500, 6750, 40500, 0] µg  |  Nest [0, 0, 0, 0] µg  (carbs, protein, water, other)
+ Collections 0  ·  Deliveries 0  ·  Trophallaxis 0  ·  Excavations 0  ·  Activations 0
+
+ 192 committed records · 0 movements · 0 collections · 0 deliveries
+
+ Committed events in day 5  [highlights]
+ No matching events in this window.
+
+ Milestones · First hatch #3418 · First worker eclosed #8400 · First food delivered #8744 · First excavation #9965 · First recruitment activation #52302
+ d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN
+
+ op0 >
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+ MicroWorld · shaft  ·  Day 5 00:00:00.000 / Day 90 00:00:00.000  ·  committed through #267
+ 00000000-0000-0286-0000-000000041eb1 · borisovka · Seed 1 · Physics 27 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+ Queen alive #2  |  0 workers  |  12 eggs  |  0 larvae  |  0 pupae
+ External [13500, 6750, 40500, 0] µg  |  Nest [0, 0, 0, 0] µg  (carbs, protein, water, other)
+ Collections 0  ·  Deliveries 0  ·  Trophallaxis 0  ·  Excavations 0  ·  Activations 0
+
+ 192 committed records · 0 movements · 0 collections · 0 deliveries
+
+ Committed events in day 5  [birth]
+ No matching events in this window.
+
+ Milestones · First hatch #3418 · First worker eclosed #8400 · First food delivered #8744 · First excavation #9965 · First recruitment activation #52302
+ d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN
+
+ op0 >
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+ MicroWorld · shaft  ·  Day 90 00:00:00.000 / Day 90 00:00:00.000  ·  committed through #92225
+ 00000000-0000-0286-0000-000000041eb1 · borisovka · Seed 1 · Physics 27 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+ Queen alive #2  |  15 workers  |  1 eggs  |  0 larvae  |  4 pupae
+ External [124109, 62064, 372327, 0] µg  |  Nest (100, 7401, 3621, 0) µg  (carbs, protein, water, other)
+ Collections 19  ·  Deliveries 19  ·  Trophallaxis 370  ·  Excavations 13  ·  Activations 5
+
+ 27 committed records · 0 movements · 0 collections · 0 deliveries
+
+ Committed events in day 90  [birth]
+ No matching events in this window.
+
+ Milestones · First hatch #3418 · First worker eclosed #8400 · First food delivered #8744 · First excavation #9965 · First recruitment activation #52302
+ d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN
+
+ op0 >
+ ANT WORLD  /  OP0  /  OBSERVATION PREVIEW
+ ────────────────────────────────────────────────────────────────────
+ MicroWorld · shaft  ·  Day 90 00:00:00.000 / Day 90 00:00:00.000  ·  committed through #92225
+ 00000000-0000-0286-0000-000000041eb1 · borisovka · Seed 1 · Physics 27 · VERIFIED_PUBLISHED · ENGINEERING_ONLY
+ Queen alive #2  |  15 workers  |  1 eggs  |  0 larvae  |  4 pupae
+ External [124109, 62064, 372327, 0] µg  |  Nest (100, 7401, 3621, 0) µg  (carbs, protein, water, other)
+ Collections 19  ·  Deliveries 19  ·  Trophallaxis 370  ·  Excavations 13  ·  Activations 5
+
+ Tracking #4  ·  Worker  ·  Adult  ·  Paused
+ Mother 2  ·  Born Day 4 00:00:00.000  ·  Alive
+ Sample Day 90 00:00:00.000 · 1888664452 nJ · 1969 µg water · crop [0, 0, 0, 0] µg
+ Life · Egg #84 (Day 4 00:00:00.000) | Larva #3418 (Day 20 16:48:00.000) | Pupa #5849 (Day 30 21:36:00.000) | Adult #8400 (Day 45 09:36:00.000)
+
+ 27 committed records · 0 movements · 0 collections · 0 deliveries
+
+ Committed events in day 90  [birth]
+ No matching events in this window.
+
+ Milestones · First hatch #3418 · First worker eclosed #8400 · First food delivered #8744 · First excavation #9965 · First recruitment activation #52302
+ d <day>  h <HH:MM[:SS]>  +/-  n/p event  play [days/s]  e <id>  f <category>  more  a <ant>  w  q  lang en|zh-CN
+
+ op0 >

@@ -1,5 +1,9 @@
 # AntWorld
 
+## Watch a MicroWorld
+
+The MicroWorld preview starts with one queen in a small 3D nest and replays 90 days of committed Core history. Open the [Windows start guide](research/m0/README.md) to watch the first clutch, individual care, worker movements and real soil edits. Five compact archives are included, with English and Simplified Chinese controls and a read-only terminal option.
+
 ## Watch a real colony with OP0
 
 On Windows, install [Python 3.11 or later](https://www.python.org/downloads/windows/) and Git. Open PowerShell and run:

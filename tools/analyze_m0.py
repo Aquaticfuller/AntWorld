@@ -2,6 +2,7 @@
 
 import argparse
 from collections import Counter
+from contextlib import contextmanager
 import csv
 from hashlib import sha256
 import json
@@ -22,7 +23,7 @@ def require(predicate, message):
 
 
 def join_facts(archive):
-    with zip_inputs(archive) as (initial, tip, _, facts, capture):
+    with contextmanager(zip_inputs)(archive) as (initial, tip, _, facts, capture):
         case = capture["case"]
         queen = next(iter(initial["ants"]))
         totals = Counter()
@@ -49,7 +50,7 @@ def join_facts(archive):
                 if start is None:
                     start = f.time
                 row = dict(id=f.actor, mother=f.related, egg_ms=f.time, egg_event=f.id, egg_position_m=f.position,
-                           hatch_ms=None, pupation_ms=None, adult_ms=None, death_ms=None, death_cause=None,
+                           hatch_ms=None, pupation_ms=None, adult_ms=None, death_ms=None, death_cause=None, death_stage=None,
                            first_contact_event=None, first_selection_event=None, first_started_event=None,
                            first_paid_event=None, first_paid_ms=None, first_protein_uptake_ms=None, first_water_uptake_ms=None,
                            maternal_lipid_ug=0, maternal_protein_ug=0, maternal_water_ug=0, absorbed_protein_ug=0,
@@ -62,6 +63,8 @@ def join_facts(archive):
                     cohort[f.actor] = row
             if f.kind == 34 and f.outcome == 10:
                 totals["space_deferred"] += 1
+            if f.kind == 58:
+                totals["water_sipped_ug"] += f.mass[2]
             if f.kind == 42:
                 phase, act, target, _, _, known, *_ = f.observation
                 if phase == 3 and act == 4 and known:
@@ -100,6 +103,7 @@ def join_facts(archive):
                         first_workers.append((f.actor, f.time))
                 if f.kind==8:
                     row["death_ms"], row["death_cause"] = f.time, DEATHS[f.payload]
+                    row["death_stage"] = ("Egg", "Larva", "Pupa", "Adult")[apparent_stage[f.actor]]
                     apparent_stage[f.actor] = 4
                 if f.kind==16 and apparent_stage[f.actor]==1:
                     row["absorbed_protein_ug"] += f.mass[1]
@@ -157,7 +161,8 @@ def join_facts(archive):
             cohort_protein_uptake=sum(bool(r["absorbed_protein_ug"]) for r in cohort.values()),
             cohort_water_uptake=sum(bool(r["absorbed_water_ug"]) for r in cohort.values()),
             queen_living=tip["ants"][queen]["stage"]==3, first_workers=first_workers, arrangements=totals["arrangements"],
-            brood_moves=totals[43], maternal_rations=totals[48], water_sips=totals[58], transfers=totals[21],
+            brood_moves=totals[43], maternal_rations=totals[48], water_sips=totals[58], water_sipped_ug=totals["water_sipped_ug"],
+            transfers=totals[21],
             excavation_drops=complete_soil, resource_trips=complete_deliveries, space_deferred=totals["space_deferred"],
             hatch_cues=totals[50], archive_sha256=file_hash(archive), canonical_sha256=checksum.hexdigest(), end_ms=tip["time_ms"],
             right_censored=sum(r["death_ms"] is None for r in cohort.values()))

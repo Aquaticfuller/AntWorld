@@ -248,6 +248,7 @@ async function openArchive(key, preferred) {
     app.geometry = null;
     app.layer = null;
     app.map = {zoom: 1, x: 0, y: 0};
+    $("replay-mode").value = meta.scenario?.startsWith("micro-m0-") ? "scenes" : "overview";
     setSection(meta.settings.geometry && meta.initial_queens.length ? "slice" : "surface");
     $("axis").value = meta.scenario?.startsWith("micro-m0-") ? "y" : "z";
     if (app.section === "slice" && $("axis").value === "y" && meta.colonies.length) preferView(meta.colonies[0].position_m);
@@ -1102,10 +1103,7 @@ function playFrames(advance, interval) {
 function firstDelivery(meta) {
     return meta?.milestones.find(m => m.label === "First food delivered" && m.ant);
 }
-async function watchAction(mark) {
-    stopPlay();
-    const version = app.playVersion;
-    const end = await world("event",{id:mark.id});
+async function actionBoundaries(end) {
     let frames = [end];
     if (end.action?.began_ms != null) {
         const result = await world("events", {group:"care",ant:end.actor,since_ms:end.action.began_ms,
@@ -1117,6 +1115,13 @@ async function watchAction(mark) {
         const previous = await world("event", {id:(BigInt(end.id)-1n).toString()});
         if (previous.kind==="ReproductionAttempt" && previous.source===end.source) frames = [previous,end];
     }
+    return frames;
+}
+async function watchAction(mark) {
+    stopPlay();
+    const version = app.playVersion;
+    const end = await world("event",{id:mark.id});
+    const frames = await actionBoundaries(end);
     if (version!==app.playVersion) return;
     app.selected = end.kind==="AntBorn" ? end.actor : end.related || end.actor;
     $("ant-id").value = app.selected || "";
@@ -1171,12 +1176,13 @@ async function watchDelivery() {
     }, 260);
 }
 function replayMode() {
-    return $("replay-mode").value === "overview" ? "outcomes" : $("replay-mode").value;
+    return $("replay-mode").value === "movement" ? "movement" : "outcomes";
 }
 function replaySettings() {
     const showSpeed = app.compare || $("replay-mode").value === "overview";
     $("speed").hidden = !showSpeed;
     put("replay-note", tr(showSpeed ? "Overview skips ahead in simulated time." :
+        $("replay-mode").value === "scenes" ? "Pauses at major events and shows recorded care boundaries." :
         replayMode() === "movement" ? "Each recorded position is shown in commit order." :
             "Steps through key outcomes and movements. See Events for all records."));
 }
@@ -1208,6 +1214,26 @@ function togglePlay() {
         app.time = 0;
         app.selectedFact = null;
         ++app.seekVersion;
+    }
+    if (!app.compare && $("replay-mode").value === "scenes") {
+        const marks = app.meta.milestones.filter(m => m.time_ms>app.time || (m.time_ms===app.time && app.selectedFact &&
+            BigInt(m.id)>BigInt(app.selectedFact.id)));
+        let frames = [];
+        playFrames(async generation => {
+            if (!frames.length) {
+                if (!marks.length) { await seek(end); return false; }
+                const event = await world("event",{id:marks.shift().id});
+                frames = (await actionBoundaries(event)).filter(e => e.time_ms>=app.time);
+            }
+            if (generation!==app.playVersion) return false;
+            const fact = frames.shift();
+            if (!fact) return true;
+            preferView(fact.position_m);
+            await seek(fact.time_ms,fact);
+            if (generation===app.playVersion && app.selectedFact===fact && !$('event-panel').hidden) showEvent(fact);
+            return true;
+        },1000);
+        return;
     }
     let previous = performance.now();
     playFrames(async generation => {
