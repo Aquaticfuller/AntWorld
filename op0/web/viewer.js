@@ -24,7 +24,7 @@ const app = {
     meta: null, series: [], state: null, geometry: null, catalog: [], time: 0, selectedFact: null, selected: null,
     path: [], recentMotion: null, follow: false, section: "surface", hits: [], visible: [], location: null,
     visibleSummary: null,
-    map: {zoom: 1, x: 0, y: 0}, drag: null, activity: null, activityVersion: 0, playVersion: 0,
+    map: {zoom: 1, x: 0, y: 0}, drag: null, activity: null, activityVersion: 0, playVersion: 0, playingDelivery: false,
     eventAfter: null, eventListVersion: 0, seekVersion: 0, openVersion: 0, playback: null,
     compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0
 };
@@ -42,7 +42,7 @@ function preference() {
 const staticStrings = [];
 function captureStaticStrings() {
     const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,#day-title,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
-    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play"]);
+    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play", "watch-delivery"]);
     for (const e of document.querySelectorAll(selectors)) {
         if (!dynamic.has(e.id) && e.children.length === 0 && e.textContent.trim() && !e.closest("#locale")) {
             staticStrings.push([e, null, e.textContent.trim()]);
@@ -172,6 +172,8 @@ function setOptions(select, entries, value) {
 }
 
 function configure(meta, referenceKey = null) {
+    $("watch-delivery").hidden = !firstDelivery(meta);
+    playbackControls(Boolean(app.playback));
     put("title", tr(meta.title));
     put("subtitle", [meta.population, meta.layout, meta.supply].filter(Boolean).map(value => tr(value).replaceAll("_", " "))
         .concat(tr("Physics {version}", {version: meta.settings.physics}), tr("Seed {seed}", {seed: meta.settings.seed}), meta.readiness).join("  ·  "));
@@ -846,6 +848,7 @@ function drawMap() {
         notes.push(tr("{count} living outside this view.", {count: state.ants.length}));
     }
     if (trail.length) notes.push(tr("{count} recorded movement points in this view over the last 5 simulated minutes.", {count: trail.length}));
+    else if (motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     put("map-detail", notes.join(" "));
     renderLocation();
@@ -1018,10 +1021,78 @@ function stopPlay() {
     ++app.playVersion;
     if (app.playback) clearInterval(app.playback);
     app.playback = null;
+    app.playingDelivery = false;
+    playbackControls(false);
+}
+function playbackControls(active) {
     for (const id of ["play", "compare-play"]) {
-        put(id, tr("▶ Play"));
-        $(id).setAttribute("aria-pressed", "false");
+        put(id, tr(active ? "Ⅱ Pause" : "▶ Play"));
+        $(id).setAttribute("aria-pressed", String(active));
     }
+    const delivery = $("watch-delivery");
+    if (app.playingDelivery) {
+        delivery.textContent = tr("Stop delivery replay");
+    } else {
+        delivery.replaceChildren(document.createTextNode(tr("Watch first food delivery")));
+        const first = firstDelivery(app.meta);
+        if (first) delivery.append(node("small", day(first.time_ms)));
+    }
+    $("watch-delivery").setAttribute("aria-pressed", String(app.playingDelivery));
+}
+function playFrames(advance, interval) {
+    const generation = ++app.playVersion;
+    playbackControls(true);
+    let busy = false;
+    app.playback = setInterval(async () => {
+        if (busy || generation !== app.playVersion) return;
+        busy = true;
+        try {
+            if (!await advance(generation) && generation === app.playVersion) stopPlay();
+        } catch (err) {
+            if (generation === app.playVersion) { stopPlay(); report(err); }
+        } finally {
+            busy = false;
+        }
+    }, interval);
+}
+function firstDelivery(meta) {
+    return meta?.milestones.find(m => m.label === "First food delivered" && m.ant);
+}
+async function watchDelivery() {
+    const delivery = firstDelivery(app.meta);
+    if (!delivery || app.compare) return;
+    if (app.playingDelivery) { stopPlay(); return; }
+    stopPlay();
+    const generation = app.playVersion;
+    const options = {ant: delivery.ant, since_ms: Math.max(0, delivery.time_ms - 15 * MINUTE), until_ms: delivery.time_ms,
+        cut_event: delivery.id, limit: 200};
+    const [travel, food] = await Promise.all([
+        world("events", {...options, group: "movement"}),
+        world("events", {...options, group: "food"})
+    ]);
+    if (generation !== app.playVersion) return;
+    const foodFrames = food.events.filter(e => e.actor === delivery.ant && ["FoodCollected", "FoodDelivered"].includes(e.kind));
+    const frames = [...travel.events.filter(e => e.actor === delivery.ant), ...foodFrames]
+        .sort((a, b) => BigInt(a.id) < BigInt(b.id) ? -1 : 1);
+    if (travel.next_after || food.next_after || !frames.length || frames.at(-1).id !== delivery.id) {
+        show(tr("Use Movement only to inspect this delivery. Its records do not fit the quick replay."));
+        return;
+    }
+    show(tr("Delivery replay shows recorded steps from the preceding 15 simulated minutes at a slower speed."));
+    app.selected = delivery.ant;
+    $("ant-id").value = delivery.ant;
+    inspect(false);
+    app.location = null;
+    app.map = {zoom: 1, x: 0, y: 0};
+    app.playingDelivery = true;
+    $("map").scrollIntoView({block: "nearest"});
+    let index = 0;
+    playFrames(async () => {
+        const fact = frames[index++];
+        preferView(fact.position_m);
+        await seek(fact.time_ms, fact);
+        return index < frames.length;
+    }, 260);
 }
 function replayMode() {
     return $("replay-mode").value === "overview" ? "outcomes" : $("replay-mode").value;
@@ -1057,33 +1128,19 @@ function togglePlay() {
     if (app.playback) { stopPlay(); return; }
     const end = app.compare && app.reference ? Math.max(app.meta.end_ms, app.reference.end_ms) : app.meta.end_ms;
     const inRealOrder = !app.compare && $("replay-mode").value !== "overview";
-    const generation = ++app.playVersion;
     if (app.time >= end) {
         app.time = 0;
         app.selectedFact = null;
         ++app.seekVersion;
     }
-    for (const id of ["play", "compare-play"]) {
-        put(id, tr("Ⅱ Pause"));
-        $(id).setAttribute("aria-pressed", "true");
-    }
-    let busy = false, previous = performance.now();
-    app.playback = setInterval(async () => {
-        if (busy || generation !== app.playVersion) return;
-        busy = true;
+    let previous = performance.now();
+    playFrames(async generation => {
+        if (inRealOrder) return stepEvent("next", generation);
         const now = performance.now();
         const next = app.time + Number($("speed").value) * DAY * (now - previous) / 1000;
         previous = now;
-        try {
-            if (inRealOrder) {
-                if (!await stepEvent("next", generation) && generation === app.playVersion) stopPlay();
-            } else {
-                await seek(next);
-                if (app.time >= end && generation === app.playVersion) stopPlay();
-            }
-        }
-        catch (err) { stopPlay(); report(err); }
-        finally { busy = false; }
+        await seek(next);
+        return app.time < end;
     }, inRealOrder ? 220 : 135);
 }
 
@@ -1129,6 +1186,7 @@ function bind() {
     click("back", () => { stopPlay(); return seek(app.time - DAY); });
     click("next", () => { stopPlay(); return seek(app.time + DAY); });
     click("play", togglePlay);
+    click("watch-delivery", watchDelivery);
     click("compare-play", togglePlay);
     change("replay-mode", () => { stopPlay(); replaySettings(); });
     click("previous-event", () => { stopPlay(); return stepEvent("previous"); });

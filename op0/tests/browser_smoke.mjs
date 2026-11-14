@@ -156,6 +156,15 @@ try {
     await select("locale", "en");
     await wait(() => evaluate("$('day-counts').textContent.includes('400 committed records')"), "English intraday activity");
 
+    await click("#watch-delivery");
+    await wait(() => evaluate("app.playingDelivery && app.state.cursor === '9721' && app.section === 'slice' && app.selected === '4'"),
+        "Quick replay starts at worker #4's actual departure");
+    await wait(() => evaluate("app.state.cursor === '9826' && app.section === 'surface' && app.hits.some(a => a.id === '4')"),
+        "Quick replay follows the worker to the surface and its recorded collection");
+    await wait(() => evaluate("!app.playingDelivery && app.state.cursor === '9938' && app.section === 'slice'"),
+        "Quick replay stops at the actual delivery back underground");
+    assert.equal(await evaluate("app.state.cumulative.deliveries"), 1);
+
     await timed("jump_to_worker_ms", async () => {
         await click("#milestones button[title^='First worker eclosed']");
         await wait(() => evaluate("app.state.cursor === '9661' && $('event-detail').textContent.includes('Eclosed')"), "Worker eclosed");
@@ -263,6 +272,7 @@ try {
     result.chromium = (await send("Browser.getVersion")).product;
     result.localization = "English and Simplified Chinese switched at the same cut and comparison, persisted after reload";
     result.within_day_replay = "Selected a real egg from a shared marker; observed 400 facts and 30 movements on day 45; stepped through the real 101 ms interval and back";
+    result.delivery_replay = "Followed worker #4 underground to surface collection and back underground, stopping at fact #9938";
     result.date_utc = new Date().toISOString();
     result.status = "PASS";
     await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
