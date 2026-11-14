@@ -107,8 +107,8 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     if (frame) w.put(frame_magic);
     if (s.ecological) {
         w.put(ecological_magic);
-        w.put(ecological_schema,4);
-        w.put(s.ecological->suppress_foundress_hatch_cue ? suppressed_hatch_physics :
+        w.put(s.ecological->brood_space ? micro_world_schema : ecological_schema,4);
+        w.put(s.ecological->brood_space ? micro_world_physics : s.ecological->suppress_foundress_hatch_cue ? suppressed_hatch_physics :
               s.ecological->portable_field ? portable_ecological_physics : ecological_physics,4);
     }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
@@ -170,9 +170,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     const bool ecological = header==ecological_magic;
     unsigned ecological_version{};
     if (ecological) {
-        ensure(r.get(4)==ecological_schema,"unsupported ecological closure schema");
+        const auto outer_schema=r.get(4);
         const auto version=r.get(4);
-        ensure(version==ecological_physics || version==portable_ecological_physics || version==suppressed_hatch_physics,
+        ensure((outer_schema==micro_world_schema && version==micro_world_physics) ||
+               (outer_schema==ecological_schema && (version==ecological_physics || version==portable_ecological_physics ||
+                                                    version==suppressed_hatch_physics)),
                "unsupported ecological closure physics");
         ecological_version=static_cast<unsigned>(version);
         header=r.get();
@@ -273,6 +275,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         s->ecological=read_ecological(r,s->config);
         s->ecological->portable_field=ecological_version>=portable_ecological_physics;
         s->ecological->suppress_foundress_hatch_cue=ecological_version==suppressed_hatch_physics;
+        s->ecological->brood_space=ecological_version==micro_world_physics;
     }
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();
@@ -307,6 +310,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_surface(r, *s, limits);
     read_physiology(r, *s, limits);
     read_geometry(r,*s,limits,entity_ids);
+    if (bounded_brood_space(*s)) {
+        ensure(!s->ants.size() || s->geometry,"MicroWorld entities require physical geometry");
+        if (s->geometry) ensure(s->geometry->config.quantum_m>=0.00025 && s->geometry->config.quantum_m<=0.001,
+                                "MicroWorld geometry quantum outside the supported 0.25–1 mm range");
+    }
     read_commands(r,*s,limits);
     read_social(r,*s,motion);
     read_long_term(r,*s,guarded,founding);
@@ -569,7 +577,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) && e.kind!=FactKind::FoundressWaterIngested)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
         if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind) && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation)
-            ensure(e.outcome == Outcome::Success, "unexpected fact outcome");
+            ensure(e.outcome == Outcome::Success || (bounded_brood_space(*s) && e.kind==FactKind::ReproductionAttempt &&
+                   !e.payload && (e.outcome==Outcome::Capacity || e.outcome==Outcome::Depleted)), "unexpected fact outcome");
     }
     ensure(seeded_colonies.size() == colonies && seeded_ants.size() == ants && seeded_food.size() == foods &&
         executed_now == m.executed && cue_activations.empty(), "missing seed, activation or execution evidence");

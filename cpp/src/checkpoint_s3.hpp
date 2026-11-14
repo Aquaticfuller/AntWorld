@@ -101,10 +101,11 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 auto* mother = e.kind == FactKind::AntBorn ? &audit.at(EntityId{e.payload}) : nullptr;
                 if (mother) {
                     const EntityId parent{e.payload};
-                    ensure(stages.at(parent)==LifeStage::Adult && e.position==positions.at(parent), "F1 birth lacks living maternal placement");
+                    ensure(stages.at(parent)==LifeStage::Adult && (bounded_brood_space(s) || e.position==positions.at(parent)),
+                           "F1 birth lacks living maternal placement");
                     founding.settle(parent,*mother,LifeStage::Adult,e.time);
                 }
-                founding.initialize(p, e, mother);
+                founding.initialize(p, e, mother, mother?positions.at(EntityId{e.payload}):e.position);
             } else if (e.kind==FactKind::AntBorn) {
                 const EntityId parent{e.payload}; ensure(s.long_term && p.mother==parent && audit.contains(parent) && s.reproduction.contains(parent),"missing birth parent");
                 auto& mother=audit.at(parent); const auto& c=s.reproduction.at(parent).config;
@@ -166,7 +167,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(s.reproduction.contains(e.actor),"attempt lacks reproduction configuration");
                 const auto& c=s.reproduction.at(e.actor).config;
                 const bool funded=founding.founder(e.actor) ? founding.funded(p, e) : reproductive_resources(c,p);
-                ensure(funded==(e.payload!=0),"reproduction outcome differs from physiological funding");
+                if (bounded_brood_space(s)) {
+                    ensure(e.payload ? funded && e.outcome==Outcome::Success :
+                        e.outcome==(funded?Outcome::Capacity:Outcome::Depleted),"invalid MicroWorld reproduction funding");
+                } else ensure(funded==(e.payload!=0),"reproduction outcome differs from physiological funding");
             } else if (e.kind == FactKind::StageChanged) {
                 const bool ready = enrolled ? founding_develops(founding.profile(), p, founding.reserves.at(e.actor), prior_stage) :
                     developing(p, prior_stage) && p.stage_progress == stage_duration(p.config, prior_stage);

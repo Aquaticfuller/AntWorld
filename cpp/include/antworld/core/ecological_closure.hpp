@@ -12,6 +12,7 @@ struct EcologicalClosureConfig {
     std::uint32_t cue_response_ppm{350000}, first_ration_ppm{};
     bool portable_field{}; // Physics 25 fixes the numerical representation of the same local field.
     bool suppress_foundress_hatch_cue{}; // Physics 26. Matched founding assay only.
+    bool brood_space{}; // Physics 27. Local single-layer brood placement and handling envelope.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

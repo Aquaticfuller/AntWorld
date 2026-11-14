@@ -1,4 +1,4 @@
-#include "care_internal.hpp"
+#include "brood_space.hpp"
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
@@ -30,7 +30,8 @@ PositionM WorldRuntime::care_destination(const CareState& care,const AntState& a
     const auto half=care_extent(s,body_half(actor.id),care.act);
     const auto clear=[&](PositionM next) {
         return clear_care_segment(actor.position,next,half) &&
-            (!load || clear_care_segment(*load,translated(next,care.grip_offset),half));
+            (!load || (clear_care_segment(*load,translated(next,care.grip_offset),half) &&
+                       clear_brood_space(care.retrieval.target,*load,translated(next,care.grip_offset))));
     };
     if (clear(direct)) return direct;
     // Try a local, distance-reducing axis segment when a diagonal clips a
@@ -385,7 +386,12 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                         if (available) acts.push_back(CareAct::FeedBrood);
                     }
                     c.act=acts[static_cast<std::size_t>(bounded_draw(rng,acts.size()))];
-                    if (c.act==CareAct::ArrangeBrood) c.destination=toward(b.position,a.position,cfg.arrangement_m);
+                    if (c.act==CareAct::ArrangeBrood) {
+                        if (bounded_brood_space(s)) {
+                            if (const auto site=arrange_brood_site(b,c.familiar_shelter)) c.destination=*site;
+                            else c.act=CareAct::InspectBrood;
+                        } else c.destination=toward(b.position,a.position,cfg.arrangement_m);
+                    }
                 }
             }
         } else if (capable && brood_candidates.empty() && !integrated_care(s)) {
@@ -464,11 +470,13 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
                 outcome=Outcome::Blocked;
         } else if (timed && c.act==CareAct::TransportBrood) {
             const auto target=carried_position(b.position,a.position,c.destination,c,true,s.config.continuous_spatial_motion);
-            if (target==b.position || !clear_care_segment(b.position,target,half)) outcome=Outcome::Blocked;
+            if (target==b.position || !clear_care_segment(b.position,target,half) ||
+                !clear_brood_space(b.id,b.position,target)) outcome=Outcome::Blocked;
         }
     }
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
+            (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
             ((timed || (cfg.local_retrieval && c.act==CareAct::TransportBrood)) && c.destination==from))
             outcome=Outcome::Blocked;
     }

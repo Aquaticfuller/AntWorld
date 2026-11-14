@@ -87,6 +87,7 @@ AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
     if (colony.world != s.world || !s.colonies.index.contains(colony.id) ||
         !valid(seed.stage) || seed.stage == LifeStage::Dead || seed.caste > Caste::Male ||
+        (bounded_brood_space(s) && (!s.geometry || (seed.stage<LifeStage::Adult && !clear_brood_space({},seed.position,seed.position)))) ||
         !inside(seed.position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
             !(s.social && s.geometry) && !s.surface->locate(seed.position)) ||
         !spatially_clear(seed.position,seed.position,s.geometry ? s.geometry->config.body_half_q : 0))
@@ -171,6 +172,7 @@ void WorldRuntime::execute(Transaction& tx, const ScheduledEvent& e) {
         synchronize_physiology(tx, e.actor);
         tx.touch_ant(i); ant.stage = e.stage; s.ants.set(i, ant);
         fact.kind = e.stage == LifeStage::Dead ? FactKind::AntDied : FactKind::StageChanged;
+        if (bounded_brood_space(s)) fact.position=ant.position;
         if (e.stage == LifeStage::Dead) { --s.m.living; index_contact(tx,e.actor,{}); stop_dead_forager(tx, e.actor); stop_excavator(tx,e.actor); stop_physiology(tx, e.actor, DeathCause::Fixture); stop_autonomy(tx,e.actor); }
     }
     tx.fact(fact);

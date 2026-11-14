@@ -41,7 +41,8 @@ Case read_case(const Path& path) {
         (c.workers && c.workers != 8 && c.workers != 32)) throw std::invalid_argument("invalid frozen F1 case header");
     const bool scope=c.arm=="scope-balanced-60" || c.arm=="scope-balanced-120";
     c.cohort_assay=c.arm.starts_with("cohort25-");
-    const bool portable_field=c.arm.starts_with("ecology5-") || c.cohort_assay;
+    c.micro_world=c.arm.starts_with("micro-m0-");
+    const bool portable_field=c.arm.starts_with("ecology5-") || c.cohort_assay || c.micro_world;
     c.expanded_history=c.arm.starts_with("ecology4-") || portable_field;
     const bool ecology=c.arm.starts_with("ecology-") || c.expanded_history;
     if (ecology) {
@@ -60,10 +61,11 @@ Case read_case(const Path& path) {
         c.ecological.emplace();
         auto& e=*c.ecological;
         e.portable_field=portable_field;
+        e.brood_space=c.micro_world && treatment!="reference";
         e.distance_clock=true;
-        e.floor_space=treatment=="joint" || treatment=="silent" || protected_profile;
-        e.recruitment=treatment=="joint" || protected_profile;
-        e.activity_cost=treatment=="joint" || treatment=="cost" || protected_profile;
+        e.floor_space=treatment=="joint" || treatment=="silent" || protected_profile || c.micro_world;
+        e.recruitment=treatment=="joint" || protected_profile || c.micro_world;
+        e.activity_cost=treatment=="joint" || treatment=="cost" || protected_profile || c.micro_world;
         e.cue_lifetime={6*hour_ms};
         if (treatment=="joint" || treatment=="first" || treatment=="water" || treatment=="wallwater")
             e.first_ration_ppm=500000;
@@ -83,6 +85,9 @@ Case read_case(const Path& path) {
             e.water_sip_ug=treatment[4]=='n'?0:25;
             e.suppress_foundress_hatch_cue=treatment[5]=='0';
             c.blocked_water=treatment[4]=='b';
+        } else if (c.micro_world) {
+            require(treatment=="reference" || treatment=="slots" || treatment=="wet", "invalid MicroWorld treatment");
+            if (treatment=="wet") e.water_sip_ug=25;
         } else {
             require(protected_profile || treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||
                     treatment=="first" || treatment=="water" || treatment=="wallwater" || treatment=="cost",
@@ -94,7 +99,8 @@ Case read_case(const Path& path) {
     c.qualification=c.qualification || ecology;
     c.integrated_assay=scope || c.qualification || c.arm.starts_with("integrated-");
     require(c.horizon.milliseconds==(scope?180:c.integrated_assay?150:90)*day_ms ||
-            (ecology && c.horizon.milliseconds==55*day_ms),"invalid F1 assay horizon");
+            (ecology && c.horizon.milliseconds==55*day_ms) || (c.micro_world && c.horizon.milliseconds==90*day_ms),
+            "invalid F1 assay horizon");
     if (c.integrated_assay) {
         if (scope) {
             c.release_days=c.arm=="scope-balanced-60"?60U:120U;
@@ -120,7 +126,7 @@ Case read_case(const Path& path) {
                 c.trail_treatment = TrailTreatment::Marked;
             }
         } else if (!ecology) c.arm.erase(0,11);
-        require(!c.workers && (c.care || (ecology && c.horizon.milliseconds==55*day_ms)),
+        require(!c.workers && (c.care || c.micro_world || (ecology && c.horizon.milliseconds==55*day_ms)),
                 "the integrated assay begins with one queen");
         const std::map<std::string,FoodMass> inputs{
             {"balanced",{6000,3000,18000,0}},{"limited",{752,376,2252,0}},{"water",{0,0,18000,0}},

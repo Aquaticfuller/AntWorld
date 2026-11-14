@@ -8,6 +8,7 @@ inline constexpr auto ecological_magic = UINT64_C(0x4d54504b435741); // AWCKPTM
 inline constexpr unsigned ecological_schema = 22, ecological_physics = 24;
 inline constexpr unsigned portable_ecological_physics = 25;
 inline constexpr unsigned suppressed_hatch_physics = 26;
+inline constexpr unsigned micro_world_schema = 23, micro_world_physics = 27;
 
 inline void write_ecological(Writer& w, const EcologicalClosureConfig& c) {
     w.put(c.distance_clock, 1); w.put(c.floor_space, 1);

@@ -1,4 +1,5 @@
 #include "state.hpp"
+#include "ecological_internal.hpp"
 #include <queue>
 #include <set>
 
@@ -8,7 +9,7 @@ void WorldRuntime::configure_geometry(const GeometryConfig &config, std::span<co
                                       std::span<const BoxQ> rocks) {
     auto &s = *state_;
     if (s.geometry || s.m.now != SimTime{} || s.m.watermark || s.ants.size() || !s.foods.rows.empty() ||
-        !s.colonies.rows.empty())
+        !s.colonies.rows.empty() || (bounded_brood_space(s) && (config.quantum_m<0.00025 || config.quantum_m>0.001)))
         throw std::invalid_argument("geometry must precede entity seeding in an unexecuted world");
     auto definition = std::make_shared<GeometryDefinition>();
     definition->config = config;

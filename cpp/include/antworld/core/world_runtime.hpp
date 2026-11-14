@@ -153,6 +153,9 @@ private:
     void notify_local_hatch(Transaction&, const AntState&, ScheduledId);
     void validate_nutrition_capacity() const;
     void execute_reproduction(Transaction&, const ScheduledEvent&);
+    [[nodiscard]] std::optional<PositionM> local_egg_site(const AntState&) const;
+    [[nodiscard]] std::optional<PositionM> arrange_brood_site(const AntState&, PositionM shelter) const;
+    [[nodiscard]] bool clear_brood_space(EntityId, PositionM from, PositionM to) const;
     void execute_resource_release(Transaction&, const ScheduledEvent&);
     void stop_reproduction(Transaction&, EntityId);
     void notify_return(Transaction&, EntityId);

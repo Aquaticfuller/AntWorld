@@ -89,13 +89,13 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   // Only this individual's current body reserves and maintenance rates enter.
   // A deferred attempt spends nothing; unmet needs can still cause death.
   const auto fuel=founding ? founding_egg_fuel(*founding,p,s.founding_reserves.at(e.actor)) : FoundingEggFuel::None;
-  const bool funded =
-      (founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p)) &&
-      spatially_clear(mother.position, mother.position,
-                      s.geometry ? s.geometry->config.body_half_q : 0);
+  const bool resources=founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p);
+  const auto site=!resources ? std::nullopt : bounded_brood_space(s) ? local_egg_site(mother) :
+      (spatially_clear(mother.position,mother.position,s.geometry?s.geometry->config.body_half_q:0) ?
+       std::optional{mother.position} : std::nullopt);
   EntityId child;
   std::uint64_t converted{}, crop_protein{};
-  if (funded) {
+  if (resources && site) {
     if (integrated_care(s) && care_owned(s,mother.id)) {
       interrupt_care(tx,mother.id,Outcome::InvalidTransition,true);
       p=s.physiology.at(e.actor);
@@ -121,13 +121,13 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
                    s.m.now,
                    LifeStage::Egg,
                    Caste::Worker,
-                   mother.position,
+                   *site,
                    0,
                    c.offspring_carrying_capacity_ug,
                    {}});
     if (s.geometry)
-      tx.spatial_index.set({spatial_key(mother.position), child.value}, 1);
-    index_contact(tx, child, mother.position);
+      tx.spatial_index.set({spatial_key(*site), child.value}, 1);
+    index_contact(tx, child, *site);
     bump(s.m.living);
     PhysiologyState q;
     if (founding) {
@@ -170,11 +170,13 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   f.stage = mother.stage;
   f.position = mother.position;
   f.payload = child.value;
+  if (bounded_brood_space(s) && !child.value) f.outcome=resources?Outcome::Capacity:Outcome::Depleted;
   tx.fact(f);
   if (child.value) {
     f.kind = FactKind::AntBorn;
     f.actor = child;
     f.stage = LifeStage::Egg;
+    f.position = *site;
     f.payload = mother.id.value;
     f.transferred = {0, c.egg_protein_ug, c.egg_water_ug, 0};
     f.random_value = !founding || fuel==FoundingEggFuel::Body ? c.egg_energy_nj : 0;
@@ -183,6 +185,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
       f.kind = fuel==FoundingEggFuel::Body ? FactKind::FoundingDietaryEggFunded : FactKind::FoundingEggFunded;
       f.actor = mother.id;
       f.stage = mother.stage;
+      f.position = mother.position;
       f.payload = child.value;
       f.random_value = fuel==FoundingEggFuel::Body ? c.egg_energy_nj : founding->egg_lipid_ug;
       f.transferred = {0,crop_protein,0,0};

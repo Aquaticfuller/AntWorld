@@ -1,5 +1,7 @@
 #pragma once
 #include "checkpoint_codec.hpp"
+#include "brood_space.hpp"
+#include "ecological_internal.hpp"
 #include "state.hpp"
 #include <bit>
 #include <set>
@@ -260,6 +262,12 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         const auto q=*quantized(p,c);
         return extent?box_valid(intersection(around(q,extent),box)):contains(box,q);
     };
+    const auto clear_brood=[&](EntityId mover,PositionM from,PositionM to) {
+        return std::none_of(positions.begin(),positions.end(),[&](const auto& row) {
+            return row.first!=mover && brood(stages.at(row.first)) && intersects_brood(from,to,row.second);
+        });
+    };
+    std::optional<std::pair<EntityId,PositionM>> expected_egg;
     for (const auto &e : s.journal) {
         if (spatial && e.kind==FactKind::BiologicalObservation) {
             const auto& o=e.observation;
@@ -278,6 +286,31 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
             ensure(configured && clear(e.position,e.position,e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn?c.body_half_q:contact_half),
                    "seed embedded in material");
+        if (bounded_brood_space(s)) {
+            if (expected_egg) {
+                ensure(e.kind==FactKind::AntBorn && expected_egg->first==e.actor && expected_egg->second==e.position,
+                       "MicroWorld birth disagrees with available placement");
+                expected_egg.reset();
+            } else if (e.kind==FactKind::ReproductionAttempt && (e.payload || e.outcome==Outcome::Capacity)) {
+                ensure(positions.contains(e.actor) && positions.at(e.actor)==e.position,"invalid MicroWorld maternal origin");
+                const auto site=pick_egg_site(e.position,s.config,
+                    [&](PositionM a,PositionM b) {
+                        const auto below=below_brood(b,c);
+                        return clear(a,b,brood_half(c)) && !clear(below,below,0);
+                    },
+                    [&](PositionM b) { return clear_brood({},b,b); },
+                    [&](PositionM b) {
+                        return static_cast<std::size_t>(std::count_if(positions.begin(),positions.end(),[&](const auto& row) {
+                            return brood(stages.at(row.first)) && within_distance(b,row.second,brood_adjacency_m,true) &&
+                                s.ants.get(s.ants.index.at(row.first)).colony==e.colony && clear(b,row.second,0);
+                        }));
+                    });
+                ensure(site.has_value()==(e.payload!=0),"MicroWorld no-space outcome contradicts the local clutch");
+                if (site) expected_egg=std::pair{EntityId{e.payload},*site};
+            } else if (e.kind==FactKind::AntBorn) ensure(false,"MicroWorld egg lacks a preceding spatial attempt");
+            if (e.kind==FactKind::AntSeeded && brood(e.stage))
+                ensure(clear_brood(e.actor,e.position,e.position),"overlapping seeded MicroWorld brood");
+        }
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
             positions[e.actor] = e.position;
             stages[e.actor] = e.stage;
@@ -289,6 +322,8 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             const bool loaded_care=held!=held_brood.end() && (carrier==e.actor || held->second==e.actor);
             ensure(clear(positions.at(e.actor),e.position,loaded_care?c.loaded_half_q:half(e.actor)),
                    "historical movement crosses solid material");
+            if (bounded_brood_space(s) && e.kind==FactKind::BroodMoved)
+                ensure(clear_brood(e.actor,positions.at(e.actor),e.position),"MicroWorld brood movement intersects live brood");
             positions[e.actor] = e.position;
             if (carriers.contains(e.actor))
                 parcels.at(carriers.at(e.actor)).position = e.position;
@@ -447,7 +482,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                    "history exceeds combined cargo capacity");
         }
     }
-    ensure(configured && edits == s.geometry_edits && parcels == s.parcels && carriers == s.carriers &&
+    ensure(!expected_egg && configured && edits == s.geometry_edits && parcels == s.parcels && carriers == s.carriers &&
                ledger == s.m.soil &&
                add(add(ledger.remaining_q3, ledger.carried_q3), ledger.deposited_q3) == ledger.initial_q3,
            "soil authority disagrees with committed history");

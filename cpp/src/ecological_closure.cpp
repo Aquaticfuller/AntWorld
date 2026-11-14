@@ -7,7 +7,8 @@ using namespace detail;
 void WorldRuntime::configure_ecological_closure(const EcologicalClosureConfig& config) {
     auto& s = *state_;
     validate_ecological_closure(config, s.config);
-    if (s.ecological || s.m.now != SimTime{} || s.m.watermark || s.ants.size() || !s.foods.rows.empty())
+    if (s.ecological || s.m.now != SimTime{} || s.m.watermark || s.ants.size() || !s.foods.rows.empty() ||
+        (config.brood_space && s.geometry && (s.geometry->config.quantum_m<0.00025 || s.geometry->config.quantum_m>0.001)))
         throw std::invalid_argument("ecological closure must precede the first ant or source");
     Transaction tx(s, limits_);
     s.ecological = config;

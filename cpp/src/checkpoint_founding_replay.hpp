@@ -195,7 +195,7 @@ public:
         return !world.geometry || historical_clear(*world.geometry, edits, index, a, b, half, limits.geometry_partition_cells);
     }
 
-    void initialize(PhysiologyState& p, const WorldEvent& e, PhysiologyState* mother) {
+    void initialize(PhysiologyState& p, const WorldEvent& e, PhysiologyState* mother, PositionM maternal_site) {
         const bool is_founder = founder(e.actor);
         const auto& f = profile();
         ensure(declared && !reserves.contains(e.actor) && (is_founder ? !mother && e.kind == FactKind::PhysiologyEnabled &&
@@ -223,6 +223,7 @@ public:
             packet.kind = body ? FactKind::FoundingDietaryEggFunded : FactKind::FoundingEggFunded;
             packet.actor = {e.payload};
             packet.stage = LifeStage::Adult;
+            packet.position = maternal_site;
             packet.payload = e.actor.value;
             packet.random_value = body ? energy : f.egg_lipid_ug;
             packet.transferred = {0,protein,0,0};

@@ -1,5 +1,6 @@
 #include "behavior_rng.hpp"
 #include "care_internal.hpp"
+#include "ecological_internal.hpp"
 #include "social_internal.hpp"
 #include "founding_internal.hpp"
 
@@ -139,6 +140,13 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (ant.caste==Caste::Queen) {
       choice.care=can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (bounded_brood_space(s) && can_switch && !at_depot && stationary && p.mother.value &&
+               within_contact(ant.position,colony.nest_position,s.config) &&
+               clear_care_segment(ant.position,colony.nest_position,body_half(ant.id))) {
+      // A worker emerging among the brood can see the nearby depot. Use the
+      // existing paid return action before assigning a depot-owned program.
+      choice.care=true;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && wake.payload==1 && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;

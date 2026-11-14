@@ -47,12 +47,38 @@ struct Case {
     std::optional<EcologicalClosureConfig> ecological{};
     bool expanded_history{};
     bool cohort_assay{};
+    bool micro_world{};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
     auto limits=s6_3_1_fixture::limits();
     if (c.expanded_history) limits.committed_events=4'000'000;
     return limits;
+}
+
+inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM nest) {
+    auto& w=scene.world;
+    BehaviorConfig behavior;
+    behavior.field_interval={6*hour_ms};
+    behavior.step_duration={30'000}; // Retained collection/handling clock, not the travel clock.
+    w.configure_surface({{-.15,0,-.15},31,31,.01},{},behavior);
+    auto& g=scene.geometry;
+    g.origin_m={0,0,0};
+    g.initial_solid={{-300,-300,-300},{300,0,300}};
+    g.work_duration={hour_ms/2}; g.move_duration={500}; g.decision_delay={60'000};
+    // Compact founding pocket within a larger solid envelope. Connector reach
+    // stays inside the existing bounded local navigation search.
+    scene.voids={{{-4,-10,-4},{4,-4,4}}};
+    const auto top=c.arm=="blocked"?-4:0;
+    if (c.dogleg) {
+        scene.voids.push_back({{-2,-10,-3},{11,-4,3}});
+        if (top==0) scene.voids.push_back({{6,-10,-3},{12,top,3}});
+    } else if (top==0) scene.voids.push_back({{-3,-10,-3},{3,top,3}});
+    w.configure_geometry(g,scene.voids);
+    scene.target={c.seed%2?.03:-.03,0,0};
+    require(w.spatially_clear(nest,nest,g.loaded_half_q),"MicroWorld founding site lacks load clearance");
+    require(w.spatially_clear(nest,{0,.001,0},g.loaded_half_q)==(top==0 && !c.dogleg),
+            "MicroWorld direct opening differs from its control");
 }
 
 inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, PositionM nest) {
@@ -96,6 +122,7 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
                         SocialConfig social = closure::day_social(), SpeciesCareProfile care = closure::timed_care(true)) {
     WorldConfig config;
     config.continuous_spatial_motion = c.integrated_assay;
+    if (c.micro_world) { config.min_m={-.155,-.15,-.155}; config.max_m={.155,.005,.155}; }
     wp5::Scene scene{WorldRuntime({646, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
     auto& w = scene.world;
     if (c.ecological) w.configure_ecological_closure(*c.ecological);
@@ -103,7 +130,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     w.configure_long_term();
     BehaviorConfig behavior;
     behavior.trails_enabled = false;
-    if (c.integrated_assay) configure_integrated_assay(scene,c,nest);
+    if (c.micro_world) configure_micro_world(scene,c,nest);
+    else if (c.integrated_assay) configure_integrated_assay(scene,c,nest);
     else w.configure_surface({{-.03, 0, -.03}, 7, 7, .01}, {}, behavior);
     const bool water_trial=c.arm=="water-reachable" || c.arm=="water-blocked" || c.arm=="water-absent";
     if (!c.integrated_assay && (c.workers || water_trial)) {

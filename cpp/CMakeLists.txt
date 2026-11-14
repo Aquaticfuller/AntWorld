@@ -7,7 +7,7 @@ option(ANTWORLD_PROFILE "Instrument host-only exclusive and inclusive core timin
 option(ANTWORLD_STORAGE_TIMING "Enable diagnostic-only founding SQLite timing probes" OFF)
 
 add_library(antworld_core src/types.cpp src/world_runtime.cpp src/checkpoint.cpp src/event_journal.cpp src/behavior.cpp src/foraging.cpp src/spatial_navigation.cpp src/physiology.cpp src/founding.cpp src/geometry_kernel.cpp src/geometry.cpp src/excavation.cpp src/commands.cpp src/social.cpp src/ecology.cpp src/long_term.cpp src/inspection.cpp src/care.cpp src/observations.cpp)
-target_sources(antworld_core PRIVATE src/ecological_closure.cpp)
+target_sources(antworld_core PRIVATE src/ecological_closure.cpp src/brood_space.cpp)
 target_include_directories(antworld_core PUBLIC include)
 target_compile_features(antworld_core PUBLIC cxx_std_20)
 if(ANTWORLD_PROFILE)
@@ -68,6 +68,14 @@ antworld_checks(antworld_s3_experiment)
 antworld_checks(antworld_s3_benchmark)
 antworld_checks(antworld_s4_experiment)
 antworld_checks(antworld_s4_benchmark)
+
+if(BUILD_TESTING AND ANTWORLD_STORAGE)
+    add_executable(antworld_m0_tests tests/test_micro_world.cpp)
+    target_include_directories(antworld_m0_tests PRIVATE apps src)
+    target_link_libraries(antworld_m0_tests PRIVATE antworld_core antworld_storage)
+    antworld_checks(antworld_m0_tests)
+    add_test(NAME M0_BROOD_SPACE COMMAND antworld_m0_tests ${CMAKE_CURRENT_BINARY_DIR}/test-output/m0-brood-space)
+endif()
 
 add_executable(antworld_s6_nutrition apps/antworld_s6_nutrition.cpp)
 target_link_libraries(antworld_s6_nutrition PRIVATE antworld_core)

@@ -14,7 +14,8 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         c.cue_lifetime.milliseconds < 1 || c.cue_lifetime.milliseconds > 86400000 ||
         !c.cue_minimum_carbs_ug || c.cue_minimum_carbs_ug > 1000000000 || c.water_sip_ug > 1000000000 ||
         c.cue_response_ppm > 1000000 || c.first_ration_ppm > 1000000 ||
-        (c.suppress_foundress_hatch_cue && !c.portable_field))
+        (c.suppress_foundress_hatch_cue && !c.portable_field) ||
+        (c.brood_space && (!c.portable_field || c.suppress_foundress_hatch_cue)))
         throw std::invalid_argument("invalid ecological closure ENGINEERING_FIXTURE");
 }
 inline SimTime segment_duration(const EcologicalClosureConfig& c, PositionM from, PositionM to, bool loaded) {
@@ -25,6 +26,7 @@ inline SimTime segment_duration(const EcologicalClosureConfig& c, PositionM from
     return {std::max<std::int64_t>(1, static_cast<std::int64_t>(milliseconds))};
 }
 inline bool timed_activity(const auto& s) { return s.ecological && s.ecological->activity_cost; }
+inline bool bounded_brood_space(const auto& s) { return s.ecological && s.ecological->brood_space; }
 inline bool hatch_cue_enabled(const auto& s) {
     return s.founding && s.founding->profile.early_access && s.founding->profile.early_access->local_hatch_cue &&
            (!s.ecological || !s.ecological->suppress_foundress_hatch_cue);
