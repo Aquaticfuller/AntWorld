@@ -14,6 +14,8 @@ The portable archive was opened and exercised in Windows Chrome. A [runtime rece
 
 The Windows launcher opened the portable shaft, sought day 90 and tracked worker #4 with 15 workers alive. The 16 OP0 tests passed, including the local HTTP and native legacy SQLite fixtures. The targeted Release CTest passed the clock, allocation, rollback and save-and-resume checks. Both local logs are included under `experiments/m0/evidence/tests/`.
 
+The first [portable OP0 CI run](https://github.com/Aquaticfuller/AntWorld/actions/runs/43652057167) also recorded a browser harness error at navigation, before checking the world. The follow-up makes readiness polling wait for the new document and actual application state. The browser assertions for positions, histories, care, delivery and excavation are unchanged.
+
 ```powershell
 py -B tools/run_m0.py build/m0-release/antworld_s6_4_wp6b.exe out/m0-portable-panel --portable-care
 py -B tools/run_m0.py build/m0-release/antworld_s6_4_wp6b.exe out/m0-portable-replay --portable-care --durable --case borisovka-shaft-1-slots --case st_petersburg-dogleg-1-slots

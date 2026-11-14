@@ -47,7 +47,8 @@ function send(method, params = {}) {
 }
 async function evaluate(expression) {
     const response = await send("Runtime.evaluate", {expression, returnByValue: true, awaitPromise: true});
-    if (response.exceptionDetails) throw Error("Evaluation failed: " + expression + "\n" + response.exceptionDetails.text);
+    if (response.exceptionDetails) throw Error("Evaluation failed: " + expression + "\n" +
+        (response.exceptionDetails.exception?.description || response.exceptionDetails.text));
     return response.result.value;
 }
 async function click(selector) {
@@ -79,7 +80,15 @@ async function screenshot(name, includeHours = false) {
     await writeFile(join(output, name + ".png"), Buffer.from(frame.data, "base64"));
 }
 async function opened() {
-    await wait(() => evaluate('document.documentElement.dataset.ready === "true" && !!app.state'), "Rendered world");
+    await wait(async () => {
+        try {
+            return await evaluate('document.documentElement?.dataset.ready === "true" && typeof app !== "undefined" && !!app.state');
+        } catch (error) {
+            // A navigation can replace the document between polling and evaluation.
+            if (/Execution context was destroyed|Cannot find context with specified id/.test(error.message)) return false;
+            throw error;
+        }
+    }, "Rendered world");
 }
 async function timed(name, execute) {
     const start = clock();
