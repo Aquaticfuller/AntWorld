@@ -18,7 +18,7 @@ from .archive import fingerprint, json_bytes, read_db, source_inputs
 from .codec import ArchiveError, DEATHS, HIGHLIGHTS, decode_fact, label, require, sql_id
 
 
-CACHE_VERSION = 6
+CACHE_VERSION = 7
 BLOCK_RECORDS = 2048
 META = "meta.json"
 TABLES = """
@@ -291,6 +291,12 @@ class IndexBuilder:
                          24: "First soil placement", 48: "First maternal ration", 56: "First recruitment activation"}.get(fact.kind)
             if milestone:
                 self.milestone(milestone, fact)
+            if fact.observation and fact.observation[0] == 3 and fact.observation[5]:
+                act = fact.observation[1]
+                care_mark = {4: "First brood arrangement", 6: "First brood transport", 7: "First timed feeding",
+                             17: "First brood placement"}.get(act)
+                if care_mark:
+                    self.milestone(care_mark, fact)
             previous, last, revision = fact.time, fact.id, fact.revision
         self.flush()
         self.commit_samples(last, previous, self.tip["time_ms"])

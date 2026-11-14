@@ -22,6 +22,19 @@ from .query import HOUR, ReadAPI
 ROOT = Path(__file__).resolve().parent.parent
 VERIFIED = ROOT / "experiments/s6_4_founding_cohort_release/correction"
 PREVIOUS = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physics/joint"
+MICRO = ROOT / "experiments/m0/demo"
+MICRO_DEMOS = (
+    (MICRO, "borisovka-shaft-1-slots.zip", "MicroWorld · shaft",
+     "One queen starts a protected 90-day colony in a shaft nest. The eggs occupy separate positions."),
+    (MICRO, "st_petersburg-dogleg-1-slots.zip", "MicroWorld · dogleg",
+     "A second founding profile uses a bent passage from chamber to surface."),
+    (MICRO, "borisovka-shaft-1-reference.zip", "MicroWorld · reference placement",
+     "The same shaft fixture and seed with the older brood placement rule."),
+    (MICRO, "borisovka-shaft-1-no-protein.zip", "MicroWorld · no external protein",
+     "The surface carries carbohydrate and water. The colony starts with finite maternal protein."),
+    (MICRO, "borisovka-shaft-1-blocked.zip", "MicroWorld · sealed entrance",
+     "The initial shaft is physically sealed. External food remains outside the nest."),
+)
 DEMOS = (
     (VERIFIED, "borisovka-1-shaft-joint-balanced-5500-corrected-c011n1-r1.zip", "Founding colony",
      "Borisovka · protected shaft · balanced supply. Follow the queen and her first foragers."),
@@ -43,12 +56,12 @@ def cache_path():
     return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "antworld/op0"
 
 
-def default_catalog(path, include_demos=True):
+def default_catalog(path, include_demos=True, micro_first=False):
     catalog = Catalog(path)
     if include_demos:
         manifests = {}
         producers = {}
-        for folder, filename, title, description in DEMOS:
+        for folder, filename, title, description in (MICRO_DEMOS + DEMOS if micro_first else DEMOS + MICRO_DEMOS):
             if not (folder / filename).is_file():
                 continue
             if folder not in manifests:
@@ -311,6 +324,7 @@ def main(argv=None):
     parser = ArgumentParser(prog="python -m op0", description="Replay committed AntWorld history.")
     parser.add_argument("--cache", type=Path, default=cache_path())
     parser.add_argument("--no-demos", action="store_true")
+    parser.add_argument("--micro", action="store_true", help="List the MicroWorld demonstrations first.")
     modes = parser.add_subparsers(dest="mode", required=True)
     server = modes.add_parser("serve", help="Open the local web viewer")
     server.add_argument("--port", type=int, default=8765)
@@ -329,7 +343,7 @@ def main(argv=None):
         if args.mode == "pack":
             pack(args.directory, args.output)
             return 0
-        catalog = default_catalog(args.cache, not args.no_demos)
+        catalog = default_catalog(args.cache, not args.no_demos, args.micro)
         if args.mode == "import":
             worlds, elapsed = register_import(catalog, args.source)
             for meta in worlds:

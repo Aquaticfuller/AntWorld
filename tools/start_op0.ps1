@@ -2,6 +2,7 @@
 param(
     [switch]$Terminal,
     [switch]$NoBrowser,
+    [switch]$MicroWorld,
     [ValidateRange(1, 65535)][int]$Port = 8765,
     [string]$ImportPath,
     [string]$Cache,
@@ -25,6 +26,10 @@ if (-not $Python) {
     throw "Python 3.11 or later is required. Install Python, reopen PowerShell and run this script again."
 }
 $options = @("-X", "utf8", "-m", "op0")
+if ($MicroWorld) {
+    $options += "--micro"
+    if (-not $Cache) { $Cache = Join-Path $PSScriptRoot "../out/m0-op0-cache" }
+}
 if ($Cache) {
     $options += @("--cache", $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Cache))
 }

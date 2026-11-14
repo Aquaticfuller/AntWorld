@@ -198,11 +198,18 @@ function configure(meta, referenceKey = null) {
     const labels = {"First egg laid": "First eggs", "First hatch": "Hatch", "First worker eclosed": "First worker", "First food collection": "First collection",
         "First food delivered": "First delivery",
         "First excavation": "First excavation", "First recruitment activation": "Recruitment", "First larval death": "Larval death",
-        "Queen died": "Queen death"};
+        "First brood arrangement": "Brood arranged", "First timed feeding": "Brood fed", "First trophallaxis": "Trophallaxis",
+        "First soil placement": "Soil placed", "Queen died": "Queen death"};
     $("milestones").replaceChildren(...meta.milestones.filter(m => labels[m.label]).map(m =>
         button(labels[m.label], () => jumpEvent(m.id, m.ant).catch(report), tr(m.label) + " · " + exactTime(m.time_ms))));
+    const replays = {"First egg laid": "Watch egg placement", "First brood arrangement": "Watch brood arrangement",
+        "First timed feeding": "Watch brood feeding"};
+    const available = meta.milestones.filter(m => replays[m.label]);
+    $("action-replays").hidden = !available.length;
+    $("action-replays").replaceChildren(...available.map(m => button(replays[m.label], () => watchAction(m).catch(report))));
     setOptions($("reference"), app.catalog.filter(e => e.key !== $("archive").value));
-    const prior = app.catalog.find(e => e.title === "Before the feeding correction" && e.key !== $("archive").value);
+    const referenceTitle = meta.scenario?.startsWith("micro-m0-") ? "MicroWorld · reference placement" : "Before the feeding correction";
+    const prior = app.catalog.find(e => e.title === referenceTitle && e.key !== $("archive").value);
     if (referenceKey || prior) $("reference").value = referenceKey || prior.key;
 }
 
@@ -242,6 +249,8 @@ async function openArchive(key, preferred) {
     app.layer = null;
     app.map = {zoom: 1, x: 0, y: 0};
     setSection(meta.settings.geometry && meta.initial_queens.length ? "slice" : "surface");
+    $("axis").value = meta.scenario?.startsWith("micro-m0-") ? "y" : "z";
+    if (app.section === "slice" && $("axis").value === "y" && meta.colonies.length) preferView(meta.colonies[0].position_m);
     $("ant-id").value = app.selected || "";
     toggle("follow", false);
     configure(meta);
@@ -431,10 +440,45 @@ function renderAnt(ant) {
     if (s) panel.append(keyValues([["Body energy", withUnit(s.energy_nj, "nJ")], ["Body water", withUnit(s.hydration_ug, "µg")],
         ["Tissue protein", withUnit(s.tissue_protein_ug, "µg")], ["Crop C/P/W/other", mass(s.crop_ug)],
         ["Carried C/P/W/other", mass(s.carried_ug)]]));
+    if (ant.status !== "Not yet present") {
+        const detail = node("details", null, "individual-window");
+        const detailBody = node("div");
+        const actions = node("div", null, "location-list");
+        for (const [days,label] of [[1,"Selected day"],[3,"Three-day window"]])
+            actions.append(button(label, () => showIndividualWindow(ant, days, detailBody).catch(report)));
+        detail.append(node("summary",tr("Individual time budget and physiology")),actions,detailBody);
+        panel.append(detail);
+    }
     panel.append(node("h4", tr("Lifetime · includes later recorded events"), "subhead"),
         ...ant.life_events.map(e => eventButton(e)), node("h4", tr("Recent facts through cursor"), "subhead"),
         ...ant.activity.slice(0, 12).map(e => eventButton(e, true)));
     if (!ant.activity.length) panel.append(node("p", tr("No matching actions by this time."), "muted"));
+}
+async function showIndividualWindow(ant, days, panel) {
+    const observed = ant.died_ms == null ? ant.time_ms : Math.min(ant.time_ms, ant.died_ms);
+    const begin = Math.floor(observed / DAY) * DAY;
+    const data = await world("individual-window", {id: ant.id, begin_ms: begin, end_ms: Math.min(app.meta.end_ms,begin+days*DAY)});
+    if (!panel.isConnected) return;
+    const interval = ms => withUnit(ms/1000,"s");
+    panel.replaceChildren(node("p",tr("Window starts on {day}. Task time and paid work are separate measurements.",{day:day(begin)}),"muted"),
+        keyValues([["Alive in window", interval(data.elapsed_alive_ms)],
+            ["Paid work",data.work_clock_recorded ? interval(data.paid_work_ms) : null],
+            ["Committed movement",withUnit(data.completed_distance_m*1000,"mm")],
+            ["Timed part of movement",interval(data.timed_move_ms)],["Moves without a time interval",data.untimed_moves],
+            ["Nutrition received",mass(data.nutrition_in_ug)],["Nutrition sent",mass(data.nutrition_out_ug)],
+            ...Object.entries(data.programs_ms).filter(([,value]) => value).map(([program,value]) => [program,interval(value)]),
+            ...Object.entries(data.event_counts)]));
+    for (const [field,label,unit,color] of [["energy_nj","Body energy","nJ","queen"],["hydration_ug","Body water","µg","food"]]) {
+        const points = data.physiology_samples.filter(p => p[field] != null);
+        if (!points.length) continue;
+        const chart = node("canvas",null,"physiology-mini");
+        chart.id = "ant-"+field;
+        chart.setAttribute("aria-label",tr(label));
+        panel.append(node("h4",tr(label)+" ("+unit+")"),chart,
+            node("p",points.map(p => day(p.time_ms)+" · "+withUnit(p[field],unit)).join(" / "),"muted"));
+        graph(chart.id,[{values:points.map(p => [p.time_ms-begin,p[field]]),color:colors[color]}],data.end_ms-begin,
+            Math.max(0,Math.min(data.end_ms,ant.time_ms)-begin),null,begin);
+    }
 }
 function inspect(events) {
     $("individual-panel").hidden = events;
@@ -757,7 +801,7 @@ function drawMap() {
             }
         }
         put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
-            (app.geometry.cropped ? " · " + tr("Section cropped to first 480 quanta on each axis") : ""));
+            (app.geometry.cropped ? " · " + tr("Local section of the terrain") : ""));
         legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["egg", "Eggs"],
             ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["entrance", "Recent movement points"],
             ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : []),
@@ -863,7 +907,7 @@ function drawMap() {
     ctx.fillText(tr("{count} living", {count: state.ants.length}), 13, height - 13);
 }
 
-function graph(id, tracks, end, stamp, legendId = null) {
+function graph(id, tracks, end, stamp, legendId = null, origin = 0) {
     const canvas = canvasContext($(id));
     if (!canvas) return;
     const {ctx, width, height} = canvas;
@@ -897,9 +941,9 @@ function graph(id, tracks, end, stamp, legendId = null) {
     const mark = xx(stamp);
     ctx.beginPath(); ctx.moveTo(mark, 6); ctx.lineTo(mark, height - 12); ctx.stroke();
     ctx.fillStyle = "#a9b6a7";
-    ctx.fillText(day(0), low, height - 3);
+    ctx.fillText(day(origin), low, height - 3);
     ctx.textAlign = "right";
-    ctx.fillText(day(end), width - 11, height - 3);
+    ctx.fillText(day(origin+end), width - 11, height - 3);
     ctx.textAlign = "left";
     if (legendId) legend(legendId, tracks.map(t => [t.key, t.label]));
 }
@@ -1057,6 +1101,38 @@ function playFrames(advance, interval) {
 }
 function firstDelivery(meta) {
     return meta?.milestones.find(m => m.label === "First food delivered" && m.ant);
+}
+async function watchAction(mark) {
+    stopPlay();
+    const version = app.playVersion;
+    const end = await world("event",{id:mark.id});
+    let frames = [end];
+    if (end.action?.began_ms != null) {
+        const result = await world("events", {group:"care",ant:end.actor,since_ms:end.action.began_ms,
+            until_ms:end.time_ms,cut_event:end.id,limit:200});
+        const start = result.events.find(e => e.actor===end.actor && e.action?.bout===end.action.bout && e.action.phase==="Started");
+        const moved = result.events.filter(e => e.kind==="BroodMoved" && e.source===end.source && e.actor===end.related);
+        if (start) frames = [start,...moved,end];
+    } else if (end.kind === "AntBorn" && BigInt(end.id)>1n) {
+        const previous = await world("event", {id:(BigInt(end.id)-1n).toString()});
+        if (previous.kind==="ReproductionAttempt" && previous.source===end.source) frames = [previous,end];
+    }
+    if (version!==app.playVersion) return;
+    app.selected = end.kind==="AntBorn" ? end.actor : end.related || end.actor;
+    $("ant-id").value = app.selected || "";
+    app.follow=false; toggle("follow",false);
+    app.location=null;
+    $("axis").value="y";
+    inspect(true);
+    show(tr("Showing recorded action boundaries in order."));
+    let index=0;
+    playFrames(async () => {
+        const fact = frames[index++];
+        preferView(fact.position_m);
+        await seek(fact.time_ms,fact);
+        if (app.selectedFact===fact) showEvent(fact);
+        return index<frames.length;
+    },850);
 }
 async function watchDelivery() {
     const delivery = firstDelivery(app.meta);

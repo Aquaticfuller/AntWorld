@@ -29,12 +29,11 @@ def roster():
             identity += 100 * (1 + ("h0r0", "h0r1", "h1r0", "no-care", "absent", "no-protein", "blocked", "wet",
                                     "low-lipid").index(variant))
         name = f"{population}-{layout}-{seed}-{variant}"
-        case = original | dict(case=name, arm=f"micro-m0-{layout}-{treatment}-{source}", layout=layout,
+        case = original | dict(case=name, arm=f"micro-m0-{layout}-{treatment if h2 else 'nocue'}-{source}", layout=layout,
                                source=source, horizon_ms=90*DAY, care_enabled=care, h2=h2, r1=r1,
                                condition="ENGINEERING_FIXTURE", parameters=original["parameters"] | {"maternal_lipid": lipid})
         args = list(COMMAND)
         args[1] = "750000" if r1 else "0"
-        args[3] = "3" if h2 else "1"
         return identity, case, args
 
     for population, layout, seed in product(("borisovka", "st_petersburg"), ("shaft", "dogleg"), (1, 7)):

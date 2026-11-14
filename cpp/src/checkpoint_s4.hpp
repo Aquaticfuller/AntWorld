@@ -2,6 +2,7 @@
 #include "checkpoint_codec.hpp"
 #include "brood_space.hpp"
 #include "ecological_internal.hpp"
+#include "surface_internal.hpp"
 #include "state.hpp"
 #include <bit>
 #include <set>
@@ -296,13 +297,15 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 const auto site=pick_egg_site(e.position,s.config,
                     [&](PositionM a,PositionM b) {
                         const auto below=below_brood(b,c);
-                        return clear(a,b,brood_half(c)) && !clear(below,below,0);
+                        return inside(b,s.config) && (!s.surface || surface_allows(*s.surface,true,a,b)) &&
+                            clear(a,b,brood_half(c)) && !clear(below,below,0);
                     },
                     [&](PositionM b) { return clear_brood({},b,b); },
                     [&](PositionM b) {
                         return static_cast<std::size_t>(std::count_if(positions.begin(),positions.end(),[&](const auto& row) {
                             return brood(stages.at(row.first)) && within_distance(b,row.second,brood_adjacency_m,true) &&
-                                s.ants.get(s.ants.index.at(row.first)).colony==e.colony && clear(b,row.second,0);
+                                s.ants.get(s.ants.index.at(row.first)).colony==e.colony &&
+                                (!s.surface || surface_allows(*s.surface,true,b,row.second)) && clear(b,row.second,0);
                         }));
                     });
                 ensure(site.has_value()==(e.payload!=0),"MicroWorld no-space outcome contradicts the local clutch");

@@ -15,7 +15,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         !c.cue_minimum_carbs_ug || c.cue_minimum_carbs_ug > 1000000000 || c.water_sip_ug > 1000000000 ||
         c.cue_response_ppm > 1000000 || c.first_ration_ppm > 1000000 ||
         (c.suppress_foundress_hatch_cue && !c.portable_field) ||
-        (c.brood_space && (!c.portable_field || c.suppress_foundress_hatch_cue)))
+        (c.brood_space && !c.portable_field))
         throw std::invalid_argument("invalid ecological closure ENGINEERING_FIXTURE");
 }
 inline SimTime segment_duration(const EcologicalClosureConfig& c, PositionM from, PositionM to, bool loaded) {

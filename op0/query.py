@@ -3,12 +3,13 @@
 from collections import Counter, OrderedDict
 from contextlib import closing
 import json
+from math import dist
 from threading import Lock
 from urllib.parse import parse_qs, urlsplit
 import zlib
 
 from . import DAY, SCHEMA
-from .codec import CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
+from .codec import ACTS, CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
 from .geometry import AXES, MAX_PIXELS, clear_centers, slice_at
 from .index import BLOCK_RECORDS, COUNTERS, LEDGER
 
@@ -255,6 +256,87 @@ class ReadAPI:
         return dict(points=[dict(id=str(f.id), time_ms=f.time, position_m=f.position, evidence="COMMITTED_FACT") for f in facts],
                     earlier_points_available=len(rows) > limit, connected_segments=False)
 
+    def individual_window(self, db, meta, options):
+        ant_id = integer(options, "id", None, 1, MASK)
+        ant = sql_id(ant_id)
+        start = integer(options, "begin_ms", 0, 0, meta["end_ms"])
+        end = integer(options, "end_ms", min(start + DAY, meta["end_ms"]), start, min(start + 7*DAY, meta["end_ms"]))
+        identity = db.execute("SELECT born,dead FROM ants WHERE id=?", (ant,)).fetchone()
+        require(identity is not None, "Unknown ant in this archive")
+        born, dead = identity
+        first = max(start, born)
+        last = max(first, min(end, dead if dead is not None else end))
+        programs, actions, counts = Counter(), Counter(), Counter()
+        amount_in, amount_out = [0]*4, [0]*4
+        distance_m, duration_ms, untimed, paid_ms = 0., 0, 0, 0
+        cursor = cursor_at(db, first, inclusive=False)
+        prior = db.execute("SELECT x,y,z,program FROM changes WHERE ant=? AND event<=? ORDER BY event DESC LIMIT 1",
+                           (ant, cursor)).fetchone()
+        position = prior[:3] if prior else None
+        program = label(PROGRAMS, prior[3]) if prior else "Not recorded"
+        program_since = first
+        prior_paid = records(db, 0, cursor, (57,), ant, 1, reverse=True, actors_only=True)
+        active = self.fact(db, meta, prior_paid[0]) if prior_paid else None
+        if active and not active.payload:
+            active = None
+        stops = {}
+        rows = db.execute("""SELECT id,offset FROM facts WHERE id>? AND id<=? AND (actor=? OR related=?)
+            AND kind IN (2,4,5,12,15,17,21,23,24,35,42,43,48,57) ORDER BY id""",
+            (cursor, cursor_at(db, last, inclusive=False), ant, ant))
+        for row in rows:
+            f = self.fact(db, meta, row)
+            if f.kind in (21,48):
+                target = amount_out if sql_id(f.actor) == ant else amount_in
+                for i, mass in enumerate(f.mass):
+                    target[i] += mass
+                counts["Nutrition sent" if target is amount_out else "Nutrition received"] += 1
+            if sql_id(f.actor) != ant:
+                continue
+            if f.kind in (2,35):
+                position = f.position
+            elif f.kind in (15,17):
+                programs[program] += f.time-program_since
+                program = label(PROGRAMS, f.payload if f.kind == 17 else 0)
+                program_since = f.time
+            elif f.kind == 57:
+                if f.payload:
+                    active = f
+                elif active and active.source == f.source:
+                    elapsed = f.time-max(first,active.time)
+                    paid_ms += elapsed
+                    stops[f.source] = (f.time, elapsed)
+                    active = None
+            elif f.kind in (4,43):
+                if position is not None:
+                    distance_m += dist(position, f.position)
+                when, elapsed = stops.get(f.source, (-1,0))
+                if when == f.time:
+                    duration_ms += elapsed
+                else:
+                    untimed += 1
+                position = f.position
+                counts["Committed moves"] += 1
+            elif f.kind == 42:
+                phase, act = f.observation[:2]
+                if phase in (3,4):
+                    counts["Completed actions" if phase == 3 else "Interrupted actions"] += 1
+                    if phase == 3:
+                        actions[ACTS[act]] += 1
+            elif f.kind in (5,12,23,24):
+                counts[KINDS[f.kind]] += 1
+        programs[program] += last-program_since
+        if active:
+            # A death closes paid work even when no separate stop is published.
+            paid_ms += last-max(first,active.time)
+        samples = [dict(**json.loads(value), time_ms=stamp, cursor=str(cursor)) for stamp, cursor, value in db.execute(
+            "SELECT time,cursor,value FROM samples WHERE ant=? AND time>=? AND time<=? ORDER BY time,cursor LIMIT 64",
+            (ant, start, end))]
+        return dict(id=str(ant_id), begin_ms=start, end_ms=end, elapsed_alive_ms=last-first, programs_ms=dict(programs),
+                    paid_work_ms=paid_ms, work_clock_recorded=bool((meta["settings"]["ecological"] or {}).get("activity_cost")),
+                    completed_distance_m=distance_m, timed_move_ms=duration_ms, untimed_moves=untimed,
+                    event_counts=dict(counts), completed_actions=dict(actions), nutrition_in_ug=amount_in,
+                    nutrition_out_ug=amount_out, physiology_samples=samples, evidence="RECONSTRUCTED")
+
     def cohort(self, db, meta, cursor):
         saved = meta["first_cohort"]
         if not saved or cursor < int(saved["cursor"]):
@@ -289,6 +371,17 @@ class ReadAPI:
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
+        elif (meta["settings"]["physics"] == 27 or (meta.get("scenario") or "").startswith("micro-m0-")) and meta["colonies"]:
+            # The 30 cm domain is much larger than the founding pocket. Start
+            # with a nest-centered section; the surface retains its full extent.
+            focus = meta["colonies"][0]["position_m"]
+            origin, quantum = geometry["origin_m"], geometry["quantum_m"]
+            bounds = []
+            for a in (u, v):
+                center = round((focus[a] - origin[a]) / quantum)
+                low, high = max(solid[a], center - 22), min(solid[a+3], center + 22)
+                bounds.append((low, high))
+            window = bounds[0][0], bounds[1][0], bounds[0][1], bounds[1][1]
         elif (solid[u+3] - solid[u]) * (solid[v+3] - solid[v]) > MAX_PIXELS:
             window = solid[u], solid[v], min(solid[u+3], solid[u]+480), min(solid[v+3], solid[v]+480)
         edits = [json.loads(raw) for raw, in db.execute("SELECT value FROM edits WHERE event<=? ORDER BY event", (cursor,))]
@@ -296,8 +389,14 @@ class ReadAPI:
         if options.get("clearance") == "1":
             sliced["unloaded_body_clear"] = clear_centers(geometry, edits, sliced)
         openings = None
-        if (solid[3] - solid[0]) * (solid[5] - solid[2]) <= MAX_PIXELS:
-            roof = slice_at(geometry, edits, "y", solid[4] - 1)
+        roof_window = None
+        if (solid[3] - solid[0]) * (solid[5] - solid[2]) > MAX_PIXELS and (meta.get("scenario") or "").startswith("micro-m0-"):
+            focus = meta["colonies"][0]["position_m"]
+            origin, quantum = geometry["origin_m"], geometry["quantum_m"]
+            x, z = (round((focus[a] - origin[a]) / quantum) for a in (0, 2))
+            roof_window = max(solid[0], x-24), max(solid[2], z-24), min(solid[3], x+24), min(solid[5], z+24)
+        if roof_window or (solid[3] - solid[0]) * (solid[5] - solid[2]) <= MAX_PIXELS:
+            roof = slice_at(geometry, edits, "y", solid[4] - 1, roof_window)
             origin, scale = geometry["origin_m"], geometry["quantum_m"]
             x, z = roof["bounds_q"][:2]
             openings = [[origin[0] + (x + col + .5) * scale, origin[1] + solid[4] * scale,
@@ -368,6 +467,8 @@ class ReadAPI:
             return self.adjacent(db, meta, options)
         if operation == "activity":
             return self.activity_day(db, meta, options)
+        if operation == "individual-window":
+            return self.individual_window(db, meta, options)
         if operation == "series":
             return [dict(time_ms=stamp, cursor=str(cursor), **json.loads(value))
                     for stamp, cursor, value in db.execute("SELECT time,cursor,value FROM daily ORDER BY time")]
