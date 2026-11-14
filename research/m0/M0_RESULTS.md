@@ -2,6 +2,8 @@
 
 M0 is a working `ENGINEERING_ONLY` preview for a single founding colony under protected conditions. It includes the native opt-in spatial behavior, a 90-day autonomous fixture and read-only observation in OP0. This result preserves B06 `INSUFFICIENT`, the nine `BIOLOGICAL_BLOCKED` roots and the historical application `FAIL`.
 
+The table below reports the original Windows panel. The default viewer now uses physics 29 for portable care movement. [The native replay addendum](M0_PORTABILITY_RESULTS.md) records the original cross-platform failure, the versioned correction, the successful Windows and Linux byte comparisons and the unchanged outcomes of all 28 cases.
+
 ## Implementation and recorded behavior
 
 The 31 cm square arena has a 30 × 30 × 15 cm parametric soil envelope, with a fine founding pocket and a 10 mm surface grid. The seed files describe a shaft or a bent connector. A world starts with one reproductive queen and zero brood and workers. No commands place ants after initialization. External food comes from finite initialized stock and scheduled releases from an accounted reservoir. The local water control also has a finite, debited source.

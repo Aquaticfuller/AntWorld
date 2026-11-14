@@ -25,6 +25,18 @@ jobs:
         run: python tools/ci_build.py ${{ matrix.configuration }}
       - name: Test
         run: python tools/ci_test.py ${{ matrix.configuration }}
+      - name: Reproduce MicroWorld examples through a durable midpoint
+        if: matrix.configuration == 'Release'
+        shell: pwsh
+        run: |
+          $binary = @('build/ci/Release/antworld_s6_4_wp6b.exe', 'build/ci/antworld_s6_4_wp6b') |
+              Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $binary) { throw 'Missing Core scenario executable' }
+          python tools/verify_m0.py experiments/m0/demo
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/run_m0.py $binary build/m0-replay --durable --portable-care --case borisovka-shaft-1-slots --case st_petersburg-dogleg-1-slots
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python tools/verify_m0.py experiments/m0/portable-demo --portable-care --replay build/m0-replay
       - name: Release performance fixtures (Linux)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |
@@ -226,16 +238,6 @@ jobs:
         if: runner.os == 'Windows' && matrix.configuration == 'Release' && hashFiles('experiments/s6_4_founding_cohort_release/performance/application-formal/public_export_manifest.json') != ''
         run: |
           python tools/verify_founding_cohort_application.py experiments/s6_4_founding_cohort_release/performance/application-formal experiments/s6_4_founding_cohort_release/performance/application-formal-analysis
-      - name: Reproduce MicroWorld examples through a durable midpoint
-        if: matrix.configuration == 'Release'
-        shell: pwsh
-        run: |
-          $binary = @('build/ci/Release/antworld_s6_4_wp6b.exe', 'build/ci/antworld_s6_4_wp6b') |
-              Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-          if (-not $binary) { throw 'Missing Core scenario executable' }
-          python tools/run_m0.py $binary build/m0-replay --durable --case borisovka-shaft-1-slots --case st_petersburg-dogleg-1-slots
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python tools/verify_m0.py experiments/m0/demo --replay build/m0-replay
 
   sanitizers:
     runs-on: ubuntu-24.04

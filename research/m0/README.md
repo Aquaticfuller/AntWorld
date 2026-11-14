@@ -4,12 +4,13 @@ The archive begins with one queen and ends at day 90. You can open it without a 
 
 ```powershell
 Set-Location D:\Codex_workspace
-git clone --depth 1 --single-branch --branch codex/m0-microworld https://github.com/Aquaticfuller/AntWorld.git AntWorld-M0
+git clone --filter=blob:none --sparse --depth 1 --single-branch --branch codex/m0-microworld https://github.com/Aquaticfuller/AntWorld.git AntWorld-M0
 Set-Location AntWorld-M0
+git sparse-checkout set op0 tools experiments/m0/portable-demo research/m0
 .\tools\start_op0.ps1 -MicroWorld
 ```
 
-In an existing MicroWorld checkout, run the last command from its root. If the browser stays closed, open [the viewer](http://127.0.0.1:8765/). The terminal window runs the local service. Press Ctrl+C there to stop it. The launcher uses `out/m0-op0-cache` inside the checkout for its disposable browse index. To put the index on another drive, use `-Cache 'D:\AntWorldObservationCache'`. If a PowerShell execution policy blocks the script, the equivalent command is `py -B -m op0 --micro --cache out/m0-op0-cache serve`.
+In an existing MicroWorld checkout, run only the last command from its root. The sparse checkout above is for viewing; it omits the historical experiments and C++ source to save disk space. If the browser stays closed, open [the viewer](http://127.0.0.1:8765/). The terminal window runs the local service. Press Ctrl+C there to stop it. The launcher uses `out/m0-op0-cache` inside the checkout for its disposable browse index. To put the index on another drive, use `-Cache 'D:\AntWorldObservationCache'`. If a PowerShell execution policy blocks the script, the equivalent command is `py -B -m op0 --micro --cache out/m0-op0-cache serve`.
 
 1. Open **MicroWorld · shaft**. A horizontal section through the founding chamber shows the queen. Select **Watch egg placement**. The next scene shows the first egg at its committed position. Scrub just before day 5 to see the first clutch, or select **Watch brood arrangement** to replay an actual handling bout. Change the section between horizontal and either vertical direction to inspect the pocket and shaft.
 2. Select **Brood fed** to jump to a measured handling completion, or **Watch brood feeding** to see its recorded start and end. The event panel identifies the participants and transferred mass. **Larval death** opens a real lost individual. In **Individual**, the nearest prior sampled physiology still carries its own observation date.
@@ -19,4 +20,4 @@ In an existing MicroWorld checkout, run the last command from its root. If the b
 
 The initial underground section is local to the chamber. The surface shows the full arena. Markers are enlarged for readability and retain their exact coordinates. Older OP0 demonstrations and the terminal viewer are still available. Use `.\tools\start_op0.ps1 -MicroWorld -Terminal -Language zh-CN` to choose a world by number in the terminal. The browser and terminal read the same indexes.
 
-Use `-ImportPath` with a native archive to inspect a new case. The shipped archives are under `experiments/m0/demo`. The code version, physics generation, file identity and scientific status are displayed in the archive information panel. The demonstrations are `ENGINEERING_ONLY`.
+Use `-ImportPath` with a native archive to inspect a new case. The default M0 archives are under `experiments/m0/portable-demo`. Their stable physics 29 clock corrects a cross-platform rounding issue; the original physics 27 witnesses are still importable from `experiments/m0/demo` in a full checkout. The code version, physics generation, file identity and scientific status are displayed in the archive information panel. The demonstrations are `ENGINEERING_ONLY`.

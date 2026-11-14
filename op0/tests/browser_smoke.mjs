@@ -89,7 +89,7 @@ async function timed(name, execute) {
 
 async function microWorld() {
     assert.equal(await evaluate("$('title').textContent"),"MicroWorld · shaft");
-    assert.equal(await evaluate("app.meta.settings.physics"),27);
+    assert.equal(await evaluate("app.meta.settings.physics"),29);
     assert.equal(await evaluate("app.state.ants.length"),1);
     assert.equal(await evaluate("$('replay-mode').value"),"scenes");
     await click("#play");

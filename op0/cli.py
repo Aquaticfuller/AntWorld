@@ -22,7 +22,7 @@ from .query import HOUR, ReadAPI
 ROOT = Path(__file__).resolve().parent.parent
 VERIFIED = ROOT / "experiments/s6_4_founding_cohort_release/correction"
 PREVIOUS = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physics/joint"
-MICRO = ROOT / "experiments/m0/demo"
+MICRO = ROOT / "experiments/m0/portable-demo"
 MICRO_DEMOS = (
     (MICRO, "borisovka-shaft-1-slots.zip", "MicroWorld · shaft",
      "One queen starts a protected 90-day colony in a shaft nest. The eggs occupy separate positions."),

@@ -1,0 +1,68 @@
+{
+  "borisovka-shaft-1-slots": {
+    "physics_27_linux_difference": {
+      "cuts.csv": {
+        "first_distinct_byte": 8538,
+        "linux_durable_sha256": "c328a8776bf8b16b9d57278c2ca1461e98f9a37101e42929dd6811a6ab8ff401",
+        "published_original_sha256": "026974433a0f442851fa8081091f900fa0437515e971c36d8f7974e8a34fbc06"
+      },
+      "facts.bin": {
+        "first_distinct_byte": 1566870,
+        "linux_durable_sha256": "d2436015534cacc42f760a97ffcb65b74ca3788afb8ab826fd6cc2bcf5822569",
+        "published_original_sha256": "a4246ada6e183c27a2ac32bb7eea3b1d1754e7310d35813b5c1989851f5bb3b8"
+      },
+      "final.frame": {
+        "first_distinct_byte": 44868,
+        "linux_durable_sha256": "b1175a8d9fee00c740762c0dc509cb590f1f18d68fb8149c2561ee748ef1421c",
+        "published_original_sha256": "d29866a6bd9c0a843043de92012e5dc8bb9c5656d07a186170a14c61b9eb6165"
+      },
+      "individuals.csv": {
+        "first_distinct_byte": 140270,
+        "linux_durable_sha256": "89ed08796e9ec3d021c96e8c8152c8262a5a653e582f247f62ca8ad7e2fcb924",
+        "published_original_sha256": "f3e82778ed65557b258f825eccc762e18d1601aa76e59f41f1ae4bd820d41057"
+      }
+    },
+    "physics_29_unchanged_native_members": {
+      "cuts.csv": "026974433a0f442851fa8081091f900fa0437515e971c36d8f7974e8a34fbc06",
+      "facts.bin": "a4246ada6e183c27a2ac32bb7eea3b1d1754e7310d35813b5c1989851f5bb3b8",
+      "final.frame": "31f3132da994c3afbcbbdce5bd3e34dd4746e6e237b39065b84ab565b363ea39",
+      "geometry_edits.csv": "5d73455d97afa38f7e39f935344b29dcd5404fe12e34146574b2bca086f46b65",
+      "individuals.csv": "f3e82778ed65557b258f825eccc762e18d1601aa76e59f41f1ae4bd820d41057",
+      "initial.chk": "7bd40c670fa1cb9fec84b7ef37aa206eb0bebe526fba8a3e43c162e3b07e529f",
+      "parameters.txt": "0fabe64eebceb47c0622b772312dc83d3d7b0d97b62bba7dc56164a0bf0e0fa7"
+    }
+  },
+  "st_petersburg-dogleg-1-slots": {
+    "physics_27_linux_difference": {
+      "cuts.csv": {
+        "first_distinct_byte": 12920,
+        "linux_durable_sha256": "a5793ef46d88d252fafe6da39e2b72eee10120f395ad89892e18f7e5a91be11c",
+        "published_original_sha256": "10dabd82e3e1d6c4404ed9fae1ebf70a78782eeb08494ce4308aba450441ed55"
+      },
+      "facts.bin": {
+        "first_distinct_byte": 9472699,
+        "linux_durable_sha256": "5c99da09c46f8e2a271316025aae72015d55d4c6d2be8182e32b4ca393e16a37",
+        "published_original_sha256": "6d1939ab25c2bbdf1a5a90485b2046e4e01c0d61c65fa43732ca21dc690168dc"
+      },
+      "final.frame": {
+        "first_distinct_byte": 56737,
+        "linux_durable_sha256": "81a2b423edcf01415405e4b14e909c0d5be667e375b6af2dd54dfdf5a189ef40",
+        "published_original_sha256": "a8d986ccf7d1109869a41b3de44b7d8d12c307eb1e5133dc63b90dd4bb05ce22"
+      },
+      "individuals.csv": {
+        "first_distinct_byte": 268400,
+        "linux_durable_sha256": "080087b5a21e843da8cb311a77d3b36793839165fd645bd50f6f7d8e36bae43a",
+        "published_original_sha256": "b4baa6d73c71d3524011da60000f99a90aa5b77b43df58983f6eac3c8be64204"
+      }
+    },
+    "physics_29_unchanged_native_members": {
+      "cuts.csv": "10dabd82e3e1d6c4404ed9fae1ebf70a78782eeb08494ce4308aba450441ed55",
+      "facts.bin": "6d1939ab25c2bbdf1a5a90485b2046e4e01c0d61c65fa43732ca21dc690168dc",
+      "final.frame": "a92f77f6bff25a23d05f2bf1b50de8b78268d7ac941f9f8a44443fbfe284c040",
+      "geometry_edits.csv": "160be33036d7a88c9d2edd14f096c510a6761035803c3ccd8e2e5832dfe752ec",
+      "individuals.csv": "b4baa6d73c71d3524011da60000f99a90aa5b77b43df58983f6eac3c8be64204",
+      "initial.chk": "9a2c2af403f689dc47be3ff3f06bc4b5c179a4c07d763c4c3418293ef8527f9f",
+      "parameters.txt": "b1666609803e5170ab5a79f85f5e6fd487d4e658a17e83b651bf60e69301c6ac"
+    }
+  }
+}

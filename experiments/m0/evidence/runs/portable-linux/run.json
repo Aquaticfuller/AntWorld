@@ -1,0 +1,13 @@
+{
+  "binary_sha256": "42c6765b153498e8fee326687808be67e97c889d9baf200693a083c54eaf14cc",
+  "cases": [
+    "borisovka-shaft-1-slots",
+    "st_petersburg-dogleg-1-slots"
+  ],
+  "cpp_tree": "b249d14ea8896c9b9bbe194bf247f71cbe0c2892",
+  "dirty": "",
+  "mode": "durable",
+  "portable_protocol_sha256": "87af939f32f6246eae8b981a1c6041691afe665d4d8de61408e09d441696934d",
+  "protocol_sha256": "ff1f675ca7a1bdb47907873c7834752cc111ccc36479034e58fd939ce6256415",
+  "source": "2d65063388f1e5df4670bb39fec12f381c51b74d"
+}

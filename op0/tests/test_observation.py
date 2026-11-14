@@ -334,7 +334,7 @@ class ObservationTests(unittest.TestCase):
             return api_get(self.api, f"world/{world['key']}/{operation}", **options)
 
         meta = at("meta")
-        self.assertEqual((meta["settings"]["checkpoint_schema"], meta["settings"]["physics"], meta["end_ms"]), (23, 27, 90*DAY))
+        self.assertEqual((meta["settings"]["checkpoint_schema"], meta["settings"]["physics"], meta["end_ms"]), (23, 29, 90*DAY))
         early = at("state", time_ms=5*DAY-1)
         eggs = [a for a in early["ants"] if a["stage"] == "Egg"]
         self.assertEqual((len(eggs), len({tuple(a["position_m"]) for a in eggs})), (12,12))

@@ -1,0 +1,8 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/build/m0-portable
+Test project D:/Codex_workspace/AntWorld/build/m0-portable
+    Start 1: M0_BROOD_SPACE
+1/1 Test #1: M0_BROOD_SPACE ...................   Passed    0.03 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.05 sec

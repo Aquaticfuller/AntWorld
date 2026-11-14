@@ -371,7 +371,7 @@ class ReadAPI:
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
-        elif (meta["settings"]["physics"] == 27 or (meta.get("scenario") or "").startswith("micro-m0-")) and meta["colonies"]:
+        elif (meta["settings"]["physics"] in (27, 28, 29, 30) or (meta.get("scenario") or "").startswith("micro-m0-")) and meta["colonies"]:
             # The 30 cm domain is much larger than the founding pocket. Start
             # with a nest-centered section; the surface retains its full extent.
             focus = meta["colonies"][0]["position_m"]

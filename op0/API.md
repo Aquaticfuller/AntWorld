@@ -42,7 +42,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 ### Limits
 
-- OP0 replays archives with no live advancement or command API. Supported checkpoint families start at schema 8 and extend through 23. The new MicroWorld physics 27 and its cue-suppression comparison 28 retain the same canonical fact layout. Unknown encodings fail explicitly.
+- OP0 replays archives with no live advancement or command API. Supported checkpoint families start at schema 8 and extend through 23. MicroWorld physics 27/28 and portable care physics 29/30 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
 - Event pages are bounded and share a 12-block cache. Validation streams facts. It loads native frames and sampled cuts during indexing, with a 768 MiB frame limit, 8 GiB member limit and 64 MiB limit per sample CSV. Temporary disk space is needed for a SQLite copy and its index.
 - Space uses axis-aligned slices of quantized 3D material. MicroWorld centers the default underground cut and roof inset on the nest. Large legacy cuts may show a bounded corner of the solid. The full surface grid remains visible. API callers can request another bounded window. OP0 does not reconstruct unknown trajectories or animated meshes.
 - Cross-world identities remain separate. Similar settings do not establish equality of all input fields. Physical and physiological observations describe a particular simulated world.
