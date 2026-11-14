@@ -108,9 +108,7 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     if (s.ecological) {
         w.put(ecological_magic);
         w.put(s.ecological->brood_space ? micro_world_schema : ecological_schema,4);
-        w.put(s.ecological->brood_space ? (s.ecological->suppress_foundress_hatch_cue?micro_world_no_hatch_physics:micro_world_physics) :
-              s.ecological->suppress_foundress_hatch_cue ? suppressed_hatch_physics :
-              s.ecological->portable_field ? portable_ecological_physics : ecological_physics,4);
+        w.put(ecological_version(*s.ecological),4);
     }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
     w.put(resupply ? founding_resupply_schema_version : uptake ? founding_uptake_schema_version : dietary ? founding_dietary_schema_version : provisioning ? founding_provisioning_schema_version : early_access ? founding_access_schema_version : persistence ? founding_persistence_schema_version : s.founding ? founding_schema_version : spatial?spatial_schema_version:motion ? care_motion_schema_version : retrieval ? retrieval_schema_version : s.care_profile ? care_schema_version : guarded ? allocation_schema_version : s.long_term ? long_term_schema_version : schema_version, 4);
@@ -172,12 +170,12 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     unsigned ecological_version{};
     if (ecological) {
         const auto outer_schema=r.get(4);
-        const auto version=r.get(4);
-        ensure((outer_schema==micro_world_schema && (version==micro_world_physics || version==micro_world_no_hatch_physics)) ||
+        const auto version=static_cast<unsigned>(r.get(4));
+        ensure((outer_schema==micro_world_schema && micro_world_version(version)) ||
                (outer_schema==ecological_schema && (version==ecological_physics || version==portable_ecological_physics ||
                                                     version==suppressed_hatch_physics)),
                "unsupported ecological closure physics");
-        ecological_version=static_cast<unsigned>(version);
+        ecological_version=version;
         header=r.get();
     }
     const bool resupply=header==founding_resupply_magic;
@@ -276,8 +274,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         s->ecological=read_ecological(r,s->config);
         s->ecological->portable_field=ecological_version>=portable_ecological_physics;
         s->ecological->suppress_foundress_hatch_cue=ecological_version==suppressed_hatch_physics ||
-                                                   ecological_version==micro_world_no_hatch_physics;
-        s->ecological->brood_space=ecological_version==micro_world_physics || ecological_version==micro_world_no_hatch_physics;
+            ecological_version==micro_world_no_hatch_physics || ecological_version==portable_micro_world_no_hatch_physics;
+        s->ecological->brood_space=micro_world_version(ecological_version);
+        s->ecological->portable_care_motion=ecological_version==portable_micro_world_physics ||
+            ecological_version==portable_micro_world_no_hatch_physics;
     }
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
     if (has_watermark) m.watermark = r.key();

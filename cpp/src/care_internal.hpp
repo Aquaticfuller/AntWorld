@@ -43,6 +43,29 @@ inline PositionM toward(PositionM a, PositionM b, double step) {
     const auto d=distance(a,b); if (d<=step) return b;
     return {a.x+(b.x-a.x)*step/d,a.y+(b.y-a.y)*step/d,a.z+(b.z-a.z)*step/d};
 }
+inline bool portable_care(const auto& s) { return s.ecological && s.ecological->portable_care_motion; }
+inline double care_binary64(double value) {
+    // Keep the operation order even on targets with contraction or extended intermediates.
+    const volatile double rounded=value;
+    return rounded;
+}
+inline double portable_care_distance(PositionM a,PositionM b) {
+    static_assert(std::numeric_limits<double>::is_iec559);
+    const auto square=[](double x) { return care_binary64(x*x); };
+    const auto x=square(care_binary64(a.x-b.x));
+    const auto y=square(care_binary64(a.y-b.y));
+    const auto z=square(care_binary64(a.z-b.z));
+    return std::sqrt(care_binary64(care_binary64(x+y)+z));
+}
+inline PositionM portable_care_toward(PositionM a,PositionM b,double step) {
+    const auto length=portable_care_distance(a,b);
+    if (length<=step) return b;
+    const auto component=[=](double from,double to) {
+        const auto delta=care_binary64(to-from);
+        return care_binary64(from+care_binary64(care_binary64(delta*step)/length));
+    };
+    return {component(a.x,b.x),component(a.y,b.y),component(a.z,b.z)};
+}
 inline bool care_owned(const auto& s, EntityId id) { return s.care.contains(id) && s.care.at(id).enabled; }
 inline bool integrated_care(const auto& s) {
     return s.care_profile && s.care_profile->motion && s.care_profile->motion->integrate_autonomy;
@@ -70,7 +93,8 @@ inline bool surface_care_clear(const auto& s,PositionM from,PositionM to) {
     return true;
 }
 inline PositionM care_toward(const auto& s,PositionM a,PositionM b,double step) {
-    if (s.config.continuous_spatial_motion || !s.care_profile->motion || !s.surface || s.geometry) return toward(a,b,step);
+    if (s.config.continuous_spatial_motion || !s.care_profile->motion || !s.surface || s.geometry)
+        return portable_care(s)?portable_care_toward(a,b,step):toward(a,b,step);
     const auto cell=s.surface->locate(a);
     if (!cell || s.surface->config.cell_size_m>step) return a;
     auto best=a;
@@ -90,7 +114,7 @@ inline bool valid_grip(PositionM carrier,PositionM brood_position,PositionM offs
         distance(expected,brood_position)<=arithmetic_margin(position_scale(expected,brood_position),world.contact_distance_m);
 }
 inline SimTime care_duration(const SpeciesCareProfile& cfg,const WorldConfig& world,Caste caste,
-                             CareAct act,PositionM from,PositionM to) {
+                             CareAct act,PositionM from,PositionM to,bool portable=false) {
     if (act==CareAct::Inactive) return cfg.decision_interval;
     if (act==CareAct::CloseWorkerContact) return cfg.worker_contact_duration;
     if (!cfg.motion) return cfg.bout_duration;
@@ -102,7 +126,10 @@ inline SimTime care_duration(const SpeciesCareProfile& cfg,const WorldConfig& wo
     const auto preferred=act==CareAct::TransportBrood?
         (queen?m.queen_loaded_m_per_s:m.worker_loaded_m_per_s):
         (queen?m.queen_unloaded_m_per_s:m.worker_unloaded_m_per_s);
-    const auto ms=static_cast<std::int64_t>(std::ceil(1000*distance(from,to)/std::min(preferred,world.max_speed_m_per_s)));
+    const auto speed=std::min(preferred,world.max_speed_m_per_s);
+    const auto milliseconds=portable ? care_binary64(care_binary64(1000*portable_care_distance(from,to))/speed) :
+        1000*distance(from,to)/speed;
+    const auto ms=static_cast<std::int64_t>(std::ceil(milliseconds));
     return {std::max(ms,act==CareAct::ArrangeBrood?m.manipulation_duration.milliseconds:1)};
 }
 inline std::int32_t care_extent(const auto& s, std::int32_t body, CareAct act) {

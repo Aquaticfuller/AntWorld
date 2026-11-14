@@ -10,6 +10,21 @@ inline constexpr unsigned portable_ecological_physics = 25;
 inline constexpr unsigned suppressed_hatch_physics = 26;
 inline constexpr unsigned micro_world_schema = 23, micro_world_physics = 27;
 inline constexpr unsigned micro_world_no_hatch_physics = 28;
+inline constexpr unsigned portable_micro_world_physics = 29;
+inline constexpr unsigned portable_micro_world_no_hatch_physics = 30;
+
+inline bool micro_world_version(unsigned version) {
+    return version==micro_world_physics || version==micro_world_no_hatch_physics ||
+           version==portable_micro_world_physics || version==portable_micro_world_no_hatch_physics;
+}
+
+inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.portable_care_motion)
+        return c.suppress_foundress_hatch_cue?portable_micro_world_no_hatch_physics:portable_micro_world_physics;
+    if (c.brood_space) return c.suppress_foundress_hatch_cue?micro_world_no_hatch_physics:micro_world_physics;
+    if (c.suppress_foundress_hatch_cue) return suppressed_hatch_physics;
+    return c.portable_field?portable_ecological_physics:ecological_physics;
+}
 
 inline void write_ecological(Writer& w, const EcologicalClosureConfig& c) {
     w.put(c.distance_clock, 1); w.put(c.floor_space, 1);

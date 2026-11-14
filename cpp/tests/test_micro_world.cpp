@@ -2,6 +2,7 @@
 #include "brood_space.hpp"
 #include "antworld/storage/store.hpp"
 #include <array>
+#include <bit>
 #include <iostream>
 
 namespace {
@@ -15,6 +16,7 @@ WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}
     WorldRuntime world({27,1},7,bounds,limits);
     EcologicalClosureConfig profile;
     profile.portable_field=true; profile.brood_space=micro; profile.activity_cost=true;
+    profile.portable_care_motion=micro;
     world.configure_ecological_closure(profile);
     world.configure_long_term();
     GeometryConfig geometry;
@@ -113,6 +115,15 @@ void rollback() {
     const auto restored=world.checkpoint(); world.restore(restored);
     require(world.checkpoint()==restored,"failed birth state was not recoverable");
 }
+
+void diagonal_clock() {
+    const PositionM from{-.00075,-.004,-.00075}, shelter{0,-.004,0};
+    const auto next=portable_care_toward(from,shelter,.001);
+    require(std::bit_cast<std::uint64_t>(next.x)==UINT64_C(0xbf067d07c6b47e20) && next.x==next.z && next.y==from.y,
+            "portable care segment changed its authoritative diagonal end position");
+    const auto duration=care_duration(closure::timed_care(true),WorldConfig{},Caste::Worker,CareAct::ReturnToCareShelter,from,next,true);
+    require(duration.milliseconds==101,"portable care segment changed its integer-boundary clock");
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -122,6 +133,7 @@ int main(int argc,char** argv) try {
     place_and_restore(folder/"micro-world.sqlite");
     spatial_refusal();
     rollback();
+    diagonal_clock();
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

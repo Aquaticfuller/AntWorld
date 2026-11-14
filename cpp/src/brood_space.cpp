@@ -69,7 +69,10 @@ std::optional<PositionM> WorldRuntime::arrange_brood_site(const AntState& brood_
     const auto step=s.care_profile->arrangement_m;
     const auto current=neighbors(from);
     auto best_count=current;
-    auto best_distance=distance(from,shelter);
+    const auto distance_to_shelter=[&](PositionM p) {
+        return portable_care(s)?portable_care_distance(p,shelter):distance(p,shelter);
+    };
+    auto best_distance=distance_to_shelter(from);
     std::optional<PositionM> best;
     // Try only nearby displacements. A move may compact the pile or fill a gap
     // without converging every individual onto the same point.
@@ -80,9 +83,9 @@ std::optional<PositionM> WorldRuntime::arrange_brood_site(const AntState& brood_
             !clear_care_segment(from,to,brood_half(geometry)) ||
             continuous_clear(view,below,below,0) || !clear_brood_space(brood_ant.id,from,to)) continue;
         const auto adjacent=neighbors(to);
-        const auto distance_to_shelter=distance(to,shelter);
-        if (adjacent>best_count || (adjacent==best_count && distance_to_shelter<best_distance)) {
-            best=to; best_count=adjacent; best_distance=distance_to_shelter;
+        const auto remaining=distance_to_shelter(to);
+        if (adjacent>best_count || (adjacent==best_count && remaining<best_distance)) {
+            best=to; best_count=adjacent; best_distance=remaining;
         }
     }
     return best;

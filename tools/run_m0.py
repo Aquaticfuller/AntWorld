@@ -13,11 +13,12 @@ from run_s6_4_wp6b import ROOT, git, run_one, sha, write_json
 
 
 PROTOCOL = ROOT / "research/m0/FROZEN_PROTOCOL.md"
+PORTABLE_PROTOCOL = ROOT / "research/m0/PORTABLE_REPLAY_PROTOCOL.md"
 DEMO_NAMES = ("borisovka-shaft-1-slots", "st_petersburg-dogleg-1-slots",
               "borisovka-shaft-1-reference", "borisovka-shaft-1-no-protein", "borisovka-shaft-1-blocked")
 
 
-def roster():
+def roster(portable=False):
     originals = {(row["population"], row["software_seed"], row["arm"].removeprefix("integrated-")): row
                  for _, row in environments("nominal")}
 
@@ -29,7 +30,10 @@ def roster():
             identity += 100 * (1 + ("h0r0", "h0r1", "h1r0", "no-care", "absent", "no-protein", "blocked", "wet",
                                     "low-lipid").index(variant))
         name = f"{population}-{layout}-{seed}-{variant}"
-        case = original | dict(case=name, arm=f"micro-m0-{layout}-{treatment if h2 else 'nocue'}-{source}", layout=layout,
+        variant_name = treatment if h2 else "nocue"
+        if portable and treatment != "reference":
+            variant_name = "portable" + variant_name
+        case = original | dict(case=name, arm=f"micro-m0-{layout}-{variant_name}-{source}", layout=layout,
                                source=source, horizon_ms=90*DAY, care_enabled=care, h2=h2, r1=r1,
                                condition="ENGINEERING_FIXTURE", parameters=original["parameters"] | {"maternal_lipid": lipid})
         args = list(COMMAND)
@@ -54,16 +58,18 @@ def main():
     parser.add_argument("output", type=Path)
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--durable", action="store_true", help="Save and reload a midpoint SQLite publication.")
+    parser.add_argument("--portable-care", action="store_true", help="Opt into physics 29/30 portable care motion.")
     args = parser.parse_args()
     binary = args.binary.resolve(strict=True)
     destination = args.output.resolve()
-    cases = [(i, c, command) for i, c, command in roster() if not args.case or c["case"] in args.case]
+    cases = [(i, c, command) for i, c, command in roster(args.portable_care) if not args.case or c["case"] in args.case]
     if not cases or set(args.case) - {c["case"] for _, c, _ in cases}:
         parser.error("unknown MicroWorld case")
     mode = "durable" if args.durable else "observed"
     destination.mkdir(parents=True)
     write_json(destination / "run.json", dict(source=git("rev-parse", "HEAD"), cpp_tree=git("rev-parse", "HEAD:cpp"),
         binary_sha256=sha(binary), protocol_sha256=sha(PROTOCOL), mode=mode,
+        **(dict(portable_protocol_sha256=sha(PORTABLE_PROTOCOL)) if args.portable_care else {}),
         cases=[c["case"] for _, c, _ in cases], dirty=git("status", "--porcelain", "--", "cpp", "tools/run_m0.py")))
     failed = False
     with (destination / "archives.jsonl").open("x", encoding="utf-8", newline="\n") as manifest:

@@ -483,7 +483,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (event.kind==ScheduledEvent::Kind::CareBegin && outcome==Outcome::Success) {
         if (handling) tx.care_locks.set(c.target,a.id);
         c.active=true; c.began_at=s.m.now;
-        const auto duration=care_duration(cfg,s.config,a.caste,c.act,from,c.destination);
+        const auto duration=care_duration(cfg,s.config,a.caste,c.act,from,c.destination,portable_care(s));
         ScheduledEvent e; e.actor=a.id; e.kind=ScheduledEvent::Kind::CareEnd; e.issued_at=s.m.now;
         e.key={after(s.m.now,duration.milliseconds),Phase::Resolution,0,0,0}; c.pending=tx.insert(e);
         tx.care.set(a.id,c); auto p=s.physiology.at(a.id); p.behavior_event=c.pending; tx.physiology.set(a.id,p);

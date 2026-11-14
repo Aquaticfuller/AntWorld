@@ -200,7 +200,7 @@ def checkpoint(raw, *, verify_hash=True):
     ecological = magic == ECOLOGICAL
     if ecological:
         outer = r.unpack(Struct("<2I"))
-        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28)}, "Unsupported ecological checkpoint version")
+        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30)}, "Unsupported ecological checkpoint version")
         magic = bytes(r.take(8))
     version = r.unpack(Struct("<2I"))
     require(VERSIONS.get(magic) == version and r.unpack(U32)[0] == 1, "Unsupported checkpoint or RNG version")
@@ -234,9 +234,10 @@ def checkpoint(raw, *, verify_hash=True):
         flags.update(zip(("unloaded_m_per_s", "loaded_m_per_s", "soil_handling_ms", "cue_lifetime_ms",
                           "cue_minimum_carbs_ug", "water_sip_ug", "cue_response_ppm", "first_ration_ppm"),
                          r.unpack(Struct("<2d4Q2I"))))
-        flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28)
+        flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28, 30)
         if outer[0] == 23:
             flags["brood_space"] = True
+            flags["portable_care_motion"] = outer[1] in (29, 30)
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.

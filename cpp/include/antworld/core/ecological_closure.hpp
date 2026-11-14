@@ -13,6 +13,7 @@ struct EcologicalClosureConfig {
     bool portable_field{}; // Physics 25 fixes the numerical representation of the same local field.
     bool suppress_foundress_hatch_cue{}; // Physics 26. Matched founding assay only.
     bool brood_space{}; // Physics 27. Local single-layer brood placement and handling envelope.
+    bool portable_care_motion{}; // Physics 29. Fixed binary64 arithmetic for timed care.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

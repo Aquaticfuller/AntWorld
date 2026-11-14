@@ -118,7 +118,7 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
                 const bool handling=handles_brood(c.act) || c.act==CareAct::CloseWorkerContact;
                 ensure(!handling || c.target.value,"care handling has no target");
                 const auto from=c.act==CareAct::ArrangeBrood?s.ants.get(s.ants.index.at(c.target)).position:a.position;
-                const auto duration=care_duration(profile,s.config,a.caste,c.act,from,c.destination);
+                const auto duration=care_duration(profile,s.config,a.caste,c.act,from,c.destination,portable_care(s));
                 ensure(e.key.time==after(c.began_at,duration.milliseconds),"care bout duration differs from profile");
                 if (handling && !c.carrying_brood)
                     ensure(s.care_locks.emplace(c.target,id).second,"duplicate care reservation");

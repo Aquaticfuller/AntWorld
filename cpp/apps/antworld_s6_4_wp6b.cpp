@@ -52,7 +52,7 @@ Case read_case(const Path& path) {
         const auto layout=arm.substr(0,first);
         const auto end=arm.find('-',first+1);
         require(end!=std::string::npos,"invalid ecological treatment");
-        const auto treatment=arm.substr(first+1,end-first-1);
+        auto treatment=arm.substr(first+1,end-first-1);
         require(layout=="shaft" || layout=="dogleg","invalid ecological layout");
         const bool protected_profile=portable_field && treatment=="protected";
         c.arm=arm.substr(end+1);
@@ -61,6 +61,11 @@ Case read_case(const Path& path) {
         c.ecological.emplace();
         auto& e=*c.ecological;
         e.portable_field=portable_field;
+        e.portable_care_motion=c.micro_world && treatment.starts_with("portable");
+        if (e.portable_care_motion) {
+            treatment.erase(0,8);
+            require(treatment!="reference","the reference placement uses original care arithmetic");
+        }
         e.brood_space=c.micro_world && treatment!="reference";
         e.distance_clock=true;
         e.floor_space=treatment=="joint" || treatment=="silent" || protected_profile || c.micro_world;
