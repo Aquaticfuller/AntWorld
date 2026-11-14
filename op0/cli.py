@@ -15,6 +15,7 @@ from . import DAY
 from .archive import pack, zip_terminal_frame
 from .codec import ArchiveError, require
 from .index import Catalog
+from .locale import LANGUAGES, translator
 from .query import ReadAPI
 
 
@@ -90,25 +91,32 @@ def register_import(catalog, path):
     return worlds, elapsed
 
 
-def stamp(ms):
-    return f"day {ms / DAY:,.3f}"
+def stamp(ms, tr):
+    return tr("Day {number}", number=f"{ms / DAY:,.3f}")
 
 
-def event_text(event):
+def event_text(event, tr):
     who = (" #" + event["actor"]) if event["actor"] else ""
     target = (" → #" + event["related"]) if event["related"] else ""
-    detail = event.get("death_cause") or event.get("outcome")
+    detail = tr(event.get("death_cause") or event.get("outcome"))
     if event.get("action"):
-        detail = event["action"]["act"] + " / " + event["action"]["phase"]
-    return f'{event["id"]:>8}  {stamp(event["time_ms"]):>14}  {event["kind"]}{who}{target}  {detail}'
+        detail = tr(event["action"]["act"]) + " / " + tr(event["action"]["phase"])
+    name = tr(event["kind"])
+    if name != event["kind"]:
+        name += f' ({event["kind"]})'
+    return f'{event["id"]:>8}  {stamp(event["time_ms"], tr):>14}  {name}{who}{target}  {detail}'
 
 
 class Terminal:
-    def __init__(self, api, plain=False):
+    def __init__(self, api, plain=False, language=None):
         self.api = api
         self.plain = plain or not sys.stdout.isatty()
         self.meta = self.follow = self.event = None
         self.t, self.after, self.next_after, self.group = 0, 0, None, "highlights"
+        self.preference = api.catalog.root / "terminal-language.txt"
+        saved = self.preference.read_text(encoding="utf-8").strip() if self.preference.is_file() else "en"
+        self.language = language or (saved if saved in LANGUAGES else "en")
+        self.tr = translator(self.language)
 
     def request(self, operation, **options):
         return api_get(self.api, f"world/{self.meta['key']}/{operation}", **options)
@@ -119,73 +127,90 @@ class Terminal:
         self.after = 0
 
     def view(self):
+        tr = self.tr
         if not self.plain:
             print("\x1b[2J\x1b[H", end="")
-        print("\n ANT WORLD  /  OP0  /  OBSERVATION PREVIEW")
+        print("\n " + tr("ANT WORLD  /  OP0  /  OBSERVATION PREVIEW"))
         print(" ────────────────────────────────────────────────────────────────────")
         if not self.meta:
             for index, entry in enumerate(api_get(self.api, "catalog"), 1):
-                print(f" {index:>2}  {entry['title']}")
-                print(f"     {entry['description'] or 'Imported source'}")
+                print(f" {index:>2}  {tr(entry['title'])}")
+                print(f"     {tr(entry['description'] or 'Imported source')}")
                 if not entry["worlds"] and (preview := entry["preview"]):
-                    print(f"     {preview['world_id']} · physics {preview['physics']} · seed {preview['seed']} · "
-                          f"{stamp(preview['start_ms'])} to {stamp(preview['end_ms'])} · {preview['integrity']} · {preview['readiness']}")
-                    print(f"     Frame records {preview['workers']} worker(s) and {preview['queens']} live queen(s) at the end")
+                    interval = tr("{start} to {end}", start=stamp(preview["start_ms"], tr), end=stamp(preview["end_ms"], tr))
+                    print("     " + " · ".join((preview["world_id"], tr("Physics {version}", version=preview["physics"]),
+                                               tr("Seed {seed}", seed=preview["seed"]), interval,
+                                               tr(preview["integrity"]), preview["readiness"])))
+                    print("     " + tr("Frame records {workers} worker(s) and {queens} live queen(s) at the end",
+                                       workers=preview["workers"], queens=preview["queens"]))
                 for world in entry["worlds"]:
                     p = world["final_population"]
-                    print(f"     {world['world_id']} · physics {world['physics']} · seed {world['seed']} · "
-                          f"{stamp(world['end_ms'])} · {world['integrity']} · {world['readiness']}")
-                    print(f"     End: {p['workers']} worker(s), {len(p['queens_alive'])} queen(s), "
-                          f"{p['eggs'] + p['larvae'] + p['pupae']} brood")
-            print("\n Enter a world number, import <path>, or q. The source is verified when opened.")
+                    print("     " + " · ".join((world["world_id"], tr("Physics {version}", version=world["physics"]),
+                                               tr("Seed {seed}", seed=world["seed"]), stamp(world["end_ms"], tr),
+                                               world["integrity"], world["readiness"])))
+                    print("     " + tr("End: {workers} worker(s), {queens} queen(s), {brood} brood", workers=p["workers"],
+                                       queens=len(p["queens_alive"]), brood=p["eggs"] + p["larvae"] + p["pupae"]))
+            print("\n " + tr("Enter a world number, import <path>, or q. The source is verified when opened."))
+            print(" lang en | lang zh-CN")
             return
         meta = self.meta
         cut = {"event": self.event} if self.event else {"time_ms": self.t}
         state = self.request("state", **cut)
         pop, actions = state["population"], state["cumulative"]
-        print(f" {meta['title']}  ·  {stamp(self.t)} / {stamp(meta['end_ms'])}  ·  committed through #{state['cursor']}")
-        print(f" {meta['world_id']}  ·  {meta['population'] or 'Population not recorded'}  ·  seed {meta['settings']['seed']} "
-              f" ·  physics {meta['settings']['physics']}  ·  {meta['integrity']}  ·  {meta['readiness']}")
-        print(" Queen " + ("alive #" + ", #".join(pop["queens_alive"]) if pop["queens_alive"] else "not present at this cut") +
-              f"  |  {pop['workers']} workers  |  {pop['eggs']} eggs  |  {pop['larvae']} larvae  |  {pop['pupae']} pupae")
-        print(f" External {state['external_ug']} µg  |  Nest {state['nest_ug']} µg  (carbs, protein, water, other)")
-        print(f" Collections {actions.get('collections', 0)}  ·  Deliveries {actions.get('deliveries', 0)}  ·  "
-              f"Trophallaxis {actions.get('trophallaxis', 0)}  ·  Excavations {actions.get('excavations', 0)}  ·  "
-              f"Activations {actions.get('activations', 0)}")
+        print(f" {tr(meta['title'])}  ·  {stamp(self.t, tr)} / {stamp(meta['end_ms'], tr)}  ·  "
+              + tr("committed through #{id}", id=state["cursor"]))
+        print(" " + " · ".join((meta["world_id"], tr(meta["population"] or "Population not recorded"),
+                               tr("Seed {seed}", seed=meta["settings"]["seed"]), tr("Physics {version}", version=meta["settings"]["physics"]),
+                               meta["integrity"], meta["readiness"])))
+        queen = tr("alive #{ids}", ids=", #".join(pop["queens_alive"])) if pop["queens_alive"] else tr("not present at this cut")
+        print(f" {tr('Queen')} {queen}  |  " + tr("{workers} workers  |  {eggs} eggs  |  {larvae} larvae  |  {pupae} pupae", **pop))
+        print(" " + tr("External {external} µg  |  Nest {nest} µg  (carbs, protein, water, other)",
+                       external=state["external_ug"], nest=state["nest_ug"]))
+        print(" " + "  ·  ".join(f"{tr(label)} {actions.get(key, 0)}" for key, label in (
+            ("collections", "Collections"), ("deliveries", "Deliveries"), ("trophallaxis", "Trophallaxis"),
+            ("excavations", "Excavations"), ("activations", "Activations"))))
         if self.event:
-            print("\n Selected: " + event_text(self.request("event", id=self.event)))
+            print("\n " + tr("Selected") + " · " + event_text(self.request("event", id=self.event), tr))
         if self.follow:
             ant = self.request("ant", id=self.follow, **cut)
             s = ant["sample"] or {}
-            print(f"\n Tracking #{ant['id']}  ·  {ant['caste']}  ·  {ant['stage']}  ·  {ant['program']}")
-            print(f" Mother {ant['mother'] or 'Not recorded'}  ·  born "
-                  f"{stamp(ant['born_ms']) if ant['born_ms'] is not None else 'Not recorded'}  ·  "
-                  f"{ant['death_cause'] or ant['status']}")
+            identity = "  ·  ".join(tr(ant[k]) for k in ("caste", "stage", "program"))
+            print("\n " + tr("Tracking #{id}", id=ant["id"]) + "  ·  " + identity)
+            born = stamp(ant["born_ms"], tr) if ant["born_ms"] is not None else tr("Not recorded")
+            print(f" {tr('Mother')} {ant['mother'] or tr('Not recorded')}  ·  {tr('Born')} {born}  ·  "
+                  f"{tr(ant['death_cause'] or ant['status'])}")
             if s:
-                print(f" Sample {stamp(s['time_ms'])}: {s.get('energy_nj')} nJ · {s.get('hydration_ug')} µg water · "
-                      f"crop {s.get('crop_ug')} µg")
+                print(" " + tr("Sample {day}", day=stamp(s["time_ms"], tr)) +
+                      f" · {s.get('energy_nj')} nJ · {s.get('hydration_ug')} {tr('µg water')} · {tr('crop')} {s.get('crop_ug')} µg")
             if ant["died_ms"] is not None:
-                print(f" Died {stamp(ant['died_ms'])}; {ant['death_cause'] or 'cause not recorded'}")
-            print(" Life: " + " | ".join(f"{e['stage']} #{e['id']} ({stamp(e['time_ms'])})" for e in ant["life_events"]))
+                print(f" {tr('Died')} {stamp(ant['died_ms'], tr)} · {tr(ant['death_cause'])}")
+            print(" " + tr("Life") + " · " + " | ".join(
+                f"{tr(e['stage'])} #{e['id']} ({stamp(e['time_ms'], tr)})" for e in ant["life_events"]))
         lo = (self.t // DAY) * DAY
         events = self.request("events", since_ms=lo, until_ms=min(lo+DAY-1, meta["end_ms"]),
                               after=self.after, group=self.group, limit=7, **({"ant": self.follow} if self.follow else {}))
         self.next_after = events["next_after"]
-        print(f"\n Committed events in day {lo // DAY}  [{self.group}]")
+        print("\n " + tr("Committed events in day {day}", day=lo // DAY) + f"  [{tr(self.group)}]")
         for item in events["events"]:
-            print(" " + event_text(item))
+            print(" " + event_text(item, tr))
         if not events["events"]:
-            print(" No matching events in this window.")
-        print("\n Milestones: " + " · ".join(f"{m['label']} #{m['id']}" for m in meta["milestones"] if m["label"] in
+            print(" " + tr("No matching events in this window."))
+        print("\n " + tr("Milestones") + " · " + " · ".join(f"{tr(m['label'])} #{m['id']}" for m in meta["milestones"] if m["label"] in
               ("First hatch", "First worker eclosed", "First food delivered", "First excavation", "First recruitment activation", "Queen died")))
-        print(" d <day>  +/-  play [days/s]  pause (Ctrl-C)  e <event>  f <category>  more  a <ant>  untrack  w  q")
+        print(" " + tr("d <day>  +/-  play [days/s]  pause (Ctrl-C)  e <event>  f <category>  more  a <ant>  untrack  w  q  lang en|zh-CN"))
 
     def command(self, line):
         word, _, arg = line.strip().partition(" ")
         arg = arg.strip()
         if word == "q":
             return False
-        if word == "w":
+        if word == "lang":
+            if not arg or arg == "toggle":
+                arg = "en" if self.language == "zh-CN" else "zh-CN"
+            require(arg in LANGUAGES, "Choose en, zh-CN, or toggle")
+            self.preference.write_text(arg + "\n", encoding="utf-8")
+            self.language, self.tr = arg, translator(arg)
+        elif word == "w":
             self.meta = self.follow = None
         elif not self.meta and word == "import":
             register_import(self.api.catalog, Path(arg.strip('"')))
@@ -196,8 +221,8 @@ class Terminal:
             worlds = api_get(self.api, f"archive/{catalog[int(word)-1]['key']}")["worlds"]
             if len(worlds) > 1:
                 for i, world in enumerate(worlds, 1):
-                    print(f" {i}  {world['title']}  {world['world_id']}")
-                choice = int(input("World in this store > "))
+                    print(f" {i}  {self.tr(world['title'])}  {world['world_id']}")
+                choice = int(input(self.tr("World in this store > ")))
                 if not 1 <= choice <= len(worlds):
                     raise ValueError("Choose a published world from the list")
                 world = worlds[choice-1]
@@ -218,7 +243,6 @@ class Terminal:
                 detail = self.request("event", id=int(arg))
                 self.seek(detail["time_ms"])
                 self.event = detail["id"]
-                print(event_text(detail))
             elif word == "a":
                 cut = {"event": self.event} if self.event else {"time_ms": self.t}
                 self.follow = self.request("ant", id=int(arg), **cut)["id"]
@@ -241,7 +265,7 @@ class Terminal:
                         self.seek(self.t + round(speed*DAY/4))
                         self.view()
                 except KeyboardInterrupt:
-                    print("\n Playback paused.")
+                    print("\n " + self.tr("Playback paused."))
             else:
                 raise ValueError("Unknown command")
         return True
@@ -255,9 +279,9 @@ class Terminal:
             except (EOFError, KeyboardInterrupt):
                 return
             except ERRORS as err:
-                print(f"\n {err}", file=sys.stderr)
+                print(f"\n {self.tr(str(err))}", file=sys.stderr)
                 if not self.plain:
-                    input(" Press Enter to continue ")
+                    input(" " + self.tr("Press Enter to continue "))
 
 
 def main(argv=None):
@@ -271,6 +295,7 @@ def main(argv=None):
     server.add_argument("--import-path", action="append", type=Path, default=[])
     terminal = modes.add_parser("tui", help="Open the terminal viewer")
     terminal.add_argument("--plain", action="store_true")
+    terminal.add_argument("--language", choices=LANGUAGES)
     terminal.add_argument("--import-path", action="append", type=Path, default=[])
     modes.add_parser("import", help="Verify and add a ZIP or stable SQLite store").add_argument("source", type=Path)
     package = modes.add_parser("pack", help="Package an existing native export")
@@ -292,7 +317,7 @@ def main(argv=None):
             register_import(catalog, path)
         api = ReadAPI(catalog)
         if args.mode == "tui":
-            Terminal(api, args.plain).run()
+            Terminal(api, args.plain, args.language).run()
         else:
             from .server import serve
             serve(api, args.port, not args.no_browser)

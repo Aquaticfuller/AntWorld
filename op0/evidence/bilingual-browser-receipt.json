@@ -1,0 +1,15 @@
+{
+  "shell_paint_ms": 248,
+  "world_ready_ms_after_navigation": 388.19999998807907,
+  "first_browser_view_ms": 396.27,
+  "jump_to_worker_ms": 138.09,
+  "select_ant_from_map_ms": 78.16,
+  "seek_day_90_ms": 78.43,
+  "reopen_browser_with_index_ms": 93.81,
+  "world": "00000000-0000-0286-0000-000000018a61",
+  "archive_sha256": "448d2a7db60487e98113cc27f70cce307b1452a26b0ab36edef48911745a80df",
+  "chromium": "Chrome/157.0.8103.78",
+  "localization": "English and Simplified Chinese switched at the same cut and comparison, persisted after reload",
+  "date_utc": "2026-11-14T00:29:03.795Z",
+  "status": "PASS"
+}

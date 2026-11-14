@@ -27,6 +27,8 @@ py -X utf8 -m op0 serve
 
 To choose a particular Python installation, pass its complete executable path with `-Python`. The default cache lives at `$env:LOCALAPPDATA\AntWorld\OP0`. Pass `-Cache 'E:\AntWorldObservationCache'` to use another drive with space. The largest bundled archive needs roughly 193 MiB of index space. Initial indexing may take several seconds. `Ctrl+C` stops the program.
 
+Use the language selector in the top-right corner to switch between English and Simplified Chinese. The viewer keeps the current world, time, selected individual and comparison. The browser remembers the setting for this localhost address. Raw event names, parameters, evidence statuses and archive hashes remain available for review.
+
 ### What to look at
 
 1. **Day 0.** The default underground cut shows Queen #2 and the initial shaft. Toggle **Body clearance** for quantized positions that can fit the unloaded Core body cube. Use the section controls to change the axis or the selected layer.
@@ -46,6 +48,8 @@ To choose a particular Python installation, pass its complete executable path wi
 Enter `1` to verify and open **Founding colony**. Use `d 45` to jump to day 45, `e 9661` to open an exact event, `a 4` to track the first worker, `f food` to filter and `more` to page. `f care`, `f recruitment`, `f soil` and `f death` select other facts. Use `play 15` to advance at approximately 15 simulation days per second and press Ctrl+C to pause playback. `+` and `-` move one day. `w` returns to the world catalogue and `q` exits. The first view of an unopened entry identifies it as unverified until the source is indexed. The world list then includes its WorldId, physics, seed, integrity and recorded final status.
 
 On Linux, the equivalents from the repository root are `python3 -m op0 serve` and `python3 -m op0 tui`.
+
+Enter `lang zh-CN` or `lang en` at any terminal prompt. The terminal remembers the language in its local cache. To override the saved setting for one launch, use `.\tools\start_op0.ps1 -Terminal -Language zh-CN`.
 
 ## Add an experiment after a Core change
 

@@ -10,11 +10,13 @@
 <body>
   <header class="top">
     <a class="wordmark" href="/" aria-label="AntWorld home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>AntWorld</a>
-    <nav aria-label="Viewer">
+    <nav aria-label="Viewer" data-i18n-aria>
       <button id="observe-tab" class="top-tab active" aria-pressed="true">Observe</button>
       <button id="compare-tab" class="top-tab" aria-pressed="false">Compare worlds</button>
     </nav>
-    <div class="top-right"><span class="status-dot"></span> Local archive <span class="version">OP0</span></div>
+    <div class="top-right"><div class="local-state"><span class="status-dot"></span> <span>Local archive</span> <span class="version">OP0</span></div>
+      <label for="locale" class="sr-only" data-i18n>Language</label>
+      <select id="locale" aria-label="Language" data-i18n-aria><option value="en">English</option><option value="zh-CN">&#20013;&#25991;</option></select></div>
   </header>
   <main>
     <section class="world-heading">
@@ -32,10 +34,10 @@
     <div id="viewer" class="workspace" hidden>
       <section class="population" aria-label="Population at the playback cursor">
         <div><span class="metric-label">QUEEN</span><strong id="queen-state">—</strong><small id="queen-mass"></small></div>
-        <div><span class="metric-label"><i class="worker"></i>WORKERS</span><strong id="workers">0</strong><small>Eclosed and alive</small></div>
-        <div><span class="metric-label"><i class="egg"></i>EGGS</span><strong id="eggs">0</strong><small>Alive</small></div>
-        <div><span class="metric-label"><i class="larva"></i>LARVAE</span><strong id="larvae">0</strong><small>Alive</small></div>
-        <div><span class="metric-label"><i class="pupa"></i>PUPAE</span><strong id="pupae">0</strong><small>Alive</small></div>
+        <div><span class="metric-label"><i class="worker"></i><span data-i18n>WORKERS</span></span><strong id="workers">0</strong><small>Eclosed and alive</small></div>
+        <div><span class="metric-label"><i class="egg"></i><span data-i18n>EGGS</span></span><strong id="eggs">0</strong><small>Alive</small></div>
+        <div><span class="metric-label"><i class="larva"></i><span data-i18n>LARVAE</span></span><strong id="larvae">0</strong><small>Alive</small></div>
+        <div><span class="metric-label"><i class="pupa"></i><span data-i18n>PUPAE</span></span><strong id="pupae">0</strong><small>Alive</small></div>
       </section>
       <div class="observation">
         <section class="panel space" aria-labelledby="space-title">
@@ -43,9 +45,9 @@
             <div class="segmented" aria-label="Spatial view"><button id="surface-button" class="active" aria-pressed="true">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
           </div>
           <div class="map-tools">
-            <label id="plane-controls" hidden>Section <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
+            <label id="plane-controls" hidden><span data-i18n>Section</span> <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
               <input id="layer" type="range" aria-label="Section depth"><output id="layer-value"></output></label>
-            <label id="clearance-control" hidden><input id="clearance" type="checkbox"> Body clearance</label>
+            <label id="clearance-control" hidden><input id="clearance" type="checkbox"><span data-i18n>Body clearance</span></label>
             <label id="view-controls">Drag to pan · Scroll to zoom</label>
             <div class="zoom"><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>
@@ -101,6 +103,6 @@
       <details open><summary>Input alignment</summary><div id="compare-config"></div></details>
     </section>
   </main>
-  <footer>AntWorld Observation Preview <span>·</span> Read-only replay of Simulation Core facts <span>·</span> Ant identities are scoped to the opened archive.</footer>
+  <footer><span data-i18n>AntWorld Observation Preview</span><span>·</span><span data-i18n>Read-only replay of Simulation Core facts</span><span>·</span><span data-i18n>Ant identities are scoped to the opened archive.</span></footer>
 </body>
 </html>

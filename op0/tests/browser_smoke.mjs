@@ -147,6 +147,15 @@ try {
     assert.match(await evaluate("$('individual-content').textContent"), /Larva|Dead/);
     assert.match(await evaluate("$('individual-content').textContent"), /Body energy/);
     await screenshot("larval-life-history");
+    const originalIdentity = await evaluate("[app.meta.archive_sha256, app.state.cursor, app.selected]");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('individual-content').textContent.includes('\u80fd\u91cf\u8017\u5c3d')"), "Chinese larval profile");
+    assert.equal(await evaluate("$('compare-tab').textContent"), "\u5bf9\u6bd4\u4e16\u754c");
+    assert.equal(await evaluate("$('ant-id').placeholder"), "\u8f93\u5165\u8682\u8681\u7f16\u53f7");
+    assert.deepEqual(await evaluate("[app.meta.archive_sha256, app.state.cursor, app.selected]"), originalIdentity);
+    await screenshot("larval-life-history-zh");
+    await select("locale", "en");
+    await wait(() => evaluate("document.documentElement.lang === 'en' && $('individual-content').textContent.includes('Energy depleted')"), "Restored English larval profile");
     await click("#follow");
     await click("#events-tab");
     await select("filter", "care");
@@ -182,6 +191,11 @@ try {
     assert.match(await evaluate("$('compare-cards').textContent"), /First census cohort/);
     assert.match(await evaluate("$('compare-config').textContent"), /first_ration_ppm/);
     await screenshot("physics-25-comparison");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("$('compare-config').textContent.includes('\u751f\u6001\u5f00\u5173')"), "Chinese comparison controls and settings");
+    assert.match(await evaluate("$('compare-config').textContent"), /first_ration_ppm/);
+    await select("locale", "en");
+    await wait(() => evaluate("$('compare-config').textContent.includes('Ecological switches')"), "Restored English comparison");
     await click("#observe-tab");
 
     const absent = await evaluate("app.catalog[1].key");
@@ -193,15 +207,22 @@ try {
     assert.equal(await evaluate("$('queen-state').textContent"), "Absent");
     await screenshot("no-external-supply");
 
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('queen-state').textContent !== 'Absent'"), "Language preference saved");
     await timed("reopen_browser_with_index_ms", async () => {
         await send("Page.reload");
         await opened();
     });
+    assert.equal(await evaluate("document.documentElement.lang"), "zh-CN");
+    assert.equal(await evaluate("$('locale').value"), "zh-CN");
+    await select("locale", "en");
+    await wait(() => evaluate("document.documentElement.lang === 'en' && $('title').textContent === 'Founding colony'"), "Switch back after reopening");
     assert.equal(await evaluate("app.meta.facts"), 668720);
     assert.deepEqual(exceptions, []);
     result.world = await evaluate("app.meta.world_id");
     result.archive_sha256 = await evaluate("app.meta.archive_sha256");
     result.chromium = (await send("Browser.getVersion")).product;
+    result.localization = "English and Simplified Chinese switched at the same cut and comparison, persisted after reload";
     result.date_utc = new Date().toISOString();
     result.status = "PASS";
     await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");

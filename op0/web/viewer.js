@@ -2,7 +2,10 @@
 
 const DAY = 86_400_000;
 const $ = id => document.getElementById(id);
-const decimal = new Intl.NumberFormat("en-US", {maximumFractionDigits: 3});
+let language = "en", messages = {};
+let decimal = new Intl.NumberFormat("en", {maximumFractionDigits: 3});
+let languageChange = 0;
+let chineseCatalog;
 const colors = {worker: "#b7d98c", egg: "#f4e5b2", larva: "#eab17e", pupa: "#ccb1e5",
     queen: "#f2bf7d", food: "#83d4b7", entrance: "#bddba0", soil: "#a17c55", rock: "#899088",
     void: "#252f25", trace: "#baa6ef", Nurse: "#d5a7ce", Forage: "#86d6b4", Excavate: "#edb485", Rest: "#c5c8aa"};
@@ -20,6 +23,75 @@ const app = {
     compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0
 };
 
+function tr(message, values = {}) {
+    if (message == null) return messages["Not recorded"] || "Not recorded";
+    if (typeof message !== "string") return message;
+    const translated = Object.hasOwn(messages, message) ? messages[message] : message;
+    return translated.replace(/\{(\w+)\}/g, (whole, key) => Object.hasOwn(values, key) ? values[key] : whole);
+}
+function preference() {
+    try { return localStorage.getItem("antworld.op0.language") === "zh-CN" ? "zh-CN" : "en"; }
+    catch { return "en"; }
+}
+const staticStrings = [];
+function captureStaticStrings() {
+    const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
+    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play"]);
+    for (const e of document.querySelectorAll(selectors)) {
+        if (!dynamic.has(e.id) && e.children.length === 0 && e.textContent.trim() && !e.closest("#locale")) {
+            staticStrings.push([e, null, e.textContent.trim()]);
+        }
+    }
+    for (const e of document.querySelectorAll("[aria-label],[placeholder]")) {
+        for (const attribute of ["aria-label", "placeholder"]) {
+            if (e.hasAttribute(attribute)) staticStrings.push([e, attribute, e.getAttribute(attribute)]);
+        }
+    }
+}
+async function setLanguage(next, refresh = true) {
+    const version = ++languageChange;
+    if (next === "zh-CN" && !chineseCatalog) {
+        const response = await fetch("/locale/zh-CN.json");
+        if (!response.ok) throw Error(tr("Language catalogue could not be loaded"));
+        chineseCatalog = await response.json();
+    }
+    if (version !== languageChange) return;
+    messages = next === "zh-CN" ? chineseCatalog : {};
+    language = next;
+    decimal = new Intl.NumberFormat(language, {maximumFractionDigits: 3});
+    document.documentElement.lang = next;
+    document.title = tr("AntWorld · Observation Preview");
+    $("locale").value = next;
+    try { localStorage.setItem("antworld.op0.language", next); } catch { /* The current tab still remembers the selection. */ }
+    if (refresh) stopPlay();
+    for (const [element, attribute, message] of staticStrings) {
+        if (attribute) element.setAttribute(attribute, tr(message));
+        else element.textContent = tr(message);
+    }
+    if (!refresh) return;
+    if (!app.catalog.length) {
+        showEmptyCatalog();
+        return;
+    }
+    if (!app.meta || !app.state) {
+        show(tr("Verifying the archive and opening its history index…"));
+        return;
+    }
+    const active = $("archive").value, prior = $("reference").value, saved = $("archived-world").value;
+    setOptions($("archive"), app.catalog, active);
+    for (const id of ["archived-world", "reference-world"]) {
+        for (const option of $(id).options) option.textContent = tr(option.dataset.title);
+    }
+    $("archived-world").value = saved;
+    configure(app.meta, prior);
+    if (app.reference) $("compare-time").max = Math.max(app.meta.end_ms, app.reference.end_ms);
+    await seek(app.time, app.selectedFact);
+    if (!app.compare && !$("event-panel").hidden) {
+        if (app.selectedFact) showEvent(app.selectedFact);
+        await loadEvents(false);
+    }
+}
+
 function node(tag, value, className) {
     const element = document.createElement(tag);
     if (value != null) element.textContent = value;
@@ -27,7 +99,7 @@ function node(tag, value, className) {
     return element;
 }
 function button(value, action, title) {
-    const element = node("button", value);
+    const element = node("button", tr(value));
     element.type = "button";
     element.addEventListener("click", action);
     if (title) element.title = title;
@@ -44,22 +116,22 @@ function show(message, error = false) {
     target.classList.toggle("error", error);
     target.textContent = message || "";
 }
-function report(err) { show(err.message || String(err), true); }
-function day(ms) { return ms == null ? "Not recorded" : "Day " + decimal.format(ms / DAY); }
-function exactTime(ms) { return day(ms) + " · " + ms.toLocaleString("en-US") + " ms"; }
-function withUnit(value, unit) { return value == null ? "Not recorded" : decimal.format(value) + " " + unit; }
+function report(err) { show(tr(err.message || String(err)), true); }
+function day(ms) { return ms == null ? tr("Not recorded") : tr("Day {number}", {number: decimal.format(ms / DAY)}); }
+function exactTime(ms) { return day(ms) + " · " + ms.toLocaleString(language) + " ms"; }
+function withUnit(value, unit) { return value == null ? tr("Not recorded") : decimal.format(value) + " " + tr(unit); }
 function mass(value) {
-    return value ? "[" + value.map(v => v == null ? "?" : decimal.format(v)).join(" / ") + "] µg" : "Not recorded";
+    return value ? "[" + value.map(v => v == null ? "?" : decimal.format(v)).join(" / ") + "] µg" : tr("Not recorded");
 }
-function coords(p) { return p ? "(" + p.map(v => decimal.format(v * 1000)).join(", ") + ") mm" : "Not recorded"; }
-function truth(value) { return value == null ? "Not recorded" : typeof value === "object" ? JSON.stringify(value) : String(value); }
+function coords(p) { return p ? "(" + p.map(v => decimal.format(v * 1000)).join(", ") + ") mm" : tr("Not recorded"); }
+function truth(value) { return value == null ? tr("Not recorded") : typeof value === "object" ? JSON.stringify(value) : String(value); }
 function keyValues(rows) {
     const dl = node("dl", null, "key-value");
     for (const [key, value] of rows) {
         const dd = node("dd");
         if (value instanceof Node) dd.append(value);
-        else dd.textContent = value ?? "Not recorded";
-        dl.append(node("dt", key), dd);
+        else dd.textContent = value ?? tr("Not recorded");
+        dl.append(node("dt", tr(key)), dd);
     }
     return dl;
 }
@@ -78,40 +150,45 @@ function geometryOptions() {
         clearance: app.section === "slice" && $("clearance").checked ? 1 : null};
 }
 function setOptions(select, entries, value) {
-    select.replaceChildren(...entries.map(e => new Option(e.title, e.key)));
+    select.replaceChildren(...entries.map(e => {
+        const option = new Option(tr(e.title), e.key);
+        option.dataset.title = e.title;
+        return option;
+    }));
     if (value) select.value = value;
 }
 
-function configure(meta) {
-    put("title", meta.title);
-    put("subtitle", [meta.population?.replaceAll("_", " "), meta.layout, meta.supply, "Physics " + meta.settings.physics,
-        "Seed " + meta.settings.seed, meta.readiness].filter(Boolean).join("  ·  "));
+function configure(meta, referenceKey = null) {
+    put("title", tr(meta.title));
+    put("subtitle", [meta.population, meta.layout, meta.supply].filter(Boolean).map(value => tr(value).replaceAll("_", " "))
+        .concat(tr("Physics {version}", {version: meta.settings.physics}), tr("Seed {seed}", {seed: meta.settings.seed}), meta.readiness).join("  ·  "));
     const hashes = node("details");
-    hashes.append(node("summary", "Member SHA-256"), node("pre", JSON.stringify(meta.member_sha256, null, 2)));
+    hashes.append(node("summary", tr("Member SHA-256")), node("pre", JSON.stringify(meta.member_sha256, null, 2)));
     const setup = node("details");
-    setup.append(node("summary", "Effective experiment settings"), node("pre", JSON.stringify(meta.settings, null, 2)));
+    setup.append(node("summary", tr("Effective experiment settings")), node("pre", JSON.stringify(meta.settings, null, 2)));
     const p = meta.final_population;
-    $("identity-content").replaceChildren(node("p", meta.description || "User-imported Core archive.", "muted"),
+    $("identity-content").replaceChildren(node("p", tr(meta.description || "User-imported Core archive."), "muted"),
         keyValues([["World ID", meta.world_id], ["Scenario", meta.scenario || meta.name], ["Condition", meta.settings.condition],
             ["Valid time interval", day(meta.start_ms) + " – " + day(meta.end_ms)],
-            ["Recorded end", (p.queens_alive.length ? "Queen alive" : "No live queen") + " · " + p.workers + " live workers"],
+            ["Recorded end", tr(p.queens_alive.length ? "Queen alive" : "No live queen") + " · " + tr("{count} live workers", {count: p.workers})],
             ["Checkpoint / physics", meta.settings.checkpoint_schema + " / " + meta.settings.physics],
-            ["Canonical facts", meta.facts.toLocaleString("en-US")], ["Integrity", meta.integrity], ["Archive SHA-256", meta.archive_sha256],
+            ["Canonical facts", meta.facts.toLocaleString(language)], ["Integrity", meta.integrity], ["Archive SHA-256", meta.archive_sha256],
             ["Producer commit", meta.producer?.source], ["Producer binary SHA-256", meta.producer?.binary_sha256],
-            ["Archive type", meta.archive_kind], ["Scope", meta.readiness + " · B06 " + meta.b06 + " · release " + meta.release],
+            ["Archive type", meta.archive_kind], ["Scope", meta.readiness + " · B06 " + meta.b06 + " · " + tr("Release") + " " + meta.release],
             ["Biological validation", meta.biological_status]]), setup, hashes);
     for (const id of ["time", "compare-time"]) $(id).max = meta.end_ms;
     $("days").replaceChildren(...[0, 1, 20, 45, 90, 120, 150].filter(d => d * DAY <= meta.end_ms)
-        .map(d => button("D" + d, () => seek(d * DAY).catch(report), "Jump to day " + d)));
+        .map(d => button(language === "en" ? "D" + d : tr("Day {number}", {number: d}),
+            () => seek(d * DAY).catch(report), tr("Jump to day {number}", {number: d}))));
     const labels = {"First hatch": "Hatch", "First worker eclosed": "First worker", "First food collection": "First collection",
         "First food delivered": "First delivery",
         "First excavation": "First excavation", "First recruitment activation": "Recruitment", "First larval death": "Larval death",
         "Queen died": "Queen death"};
     $("milestones").replaceChildren(...meta.milestones.filter(m => labels[m.label]).map(m =>
-        button(labels[m.label], () => jumpEvent(m.id, m.ant).catch(report), m.label + " · " + exactTime(m.time_ms))));
+        button(labels[m.label], () => jumpEvent(m.id, m.ant).catch(report), tr(m.label) + " · " + exactTime(m.time_ms))));
     setOptions($("reference"), app.catalog.filter(e => e.key !== $("archive").value));
     const prior = app.catalog.find(e => e.title === "Before the feeding correction" && e.key !== $("archive").value);
-    if (prior) $("reference").value = prior.key;
+    if (referenceKey || prior) $("reference").value = referenceKey || prior.key;
 }
 
 async function openArchive(key, preferred) {
@@ -122,7 +199,7 @@ async function openArchive(key, preferred) {
     ++app.eventListVersion;
     delete document.documentElement.dataset.ready;
     stopPlay();
-    show("Verifying the archive and opening its history index…");
+    show(tr("Verifying the archive and opening its history index…"));
     const result = await api("archive/" + key);
     if (version !== app.openVersion) return;
     const entry = result.worlds.find(w => w.key === preferred) || result.worlds[0];
@@ -209,20 +286,20 @@ async function seek(ms, exact = null) {
 }
 
 function updateClock() {
-    const grain = app.selectedFact ? " · event #" + app.selectedFact.id + " cut" : " · committed through this time";
-    put("time-note", exactTime(app.time) + grain);
+    const grain = app.selectedFact ? tr("Event #{id} cut", {id: app.selectedFact.id}) : tr("Committed through this time");
+    put("time-note", exactTime(app.time) + " · " + grain);
     put("compare-stamp", day(app.time));
 }
 
 function updateState(state) {
     const p = state.population;
-    put("queen-state", p.queens_alive.length ? "Alive" : "Absent");
+    put("queen-state", tr(p.queens_alive.length ? "Alive" : "Absent"));
     const s = state.queens_last_sample;
-    put("queen-mass", s ? withUnit(s.hydration_ug, "µg water") + " · " + day(s.time_ms) + " cut" :
-        p.queens_alive.length ? "Physiology unavailable at this cut" : "No live queen at this cut");
-    for (const name of ["workers", "eggs", "larvae", "pupae"]) put(name, p[name].toLocaleString("en-US"));
+    put("queen-mass", s ? tr("{water} · sampled on {day}", {water: withUnit(s.hydration_ug, "µg water"), day: day(s.time_ms)}) :
+        tr(p.queens_alive.length ? "Physiology unavailable at this cut" : "No live queen at this cut"));
+    for (const name of ["workers", "eggs", "larvae", "pupae"]) put(name, p[name].toLocaleString(language));
     const totals = state.cumulative;
-    const net = state.net_removed_m3 == null ? "Not recorded" : withUnit(state.net_removed_m3 * 1e9, "mm³");
+    const net = withUnit(state.net_removed_m3 == null ? null : state.net_removed_m3 * 1e9, "mm³");
     const rows = [["External stock", mass(state.external_ug)], ["Nest stock", mass(state.nest_ug)],
         ["Collections / deliveries", (totals.collections || 0) + " / " + (totals.deliveries || 0)],
         ["Trophallaxis / rations", (totals.trophallaxis || 0) + " / " + (totals.maternal_rations || 0)],
@@ -231,7 +308,7 @@ function updateState(state) {
         ["Recruitment activations", String(totals.activations || 0)]];
     $("ledger").replaceChildren(...rows.map(([label, value]) => {
         const tile = node("div");
-        tile.append(node("small", label, "muted"), node("strong", value));
+        tile.append(node("small", tr(label), "muted"), node("strong", value));
         return tile;
     }));
 }
@@ -241,42 +318,42 @@ function eventLabel(e) {
         FoodCollected: "Food collected", FoodDelivered: "Food delivered", NutritionTransferred: "Trophallaxis",
         FoundingRation: "Maternal ration", SoilExcavated: "Soil excavated", SoilDropped: "Soil placed",
         RecruitmentObserved: "Scout cue sensed", RecruitmentActivated: "Recruitment activated"};
-    if (e.kind === "StageChanged") return {Larva: "Hatched", Pupa: "Pupated", Adult: "Eclosed"}[e.stage] || e.stage;
-    if (e.action) return e.action.act + " · " + e.action.phase;
-    return labels[e.kind] || e.kind.replace(/([a-z])([A-Z])/g, "$1 $2");
+    if (e.kind === "StageChanged") return tr({Larva: "Hatched", Pupa: "Pupated", Adult: "Eclosed"}[e.stage] || e.stage);
+    if (e.action) return tr(e.action.act) + " · " + tr(e.action.phase);
+    return tr(labels[e.kind] || (Object.hasOwn(messages, e.kind) ? e.kind : e.kind.replace(/([a-z])([A-Z])/g, "$1 $2")));
 }
 function eventButton(e, extra = false) {
     const b = button("", () => jumpEvent(e.id).catch(report));
     b.className = "event-row";
     b.dataset.event = e.id;
     b.append(node("span", eventLabel(e)), node("span", day(e.time_ms)));
-    if (extra) b.append(node("small", "#" + e.id + (e.actor ? " · ant #" + e.actor : "") +
-        (e.related ? " → #" + e.related : "") + (e.death_cause ? " · " + e.death_cause : "")));
+    if (extra) b.append(node("small", "#" + e.id + (e.actor ? " · " + tr("Ant #{id}", {id: e.actor}) : "") +
+        (e.related ? " → #" + e.related : "") + (e.death_cause ? " · " + tr(e.death_cause) : "")));
     return b;
 }
 function renderAnt(ant) {
     const panel = $("individual-content");
     if (!ant) {
-        panel.replaceChildren(node("p", "Select an individual on the map or enter its ID.", "muted"));
+        panel.replaceChildren(node("p", tr("Select an individual on the map or enter its ID."), "muted"));
         return;
     }
     const title = node("div", null, "animal-head");
     const headline = node("div");
-    headline.append(node("h3", (ant.stage === "Adult" ? ant.caste : ant.stage) + " #" + ant.id),
-        node("small", ant.program === "Not recorded" ? "Task state not recorded" : "Program · " + ant.program));
-    title.append(headline, node("span", ant.status, "pill" + (ant.status === "Dead" ? " dead" : "")));
+    headline.append(node("h3", tr(ant.stage === "Adult" ? ant.caste : ant.stage) + " #" + ant.id),
+        node("small", ant.program === "Not recorded" ? tr("Task state not recorded") : tr("Program · {name}", {name: tr(ant.program)})));
+    title.append(headline, node("span", tr(ant.status), "pill" + (ant.status === "Dead" ? " dead" : "")));
     const mother = ant.mother ? button("#" + ant.mother, () => selectAnt(ant.mother).catch(report)) : null;
     const s = ant.sample;
     panel.replaceChildren(title, keyValues([["Mother", mother], ["Born", ant.born_ms == null ? null : day(ant.born_ms)],
-        ["Last position at cut", coords(ant.position_m)], ...(ant.died_ms == null ? [] : [["Died", exactTime(ant.died_ms)], ["Cause", ant.death_cause]])]),
-        node("h4", s ? "Physiology · " + day(s.time_ms) + " cut" : "Physiology · not recorded", "subhead"));
+        ["Last position at cut", coords(ant.position_m)], ...(ant.died_ms == null ? [] : [["Died", exactTime(ant.died_ms)], ["Cause", tr(ant.death_cause)]])]),
+        node("h4", s ? tr("Physiology · sample on {day}", {day: day(s.time_ms)}) : tr("Physiology · not recorded"), "subhead"));
     if (s) panel.append(keyValues([["Body energy", withUnit(s.energy_nj, "nJ")], ["Body water", withUnit(s.hydration_ug, "µg")],
         ["Tissue protein", withUnit(s.tissue_protein_ug, "µg")], ["Crop C/P/W/other", mass(s.crop_ug)],
         ["Carried C/P/W/other", mass(s.carried_ug)]]));
-    panel.append(node("h4", "Lifetime · includes later recorded events", "subhead"),
-        ...ant.life_events.map(e => eventButton(e)), node("h4", "Recent facts through cursor", "subhead"),
+    panel.append(node("h4", tr("Lifetime · includes later recorded events"), "subhead"),
+        ...ant.life_events.map(e => eventButton(e)), node("h4", tr("Recent facts through cursor"), "subhead"),
         ...ant.activity.slice(0, 12).map(e => eventButton(e, true)));
-    if (!ant.activity.length) panel.append(node("p", "No matching actions by this time.", "muted"));
+    if (!ant.activity.length) panel.append(node("p", tr("No matching actions by this time."), "muted"));
 }
 function inspect(events) {
     $("individual-panel").hidden = events;
@@ -299,18 +376,18 @@ function showEvent(e) {
     const editList = [];
     for (const edit of e.geometry_edits || []) {
         const target = app.meta.settings.geometry;
-        const actor = button("Ant #" + edit.actor, () => selectAnt(edit.actor).catch(report));
+        const actor = button(tr("Ant #{id}", {id: edit.actor}), () => selectAnt(edit.actor).catch(report));
         editList.push(["Excavator / filler", actor], ["Quantized box", edit.box_q.join(", ")],
             ["Material edited", withUnit(edit.volume_q3 * target.quantum_m ** 3 * 1e9, "mm³")]);
     }
-    const antLink = id => id ? button("Ant #" + id, () => selectAnt(id).catch(report)) : null;
-    container.replaceChildren(node("h3", eventLabel(e)), keyValues([["Fact ID", "#" + e.id],
+    const antLink = id => id ? button(tr("Ant #{id}", {id}), () => selectAnt(id).catch(report)) : null;
+    container.replaceChildren(node("h3", eventLabel(e)), keyValues([["Fact ID", "#" + e.id], ["Canonical event name", e.kind],
         ["Simulation time", exactTime(e.time_ms)], ["Actor", antLink(e.actor)], ["Participant", antLink(e.related)],
         ["Resource / parcel", [e.resource, e.parcel].filter(Boolean).map(s => "#" + s).join(" / ") || null],
-        ["Outcome", e.outcome], ["Recorded position", coords(e.position_m)], ["Transferred C/P/W/other", mass(e.mass_ug)],
+        ["Outcome", tr(e.outcome)], ["Recorded position", coords(e.position_m)], ["Transferred C/P/W/other", mass(e.mass_ug)],
         ...(e.origin_fact ? [["Preceding committed fact", button("#" + e.origin_fact, () => jumpEvent(e.origin_fact).catch(report))]] : []),
-        ...(e.death_cause ? [["Death cause", e.death_cause]] : []),
-        ...(e.mode ? [["Foraging mode", e.mode], ["Decision label", e.reason]] : []),
+        ...(e.death_cause ? [["Death cause", tr(e.death_cause)]] : []),
+        ...(e.mode ? [["Foraging mode", tr(e.mode)], ["Decision label", tr(e.reason)]] : []),
         ...(e.trail_deposited_units ? [["Deposited trail units", decimal.format(e.trail_deposited_units)]] : []), ...editList]));
     container.hidden = false;
 }
@@ -347,7 +424,7 @@ async function loadEvents(more) {
     app.eventAfter = data.next_after;
     const list = $("event-list");
     list.replaceChildren(...data.events.map(e => eventButton(e, true)));
-    if (!data.events.length) list.append(node("p", "No matching facts in this window.", "muted"));
+    if (!data.events.length) list.append(node("p", tr("No matching facts in this window."), "muted"));
     $("more-events").hidden = !app.eventAfter;
 }
 
@@ -426,7 +503,7 @@ function circle(ctx, x, y, radius, fill, stroke) {
 function legend(id, entries) {
     $(id).replaceChildren(...entries.map(([key, label]) => {
         const row = node("span");
-        row.append(node("i", null, key), document.createTextNode(label));
+        row.append(node("i", null, key), document.createTextNode(tr(label)));
         return row;
     }));
 }
@@ -435,9 +512,9 @@ function scaleMark(ctx, width, height, p, label) {
     const step = 10 ** Math.floor(Math.log10(mm));
     const value = Math.max(1, Math.floor(mm / step)) * step;
     const px = value / 1000 * p.unit;
-    ctx.font = "11px monospace";
+    ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
     ctx.fillStyle = "#b9c8b1";
-    ctx.fillText(label, 13, 19);
+    ctx.fillText(tr(label), 13, 19);
     ctx.fillText(decimal.format(value) + " mm", width - px - 15, height - 18);
     ctx.fillRect(width - px - 15, height - 13, px, 1);
 }
@@ -481,8 +558,8 @@ function drawMap() {
                     Math.min(2.5, p.unit*q/5), "#91be80");
             }
         }
-        put("space-caption", "Quantized material section · " + app.geometry.revision + " committed edits" +
-            (app.geometry.cropped ? " · section cropped to first 480 quanta on each axis" : ""));
+        put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
+            (app.geometry.cropped ? " · " + tr("Section cropped to first 480 quanta on each axis") : ""));
         legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["larva", "Brood"],
             ["worker", "Worker"], ["trace", "Recorded positions"],
             ...(slice.unloaded_body_clear ? [["entrance", "Unloaded body fits here"]] : [])]);
@@ -538,11 +615,12 @@ function drawMap() {
             const inStock = s.stock_ug.some(v => v > 0);
             ctx.fillStyle = inStock ? colors.food : "#52635a";
             ctx.fillRect(x-4, y-4, 8, 8);
-            ctx.font = "11px monospace";
+            ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
             ctx.fillStyle = "#d3e6d5";
-            ctx.fillText("Source #" + s.id + (inStock ? "" : " · depleted"), x + 8, y - 5);
+            ctx.fillText(tr("Source #{id}", {id: s.id}) + (inStock ? "" : " · " + tr("depleted")), x + 8, y - 5);
         }
-        put("space-caption", "Surface positions at this cut · " + (openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
+        put("space-caption", tr("Surface positions at this cut") + " · " +
+            tr(openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
         legend("map-legend", [["entrance", "Opening / surface nest"], ["food", "Source"], ["worker", "Worker"],
             ["trace", "Recorded positions"]]);
     }
@@ -572,9 +650,10 @@ function drawMap() {
         ctx.strokeRect(x - 7, y - 7, 14, 14);
     }
     scaleMark(ctx, width, height, p, orientation);
-    ctx.font = "11px monospace";
+    ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
     ctx.fillStyle = "#a9b6a7";
-    ctx.fillText(visible.length + (underground ? " in section" : " on surface") + " · " + state.ants.length + " living", 13, height - 13);
+    ctx.fillText(tr(underground ? "{count} in section" : "{count} on surface", {count: visible.length}) +
+        " · " + tr("{count} living", {count: state.ants.length}), 13, height - 13);
 }
 
 function graph(id, tracks, end, stamp, legendId = null) {
@@ -585,13 +664,13 @@ function graph(id, tracks, end, stamp, legendId = null) {
     for (const s of tracks) for (const [, value] of s.values) if (value != null) max = Math.max(max, value);
     const low = 38, plotW = Math.max(1, width - low - 13), plotH = Math.max(1, height - 26);
     const xx = ms => low + plotW * ms / Math.max(1, end), yy = v => 9 + plotH * (1 - v / max);
-    ctx.font = "10px monospace";
+    ctx.font = '10px "Cascadia Mono", "Microsoft YaHei", monospace';
     ctx.fillStyle = "#a9b6a7";
     ctx.strokeStyle = "#354237";
     for (const i of [0, .5, 1]) {
         const y = yy(max * i);
         ctx.beginPath(); ctx.moveTo(low, y); ctx.lineTo(width - 13, y); ctx.stroke();
-        ctx.fillText(new Intl.NumberFormat("en-US", {notation: "compact", maximumFractionDigits: 1}).format(max * i), 2, y + 3);
+        ctx.fillText(new Intl.NumberFormat(language, {notation: "compact", maximumFractionDigits: 1}).format(max * i), 2, y + 3);
     }
     for (const s of tracks) {
         ctx.strokeStyle = s.color;
@@ -611,8 +690,10 @@ function graph(id, tracks, end, stamp, legendId = null) {
     const mark = xx(stamp);
     ctx.beginPath(); ctx.moveTo(mark, 6); ctx.lineTo(mark, height - 12); ctx.stroke();
     ctx.fillStyle = "#a9b6a7";
-    ctx.fillText("0d", low, height - 3);
-    ctx.fillText(decimal.format(end / DAY) + "d", Math.max(low, width-42), height - 3);
+    ctx.fillText(day(0), low, height - 3);
+    ctx.textAlign = "right";
+    ctx.fillText(day(end), width - 11, height - 3);
+    ctx.textAlign = "left";
     if (legendId) legend(legendId, tracks.map(t => [t.key, t.label]));
 }
 function track(key, label, field, series = app.series) {
@@ -662,7 +743,7 @@ async function loadReference(preferred) {
     const version = ++app.referenceVersion;
     if (!$("reference").value) return;
     stopPlay();
-    show("Opening and verifying the reference archive…");
+    show(tr("Opening and verifying the reference archive…"));
     const archive = await api("archive/" + $("reference").value);
     const record = archive.worlds.find(w => w.key === preferred) || archive.worlds[0];
     if (version !== app.referenceVersion || !app.compare) return;
@@ -686,41 +767,43 @@ async function updateComparison() {
     if (!app.compare || version !== app.compareVersion) return;
     const differing = Object.values(data.settings).filter(s => s.status === "different").length;
     const unknown = Object.values(data.settings).filter(s => s.status === "unknown").length;
-    $("compare-status").replaceChildren(node("p", differing + " recorded input differences · " + unknown +
-        " unknown input fields. Compare colony outcomes and roles. Ant IDs remain local to each archive.", differing || unknown ? "different" : "matching"));
+    $("compare-status").replaceChildren(node("p", tr(
+        "{different} recorded input differences · {unknown} unknown input fields. Compare colony outcomes and roles. Ant IDs remain local to each archive.",
+        {different: differing, unknown}), differing || unknown ? "different" : "matching"));
     const cards = data.worlds.map(({world, state, cohort, outside_record}, i) => {
         const box = node("article", null, "compare-card");
         const p = state.population, c = state.cumulative;
-        box.append(node("h3", world.title), node("p", day(state.time_ms) + (outside_record ? " · archive ends before cursor" : "") +
-            " · physics " + world.physics + " · seed " + world.seed, "muted"),
-        keyValues([["Queen / workers", (p.queens_alive.length ? "Alive" : "Absent") + " / " + p.workers],
+        box.append(node("h3", tr(world.title)), node("p", day(state.time_ms) +
+            (outside_record ? " · " + tr("Archive ends before cursor") : "") +
+            " · " + tr("Physics {version}", {version: world.physics}) + " · " + tr("Seed {seed}", {seed: world.seed}), "muted"),
+        keyValues([["Queen / workers", tr(p.queens_alive.length ? "Alive" : "Absent") + " / " + p.workers],
             ["Eggs / larvae / pupae", [p.eggs, p.larvae, p.pupae].join(" / ")],
-            ["First census cohort", cohort ? cohort.eclosed + " eclosed / " + cohort.size : "Not recorded at this cut"],
-            ["No recorded positive feeding", cohort?.without_recorded_feeding ?? "Not recorded at this cut"],
-            ["First cohort deaths", cohort ? Object.entries(cohort.deaths).map(([k, v]) => k + " " + v).join(", ") || "None at this cut" : null],
+            ["First census cohort", cohort ? tr("{eclosed} eclosed / {size}", cohort) : tr("Not recorded at this cut")],
+            ["No recorded positive feeding", cohort?.without_recorded_feeding ?? tr("Not recorded at this cut")],
+            ["First cohort deaths", cohort ? Object.entries(cohort.deaths).map(([k, v]) => tr(k) + " " + v).join(", ") || tr("None at this cut") : null],
             ["Collections / deliveries", (c.collections || 0) + " / " + (c.deliveries || 0)],
             ["Recruitment activations", c.activations || 0], ["Excavations / soil placements", (c.excavations || 0) + " / " + (c.soil_drops || 0)],
             ["Net soil removed", withUnit(state.net_removed_m3 == null ? null : state.net_removed_m3 * 1e9, "mm³")]]));
-        box.append(node("h4", "Committed facts on this day", "subhead"));
+        box.append(node("h4", tr("Committed facts on this day"), "subhead"));
         for (const event of lists[i].events) {
             const detail = node("p", "#" + event.id + " · " + eventLabel(event) + " · " + day(event.time_ms), "compare-fact");
             box.append(detail);
         }
-        if (!lists[i].events.length) box.append(node("p", "No matching facts on this day.", "muted"));
+        if (!lists[i].events.length) box.append(node("p", tr("No matching facts on this day."), "muted"));
         return box;
     });
     $("compare-cards").replaceChildren(...cards);
-    const inputSignature = JSON.stringify(data.settings);
+    const inputSignature = language + JSON.stringify(data.settings);
     if ($("compare-config").dataset.signature !== inputSignature) {
         $("compare-config").dataset.signature = inputSignature;
         const settings = Object.entries(data.settings).map(([key, item]) => {
-        const label = names[key] || key;
-        const container = node("div");
-        const detail = node("details");
-        detail.append(node("summary", label + " · " + item.status, item.status === "different" ? "different" : ""),
-            keyValues([["Active world", truth(item.left)], ["Reference", truth(item.right)]]));
-        container.append(detail);
-        return container;
+            const label = tr(names[key] || key);
+            const container = node("div");
+            const detail = node("details");
+            detail.append(node("summary", label + " · " + tr(item.status), item.status === "different" ? "different" : ""),
+                keyValues([["Active world", truth(item.left)], ["Reference", truth(item.right)]]));
+            container.append(detail);
+            return container;
         });
         $("compare-config").replaceChildren(...settings);
     }
@@ -731,7 +814,7 @@ function stopPlay() {
     if (app.playback) clearInterval(app.playback);
     app.playback = null;
     for (const id of ["play", "compare-play"]) {
-        put(id, "▶ Play");
+        put(id, tr("▶ Play"));
         $(id).setAttribute("aria-pressed", "false");
     }
 }
@@ -741,7 +824,7 @@ function togglePlay() {
     const end = app.compare && app.reference ? Math.max(app.meta.end_ms, app.reference.end_ms) : app.meta.end_ms;
     if (app.time >= end) app.time = 0;
     for (const id of ["play", "compare-play"]) {
-        put(id, "Ⅱ Pause");
+        put(id, tr("Ⅱ Pause"));
         $(id).setAttribute("aria-pressed", "true");
     }
     let busy = false, previous = performance.now();
@@ -762,6 +845,7 @@ function bind() {
     const safe = (action) => (...args) => Promise.resolve().then(() => action(...args)).catch(report);
     const click = (id, action) => $(id).addEventListener("click", safe(action));
     const change = (id, action) => $(id).addEventListener("change", safe(action));
+    change("locale", () => setLanguage($("locale").value));
     change("archive", () => openArchive($("archive").value));
     change("archived-world", () => openArchive($("archive").value, $("archived-world").value));
     click("observe-tab", () => { if (app.meta) { stopPlay(); setMode(false); return seek(app.time); } });
@@ -833,12 +917,23 @@ function bind() {
     new ResizeObserver(draw).observe(document.querySelector("main"));
 }
 
+function showEmptyCatalog() {
+    put("title", tr("No archives available"));
+    put("subtitle", tr("Import a Core ZIP or SQLite backup with python -m op0 import PATH, then restart this viewer."));
+}
+
 async function start() {
+    captureStaticStrings();
+    await setLanguage(preference(), false);
+    put("title", tr("Opening AntWorld"));
+    put("subtitle", tr("Checking the local archive catalogue…"));
+    put("time-note", day(0));
+    put("space-caption", tr("Committed positions and ordered geometry edits"));
+    stopPlay();
     bind();
     app.catalog = await api("catalog");
     if (!app.catalog.length) {
-        put("title", "No archives available");
-        put("subtitle", "Import a Core ZIP or SQLite backup with python -m op0 import PATH, then restart this viewer.");
+        showEmptyCatalog();
         return;
     }
     setOptions($("archive"), app.catalog);

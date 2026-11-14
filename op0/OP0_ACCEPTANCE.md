@@ -20,6 +20,7 @@ Windows 11 x64, Python 3.15.2, SQLite 3.53.4, Chrome 157.0.8103.78 and Node.js 2
 | Watch a failure | The no-external-supply world reaches day 150 with zero workers and no live queen. It is keyed separately even though its recorded WorldId is shared with the balanced case |
 | Compare the previous and corrected physics 25 | Both have the same recorded population source, seed, shaft geometry and initial maternal inputs. First-ration preference differs, 500,000 ppm before and 0 ppm after. The recorded day-150 worker counts are 43 and 45, respectively. Of four members in the first recorded larval census, zero eclosed before and one after. These are archive outcomes and do not establish an independent effect |
 | Reopen without changing the original source | Import verifies the original files. The browser reopened from its browse index with the same facts and source SHA-256. Native SQLite v1 and durable v2 with WAL were exercised. The DB and WAL source hashes remained identical. The v2 test ensures no SHM is created in the original directory |
+| Switch between English and Simplified Chinese | Chromium switched the larval profile and comparison in both directions without changing the active fact, identity or source hash. Reload restored the selected language. The terminal test switched languages while tracking the same larva and verified the preference in a new terminal session |
 
 ### Real screenshots
 
@@ -31,6 +32,7 @@ Windows 11 x64, Python 3.15.2, SQLite 3.53.4, Chrome 157.0.8103.78 and Node.js 2
 | Energy death and earlier physiological cut | [Larva #5](evidence/larval-life-history.png) |
 | Extinction at day 150 | [No external supply](evidence/no-external-supply.png) |
 | Feeding treatment comparison | [Physics 25 comparison](evidence/physics-25-comparison.png) |
+| Larva #5 with the same facts in Simplified Chinese | [Chinese life history](evidence/larval-life-history-zh.png) |
 
 These PNGs came from the running viewer. Spatial dots are recorded positions. Some adjacent facts have the same simulation timestamp. The inspector displays the exact event ID and cursor at those boundaries.
 
@@ -62,11 +64,11 @@ The table uses a fresh index in each measurement. The OS file cache was not flus
 | Peak process working set | 85.9 MiB | 85.8 MiB |
 | Browse index on disk | 63.3 MiB | 192.3 MiB |
 
-Real browser navigation painted the shell at **292 ms** and rendered the first real colony at **4.484 s** on a cold derived cache. The worker selection and day-90 scrub took **66.83 ms** and **76.22 ms** with the automation polling interval included. Reopening from the derived cache took **92.76 ms**. See [browser timings](evidence/browser-receipt.json), [balanced import samples](evidence/import-balanced.json) and [large import samples](evidence/import-dogleg.json). Individual query time depends on the available event pages and observations. These are measurements on one host, with no hard latency guarantee.
+Real browser navigation painted the shell at **292 ms** and rendered the first real colony at **4.484 s** on a cold derived cache. The worker selection and day-90 scrub took **66.83 ms** and **76.22 ms** with the automation polling interval included. Reopening from the derived cache took **92.76 ms**. See [browser timings](evidence/browser-receipt.json), [bilingual workflow receipt](evidence/bilingual-browser-receipt.json), [balanced import samples](evidence/import-balanced.json) and [large import samples](evidence/import-dogleg.json). Individual query time depends on the available event pages and observations. These are measurements on one host, with no hard latency guarantee.
 
 ## Reproduce
 
-The Python checks run on Windows or Linux with the checked-in archives. Windows executed 13 tests with the optional native v1 writer enabled, including physics 24, 25 and 26 and a native v2 WAL. The v1 writer uses the existing Core and `Store` API. It is test-only and excluded from viewer installation.
+The Python checks run on Windows or Linux with the checked-in archives, including physics 24, 25 and 26 and a native v2 WAL. The optional native v1 writer uses the existing Core and `Store` API. It is test-only and excluded from viewer installation.
 
 ~~~powershell
 py -X utf8 -m unittest discover -s op0/tests -v

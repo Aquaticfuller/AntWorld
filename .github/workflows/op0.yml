@@ -1,9 +1,9 @@
 name: OP0 Observation Preview
 on:
   push:
-    paths: ["op0/**", "tools/start_op0.ps1", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "tools/start_op0.ps1", "tools/check_repository.py", ".github/workflows/op0.yml"]
   pull_request:
-    paths: ["op0/**", "tools/start_op0.ps1", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "tools/start_op0.ps1", "tools/check_repository.py", ".github/workflows/op0.yml"]
   workflow_dispatch:
 
 permissions:
@@ -56,7 +56,7 @@ jobs:
         shell: pwsh
         run: |
           @("1", "d 150", "q") | Set-Content -Encoding ascii "$env:RUNNER_TEMP\op0-commands.txt"
-          cmd.exe /d /c "pwsh -NoProfile -File .\tools\start_op0.ps1 -Terminal -Python python < ""$env:RUNNER_TEMP\op0-commands.txt"" > ""$env:RUNNER_TEMP\op0-terminal.txt"""
+          cmd.exe /d /c "pwsh -NoProfile -File .\tools\start_op0.ps1 -Terminal -Language en -Python python < ""$env:RUNNER_TEMP\op0-commands.txt"" > ""$env:RUNNER_TEMP\op0-terminal.txt"""
           $status = $LASTEXITCODE
           Get-Content -Encoding utf8 "$env:RUNNER_TEMP\op0-terminal.txt"
           if ($status -ne 0 -or -not (Select-String -SimpleMatch "45 workers" "$env:RUNNER_TEMP\op0-terminal.txt")) { exit 1 }

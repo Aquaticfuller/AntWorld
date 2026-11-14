@@ -11,6 +11,7 @@ import webbrowser
 from . import SCHEMA
 from .archive import json_bytes
 from .cli import ERRORS
+from .locale import CHINESE
 
 
 STATIC = {
@@ -50,7 +51,9 @@ def bind(api, port):
                 self.as_json(HTTPStatus.FORBIDDEN, dict(schema=SCHEMA, error="This viewer serves only the local host"))
                 return
             path = urlsplit(self.path).path
-            if path in STATIC:
+            if path == "/locale/zh-CN.json":
+                self.send_content(HTTPStatus.OK, "application/json; charset=utf-8", CHINESE.read_bytes())
+            elif path in STATIC:
                 file, media = STATIC[path]
                 self.send_content(HTTPStatus.OK, media, (root / file).read_bytes())
             elif path.startswith("/api/"):

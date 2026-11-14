@@ -10,7 +10,7 @@ Set-Location AntWorld
 .\tools\start_op0.ps1
 ~~~
 
-The browser opens the **Founding colony** archive. The first view is the queen in her underground chamber on day 0. Click **First collection** to see a worker at the food source, **First excavation** to see a real geometry edit, or **Play** to watch the archive advance to day 150. Open a second PowerShell in the same folder and run the following command for the terminal viewer.
+The browser opens the **Founding colony** archive. The first view is the queen in her underground chamber on day 0. Click **First collection** to see a worker at the food source, **First excavation** to see a real geometry edit, or **Play** to watch the archive advance to day 150. Use the language selector at the top right to switch between English and Simplified Chinese. Open a second PowerShell in the same folder and run the following command for the terminal viewer.
 
 ~~~powershell
 .\tools\start_op0.ps1 -Terminal

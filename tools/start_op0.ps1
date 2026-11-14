@@ -5,7 +5,8 @@ param(
     [ValidateRange(1, 65535)][int]$Port = 8765,
     [string]$ImportPath,
     [string]$Cache,
-    [string]$Python
+    [string]$Python,
+    [ValidateSet("en", "zh-CN")][string]$Language
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,6 +30,7 @@ if ($Cache) {
 }
 if ($Terminal) {
     $options += "tui"
+    if ($Language) { $options += @("--language", $Language) }
 } else {
     $options += @("serve", "--port", "$Port")
     if ($NoBrowser) { $options += "--no-browser" }

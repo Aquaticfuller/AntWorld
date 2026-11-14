@@ -21,6 +21,7 @@ from op0.cli import DEMOS, ROOT, VERIFIED, api_get, default_catalog
 from op0.codec import ArchiveError
 from op0.geometry import clear_centers, slice_at
 from op0.index import Catalog
+from op0.locale import translator
 from op0.query import ReadAPI
 from op0.server import bind
 
@@ -280,7 +281,7 @@ class ObservationTests(unittest.TestCase):
             self.assertEqual(initial_hash, file_hash(source))
 
     def test_terminal_with_real_world(self):
-        result = subprocess.run([sys.executable, "-X", "utf8", "-m", "op0", "--cache", str(self.catalog.root), "tui", "--plain"],
+        result = subprocess.run([sys.executable, "-X", "utf8", "-m", "op0", "--cache", str(self.catalog.root), "tui", "--plain", "--language", "en"],
                                 input="1\nd 150\ne 5375\na 5\nf care\nw\n2\nd 150\nq\n", capture_output=True,
                                 text=True, encoding="utf-8", cwd=ROOT, timeout=100)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -288,6 +289,20 @@ class ObservationTests(unittest.TestCase):
                         "0 workers", "VERIFIED_PUBLISHED"):
             self.assertIn(pattern, result.stdout)
         self.assertEqual(result.stderr, "")
+
+    def test_terminal_switches_language_without_resetting_cursor(self):
+        with TemporaryDirectory(dir=self.root) as tmp:
+            cmd = [sys.executable, "-X", "utf8", "-m", "op0", "--cache", tmp, "tui", "--plain"]
+            switched = subprocess.run(cmd, input="1\ne 5375\na 5\nlang zh-CN\nlang en\nlang zh-CN\nq\n",
+                                      capture_output=True, text=True, encoding="utf-8", cwd=ROOT, timeout=100)
+            self.assertEqual(switched.returncode, 0, switched.stderr)
+            self.assertIn("Tracking #5", switched.stdout)
+            self.assertIn(translator("zh-CN")("Tracking #{id}", id=5), switched.stdout)
+            self.assertIn(translator("zh-CN")("Energy depleted") + "\n", switched.stdout)
+            self.assertIn("AntDied", switched.stdout)
+            self.assertEqual((Path(tmp)/"terminal-language.txt").read_text().strip(), "zh-CN")
+            reopened = subprocess.run(cmd, input="q\n", capture_output=True, text=True, encoding="utf-8", cwd=ROOT, timeout=20)
+            self.assertIn(translator("zh-CN")("Founding colony"), reopened.stdout)
 
 
 class GeometryTests(unittest.TestCase):

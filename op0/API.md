@@ -2,6 +2,8 @@
 
 The terminal calls the same dispatcher used for HTTP. The server binds to IPv4 loopback and serves bundled assets and GET endpoints. The JSON envelope contains `schema: "antworld.observation.v1"` and either `data` or `error`. Events are anchored to the original WorldId. Every world URL also carries an archive-specific key, including when two source files reuse a WorldId.
 
+English and Simplified Chinese are presentation preferences. The local message catalogue is shared by both viewers. API fields, event names, checkpoint versions, IDs, hashes and numeric values use the same schema for both languages.
+
 | Endpoint under /api/v1 | Inputs and output |
 | --- | --- |
 | `catalog` | Registered archives, source SHA-256 and verified worlds if their cache is ready |
