@@ -18,7 +18,8 @@ from time import monotonic_ns
 from uuid import UUID, uuid4
 
 from .archive import SQLITE_ID, key
-from .codec import CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, PROGRAMS, STAGES, U32, checkpoint, decode_fact, label, require
+from .codec import (CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32,
+                    checkpoint, decode_fact, label, require)
 from .geometry import AXES, focused_window, terrain_view
 from .query import HOUR, integer
 
@@ -152,8 +153,7 @@ def save_details(path):
     world, stamp, cursor, header = rows[0]
     require(type(stamp) is int and 0 <= stamp < 1 << 53 and isinstance(header, bytes) and len(header) == 24 and
             header[:16] == b"AWSTATE1AWCKPTM\0" and
-            (U32.unpack_from(header, 16)[0], U32.unpack_from(header, 20)[0]) in
-            {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32)},
+            (U32.unpack_from(header, 16)[0], U32.unpack_from(header, 20)[0]) in MICROWORLD_VERSIONS,
             "Expected a MicroWorld checkpoint")
     require(isinstance(world, str) and str(UUID(world)) == world and isinstance(cursor, str) and key(cursor) < 1 << 53,
             "Invalid save identity")

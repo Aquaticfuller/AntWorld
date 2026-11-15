@@ -57,6 +57,16 @@ jobs:
           python tools/run_m0.py $binary build/r0-replay --r0 --durable --case r0-shaft-candidate --case r0-dogleg-candidate
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/verify_r0.py experiments/r0/witnesses --replay build/r0-replay
+      - name: Reproduce R0-r1 motor facts and verify native soil evidence
+        if: matrix.configuration == 'Release'
+        shell: pwsh
+        run: |
+          $binary = @('build/ci/Release/antworld_m0_live.exe', 'build/ci/antworld_m0_live') |
+              Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $binary) { throw 'Missing live MicroWorld executable' }
+          python -m tools.run_r0_r1 build/r0-r1-replay --core $binary --kind motion --case motion-shaft-motor --case motion-dogleg-motor --durable
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m tools.verify_r0_r1 experiments/r0_r1/witnesses --replay build/r0-r1-replay --scratch $env:RUNNER_TEMP
       - name: Release performance fixtures (Linux)
         if: runner.os == 'Linux' && matrix.configuration == 'Release'
         run: |

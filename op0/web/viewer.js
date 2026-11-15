@@ -267,7 +267,7 @@ async function openArchive(key, preferred) {
     app.map = {zoom: 1, x: 0, y: 0};
     $("replay-mode").value = meta.scenario?.startsWith("micro-m0-") ? "scenes" : "overview";
     setSection(meta.settings.geometry && (meta.initial_queens.length || meta.scenario?.startsWith("r0r1-dig")) ? "slice" : "surface");
-    $("axis").value = meta.scenario?.startsWith("micro-m0-") ? "y" : "z";
+    $("axis").value = /^(micro-m0-|r0r1-)/.test(meta.scenario || "") ? "y" : "z";
     if (app.section === "slice" && $("axis").value === "y" && meta.colonies.length) preferView(meta.colonies[0].position_m);
     $("ant-id").value = app.selected || "";
     toggle("follow", false);
@@ -1069,6 +1069,7 @@ async function updateComparison() {
             return api("world/" + m.key + "/events", {group: "highlights", since_ms: low, until_ms: Math.min(low + DAY - 1, m.end_ms), limit: 5});
         }))]);
     if (!app.compare || version !== app.compareVersion) return;
+    $("compare-marker-option").hidden = !data.worlds.some(trial => trial.nest);
     const differing = Object.values(data.settings).filter(s => s.status === "different").length;
     const unknown = Object.values(data.settings).filter(s => s.status === "unknown").length;
     $("compare-status").replaceChildren(node("p", tr(
@@ -1109,7 +1110,7 @@ async function updateComparison() {
         const preview = node("canvas", null, "compare-nest");
         preview.setAttribute("aria-label", tr("Nest floor at the selected time"));
         cards[i].insertBefore(preview, cards[i].children[2]);
-        drawCompareNest(preview, trial.nest, trial.state.ants,trial.morphology);
+        drawCompareNest(preview, trial.nest, $("compare-markers").checked ? trial.state.ants : [], trial.morphology);
     });
     const inputSignature = language + JSON.stringify(data.settings);
     if ($("compare-config").dataset.signature !== inputSignature) {
@@ -1450,6 +1451,7 @@ function bind() {
         await loadReference();
     });
     change("reference", () => loadReference());
+    change("compare-markers", () => { if (app.reference) return updateComparison(); });
     change("reference-world", () => loadReference($("reference-world").value));
     click("individual-tab", () => inspect(false));
     click("events-tab", async () => { inspect(true); await loadEvents(false); });

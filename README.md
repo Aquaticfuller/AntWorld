@@ -4,6 +4,8 @@
 
 The MicroWorld browser preview can start a live C++ Core colony with one queen in a small 3D nest. It supports real-time and accelerated simulation, manual SQLite saves and archive replay. Open the [Windows start guide](research/m0/README.md) to watch the first clutch, individual care, worker movements and real soil edits. Five compact archives are included, with English and Simplified Chinese controls and a read-only terminal option.
 
+The experimental [R0-r1 preview](research/r0_r1/README.md) includes paired worker-motion and excavation archives from physics 32 and 33. In Windows PowerShell, run `.\tools\start_m0.cmd --r0-r1 --replay` from the repository root.
+
 ## Watch a real colony with OP0
 
 On Windows, install [Python 3.11 or later](https://www.python.org/downloads/windows/) and Git. Open PowerShell and run:

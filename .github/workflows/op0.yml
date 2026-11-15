@@ -1,9 +1,9 @@
 name: OP0 Observation Preview
 on:
   push:
-    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
   pull_request:
-    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,7 @@ jobs:
             tools/start_m0.cmd
             experiments/m0/portable-demo
             experiments/r0/witnesses
+            experiments/r0_r1/witnesses
             experiments/s6_4_founding_cohort_release/correction
             experiments/s6_4_founding_cohort_release/hatch
             experiments/s6_4_ecological_mechanism_closure/portable-physics/joint
@@ -82,6 +83,19 @@ jobs:
           done
           curl -fsS http://127.0.0.1:8767/ > /dev/null
           node op0/tests/browser_smoke.mjs "$(command -v google-chrome)" http://127.0.0.1:8767 "$RUNNER_TEMP/r0-browser" r0
+      - name: Compare real R0-r1 motor segments and seeded nest growth in Chrome
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          python -m op0 --micro --cache "$RUNNER_TEMP/op0-archive-cache" serve --r0-r1 --replay --port 8768 --no-browser > "$RUNNER_TEMP/r0-r1-service.log" 2>&1 &
+          service_pid=$!
+          trap 'kill "$service_pid" 2>/dev/null || true' EXIT
+          for i in {1..25}; do
+            if curl -fsS http://127.0.0.1:8768/ > /dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8768/ > /dev/null
+          node op0/tests/browser_smoke.mjs "$(command -v google-chrome)" http://127.0.0.1:8768 "$RUNNER_TEMP/r0-r1-browser" r0r1
       - name: Verify launch script in Windows PowerShell
         if: runner.os == 'Windows'
         shell: pwsh

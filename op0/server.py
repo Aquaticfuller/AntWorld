@@ -39,10 +39,10 @@ def bind(api, port, live=None):
             self.send_header("Cross-Origin-Resource-Policy", "same-origin")
             self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'self'; "
                              "style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'")
-            self.end_headers()
             try:
+                self.end_headers()
                 self.wfile.write(payload)
-            except (ConnectionResetError, BrokenPipeError):
+            except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
                 pass
 
         def as_json(self, status, payload):

@@ -122,6 +122,77 @@ async function r0World() {
     await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
     console.log(JSON.stringify(result, null, 2));
 }
+async function r0r1World() {
+    assert.equal(await evaluate("app.meta.settings.physics"), 33);
+    assert.equal(await evaluate("app.state.population.workers"), 0);
+    const mark = await evaluate("app.meta.milestones.find(m => m.label === 'Resting site with 10 or more workers')");
+    assert.ok(mark, "Naturally developed workers have a late movement record");
+    await evaluate("[...$('action-replays').children].find(e => e.textContent === 'Watch movement in an established nest').click()");
+    await wait(() => evaluate("app.restReplay?.move?.motion && app.restReplay.progress > 0"), "Native motor segment is playing");
+    const segment = await evaluate("app.restReplay");
+    assert.equal(segment.start.time_ms, segment.move.motion.begins_ms);
+    assert.equal(segment.completion.id, mark.id);
+    assert.notDeepEqual(segment.start.position_m, segment.move.position_m);
+    await screenshot("r0-r1-worker-motor");
+    await wait(() => evaluate("!!app.selectedFact && !app.restReplay"), "Return to the committed motor endpoint");
+    await click("#milestones button[title^='First food delivered']");
+    await wait(() => evaluate("app.selectedFact?.kind === 'FoodDelivered'"), "Open the actual underground delivery");
+    assert.ok(await evaluate("app.selectedFact.mass_ug.some(m => m > 0)"));
+    result.motion = {archive:await evaluate("app.meta.archive_sha256"), actor:mark.ant,
+        begin:segment.start.id, move:segment.move.id, end:mark.id, duration_ms:segment.move.motion.duration_ms};
+    await evaluate("seek(90 * DAY)");
+    await click("#compare-tab");
+    const shaft = await evaluate("app.catalog.find(x => x.title === 'R0-r1 · shaft · reference').key");
+    await select("reference", shaft);
+    await wait(() => evaluate("app.reference?.title === 'R0-r1 · shaft · reference' && $('compare-cards').textContent.includes('Physics 32')"),
+        "Compare naturally developed workers in matched nests");
+    await screenshot("r0-r1-founding-comparison");
+
+    await click("#observe-tab");
+    await opened();
+    result.excavation = {};
+    for (const count of [50, 300]) {
+        const title = `R0-r1 · ${count} workers · dig score`;
+        const candidate = await evaluate(`app.catalog.find(x => x.title === ${JSON.stringify(title)}).key`);
+        await select("archive", candidate);
+        await wait(() => evaluate(`app.meta?.title === ${JSON.stringify(title)} && document.documentElement.dataset.ready === 'true'`),
+            "Open a seeded excavation world");
+        assert.equal(await evaluate("$('axis').value"), "y");
+        assert.equal(await evaluate("app.state.population.workers"), count);
+        const initial = await evaluate("app.state.net_removed_m3");
+        await click("#milestones button[title^='First excavation']");
+        await wait(() => evaluate("app.selectedFact?.kind === 'SoilExcavated'"), "Show the first committed excavation");
+        assert.ok(await evaluate("app.selectedFact.geometry_edits[0].volume_q3 > 0"));
+        const firstCut = await evaluate("app.selectedFact.id");
+        await evaluate("seek(DAY)");
+        assert.ok(await evaluate("app.state.net_removed_m3") > initial);
+        await click("#compare-tab");
+        const refTitle = `R0-r1 · ${count} workers · random boundary`;
+        const reference = await evaluate(`app.catalog.find(x => x.title === ${JSON.stringify(refTitle)}).key`);
+        await select("reference", reference);
+        await wait(() => evaluate(`app.reference?.title === ${JSON.stringify(refTitle)} && document.querySelectorAll('.compare-nest').length === 2 && $('compare-cards').textContent.includes('Wide room cores')`),
+            "Render both soil histories and their measured chamber cores");
+        result.excavation[count] = {archive:await evaluate("app.meta.archive_sha256"), first_cut:firstCut,
+            net_mm3:await evaluate("app.state.net_removed_m3 * 1e9")};
+        if (await evaluate("$('compare-markers').checked")) {
+            const old = await evaluate("window.previousSection = document.querySelector('.compare-nest'); !!window.previousSection");
+            assert.ok(old);
+            await click("#compare-markers");
+            await wait(() => evaluate("!$('compare-markers').checked && document.querySelector('.compare-nest') !== window.previousSection"),
+                "Show edited terrain without overlapping ant badges");
+        }
+        await screenshot(`r0-r1-excavation-${count}`);
+        await click("#observe-tab");
+        await opened();
+    }
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN'"), "Change the language without changing the world");
+    assert.deepEqual(exceptions, []);
+    result.status = "PASS";
+    result.chromium = (await send("Browser.getVersion")).product;
+    await writeFile(join(output, "r0-r1-browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result, null, 2));
+}
 async function timed(name, execute) {
     const start = clock();
     await execute();
@@ -355,6 +426,8 @@ try {
         await microWorld();
     } else if (mode === "r0") {
         await r0World();
+    } else if (mode === "r0r1") {
+        await r0r1World();
     } else {
     assert.equal(await evaluate("$('title').textContent"), "Founding colony");
     assert.equal(await evaluate("app.meta.facts"), 668720);

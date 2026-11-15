@@ -188,6 +188,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
+MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
@@ -205,7 +206,7 @@ def checkpoint(raw, *, verify_hash=True):
     ecological = magic == ECOLOGICAL
     if ecological:
         outer = r.unpack(Struct("<2I"))
-        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33)},
+        require(outer in MICROWORLD_VERSIONS or outer in {(22, 24), (22, 25), (22, 26)},
                 "Unsupported ecological checkpoint version")
         magic = bytes(r.take(8))
     version = r.unpack(Struct("<2I"))
@@ -310,7 +311,7 @@ def checkpoint(raw, *, verify_hash=True):
                                  tissue_protein_ug=protein, crop_ug=crop, program=program, death_code=death,
                                  updated_ms=updated, next_absorption_ms=absorption, stage_progress_ms=progress,
                                  oxidized_carbs_ug=oxidized, lost_water_ug=lost, dissipated_nj=dissipated)
-    geometry, edits, ledger = None, [], None
+    geometry, edits, ledger, soil_carriers = None, [], None, set()
     if r.flag():
         origin = r.position()
         quantum = r.unpack(Struct("<d"))[0]
@@ -326,10 +327,19 @@ def checkpoint(raw, *, verify_hash=True):
             edits.append(dict(edit=edit, source=source, event=event, actor=actor, parcel=parcel, kind=kind, time_ms=at,
                               box_q=r.unpack(BOX), volume_q3=r.uint()))
         require(len(edits) == geometry_revision, "Geometry snapshot omits an edit")
+        parcel = Struct("<5Q3dB")
+        count = r.uint()
+        require(count <= (len(r.raw) - r.pos) // parcel.size, "Invalid soil parcel count")
+        for _ in range(count):
+            _, _, _, _, carrier, _, _, _, state = r.unpack(parcel)
+            if state == 0:
+                require(carrier in ants and str(carrier) not in soil_carriers, "Invalid soil carrier in checkpoint")
+                soil_carriers.add(str(carrier))
     schema, physics = outer if ecological else version
     return dict(world=world_id(hi, lo), seed=seed, time_ms=time, revision=revision, cursor=cursor, framed=framed,
                 schema=schema, physics=physics, inner_schema=version[0], inner_physics=version[1], flags=flags,
                 world_min_m=world_min, world_max_m=world_max, max_speed_m_per_s=max_speed, contact_m=contact,
-                surface=surface, geometry=geometry, edits=edits, soil=ledger, colonies=colonies, ants=ants,
+                surface=surface, geometry=geometry, edits=edits, soil=ledger, soil_carriers=tuple(sorted(soil_carriers, key=int)),
+                colonies=colonies, ants=ants,
                 sources=sources, living=living, introduced= introduced, available=available, carried=carried, stored=stored,
                 fact_offset=fact_offset, fact_end=fact_end)

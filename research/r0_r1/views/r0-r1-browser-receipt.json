@@ -1,0 +1,27 @@
+{
+  "shell_paint_ms": 508,
+  "world_ready_ms_after_navigation": 663.5,
+  "first_browser_view_ms": 690.78,
+  "motion": {
+    "archive": "ab5c322ed35dc3390fe210c6629023bd35f48fe2f5d5955f7c2262287601733f",
+    "actor": "24",
+    "begin": "71081",
+    "move": "71085",
+    "end": "71086",
+    "duration_ms": 262
+  },
+  "excavation": {
+    "50": {
+      "archive": "b29b721f98c0cfff2d185c02f939f4149f5e8ec0fb8db3c2f916dc259dec7224",
+      "first_cut": "2453",
+      "net_mm3": 400.25
+    },
+    "300": {
+      "archive": "40e90f7dfc53add4525898949cfbfa370dcb50912e98365f9a8229e4fabf8877",
+      "first_cut": "15137",
+      "net_mm3": 1183.8750000000002
+    }
+  },
+  "status": "PASS",
+  "chromium": "Chrome/157.0.8103.78"
+}

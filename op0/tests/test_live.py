@@ -48,6 +48,23 @@ class LiveTests(unittest.TestCase):
                              sha256(witness.read("final.frame")).digest())
         self.assertEqual(list(self.folder.iterdir()), [])
 
+    def test_nest_dynamics_is_opt_in_and_survives_sqlite(self):
+        self.live.write("new", {"nest_dynamics": True})
+        self.live.write("clock", {"running": False})
+        frame = self.live.worker.call(f"ADVANCE {48 * DAY}")
+        self.live.publish(frame)
+        view = self.live.read("view", {})
+        self.assertEqual((view["schema_version"], view["physics"]), (26, 33))
+        self.assertEqual(view["nest_dynamics"], {"worker_motor": True, "excavation": 3})
+        self.live.write("save", {"name": "Nest dynamics"})
+        expected = self.live.worker.call(f"ADVANCE {49 * DAY}")
+        self.live.write("load", {"name": "Nest dynamics"})
+        self.assertEqual(self.live.worker.call("FRAME"), frame)
+        self.assertEqual(self.live.worker.call(f"ADVANCE {49 * DAY}"), expected)
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+        self.live.write("new", {})
+        self.assertEqual(self.live.read("view", {})["physics"], 29)
+
     def test_fast_forward_stops_at_each_committed_milestone(self):
         expected, positions = {}, {}
         with ZipFile(WITNESS) as witness, witness.open("facts.bin") as stream:
