@@ -91,9 +91,11 @@ Case read_case(const Path& path) {
             e.suppress_foundress_hatch_cue=treatment[5]=='0';
             c.blocked_water=treatment[4]=='b';
         } else if (c.micro_world) {
-            require(treatment=="reference" || treatment=="slots" || treatment=="wet" || treatment=="nocue",
+            require(treatment=="reference" || treatment=="slots" || treatment=="wet" || treatment=="nocue" ||
+                    (treatment=="nest" && e.portable_care_motion),
                     "invalid MicroWorld treatment");
             e.suppress_foundress_hatch_cue=treatment=="nocue";
+            e.local_nest_activity=treatment=="nest";
             if (treatment=="wet") e.water_sip_ug=25;
         } else {
             require(protected_profile || treatment=="joint" || treatment=="silent" || treatment=="clock" || treatment=="legacy" ||

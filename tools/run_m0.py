@@ -16,6 +16,7 @@ PROTOCOL = ROOT / "research/m0/FROZEN_PROTOCOL.md"
 PORTABLE_PROTOCOL = ROOT / "research/m0/PORTABLE_REPLAY_PROTOCOL.md"
 DEMO_NAMES = ("borisovka-shaft-1-slots", "st_petersburg-dogleg-1-slots",
               "borisovka-shaft-1-reference", "borisovka-shaft-1-no-protein", "borisovka-shaft-1-blocked")
+R0_PROTOCOL = ROOT / "research/r0/PROTOCOL.md"
 
 
 def roster(portable=False):
@@ -59,16 +60,22 @@ def main():
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--durable", action="store_true", help="Save and reload a midpoint SQLite publication.")
     parser.add_argument("--portable-care", action="store_true", help="Opt into physics 29/30 portable care motion.")
+    parser.add_argument("--r0", action="store_true", help="Export paired local nest activity witnesses.")
     args = parser.parse_args()
     binary = args.binary.resolve(strict=True)
     destination = args.output.resolve()
-    cases = [(i, c, command) for i, c, command in roster(args.portable_care) if not args.case or c["case"] in args.case]
+    candidates = roster(args.portable_care)
+    protocol = PROTOCOL
+    if args.r0:
+        candidates = r0_roster()
+        protocol = R0_PROTOCOL
+    cases = [(i, c, command) for i, c, command in candidates if not args.case or c["case"] in args.case]
     if not cases or set(args.case) - {c["case"] for _, c, _ in cases}:
         parser.error("unknown MicroWorld case")
     mode = "durable" if args.durable else "observed"
     destination.mkdir(parents=True)
     write_json(destination / "run.json", dict(source=git("rev-parse", "HEAD"), cpp_tree=git("rev-parse", "HEAD:cpp"),
-        binary_sha256=sha(binary), protocol_sha256=sha(PROTOCOL), mode=mode,
+        binary_sha256=sha(binary), protocol_sha256=sha(protocol), mode=mode,
         **(dict(portable_protocol_sha256=sha(PORTABLE_PROTOCOL)) if args.portable_care else {}),
         cases=[c["case"] for _, c, _ in cases], dirty=git("status", "--porcelain", "--", "cpp", "tools/run_m0.py")))
     failed = False
@@ -88,6 +95,16 @@ def main():
                       (work / "program.log").read_text(encoding="utf-8", errors="replace").strip(), flush=True)
                 failed |= receipt["status"] != "COMPLETE"
     return int(failed)
+
+
+def r0_roster():
+    for identity, base, command in roster(portable=True):
+        if base["case"] not in ("borisovka-shaft-1-slots", "borisovka-dogleg-1-slots"):
+            continue
+        for form in ("reference", "candidate"):
+            name = f"r0-{base['layout']}-{form}"
+            arm = base["arm"] if form == "reference" else base["arm"].replace("portableslots", "portablenest")
+            yield identity, base | {"case": name, "arm": arm, "r0_variant": form}, command
 
 
 if __name__ == "__main__":

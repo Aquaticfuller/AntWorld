@@ -101,6 +101,7 @@ template <class S> void write_geometry(Writer &w, const S &s) {
             write_point(w, p.path[i]);
         w.put(p.wake.value);
         w.put(p.action.value);
+        if (local_nest_activity(s)) w.put(p.returning_empty,1);
     }
 }
 template <class S>
@@ -211,6 +212,7 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
             p.path[j] = read_point(r);
         p.wake = {r.get()};
         p.action = {r.get()};
+        if (local_nest_activity(s)) p.returning_empty=r.flag();
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && s.excavators.emplace(id, p).second,
                "invalid excavator identity");
     }
@@ -370,13 +372,16 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 ensure(worker.path[worker.path_size - 1] == *quantized(e.position, c),
                        "excavator restart has stale position memory");
                 worker.enabled = true;
-            } else if (excavators.contains(e.actor))
+            } else if (excavators.contains(e.actor)) {
                 excavators.at(e.actor).enabled = false;
+                excavators.at(e.actor).returning_empty=false;
+            }
         }
         if (e.kind == FactKind::ExcavationDecision) {
             ensure(excavators.contains(e.actor) && excavators.at(e.actor).enabled,
                    "decision without active excavation program");
             ensure(e.payload == ++excavators.at(e.actor).decisions, "excavation decision evidence mismatch");
+            if (local_nest_activity(s)) excavators.at(e.actor).returning_empty=e.random_value!=0;
         }
         const bool soil = e.kind >= FactKind::SoilExcavated && e.kind <= FactKind::SoilFilled;
         if (soil) {
@@ -472,8 +477,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 }
             }
         }
-        if (e.kind == FactKind::AntDied && excavators.contains(e.actor))
+        if (e.kind == FactKind::AntDied && excavators.contains(e.actor)) {
             excavators.at(e.actor).enabled = false;
+            excavators.at(e.actor).returning_empty=false;
+        }
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
             stages[e.actor] = e.stage;
         if (e.actor.value && positions.contains(e.actor)) {

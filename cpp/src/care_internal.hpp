@@ -37,7 +37,8 @@ inline bool handles_brood(CareAct a) {
 }
 inline bool care_motion(CareAct act) {
     return act==CareAct::Walk || act==CareAct::ApproachBrood || act==CareAct::TransportBrood ||
-           act==CareAct::ArrangeBrood || act==CareAct::RevisitBroodSite || act==CareAct::ReturnToCareShelter;
+           act==CareAct::ArrangeBrood || act==CareAct::RevisitBroodSite || act==CareAct::ReturnToCareShelter ||
+           act==CareAct::NestReposition;
 }
 inline PositionM toward(PositionM a, PositionM b, double step) {
     const auto d=distance(a,b); if (d<=step) return b;

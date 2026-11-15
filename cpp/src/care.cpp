@@ -15,6 +15,10 @@ PositionM carried_position(PositionM brood_position,PositionM from,PositionM to,
         return {brood_position.x+(to.x-from.x),brood_position.y+(to.y-from.y),brood_position.z+(to.z-from.z)};
     return {brood_position.x+to.x-from.x,brood_position.y+to.y-from.y,brood_position.z+to.z-from.z};
 }
+bool adult_overlap(PositionM a,PositionM b,double width) {
+    const auto threshold=width-arithmetic_margin(position_scale(a,b),width);
+    return std::abs(a.x-b.x)<threshold && std::abs(a.y-b.y)<threshold && std::abs(a.z-b.z)<threshold;
+}
 }
 bool WorldRuntime::clear_care_segment(PositionM from,PositionM to,std::int32_t half) const {
     const auto& s=*state_;
@@ -44,7 +48,78 @@ PositionM WorldRuntime::care_destination(const CareState& care,const AntState& a
         const auto d=distance(next,goal);
         if (d<remaining && clear(next)) { best=next; remaining=d; }
     }
+    if (local_nest_activity(s) && actor.caste==Caste::Worker && care.act==CareAct::ApproachBrood) {
+        // Try short diagonal probes in the current local floor plane. Progress
+        // to the observed brood must be strict at each accepted segment.
+        constexpr double diagonal=0.7071067811865476;
+        for (const auto x : {-1,1}) for (const auto z : {-1,1}) {
+            const PositionM next{actor.position.x+x*step*diagonal,actor.position.y,
+                                 actor.position.z+z*step*diagonal};
+            const auto d=portable_care_distance(next,goal);
+            if (d<remaining && clear(next)) { best=next; remaining=d; }
+        }
+    }
     return best;
+}
+bool WorldRuntime::clear_resting_site(const AntState& ant,PositionM site) const {
+    const auto& s=*state_;
+    const auto& g=s.geometry->config;
+    const auto nest=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+    const auto half=body_half(ant.id);
+    const auto q=quantized(site,g);
+    if (!q || site==ant.position || !within_contact(nest,site,s.config) || !spatially_clear(site,nest) ||
+        !clear_care_segment(ant.position,site,half) ||
+        material_at(geometry_view(s,limits_),{q->x,q->y-g.loaded_half_q-1,q->z})==Material::Void) return false;
+    const auto width=2*half*g.quantum_m;
+    const auto radius=portable_care_distance(ant.position,site)+2*width;
+    for (const auto other:query_neighborhood({s.world,ant.id},radius).ants) {
+        const auto neighbor=*query_ant(other);
+        if (neighbor.stage==LifeStage::Adult && adult_overlap(site,neighbor.position,width)) return false;
+    }
+    return true;
+}
+std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) const {
+    const auto& s=*state_;
+    if (!local_nest_activity(s) || !s.geometry || !integrated_care(s)) return {};
+    const auto& g=s.geometry->config;
+    const auto origin=quantized(ant.position,g);
+    if (!origin || (s.surface && ant.position.y>=s.surface->config.origin_m.y)) return {};
+    const auto span=2*body_half(ant.id);
+    const auto width=span*g.quantum_m;
+    const auto local=query_neighborhood({s.world,ant.id},2*width);
+    const auto crowded=std::any_of(local.ants.begin(),local.ants.end(),[&](AntRef ref) {
+        const auto other=*query_ant(ref);
+        return other.stage==LifeStage::Adult && adult_overlap(ant.position,other.position,width);
+    });
+    if (!crowded) return {};
+    constexpr std::array<Cell,8> bearings{{{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,1},{-1,-1},{1,-1}}};
+    // Individual tie breaks keep the same preferred bearings across a save.
+    for (std::size_t i=0;i<bearings.size();++i) {
+        const auto d=bearings[(i+ant.id.value)%bearings.size()];
+        const auto next=physical({origin->x+span*d.x,origin->y,origin->z+span*d.z},g);
+        if (clear_resting_site(ant,next)) return next;
+    }
+    return {};
+}
+void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source) {
+    auto& s=*state_;
+    const AntRef ref{s.world,ant.id};
+    change_behavior(tx,ref,IndividualBehavior::Rest,source,true);
+    CareState care;
+    if (s.care.contains(ant.id)) care=s.care.at(ant.id);
+    else {
+        care.profile={CareContext::Worker,{s.m.now.milliseconds-ant.born_at.milliseconds}};
+        care.familiar_shelter=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+        care.enrolled_at=s.m.now;
+    }
+    care.enabled=true; care.act=CareAct::NestReposition; care.destination=site;
+    ScheduledEvent e; e.actor=ant.id; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
+    e.key={after(s.m.now,1),Phase::Resolution,0,0,0}; care.pending=tx.insert(e); care.bout=care.pending;
+    tx.care.set(ant.id,care);
+    auto p=s.physiology.at(ant.id); p.behavior_event=care.pending; tx.physiology.set(ant.id,p);
+    WorldEvent fact; fact.kind=FactKind::CareProgramChanged; fact.actor=ant.id; fact.colony=ant.colony;
+    fact.stage=ant.stage; fact.position=ant.position; fact.payload=1; tx.fact(fact);
+    observe(tx,ant.id,source,{ObservationPhase::Selected,care.act,{},care.bout,s.m.now,false,site});
 }
 void WorldRuntime::configure_biology(const SpeciesCareProfile& profile, const EnvironmentCareProfile& environment) {
     auto& s=*state_;
@@ -476,6 +551,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     }
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
+            (c.act==CareAct::NestReposition && !clear_resting_site(a,c.destination)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
             ((timed || (cfg.local_retrieval && c.act==CareAct::TransportBrood)) && c.destination==from))
             outcome=Outcome::Blocked;
@@ -561,6 +637,11 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         ended.returning!=c.returning || ended.search_remaining!=c.search_remaining) tx.care.set(a.id,ended);
     observe(tx,a.id,event.id,{event.kind==ScheduledEvent::Kind::CareEnd && outcome<=Outcome::Partial?ObservationPhase::Completed:ObservationPhase::Interrupted,
         c.act,c.target,c.bout,c.active?c.began_at:s.m.now,c.active},amount,outcome);
+    if (c.act==CareAct::NestReposition) {
+        interrupt_care(tx,a.id,outcome,true);
+        change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
+        return;
+    }
     if (integrated && c.act==CareAct::ReturnToCareShelter && failed) {
         interrupt_care(tx,a.id,Outcome::Blocked,true);
         return;

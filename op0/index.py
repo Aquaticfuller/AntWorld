@@ -294,9 +294,11 @@ class IndexBuilder:
             if fact.observation and fact.observation[0] == 3 and fact.observation[5]:
                 act = fact.observation[1]
                 care_mark = {4: "First brood arrangement", 6: "First brood transport", 7: "First timed feeding",
-                             17: "First brood placement"}.get(act)
+                             17: "First brood placement", 19: "First move to a resting site"}.get(act)
                 if care_mark:
                     self.milestone(care_mark, fact)
+                if act == 19 and self.counts[3] >= 11:
+                    self.milestone("Resting site with 10 or more workers", fact)
             previous, last, revision = fact.time, fact.id, fact.revision
         self.flush()
         self.commit_samples(last, previous, self.tip["time_ms"])

@@ -193,6 +193,7 @@ h2 { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
 #compare-config details { margin: 0; }
 .compare-fact { font-size: 11px; color: var(--muted); margin: 4px 0; }
 #compare-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.compare-nest { display: block; width: 100%; height: 185px; background: #152019; border: 1px solid var(--line); }
 .different { color: #f2be91; }
 .matching { color: var(--green); }
 pre { white-space: pre-wrap; word-break: break-word; color: var(--muted); font-size: 11px; margin: 6px 0; }

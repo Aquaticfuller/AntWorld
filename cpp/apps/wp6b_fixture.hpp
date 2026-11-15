@@ -48,6 +48,7 @@ struct Case {
     bool expanded_history{};
     bool cohort_assay{};
     bool micro_world{};
+    bool seasonal_supply{};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -181,8 +182,14 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         const auto source=w.seed_food(scene.target,c.food);
         const auto daily = c.arm == "limited" ? FoodMass{188,94,563,0} :
             FoodMass{c.food.carbs_ug/4,c.food.protein_ug/4,c.food.water_ug/4,0};
-        w.configure_resource_cycle(source, {{daily.carbs_ug*c.release_days,daily.protein_ug*c.release_days,
-                                              daily.water_ug*c.release_days,0},daily});
+        ResourceCycleConfig cycle{{daily.carbs_ug*c.release_days,daily.protein_ug*c.release_days,
+                                    daily.water_ug*c.release_days,0},daily};
+        if (c.seasonal_supply) {
+            cycle.cyclic=true;
+            cycle.productive_span={182*day_ms};
+            cycle.low_productivity_permille=250;
+        }
+        w.configure_resource_cycle(source,cycle);
     } else if (!c.integrated_assay && c.food.total_ug()) {
         const bool blocked=c.arm=="blocked" || c.arm=="water-blocked";
         const PositionM depot = blocked ? PositionM{0, 0, .020} : PositionM{};

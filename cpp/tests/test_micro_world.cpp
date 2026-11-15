@@ -10,20 +10,25 @@ using namespace antworld;
 using namespace antworld::detail;
 using namespace antworld::wp6b;
 
-WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}) {
+WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}, bool nest_activity=false) {
     WorldConfig bounds;
     bounds.continuous_spatial_motion=true;
     WorldRuntime world({27,1},7,bounds,limits);
     EcologicalClosureConfig profile;
     profile.portable_field=true; profile.brood_space=micro; profile.activity_cost=true;
     profile.portable_care_motion=micro;
+    profile.local_nest_activity=nest_activity;
+    profile.floor_space=nest_activity;
     world.configure_ecological_closure(profile);
     world.configure_long_term();
     GeometryConfig geometry;
     geometry.origin_m={}; geometry.initial_solid={{-12,-18,-12},{12,0,12}};
-    const std::array voids{blocked?BoxQ{{-2,-10,-2},{2,-4,2}}:BoxQ{{-5,-10,-5},{5,-4,5}}};
+    const auto radius=nest_activity?8:5;
+    const std::array voids{blocked?BoxQ{{-2,-10,-2},{2,-4,2}}:BoxQ{{-radius,-10,-radius},{radius,-4,radius}}};
     world.configure_geometry(geometry,voids);
-    world.configure_social(closure::day_social());
+    auto social=closure::day_social();
+    if (nest_activity) { social.exchange_enabled=false; social.rest_weight=1'000'000; }
+    world.configure_social(social);
     world.configure_biology(closure::timed_care(true));
     const PositionM nest{0,-.004,0};
     const auto c=world.seed_colony(nest);
@@ -124,6 +129,39 @@ void diagonal_clock() {
     const auto duration=care_duration(closure::timed_care(true),WorldConfig{},Caste::Worker,CareAct::ReturnToCareShelter,from,next,true);
     require(duration.milliseconds==101,"portable care segment changed its integer-boundary clock");
 }
+void local_nest_motion(const std::filesystem::path& path) {
+    for (const bool sealed : {false,true}) {
+        auto world=colony(sealed,true,{},true);
+        const WorldId id=world.summary().world;
+        const ColonyRef group{id,{1}};
+        const PositionM depot{0,-.004,0};
+        const auto worker=world.seed_ant(group,{depot,LifeStage::Adult,Caste::Worker,4000});
+        world.enable_physiology(worker,closure::adult,closure::day_physiology());
+        world.set_autonomy(worker);
+        const SimTime begin{6*hour_ms+1};
+        world.advance_to(begin);
+        const auto care=world.query_care(worker);
+        require((care && care->active && care->act==CareAct::NestReposition)==!sealed,"rest lease ignored reachable floor");
+        require(world.query_ant(worker)->position==depot,"rest body teleported at selection");
+        if (!sealed) {
+            storage::Store store(path,{},storage::StoreFormat::Segmented);
+            const auto saved=store.save(world);
+            auto restore=store.load(id);
+            require(saved==restore.token && restore.world.checkpoint_frame()==world.checkpoint_frame(),"in-flight rest lease lost on restore");
+            restore.world.advance_to({begin.milliseconds+15});
+            restore.world.advance_to({begin.milliseconds+1000});
+            world.advance_to({begin.milliseconds+1000});
+            require(world.checkpoint()==restore.world.checkpoint(),"partitioning a rest lease changed the authority");
+            const auto settled=*world.query_ant(worker);
+            require(settled.position!=depot && within_contact(settled.position,depot,world.config()) &&
+                    world.spatially_clear(depot,settled.position,1),"rest relocation lacks local floor clearance");
+            require(world.query_physiology(worker)->behavior==IndividualBehavior::Rest,"worker did not settle after local motion");
+        }
+        check_ledgers(world);
+        const auto bytes=world.checkpoint();world.restore(bytes);
+        require(world.checkpoint()==bytes,"local nest history failed validation");
+    }
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -134,6 +172,7 @@ int main(int argc,char** argv) try {
     spatial_refusal();
     rollback();
     diagonal_clock();
+    local_nest_motion(folder/"rest-motion.sqlite");
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

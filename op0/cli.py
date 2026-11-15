@@ -1,6 +1,6 @@
 """Launcher and dependency-free terminal interface for OP0."""
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, SUPPRESS
 import json
 from math import isfinite
 import os
@@ -23,6 +23,13 @@ ROOT = Path(__file__).resolve().parent.parent
 VERIFIED = ROOT / "experiments/s6_4_founding_cohort_release/correction"
 PREVIOUS = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physics/joint"
 MICRO = ROOT / "experiments/m0/portable-demo"
+R0 = ROOT / "experiments/r0/witnesses"
+R0_DEMOS = (
+    (R0, "r0-shaft-candidate.zip", "R0 · local nest activity",
+     "A single queen and her own workers in the R0 shaft experiment."),
+    (R0, "r0-shaft-reference.zip", "R0 · matched reference",
+     "The same shaft, seed and supply using standard MicroWorld behavior."),
+)
 MICRO_DEMOS = (
     (MICRO, "borisovka-shaft-1-slots.zip", "MicroWorld · shaft",
      "One queen starts a protected 90-day colony in a shaft nest. The eggs occupy separate positions."),
@@ -56,12 +63,14 @@ def cache_path():
     return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "antworld/op0"
 
 
-def default_catalog(path, include_demos=True, micro_first=False):
+def default_catalog(path, include_demos=True, micro_first=False, r0_first=False):
     catalog = Catalog(path)
     if include_demos:
         manifests = {}
         producers = {}
-        for folder, filename, title, description in (MICRO_DEMOS + DEMOS if micro_first else DEMOS + MICRO_DEMOS):
+        demos = MICRO_DEMOS + DEMOS if micro_first else DEMOS + MICRO_DEMOS
+        demos = R0_DEMOS + demos if r0_first else demos + R0_DEMOS
+        for folder, filename, title, description in demos:
             if not (folder / filename).is_file():
                 continue
             if folder not in manifests:
@@ -325,11 +334,13 @@ def main(argv=None):
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--no-demos", action="store_true")
     parser.add_argument("--micro", action="store_true", help="Open MicroWorld and put its demonstrations first.")
+    parser.add_argument("--r0", action="store_true", help="Put the paired R0 nests first in the archive catalogue.")
     modes = parser.add_subparsers(dest="mode", required=True)
     server = modes.add_parser("serve", help="Open the local web viewer")
     server.add_argument("--port", type=int, default=8765)
     server.add_argument("--no-browser", action="store_true")
     server.add_argument("--replay", action="store_true", help="Open the archive viewer directly.")
+    server.add_argument("--r0", action="store_true", default=SUPPRESS, help="Put the paired R0 archives first.")
     server.add_argument("--live-core", type=Path, help="Path to the native MicroWorld executable.")
     server.add_argument("--saves", type=Path, default=ROOT / "out/m0-saves", help="Folder for manually saved colonies.")
     server.add_argument("--import-path", action="append", type=Path, default=[])
@@ -347,7 +358,7 @@ def main(argv=None):
             pack(args.directory, args.output)
             return 0
         cache = args.cache or (ROOT / "out/m0-op0-cache" if args.micro else cache_path())
-        catalog = default_catalog(cache, not args.no_demos, args.micro)
+        catalog = default_catalog(cache, not args.no_demos, args.micro, args.r0)
         if args.mode == "import":
             worlds, elapsed = register_import(catalog, args.source)
             for meta in worlds:

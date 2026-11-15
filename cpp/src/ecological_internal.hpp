@@ -18,12 +18,17 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         (c.suppress_foundress_hatch_cue && !c.portable_field) ||
         (c.brood_space && !c.portable_field) || (c.portable_care_motion && !c.brood_space))
         throw std::invalid_argument("invalid ecological closure ENGINEERING_FIXTURE");
+    if (c.local_nest_activity && (!c.portable_care_motion || c.suppress_foundress_hatch_cue || !c.activity_cost || !c.floor_space))
+        throw std::invalid_argument("local nest activity requires the portable active MicroWorld profile");
     if (const auto& timing = c.worker_activity_timing;
         timing && (!c.portable_care_motion || c.suppress_foundress_hatch_cue ||
                    timing->check_interval.milliseconds < 60000 ||
                    timing->minimum_program_time < timing->check_interval ||
                    timing->minimum_program_time.milliseconds > 6 * 3600000))
         throw std::invalid_argument("invalid MicroWorld worker review timing ENGINEERING_FIXTURE");
+}
+inline bool local_nest_activity(const auto& s) {
+    return s.ecological && s.ecological->local_nest_activity;
 }
 inline const WorkerActivityTiming* worker_timing(const auto& s, Caste caste) {
     return caste == Caste::Worker && s.ecological && s.ecological->worker_activity_timing

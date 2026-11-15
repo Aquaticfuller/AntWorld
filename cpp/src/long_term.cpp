@@ -299,7 +299,7 @@ void WorldRuntime::notify_return(Transaction &tx, EntityId id) {
 }
 bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
   const auto &s = *state_;
-  if (!s.geometry || !s.long_term || contacts < 2)
+  if (!s.geometry || !s.long_term || (contacts < 2 && !local_nest_activity(s)))
     return false;
   const auto ant = query_ant(ref);
   const auto &g = s.geometry->config;
@@ -317,12 +317,26 @@ bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
       return material_at(view, below) != Material::Void &&
              spatially_clear(physical(origin,g), physical(center,g), half);
     };
-    std::size_t useful = room(origin) ? 1 : 0;
-    for (std::int32_t dx = -g.reach_q / spacing; dx <= g.reach_q / spacing; ++dx)
-      for (std::int32_t dz = -g.reach_q / spacing; dz <= g.reach_q / spacing; ++dz) {
-        if ((!dx && !dz) || (std::abs(dx) + std::abs(dz)) * spacing > g.reach_q) continue;
+    const bool occupied_floor=room(origin);
+    std::size_t useful = occupied_floor ? 1 : 0;
+    const auto reach=local_nest_activity(s)?std::min(g.reach_q,8):g.reach_q;
+    for (std::int32_t dx = -reach / spacing; dx <= reach / spacing; ++dx)
+      for (std::int32_t dz = -reach / spacing; dz <= reach / spacing; ++dz) {
+        if ((!dx && !dz) || (std::abs(dx) + std::abs(dz)) * spacing > reach) continue;
         if (room({origin.x + dx * spacing, origin.y, origin.z + dz * spacing})) ++useful;
       }
+    if (local_nest_activity(s)) {
+      if (!occupied_floor) return false;
+      // Four brood units share an adult-sized working site in this fixture.
+      // Count only physically visible local bodies and leave one transit site.
+      std::size_t bodies=4;
+      for (const auto other:query_neighborhood(ref,reach*g.quantum_m).ants) {
+        const auto neighbor=*query_ant(other);
+        if (!spatially_clear(ant->position,neighbor.position)) continue;
+        bodies+=neighbor.stage==LifeStage::Adult?4:1;
+      }
+      return bodies>=8 && bodies+4>useful*4;
+    }
     return useful < contacts + 1;
   }
   constexpr std::array<PointQ, 6> directions{

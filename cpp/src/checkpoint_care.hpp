@@ -1,6 +1,7 @@
 #pragma once
 #include "care_internal.hpp"
 #include "checkpoint_codec.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array care_times{&SpeciesCareProfile::decision_interval,&SpeciesCareProfile::bout_duration,
@@ -69,7 +70,9 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
         }
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && c.profile.context<=CareContext::Worker &&
             (c.act<=CareAct::CloseWorkerContact || (retrieval && c.act==CareAct::RevisitBroodSite) ||
-             (motion && c.act>=CareAct::PickUpBrood && c.act<=CareAct::ReturnToCareShelter)) &&
+             (motion && c.act>=CareAct::PickUpBrood && c.act<=CareAct::ReturnToCareShelter) ||
+             (motion && local_nest_activity(s) && c.act==CareAct::NestReposition &&
+              c.profile.context==CareContext::Worker && !c.target.value)) &&
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");
         const auto a=s.ants.get(s.ants.index.at(id));
@@ -181,6 +184,10 @@ template<class S> void validate_care_evidence(const S& s) {
               (s.care_environment.neutral_displacement_assay && foreign_assay_act(o.act,o.phase))))),"invalid observation fields");
         ensure(o.act!=CareAct::RevisitBroodSite || (s.care_profile->local_retrieval && !o.target.value),"revisit observation outside retrieval contract");
         ensure(o.act<CareAct::PickUpBrood || s.care_profile->motion.has_value(),"motion observation outside its contract");
+        if (o.act==CareAct::NestReposition)
+            ensure(local_nest_activity(s) && !o.target.value && e.stage==LifeStage::Adult &&
+                   s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
+                   "rest relocation outside the local nest activity contract");
         if (o.phase==ObservationPhase::Selected && audit.contains(e.actor) && audit.at(e.actor).enabled) {
             auto& a=audit.at(e.actor);
             a.selected=o;
@@ -206,6 +213,13 @@ template<class S> void validate_care_evidence(const S& s) {
             if (o.duration_known) {
                 ensure(starts.contains(o.bout) && owners.at(o.bout)==e.actor && starts.at(o.bout).act==o.act &&
                     starts.at(o.bout).target==o.target && starts.at(o.bout).began_at==o.began_at,"end without matching start");
+                if (o.act==CareAct::NestReposition && o.phase==ObservationPhase::Completed) {
+                    ensure(e.id.value>1,"rest relocation lacks a preceding motion fact");
+                    const auto moved=s.journal.at(static_cast<std::size_t>(e.id.value-2));
+                    ensure(moved.kind==FactKind::Moved && moved.actor==e.actor && moved.source==e.source && moved.time==e.time &&
+                           moved.position==e.position && moved.position==starts.at(o.bout).destination,
+                           "rest relocation disagrees with committed movement");
+                }
                 starts.erase(o.bout); owners.erase(o.bout); audit.at(e.actor).started.reset();
                 if (s.care_profile->local_retrieval && o.act==pickup_act && o.phase==ObservationPhase::Completed) {
                     auto& a=audit.at(e.actor);

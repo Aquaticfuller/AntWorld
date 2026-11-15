@@ -204,6 +204,30 @@ class ReadAPI:
             rows = records(db, 0, stop, kinds, ant, 1, reverse=True, actors_only=mode == "movement")
         return self.event(db, meta, {"id": rows[0][0]}) if rows else None
 
+    def rest_segment(self, db, meta, options):
+        end = self.event(db, meta, options)
+        action = end.get("action", {})
+        if (meta["settings"]["physics"] != 32 or action.get("act") != "Move to a resting site" or
+                action.get("phase") != "Completed" or end["outcome"] != "Success"):
+            return None
+        begin = action["began_ms"]
+        if begin is None or not begin < end["time_ms"]:
+            return None
+        aid, tip = sql_id(int(end["actor"])), int(end["id"])
+        before = cursor_at(db, begin, inclusive=False)
+        observed = records(db, before, tip-1, (42,), aid, 16, actors_only=True)
+        starts = [f for row in observed if (f := self.fact(db, meta, row)).observation[:2] == (2, 19)
+                  and str(f.observation[3]) == action["bout"] and f.time == begin]
+        move = self.event(db, meta, {"id": tip-1})
+        if (len(starts) != 1 or move["kind"] != "Moved" or move["actor"] != end["actor"] or
+                move["time_ms"] != end["time_ms"] or move["source"] != end["source"] or
+                move["position_m"] != end["position_m"] or move["position_m"] != starts[0].observation[6:]):
+            return None
+        start = starts[0]
+        if db.execute("SELECT 1 FROM edits WHERE event>? AND event<=? LIMIT 1", (start.id, tip)).fetchone():
+            return None
+        return dict(start=start.packet(), move=move, completion=end)
+
     def nearby_motion(self, db, meta, options, stamp, cursor):
         window = integer(options, "window_ms", 5 * 60_000, 1, HOUR)
         limit = integer(options, "limit", 144, 1, 200)
@@ -373,7 +397,7 @@ class ReadAPI:
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
-        elif (meta["settings"]["physics"] in (27, 28, 29, 30, 31) or micro) and focus is not None:
+        elif (meta["settings"]["physics"] in (27, 28, 29, 30, 31, 32) or micro) and focus is not None:
             # The 30 cm domain is much larger than the founding pocket. Start
             # with a nest-centered section; the surface retains its full extent.
             window = focused_window(geometry, focus, (u, v), 22)
@@ -397,8 +421,16 @@ class ReadAPI:
         for meta, db in ((a, ldb), (b, rdb)):
             at = min(stamp, meta["end_ms"])
             cursor = cursor_at(db, at)
-            results.append(dict(world=brief(meta), state=state_at(db, meta, at, cursor, False),
-                                cohort=self.cohort(db, meta, cursor), outside_record=at != stamp))
+            show_nest = options.get("nest") == "1"
+            item = dict(world=brief(meta), state=state_at(db, meta, at, cursor, show_nest),
+                        cohort=self.cohort(db, meta, cursor), outside_record=at != stamp)
+            if show_nest and meta["settings"]["geometry"] and meta["colonies"]:
+                g = meta["settings"]["geometry"]
+                focus = meta["colonies"][0]["position_m"][1]
+                layer = round((focus-g["origin_m"][1])/g["quantum_m"])
+                if g["solid"][1] <= layer < g["solid"][4]:
+                    item["nest"] = self.geometry(db, meta, {"axis": "y", "layer_q": layer}, cursor)["slice"]
+            results.append(item)
         compared = {}
         for fields, left, right in (
             (("physics", "inner_physics", "seed", "geometry", "initial_maternal", "initial_external_ug", "initial_sources",
@@ -441,6 +473,8 @@ class ReadAPI:
             return self.page(db, meta, options)
         if operation == "event":
             return self.event(db, meta, options)
+        if operation == "rest-segment":
+            return self.rest_segment(db, meta, options)
         if operation == "adjacent":
             return self.adjacent(db, meta, options)
         if operation == "activity":

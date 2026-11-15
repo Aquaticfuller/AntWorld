@@ -21,6 +21,7 @@ struct EcologicalClosureConfig {
     bool brood_space{}; // Physics 27. Local single-layer brood placement and handling envelope.
     bool portable_care_motion{}; // Physics 29. Fixed binary64 arithmetic for timed care.
     std::optional<WorkerActivityTiming> worker_activity_timing; // Physics 31. Worker-only review clocks.
+    bool local_nest_activity{}; // Physics 32. Paid rest relocation and local floor demand.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

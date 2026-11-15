@@ -1,4 +1,5 @@
 #include "wp6b_fixture.hpp"
+#include "r0_diagnostic_history.hpp"
 #include "antworld/storage/store.hpp"
 
 #include <algorithm>
@@ -235,6 +236,8 @@ int main() {
     const auto limits = assay_limits(live_case(1, 1));
     std::optional<WorldRuntime> world;
     std::optional<MilestoneSearch> search;
+    bool r0_assay=false;
+    std::shared_ptr<const r0::DiagnosticHistory> r0_history;
     std::string line;
     while (std::getline(std::cin, line)) {
         try {
@@ -243,17 +246,37 @@ int main() {
             if (command == "HELLO") {
                 end(request);
                 message("OK", "antworld.m0.live.v4");
-            } else if (command == "NEW") {
+            } else if (command == "NEW" || command == "NEW_NEST" || command == "NEW_R0_ASSAY") {
                 const auto id = number(request), seed = number(request);
-                std::optional<WorkerActivityTiming> timing;
-                request >> std::ws;
-                if (!request.eof()) timing = WorkerActivityTiming{read_target(request), read_target(request)};
+                auto c = live_case(id,seed);
+                if (command == "NEW_R0_ASSAY") {
+                    const auto physics=number(request);
+                    const auto supply=word(request), layout=word(request);
+                    require(physics==29 || physics==32,"invalid R0 trial physics");
+                    require(layout=="shaft" || layout=="dogleg","invalid R0 trial geometry");
+                    require(supply=="continued" || supply=="limited" || supply=="water-restricted" ||
+                            supply=="seasonal" || supply=="blocked","invalid R0 trial supply");
+                    c.ecological->local_nest_activity=physics==32;
+                    c.dogleg=layout=="dogleg";
+                    c.release_days=supply=="limited" || supply=="blocked" ? 120U : 730U;
+                    if (supply=="water-restricted") c.food.water_ug/=4;
+                    if (supply=="seasonal") c.seasonal_supply=true;
+                    if (supply=="blocked") c.arm="blocked";
+                } else {
+                    c.ecological->local_nest_activity=command=="NEW_NEST";
+                    request >> std::ws;
+                    if (!request.eof()) c.ecological->worker_activity_timing=WorkerActivityTiming{read_target(request),read_target(request)};
+                }
                 end(request);
                 require(id != 0, "A live colony needs a world ID");
-                auto scene = setup(live_case(id, seed, timing), limits);
+                auto case_limits=limits;
+                if (command == "NEW_R0_ASSAY") case_limits.committed_events=20'000'000;
+                auto scene = setup(c, case_limits);
                 const auto frame = scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
+                r0_assay=command=="NEW_R0_ASSAY";
+                r0_history.reset();
                 payload(frame);
             } else if (command == "LOAD") {
                 const auto path = staged_save(request);
@@ -268,6 +291,8 @@ int main() {
                 const auto frame = loaded.world.checkpoint_frame();
                 world.emplace(std::move(loaded.world));
                 search.reset();
+                r0_assay=false;
+                r0_history.reset();
                 payload(frame);
             } else {
                 require(world.has_value(), "Create or load a colony first");
@@ -275,6 +300,8 @@ int main() {
                     const auto target = read_target(request);
                     end(request);
                     world->advance_to(target);
+                    if (r0_assay && world->unpublished_history()>=65'536)
+                        r0_history=r0::DiagnosticHistory::publish(*world,r0_history);
                     search.reset();
                     payload(world->checkpoint_frame());
                 } else if (command == "FIND_MILESTONE") {
@@ -307,6 +334,20 @@ int main() {
                     end(request);
                     check_ledgers(*world);
                     message("OK");
+                } else if (command == "R0_BALANCES") {
+                    const AntRef queen{world->summary().world,{number(request)}};
+                    end(request);
+                    const auto p=world->query_physiology(queen);
+                    const auto reserves=world->query_founding(queen);
+                    require(p && reserves,"No founding physiology for this actor");
+                    const auto stock=world->resource_reserves();
+                    std::ostringstream data;
+                    data << p->body_energy_nj << ' ' << p->hydration_ug << ' ' << p->crop.carbs_ug << ' '
+                         << p->crop.protein_ug << ' ' << p->crop.water_ug << ' ' << reserves->lipid_ug << ' '
+                         << reserves->mobile_protein_ug << ' ' << stock.carbs_ug << ' ' << stock.protein_ug << ' '
+                         << stock.water_ug << ' ' << world->resident_history_bytes() << ' '
+                         << (r0_history?r0_history->encoded_bytes():0);
+                    message("OK",data.str());
                 } else if (command == "SAVE") {
                     const auto path = staged_save(request);
                     end(request);

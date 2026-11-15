@@ -107,8 +107,7 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     if (frame) w.put(frame_magic);
     if (s.ecological) {
         w.put(ecological_magic);
-        w.put(s.ecological->worker_activity_timing ? worker_timing_schema :
-              s.ecological->brood_space ? micro_world_schema : ecological_schema,4);
+        w.put(ecological_schema_version(*s.ecological),4);
         w.put(ecological_version(*s.ecological),4);
     }
     w.put(resupply ? founding_resupply_magic : uptake ? founding_uptake_magic : dietary ? founding_dietary_magic : provisioning ? founding_provisioning_magic : early_access ? founding_access_magic : persistence ? founding_persistence_magic : s.founding ? founding_magic : spatial?spatial_magic:base);
@@ -172,7 +171,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==worker_timing_schema && version==worker_timing_physics) ||
+        ensure((outer_schema==nest_activity_schema && version==nest_activity_physics) ||
+               (outer_schema==worker_timing_schema && version==worker_timing_physics) ||
                (outer_schema==micro_world_schema && micro_world_version(version)) ||
                (outer_schema==ecological_schema && (version==ecological_physics || version==portable_ecological_physics ||
                                                     version==suppressed_hatch_physics)),
@@ -260,7 +260,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             (e.action == DiagnosticAction::DrawRandom || e.kind==FactKind::NutritionDecision || e.kind==FactKind::AutonomyDecision || e.kind==FactKind::AntBorn ||
                 (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || founding_fact(e.kind) ||
                 (persistence && e.kind==FactKind::CareTick) || ecological_fact(e.kind) ||
-                (ecological && e.kind==FactKind::ForagingDecision && e.random_value<=7) || e.random_value == 0) &&
+                (ecological && e.kind==FactKind::ForagingDecision && e.random_value<=7) ||
+                (ecological_version==nest_activity_physics && e.kind==FactKind::ExcavationDecision && e.random_value<=1) ||
+                e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
         if (founding) {

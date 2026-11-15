@@ -33,7 +33,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
-    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v4")
+    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v5")
     paths = (installed, ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name)
     return next((path for path in paths if path.is_file()), paths[0])
@@ -132,7 +132,7 @@ def save_details(path):
     require(type(stamp) is int and 0 <= stamp < 1 << 53 and isinstance(header, bytes) and len(header) == 24 and
             header[:16] == b"AWSTATE1AWCKPTM\0" and
             (U32.unpack_from(header, 16)[0], U32.unpack_from(header, 20)[0]) in
-            {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31)},
+            {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32)},
             "Expected a MicroWorld checkpoint")
     require(isinstance(world, str) and str(UUID(world)) == world and isinstance(cursor, str) and key(cursor) < 1 << 53,
             "Invalid save identity")
@@ -329,6 +329,7 @@ class LiveSession:
             require(group == "all" or group in LIVE_GROUPS, "Unknown event category")
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
+                        local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         cursor=str(frame["cursor"]), colonies=colonies, geometry=geometry, terrain=self.sections[key],
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
@@ -409,7 +410,10 @@ class LiveSession:
             if resource == "new":
                 timing = data.get("timing", "standard")
                 require(isinstance(timing, str) and timing in NEW_COLONY_TIMINGS, "Unknown worker timing")
-                self.install(self.core().call(f"NEW {randbits(63) or 1} 1{NEW_COLONY_TIMINGS[timing]}"), running=True)
+                activity = data.get("local_nest_activity", False)
+                require(type(activity) is bool, "Unknown local nest activity setting")
+                command = "NEW_NEST" if activity else "NEW"
+                self.install(self.core().call(f"{command} {randbits(63) or 1} 1{NEW_COLONY_TIMINGS[timing]}"), running=True)
             elif resource == "load":
                 self.load(data.get("name"))
             elif resource == "folder":

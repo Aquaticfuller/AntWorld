@@ -313,6 +313,7 @@ void WorldRuntime::stop_excavator(Transaction &tx, EntityId id) {
     worker.enabled = false;
     worker.wake = {};
     worker.action = {};
+    worker.returning_empty=false;
     tx.excavators.set(id, worker);
 }
 void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
@@ -322,6 +323,7 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         ScheduledEvent action;
         SoilRequest soil;
         bool stalled{};
+        bool returning_empty{};
     };
     std::vector<Choice> choices(0);
     for (const auto &wake : wakes) {
@@ -337,22 +339,29 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         action.observed_position_revision = ant.position_revision;
         action.key = {after(s.m.now, c.work_duration.milliseconds), Phase::Resolution, 0, 0, 0};
         const auto carrier = s.carriers.find(ant.id);
+        const auto follow_inbound=[&] {
+            const auto previous = worker.path[worker.path_size - 2];
+            const bool clear=s.ecological && s.ecological->distance_clock
+                ? spatially_clear(ant.position,physical(previous,c),body_half(ant.id))
+                : clear_sweep(geometry_view(s, limits_), p, previous, body_half(ant.id));
+            if (clear) {
+                action.kind = ScheduledEvent::Kind::Move;
+                action.destination = physical(previous, c);
+            }
+        };
+        const bool floor_search=local_nest_activity(s);
         if (carrier != s.carriers.end()) {
             if (worker.path_size == 1) {
                 action.kind = ScheduledEvent::Kind::SoilAction;
                 choice.soil = {ant.id, SoilAction::Drop, {}, carrier->second, s.m.geometry_revision, 0, {}};
-            } else {
-                const auto previous = worker.path[worker.path_size - 2];
-                const bool clear=s.ecological && s.ecological->distance_clock
-                    ? spatially_clear(ant.position,physical(previous,c),body_half(ant.id))
-                    : clear_sweep(geometry_view(s, limits_), p, previous, body_half(ant.id));
-                if (clear) {
-                    action.kind = ScheduledEvent::Kind::Move;
-                    action.destination = physical(previous, c);
-                }
-            }
+            } else follow_inbound();
+        } else if (floor_search && (worker.returning_empty || worker.path_size>=24)) {
+            choice.returning_empty=worker.path_size>1;
+            if (choice.returning_empty) follow_inbound();
         } else {
-            const auto frontiers = local_frontiers({s.world, ant.id});
+            auto frontiers = local_frontiers({s.world, ant.id});
+            if (floor_search)
+                std::erase_if(frontiers,[&](BoxQ b) { return b.max.y-b.min.y<2*c.loaded_half_q; });
             if (worker.path_size > 1 && !frontiers.empty()) {
                 const auto box = frontiers[static_cast<std::size_t>(bounded_draw(rng, frontiers.size()))];
                 action.kind = ScheduledEvent::Kind::SoilAction;
@@ -364,6 +373,10 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                     if (s.ecological && s.ecological->distance_clock &&
                         !spatially_clear(ant.position,physical(q,c),c.loaded_half_q)) continue;
                     const auto depot = worker.path[0];
+                    if (floor_search && (q.y!=depot.y ||
+                        material_at(geometry_view(s, limits_),{q.x,q.y-c.loaded_half_q-1,q.z})==Material::Void ||
+                        std::find(worker.path.begin(),worker.path.begin()+worker.path_size,q)!=worker.path.begin()+worker.path_size))
+                        continue;
                     const auto d = std::abs(q.x - depot.x) + std::abs(q.y - depot.y) + std::abs(q.z - depot.z);
                     if (d > best) {
                         candidates.clear();
@@ -378,6 +391,9 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                     action.kind = ScheduledEvent::Kind::Move;
                     action.destination =
                         physical(candidates[static_cast<std::size_t>(bounded_draw(rng, candidates.size()))], c);
+                } else if (floor_search && worker.path_size>1) {
+                    choice.returning_empty=true;
+                    follow_inbound();
                 }
             }
         }
@@ -401,6 +417,7 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         auto worker = s.excavators.at(choice.action.actor);
         bump(worker.decisions);
         worker.wake = {};
+        worker.returning_empty=choice.returning_empty;
         worker.action = tx.insert(choice.action);
         if (choice.action.kind == ScheduledEvent::Kind::SoilAction) {
             if (s.soil_requests.size() >= limits_.committed_events)
@@ -413,6 +430,7 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         f.actor = choice.action.actor;
         f.source = wakes[i].id;
         f.payload = worker.decisions;
+        f.random_value=worker.returning_empty ? 1 : 0;
         const auto ant = s.ants.get(s.ants.index.at(f.actor));
         f.colony = ant.colony;
         f.position = ant.position;

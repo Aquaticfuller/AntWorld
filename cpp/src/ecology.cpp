@@ -108,6 +108,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EntityId scout;
     EventId cue;
     bool recruited{};
+    std::optional<PositionM> resting_site;
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -146,6 +147,7 @@ void WorldRuntime::resolve_autonomy_wakes(
                   local_care_available({s.world,ant.id});
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (bounded_brood_space(s) && can_switch && !at_depot && stationary && p.mother.value &&
+               (!local_nest_activity(s) || ready || urgent) &&
                within_contact(ant.position,colony.nest_position,s.config) &&
                clear_care_segment(ant.position,colony.nest_position,body_half(ant.id))) {
       // A worker emerging among the brood can see the nearby depot. Use the
@@ -219,7 +221,8 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
       bool soil = false;
-      if (at_depot && s.geometry && sample.ants.size()>=2 && quantized(ant.position,s.geometry->config)) {
+      if (at_depot && s.geometry && (sample.ants.size()>=2 || local_nest_activity(s)) &&
+          quantized(ant.position,s.geometry->config)) {
         const auto &g = s.geometry->config;
         const auto origin = *quantized(ant.position, g);
         constexpr std::array<PointQ, 6> directions{{{1, 0, 0},
@@ -307,6 +310,8 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
         }
       }
+      if (at_depot && !urgent && choice.behavior==IndividualBehavior::Rest)
+        choice.resting_site=local_resting_site(ant);
       inspect_decision(wake, sample, 1, static_cast<std::uint64_t>(choice.behavior));
     } else {
       inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
@@ -339,6 +344,8 @@ void WorldRuntime::resolve_autonomy_wakes(
     }
     if (choice.care)
       start_autonomous_care(tx,{s.world,id},choice.event.id);
+    else if (choice.resting_site)
+      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id);
     else if (choice.behavior != s.physiology.at(id).behavior)
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
     const auto &sample = choice.sample;

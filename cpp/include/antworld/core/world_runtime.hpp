@@ -161,6 +161,9 @@ private:
     void stop_reproduction(Transaction&, EntityId);
     void notify_return(Transaction&, EntityId);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
+    [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
+    [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
+    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId);
     void inspect_decision(const ScheduledEvent&, const ContactSample&, std::uint64_t context,
                           std::uint64_t choice, EntityId recipient = {}) const;
     void resolve_soil_action(Transaction&, const ScheduledEvent&, WorldEvent&);

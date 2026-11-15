@@ -119,7 +119,11 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   std::map<EntityId, PositionM> positions;
   std::map<EntityId, SimTime> emergence;
   std::map<ScheduledId, WorldEvent> switches;
+  std::optional<WorldEvent> last_r0_rest_source;
   for (const auto &e : s.journal) {
+    if (local_nest_activity(s) && (e.kind==FactKind::ExcavationDecision ||
+        (e.kind==FactKind::BiologicalObservation && e.observation.act==CareAct::NestReposition &&
+         e.observation.phase>=ObservationPhase::Completed))) last_r0_rest_source=e;
     if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
       stages[e.actor] = e.stage;
       positions[e.actor] = e.position;
@@ -145,7 +149,13 @@ template <class S> void validate_autonomy_evidence(const S &s) {
     if (e.kind == FactKind::BehaviorChanged) {
       if (audit.contains(e.actor))
         audit.at(e.actor).last_program_change = e.time;
-      if (e.source.value)
+      const bool local_rest=e.source.value && e.payload==static_cast<std::uint64_t>(IndividualBehavior::Rest) &&
+          last_r0_rest_source && last_r0_rest_source->source==e.source && last_r0_rest_source->actor==e.actor &&
+          last_r0_rest_source->time==e.time && last_r0_rest_source->position==e.position;
+      if (local_rest) {
+        ensure(audit.contains(e.actor) && audit.at(e.actor).enabled,"local rest without an active program");
+        last_r0_rest_source.reset();
+      } else if (e.source.value)
         ensure(audit.contains(e.actor) && audit.at(e.actor).enabled &&
                    switches.emplace(e.source, e).second,
                "automatic program change without unique active decision");

@@ -212,12 +212,15 @@ function configure(meta, referenceKey = null) {
     $("milestones").replaceChildren(...meta.milestones.filter(m => labels[m.label]).map(m =>
         button(labels[m.label], () => jumpEvent(m.id, m.ant).catch(report), tr(m.label) + " · " + exactTime(m.time_ms))));
     const replays = {"First egg laid": "Watch egg placement", "First brood arrangement": "Watch brood arrangement",
-        "First timed feeding": "Watch brood feeding"};
+        "First timed feeding": "Watch brood feeding", "First move to a resting site": "Watch a worker settle",
+        "Resting site with 10 or more workers": "Watch movement in an established nest"};
     const available = meta.milestones.filter(m => replays[m.label]);
     $("action-replays").hidden = !available.length;
     $("action-replays").replaceChildren(...available.map(m => button(replays[m.label], () => watchAction(m).catch(report))));
     setOptions($("reference"), app.catalog.filter(e => e.key !== $("archive").value));
-    const referenceTitle = meta.scenario?.startsWith("micro-m0-") ? "MicroWorld · reference placement" : "Before the feeding correction";
+    const referenceTitle = meta.settings.physics === 32 ? "R0 · matched reference" :
+        meta.title === "R0 · matched reference" ? "R0 · local nest activity" :
+        meta.scenario?.startsWith("micro-m0-") ? "MicroWorld · reference placement" : "Before the feeding correction";
     const prior = app.catalog.find(e => e.title === referenceTitle && e.key !== $("archive").value);
     if (referenceKey || prior) $("reference").value = referenceKey || prior.key;
 }
@@ -899,9 +902,11 @@ function drawMap() {
     for (const move of app.path) {
         if (fits(move.position_m)) circle(ctx, ...point(move.position_m), 2, "#ad9ce18a");
     }
+    const segment = app.restReplay;
     const visible = state.ants.filter(a => fits(a.position_m));
     app.visible = visible;
-    drawOccupants(ctx, visible, point);
+    drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point);
+    if (segment) drawRestSegment(ctx, point, fits, segment);
     if (app.live) drawLiveActions(ctx, point, fits);
     const shared = app.hits.filter(hit => hit.ants.length > 1);
     const largest = shared.reduce((best, item) => !best || item.ants.length > best.ants.length ? item : best, null);
@@ -922,6 +927,7 @@ function drawMap() {
         "{count} recorded movement points in this view over the last 5 simulated minutes.", {count: trail.length}));
     else if (!app.live && motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
+    if (segment) notes.push(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
     put("map-detail", notes.join(" "));
     renderLocation();
     if (app.selectedFact && fits(app.selectedFact.position_m)) {
@@ -1039,7 +1045,8 @@ async function loadReference(preferred) {
 }
 async function updateComparison() {
     const version = ++app.compareVersion;
-    const [data, lists] = await Promise.all([api("compare", {left: app.meta.key, right: app.reference.key, time_ms: app.time}),
+    const nest = [app.meta, app.reference].some(m => (m.settings?.physics || m.physics) === 32) ? "1" : "0";
+    const [data, lists] = await Promise.all([api("compare", {left: app.meta.key, right: app.reference.key, time_ms: app.time, nest}),
         Promise.all([app.meta, app.reference].map(m => {
             const low = Math.floor(Math.min(app.time, m.end_ms) / DAY) * DAY;
             return api("world/" + m.key + "/events", {group: "highlights", since_ms: low, until_ms: Math.min(low + DAY - 1, m.end_ms), limit: 5});
@@ -1073,6 +1080,13 @@ async function updateComparison() {
         return box;
     });
     $("compare-cards").replaceChildren(...cards);
+    data.worlds.forEach((trial, i) => {
+        if (!trial.nest) return;
+        const preview = node("canvas", null, "compare-nest");
+        preview.setAttribute("aria-label", tr("Nest floor at the selected time"));
+        cards[i].insertBefore(preview, cards[i].children[2]);
+        drawCompareNest(preview, trial.nest, trial.state.ants);
+    });
     const inputSignature = language + JSON.stringify(data.settings);
     if ($("compare-config").dataset.signature !== inputSignature) {
         $("compare-config").dataset.signature = inputSignature;
@@ -1095,6 +1109,7 @@ function stopPlay() {
     if (app.playback) clearInterval(app.playback);
     app.playback = null;
     app.playingDelivery = false;
+    app.restReplay = null;
     playbackControls(false);
 }
 function playbackControls(active) {
@@ -1146,6 +1161,10 @@ async function actionBoundaries(end) {
     return frames;
 }
 async function watchAction(mark) {
+    if (["First move to a resting site", "Resting site with 10 or more workers"].includes(mark.label)) {
+        await watchRestSegment(mark);
+        return;
+    }
     stopPlay();
     const version = app.playVersion;
     const end = await world("event",{id:mark.id});
@@ -1166,6 +1185,97 @@ async function watchAction(mark) {
         if (app.selectedFact===fact) showEvent(fact);
         return index<frames.length;
     },850);
+}
+function drawRestSegment(ctx, point, fits, segment) {
+    const a = segment.start.position_m, b = segment.move.position_m;
+    const current = a.map((value, i) => value + (b[i] - value) * segment.progress);
+    if (!fits(current)) return;
+    const [x, y] = point(current), from = point(a), to = point(b);
+    const heading = Math.atan2(to[1] - from[1], to[0] - from[0]);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(...from);
+    ctx.lineTo(...to);
+    ctx.strokeStyle = "#e4c791";
+    ctx.stroke();
+    ctx.translate(x, y);
+    ctx.rotate(heading);
+    ctx.beginPath();
+    ctx.moveTo(9, 0);
+    ctx.lineTo(-6, -4);
+    ctx.lineTo(-4, 0);
+    ctx.lineTo(-6, 4);
+    ctx.closePath();
+    ctx.fillStyle = "#ffe1a3";
+    ctx.fill();
+    ctx.restore();
+}
+async function watchRestSegment(mark) {
+    stopPlay();
+    const generation = app.playVersion;
+    const data = await world("rest-segment", {id: mark.id});
+    if (generation !== app.playVersion) return;
+    if (!data) {
+        await jumpEvent(mark.id, mark.ant);
+        return;
+    }
+    app.selected = data.start.actor;
+    $("ant-id").value = app.selected;
+    app.follow = false;
+    toggle("follow", false);
+    app.location = null;
+    $("axis").value = "y";
+    preferView(data.start.position_m);
+    await seek(data.start.time_ms, data.start);
+    if (generation !== app.playVersion) return;
+    app.restReplay = {...data, progress: 0};
+    const begin = performance.now();
+    show(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
+    playbackControls(true);
+    const step = now => {
+        if (generation !== app.playVersion || !app.restReplay) return;
+        app.restReplay.progress = Math.min(1, (now - begin) / 1600);
+        drawMap();
+        if (app.restReplay.progress < 1) requestAnimationFrame(step);
+        else {
+            stopPlay();
+            seek(data.completion.time_ms, data.completion).then(() => showEvent(data.completion)).catch(report);
+        }
+    };
+    requestAnimationFrame(step);
+}
+function drawCompareNest(canvas, slice, ants) {
+    const view = canvasContext(canvas);
+    if (!view) return;
+    const {ctx, width, height} = view;
+    const [u, v, normal] = slice.axes, q = slice.quantum_m, o = slice.origin_m;
+    const [x0, y0, x1, y1] = slice.bounds_q;
+    const bounds = [o[u] + x0*q, o[v] + y0*q, o[u] + x1*q, o[v] + y1*q];
+    const p = projection(width, height, bounds);
+    slice.rows.forEach((line, z) => [...line].forEach((material, x) => {
+        rect(ctx, p, bounds[0]+x*q, bounds[1]+z*q, q, q, material === "0" ? "#222f25" :
+            material === "2" ? "#707c72" : "#826647");
+    }));
+    const sites = new Map();
+    for (const ant of ants) {
+        const at = ant.position_m;
+        if (Math.floor((at[normal]-o[normal])/q+1e-9) !== slice.plane_q) continue;
+        const key = `${at[u]},${at[v]}`;
+        if (!sites.has(key)) sites.set(key, []);
+        sites.get(key).push(ant);
+    }
+    for (const at of sites.values()) {
+        const first = at[0];
+        const [x,y] = p.point(first.position_m[u],first.position_m[v]);
+        circle(ctx,x,y,at.length>1?8:first.stage==="Adult"?4:2,
+            colors[first.stage === "Adult" ? first.caste.toLowerCase() : first.stage.toLowerCase()],"#122319");
+        if (at.length>1) {
+            ctx.font = "10px monospace";
+            ctx.fillStyle = "#152019";
+            ctx.textAlign = "center";
+            ctx.fillText(String(at.length),x,y+3);
+        }
+    }
 }
 async function watchDelivery() {
     const delivery = firstDelivery(app.meta);
@@ -1235,7 +1345,7 @@ async function stepEvent(direction, generation = null) {
 }
 function togglePlay() {
     if (!app.meta) return;
-    if (app.playback) { stopPlay(); return; }
+    if (app.playback || app.restReplay) { stopPlay(); drawMap(); return; }
     const end = app.compare && app.reference ? Math.max(app.meta.end_ms, app.reference.end_ms) : app.meta.end_ms;
     const inRealOrder = !app.compare && $("replay-mode").value !== "overview";
     if (app.time >= end) {
