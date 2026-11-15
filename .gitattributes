@@ -30,3 +30,5 @@ experiments/s6_4_ecological_mechanism_closure/tests/*.log whitespace=-blank-at-e
 experiments/s6_4_ecological_mechanism_closure/portable-physics/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 experiments/s6_4_founding_cohort_release/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 experiments/s6_4_founding_cohort_release/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+# Preserve the original R0 diagnostic bytes covered by checksum receipts.
+experiments/r0/diagnostics/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -265,6 +265,8 @@ class IndexBuilder:
             require(len(payload) == (210 if fact.observation else 159) and (ids[0] << 64) | ids[1] == self.identity
                     and fact.id == last + 1 and previous <= fact.time <= self.tip["time_ms"] and
                     revision < fact.revision <= self.tip["revision"], "Canonical sequence, world or time mismatch")
+            if fact.observation and fact.observation[1] == 19:
+                require(self.tip["physics"] == 32, "Rest relocation requires the R0 checkpoint contract")
             if self.next_sample is not None and self.next_sample[1] == last:
                 self.commit_samples(last, previous, fact.time)
             while self.next_cut is not None and self.next_cut < fact.time:

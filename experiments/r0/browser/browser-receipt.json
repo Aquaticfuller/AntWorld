@@ -1,0 +1,13 @@
+{
+  "shell_paint_ms": null,
+  "world_ready_ms_after_navigation": 1633.7999999523163,
+  "first_browser_view_ms": 1716.69,
+  "rest_replay_ms": 1658,
+  "segment": {
+    "start": "71210",
+    "end": "71215",
+    "actor": "18",
+    "time_ms": 6789986028
+  },
+  "status": "PASS"
+}

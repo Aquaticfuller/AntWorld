@@ -1,0 +1,20 @@
+{
+  "core_sha256": "9aa3ef390390113aa35bd8ffacfd4304bfbe0bf13cf6f7c281646967837c41c7",
+  "days": 730,
+  "seeds": [
+    1,
+    7
+  ],
+  "supplies": [
+    "continued",
+    "limited",
+    "water-restricted",
+    "seasonal"
+  ],
+  "physics": [
+    29,
+    32
+  ],
+  "layout": "shaft",
+  "protocol_sha256": "971327d88ffb6ca2b7b14fdf6615ab6f2f03f81eaad8bee62a3baf541327910d"
+}

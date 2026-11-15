@@ -1,0 +1,16 @@
+{
+  "core_sha256": "e561037413db21362bb50c85fba4d8cc10f225f5f170bf6bcd6af43c916548e5",
+  "days": 90,
+  "seeds": [
+    1
+  ],
+  "supplies": [
+    "limited"
+  ],
+  "physics": [
+    29,
+    32
+  ],
+  "layout": "dogleg",
+  "protocol_sha256": "971327d88ffb6ca2b7b14fdf6615ab6f2f03f81eaad8bee62a3baf541327910d"
+}
