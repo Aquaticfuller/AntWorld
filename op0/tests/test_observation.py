@@ -17,7 +17,7 @@ from zipfile import ZipFile
 
 from op0 import DAY, SCHEMA
 from op0.archive import file_hash, pack
-from op0.cli import DEMOS, MICRO_DEMOS, ROOT, VERIFIED, api_get, default_catalog
+from op0.cli import DEMOS, MICRO_DEMOS, R0_DEMOS, ROOT, VERIFIED, api_get, default_catalog
 from op0.codec import ArchiveError
 from op0.geometry import clear_centers, slice_at
 from op0.index import Catalog
@@ -67,7 +67,8 @@ class ObservationTests(unittest.TestCase):
         return api_get(self.api, f"world/{self.demo['key']}/{operation}", **params)
 
     def test_catalogue_physics_identity_and_initial_snapshot(self):
-        self.assertEqual(len(self.entries), sum((folder / filename).is_file() for folder, filename, _, _ in DEMOS + MICRO_DEMOS))
+        self.assertEqual(len(self.entries), sum((folder / filename).is_file()
+                         for folder, filename, _, _ in DEMOS + MICRO_DEMOS + R0_DEMOS))
         meta = self.get("meta")
         self.assertEqual((meta["world_id"], meta["settings"]["physics"], meta["settings"]["seed"]),
                          ("00000000-0000-0286-0000-000000018a61", 25, "1"))
