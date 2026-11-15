@@ -14,6 +14,8 @@ from unittest.mock import patch
 from zipfile import ZipFile
 
 from op0 import DAY
+from op0.archive import prefixed
+from op0.codec import CASTES, checkpoint, decode_fact
 from op0.index import Catalog
 from op0.live import ROOT, LiveSession, NativeCore, core_path
 from op0.query import ReadAPI
@@ -21,6 +23,7 @@ from op0.server import bind
 
 
 BINARY = Path(os.environ.get("M0_LIVE_CORE", core_path())).resolve()
+WITNESS = ROOT / "experiments/m0/portable-demo/borisovka-shaft-1-slots.zip"
 
 
 @unittest.skipUnless(BINARY.is_file(), "Build antworld_m0_live or set M0_LIVE_CORE")
@@ -39,12 +42,65 @@ class LiveTests(unittest.TestCase):
             return self.live.status()
 
     def test_new_colony_matches_reviewed_day_90_checkpoint(self):
-        source = ROOT / "experiments/m0/portable-demo/borisovka-shaft-1-slots.zip"
-        with ZipFile(source) as witness, closing(NativeCore(BINARY, self.folder)) as core:
+        with ZipFile(WITNESS) as witness, closing(NativeCore(BINARY, self.folder)) as core:
             core.call("NEW 270001 1")
             self.assertEqual(sha256(core.call(f"ADVANCE {90 * DAY}")).digest(),
                              sha256(witness.read("final.frame")).digest())
         self.assertEqual(list(self.folder.iterdir()), [])
+
+    def test_fast_forward_stops_at_each_committed_milestone(self):
+        expected = {}
+        with ZipFile(WITNESS) as witness, witness.open("facts.bin") as stream:
+            ants = checkpoint(witness.read("final.frame"))["ants"]
+            for _, raw in prefixed(stream):
+                _, fact = decode_fact(raw)
+                event = fact.packet()
+                if (event["kind"], event["stage"]) == ("AntBorn", "Egg"):
+                    expected.setdefault("egg", event)
+                elif (event["kind"], event["stage"]) == ("StageChanged", "Larva"):
+                    expected.setdefault("hatch", event)
+                elif ((event["kind"], event["stage"]) == ("StageChanged", "Adult") and
+                      CASTES[ants[fact.actor]["caste"]] == "Worker"):
+                    expected.setdefault("worker", event)
+                if len(expected) == 3:
+                    break
+        self.assertEqual(set(expected), {"egg", "hatch", "worker"})
+
+        with patch("op0.live.randbits", return_value=270001):
+            self.live.write("new", {})
+        with self.assertRaisesRegex(ValueError, "Unknown live milestone"):
+            self.live.write("seek", {"target": "unknown"})
+
+        self.live.write("seek", {"target": "egg"})
+        self.advance(100)
+        cancelled = self.live.write("clock", {"running": False})
+        self.assertEqual((cancelled["fast_forward"]["state"], cancelled["running"], cancelled["rate"]),
+                         ("cancelled", False, 1))
+
+        with closing(NativeCore(BINARY, self.folder)) as reference:
+            reference.call("NEW 270001 1")
+            for target in ("egg", "hatch", "worker"):
+                with self.subTest(target=target):
+                    started = self.live.write("seek", {"target": target})
+                    self.assertTrue(started["running"])
+                    for _ in range(180):
+                        stopped = self.advance(1000)
+                        if not stopped["running"]:
+                            break
+                    self.assertEqual(stopped["fast_forward"], dict(target=target, state="reached", event=expected[target]))
+                    stamp = expected[target]["time_ms"]
+                    self.assertEqual((stopped["time_ms"], stopped["running"], stopped["rate"]), (stamp, False, 1))
+                    self.assertEqual(self.advance(2000)["time_ms"], stamp)
+                    with self.live.lock:
+                        self.assertEqual(self.live.worker.call("FRAME"), reference.call(f"ADVANCE {stamp}"))
+                    self.live.write("clock", {"running": True})
+                    self.assertEqual(self.advance(1250)["time_ms"], stamp + 1250)
+                    self.live.write("clock", {"running": False})
+
+        past = self.live.write("seek", {"target": "egg"})
+        self.assertEqual(past["fast_forward"], dict(target="egg", state="already", event=expected["egg"]))
+        self.assertEqual(past["time_ms"], expected["worker"]["time_ms"] + 1250)
+        self.assertEqual(list(self.live.saves.rglob("*.sqlite")), [])
 
     def test_native_clock_save_metadata_and_exact_resume(self):
         started = self.live.write("new", {})

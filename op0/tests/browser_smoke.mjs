@@ -172,13 +172,17 @@ async function liveWorld() {
     await sleep(350);
     assert.equal(await evaluate("liveView.state.time_ms"), paused);
 
-    await select("live-rate", "86400");
-    await wait(() => evaluate("liveView.state.rate === 86400 && !liveView.busy"), "Accelerate the paused world");
-    await click("#live-pause");
-    await wait(() => evaluate("app.state.ants.some(a => a.stage === 'Egg')"), "Live worker commits the first birth", 22000);
-    await click("#live-pause");
-    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause for a save");
+    await select("live-target", "egg");
+    await click("#live-seek");
+    await wait(() => evaluate("liveView.state.fast_forward?.state === 'seeking' && $('live-rate').disabled"), "Look for the first egg");
+    await wait(() => evaluate("liveView.state.fast_forward?.state === 'reached' && !$('event-detail').hidden"),
+        "Stop and show the first committed birth", 22000);
     const savedTime = await evaluate("liveView.state.time_ms");
+    assert.equal(savedTime, 4 * 86400000);
+    assert.equal(await evaluate("liveView.state.fast_forward.event.time_ms"), savedTime);
+    assert.equal(await evaluate("liveView.state.running"), false);
+    assert.equal(await evaluate("$('live-rate').value"), "1");
+    assert.equal(await evaluate("app.state.ants.filter(a => a.stage === 'Egg').length"), 1);
     await screenshot("m0-live-colony");
     await click("#open-saves");
     await evaluate("$('save-name').value = 'Live browser test'");
@@ -193,6 +197,9 @@ async function liveWorld() {
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     assert.equal(await evaluate("liveView.state.rate"), 1);
     assert.equal(await evaluate("liveView.state.running"), false);
+    await click("#live-seek");
+    await wait(() => evaluate("liveView.state.fast_forward?.state === 'already'"), "Find the saved milestone in the Core history");
+    assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     await click("#observe-tab");
     await opened();
     assert.equal(await evaluate("app.meta.settings.physics"), 29);
@@ -200,9 +207,12 @@ async function liveWorld() {
     await wait(() => evaluate("app.live && ! $('viewer').hidden && Boolean(app.state)"), "Return from the original archive");
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     await select("locale", "zh-CN");
-    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('new-colony').textContent === '\u65b0\u5efa\u8681\u7a9d'"),
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('live-seek').textContent === '\u5feb\u8fdb\u5230\u4e8b\u4ef6'"),
         "Translate the live controls without resetting the world");
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
+    await click("#live-pause");
+    await wait(() => evaluate(`liveView.state.running && liveView.state.time_ms > ${savedTime}`), "Resume live sim at 1x");
+    assert.equal(await evaluate("liveView.state.rate"), 1);
     assert.deepEqual(exceptions, []);
     result.status = "PASS";
     result.elapsed_at_1x_ms = elapsed;

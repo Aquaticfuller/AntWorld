@@ -64,7 +64,9 @@ h1 { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(34px, 4vw
 .live-readout { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px 14px; }
 #live-clock { font: 600 18px "IBM Plex Mono", "Cascadia Mono", monospace; font-variant-numeric: tabular-nums; }
 #live-status { color: var(--muted); font-size: 12px; }
-.live-actions, #save-form, .save-folder-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.live-actions, .live-milestone, #save-form, .save-folder-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.live-milestone { flex-basis: 100%; border-top: 1px solid var(--line); padding-top: 10px; }
+.live-milestone label, #live-stop { color: var(--muted); font-size: 12px; }
 button.primary-button { background: var(--green); border-color: var(--green); color: #182216; font-weight: 700; }
 #save-manager { width: min(750px, calc(100% - 32px)); max-height: 85vh; padding: 0; color: var(--text); }
 #save-manager::backdrop { background: #080e0bbd; }

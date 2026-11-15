@@ -97,7 +97,7 @@ def bind(api, port, live=None):
                 if not self.local_host() or self.headers.get("Origin") != "http://" + self.headers["Host"]:
                     self.as_json(HTTPStatus.FORBIDDEN, dict(schema=SCHEMA, error="Live commands require the local viewer origin"))
                     return
-                if (resource not in {"new", "clock", "save", "load", "folder"} or len(body) < 2 or len(body) != size or
+                if (resource not in {"new", "clock", "seek", "save", "load", "folder"} or len(body) < 2 or len(body) != size or
                         self.headers.get_content_type() != "application/json"):
                     raise ValueError("Invalid live command request")
                 data = json.loads(body)

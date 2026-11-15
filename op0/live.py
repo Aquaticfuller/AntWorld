@@ -24,6 +24,7 @@ from .query import HOUR, integer
 
 ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
+MILESTONES = {"egg", "hatch", "worker"}
 FRAME_LIMIT = 128 * 1024 * 1024
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
@@ -31,7 +32,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
-    paths = (ROOT / "out/m0-live-bin" / name, ROOT / "build/m0-live" / name,
+    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v2")
+    paths = (installed, ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name)
     return next((path for path in paths if path.is_file()), paths[0])
 
@@ -41,7 +43,7 @@ class NativeCore:
         self.process = subprocess.Popen([str(binary)], cwd=workdir, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
-            require(self.call("HELLO") == b"antworld.m0.live.v1", "Unsupported live Core protocol")
+            require(self.call("HELLO") == b"antworld.m0.live.v2", "Rebuild the live Core for this viewer version.")
         except Exception:
             self.close()
             raise
@@ -158,6 +160,7 @@ class LiveSession:
         self.epoch = 0
         self.running = False
         self.rate = 1
+        self.fast_forward = None
         self.anchor_ns = self.anchor_ms = 0
         self.saved = None
         self.error = None
@@ -208,16 +211,54 @@ class LiveSession:
         self.epoch += 1
         self.sections.clear()
         self.running, self.rate, self.saved, self.error = running, 1, saved, None
+        self.fast_forward = None
         self.reanchor()
 
+    def seeking(self):
+        return self.fast_forward is not None and self.fast_forward["state"] == "seeking"
+
+    def milestone_event(self, raw):
+        identity, event = decode_fact(raw)
+        require(UUID(self.frame["world"]).int == ((identity[0] << 64) | identity[1]) and
+                event.id <= self.frame["cursor"] and event.time <= self.frame["time_ms"],
+                "Live milestone does not belong to the published cut")
+        return event.packet()
+
+    def start_seek(self, target):
+        require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
+        require(not self.seeking(), "Cancel the current fast-forward first.")
+        past = self.worker.call(f"FIND_MILESTONE {target}")
+        if past:
+            self.fast_forward = dict(target=target, state="already", event=self.milestone_event(past))
+        else:
+            self.fast_forward = dict(target=target, state="seeking", event=None)
+            self.running, self.rate, self.error = True, RATES[-1], None
+            self.reanchor()
+
+    def stop_seek(self, state, event=None):
+        self.fast_forward = self.fast_forward | dict(state=state, event=event)
+        self.running, self.rate = False, 1
+
     def advance(self):
-        if self.running:
-            stamp = self.frame["time_ms"]
-            target = self.anchor_ms + (self.clock() - self.anchor_ns) * self.rate // 1_000_000
-            # A slow frame may fall behind the desired rate. Bound one Core call
-            # so the next pause or save can still take the controller lock.
-            if target > stamp:
-                self.publish(self.worker.call(f"ADVANCE {min(target, stamp + 12 * HOUR)}"))
+        if not self.running:
+            return
+        stamp = self.frame["time_ms"]
+        desired = self.anchor_ms + (self.clock() - self.anchor_ns) * self.rate // 1_000_000
+        # Bound one Core call so a pause or save can still take the controller lock.
+        target = min(desired, stamp + 12 * HOUR)
+        if target <= stamp:
+            return
+        if not self.seeking():
+            self.publish(self.worker.call(f"ADVANCE {target}"))
+            return
+        reply = self.worker.call(f"ADVANCE_UNTIL {target} {self.fast_forward['target']}")
+        self.publish(self.worker.call("FRAME"))
+        if reply == b"exhausted":
+            self.stop_seek("exhausted")
+        elif reply:
+            event = self.milestone_event(reply)
+            require(event["time_ms"] == self.frame["time_ms"], "The Core did not stop at the live milestone")
+            self.stop_seek("reached", event)
 
     def run_clock(self):
         while not self.stopping.wait(.10):
@@ -225,6 +266,8 @@ class LiveSession:
                 try:
                     self.advance()
                 except Exception as err:
+                    if self.seeking():
+                        self.stop_seek("cancelled")
                     self.running, self.error = False, str(err)
                     # A Core exception can occur after earlier cuts have committed.
                     try:
@@ -238,7 +281,8 @@ class LiveSession:
                                 self.saved["facts"] != frame["cursor"]))
         return dict(enabled=True, core_available=self.binary.is_file(), time_ms=frame["time_ms"] if frame else None,
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
-                    saved_name=self.saved["name"] if self.saved else None, dirty=dirty, error=self.error)
+                    fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
+                    dirty=dirty, error=self.error)
 
     def read(self, resource, options):
         with self.lock:
@@ -358,11 +402,19 @@ class LiveSession:
                 require(self.frame is not None, "Create or load a colony first")
                 if resource == "save":
                     self.save(data.get("name"), data.get("overwrite") is True)
+                elif resource == "seek":
+                    self.start_seek(data.get("target"))
                 elif resource == "clock":
                     rate, running = data.get("rate", self.rate), data.get("running", self.running)
                     require(type(rate) is int and rate in RATES and type(running) is bool, "Invalid live clock settings")
                     self.advance()
-                    self.running, self.rate, self.error = running, rate, None
+                    if self.seeking():
+                        self.stop_seek("cancelled")
+                    self.running = data.get("running", self.running)
+                    self.rate = data.get("rate", self.rate)
+                    if self.running:
+                        self.fast_forward = None
+                    self.error = None
                     self.reanchor()
                 else:
                     raise ValueError("Unknown live command")

@@ -354,6 +354,11 @@ void WorldRuntime::acknowledge_history(const HistoryCapture& capture,std::shared
 }
 void WorldRuntime::limit_unpublished_history(std::size_t count) { state_->journal.limit(count); }
 std::size_t WorldRuntime::unpublished_history() const noexcept { return state_->journal.unpublished(); }
+std::optional<SimTime> WorldRuntime::next_scheduled_time() const {
+    const auto& queue = state_->queue;
+    if (queue.empty()) return {};
+    return queue.begin()->first.time;
+}
 std::vector<ScheduledEvent> WorldRuntime::pending_events() const {
     std::vector<ScheduledEvent> result(0); result.reserve(state_->queue.size());
     for (const auto& [key, e] : state_->queue) { (void)key; result.push_back(e); }

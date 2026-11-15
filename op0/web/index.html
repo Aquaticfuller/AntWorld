@@ -42,6 +42,12 @@
         <select id="live-rate"><option value="1">1× real time</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option><option value="3600">3,600×</option><option value="86400">86,400×</option></select>
         <button id="open-saves" type="button">Save and load</button>
       </div>
+      <div class="live-milestone">
+        <label for="live-target">Target event</label>
+        <select id="live-target"><option value="egg">First egg laid</option><option value="hatch">First hatch</option><option value="worker">First worker eclosed</option></select>
+        <button id="live-seek" type="button">Fast-forward to event</button>
+        <output id="live-stop" role="status" hidden></output>
+      </div>
     </section>
     <div id="viewer" class="workspace" hidden>
       <section class="population" aria-label="Population at the playback cursor">

@@ -1,6 +1,14 @@
 "use strict";
 
-const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null};
+const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null, shownStop: null};
+const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed"};
+const liveStopLabels = {
+    seeking: "Fast-forwarding to {event}…",
+    reached: "Reached {event} at {time}. Resume at 1×.",
+    already: "{event} already happened at {time}.",
+    exhausted: "The colony has no future activity that can reach {event}.",
+    cancelled: "Fast-forward cancelled."
+};
 
 function duration(ms) {
     if (ms == null) return tr("Not recorded");
@@ -10,14 +18,22 @@ function duration(ms) {
 function liveControls() {
     const s = liveView.state;
     const active = s?.world_id != null;
+    const stop = s?.fast_forward, seeking = stop?.state === "seeking";
     put("live-clock", active ? duration(s.time_ms) : "00:00:00");
     const label = active ? (s.running ? "Simulation running" : "Simulation paused") : "No active colony";
     put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : ""));
-    put("live-pause", tr(s?.running ? "Pause" : "Resume"));
+    put("live-pause", tr(seeking ? "Cancel fast-forward" : (s?.running ? "Pause" : "Resume")));
     $("live-rate").value = String(s?.rate || 1);
     $("new-colony").disabled = liveView.busy || !s?.core_available;
-    $("live-pause").disabled = $("live-rate").disabled = liveView.busy || !active;
-    $("save-name").disabled = $("save-form").querySelector("button").disabled = liveView.busy || !active;
+    const locked = liveView.busy || !active;
+    $("live-pause").disabled = locked;
+    $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
+    $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
+    const details = stop ? tr(liveStopLabels[stop.state], {
+        event: tr(liveMilestones[stop.target]), time: stop.event ? duration(stop.event.time_ms) : ""
+    }) : "";
+    if ($("live-stop").textContent !== details) put("live-stop", details);
+    $("live-stop").hidden = !details;
     if (s?.error) show(tr(s.error), true);
 }
 
@@ -83,6 +99,7 @@ async function refreshLive() {
     if (liveView.epoch !== data.epoch) {
         liveView.epoch = data.epoch;
         liveView.eventsKey = null;
+        liveView.shownStop = null;
         app.selected = data.ants.find(a => a.caste === "Queen")?.id ?? null;
         app.follow = false;
         app.location = app.selectedFact = null;
@@ -114,6 +131,13 @@ async function refreshLive() {
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
     liveIndividual();
+    const stop = data.fast_forward;
+    const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
+    if (key && liveView.shownStop !== key) {
+        liveView.shownStop = key;
+        inspect(true);
+        showEvent(stop.event);
+    }
     if (!$("event-panel").hidden) renderLiveEvents();
     drawMap();
 }
@@ -230,6 +254,10 @@ function bindLive() {
         return liveCommand("new");
     });
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
+    click("live-seek", () => {
+        liveView.shownStop = null;
+        return liveCommand("seek", {target: $("live-target").value});
+    });
     $("live-rate").addEventListener("change", () => liveCommand("clock", {rate: Number($("live-rate").value)}).catch(report));
     click("open-saves", async () => {
         $("save-name").value = liveView.state?.saved_name || "";

@@ -111,6 +111,7 @@ public:
     [[nodiscard]] SurfaceSnapshot surface_snapshot() const;
     [[nodiscard]] std::vector<TrailSample> trails() const;
     [[nodiscard]] std::vector<CellVisit> visits() const;
+    [[nodiscard]] std::optional<SimTime> next_scheduled_time() const;
     [[nodiscard]] std::vector<ScheduledEvent> pending_events() const;
     [[nodiscard]] std::vector<WorldEvent> committed_events() const;
     [[nodiscard]] std::vector<WorldEvent> events_after(EventId cursor, std::size_t limit) const;
