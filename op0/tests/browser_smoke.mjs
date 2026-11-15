@@ -246,6 +246,41 @@ async function liveWorld() {
     console.log(JSON.stringify(result, null, 2));
 }
 
+async function activityWorld() {
+    await click("#open-saves");
+    await wait(() => evaluate("$('saved-colonies').textContent.includes('Worker activity test')"), "Find the activity test save");
+    await click("#saved-colonies button");
+    await wait(() => evaluate("liveView.state?.physics === 31 && !$('save-manager').open"), "Load the shorter worker timing");
+    assert.deepEqual(await evaluate("liveView.state.worker_activity_timing"), {check_ms: 900000, minimum_program_ms: 3600000});
+    assert.equal(await evaluate("liveView.state.running"), false);
+    const categories = await evaluate("[...$('live-action-list').querySelectorAll('button')].map(e => e.dataset.activity).sort()");
+    assert.deepEqual(categories, ["Brood care", "Ingest food", "Trophallaxis"]);
+    const timestamp = await evaluate("liveView.state.time_ms");
+    const labels = await evaluate(`(() => {
+        const ctx = $('map').getContext('2d'), original = ctx.fillText, labels = [];
+        try { ctx.fillText = (...args) => { labels.push(args[0]); return original.apply(ctx, args); }; drawMap(); }
+        finally { ctx.fillText = original; }
+        return labels;
+    })()`);
+    assert.ok(labels.includes("Ingest food #2"), "Draw the just-recorded queen meal at its recorded location");
+    await click('#live-action-list [data-activity="Trophallaxis"]');
+    assert.equal(await evaluate("$('event-detail').dataset.event"),
+        await evaluate("liveView.state.actions.find(e => e.kind === 'NutritionTransferred').id"));
+    assert.equal(await evaluate("liveView.state.time_ms"), timestamp);
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("$('live-action-list').textContent.includes('\u4ea4\u54fa') && $('event-detail').textContent.includes('\u4ea4\u54fa')"),
+        "Translate in-place actions and the selected fact");
+    await screenshot("m0-in-place-actions");
+    await select("colony-timing", "shorter");
+    await click("#new-colony");
+    await wait(() => evaluate("liveView.state.physics === 31 && liveView.state.running && !liveView.busy"), "Create a new shorter-timing colony");
+    assert.equal(await evaluate("liveView.state.actions.length"), 0);
+    assert.deepEqual(exceptions, []);
+    result.status = "PASS";
+    result.activity_groups = categories;
+    console.log(JSON.stringify(result, null, 2));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -271,7 +306,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (mode === "live") {
+        if (mode === "live" || mode === "activity") {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -282,6 +317,8 @@ try {
     });
     if (mode === "live") {
         await liveWorld();
+    } else if (mode === "activity") {
+        await activityWorld();
     } else if (mode === "micro") {
         await microWorld();
     } else {

@@ -225,7 +225,9 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         activate_excavator(tx,ref.id);
     } else if (behavior != IndividualBehavior::Paused && !care_motor) {
         ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
-        e.key = {after(s.m.now, p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
+        const auto timing = worker_timing(s, ant->caste);
+        const auto interval = timing ? timing->check_interval : p.config.behavior_interval;
+        e.key = {after(s.m.now, interval.milliseconds), Phase::Perception, 0, 0, 0};
         p.behavior_event = tx.insert(e); tx.physiology.set(ref.id, p);
     }
     schedule_physiology(tx, ref.id);
@@ -426,7 +428,10 @@ void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledE
     ScheduledEvent e; e.actor = action.actor; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
     const bool ongoing_contact=s.long_term && s.long_term->post_intake_contact &&
         p.behavior==IndividualBehavior::Nurse && fact.kind==FactKind::NestIngested;
-    e.key = {after(s.m.now, ongoing_contact ? 1 : p.config.behavior_interval.milliseconds), Phase::Perception, 0, 0, 0};
+    const auto timing = s.ecological && s.ecological->worker_activity_timing
+        ? worker_timing(s, s.ants.get(s.ants.index.at(action.actor)).caste) : nullptr;
+    const auto interval = timing ? timing->check_interval : p.config.behavior_interval;
+    e.key = {after(s.m.now, ongoing_contact ? 1 : interval.milliseconds), Phase::Perception, 0, 0, 0};
     p.behavior_event = tx.insert(e); tx.physiology.set(e.actor, p);
 }
 std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const {

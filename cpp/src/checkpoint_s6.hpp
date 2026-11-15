@@ -186,10 +186,12 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       ensure(s.queue_index.contains(a.wake), "missing automatic wake");
       const auto &e = s.queue.at(s.queue_index.at(a.wake));
       const bool first_adult_wake=!a.decisions && emergence.contains(id) && emergence.at(id)==e.issued_at;
+      const auto timing = worker_timing(s, ant.caste);
+      const auto interval = timing ? timing->check_interval : s.social->decision_interval;
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::AutonomyWake &&
                  e.key.phase == Phase::Reschedule &&
                  e.key.time == after(e.issued_at,
-                                     first_adult_wake || (e.payload==1 && s.long_term) ? 1 : s.social->decision_interval.milliseconds),
+                                     first_adult_wake || (e.payload==1 && s.long_term) ? 1 : interval.milliseconds),
              "wrong automatic wake schedule");
     }
   }

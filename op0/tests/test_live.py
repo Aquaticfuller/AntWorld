@@ -17,7 +17,7 @@ from op0 import DAY
 from op0.archive import prefixed
 from op0.codec import CASTES, checkpoint, decode_fact
 from op0.index import Catalog
-from op0.live import ROOT, LiveSession, NativeCore, core_path
+from op0.live import ROOT, LiveSession, NativeCore, core_path, read_live_events
 from op0.query import ReadAPI
 from op0.server import bind
 
@@ -181,6 +181,45 @@ class LiveTests(unittest.TestCase):
         with self.assertRaises((sqlite3.DatabaseError, ValueError)):
             self.live.write("load", {"name": "Broken"})
         self.assertEqual(self.live.read("status", {})["time_ms"], target)
+
+    def test_shorter_worker_timing_and_completed_actions_persist(self):
+        with self.assertRaisesRegex(ValueError, "Unknown worker timing"):
+            self.live.write("new", {"timing": "invalid"})
+        self.live.write("new", {"timing": "shorter"})
+        self.live.write("clock", {"running": False})
+        with self.live.lock:
+            saved_frame = self.live.worker.call(f"ADVANCE {46 * DAY}")
+            self.live.publish(saved_frame)
+        view = self.live.read("view", {})
+        self.assertEqual((view["schema_version"], view["physics"]), (24, 31))
+        self.assertEqual(view["worker_activity_timing"], {"check_ms": 900000, "minimum_program_ms": 3600000})
+        self.assertTrue({"NestIngested", "NutritionTransferred", "BiologicalObservation"} <=
+                        {event["kind"] for event in view["actions"]})
+        cursor = min(int(event["id"]) for event in view["actions"]) - 1
+        native = read_live_events(self.live.worker.call(f"FACTS_AFTER {cursor}"), self.live.frame)
+        first_page = {event["id"]: event for event in native}
+        for event in view["actions"]:
+            self.assertEqual(event, first_page[event["id"]])
+            self.assertIn(event["outcome"], ("Success", "Partial"))
+            if event.get("action"):
+                self.assertEqual(event["action"]["phase"], "Completed")
+            else:
+                self.assertGreater(sum(event["mass_ug"]), 0)
+        self.assertEqual(self.live.worker.call("FRAME"), saved_frame)
+
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+        self.live.write("save", {"name": "Shorter timing"})
+        expected = self.live.worker.call(f"ADVANCE {47 * DAY}")
+        self.live.write("load", {"name": "Shorter timing"})
+        self.assertEqual(self.live.worker.call("FRAME"), saved_frame)
+        self.assertEqual(self.live.read("view", {})["actions"], view["actions"])
+        self.assertEqual(self.live.worker.call(f"ADVANCE {47 * DAY}"), expected)
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+
+        catalogue = Catalog(self.folder / "replay")
+        archive = catalogue.register(self.live.saves / "Shorter timing.sqlite")
+        worlds, _, _ = catalogue.browse(archive)
+        self.assertEqual(worlds[0]["settings"]["physics"], 31)
 
     def test_loopback_origin_and_folder_control(self):
         api = ReadAPI(Catalog(self.folder / "cache"))

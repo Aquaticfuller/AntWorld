@@ -36,6 +36,8 @@
     <section id="live-controls" class="panel live-controls" aria-label="Live simulation controls" hidden>
       <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span></div>
       <div class="live-actions">
+        <label for="colony-timing" id="colony-timing-label">New colony worker timing</label>
+        <select id="colony-timing"><option value="standard">Standard worker timing</option><option value="shorter">15-minute worker checks (experimental)</option></select>
         <button id="new-colony" class="primary-button" type="button">New colony</button>
         <button id="live-pause" type="button">Pause</button>
         <label for="live-rate" class="sr-only">Simulation speed</label>
@@ -72,6 +74,10 @@
             <label id="view-controls">Drag to pan · Scroll to zoom</label>
             <div class="zoom"><button id="show-occupants" type="button">Individuals in view</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>
+          <section id="live-activity" class="in-place-activity" aria-labelledby="in-place-title" hidden>
+            <h3 id="in-place-title" data-i18n>Recent in-place actions</h3>
+            <div id="live-action-list"></div>
+          </section>
           <canvas id="map" tabindex="0" aria-label="World map. Individual positions are also available through the individual panel."></canvas>
           <div id="map-legend" class="legend"></div>
           <div class="map-readout">

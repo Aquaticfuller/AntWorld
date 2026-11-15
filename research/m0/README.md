@@ -22,7 +22,7 @@ python -B tools/build_m0_live.py
 .\tools\start_m0.cmd
 ```
 
-1. Select **New colony**. The C++ Core creates a new world on day zero with a queen in the protected shaft. The default `1×` speed advances one simulated second per elapsed second. The clock shows the day, hours, minutes and seconds. The Web page displays published Core positions and recent events.
+1. Select **New colony**. The C++ Core creates a new world on day zero with a queen in the protected shaft. The default `1×` speed advances one simulated second per elapsed second. The clock shows the day, hours, minutes and seconds. The Web page displays published Core positions and recent events. Choose **15-minute worker checks (experimental)** before starting a colony to try the shorter rhythm.
 2. Use **Pause** and **Resume** to inspect the current world. Select `60×` for a simulated minute per elapsed second or `86,400×` for up to one simulated day per elapsed second. The Core can run behind the requested speed when it has more work to process.
 3. Choose a target event and select **Fast-forward to event**. The Core runs at up to `86,400×` and pauses at the exact timestamp of the committed milestone. For the first nest exit, food delivery or excavation, the viewer follows the worker that performed the action. Select **Resume** to continue following at `1×`. **Cancel fast-forward** is available while waiting. Earlier milestones display their recorded time in the current world.
 4. Select **Save and load**, enter a name, and select **Save colony**. The list shows each save's simulated age, file size and modification time. **Load** restores the saved colony paused at the saved time. Resume to continue. Saving to an existing name asks for confirmation.
@@ -31,7 +31,7 @@ python -B tools/build_m0_live.py
 
 The live preview runs one colony and holds its state and history in memory until you save. Each named save holds one full SQLite snapshot and its committed history. While a loaded colony is open, a private working copy keeps its history accessible if you move its save file. The working copy is removed on normal shutdown. Save storage, the archive index and build output use the checkout's drive by default. The live profile is the reviewed Borisovka balanced-shaft fixture with physics 29 and seed 1. Its `ENGINEERING_ONLY` label applies during live observation as it does during archive replay.
 
-Positions hold between committed movements. An ant can handle food, care for brood or excavate without changing its body coordinates. The live fixture uses a one-hour base worker behavior interval. Its movement and inactivity budgets still require validation against black garden ant observations.
+Positions hold between committed movements. **Recent in-place actions** lists recent completed feeding, trophallaxis and brood handling. Select a record to inspect the participants, exact timestamp and any transferred material. Short-lived labels sit at the original event locations. The standard fixture uses hourly intake and exchange checks and six-hour task reviews. See [the worker timing experiment](WORKER_ACTIVITY_TIMING.md) for the paired runs and camera-data limits.
 
 ## Replay archived colonies
 

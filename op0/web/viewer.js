@@ -80,6 +80,7 @@ async function setLanguage(next, refresh = true) {
         liveVisibility(true);
         liveView.eventsKey = null;
         await refreshLive();
+        if (app.selectedFact && !$('event-detail').hidden) showEvent(app.selectedFact);
         if ($("save-manager").open) await refreshSaves();
         return;
     }
@@ -418,6 +419,7 @@ function updateState(state) {
 function eventLabel(e) {
     const labels = {AntSeeded: "Placed at initialization", AntBorn: "Egg laid", AntDied: "Death",
         FoodCollected: "Food collected", FoodDelivered: "Food delivered", NutritionTransferred: "Trophallaxis",
+        CargoIngested: "Ingest food", NestIngested: "Ingest food", FoundressWaterIngested: "Drink water",
         FoundingRation: "Maternal ration", SoilExcavated: "Soil excavated", SoilDropped: "Soil placed",
         RecruitmentObserved: "Scout cue sensed", RecruitmentActivated: "Recruitment activated"};
     if (e.kind === "StageChanged") return tr({Larva: "Hatched", Pupa: "Pupated", Adult: "Eclosed"}[e.stage] || e.stage);
@@ -518,6 +520,7 @@ async function selectAnt(id) {
     await seek(app.time, app.selectedFact);
 }
 function showEvent(e) {
+    if (app.live) app.selectedFact = e;
     const container = $("event-detail");
     const editList = [];
     for (const edit of e.geometry_edits || []) {
@@ -899,6 +902,7 @@ function drawMap() {
     const visible = state.ants.filter(a => fits(a.position_m));
     app.visible = visible;
     drawOccupants(ctx, visible, point);
+    if (app.live) drawLiveActions(ctx, point, fits);
     const shared = app.hits.filter(hit => hit.ants.length > 1);
     const largest = shared.reduce((best, item) => !best || item.ants.length > best.ants.length ? item : best, null);
     app.visibleSummary = largest;

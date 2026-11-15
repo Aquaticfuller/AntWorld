@@ -74,7 +74,9 @@ void WorldRuntime::schedule_autonomy(Transaction &tx, EntityId id, SimTime delay
   e.actor = id;
   e.kind = ScheduledEvent::Kind::AutonomyWake;
   e.issued_at = s.m.now;
-  e.key = {after(s.m.now, delay.milliseconds ? delay.milliseconds : s.social->decision_interval.milliseconds),
+  const auto timing = worker_timing(s, ant.caste);
+  const auto interval = timing ? timing->check_interval : s.social->decision_interval;
+  e.key = {after(s.m.now, delay.milliseconds ? delay.milliseconds : interval.milliseconds),
            Phase::Reschedule, 0, 0, 0};
   a.wake = tx.insert(e);
   tx.autonomy.set(id, a);
@@ -128,10 +130,12 @@ void WorldRuntime::resolve_autonomy_wakes(
     const bool can_switch = (at_depot || stationary) &&
                             !ant.carried_food.total_ug() &&
                             !s.carriers.contains(ant.id);
+    const auto timing = worker_timing(s, ant.caste);
+    const auto program_time = timing ? timing->minimum_program_time : config.minimum_program_time;
     const bool ready =
         p.behavior == IndividualBehavior::Paused ||
         s.m.now.milliseconds - a.last_program_change.milliseconds >=
-            config.minimum_program_time.milliseconds;
+            program_time.milliseconds;
     const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
                         p.hydration_ug < p.config.hydration_capacity_ug / 4;
     if (integrated_care(s) && care_owned(s,ant.id)) {

@@ -42,7 +42,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 ### Limits
 
-- The archive interface is read-only. Supported checkpoint families start at schema 8 and extend through 23. MicroWorld physics 27/28 and portable care physics 29/30 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
+- The archive interface is read-only. Supported checkpoint families start at schema 8 and extend through 24. MicroWorld physics 27–31 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
 - Event pages are bounded and share a 12-block cache. Validation streams facts. It loads native frames and sampled cuts during indexing, with a 768 MiB frame limit, 8 GiB member limit and 64 MiB limit per sample CSV. Temporary disk space is needed for a SQLite copy and its index.
 - Space uses axis-aligned slices of quantized 3D material. MicroWorld centers the default underground cut and roof inset on the nest. Large legacy cuts may show a bounded corner of the solid. The full surface grid remains visible. API callers can request another bounded window. OP0 does not reconstruct unknown trajectories or animated meshes.
 - Cross-world identities remain separate. Similar settings do not establish equality of all input fields. Physical and physiological observations describe a particular simulated world.
@@ -54,9 +54,9 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 | Endpoint under /api/v1/live | Method | Inputs and output |
 | --- | --- | --- |
 | `status` | GET | Availability, current WorldId, simulation time, rate, pause state and save status |
-| `view` | GET | A published Core cut, recent canonical facts and the requested derived terrain section. Accepts `axis`, `layer_q`, `clearance` and `group` |
+| `view` | GET | A published Core cut, recent canonical facts, the current worker timing and the requested derived terrain section. Accepts `axis`, `layer_q`, `clearance` and `group` |
 | `saves` | GET | Managed directory and save names, world identities, elapsed simulation time, file sizes and modification times |
-| `new` | POST | Creates a new world in the protected shaft fixture and starts the Core clock at `1×` |
+| `new` | POST | Creates a new world in the protected shaft fixture and starts the Core clock at `1×`. `timing` accepts `standard` or the opt-in `shorter` setting |
 | `clock` | POST | `running` and optional `rate` from 1, 10, 60, 600, 3600 and 86400. Returns the published clock after the change |
 | `seek` | POST | `target` of `egg`, `hatch`, `worker`, `exit`, `delivery` or `excavation`. Advance at up to `86,400×` until the first committed milestone. Pause resets the rate to `1×`, including on cancellation or when no living ants or work remain |
 | `save` | POST | `name` and optional `overwrite`. Publishes a finished native SQLite store with its authoritative checkpoint and history |
@@ -68,3 +68,5 @@ Live commands take a same-origin local JSON request. The browser observes publis
 The live clock checks fast-forward targets against committed facts. It completes all scheduled work at the matching timestamp before pausing. The live `fast_forward` status carries the target, result and matching fact when available. An earlier match is reported through `already` at the current clock position. The stop request is viewer state and goes away on load or when starting a new colony. Saved worlds retain their original history and checkpoint format.
 
 `exit` matches a worker's committed movement from below the configured surface plane onto it. `delivery` matches a worker depositing positive food mass in the nest. `excavation` matches a completed soil removal and includes its associated geometry edit. At a new match for these targets the browser follows the worker's published positions across the surface and underground views.
+
+The live view's `actions` retain up to 12 recent completed in-place actions. After a catch-up slice or load, collection examines the latest 4,096 canonical facts at most. The client lists the latest action from each available group and highlights the recorded positions for eight simulated seconds. Positive ingestion and transfer use the transaction facts. Other brood handling uses successful completion observations. The markers leave the underlying positions and timestamps untouched.

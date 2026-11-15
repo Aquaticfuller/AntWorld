@@ -1,6 +1,7 @@
 #include "wp6b_fixture.hpp"
 #include "antworld/storage/store.hpp"
 
+#include <algorithm>
 #include <charconv>
 #include <cstdio>
 #include <iostream>
@@ -18,7 +19,7 @@ using namespace antworld;
 using namespace antworld::wp6b;
 
 // The same protected, balanced shaft profile as the portable M0 witness.
-Case live_case(std::uint64_t id, std::uint64_t seed) {
+Case live_case(std::uint64_t id, std::uint64_t seed, std::optional<WorkerActivityTiming> timing = {}) {
     Case c{};
     c.identity = id;
     c.seed = seed;
@@ -37,6 +38,7 @@ Case live_case(std::uint64_t id, std::uint64_t seed) {
     e.distance_clock = e.floor_space = e.recruitment = e.activity_cost = true;
     e.portable_field = e.brood_space = e.portable_care_motion = true;
     e.cue_lifetime = {6 * hour_ms};
+    e.worker_activity_timing = timing;
     return c;
 }
 
@@ -80,11 +82,9 @@ void payload(std::span<const std::uint8_t> bytes) {
     message("OK", {reinterpret_cast<const char*>(bytes.data()), bytes.size()});
 }
 
-void recent(const WorldRuntime& world) {
-    constexpr std::uint64_t cap = 120;
-    const auto count = world.summary().committed_events;
+void send_events(std::span<const WorldEvent> events) {
     std::vector<std::uint8_t> bytes;
-    for (const auto& fact : world.events_after({count > cap ? count - cap : 0}, cap)) {
+    for (const auto& fact : events) {
         const auto data = encode_event(fact);
         const auto size = data.size();
         bytes.insert(bytes.end(), {static_cast<std::uint8_t>(size), static_cast<std::uint8_t>(size >> 8),
@@ -93,6 +93,46 @@ void recent(const WorldRuntime& world) {
     }
     if (bytes.empty()) message("OK");
     else payload(bytes);
+}
+
+void recent(const WorldRuntime& world) {
+    constexpr std::uint64_t cap = 120;
+    const auto count = world.summary().committed_events;
+    send_events(world.events_after({count > cap ? count - cap : 0}, cap));
+}
+
+bool in_place_action(const WorldEvent& e) {
+    if (e.outcome > Outcome::Partial) return false;
+    switch (e.kind) {
+    case FactKind::NestIngested: case FactKind::CargoIngested: case FactKind::FoundressNestMeal:
+    case FactKind::FoundressWaterIngested: case FactKind::NutritionTransferred: case FactKind::FoundingRation:
+        return e.transferred.total_ug() > 0;
+    case FactKind::BiologicalObservation:
+        if (e.observation.phase != ObservationPhase::Completed) return false;
+        switch (e.observation.act) {
+        case CareAct::InspectBrood: case CareAct::ArrangeBrood: case CareAct::CleanBrood:
+        case CareAct::PickUpBrood: case CareAct::PlaceBrood: return true;
+        default: return false;
+        }
+    default: return false;
+    }
+}
+
+void recent_actions(const WorldRuntime& world, std::uint64_t after) {
+    constexpr std::uint64_t page = 512, scan = 4096;
+    constexpr std::size_t keep = 12;
+    std::vector<WorldEvent> latest;
+    auto tip = world.summary().committed_events;
+    after = std::max(after, tip > scan ? tip - scan : 0);
+    while (tip > after && latest.size() < keep) {
+        const auto count = std::min(page, tip - after);
+        const auto events = world.events_after({tip - count}, count);
+        for (auto e = events.rbegin(); e != events.rend() && latest.size() < keep; ++e)
+            if (in_place_action(*e)) latest.push_back(*e);
+        tip -= count;
+    }
+    std::reverse(latest.begin(), latest.end());
+    send_events(latest);
 }
 
 enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Excavation };
@@ -202,12 +242,15 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v3");
+                message("OK", "antworld.m0.live.v4");
             } else if (command == "NEW") {
                 const auto id = number(request), seed = number(request);
+                std::optional<WorkerActivityTiming> timing;
+                request >> std::ws;
+                if (!request.eof()) timing = WorkerActivityTiming{read_target(request), read_target(request)};
                 end(request);
                 require(id != 0, "A live colony needs a world ID");
-                auto scene = setup(live_case(id, seed), limits);
+                auto scene = setup(live_case(id, seed, timing), limits);
                 const auto frame = scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
@@ -252,6 +295,18 @@ int main() {
                 } else if (command == "RECENT") {
                     end(request);
                     recent(*world);
+                } else if (command == "RECENT_ACTIONS") {
+                    const auto cursor = number(request);
+                    end(request);
+                    recent_actions(*world, cursor);
+                } else if (command == "FACTS_AFTER") {
+                    const auto cursor = EventId{number(request)};
+                    end(request);
+                    send_events(world->events_after(cursor, 512));
+                } else if (command == "CHECK_LEDGERS") {
+                    end(request);
+                    check_ledgers(*world);
+                    message("OK");
                 } else if (command == "SAVE") {
                     const auto path = staged_save(request);
                     end(request);

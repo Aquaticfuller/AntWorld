@@ -1,9 +1,10 @@
 "use strict";
 
-const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null, shownStop: null};
+const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null, actionsKey: null, shownStop: null};
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation"};
 const followMilestones = new Set(["exit", "delivery", "excavation"]);
+const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9"};
 const liveStopLabels = {
     seeking: "Fast-forwarding to {event}…",
     reached: "Reached {event} at {time}. Resume at 1×.",
@@ -27,7 +28,7 @@ function liveControls() {
     put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : "") + follow);
     put("live-pause", tr(seeking ? "Cancel fast-forward" : (s?.running ? "Pause" : "Resume")));
     $("live-rate").value = String(s?.rate || 1);
-    $("new-colony").disabled = liveView.busy || !s?.core_available;
+    $("colony-timing").disabled = $("new-colony").disabled = liveView.busy || !s?.core_available;
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
@@ -44,6 +45,7 @@ function liveVisibility(active) {
     app.live = active;
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
+    $("live-activity").hidden = !active;
     if (active) $("watch-delivery").hidden = true;
     put("view-source", tr(active ? "Live Core" : "Local archive"));
     put("footer-mode", tr(active ? "Live state published by the Simulation Core" : "Read-only replay of Simulation Core facts"));
@@ -66,6 +68,53 @@ function renderLiveEvents() {
     $("event-list").replaceChildren(...liveView.state.events.map(e => eventButton(e, true)));
     if (!liveView.state.events.length) $("event-list").append(node("p", tr("No matching recent events."), "muted"));
     $("more-events").hidden = true;
+}
+
+function liveActionGroup(event) {
+    if (event.kind === "NutritionTransferred") return "Trophallaxis";
+    if (event.action || event.kind === "FoundingRation") return "Brood care";
+    return "Ingest food";
+}
+
+function renderLiveActions() {
+    const actions = liveView.state.actions ?? [];
+    const key = language + ":" + actions.map(e => e.id).join(",");
+    if (liveView.actionsKey === key) return;
+    liveView.actionsKey = key;
+    const groups = new Set();
+    const latest = [];
+    for (const event of actions) {
+        const group = liveActionGroup(event);
+        if (groups.has(group)) continue;
+        groups.add(group);
+        const entry = eventButton(event, true);
+        entry.dataset.activity = group;
+        latest.push(entry);
+    }
+    $("live-action-list").replaceChildren(...(latest.length ? latest : [node("p", tr("No in-place actions recorded yet."), "muted")]));
+}
+
+function drawLiveActions(ctx, point, fits) {
+    const actions = liveView.state?.actions ?? [];
+    const cells = new Set();
+    ctx.save();
+    ctx.font = '600 11px "Cascadia Mono", "Microsoft YaHei", monospace';
+    for (const event of actions) {
+        if (app.time - event.time_ms > 8000 || !fits(event.position_m)) continue;
+        const [x, y] = point(event.position_m);
+        const cell = `${Math.floor(x / 85)},${Math.floor(y / 25)}`;
+        if (cells.has(cell)) continue;
+        cells.add(cell);
+        const group = liveActionGroup(event);
+        const label = tr(group) + " #" + event.actor;
+        const width = ctx.measureText(label).width + 12;
+        circle(ctx, x, y, 9, "transparent", liveActionColors[group]);
+        ctx.fillStyle = "#263327";
+        ctx.fillRect(x + 10, y - 23, width, 19);
+        ctx.fillStyle = liveActionColors[group];
+        ctx.fillText(label, x + 16, y - 10);
+    }
+    ctx.restore();
 }
 
 function chooseLiveAnt(id) {
@@ -103,6 +152,7 @@ async function refreshLive(alignSection = true) {
     if (liveView.epoch !== data.epoch) {
         liveView.epoch = data.epoch;
         liveView.eventsKey = null;
+        liveView.actionsKey = null;
         liveView.shownStop = null;
         app.selected = data.ants.find(a => a.caste === "Queen")?.id ?? null;
         app.follow = false;
@@ -154,10 +204,14 @@ async function refreshLive(alignSection = true) {
     const queen = p.queens_alive[0];
     updatePopulation(p, queen && {...queen, time_ms: queen.updated_ms});
     put("map-time", duration(data.time_ms));
-    put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · ENGINEERING_ONLY");
+    const timing = data.worker_activity_timing;
+    const description = timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) :
+        tr("Standard worker timing");
+    put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · " + description + " · ENGINEERING_ONLY");
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
     liveIndividual();
+    renderLiveActions();
     if (!$("event-panel").hidden) renderLiveEvents();
     drawMap();
 }
@@ -271,7 +325,7 @@ function bindLive() {
     click("live-tab", openLiveView);
     click("new-colony", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
-        return liveCommand("new");
+        return liveCommand("new", {timing: $("colony-timing").value});
     });
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => {

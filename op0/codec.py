@@ -200,7 +200,8 @@ def checkpoint(raw, *, verify_hash=True):
     ecological = magic == ECOLOGICAL
     if ecological:
         outer = r.unpack(Struct("<2I"))
-        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30)}, "Unsupported ecological checkpoint version")
+        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31)},
+                "Unsupported ecological checkpoint version")
         magic = bytes(r.take(8))
     version = r.unpack(Struct("<2I"))
     require(VERSIONS.get(magic) == version and r.unpack(U32)[0] == 1, "Unsupported checkpoint or RNG version")
@@ -235,9 +236,13 @@ def checkpoint(raw, *, verify_hash=True):
                           "cue_minimum_carbs_ug", "water_sip_ug", "cue_response_ppm", "first_ration_ppm"),
                          r.unpack(Struct("<2d4Q2I"))))
         flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28, 30)
-        if outer[0] == 23:
+        if outer[0] in (23, 24):
             flags["brood_space"] = True
-            flags["portable_care_motion"] = outer[1] in (29, 30)
+            flags["portable_care_motion"] = outer[1] in (29, 30, 31)
+        if outer == (24, 31):
+            interval, dwell = r.unpack(Struct("<2q"))
+            require(60000 <= interval <= dwell <= 21600000, "Invalid MicroWorld worker timing")
+            flags["worker_activity_timing"] = dict(check_ms=interval, minimum_program_ms=dwell)
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.

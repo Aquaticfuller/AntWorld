@@ -373,7 +373,7 @@ class ReadAPI:
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
-        elif (meta["settings"]["physics"] in (27, 28, 29, 30) or micro) and focus is not None:
+        elif (meta["settings"]["physics"] in (27, 28, 29, 30, 31) or micro) and focus is not None:
             # The 30 cm domain is much larger than the founding pocket. Start
             # with a nest-centered section; the surface retains its full extent.
             window = focused_window(geometry, focus, (u, v), 22)

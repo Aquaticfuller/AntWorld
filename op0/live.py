@@ -25,6 +25,7 @@ from .query import HOUR, integer
 ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
 MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
+NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 FRAME_LIMIT = 128 * 1024 * 1024
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
@@ -32,7 +33,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
-    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v3")
+    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v4")
     paths = (installed, ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name)
     return next((path for path in paths if path.is_file()), paths[0])
@@ -43,7 +44,7 @@ class NativeCore:
         self.process = subprocess.Popen([str(binary)], cwd=workdir, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
-            require(self.call("HELLO") == b"antworld.m0.live.v3", "Rebuild the live Core for this viewer version.")
+            require(self.call("HELLO") == b"antworld.m0.live.v4", "Rebuild the live Core for this viewer version.")
         except Exception:
             self.close()
             raise
@@ -77,7 +78,7 @@ class NativeCore:
             self.process.stdout.close()
 
 
-def read_recent(data, frame):
+def read_live_events(data, frame, *, contiguous=False):
     offset, previous = 0, None
     events = []
     expected = UUID(frame["world"]).int
@@ -88,10 +89,13 @@ def read_recent(data, frame):
         require(end <= len(data), "Truncated live event")
         identity, fact = decode_fact(data[start:end])
         require(expected == ((identity[0] << 64) | identity[1]) and fact.time <= frame["time_ms"] and
-                (previous is None or fact.id == previous + 1), "Live event does not belong to the published cut")
+                0 < fact.id <= frame["cursor"] and (previous is None or
+                (fact.id == previous + 1 if contiguous else fact.id > previous)),
+                "Live event does not belong to the published cut")
         events.append(fact.packet())
         previous, offset = fact.id, end
-    require(previous == (frame["cursor"] or None), "Live events do not reach the published cut")
+    if contiguous:
+        require(previous == (frame["cursor"] or None), "Live events do not reach the published cut")
     return events
 
 
@@ -127,7 +131,8 @@ def save_details(path):
     world, stamp, cursor, header = rows[0]
     require(type(stamp) is int and 0 <= stamp < 1 << 53 and isinstance(header, bytes) and len(header) == 24 and
             header[:16] == b"AWSTATE1AWCKPTM\0" and
-            header[16:20] == U32.pack(23) and U32.unpack_from(header, 20)[0] in (27, 28, 29, 30),
+            (U32.unpack_from(header, 16)[0], U32.unpack_from(header, 20)[0]) in
+            {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31)},
             "Expected a MicroWorld checkpoint")
     require(isinstance(world, str) and str(UUID(world)) == world and isinstance(cursor, str) and key(cursor) < 1 << 53,
             "Invalid save identity")
@@ -156,6 +161,7 @@ class LiveSession:
         self.loaded_copy = None
         self.frame = None
         self.recent = []
+        self.actions = []
         self.sections = OrderedDict()
         self.epoch = 0
         self.running = False
@@ -197,7 +203,10 @@ class LiveSession:
         # The pipe is private to this process. On-disk stores are validated by Store::load.
         frame = checkpoint(raw, verify_hash=False)
         if reset or not self.frame or self.frame["cursor"] != frame["cursor"]:
-            self.recent = read_recent(self.worker.call("RECENT"), frame)
+            cursor = self.frame["cursor"] if self.frame and not reset else 0
+            self.recent = read_live_events(self.worker.call("RECENT"), frame, contiguous=True)
+            actions = read_live_events(self.worker.call(f"RECENT_ACTIONS {cursor}"), frame)
+            self.actions = (([] if reset else self.actions) + actions)[-12:]
         self.frame = frame
 
     def reanchor(self):
@@ -319,6 +328,7 @@ class LiveSession:
             group = options.get("group", "highlights")
             require(group == "all" or group in LIVE_GROUPS, "Unknown event category")
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
+                        worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         cursor=str(frame["cursor"]), colonies=colonies, geometry=geometry, terrain=self.sections[key],
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
@@ -327,7 +337,8 @@ class LiveSession:
                                    program=label(PROGRAMS, ant.get("program")), death_cause=label(DEATHS, ant.get("death_code")))
                               for ant in frame["ants"].values()],
                         events=[e for e in reversed(self.recent) if group == "all" or e["kind"] in LIVE_GROUPS[group]][:16],
-                        motion=[e for e in self.recent if e["kind"] in ("Moved", "BroodMoved")])
+                        motion=[e for e in self.recent if e["kind"] in ("Moved", "BroodMoved")],
+                        actions=list(reversed(self.actions)))
             return data
 
     def name_path(self, name):
@@ -396,7 +407,9 @@ class LiveSession:
     def write(self, resource, data):
         with self.lock:
             if resource == "new":
-                self.install(self.core().call(f"NEW {randbits(63) or 1} 1"), running=True)
+                timing = data.get("timing", "standard")
+                require(isinstance(timing, str) and timing in NEW_COLONY_TIMINGS, "Unknown worker timing")
+                self.install(self.core().call(f"NEW {randbits(63) or 1} 1{NEW_COLONY_TIMINGS[timing]}"), running=True)
             elif resource == "load":
                 self.load(data.get("name"))
             elif resource == "folder":

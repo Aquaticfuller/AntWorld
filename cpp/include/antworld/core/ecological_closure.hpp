@@ -1,8 +1,14 @@
 #pragma once
 
 #include "antworld/core/types.hpp"
+#include <optional>
 
 namespace antworld {
+struct WorkerActivityTiming {
+    SimTime check_interval, minimum_program_time;
+    bool operator==(const WorkerActivityTiming&) const = default;
+};
+
 // Independent opt-in hypotheses. All numbers are ENGINEERING_FIXTURE.
 struct EcologicalClosureConfig {
     bool distance_clock{}, floor_space{}, recruitment{}, activity_cost{};
@@ -14,6 +20,7 @@ struct EcologicalClosureConfig {
     bool suppress_foundress_hatch_cue{}; // Physics 26. Matched founding assay only.
     bool brood_space{}; // Physics 27. Local single-layer brood placement and handling envelope.
     bool portable_care_motion{}; // Physics 29. Fixed binary64 arithmetic for timed care.
+    std::optional<WorkerActivityTiming> worker_activity_timing; // Physics 31. Worker-only review clocks.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

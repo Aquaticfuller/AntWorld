@@ -2,6 +2,7 @@
 
 #include "motion_numeric.hpp"
 #include "antworld/core/ecological_closure.hpp"
+#include "antworld/core/entities.hpp"
 #include <algorithm>
 #include <stdexcept>
 
@@ -17,6 +18,16 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         (c.suppress_foundress_hatch_cue && !c.portable_field) ||
         (c.brood_space && !c.portable_field) || (c.portable_care_motion && !c.brood_space))
         throw std::invalid_argument("invalid ecological closure ENGINEERING_FIXTURE");
+    if (const auto& timing = c.worker_activity_timing;
+        timing && (!c.portable_care_motion || c.suppress_foundress_hatch_cue ||
+                   timing->check_interval.milliseconds < 60000 ||
+                   timing->minimum_program_time < timing->check_interval ||
+                   timing->minimum_program_time.milliseconds > 6 * 3600000))
+        throw std::invalid_argument("invalid MicroWorld worker review timing ENGINEERING_FIXTURE");
+}
+inline const WorkerActivityTiming* worker_timing(const auto& s, Caste caste) {
+    return caste == Caste::Worker && s.ecological && s.ecological->worker_activity_timing
+        ? &*s.ecological->worker_activity_timing : nullptr;
 }
 inline SimTime segment_duration(const EcologicalClosureConfig& c, PositionM from, PositionM to, bool loaded) {
     const auto speed = loaded ? c.loaded_m_per_s : c.unloaded_m_per_s;
