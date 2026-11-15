@@ -117,6 +117,7 @@ struct ExcavatorState {
     std::uint32_t path_size{};
     ScheduledId wake, action;
     bool returning_empty{}; // Local nest activity. Retrace a bounded unsuccessful search.
+    PointQ last_cut; // Bounded private memory of a committed excavation.
     bool operator==(const ExcavatorState &) const = default;
 };
 } // namespace antworld

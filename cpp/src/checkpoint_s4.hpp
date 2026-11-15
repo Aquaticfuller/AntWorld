@@ -4,6 +4,7 @@
 #include "ecological_internal.hpp"
 #include "surface_internal.hpp"
 #include "state.hpp"
+#include "nest_scoring.hpp"
 #include <bit>
 #include <set>
 
@@ -102,6 +103,7 @@ template <class S> void write_geometry(Writer &w, const S &s) {
         w.put(p.wake.value);
         w.put(p.action.value);
         if (local_nest_activity(s)) w.put(p.returning_empty,1);
+        if (nest_scoring(s)>=NestScoring::Reinforcement && p.digs) write_point(w,p.last_cut);
     }
 }
 template <class S>
@@ -213,6 +215,10 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
         p.wake = {r.get()};
         p.action = {r.get()};
         if (local_nest_activity(s)) p.returning_empty=r.flag();
+        if (nest_scoring(s)>=NestScoring::Reinforcement && p.digs) {
+            p.last_cut=read_point(r);
+            ensure(contains(c.initial_solid,p.last_cut),"remembered excavation outside the bed");
+        }
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && s.excavators.emplace(id, p).second,
                "invalid excavator identity");
     }
@@ -420,8 +426,11 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                     ledger.remaining_q3 -= amount;
                     ledger.carried_q3 = add(ledger.carried_q3, amount);
                     ledger.excavated_q3 = add(ledger.excavated_q3, amount);
-                    if (excavators.contains(e.actor) && excavators.at(e.actor).enabled)
-                        ++excavators.at(e.actor).digs;
+                    if (excavators.contains(e.actor) && excavators.at(e.actor).enabled) {
+                        auto& worker=excavators.at(e.actor);
+                        ++worker.digs;
+                        if (nest_scoring(s)>=NestScoring::Reinforcement) worker.last_cut=patch_center(request.box);
+                    }
                 } else {
                     ensure(carriers.contains(e.actor) && carriers.at(e.actor) == request.parcel,
                            "fill lacks physical soil carrier");

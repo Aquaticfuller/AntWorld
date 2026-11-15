@@ -230,6 +230,9 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
                 index_position(tx,ant.id,ant.position,e.destination);
                 tx.touch_ant(i); ant.position = e.destination; bump(ant.position_revision); s.ants.set(i, ant);
                 f.kind = FactKind::Moved; f.position = ant.position;
+                record_worker_move(tx,f,before.position,e.issued_at,
+                    (s.foragers.contains(e.actor) && s.foragers.at(e.actor).enabled) ||
+                    (s.excavators.contains(e.actor) && s.excavators.at(e.actor).enabled));
             }
         } else if (e.kind == ScheduledEvent::Kind::CollectFood) {
             const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];

@@ -1,5 +1,7 @@
 #include "wp6b_fixture.hpp"
 #include "r0_diagnostic_history.hpp"
+#include "r0r1_fixture.hpp"
+#include "process_memory.hpp"
 #include "antworld/storage/store.hpp"
 
 #include <algorithm>
@@ -245,25 +247,41 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v4");
-            } else if (command == "NEW" || command == "NEW_NEST" || command == "NEW_R0_ASSAY") {
+                message("OK", "antworld.m0.live.v5");
+            } else if (command=="NEW_R1_DIG") {
+                const auto id=number(request), seed=number(request), group=number(request), mode=number(request);
+                const auto shield=number(request);
+                end(request);
+                require(id && group>=1 && group<=300 && mode<=3 && shield<=1,"invalid R0-r1 digging fixture");
+                auto case_limits=limits;
+                case_limits.committed_events=20'000'000;
+                auto scene=r0r1::digging(id,seed,static_cast<unsigned>(group),static_cast<NestScoring>(mode),case_limits,shield!=0);
+                auto frame=scene.world.checkpoint_frame();
+                world.emplace(std::move(scene.world));
+                search.reset(); r0_history.reset(); r0_assay=true;
+                payload(frame);
+            } else if (command == "NEW" || command == "NEW_NEST" || command=="NEW_MOTOR" || command == "NEW_R0_ASSAY") {
                 const auto id = number(request), seed = number(request);
                 auto c = live_case(id,seed);
                 if (command == "NEW_R0_ASSAY") {
                     const auto physics=number(request);
                     const auto supply=word(request), layout=word(request);
-                    require(physics==29 || physics==32,"invalid R0 trial physics");
+                    require(physics==29 || physics==32 || physics==33,"invalid R0 trial physics");
                     require(layout=="shaft" || layout=="dogleg","invalid R0 trial geometry");
                     require(supply=="continued" || supply=="limited" || supply=="water-restricted" ||
                             supply=="seasonal" || supply=="blocked","invalid R0 trial supply");
-                    c.ecological->local_nest_activity=physics==32;
+                    c.ecological->local_nest_activity=physics>=32;
+                    if (physics==33) c.ecological->nest_dynamics=NestDynamics{true};
                     c.dogleg=layout=="dogleg";
                     c.release_days=supply=="limited" || supply=="blocked" ? 120U : 730U;
                     if (supply=="water-restricted") c.food.water_ug/=4;
                     if (supply=="seasonal") c.seasonal_supply=true;
                     if (supply=="blocked") c.arm="blocked";
+                    request >> std::ws;
+                    if (!request.eof()) c.ecological->worker_activity_timing=WorkerActivityTiming{read_target(request),read_target(request)};
                 } else {
-                    c.ecological->local_nest_activity=command=="NEW_NEST";
+                    c.ecological->local_nest_activity=command!="NEW";
+                    if (command=="NEW_MOTOR") c.ecological->nest_dynamics=NestDynamics{true,NestScoring::SpatialDemand};
                     request >> std::ws;
                     if (!request.eof()) c.ecological->worker_activity_timing=WorkerActivityTiming{read_target(request),read_target(request)};
                 }
@@ -296,14 +314,15 @@ int main() {
                 payload(frame);
             } else {
                 require(world.has_value(), "Create or load a colony first");
-                if (command == "ADVANCE") {
+                if (command == "ADVANCE" || command=="ADVANCE_STEP") {
                     const auto target = read_target(request);
                     end(request);
                     world->advance_to(target);
                     if (r0_assay && world->unpublished_history()>=65'536)
                         r0_history=r0::DiagnosticHistory::publish(*world,r0_history);
                     search.reset();
-                    payload(world->checkpoint_frame());
+                    if (command=="ADVANCE") payload(world->checkpoint_frame());
+                    else message("OK");
                 } else if (command == "FIND_MILESTONE") {
                     const auto milestone = read_milestone(request);
                     end(request);
@@ -319,6 +338,28 @@ int main() {
                 } else if (command == "FRAME") {
                     end(request);
                     payload(world->checkpoint_frame());
+                } else if (command=="INITIAL") {
+                    end(request);
+                    require(world->summary().now==SimTime{},"Initial frame is available only at time zero");
+                    payload(world->checkpoint());
+                } else if (command=="WORKER_MOTION") {
+                    end(request);
+                    std::ostringstream data;
+                    data.precision(17);
+                    const auto id=world->summary().world;
+                    for (const auto& ant:world->ant_states()) {
+                        const AntRef who{id,ant.id};
+                        if (const auto move=world->query_worker_motion(who))
+                            data << ant.id.value << ' ' << move->begins.milliseconds << ' ' << move->translates.milliseconds << ' '
+                                 << move->ends.milliseconds << ' ' << unsigned(move->facing) << ' ' << unsigned(move->target_facing)
+                                 << ' ' << move->from.x << ' ' << move->from.y << ' ' << move->from.z
+                                 << ' ' << move->to.x << ' ' << move->to.y << ' ' << move->to.z << '\n';
+                    }
+                    message("OK",data.str());
+                } else if (command=="MEMORY") {
+                    end(request);
+                    const auto [current,peak]=performance::memory();
+                    message("OK",std::to_string(current)+' '+std::to_string(peak)+' '+std::to_string(world->resident_history_bytes()));
                 } else if (command == "RECENT") {
                     end(request);
                     recent(*world);

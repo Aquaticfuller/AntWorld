@@ -71,6 +71,7 @@ public:
     [[nodiscard]] ContactWork contact_work() const;
     void set_autonomy(AntRef, bool enabled = true);
     [[nodiscard]] std::optional<AutonomyState> query_autonomy(AntRef) const;
+    [[nodiscard]] std::optional<WorkerMotion> query_worker_motion(AntRef) const;
     ScheduledId submit_nutrition(const NutritionProposal&);
     [[nodiscard]] std::optional<PhysiologyState> query_physiology(AntRef) const;
     [[nodiscard]] NutritionSnapshot nutrition_snapshot() const;
@@ -163,7 +164,10 @@ private:
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
-    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId);
+    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition);
+    [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
+    [[nodiscard]] std::optional<PositionM> worker_depot_step(const AntState&) const;
+    void record_worker_move(Transaction&, WorldEvent&, PositionM from, SimTime began, bool autonomous);
     void inspect_decision(const ScheduledEvent&, const ContactSample&, std::uint64_t context,
                           std::uint64_t choice, EntityId recipient = {}) const;
     void resolve_soil_action(Transaction&, const ScheduledEvent&, WorldEvent&);

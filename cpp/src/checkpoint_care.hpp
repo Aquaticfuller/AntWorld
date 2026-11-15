@@ -2,6 +2,7 @@
 #include "care_internal.hpp"
 #include "checkpoint_codec.hpp"
 #include "ecological_internal.hpp"
+#include "worker_motion.hpp"
 
 namespace antworld::detail {
 inline constexpr std::array care_times{&SpeciesCareProfile::decision_interval,&SpeciesCareProfile::bout_duration,
@@ -71,7 +72,8 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && c.profile.context<=CareContext::Worker &&
             (c.act<=CareAct::CloseWorkerContact || (retrieval && c.act==CareAct::RevisitBroodSite) ||
              (motion && c.act>=CareAct::PickUpBrood && c.act<=CareAct::ReturnToCareShelter) ||
-             (motion && local_nest_activity(s) && c.act==CareAct::NestReposition &&
+             (motion && ((local_nest_activity(s) && c.act==CareAct::NestReposition) ||
+                         (worker_motor(s) && c.act==CareAct::DepotApproach)) &&
               c.profile.context==CareContext::Worker && !c.target.value)) &&
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");
@@ -121,7 +123,9 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
                 const bool handling=handles_brood(c.act) || c.act==CareAct::CloseWorkerContact;
                 ensure(!handling || c.target.value,"care handling has no target");
                 const auto from=c.act==CareAct::ArrangeBrood?s.ants.get(s.ants.index.at(c.target)).position:a.position;
-                const auto duration=care_duration(profile,s.config,a.caste,c.act,from,c.destination,portable_care(s));
+                auto duration=care_duration(profile,s.config,a.caste,c.act,from,c.destination,portable_care(s));
+                if (a.caste==Caste::Worker && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
+                    duration=with_worker_turn(s,id,from,c.destination,duration);
                 ensure(e.key.time==after(c.began_at,duration.milliseconds),"care bout duration differs from profile");
                 if (handling && !c.carrying_brood)
                     ensure(s.care_locks.emplace(c.target,id).second,"duplicate care reservation");
@@ -184,8 +188,9 @@ template<class S> void validate_care_evidence(const S& s) {
               (s.care_environment.neutral_displacement_assay && foreign_assay_act(o.act,o.phase))))),"invalid observation fields");
         ensure(o.act!=CareAct::RevisitBroodSite || (s.care_profile->local_retrieval && !o.target.value),"revisit observation outside retrieval contract");
         ensure(o.act<CareAct::PickUpBrood || s.care_profile->motion.has_value(),"motion observation outside its contract");
-        if (o.act==CareAct::NestReposition)
-            ensure(local_nest_activity(s) && !o.target.value && e.stage==LifeStage::Adult &&
+        if (o.act==CareAct::NestReposition || o.act==CareAct::DepotApproach)
+            ensure(local_nest_activity(s) && (o.act==CareAct::NestReposition || worker_motor(s)) &&
+                   !o.target.value && e.stage==LifeStage::Adult &&
                    s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
                    "rest relocation outside the local nest activity contract");
         if (o.phase==ObservationPhase::Selected && audit.contains(e.actor) && audit.at(e.actor).enabled) {
@@ -213,7 +218,8 @@ template<class S> void validate_care_evidence(const S& s) {
             if (o.duration_known) {
                 ensure(starts.contains(o.bout) && owners.at(o.bout)==e.actor && starts.at(o.bout).act==o.act &&
                     starts.at(o.bout).target==o.target && starts.at(o.bout).began_at==o.began_at,"end without matching start");
-                if (o.act==CareAct::NestReposition && o.phase==ObservationPhase::Completed) {
+                if ((o.act==CareAct::NestReposition || o.act==CareAct::DepotApproach) &&
+                    o.phase==ObservationPhase::Completed) {
                     ensure(e.id.value>1,"rest relocation lacks a preceding motion fact");
                     const auto moved=s.journal.at(static_cast<std::size_t>(e.id.value-2));
                     ensure(moved.kind==FactKind::Moved && moved.actor==e.actor && moved.source==e.source && moved.time==e.time &&

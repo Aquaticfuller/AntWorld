@@ -20,6 +20,10 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         throw std::invalid_argument("invalid ecological closure ENGINEERING_FIXTURE");
     if (c.local_nest_activity && (!c.portable_care_motion || c.suppress_foundress_hatch_cue || !c.activity_cost || !c.floor_space))
         throw std::invalid_argument("local nest activity requires the portable active MicroWorld profile");
+    if (c.nest_dynamics && (!c.local_nest_activity || !c.distance_clock ||
+        c.nest_dynamics->excavation > NestScoring::SpatialDemand ||
+        (!c.nest_dynamics->worker_motor && c.nest_dynamics->excavation == NestScoring::Original)))
+        throw std::invalid_argument("nest dynamics requires the physical R0 treatment and an explicit mechanism");
     if (const auto& timing = c.worker_activity_timing;
         timing && (!c.portable_care_motion || c.suppress_foundress_hatch_cue ||
                    timing->check_interval.milliseconds < 60000 ||
@@ -29,6 +33,12 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
 }
 inline bool local_nest_activity(const auto& s) {
     return s.ecological && s.ecological->local_nest_activity;
+}
+inline bool worker_motor(const auto& s) {
+    return s.ecological && s.ecological->nest_dynamics && s.ecological->nest_dynamics->worker_motor;
+}
+inline NestScoring nest_scoring(const auto& s) {
+    return s.ecological && s.ecological->nest_dynamics ? s.ecological->nest_dynamics->excavation : NestScoring::Original;
 }
 inline const WorkerActivityTiming* worker_timing(const auto& s, Caste caste) {
     return caste == Caste::Worker && s.ecological && s.ecological->worker_activity_timing

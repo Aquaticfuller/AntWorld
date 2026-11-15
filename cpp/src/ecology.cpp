@@ -109,6 +109,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EventId cue;
     bool recruited{};
     std::optional<PositionM> resting_site;
+    CareAct transit{CareAct::NestReposition};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -146,7 +147,13 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.care=can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (bounded_brood_space(s) && can_switch && !at_depot && stationary && p.mother.value &&
+    } else if (worker_motor(s) && !a.decisions && p.mother.value &&
+               p.behavior==IndividualBehavior::Paused && !at_depot &&
+               (choice.resting_site=worker_depot_step(ant))) {
+      // Emergence schedules a direct review, before any return notification.
+      choice.transit=CareAct::DepotApproach;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (!worker_motor(s) && bounded_brood_space(s) && can_switch && !at_depot && stationary && p.mother.value &&
                (!local_nest_activity(s) || ready || urgent) &&
                within_contact(ant.position,colony.nest_position,s.config) &&
                clear_care_segment(ant.position,colony.nest_position,body_half(ant.id))) {
@@ -173,6 +180,8 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
         }
       }
+      if (worker_motor(s) && at_depot && !urgent && choice.behavior==IndividualBehavior::Rest)
+        choice.resting_site=local_resting_site(ant);
       inspect_decision(wake,local,1,static_cast<std::uint64_t>(choice.behavior));
     } else if (can_switch && ready) {
       const auto sample = sample_contacts(
@@ -243,6 +252,8 @@ void WorldRuntime::resolve_autonomy_wakes(
               break; // Rock occludes soil behind it.
           }
       }
+      if (!soil && at_depot && nest_scoring(s)!=NestScoring::Original && s.excavators.contains(ant.id))
+        soil=s.excavators.at(ant.id).digs!=0;
       if (s.long_term && s.long_term->demand_feedback) {
         const auto self=signaled_need(p,ant.stage);
         forage=forage && (unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
@@ -310,7 +321,15 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
         }
       }
-      if (at_depot && !urgent && choice.behavior==IndividualBehavior::Rest)
+      if (worker_motor(s) && !at_depot && !choice.care && stationary &&
+          ((urgent && !nest_contact) || (!urgent && unmet && config.forage_weight &&
+            s.surface && (p.crop.total_ug()<p.config.crop_capacity_ug/2 ||
+                          choice.behavior==IndividualBehavior::Rest)))) {
+        choice.resting_site=worker_depot_step(ant);
+        if (choice.resting_site) choice.transit=CareAct::DepotApproach;
+      }
+      if (!choice.resting_site && (at_depot || worker_motor(s)) && !urgent &&
+          choice.behavior==IndividualBehavior::Rest)
         choice.resting_site=local_resting_site(ant);
       inspect_decision(wake, sample, 1, static_cast<std::uint64_t>(choice.behavior));
     } else {
@@ -345,7 +364,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (choice.care)
       start_autonomous_care(tx,{s.world,id},choice.event.id);
     else if (choice.resting_site)
-      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id);
+      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit);
     else if (choice.behavior != s.physiology.at(id).behavior)
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
     const auto &sample = choice.sample;

@@ -9,6 +9,14 @@ struct WorkerActivityTiming {
     bool operator==(const WorkerActivityTiming&) const = default;
 };
 
+enum class NestScoring : std::uint8_t { Original, Hex, Reinforcement, SpatialDemand };
+
+struct NestDynamics {
+    bool worker_motor{};
+    NestScoring excavation{NestScoring::Original};
+    bool operator==(const NestDynamics&) const = default;
+};
+
 // Independent opt-in hypotheses. All numbers are ENGINEERING_FIXTURE.
 struct EcologicalClosureConfig {
     bool distance_clock{}, floor_space{}, recruitment{}, activity_cost{};
@@ -22,6 +30,7 @@ struct EcologicalClosureConfig {
     bool portable_care_motion{}; // Physics 29. Fixed binary64 arithmetic for timed care.
     std::optional<WorkerActivityTiming> worker_activity_timing; // Physics 31. Worker-only review clocks.
     bool local_nest_activity{}; // Physics 32. Paid rest relocation and local floor demand.
+    std::optional<NestDynamics> nest_dynamics; // Physics 33. Independent motor and dig scoring.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

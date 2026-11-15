@@ -2,6 +2,7 @@
 #include "checkpoint_codec.hpp"
 #include "social_internal.hpp"
 #include "founding_internal.hpp"
+#include "worker_motion.hpp"
 
 namespace antworld::detail {
 template <class S> void write_social(Writer &w, const S &s) {
@@ -34,6 +35,7 @@ template <class S> void write_social(Writer &w, const S &s) {
       w.time(p.enrolled_at);
       w.time(p.last_program_change);
       w.put(p.wake.value);
+      if (worker_motor(s)) w.put(p.facing,1);
     }
   }
 }
@@ -56,16 +58,17 @@ template <class S> void read_social(Reader &r, S &s,bool care_motion) {
     ensure(s.long_term || (c->decision_interval.milliseconds<=60000 && c->minimum_program_time.milliseconds<=3600000),"legacy social interval exceeds its contract");
     s.social = std::move(c);
     s.m.contact_work = {r.get(), r.get(), r.get(), r.get(), r.get()};
-    const auto count = r.count(s.ants.size(), 41);
+    const auto count = r.count(s.ants.size(), worker_motor(s)?42:41);
     for (std::size_t i = 0; i < count; ++i) {
       const EntityId id{r.get()};
       AutonomyState a{r.flag(), r.get(), r.time(), r.time(), {r.get()}};
+      if (worker_motor(s)) a.facing=static_cast<std::uint8_t>(r.get(1));
       ensure(s.ants.index.contains(id) && s.physiology.contains(id) &&
                  (s.ants.get(s.ants.index.at(id)).caste == Caste::Worker ||
                   (care_motion && s.ants.get(s.ants.index.at(id)).caste == Caste::Queen)) &&
                  a.enrolled_at <= s.m.now &&
                  a.last_program_change >= a.enrolled_at &&
-                 a.last_program_change <= s.m.now &&
+                 a.last_program_change <= s.m.now && a.facing<=facing_down &&
                  s.autonomy.emplace(id, a).second,
              "invalid autonomy identity/state");
     }
@@ -122,12 +125,25 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   std::optional<WorldEvent> last_r0_rest_source;
   for (const auto &e : s.journal) {
     if (local_nest_activity(s) && (e.kind==FactKind::ExcavationDecision ||
-        (e.kind==FactKind::BiologicalObservation && e.observation.act==CareAct::NestReposition &&
+        (e.kind==FactKind::BiologicalObservation && (e.observation.act==CareAct::NestReposition || worker_motor(s)) &&
          e.observation.phase>=ObservationPhase::Completed))) last_r0_rest_source=e;
     if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
       stages[e.actor] = e.stage;
       positions[e.actor] = e.position;
     }
+    if (e.kind==FactKind::Moved && worker_motor(s) && audit.contains(e.actor) &&
+        s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && positions.at(e.actor)!=e.position) {
+      auto& a=audit.at(e.actor);
+      const auto facing=movement_facing(positions.at(e.actor),e.position);
+      if (e.random_value) {
+        const auto duration=e.random_value>>32;
+        const auto turn=turn_ms(a.facing,facing);
+        ensure(static_cast<std::uint32_t>(e.random_value)==static_cast<std::uint32_t>(turn) &&
+               duration>static_cast<std::uint64_t>(turn) &&
+               duration<=static_cast<std::uint64_t>(e.time.milliseconds),"invalid worker motion clock");
+      }
+      a.facing=facing;
+    } else if (e.kind==FactKind::Moved) ensure(!e.random_value,"motion evidence outside a worker motor segment");
     if (e.kind == FactKind::Moved || e.kind==FactKind::BroodMoved)
       positions[e.actor] = e.position;
     if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)

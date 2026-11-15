@@ -2,6 +2,7 @@
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
 #include "ecological_internal.hpp"
+#include "worker_motion.hpp"
 #include <algorithm>
 
 namespace antworld {
@@ -205,7 +206,8 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         const auto physical_clock = s.ecological && s.ecological->distance_clock;
         auto duration=r.connector_clock && !physical_clock?s.geometry->config.move_duration:config.step_duration;
         if (physical_clock && r.decision.action==ActionKind::Move)
-            duration=segment_duration(*s.ecological,ant.position,r.destination,ant.carried_food.total_ug()!=0);
+            duration=with_worker_turn(s,ant.id,ant.position,r.destination,
+                segment_duration(*s.ecological,ant.position,r.destination,ant.carried_food.total_ug()!=0));
         else if (s.config.continuous_spatial_motion && r.decision.action==ActionKind::Move) {
             const auto travel_ms=std::ceil(1000*distance(ant.position,r.destination)/s.config.max_speed_m_per_s);
             if (!std::isfinite(travel_ms) || travel_ms>=static_cast<double>(INT64_MAX))

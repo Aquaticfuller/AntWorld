@@ -28,7 +28,8 @@ function liveControls() {
     put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : "") + follow);
     put("live-pause", tr(seeking ? "Cancel fast-forward" : (s?.running ? "Pause" : "Resume")));
     $("live-rate").value = String(s?.rate || 1);
-    $("colony-timing").disabled = $("nest-activity").disabled = $("new-colony").disabled = liveView.busy || !s?.core_available;
+    $("colony-timing").disabled = $("nest-activity").disabled = $("nest-dynamics").disabled =
+        $("new-colony").disabled = liveView.busy || !s?.core_available;
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
@@ -325,7 +326,8 @@ function bindLive() {
     click("live-tab", openLiveView);
     click("new-colony", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
-        return liveCommand("new", {timing: $("colony-timing").value, local_nest_activity: $("nest-activity").checked});
+        return liveCommand("new", {timing: $("colony-timing").value, local_nest_activity: $("nest-activity").checked,
+            nest_dynamics: $("nest-dynamics").checked});
     });
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => {

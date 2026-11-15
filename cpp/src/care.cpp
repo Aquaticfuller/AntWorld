@@ -4,6 +4,8 @@
 #include "behavior_rng.hpp"
 #include "founding_internal.hpp"
 #include "ecological_internal.hpp"
+#include "worker_motion.hpp"
+#include <tuple>
 
 namespace antworld {
 using namespace detail;
@@ -63,6 +65,7 @@ PositionM WorldRuntime::care_destination(const CareState& care,const AntState& a
 }
 bool WorldRuntime::clear_resting_site(const AntState& ant,PositionM site) const {
     const auto& s=*state_;
+    if (worker_motor(s)) return clear_worker_site(ant,site);
     const auto& g=s.geometry->config;
     const auto nest=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     const auto half=body_half(ant.id);
@@ -92,6 +95,26 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
         return other.stage==LifeStage::Adult && adult_overlap(ant.position,other.position,width);
     });
     if (!crowded) return {};
+    if (worker_motor(s)) {
+        const auto reach=s.care_profile->perception_radius_m;
+        const auto pitch=std::max(span,1);
+        const auto count=std::min(12,static_cast<int>(reach/(pitch*g.quantum_m)));
+        std::vector<PositionM> sites(0);
+        for (int dx=-count;dx<=count;++dx) for (int dz=-count;dz<=count;++dz) {
+            if (!dx && !dz) continue;
+            const auto site=physical({origin->x+pitch*dx,origin->y,origin->z+pitch*dz},g);
+            if (portable_care_distance(ant.position,site)<=reach) sites.push_back(site);
+        }
+        auto rank=[&](PositionM site) {
+            const auto facing=movement_facing(ant.position,site);
+            return std::tuple{portable_care_distance(ant.position,site),turn_ms(actor_facing(s,ant.id),facing),
+                              (ant.id.value+facing)%8,site.x,site.z};
+        };
+        std::sort(sites.begin(),sites.end(),[&](auto a,auto b) { return rank(a)<rank(b); });
+        for (const auto site:sites)
+            if (clear_worker_site(ant,site)) return site;
+        return {};
+    }
     constexpr std::array<Cell,8> bearings{{{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,1},{-1,-1},{1,-1}}};
     // Individual tie breaks keep the same preferred bearings across a save.
     for (std::size_t i=0;i<bearings.size();++i) {
@@ -101,7 +124,7 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
     }
     return {};
 }
-void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source) {
+void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act) {
     auto& s=*state_;
     const AntRef ref{s.world,ant.id};
     change_behavior(tx,ref,IndividualBehavior::Rest,source,true);
@@ -112,7 +135,7 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
         care.familiar_shelter=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
         care.enrolled_at=s.m.now;
     }
-    care.enabled=true; care.act=CareAct::NestReposition; care.destination=site;
+    care.enabled=true; care.act=act; care.destination=site;
     ScheduledEvent e; e.actor=ant.id; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
     e.key={after(s.m.now,1),Phase::Resolution,0,0,0}; care.pending=tx.insert(e); care.bout=care.pending;
     tx.care.set(ant.id,care);
@@ -186,7 +209,7 @@ bool WorldRuntime::local_care_available(AntRef ref) const {
     if (!integrated_care(s) || care_owned(s,ref.id)) return false;
     const auto a=*query_ant(ref);
     const auto nest=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
-    if (a.position!=nest) {
+    if (a.position!=nest && (!worker_motor(s) || a.caste!=Caste::Worker)) {
         // Only a remembered shelter can resume a failed return, one valid step at a time.
         if (!s.care.contains(a.id)) return false;
         const auto shelter=s.care.at(a.id).familiar_shelter;
@@ -217,7 +240,7 @@ void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId 
     }
     if (a.caste==Caste::Worker) change_behavior(tx,ref,IndividualBehavior::Nurse,source,true);
     care.enabled=true;
-    care.returning=a.position!=care.familiar_shelter;
+    care.returning=a.position!=care.familiar_shelter && (!worker_motor(s) || a.caste!=Caste::Worker);
     tx.care.set(a.id,care);
     schedule_care(tx,a.id,after(s.m.now,1),hatch_target);
     WorldEvent f; f.kind=FactKind::CareProgramChanged; f.actor=a.id; f.colony=a.colony;
@@ -552,6 +575,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
             (c.act==CareAct::NestReposition && !clear_resting_site(a,c.destination)) ||
+            (c.act==CareAct::DepotApproach && !clear_worker_site(a,c.destination,true)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
             ((timed || (cfg.local_retrieval && c.act==CareAct::TransportBrood)) && c.destination==from))
             outcome=Outcome::Blocked;
@@ -559,7 +583,9 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (event.kind==ScheduledEvent::Kind::CareBegin && outcome==Outcome::Success) {
         if (handling) tx.care_locks.set(c.target,a.id);
         c.active=true; c.began_at=s.m.now;
-        const auto duration=care_duration(cfg,s.config,a.caste,c.act,from,c.destination,portable_care(s));
+        auto duration=care_duration(cfg,s.config,a.caste,c.act,from,c.destination,portable_care(s));
+        if (a.caste==Caste::Worker && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
+            duration=with_worker_turn(s,a.id,from,c.destination,duration);
         ScheduledEvent e; e.actor=a.id; e.kind=ScheduledEvent::Kind::CareEnd; e.issued_at=s.m.now;
         e.key={after(s.m.now,duration.milliseconds),Phase::Resolution,0,0,0}; c.pending=tx.insert(e);
         tx.care.set(a.id,c); auto p=s.physiology.at(a.id); p.behavior_event=c.pending; tx.physiology.set(a.id,p);
@@ -579,7 +605,9 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             index_position(tx,id,ant.position,destination); tx.touch_ant(i);
             ant.position=destination; bump(ant.position_revision); s.ants.set(i,ant);
             WorldEvent f; f.kind=carried?FactKind::BroodMoved:FactKind::Moved; f.actor=id; f.source=event.id;
-            f.colony=ant.colony; f.stage=ant.stage; f.position=destination; f.payload=carried?a.id.value:0; tx.fact(f);
+            f.colony=ant.colony; f.stage=ant.stage; f.position=destination; f.payload=carried?a.id.value:0;
+            if (!carried) record_worker_move(tx,f,a.position,c.began_at,true);
+            tx.fact(f);
         };
         if (care_motion(c.act) && c.act!=CareAct::ArrangeBrood) {
             if (c.act==CareAct::TransportBrood) {
@@ -637,7 +665,22 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         ended.returning!=c.returning || ended.search_remaining!=c.search_remaining) tx.care.set(a.id,ended);
     observe(tx,a.id,event.id,{event.kind==ScheduledEvent::Kind::CareEnd && outcome<=Outcome::Partial?ObservationPhase::Completed:ObservationPhase::Interrupted,
         c.act,c.target,c.bout,c.active?c.began_at:s.m.now,c.active},amount,outcome);
-    if (c.act==CareAct::NestReposition) {
+    const bool local_work=worker_motor(s) && integrated && a.caste==Caste::Worker && !ended.carrying_brood &&
+        (failed || c.act==CareAct::PlaceBrood || c.act==CareAct::InspectBrood ||
+         c.act==CareAct::ArrangeBrood || c.act==CareAct::CleanBrood || c.act==CareAct::FeedBrood);
+    if (c.act==CareAct::DepotApproach) {
+        interrupt_care(tx,a.id,outcome,true);
+        // Reassess upon contact. A failed trip waits for the regular decision.
+        if (!failed && s.autonomy.at(a.id).enabled) {
+            auto autonomy=s.autonomy.at(a.id);
+            if (s.queue_index.contains(autonomy.wake)) tx.remove(s.queue_index.at(autonomy.wake));
+            autonomy.wake={};
+            tx.autonomy.set(a.id,autonomy);
+            schedule_autonomy(tx,a.id,{1});
+        }
+        return;
+    }
+    if (c.act==CareAct::NestReposition || local_work) {
         interrupt_care(tx,a.id,outcome,true);
         change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
         return;

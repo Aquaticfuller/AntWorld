@@ -218,7 +218,12 @@ function configure(meta, referenceKey = null) {
     $("action-replays").hidden = !available.length;
     $("action-replays").replaceChildren(...available.map(m => button(replays[m.label], () => watchAction(m).catch(report))));
     setOptions($("reference"), app.catalog.filter(e => e.key !== $("archive").value));
-    const referenceTitle = meta.title.startsWith("R0 · ") ? (meta.settings.physics === 32 ?
+    const referenceTitle = meta.title.startsWith("R0-r1 · ") ?
+        (meta.title.includes(" · motor") ? meta.title.replace(" · motor", " · reference") :
+         meta.title.includes(" · reference") ? meta.title.replace(" · reference", " · motor") :
+         meta.title.includes(" · dig score") ? meta.title.replace(" · dig score", " · random boundary") :
+         meta.title.replace(" · random boundary", " · dig score")) :
+        meta.title.startsWith("R0 · ") ? (meta.settings.physics === 32 ?
         meta.title.replace("local nest activity", "matched reference") : meta.title.replace("matched reference", "local nest activity")) :
         meta.scenario?.startsWith("micro-m0-") ? "MicroWorld · reference placement" : "Before the feeding correction";
     const prior = app.catalog.find(e => e.title === referenceTitle && e.key !== $("archive").value);
@@ -261,7 +266,7 @@ async function openArchive(key, preferred) {
     app.layer = null;
     app.map = {zoom: 1, x: 0, y: 0};
     $("replay-mode").value = meta.scenario?.startsWith("micro-m0-") ? "scenes" : "overview";
-    setSection(meta.settings.geometry && meta.initial_queens.length ? "slice" : "surface");
+    setSection(meta.settings.geometry && (meta.initial_queens.length || meta.scenario?.startsWith("r0r1-dig")) ? "slice" : "surface");
     $("axis").value = meta.scenario?.startsWith("micro-m0-") ? "y" : "z";
     if (app.section === "slice" && $("axis").value === "y" && meta.colonies.length) preferView(meta.colonies[0].position_m);
     $("ant-id").value = app.selected || "";
@@ -907,6 +912,17 @@ function drawMap() {
     app.visible = visible;
     drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point);
     if (segment) drawRestSegment(ctx, point, fits, segment);
+    const plan = app.live && visible.find(a => a.id === app.selected)?.motion_plan;
+    if (plan && fits(plan.from_m) && fits(plan.to_m)) {
+        ctx.save();
+        ctx.strokeStyle = "#e4c791";
+        ctx.setLineDash([3,4]);
+        ctx.beginPath();
+        ctx.moveTo(...point(plan.from_m));
+        ctx.lineTo(...point(plan.to_m));
+        ctx.stroke();
+        ctx.restore();
+    }
     if (app.live) drawLiveActions(ctx, point, fits);
     const shared = app.hits.filter(hit => hit.ants.length > 1);
     const largest = shared.reduce((best, item) => !best || item.ants.length > best.ants.length ? item : best, null);
@@ -928,6 +944,7 @@ function drawMap() {
     else if (!app.live && motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     if (segment) notes.push(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
+    if (plan) notes.push(tr("Selected worker · open Core segment · {percent}% through translation", {percent: Math.round(100*plan.progress)}));
     put("map-detail", notes.join(" "));
     renderLocation();
     if (app.selectedFact && fits(app.selectedFact.position_m)) {
@@ -1045,7 +1062,7 @@ async function loadReference(preferred) {
 }
 async function updateComparison() {
     const version = ++app.compareVersion;
-    const nest = [app.meta, app.reference].some(m => (m.settings?.physics || m.physics) === 32) ? "1" : "0";
+    const nest = [app.meta, app.reference].some(m => [32,33].includes(m.settings?.physics || m.physics)) ? "1" : "0";
     const [data, lists] = await Promise.all([api("compare", {left: app.meta.key, right: app.reference.key, time_ms: app.time, nest}),
         Promise.all([app.meta, app.reference].map(m => {
             const low = Math.floor(Math.min(app.time, m.end_ms) / DAY) * DAY;
@@ -1057,7 +1074,7 @@ async function updateComparison() {
     $("compare-status").replaceChildren(node("p", tr(
         "{different} recorded input differences · {unknown} unknown input fields. Compare colony outcomes and roles. Ant IDs remain local to each archive.",
         {different: differing, unknown}), differing || unknown ? "different" : "matching"));
-    const cards = data.worlds.map(({world, state, cohort, outside_record}, i) => {
+    const cards = data.worlds.map(({world, state, cohort, outside_record, morphology}, i) => {
         const box = node("article", null, "compare-card");
         const p = state.population, c = state.cumulative;
         box.append(node("h3", tr(world.title)), node("p", day(state.time_ms) +
@@ -1071,6 +1088,13 @@ async function updateComparison() {
             ["Collections / deliveries", (c.collections || 0) + " / " + (c.deliveries || 0)],
             ["Recruitment activations", c.activations || 0], ["Excavations / soil placements", (c.excavations || 0) + " / " + (c.soil_drops || 0)],
             ["Net soil removed", withUnit(state.net_removed_m3 == null ? null : state.net_removed_m3 * 1e9, "mm³")]]));
+        if (morphology) box.append(keyValues([
+            ["Floor section area",withUnit(morphology.area_mm2,"mm²")],
+            ["Section perimeter",withUnit(morphology.perimeter_mm,"mm")],
+            ["Wide room cores",morphology.rooms.length],
+            ["Narrow junctions",morphology.junctions_q.length],
+            ["Workers on reachable floor",morphology.supported_workers]
+        ]));
         box.append(node("h4", tr("Committed facts on this day"), "subhead"));
         for (const event of lists[i].events) {
             const detail = node("p", "#" + event.id + " · " + eventLabel(event) + " · " + day(event.time_ms), "compare-fact");
@@ -1085,7 +1109,7 @@ async function updateComparison() {
         const preview = node("canvas", null, "compare-nest");
         preview.setAttribute("aria-label", tr("Nest floor at the selected time"));
         cards[i].insertBefore(preview, cards[i].children[2]);
-        drawCompareNest(preview, trial.nest, trial.state.ants);
+        drawCompareNest(preview, trial.nest, trial.state.ants,trial.morphology);
     });
     const inputSignature = language + JSON.stringify(data.settings);
     if ($("compare-config").dataset.signature !== inputSignature) {
@@ -1188,7 +1212,10 @@ async function watchAction(mark) {
 }
 function drawRestSegment(ctx, point, fits, segment) {
     const a = segment.start.position_m, b = segment.move.position_m;
-    const current = a.map((value, i) => value + (b[i] - value) * segment.progress);
+    const timing = segment.move.motion;
+    const delay = timing ? timing.turn_ms / timing.duration_ms : 0;
+    const translated = Math.max(0, (segment.progress-delay)/(1-delay));
+    const current = a.map((value, i) => value + (b[i] - value) * translated);
     if (!fits(current)) return;
     const [x, y] = point(current), from = point(a), to = point(b);
     const heading = Math.atan2(to[1] - from[1], to[0] - from[0]);
@@ -1212,7 +1239,8 @@ function drawRestSegment(ctx, point, fits, segment) {
     ctx.restore();
     ctx.save();
     ctx.font = '600 12px "Cascadia Mono", monospace';
-    const label = tr("Worker") + " #" + segment.start.actor;
+    const label = tr("Worker") + " #" + segment.start.actor +
+        (delay && segment.progress<delay ? " · " + tr("Turning") : "");
     ctx.fillStyle = "#152319";
     ctx.fillRect(x+10,y-29,ctx.measureText(label).width+12,20);
     ctx.fillStyle = "#ffe1a3";
@@ -1254,18 +1282,31 @@ async function watchRestSegment(mark) {
     };
     requestAnimationFrame(step);
 }
-function drawCompareNest(canvas, slice, ants) {
+function drawCompareNest(canvas, slice, ants, morphology) {
     const view = canvasContext(canvas);
     if (!view) return;
     const {ctx, width, height} = view;
     const [u, v, normal] = slice.axes, q = slice.quantum_m, o = slice.origin_m;
     const [x0, y0, x1, y1] = slice.bounds_q;
     const bounds = [o[u] + x0*q, o[v] + y0*q, o[u] + x1*q, o[v] + y1*q];
-    const p = projection(width, height, bounds, null, {zoom: 2.25, x: 0, y: 0});
+    const p = projection(width, height, bounds, null, {zoom: morphology ? 1.1 : 2.25, x: 0, y: 0});
     slice.rows.forEach((line, z) => [...line].forEach((material, x) => {
         rect(ctx, p, bounds[0]+x*q, bounds[1]+z*q, q, q, material === "0" ? "#222f25" :
             material === "2" ? "#707c72" : "#826647");
     }));
+    if (morphology) {
+        for (const [x,z] of morphology.corridor_q)
+            rect(ctx,p,o[u]+x*q,o[v]+z*q,q,q,"#49695b");
+        for (const room of morphology.rooms) {
+            const [x,z] = room.center_q;
+            const [px,py] = p.point(o[u]+x*q,o[v]+z*q);
+            circle(ctx,px,py,5,"#d3ab6b","#152319");
+        }
+        for (const [x,z] of morphology.junctions_q) {
+            const [px,py] = p.point(o[u]+x*q,o[v]+z*q);
+            circle(ctx,px,py,3,"#8eebde","#152319");
+        }
+    }
     const sites = new Map();
     for (const ant of ants) {
         const at = ant.position_m;

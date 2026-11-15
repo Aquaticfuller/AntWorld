@@ -3,6 +3,7 @@
 from collections import OrderedDict
 from contextlib import closing
 import os
+from math import isfinite
 from pathlib import Path
 import re
 from secrets import randbits
@@ -33,9 +34,9 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
-    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v5")
-    paths = (installed, ROOT / "build/m0-live" / name,
-             ROOT / "build/m0-live/Release" / name)
+    installed = ROOT / "out/m0-live-bin" / name
+    paths = (installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
+             ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
     return next((path for path in paths if path.is_file()), paths[0])
 
 
@@ -44,7 +45,9 @@ class NativeCore:
         self.process = subprocess.Popen([str(binary)], cwd=workdir, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
-            require(self.call("HELLO") == b"antworld.m0.live.v4", "Rebuild the live Core for this viewer version.")
+            version = self.call("HELLO")
+            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5"), "Rebuild the live Core for this viewer version.")
+            self.worker_motor = version == b"antworld.m0.live.v5"
         except Exception:
             self.close()
             raise
@@ -97,6 +100,24 @@ def read_live_events(data, frame, *, contiguous=False):
     if contiguous:
         require(previous == (frame["cursor"] or None), "Live events do not reach the published cut")
     return events
+
+
+def live_motion(data, frame):
+    result = {}
+    now = frame["time_ms"]
+    for line in data.splitlines():
+        fields = line.split()
+        require(len(fields)==12, "Malformed native movement lease")
+        actor,begin,travel,end,heading,direction = map(int,fields[:6])
+        points=tuple(map(float,fields[6:]))
+        require(actor in frame["ants"] and actor not in result and begin<=now<end and begin<=travel<end and
+                0<=heading<=10 and 1<=direction<=10 and all(map(isfinite,points)) and
+                points[:3]==frame["ants"][actor]["position_m"] and points[:3]!=points[3:],
+                "Movement lease disagrees with the native frame")
+        result[actor] = dict(from_m=points[:3], to_m=points[3:], begins_ms=begin, translates_ms=travel, ends_ms=end,
+                             heading=heading, target_heading=direction, progress=min(1,max(0,(now-travel)/(end-travel))),
+                             evidence="CORE_MOTION_LEASE")
+    return result
 
 
 def regular_file(path):
@@ -327,14 +348,17 @@ class LiveSession:
                     self.sections.popitem(last=False)
             group = options.get("group", "highlights")
             require(group == "all" or group in LIVE_GROUPS, "Unknown event category")
+            dynamics=frame["flags"].get("nest_dynamics", {})
+            plans = live_motion(self.worker.call("WORKER_MOTION"),frame) if dynamics.get("worker_motor") else {}
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
+                        nest_dynamics=dynamics,
                         cursor=str(frame["cursor"]), colonies=colonies, geometry=geometry, terrain=self.sections[key],
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
                         bounds_m=(frame["world_min_m"], frame["world_max_m"]), sources=list(frame["sources"].values()),
-                        ants=[dict(ant, stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
+                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])), stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
                                    program=label(PROGRAMS, ant.get("program")), death_cause=label(DEATHS, ant.get("death_code")))
                               for ant in frame["ants"].values()],
                         events=[e for e in reversed(self.recent) if group == "all" or e["kind"] in LIVE_GROUPS[group]][:16],
@@ -412,7 +436,10 @@ class LiveSession:
                 require(isinstance(timing, str) and timing in NEW_COLONY_TIMINGS, "Unknown worker timing")
                 activity = data.get("local_nest_activity", False)
                 require(type(activity) is bool, "Unknown local nest activity setting")
-                command = "NEW_NEST" if activity else "NEW"
+                dynamics=data.get("nest_dynamics",False)
+                require(type(dynamics) is bool, "Unknown nest dynamics setting")
+                require(not dynamics or self.core().worker_motor, "Build the R0-r1 Core to start this experiment.")
+                command = "NEW_MOTOR" if dynamics else "NEW_NEST" if activity else "NEW"
                 self.install(self.core().call(f"{command} {randbits(63) or 1} 1{NEW_COLONY_TIMINGS[timing]}"), running=True)
             elif resource == "load":
                 self.load(data.get("name"))

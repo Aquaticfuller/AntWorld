@@ -24,6 +24,22 @@ VERIFIED = ROOT / "experiments/s6_4_founding_cohort_release/correction"
 PREVIOUS = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physics/joint"
 MICRO = ROOT / "experiments/m0/portable-demo"
 R0 = ROOT / "experiments/r0/witnesses"
+R0_R1 = ROOT / "experiments/r0_r1/witnesses"
+R0_R1_DEMOS = tuple(
+    (R0_R1,file,title,description)
+    for file,title,description in (
+        ("motion-shaft-motor.zip","R0-r1 · shaft · motor","One queen and naturally eclosed workers with local timed turns and moves."),
+        ("motion-shaft-r0.zip","R0-r1 · shaft · reference","The same founding shaft and inputs with the R0 worker rules."),
+        ("motion-dogleg-motor.zip","R0-r1 · dogleg · motor","The motor candidate with a bent founding connector."),
+        ("motion-dogleg-r0.zip","R0-r1 · dogleg · reference","The matching R0 case with a bent connector."),
+        ("motion-shaft-motor-shorter.zip","R0-r1 · shaft · motor · shorter review","The motor at the independently tested 15-minute worker review."),
+        ("motion-shaft-r0-shorter.zip","R0-r1 · shaft · reference · shorter review","R0 with the same shorter worker review."),
+        ("dig-050-s1-full.zip","R0-r1 · 50 workers · dig score","Seeded excavation group with local reinforcement, crowding and room suppression."),
+        ("dig-050-s1-r0.zip","R0-r1 · 50 workers · random boundary","Matching 50-worker R0 excavation reference."),
+        ("dig-300-s1-full.zip","R0-r1 · 300 workers · dig score","Seeded excavation group with the full local score."),
+        ("dig-300-s1-r0.zip","R0-r1 · 300 workers · random boundary","Matching 300-worker R0 excavation reference."),
+    )
+)
 R0_DEMOS = (
     (R0, "r0-shaft-candidate.zip", "R0 · local nest activity",
      "A single queen and her own workers in the R0 shaft experiment."),
@@ -67,13 +83,14 @@ def cache_path():
     return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "antworld/op0"
 
 
-def default_catalog(path, include_demos=True, micro_first=False, r0_first=False):
+def default_catalog(path, include_demos=True, micro_first=False, r0_first=False, r0_r1_first=False):
     catalog = Catalog(path)
     if include_demos:
         manifests = {}
         producers = {}
         demos = MICRO_DEMOS + DEMOS if micro_first else DEMOS + MICRO_DEMOS
         demos = R0_DEMOS + demos if r0_first else demos + R0_DEMOS
+        demos = R0_R1_DEMOS + demos if r0_r1_first else demos + R0_R1_DEMOS
         for folder, filename, title, description in demos:
             if not (folder / filename).is_file():
                 continue
@@ -339,12 +356,14 @@ def main(argv=None):
     parser.add_argument("--no-demos", action="store_true")
     parser.add_argument("--micro", action="store_true", help="Open MicroWorld and put its demonstrations first.")
     parser.add_argument("--r0", action="store_true", help="Put the paired R0 nests first in the archive catalogue.")
+    parser.add_argument("--r0-r1", action="store_true", help="Put the R0-r1 motion and excavation pairs first.")
     modes = parser.add_subparsers(dest="mode", required=True)
     server = modes.add_parser("serve", help="Open the local web viewer")
     server.add_argument("--port", type=int, default=8765)
     server.add_argument("--no-browser", action="store_true")
     server.add_argument("--replay", action="store_true", help="Open the archive viewer directly.")
     server.add_argument("--r0", action="store_true", default=SUPPRESS, help="Put the paired R0 archives first.")
+    server.add_argument("--r0-r1", action="store_true", default=SUPPRESS, help="Open the R0-r1 catalogue first.")
     server.add_argument("--live-core", type=Path, help="Path to the native MicroWorld executable.")
     server.add_argument("--saves", type=Path, default=ROOT / "out/m0-saves", help="Folder for manually saved colonies.")
     server.add_argument("--import-path", action="append", type=Path, default=[])
@@ -362,7 +381,7 @@ def main(argv=None):
             pack(args.directory, args.output)
             return 0
         cache = args.cache or (ROOT / "out/m0-op0-cache" if args.micro else cache_path())
-        catalog = default_catalog(cache, not args.no_demos, args.micro, args.r0)
+        catalog = default_catalog(cache, not args.no_demos, args.micro, args.r0, args.r0_r1)
         if args.mode == "import":
             worlds, elapsed = register_import(catalog, args.source)
             for meta in worlds:

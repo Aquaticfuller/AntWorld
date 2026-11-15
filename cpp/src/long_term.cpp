@@ -319,7 +319,8 @@ bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
     };
     const bool occupied_floor=room(origin);
     std::size_t useful = occupied_floor ? 1 : 0;
-    const auto reach=local_nest_activity(s)?std::min(g.reach_q,8):g.reach_q;
+    const auto reach=nest_scoring(s)==NestScoring::SpatialDemand ? std::min(3*g.reach_q,16) :
+        local_nest_activity(s)?std::min(g.reach_q,8):g.reach_q;
     for (std::int32_t dx = -reach / spacing; dx <= reach / spacing; ++dx)
       for (std::int32_t dz = -reach / spacing; dz <= reach / spacing; ++dz) {
         if ((!dx && !dz) || (std::abs(dx) + std::abs(dz)) * spacing > reach) continue;

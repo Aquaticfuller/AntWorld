@@ -31,6 +31,15 @@ struct AutonomyState {
   std::uint64_t decisions{};
   SimTime enrolled_at, last_program_change;
   ScheduledId wake;
+  std::uint8_t facing{}; // Physics 33. 0 unknown, 1–8 compass, 9 up, 10 down.
   bool operator==(const AutonomyState &) const = default;
+};
+
+struct WorkerMotion {
+    ScheduledId action;
+    PositionM from, to;
+    SimTime begins, translates, ends;
+    std::uint8_t facing{}, target_facing{};
+    bool operator==(const WorkerMotion&) const = default;
 };
 } // namespace antworld

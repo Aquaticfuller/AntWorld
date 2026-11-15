@@ -263,7 +263,9 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        if (!contact(ant, recipient, s.config, s.social && s.geometry ? nullptr : s.surface.get()) || !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
+        if (!contact(ant, recipient, s.config, s.social && s.geometry ? nullptr : s.surface.get()) ||
+            query_worker_motion({s.world,recipient.id}) ||
+            !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;

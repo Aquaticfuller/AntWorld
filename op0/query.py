@@ -10,6 +10,7 @@ import zlib
 
 from . import DAY, SCHEMA
 from .codec import ACTS, CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
+from .morphology import floor_shape
 from .geometry import AXES, MAX_PIXELS, focused_window, terrain_view
 from .index import BLOCK_RECORDS, COUNTERS, LEDGER
 
@@ -207,7 +208,7 @@ class ReadAPI:
     def rest_segment(self, db, meta, options):
         end = self.event(db, meta, options)
         action = end.get("action", {})
-        if (meta["settings"]["physics"] != 32 or action.get("act") != "Move to a resting site" or
+        if (meta["settings"]["physics"] not in (32, 33) or action.get("act") != "Move to a resting site" or
                 action.get("phase") != "Completed" or end["outcome"] != "Success"):
             return None
         begin = action["began_ms"]
@@ -397,14 +398,16 @@ class ReadAPI:
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
-        elif (meta["settings"]["physics"] in (27, 28, 29, 30, 31, 32) or micro) and focus is not None:
+        elif (meta.get("scenario") or "").startswith("r0r1-dig") and focus is not None:
+            window = focused_window(geometry, focus, (u, v), 64)
+        elif (meta["settings"]["physics"] in (27, 28, 29, 30, 31, 32, 33) or micro) and focus is not None:
             # The 30 cm domain is much larger than the founding pocket. Start
             # with a nest-centered section; the surface retains its full extent.
             window = focused_window(geometry, focus, (u, v), 22)
         elif (solid[u+3] - solid[u]) * (solid[v+3] - solid[v]) > MAX_PIXELS:
             window = solid[u], solid[v], min(solid[u+3], solid[u]+480), min(solid[v+3], solid[v]+480)
         edits = [json.loads(raw) for raw, in db.execute("SELECT value FROM edits WHERE event<=? ORDER BY event", (cursor,))]
-        return terrain_view(geometry, edits, axis, layer, window, roof_focus=focus if micro else None,
+        return terrain_view(geometry, edits, axis, layer, window, roof_focus=focus,
                             clearance=options.get("clearance") == "1")
 
     def compare(self, options):
@@ -430,6 +433,13 @@ class ReadAPI:
                 layer = round((focus-g["origin_m"][1])/g["quantum_m"])
                 if g["solid"][1] <= layer < g["solid"][4]:
                     item["nest"] = self.geometry(db, meta, {"axis": "y", "layer_q": layer}, cursor)["slice"]
+                    if (meta.get("scenario") or "").startswith("r0r1-dig"):
+                        center = meta["colonies"][0]["position_m"]
+                        axes = (0,2)
+                        start = tuple(round((center[i]-g["origin_m"][i])/g["quantum_m"]) for i in axes)
+                        edits = [json.loads(raw) for raw, in db.execute(
+                            "SELECT value FROM edits WHERE event<=? ORDER BY event", (cursor,))]
+                        item["morphology"] = floor_shape(g, edits, layer, item["nest"]["bounds_q"], start, item["state"]["ants"])
             results.append(item)
         compared = {}
         for fields, left, right in (

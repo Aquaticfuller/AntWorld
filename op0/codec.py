@@ -47,7 +47,7 @@ OUTCOMES = ("Success", "Partial", "Missing entity", "Dead actor", "Invalid stage
 ACTS = ("Inactive", "Walk", "Approach brood", "Inspect brood", "Arrange brood", "Clean brood", "Transport brood",
         "Feed brood", "Close worker contact", "Collect food", "Deliver food", "Ingest food", "Transfer nutrition",
         "Excavate", "Handle soil", "Revisit brood site", "Pick up brood", "Place brood", "Return to care shelter",
-        "Move to a resting site")
+        "Move to a resting site", "Approach the depot")
 PHASES = ("Opportunity", "Selected", "Started", "Completed", "Interrupted")
 RELATED = {21, 35, 43, 46, 48, 50, 52, 55, 56}
 FACETS = {
@@ -115,6 +115,10 @@ class Fact:
             result["death_cause"] = label(DEATHS, self.payload)
         if self.kind == 17:
             result["program"] = label(PROGRAMS, self.payload)
+        if self.kind == 4 and self.aux:
+            duration, turn = self.aux >> 32, self.aux & 0xffffffff
+            result["motion"] = dict(begins_ms=self.time-duration, translates_ms=self.time-duration+turn,
+                                    duration_ms=duration, turn_ms=turn, ends_ms=self.time)
         if self.kind in (23, 24, 25, 26):
             result["parcel"] = str(self.payload)
         if self.kind == 11:
@@ -201,7 +205,7 @@ def checkpoint(raw, *, verify_hash=True):
     ecological = magic == ECOLOGICAL
     if ecological:
         outer = r.unpack(Struct("<2I"))
-        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32)},
+        require(outer in {(22, 24), (22, 25), (22, 26), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33)},
                 "Unsupported ecological checkpoint version")
         magic = bytes(r.take(8))
     version = r.unpack(Struct("<2I"))
@@ -237,15 +241,19 @@ def checkpoint(raw, *, verify_hash=True):
                           "cue_minimum_carbs_ug", "water_sip_ug", "cue_response_ppm", "first_ration_ppm"),
                          r.unpack(Struct("<2d4Q2I"))))
         flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28, 30)
-        if outer[0] in (23, 24, 25):
+        if outer[0] in (23, 24, 25, 26):
             flags["brood_space"] = True
-            flags["portable_care_motion"] = outer[1] in (29, 30, 31, 32)
-        if outer == (25, 32):
+            flags["portable_care_motion"] = outer[1] >= 29
+        if outer[1] >= 32:
             flags["local_nest_activity"] = True
-        if outer == (24, 31) or (outer == (25, 32) and r.flag()):
+        if outer == (24, 31) or (outer[1] >= 32 and r.flag()):
             interval, dwell = r.unpack(Struct("<2q"))
             require(60000 <= interval <= dwell <= 21600000, "Invalid MicroWorld worker timing")
             flags["worker_activity_timing"] = dict(check_ms=interval, minimum_program_ms=dwell)
+        if outer == (26, 33):
+            motor, score = r.flag(), r.take(1)[0]
+            require(score <= 3 and (motor or score), "Invalid nest dynamics treatment")
+            flags["nest_dynamics"] = dict(worker_motor=motor, excavation=score)
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.

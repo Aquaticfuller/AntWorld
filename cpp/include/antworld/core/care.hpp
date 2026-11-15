@@ -42,7 +42,7 @@ enum class CareAct : std::uint8_t {
     Inactive, Walk, ApproachBrood, InspectBrood, ArrangeBrood, CleanBrood,
     TransportBrood, FeedBrood, CloseWorkerContact, CollectFood, DeliverFood,
     IngestFood, TransferNutrition, Excavate, HandleSoil, RevisitBroodSite,
-    PickUpBrood, PlaceBrood, ReturnToCareShelter, NestReposition, Count
+    PickUpBrood, PlaceBrood, ReturnToCareShelter, NestReposition, DepotApproach, Count
 };
 enum class ObservationPhase : std::uint8_t { Opportunity, Selected, Started, Completed, Interrupted };
 struct BehaviorObservation {

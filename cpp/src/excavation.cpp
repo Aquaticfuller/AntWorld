@@ -1,6 +1,8 @@
 #include "state.hpp"
 #include "physiology_internal.hpp"
 #include "ecological_internal.hpp"
+#include "worker_motion.hpp"
+#include "nest_scoring.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -326,6 +328,8 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         bool returning_empty{};
     };
     std::vector<Choice> choices(0);
+    std::map<std::pair<PointQ,int>,ExcavationFeatures> features;
+    std::map<PointQ,std::size_t> sensed_bodies;
     for (const auto &wake : wakes) {
         const auto &worker = s.excavators.at(wake.actor);
         const auto ant = s.ants.get(s.ants.index.at(wake.actor));
@@ -350,33 +354,93 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
             }
         };
         const bool floor_search=local_nest_activity(s);
+        const auto score=nest_scoring(s);
+        const auto view=geometry_view(s,limits_);
+        const bool scored=score!=NestScoring::Original;
+        std::size_t local_bodies=0;
+        if (score==NestScoring::SpatialDemand) {
+            auto [it,new_site]=sensed_bodies.try_emplace(p,0);
+            if (new_site)
+                it->second=query_neighborhood({s.world,ant.id},std::min(16,3*c.reach_q)*c.quantum_m).ants.size();
+            local_bodies=it->second;
+        }
+        const auto weight_at=[&](PointQ q,bool moving) {
+            const auto base_y=worker.path[0].y;
+            auto [it,fresh]=features.try_emplace({q,base_y},ExcavationFeatures{});
+            if (fresh) it->second=excavation_features(view,score,q,s.m.now,base_y);
+            return digging_weight(it->second,score,q,p,worker,local_bodies,moving);
+        };
+        const auto pick=[&](const auto& items,const auto& metric) -> const auto& {
+            if (!scored) return items[static_cast<std::size_t>(bounded_draw(rng,items.size()))];
+            std::vector<std::uint64_t> weights(0);
+            std::uint64_t total=0;
+            for (const auto& item:items) {
+                const auto weight=metric(item);
+                weights.push_back(weight);
+                total+=weight;
+            }
+            auto draw=bounded_draw(rng,total);
+            for (std::size_t i=0;i<weights.size();++i) {
+                if (draw<weights[i]) return items[i];
+                draw-=weights[i];
+            }
+            throw std::logic_error("missing weighted excavation candidate");
+        };
         if (carrier != s.carriers.end()) {
             if (worker.path_size == 1) {
                 action.kind = ScheduledEvent::Kind::SoilAction;
                 choice.soil = {ant.id, SoilAction::Drop, {}, carrier->second, s.m.geometry_revision, 0, {}};
             } else follow_inbound();
-        } else if (floor_search && (worker.returning_empty || worker.path_size>=24)) {
+        } else if (floor_search && (worker.returning_empty || worker.path_size>=(scored?56U:24U))) {
             choice.returning_empty=worker.path_size>1;
             if (choice.returning_empty) follow_inbound();
         } else {
             auto frontiers = local_frontiers({s.world, ant.id});
             if (floor_search)
-                std::erase_if(frontiers,[&](BoxQ b) { return b.max.y-b.min.y<2*c.loaded_half_q; });
+                std::erase_if(frontiers,[&](BoxQ b) {
+                    if (b.max.y-b.min.y>=2*c.loaded_half_q) return false;
+                    return !scored || b.min.y<=p.y || !shaft_attachment(view,p,c.loaded_half_q);
+                });
+            if (scored) std::erase_if(frontiers,[&](BoxQ b) {
+                const auto amount=material_volume(view,b,Material::Soil);
+                const auto cargo=ant.carrying_capacity_ug-ant.carried_food.total_ug();
+                return amount*(c.dry_ug_per_q3+c.water_ug_per_q3)>cargo;
+            });
+            if (score>=NestScoring::Reinforcement && worker.digs && !frontiers.empty()) {
+                const auto d=[&](PointQ q) {
+                    return std::abs(worker.last_cut.x-q.x)+std::abs(worker.last_cut.y-q.y)+std::abs(worker.last_cut.z-q.z);
+                };
+                // A reachable step toward an experienced nearby cut can
+                // outrank side-wall work. A cut farther away supplies no cue.
+                if (d(p)<=3*c.reach_q && d(p)>c.loaded_half_q) {
+                    const auto portals=portal_neighbors(view,p,c.loaded_half_q,s.config);
+                    if (std::any_of(portals.begin(),portals.end(),[&](PointQ q) {
+                        return q.y==p.y && d(q)<d(p) && work_floor(view,q,c.loaded_half_q) &&
+                               spatially_clear(ant.position,physical(q,c),c.loaded_half_q) &&
+                               std::find(worker.path.begin(),worker.path.begin()+worker.path_size,q)==worker.path.begin()+worker.path_size;
+                    }) && bounded_draw(rng,4)!=0) frontiers.clear();
+                }
+            }
             if (worker.path_size > 1 && !frontiers.empty()) {
-                const auto box = frontiers[static_cast<std::size_t>(bounded_draw(rng, frontiers.size()))];
+                const auto box=pick(frontiers,[&](BoxQ b) {
+                    return weight_at(patch_center(b),false);
+                });
                 action.kind = ScheduledEvent::Kind::SoilAction;
                 choice.soil = {ant.id, SoilAction::Excavate, box, {}, s.m.geometry_revision, 0, {}};
             } else {
                 std::vector<PointQ> candidates(0);
                 std::int32_t best = -1;
-                for (auto q : portal_neighbors(geometry_view(s, limits_), p, c.loaded_half_q, s.config)) {
+                for (auto q : portal_neighbors(view, p, c.loaded_half_q, s.config)) {
                     if (s.ecological && s.ecological->distance_clock &&
                         !spatially_clear(ant.position,physical(q,c),c.loaded_half_q)) continue;
                     const auto depot = worker.path[0];
-                    if (floor_search && (q.y!=depot.y ||
-                        material_at(geometry_view(s, limits_),{q.x,q.y-c.loaded_half_q-1,q.z})==Material::Void ||
+                    if (floor_search && (!(scored ?
+                        ((q.y==p.y && work_floor(view,q,c.loaded_half_q)) ||
+                         (shaft_attachment(view,p,c.loaded_half_q) && shaft_attachment(view,q,c.loaded_half_q))) :
+                        q.y==depot.y && work_floor(view,q,c.loaded_half_q)) ||
                         std::find(worker.path.begin(),worker.path.begin()+worker.path_size,q)!=worker.path.begin()+worker.path_size))
                         continue;
+                    if (scored) { candidates.push_back(q); continue; }
                     const auto d = std::abs(q.x - depot.x) + std::abs(q.y - depot.y) + std::abs(q.z - depot.z);
                     if (d > best) {
                         candidates.clear();
@@ -389,8 +453,15 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                     candidates = {worker.path[worker.path_size - 2]};
                 if (!candidates.empty()) {
                     action.kind = ScheduledEvent::Kind::Move;
-                    action.destination =
-                        physical(candidates[static_cast<std::size_t>(bounded_draw(rng, candidates.size()))], c);
+                    action.destination=physical(pick(candidates,[&](PointQ q) {
+                        auto weight=weight_at(q,true);
+                        if (score>=NestScoring::Reinforcement && worker.digs) {
+                            const auto near=[&](PointQ a) { return std::abs(worker.last_cut.x-a.x)+
+                                std::abs(worker.last_cut.y-a.y)+std::abs(worker.last_cut.z-a.z); };
+                            if (near(p)<=3*c.reach_q && near(q)<near(p)) weight+=3*weight;
+                        }
+                        return weight;
+                    }),c);
                 } else if (floor_search && worker.path_size>1) {
                     choice.returning_empty=true;
                     follow_inbound();
@@ -400,7 +471,8 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         const auto physical_clock = s.ecological && s.ecological->distance_clock;
         if (action.kind == ScheduledEvent::Kind::Move) {
             const auto duration = physical_clock ?
-                segment_duration(*s.ecological, ant.position, action.destination, carrier != s.carriers.end()) : c.move_duration;
+                with_worker_turn(s,ant.id,ant.position,action.destination,
+                    segment_duration(*s.ecological, ant.position, action.destination, carrier != s.carriers.end())) : c.move_duration;
             action.key.time = after(s.m.now, duration.milliseconds);
         } else if (physical_clock && action.kind == ScheduledEvent::Kind::SoilAction && choice.soil.kind == SoilAction::Drop)
             action.key.time = after(s.m.now, s.ecological->soil_handling.milliseconds);
@@ -471,8 +543,11 @@ void WorldRuntime::after_excavation_action(Transaction &tx, const ScheduledEvent
         if (s.carriers.contains(e.actor))
             bump(worker.carrying_moves);
     }
-    if (f.kind == FactKind::SoilExcavated)
+    if (f.kind == FactKind::SoilExcavated) {
         bump(worker.digs);
+        if (nest_scoring(s)>=NestScoring::Reinforcement)
+            worker.last_cut=patch_center(s.soil_requests.at(e.id).box);
+    }
     if (f.kind == FactKind::SoilDropped)
         bump(worker.deliveries);
     ScheduledEvent wake;
