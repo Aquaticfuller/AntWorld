@@ -632,11 +632,11 @@ function canvasContext(canvas) {
     ctx.clearRect(0, 0, width, height);
     return {ctx, width, height};
 }
-function projection(width, height, bounds) {
+function projection(width, height, bounds, focus = null) {
     const [u0, v0, u1, v1] = bounds;
     const unit = Math.max(1, Math.min((width - 68) / (u1 - u0 || .01), (height - 58) / (v1 - v0 || .01))) * app.map.zoom;
-    const dx = width / 2 + app.map.x - (u0 + u1) / 2 * unit;
-    const dy = height / 2 + app.map.y + (v0 + v1) / 2 * unit;
+    const dx = width / 2 + app.map.x - (focus?.[0] ?? (u0 + u1) / 2) * unit;
+    const dy = height / 2 + app.map.y + (focus?.[1] ?? (v0 + v1) / 2) * unit;
     return {unit, point: (u, v) => [dx + u * unit, dy - v * unit]};
 }
 function rect(ctx, p, x, y, w, h, fill, stroke = null) {
@@ -793,6 +793,7 @@ function drawMap() {
     const {ctx, width, height} = canvas;
     const state = app.state, surface = app.meta.surface, slice = app.geometry?.slice;
     const underground = app.section === "slice" && slice;
+    const tracked = app.live && app.follow ? state.ants.find(a => a.id === app.selected)?.position_m : null;
     const terrain = app.meta.settings.geometry, surfaceY = planeSurface();
     ctx.fillStyle = underground ? "#152019" : "#15241a";
     ctx.fillRect(0, 0, width, height);
@@ -801,7 +802,7 @@ function drawMap() {
         const [u, v, n] = slice.axes, q = slice.quantum_m, o = slice.origin_m;
         const [x0, y0, x1, y1] = slice.bounds_q;
         const bounds = [o[u] + x0 * q, o[v] + y0 * q, o[u] + x1 * q, o[v] + y1 * q];
-        p = projection(width, height, bounds);
+        p = projection(width, height, bounds, tracked && [tracked[u], tracked[v]]);
         point = a => p.point(a[u], a[v]);
         fits = a => Math.floor((a[n] - o[n]) / q + 1e-9) === slice.plane_q;
         orientation = slice.axis === "z" ? "X east / Y up" : slice.axis === "x" ? "Z north / Y up" : "X east / Z north";
@@ -839,7 +840,7 @@ function drawMap() {
             bounds = [Math.min(...points.map(a => a[0])) - .01, Math.min(...points.map(a => a[2])) - .01,
                 Math.max(...points.map(a => a[0])) + .01, Math.max(...points.map(a => a[2])) + .01];
         }
-        p = projection(width, height, bounds);
+        p = projection(width, height, bounds, tracked && [tracked[0], tracked[2]]);
         point = a => p.point(a[0], a[2]);
         fits = a => a[1] >= surfaceY - 1e-10;
         orientation = "X east / Z north";

@@ -44,7 +44,10 @@
       </div>
       <div class="live-milestone">
         <label for="live-target">Target event</label>
-        <select id="live-target"><option value="egg">First egg laid</option><option value="hatch">First hatch</option><option value="worker">First worker eclosed</option></select>
+        <select id="live-target">
+          <option value="egg">First egg laid</option><option value="hatch">First hatch</option><option value="worker">First worker eclosed</option>
+          <option value="exit">First worker leaves the nest</option><option value="delivery">First food delivered</option><option value="excavation">First excavation</option>
+        </select>
         <button id="live-seek" type="button">Fast-forward to event</button>
         <output id="live-stop" role="status" hidden></output>
       </div>

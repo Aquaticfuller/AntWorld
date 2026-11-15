@@ -580,6 +580,8 @@
   "Resume": "继续",
   "Simulation speed": "模拟速度",
   "Target event": "目标事件",
+  "First worker leaves the nest": "首只工蚁出巢",
+  "Following ant #{id}": "正在跟踪 #{id} 号蚂蚁",
   "Fast-forward to event": "快进到事件",
   "Fast-forwarding to {event}…": "正在快进，等待{event}…",
   "Reached {event} at {time}. Resume at 1×.": "已在{event}时暂停 · {time}。点「继续」以 1× 运行。",

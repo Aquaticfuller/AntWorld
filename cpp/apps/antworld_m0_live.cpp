@@ -4,6 +4,7 @@
 #include <charconv>
 #include <cstdio>
 #include <iostream>
+#include <set>
 #include <span>
 #include <sstream>
 #include <string_view>
@@ -94,43 +95,83 @@ void recent(const WorldRuntime& world) {
     else payload(bytes);
 }
 
-enum class Milestone { Egg, Hatch, Worker };
+enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Excavation };
 
 Milestone read_milestone(std::istringstream& request) {
     const auto name = word(request);
     if (name == "egg") return Milestone::Egg;
     if (name == "hatch") return Milestone::Hatch;
     if (name == "worker") return Milestone::Worker;
+    if (name == "exit") return Milestone::Exit;
+    if (name == "delivery") return Milestone::Delivery;
+    if (name == "excavation") return Milestone::Excavation;
     throw std::invalid_argument("Unknown live milestone");
 }
 
-bool matches(const WorldRuntime& world, Milestone milestone, const WorldEvent& fact) {
-    if (milestone == Milestone::Egg) return fact.kind == FactKind::AntBorn && fact.stage == LifeStage::Egg;
-    if (fact.kind != FactKind::StageChanged) return false;
-    if (milestone == Milestone::Hatch) return fact.stage == LifeStage::Larva;
+bool adult_worker(const WorldRuntime& world, const WorldEvent& fact) {
     if (fact.stage != LifeStage::Adult) return false;
     const auto ant = world.query_ant({fact.world, fact.actor});
     return ant && ant->caste == Caste::Worker;
 }
 
-bool send_milestone(const WorldRuntime& world, Milestone milestone, EventId cursor = {}) {
-    constexpr std::size_t page = 512;
-    while (true) {
-        const auto events = world.events_after(cursor, page);
-        for (const auto& fact : events) {
-            if (matches(world, milestone, fact)) {
-                payload(encode_event(fact));
-                return true;
-            }
-        }
-        if (events.size() < page) return false;
-        cursor = events.back().id;
-    }
-}
+struct MilestoneSearch {
+    Milestone target;
+    EventId cursor{};
+    std::optional<double> surface_y;
+    std::set<EntityId> underground;
 
-void advance_until(WorldRuntime& world, SimTime target, Milestone milestone) {
+    explicit MilestoneSearch(Milestone milestone, const WorldRuntime& world) : target(milestone) {
+        if (target == Milestone::Exit) {
+            const auto surface = world.surface_snapshot();
+            if (surface.configured) surface_y = surface.surface.origin_m.y;
+        }
+    }
+
+    bool matches(const WorldRuntime& world, const WorldEvent& fact) {
+        switch (target) {
+        case Milestone::Egg:
+            return fact.kind == FactKind::AntBorn && fact.stage == LifeStage::Egg;
+        case Milestone::Hatch:
+            return fact.kind == FactKind::StageChanged && fact.stage == LifeStage::Larva;
+        case Milestone::Worker:
+            return fact.kind == FactKind::StageChanged && adult_worker(world, fact);
+        case Milestone::Delivery:
+            return fact.kind == FactKind::FoodDelivered && fact.transferred.total_ug() > 0 && adult_worker(world, fact);
+        case Milestone::Excavation:
+            return fact.kind == FactKind::SoilExcavated && adult_worker(world, fact);
+        case Milestone::Exit:
+            if (!surface_y) return false;
+            if (fact.kind == FactKind::AntDied) underground.erase(fact.actor);
+            if (fact.kind != FactKind::Moved && fact.kind != FactKind::AntSeeded && fact.kind != FactKind::StageChanged)
+                return false;
+            if (!adult_worker(world, fact)) return false;
+            // Track the last committed side of the boundary. Only an actual move can cross it.
+            if (fact.position.y < *surface_y) {
+                underground.insert(fact.actor);
+                return false;
+            }
+            return underground.erase(fact.actor) != 0 && fact.kind == FactKind::Moved;
+        }
+        return false;
+    }
+
+    std::optional<WorldEvent> scan(const WorldRuntime& world) {
+        constexpr std::size_t page = 512;
+        while (true) {
+            const auto events = world.events_after(cursor, page);
+            for (const auto& fact : events) {
+                cursor = fact.id;
+                if (matches(world, fact)) return fact;
+            }
+            if (events.size() < page) return {};
+        }
+    }
+};
+
+void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search) {
     auto cut = world.summary();
     require(target >= cut.now, "simulation time cannot move backwards");
+    require(search.cursor.value == cut.committed_events, "Live milestone search does not match the current history");
     // Finish each timestamp atomically before allowing the viewer to pause.
     // Bound the number of timestamps in one reply so the user can also cancel.
     for (int slice = 0; slice < 256; ++slice) {
@@ -138,9 +179,10 @@ void advance_until(WorldRuntime& world, SimTime target, Milestone milestone) {
         if (cut.living_ants == 0 || !next) { message("OK", "exhausted"); return; }
         if (*next > target) { world.advance_to(target); break; }
         world.advance_to(*next);
-        const auto cursor = EventId{cut.committed_events};
         cut = world.summary();
-        if (cut.committed_events != cursor.value && send_milestone(world, milestone, cursor)) return;
+        if (cut.committed_events != search.cursor.value) {
+            if (const auto hit = search.scan(world)) { payload(encode_event(*hit)); return; }
+        }
     }
     message("OK");
 }
@@ -152,6 +194,7 @@ int main() {
 #endif
     const auto limits = assay_limits(live_case(1, 1));
     std::optional<WorldRuntime> world;
+    std::optional<MilestoneSearch> search;
     std::string line;
     while (std::getline(std::cin, line)) {
         try {
@@ -159,7 +202,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v2");
+                message("OK", "antworld.m0.live.v3");
             } else if (command == "NEW") {
                 const auto id = number(request), seed = number(request);
                 end(request);
@@ -167,6 +210,7 @@ int main() {
                 auto scene = setup(live_case(id, seed), limits);
                 const auto frame = scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
+                search.reset();
                 payload(frame);
             } else if (command == "LOAD") {
                 const auto path = staged_save(request);
@@ -180,6 +224,7 @@ int main() {
                 require(model && model->brood_space, "Live load needs a MicroWorld save");
                 const auto frame = loaded.world.checkpoint_frame();
                 world.emplace(std::move(loaded.world));
+                search.reset();
                 payload(frame);
             } else {
                 require(world.has_value(), "Create or load a colony first");
@@ -187,16 +232,20 @@ int main() {
                     const auto target = read_target(request);
                     end(request);
                     world->advance_to(target);
+                    search.reset();
                     payload(world->checkpoint_frame());
                 } else if (command == "FIND_MILESTONE") {
                     const auto milestone = read_milestone(request);
                     end(request);
-                    if (!send_milestone(*world, milestone)) message("OK");
+                    search.emplace(milestone, *world);
+                    if (const auto hit = search->scan(*world)) payload(encode_event(*hit));
+                    else message("OK");
                 } else if (command == "ADVANCE_UNTIL") {
                     const auto target = read_target(request);
                     const auto milestone = read_milestone(request);
                     end(request);
-                    advance_until(*world, target, milestone);
+                    require(search && search->target == milestone, "Choose a live milestone before fast-forwarding");
+                    advance_until(*world, target, *search);
                 } else if (command == "FRAME") {
                     end(request);
                     payload(world->checkpoint_frame());

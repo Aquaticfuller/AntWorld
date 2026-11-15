@@ -24,7 +24,7 @@ from .query import HOUR, integer
 
 ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
-MILESTONES = {"egg", "hatch", "worker"}
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
 FRAME_LIMIT = 128 * 1024 * 1024
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
@@ -32,7 +32,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
-    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v2")
+    installed = (ROOT / "out/m0-live-bin" / name).with_stem("antworld_m0_live_v3")
     paths = (installed, ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name)
     return next((path for path in paths if path.is_file()), paths[0])
@@ -43,7 +43,7 @@ class NativeCore:
         self.process = subprocess.Popen([str(binary)], cwd=workdir, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
-            require(self.call("HELLO") == b"antworld.m0.live.v2", "Rebuild the live Core for this viewer version.")
+            require(self.call("HELLO") == b"antworld.m0.live.v3", "Rebuild the live Core for this viewer version.")
         except Exception:
             self.close()
             raise
@@ -222,7 +222,11 @@ class LiveSession:
         require(UUID(self.frame["world"]).int == ((identity[0] << 64) | identity[1]) and
                 event.id <= self.frame["cursor"] and event.time <= self.frame["time_ms"],
                 "Live milestone does not belong to the published cut")
-        return event.packet()
+        packet = event.packet()
+        if packet["kind"] == "SoilExcavated":
+            packet["geometry_edits"] = [edit | {"actor": str(edit["actor"])}
+                                        for edit in self.frame["edits"] if edit["event"] == event.id]
+        return packet
 
     def start_seek(self, target):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")

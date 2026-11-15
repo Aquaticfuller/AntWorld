@@ -1,7 +1,9 @@
 "use strict";
 
 const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null, shownStop: null};
-const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed"};
+const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
+    exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation"};
+const followMilestones = new Set(["exit", "delivery", "excavation"]);
 const liveStopLabels = {
     seeking: "Fast-forwarding to {event}…",
     reached: "Reached {event} at {time}. Resume at 1×.",
@@ -21,7 +23,8 @@ function liveControls() {
     const stop = s?.fast_forward, seeking = stop?.state === "seeking";
     put("live-clock", active ? duration(s.time_ms) : "00:00:00");
     const label = active ? (s.running ? "Simulation running" : "Simulation paused") : "No active colony";
-    put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : ""));
+    const follow = active && app.follow && app.selected ? " · " + tr("Following ant #{id}", {id: app.selected}) : "";
+    put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : "") + follow);
     put("live-pause", tr(seeking ? "Cancel fast-forward" : (s?.running ? "Pause" : "Resume")));
     $("live-rate").value = String(s?.rate || 1);
     $("new-colony").disabled = liveView.busy || !s?.core_available;
@@ -41,6 +44,7 @@ function liveVisibility(active) {
     app.live = active;
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
+    if (active) $("watch-delivery").hidden = true;
     put("view-source", tr(active ? "Live Core" : "Local archive"));
     put("footer-mode", tr(active ? "Live state published by the Simulation Core" : "Read-only replay of Simulation Core facts"));
     toggle("live-tab", active);
@@ -81,15 +85,15 @@ function showLiveFact(id) {
     showEvent(fact);
 }
 
-async function refreshLive() {
+async function refreshLive(alignSection = true) {
     if (!app.live) return;
     const request = ++liveView.request;
     const data = await api("live/view", {axis: $("axis").value, layer_q: app.layer,
         clearance: app.section === "slice" && $("clearance").checked ? 1 : null, group: $("filter").value});
     if (!app.live || request !== liveView.request) return;
     liveView.state = data;
-    liveControls();
     if (!data.world_id) {
+        liveControls();
         $("viewer").hidden = true;
         put("subtitle", tr(data.core_available ? "Create a colony to start the simulation." : "Build the live Core to start a colony. Archive replay is available."));
         return;
@@ -118,7 +122,30 @@ async function refreshLive() {
     app.geometry = data.terrain;
     app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
-    if (app.follow) preferView(app.state.ants.find(a => a.id === app.selected)?.position_m);
+    const stop = data.fast_forward;
+    const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
+    if (key && liveView.shownStop !== key) {
+        liveView.shownStop = key;
+        if (stop.state === "reached" && followMilestones.has(stop.target)) {
+            const worker = app.state.ants.find(a => a.id === stop.event.actor && a.caste === "Worker");
+            if (worker) {
+                app.selected = worker.id;
+                app.follow = true;
+                app.map.x = app.map.y = 0;
+                $("ant-id").value = worker.id;
+                toggle("follow", true);
+            }
+        }
+        inspect(true);
+        showEvent(stop.event);
+    }
+    const tracked = app.state.ants.find(a => a.id === app.selected);
+    app.path = app.follow ? app.recentMotion.points.filter(e => e.kind === "Moved" && e.actor === app.selected) : [];
+    if (app.follow && tracked) {
+        preferView(tracked.position_m);
+        if (alignSection && app.section === "slice" && app.geometry.slice?.plane_q !== app.layer) return refreshLive(false);
+    }
+    liveControls();
     const ants = app.state.ants;
     const p = {queens_alive: ants.filter(a => a.stage === "Adult" && a.caste === "Queen"),
         workers: ants.filter(a => a.stage === "Adult" && a.caste === "Worker").length,
@@ -131,13 +158,6 @@ async function refreshLive() {
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
     liveIndividual();
-    const stop = data.fast_forward;
-    const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
-    if (key && liveView.shownStop !== key) {
-        liveView.shownStop = key;
-        inspect(true);
-        showEvent(stop.event);
-    }
     if (!$("event-panel").hidden) renderLiveEvents();
     drawMap();
 }

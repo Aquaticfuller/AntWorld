@@ -205,6 +205,7 @@ async function liveWorld() {
     assert.equal(await evaluate("app.meta.settings.physics"), 29);
     await click("#live-tab");
     await wait(() => evaluate("app.live && ! $('viewer').hidden && Boolean(app.state)"), "Return from the original archive");
+    assert.equal(await evaluate("$('watch-delivery').hidden"), true);
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     await select("locale", "zh-CN");
     await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('live-seek').textContent === '\u5feb\u8fdb\u5230\u4e8b\u4ef6'"),
@@ -213,6 +214,30 @@ async function liveWorld() {
     await click("#live-pause");
     await wait(() => evaluate(`liveView.state.running && liveView.state.time_ms > ${savedTime}`), "Resume live sim at 1x");
     assert.equal(await evaluate("liveView.state.rate"), 1);
+    result.worker_stops = {};
+    for (const [target, kind, section] of [["exit", "Moved", "surface"], ["delivery", "FoodDelivered", "slice"],
+        ["excavation", "SoilExcavated", "slice"]]) {
+        await select("live-target", target);
+        await click("#live-seek");
+        const stop = await wait(() => evaluate(`(() => {
+            const s = liveView.state.fast_forward;
+            return s?.target === '${target}' && s.state === 'reached' && !liveView.busy && app.follow &&
+                app.selected === s.event.actor && app.section === '${section}' && !$('event-detail').hidden ? s.event : null;
+        })()`), `Pause and follow the worker at ${target}`);
+        assert.equal(stop.kind, kind);
+        assert.equal(await evaluate("liveView.state.time_ms"), stop.time_ms);
+        assert.equal(await evaluate("liveView.state.running"), false);
+        assert.equal(await evaluate("$('live-rate').value"), "1");
+        result.worker_stops[target] = {time_ms: stop.time_ms, actor: stop.actor};
+        if (target === "exit") {
+            await screenshot("m0-live-follow");
+            await click("#live-pause");
+            await wait(() => evaluate(`liveView.state.running && app.follow && app.selected === '${stop.actor}' &&
+                liveView.state.time_ms > ${stop.time_ms}`), "Keep following the same worker at 1x");
+        }
+        if (target === "delivery") assert.ok(stop.mass_ug.some(mass => mass > 0));
+        if (target === "excavation") assert.ok(stop.geometry_edits[0].volume_q3 > 0);
+    }
     assert.deepEqual(exceptions, []);
     result.status = "PASS";
     result.elapsed_at_1x_ms = elapsed;

@@ -49,22 +49,38 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(list(self.folder.iterdir()), [])
 
     def test_fast_forward_stops_at_each_committed_milestone(self):
-        expected = {}
+        expected, positions = {}, {}
         with ZipFile(WITNESS) as witness, witness.open("facts.bin") as stream:
-            ants = checkpoint(witness.read("final.frame"))["ants"]
+            final = checkpoint(witness.read("final.frame"))
+            ants = final["ants"]
+            surface_y = final["surface"]["origin_m"][1]
             for _, raw in prefixed(stream):
                 _, fact = decode_fact(raw)
                 event = fact.packet()
-                if (event["kind"], event["stage"]) == ("AntBorn", "Egg"):
+                kind, stage = event["kind"], event["stage"]
+                if (kind, stage) == ("AntBorn", "Egg"):
                     expected.setdefault("egg", event)
-                elif (event["kind"], event["stage"]) == ("StageChanged", "Larva"):
+                elif (kind, stage) == ("StageChanged", "Larva"):
                     expected.setdefault("hatch", event)
-                elif ((event["kind"], event["stage"]) == ("StageChanged", "Adult") and
-                      CASTES[ants[fact.actor]["caste"]] == "Worker"):
-                    expected.setdefault("worker", event)
-                if len(expected) == 3:
+                if stage == "Adult" and fact.actor in ants and CASTES[ants[fact.actor]["caste"]] == "Worker":
+                    if kind == "StageChanged":
+                        expected.setdefault("worker", event)
+                    if kind == "FoodDelivered" and sum(fact.mass) > 0:
+                        expected.setdefault("delivery", event)
+                    if kind == "SoilExcavated":
+                        edit = next(e for e in final["edits"] if e["event"] == fact.id)
+                        self.assertGreater(edit["volume_q3"], 0)
+                        event["geometry_edits"] = [edit | {"actor": event["actor"]}]
+                        expected.setdefault("excavation", event)
+                    if kind in ("AntSeeded", "StageChanged", "Moved"):
+                        previous = positions.get(fact.actor)
+                        if kind == "Moved" and previous and previous[1] < surface_y <= fact.position[1]:
+                            expected.setdefault("exit", event)
+                        positions[fact.actor] = fact.position
+                if len(expected) == 6:
                     break
-        self.assertEqual(set(expected), {"egg", "hatch", "worker"})
+        targets = ("egg", "hatch", "worker", "exit", "delivery", "excavation")
+        self.assertEqual(set(expected), set(targets))
 
         with patch("op0.live.randbits", return_value=270001):
             self.live.write("new", {})
@@ -79,7 +95,7 @@ class LiveTests(unittest.TestCase):
 
         with closing(NativeCore(BINARY, self.folder)) as reference:
             reference.call("NEW 270001 1")
-            for target in ("egg", "hatch", "worker"):
+            for target in targets:
                 with self.subTest(target=target):
                     started = self.live.write("seek", {"target": target})
                     self.assertTrue(started["running"])
@@ -99,7 +115,7 @@ class LiveTests(unittest.TestCase):
 
         past = self.live.write("seek", {"target": "egg"})
         self.assertEqual(past["fast_forward"], dict(target="egg", state="already", event=expected["egg"]))
-        self.assertEqual(past["time_ms"], expected["worker"]["time_ms"] + 1250)
+        self.assertEqual(past["time_ms"], expected["excavation"]["time_ms"] + 1250)
         self.assertEqual(list(self.live.saves.rglob("*.sqlite")), [])
 
     def test_native_clock_save_metadata_and_exact_resume(self):
