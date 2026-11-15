@@ -218,8 +218,8 @@ function configure(meta, referenceKey = null) {
     $("action-replays").hidden = !available.length;
     $("action-replays").replaceChildren(...available.map(m => button(replays[m.label], () => watchAction(m).catch(report))));
     setOptions($("reference"), app.catalog.filter(e => e.key !== $("archive").value));
-    const referenceTitle = meta.settings.physics === 32 ? "R0 · matched reference" :
-        meta.title === "R0 · matched reference" ? "R0 · local nest activity" :
+    const referenceTitle = meta.title.startsWith("R0 · ") ? (meta.settings.physics === 32 ?
+        meta.title.replace("local nest activity", "matched reference") : meta.title.replace("matched reference", "local nest activity")) :
         meta.scenario?.startsWith("micro-m0-") ? "MicroWorld · reference placement" : "Before the feeding correction";
     const prior = app.catalog.find(e => e.title === referenceTitle && e.key !== $("archive").value);
     if (referenceKey || prior) $("reference").value = referenceKey || prior.key;
@@ -638,11 +638,11 @@ function canvasContext(canvas) {
     ctx.clearRect(0, 0, width, height);
     return {ctx, width, height};
 }
-function projection(width, height, bounds, focus = null) {
+function projection(width, height, bounds, focus = null, view = app.map) {
     const [u0, v0, u1, v1] = bounds;
-    const unit = Math.max(1, Math.min((width - 68) / (u1 - u0 || .01), (height - 58) / (v1 - v0 || .01))) * app.map.zoom;
-    const dx = width / 2 + app.map.x - (focus?.[0] ?? (u0 + u1) / 2) * unit;
-    const dy = height / 2 + app.map.y + (focus?.[1] ?? (v0 + v1) / 2) * unit;
+    const unit = Math.max(1, Math.min((width - 68) / (u1 - u0 || .01), (height - 58) / (v1 - v0 || .01))) * view.zoom;
+    const dx = width / 2 + view.x - (focus?.[0] ?? (u0 + u1) / 2) * unit;
+    const dy = height / 2 + view.y + (focus?.[1] ?? (v0 + v1) / 2) * unit;
     return {unit, point: (u, v) => [dx + u * unit, dy - v * unit]};
 }
 function rect(ctx, p, x, y, w, h, fill, stroke = null) {
@@ -1196,6 +1196,7 @@ function drawRestSegment(ctx, point, fits, segment) {
     ctx.beginPath();
     ctx.moveTo(...from);
     ctx.lineTo(...to);
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "#e4c791";
     ctx.stroke();
     ctx.translate(x, y);
@@ -1208,6 +1209,14 @@ function drawRestSegment(ctx, point, fits, segment) {
     ctx.closePath();
     ctx.fillStyle = "#ffe1a3";
     ctx.fill();
+    ctx.restore();
+    ctx.save();
+    ctx.font = '600 12px "Cascadia Mono", monospace';
+    const label = tr("Worker") + " #" + segment.start.actor;
+    ctx.fillStyle = "#152319";
+    ctx.fillRect(x+10,y-29,ctx.measureText(label).width+12,20);
+    ctx.fillStyle = "#ffe1a3";
+    ctx.fillText(label,x+16,y-15);
     ctx.restore();
 }
 async function watchRestSegment(mark) {
@@ -1224,6 +1233,7 @@ async function watchRestSegment(mark) {
     app.follow = false;
     toggle("follow", false);
     app.location = null;
+    app.map = {zoom: 2, x: 0, y: 0};
     $("axis").value = "y";
     preferView(data.start.position_m);
     await seek(data.start.time_ms, data.start);
@@ -1251,7 +1261,7 @@ function drawCompareNest(canvas, slice, ants) {
     const [u, v, normal] = slice.axes, q = slice.quantum_m, o = slice.origin_m;
     const [x0, y0, x1, y1] = slice.bounds_q;
     const bounds = [o[u] + x0*q, o[v] + y0*q, o[u] + x1*q, o[v] + y1*q];
-    const p = projection(width, height, bounds);
+    const p = projection(width, height, bounds, null, {zoom: 2.25, x: 0, y: 0});
     slice.rows.forEach((line, z) => [...line].forEach((material, x) => {
         rect(ctx, p, bounds[0]+x*q, bounds[1]+z*q, q, q, material === "0" ? "#222f25" :
             material === "2" ? "#707c72" : "#826647");
@@ -1276,6 +1286,7 @@ function drawCompareNest(canvas, slice, ants) {
             ctx.fillText(String(at.length),x,y+3);
         }
     }
+    scaleMark(ctx, width, height, p, "X east / Z north");
 }
 async function watchDelivery() {
     const delivery = firstDelivery(app.meta);

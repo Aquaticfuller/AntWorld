@@ -221,6 +221,24 @@ class LiveTests(unittest.TestCase):
         worlds, _, _ = catalogue.browse(archive)
         self.assertEqual(worlds[0]["settings"]["physics"], 31)
 
+    def test_local_nest_activity_is_opt_in_and_restorable(self):
+        with self.assertRaisesRegex(ValueError, "Unknown local nest activity"):
+            self.live.write("new", {"local_nest_activity": "yes"})
+        self.live.write("new", {"local_nest_activity": True})
+        self.live.write("clock", {"running": False})
+        with self.live.lock:
+            recorded = self.live.worker.call(f"ADVANCE {60 * DAY}")
+            self.live.publish(recorded)
+        view = self.live.read("view", {})
+        self.assertTrue(view["local_nest_activity"])
+        self.assertEqual((view["schema_version"], view["physics"]), (25, 32))
+        self.live.write("save", {"name": "Resting sites"})
+        expected = self.live.worker.call(f"ADVANCE {61 * DAY}")
+        self.live.write("load", {"name": "Resting sites"})
+        self.assertEqual(self.live.worker.call("FRAME"), recorded)
+        self.assertEqual(self.live.worker.call(f"ADVANCE {61 * DAY}"), expected)
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+
     def test_loopback_origin_and_folder_control(self):
         api = ReadAPI(Catalog(self.folder / "cache"))
         server = self.enterContext(bind(api, 0, self.live))

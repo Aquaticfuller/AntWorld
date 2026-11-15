@@ -29,6 +29,10 @@ R0_DEMOS = (
      "A single queen and her own workers in the R0 shaft experiment."),
     (R0, "r0-shaft-reference.zip", "R0 · matched reference",
      "The same shaft, seed and supply using standard MicroWorld behavior."),
+    (R0, "r0-dogleg-candidate.zip", "R0 · local nest activity · dogleg",
+     "R0 with a bent passage between the founding chamber and surface."),
+    (R0, "r0-dogleg-reference.zip", "R0 · matched reference · dogleg",
+     "The same bent passage, seed and supply using standard MicroWorld behavior."),
 )
 MICRO_DEMOS = (
     (MICRO, "borisovka-shaft-1-slots.zip", "MicroWorld · shaft",

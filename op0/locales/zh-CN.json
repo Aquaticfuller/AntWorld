@@ -644,5 +644,9 @@
   "R0 · local nest activity": "R0 · 巢内活动",
   "R0 · matched reference": "R0 · 配对对照",
   "A single queen and her own workers in the R0 shaft experiment.": "从单只蚁后开始，观看直井巢中实际发育出的工蚁。",
-  "The same shaft, seed and supply using standard MicroWorld behavior.": "相同直井、随机种子和供给，采用标准微生态行为。"
+  "The same shaft, seed and supply using standard MicroWorld behavior.": "相同直井、随机种子和供给，采用标准微生态行为。",
+  "R0 · local nest activity · dogleg": "R0 · 巢内活动 · 弯道",
+  "R0 · matched reference · dogleg": "R0 · 配对对照 · 弯道",
+  "R0 with a bent passage between the founding chamber and surface.": "蚁室经弯道连接地表的 R0 实验。",
+  "The same bent passage, seed and supply using standard MicroWorld behavior.": "相同弯道、随机种子和供给，采用标准微生态行为。"
 }

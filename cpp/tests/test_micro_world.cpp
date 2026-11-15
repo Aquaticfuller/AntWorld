@@ -10,7 +10,8 @@ using namespace antworld;
 using namespace antworld::detail;
 using namespace antworld::wp6b;
 
-WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}, bool nest_activity=false) {
+WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}, bool nest_activity=false,
+                    std::optional<SocialConfig> trial_social={}) {
     WorldConfig bounds;
     bounds.continuous_spatial_motion=true;
     WorldRuntime world({27,1},7,bounds,limits);
@@ -19,6 +20,7 @@ WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}
     profile.portable_care_motion=micro;
     profile.local_nest_activity=nest_activity;
     profile.floor_space=nest_activity;
+    profile.distance_clock=nest_activity;
     world.configure_ecological_closure(profile);
     world.configure_long_term();
     GeometryConfig geometry;
@@ -26,8 +28,8 @@ WorldRuntime colony(bool blocked=false, bool micro=true, RuntimeLimits limits={}
     const auto radius=nest_activity?8:5;
     const std::array voids{blocked?BoxQ{{-2,-10,-2},{2,-4,2}}:BoxQ{{-radius,-10,-radius},{radius,-4,radius}}};
     world.configure_geometry(geometry,voids);
-    auto social=closure::day_social();
-    if (nest_activity) { social.exchange_enabled=false; social.rest_weight=1'000'000; }
+    auto social=trial_social.value_or(closure::day_social());
+    if (nest_activity && !trial_social) { social.exchange_enabled=false; social.rest_weight=1'000'000; }
     world.configure_social(social);
     world.configure_biology(closure::timed_care(true));
     const PositionM nest{0,-.004,0};
@@ -162,6 +164,24 @@ void local_nest_motion(const std::filesystem::path& path) {
         require(world.checkpoint()==bytes,"local nest history failed validation");
     }
 }
+void floor_load_feedback() {
+    auto policy=closure::day_social();
+    policy.exchange_enabled=false;
+    policy.excavate_weight=1'000'000;
+    for (const unsigned count : {1U,8U}) {
+        auto world=colony(false,true,{},true,policy);
+        const ColonyRef group{world.summary().world,{1}};
+        for (unsigned i=0;i<count;++i) {
+            const auto worker=world.seed_ant(group,{{0,-.004,0},LifeStage::Adult,Caste::Worker,4000});
+            world.enable_physiology(worker,closure::adult,closure::day_physiology());
+            world.set_autonomy(worker);
+        }
+        world.advance_to({6*hour_ms+15000});
+        const auto ledger=world.geometry_snapshot().ledger;
+        require((ledger.excavated_q3>0)==(count==8),"supported floor and local density did not distinguish the excavation control");
+        check_ledgers(world);
+    }
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -173,6 +193,7 @@ int main(int argc,char** argv) try {
     rollback();
     diagonal_clock();
     local_nest_motion(folder/"rest-motion.sqlite");
+    floor_load_feedback();
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

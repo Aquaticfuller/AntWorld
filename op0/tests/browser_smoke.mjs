@@ -90,6 +90,38 @@ async function opened() {
         }
     }, "Rendered world");
 }
+
+async function r0World() {
+    assert.equal(await evaluate("app.meta.settings.physics"), 32);
+    const mark = await evaluate("app.meta.milestones.find(m=>m.label==='Resting site with 10 or more workers')");
+    assert.ok(mark, "The colony developed at least ten workers before its recorded relocation");
+    const started = clock();
+    await evaluate("[...$('action-replays').children].find(e=>e.textContent==='Watch movement in an established nest').click()");
+    await wait(() => evaluate("app.restReplay?.progress > 0"), "Recorded nest interaction in progress");
+    const segment = await evaluate("app.restReplay");
+    assert.equal(segment.start.actor, mark.ant);
+    assert.equal(segment.completion.id, mark.id);
+    assert.notDeepEqual(segment.move.position_m, segment.start.position_m);
+    assert.ok(segment.start.time_ms < segment.completion.time_ms);
+    await screenshot("r0-recorded-rest-movement");
+    await wait(() => evaluate(`app.selectedFact?.id === ${JSON.stringify(mark.id)} && !app.restReplay`), "Verified end of nest movement");
+    result.rest_replay_ms = Math.round(clock()-started);
+    assert.equal(await evaluate("app.state.population.workers >= 10"), true);
+    await click("#compare-tab");
+    await wait(() => evaluate("document.querySelectorAll('.compare-nest').length === 2"), "Synchronized committed nest sections");
+    assert.equal(await evaluate("app.reference.title"), "R0 · matched reference");
+    assert.match(await evaluate("$('compare-cards').textContent"), /Physics 32.*Physics 29/s);
+    await screenshot("r0-matched-nest-comparison");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && document.querySelectorAll('.compare-nest').length === 2"),
+        "Localized comparison");
+    assert.match(await evaluate("$('compare-cards').textContent"), /\u914d\u5bf9\u5bf9\u7167/);
+    assert.deepEqual(exceptions, []);
+    result.segment = {start: segment.start.id, end: segment.completion.id, actor: mark.ant, time_ms: mark.time_ms};
+    result.status = "PASS";
+    await writeFile(join(output, "browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result, null, 2));
+}
 async function timed(name, execute) {
     const start = clock();
     await execute();
@@ -321,6 +353,8 @@ try {
         await activityWorld();
     } else if (mode === "micro") {
         await microWorld();
+    } else if (mode === "r0") {
+        await r0World();
     } else {
     assert.equal(await evaluate("$('title').textContent"), "Founding colony");
     assert.equal(await evaluate("app.meta.facts"), 668720);

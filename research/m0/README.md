@@ -1,5 +1,7 @@
 # AntWorld MicroWorld on Windows
 
+Use the [R0 preview](../r0/README.md) to watch actual rest relocation and compare paired shaft or dogleg chambers.
+
 ## Run a live colony
 
 In an existing MicroWorld checkout, start the local viewer from PowerShell.

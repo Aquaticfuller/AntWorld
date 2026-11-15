@@ -1,0 +1,14 @@
+{
+  "binary_sha256": "7f1c7e4b21fe85d8d583d2683235f1aee9b5a94bf0e78b0673e9639162e6ff63",
+  "cases": [
+    "r0-shaft-reference",
+    "r0-shaft-candidate",
+    "r0-dogleg-reference",
+    "r0-dogleg-candidate"
+  ],
+  "cpp_tree": "4cd62848465b52d7c2b87e84c81e0a43a1ce8f21",
+  "dirty": "",
+  "mode": "observed",
+  "protocol_sha256": "971327d88ffb6ca2b7b14fdf6615ab6f2f03f81eaad8bee62a3baf541327910d",
+  "source": "a10dafe45025ada572949a9fa759cbefde8d5ee9"
+}
