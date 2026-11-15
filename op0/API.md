@@ -1,6 +1,6 @@
 # OP0 observation data contract v1
 
-The terminal calls the same dispatcher used for HTTP. The server binds to IPv4 loopback and serves bundled assets and GET endpoints. The JSON envelope contains `schema: "antworld.observation.v1"` and either `data` or `error`. Events are anchored to the original WorldId. Every world URL also carries an archive-specific key, including when two source files reuse a WorldId.
+The terminal calls the same archive dispatcher used for HTTP. The server binds to IPv4 loopback and serves bundled assets. The JSON envelope contains `schema: "antworld.observation.v1"` and either `data` or `error`. Events are anchored to the original WorldId. Every archived world URL also carries an archive-specific key, including when two source files reuse a WorldId.
 
 English and Simplified Chinese are presentation preferences. The local message catalogue is shared by both viewers. API fields, event names, checkpoint versions, IDs, hashes and numeric values use the same schema for both languages.
 
@@ -42,7 +42,24 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 ### Limits
 
-- OP0 replays archives with no live advancement or command API. Supported checkpoint families start at schema 8 and extend through 23. MicroWorld physics 27/28 and portable care physics 29/30 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
+- The archive interface is read-only. Supported checkpoint families start at schema 8 and extend through 23. MicroWorld physics 27/28 and portable care physics 29/30 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
 - Event pages are bounded and share a 12-block cache. Validation streams facts. It loads native frames and sampled cuts during indexing, with a 768 MiB frame limit, 8 GiB member limit and 64 MiB limit per sample CSV. Temporary disk space is needed for a SQLite copy and its index.
 - Space uses axis-aligned slices of quantized 3D material. MicroWorld centers the default underground cut and roof inset on the nest. Large legacy cuts may show a bounded corner of the solid. The full surface grid remains visible. API callers can request another bounded window. OP0 does not reconstruct unknown trajectories or animated meshes.
 - Cross-world identities remain separate. Similar settings do not establish equality of all input fields. Physical and physiological observations describe a particular simulated world.
+
+### Live MicroWorld
+
+`python -m op0 --micro serve` also exposes the live interface when a native `antworld_m0_live` executable is available. `serve --replay` opens the read-only archive service alone. The same units and identity rules apply to live observations. `epoch` changes when a new world is created or a save is loaded, including when the WorldId stays the same.
+
+| Endpoint under /api/v1/live | Method | Inputs and output |
+| --- | --- | --- |
+| `status` | GET | Availability, current WorldId, simulation time, rate, pause state and save status |
+| `view` | GET | A published Core cut, recent canonical facts and the requested derived terrain section. Accepts `axis`, `layer_q`, `clearance` and `group` |
+| `saves` | GET | Managed directory and save names, world identities, elapsed simulation time, file sizes and modification times |
+| `new` | POST | Creates a new world in the protected shaft fixture and starts the Core clock at `1×` |
+| `clock` | POST | `running` and optional `rate` from 1, 10, 60, 600, 3600 and 86400. Returns the published clock after the change |
+| `save` | POST | `name` and optional `overwrite`. Publishes a finished native SQLite store with its authoritative checkpoint and history |
+| `load` | POST | `name`. Validates a native save and restores its world paused |
+| `folder` | POST | Opens the configured save directory in the system file manager |
+
+Live commands take a same-origin local JSON request. The browser observes published cuts. The native clock advances from the host's monotonic clock independently of requests. Current views carry the newest 120 canonical facts at most, with up to 16 listed in the selected group. The browser displays actual positions and recent committed movement points. It does not reconstruct a path between them. The complete history remains in the Core and in each explicitly saved SQLite store.

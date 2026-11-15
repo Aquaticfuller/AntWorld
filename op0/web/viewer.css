@@ -60,6 +60,23 @@ h1 { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(34px, 4vw
 #identity-content { position: absolute; right: 0; top: 100%; z-index: 6; width: min(500px, 94vw); max-height: 56vh; overflow: auto; padding: 14px; background: #202b21; border: 1px solid #536550; border-radius: 8px; }
 .notice { padding: 12px 15px; background: #202d22; border: 1px solid #455746; border-radius: 8px; margin-bottom: 12px; color: var(--green); }
 .notice.error { background: #342521; color: #f3b092; border-color: #6f4836; }
+.live-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 15px; margin-bottom: 13px; }
+.live-readout { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px 14px; }
+#live-clock { font: 600 18px "IBM Plex Mono", "Cascadia Mono", monospace; font-variant-numeric: tabular-nums; }
+#live-status { color: var(--muted); font-size: 12px; }
+.live-actions, #save-form, .save-folder-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+button.primary-button { background: var(--green); border-color: var(--green); color: #182216; font-weight: 700; }
+#save-manager { width: min(750px, calc(100% - 32px)); max-height: 85vh; padding: 0; color: var(--text); }
+#save-manager::backdrop { background: #080e0bbd; }
+.save-content { display: grid; gap: 14px; padding: 16px; }
+#save-form input { flex: 1; min-width: 120px; }
+.save-folder-row p { flex: 1; min-width: 140px; overflow-wrap: anywhere; }
+.save-table { overflow-x: auto; }
+.save-table table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+.save-table th, .save-table td { padding: 9px 8px; border-bottom: 1px solid var(--line); }
+.save-table th { color: var(--muted); font-weight: 600; }
+.save-table td:nth-child(n+2) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+#save-notice { color: var(--gold); font-size: 12px; }
 .workspace { display: grid; gap: 13px; }
 .population { display: grid; grid-template-columns: 1.4fr repeat(4,1fr); border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
 .population > div { padding: 13px 18px 11px; border-right: 1px solid var(--line); display: grid; gap: 3px; }

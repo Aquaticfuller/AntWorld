@@ -158,6 +158,59 @@ async function microWorld() {
     console.log(JSON.stringify(result,null,2));
 }
 
+async function liveWorld() {
+    await click("#new-colony");
+    await wait(() => evaluate("liveView.state?.world_id && !$('viewer').hidden && app.hits.some(a => a.id === '2')"), "Fresh Core queen");
+    const before = await evaluate("liveView.state.time_ms");
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    await sleep(1300);
+    const elapsed = await evaluate("liveView.state.time_ms") - before;
+    assert.ok(elapsed >= 800 && elapsed < 2500, `Expected 1x clock, advanced ${elapsed} ms`);
+    await click("#live-pause");
+    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause the Core clock");
+    const paused = await evaluate("liveView.state.time_ms");
+    await sleep(350);
+    assert.equal(await evaluate("liveView.state.time_ms"), paused);
+
+    await select("live-rate", "86400");
+    await wait(() => evaluate("liveView.state.rate === 86400 && !liveView.busy"), "Accelerate the paused world");
+    await click("#live-pause");
+    await wait(() => evaluate("app.state.ants.some(a => a.stage === 'Egg')"), "Live worker commits the first birth", 22000);
+    await click("#live-pause");
+    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause for a save");
+    const savedTime = await evaluate("liveView.state.time_ms");
+    await screenshot("m0-live-colony");
+    await click("#open-saves");
+    await evaluate("$('save-name').value = 'Live browser test'");
+    await click("#save-form button");
+    await wait(() => evaluate("$('saved-colonies').textContent.includes('Live browser test') && !liveView.busy"), "List the native SQLite save");
+    assert.match(await evaluate("$('saved-colonies').textContent"), /Day 4|Day 5/);
+    assert.match(await evaluate("$('saved-colonies').textContent"), /KiB|MiB/);
+    await screenshot("m0-live-saves");
+    const savedEpoch = await evaluate("liveView.state.epoch");
+    await click("#saved-colonies button");
+    await wait(() => evaluate(`liveView.state.epoch > ${savedEpoch} && !$('save-manager').open`), "Load the saved world");
+    assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    assert.equal(await evaluate("liveView.state.running"), false);
+    await click("#observe-tab");
+    await opened();
+    assert.equal(await evaluate("app.meta.settings.physics"), 29);
+    await click("#live-tab");
+    await wait(() => evaluate("app.live && ! $('viewer').hidden && Boolean(app.state)"), "Return from the original archive");
+    assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('new-colony').textContent === '\u65b0\u5efa\u8681\u7a9d'"),
+        "Translate the live controls without resetting the world");
+    assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
+    assert.deepEqual(exceptions, []);
+    result.status = "PASS";
+    result.elapsed_at_1x_ms = elapsed;
+    result.loaded_time_ms = savedTime;
+    await writeFile(join(output, "m0-live-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result, null, 2));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -183,11 +236,18 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
+        if (mode === "live") {
+            await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
+                "Live controls ready");
+            return;
+        }
         await opened();
         result.shell_paint_ms = await evaluate("performance.getEntriesByType('paint').find(x => x.name === 'first-contentful-paint')?.startTime ?? null");
         result.world_ready_ms_after_navigation = await evaluate("performance.getEntriesByName('op0-world-ready')[0].startTime");
     });
-    if (mode === "micro") {
+    if (mode === "live") {
+        await liveWorld();
+    } else if (mode === "micro") {
         await microWorld();
     } else {
     assert.equal(await evaluate("$('title').textContent"), "Founding colony");

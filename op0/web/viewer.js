@@ -26,7 +26,7 @@ const app = {
     visibleSummary: null,
     map: {zoom: 1, x: 0, y: 0}, drag: null, activity: null, activityVersion: 0, playVersion: 0, playingDelivery: false,
     eventAfter: null, eventListVersion: 0, seekVersion: 0, openVersion: 0, playback: null,
-    compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0
+    compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0, live: false
 };
 
 function tr(message, values = {}) {
@@ -42,7 +42,7 @@ function preference() {
 const staticStrings = [];
 function captureStaticStrings() {
     const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,#day-title,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
-    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play", "watch-delivery"]);
+    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play", "watch-delivery", "live-pause", "view-source", "footer-mode"]);
     for (const e of document.querySelectorAll(selectors)) {
         if (!dynamic.has(e.id) && e.children.length === 0 && e.textContent.trim() && !e.closest("#locale")) {
             staticStrings.push([e, null, e.textContent.trim()]);
@@ -76,6 +76,14 @@ async function setLanguage(next, refresh = true) {
     }
     replaySettings();
     if (!refresh) return;
+    if (app.live) {
+        liveVisibility(true);
+        liveView.eventsKey = null;
+        await refreshLive();
+        if ($("save-manager").open) await refreshSaves();
+        return;
+    }
+    liveVisibility(false);
     if (!app.catalog.length) {
         showEmptyCatalog();
         return;
@@ -270,12 +278,13 @@ function setMode(compare) {
     $("viewer").hidden = compare;
     $("comparison").hidden = !compare;
     toggle("compare-tab", compare);
-    toggle("observe-tab", !compare);
+    toggle("observe-tab", !compare && !app.live);
     replaySettings();
     if (!compare) requestAnimationFrame(draw);
 }
 
 async function seek(ms, exact = null) {
+    if (app.live) return refreshLive();
     if (!app.meta) return;
     const version = ++app.seekVersion;
     const previous = app.time;
@@ -382,13 +391,15 @@ async function loadActivity() {
     renderActivity(result);
 }
 
-function updateState(state) {
-    const p = state.population;
+function updatePopulation(p, s) {
     put("queen-state", tr(p.queens_alive.length ? "Alive" : "Absent"));
-    const s = state.queens_last_sample;
     put("queen-mass", s ? tr("{water} · sampled on {day}", {water: withUnit(s.hydration_ug, "µg water"), day: day(s.time_ms)}) :
         tr(p.queens_alive.length ? "Physiology unavailable at this cut" : "No live queen at this cut"));
     for (const name of ["workers", "eggs", "larvae", "pupae"]) put(name, p[name].toLocaleString(language));
+}
+
+function updateState(state) {
+    updatePopulation(state.population, state.queens_last_sample);
     const totals = state.cumulative;
     const net = withUnit(state.net_removed_m3 == null ? null : state.net_removed_m3 * 1e9, "mm³");
     const rows = [["External stock", mass(state.external_ug)], ["Nest stock", mass(state.nest_ug)],
@@ -414,10 +425,13 @@ function eventLabel(e) {
     return tr(labels[e.kind] || (Object.hasOwn(messages, e.kind) ? e.kind : e.kind.replace(/([a-z])([A-Z])/g, "$1 $2")));
 }
 function eventButton(e, extra = false) {
-    const b = button("", () => jumpEvent(e.id).catch(report));
+    const b = button("", () => {
+        if (app.live) { inspect(true); showEvent(e); }
+        else jumpEvent(e.id).catch(report);
+    });
     b.className = "event-row";
     b.dataset.event = e.id;
-    b.append(node("span", eventLabel(e)), node("span", day(e.time_ms)));
+    b.append(node("span", eventLabel(e)), node("span", app.live ? duration(e.time_ms) : day(e.time_ms)));
     if (extra) b.append(node("small", "#" + e.id + (e.actor ? " · " + tr("Ant #{id}", {id: e.actor}) : "") +
         (e.related ? " → #" + e.related : "") + (e.death_cause ? " · " + tr(e.death_cause) : "")));
     return b;
@@ -441,6 +455,10 @@ function renderAnt(ant) {
     if (s) panel.append(keyValues([["Body energy", withUnit(s.energy_nj, "nJ")], ["Body water", withUnit(s.hydration_ug, "µg")],
         ["Tissue protein", withUnit(s.tissue_protein_ug, "µg")], ["Crop C/P/W/other", mass(s.crop_ug)],
         ["Carried C/P/W/other", mass(s.carried_ug)]]));
+    if (app.live) {
+        if (ant.activity.length) panel.append(node("h4", tr("Recent Core events"), "subhead"), ...ant.activity.map(e => eventButton(e)));
+        return;
+    }
     if (ant.status !== "Not yet present") {
         const detail = node("details", null, "individual-window");
         const detailBody = node("div");
@@ -488,6 +506,7 @@ function inspect(events) {
     toggle("individual-tab", !events);
 }
 async function selectAnt(id) {
+    if (app.live) return chooseLiveAnt(id);
     stopPlay();
     const version = app.openVersion;
     const p = await world("ant", {...cut(), id});
@@ -520,6 +539,7 @@ function showEvent(e) {
     container.dataset.event = e.id;
 }
 async function jumpEvent(id, ant = null) {
+    if (app.live) return showLiveFact(id);
     stopPlay();
     const version = app.openVersion;
     const e = await world("event", {id});
@@ -542,6 +562,7 @@ async function jumpEvent(id, ant = null) {
     await loadEvents(false);
 }
 async function loadEvents(more) {
+    if (app.live) return refreshLive();
     if (!app.meta || app.compare) return;
     const request = ++app.eventListVersion;
     const low = Math.floor(app.time / DAY) * DAY;
@@ -892,8 +913,9 @@ function drawMap() {
     if (!underground && !visible.length && state.ants.length) {
         notes.push(tr("{count} living outside this view.", {count: state.ants.length}));
     }
-    if (trail.length) notes.push(tr("{count} recorded movement points in this view over the last 5 simulated minutes.", {count: trail.length}));
-    else if (motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
+    if (trail.length) notes.push(tr(app.live ? "{count} movement points from recent live events." :
+        "{count} recorded movement points in this view over the last 5 simulated minutes.", {count: trail.length}));
+    else if (!app.live && motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     put("map-detail", notes.join(" "));
     renderLocation();
@@ -979,6 +1001,7 @@ function dashboard() {
 }
 function draw() {
     if (!app.meta) return;
+    if (app.live) { drawMap(); return; }
     if (!app.compare) {
         drawMap();
         graph("timeline-chart", populationTracks(), app.meta.end_ms, app.time);
@@ -1253,7 +1276,7 @@ function bind() {
     change("locale", () => setLanguage($("locale").value));
     change("archive", () => openArchive($("archive").value));
     change("archived-world", () => openArchive($("archive").value, $("archived-world").value));
-    click("observe-tab", () => { if (app.meta) { stopPlay(); setMode(false); return seek(app.time); } });
+    click("observe-tab", openArchiveView);
     click("compare-tab", async () => {
         if (!app.meta) return;
         setMode(true);
@@ -1341,6 +1364,18 @@ function showEmptyCatalog() {
     put("subtitle", tr("Import a Core ZIP or SQLite backup with python -m op0 import PATH, then restart this viewer."));
 }
 
+async function openArchiveView() {
+    if (app.live) leaveLiveView();
+    if (app.meta) { stopPlay(); setMode(false); await seek(app.time); return; }
+    const version = ++app.openVersion;
+    const active = $("archive").value;
+    app.catalog = await api("catalog");
+    if (app.live || version !== app.openVersion) return;
+    if (!app.catalog.length) { showEmptyCatalog(); return; }
+    setOptions($("archive"), app.catalog, active);
+    await openArchive($("archive").value || app.catalog[0].key);
+}
+
 async function start() {
     captureStaticStrings();
     await setLanguage(preference(), false);
@@ -1350,12 +1385,10 @@ async function start() {
     put("space-caption", tr("Committed positions and ordered geometry edits"));
     stopPlay();
     bind();
-    app.catalog = await api("catalog");
-    if (!app.catalog.length) {
-        showEmptyCatalog();
-        return;
-    }
-    setOptions($("archive"), app.catalog);
-    await openArchive(app.catalog[0].key);
+    bindLive();
+    const live = await api("live/status");
+    $("live-tab").hidden = !live.enabled;
+    if (live.enabled) await openLiveView();
+    else await openArchiveView();
 }
 start().catch(report);

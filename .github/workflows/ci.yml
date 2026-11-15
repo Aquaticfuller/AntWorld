@@ -25,6 +25,16 @@ jobs:
         run: python tools/ci_build.py ${{ matrix.configuration }}
       - name: Test
         run: python tools/ci_test.py ${{ matrix.configuration }}
+      - name: Exercise the native live clock, save and restore
+        if: matrix.configuration == 'Release'
+        shell: pwsh
+        run: |
+          $binary = @('build/ci/Release/antworld_m0_live.exe', 'build/ci/antworld_m0_live') |
+              Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $binary) { throw 'Missing live MicroWorld executable' }
+          $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $binary).Path
+          $env:M0_LIVE_TEST_ROOT = Join-Path $env:RUNNER_TEMP 'm0-live-tests'
+          python -m unittest discover -s op0/tests -p test_live.py -v
       - name: Reproduce MicroWorld examples through a durable midpoint
         if: matrix.configuration == 'Release'
         shell: pwsh

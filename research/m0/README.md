@@ -1,16 +1,48 @@
-# Open AntWorld MicroWorld on Windows
+# AntWorld MicroWorld on Windows
 
-The archive begins with one queen and ends at day 90. You can open it without a C++ build. Use Python 3.11 or newer, Git and a local browser. OP0 uses the Python standard library and files bundled in the repository.
+## Run a live colony
+
+In an existing MicroWorld checkout, start the local viewer from PowerShell.
+
+```powershell
+Set-Location 'D:\Codex_workspace\AntWorld'
+.\tools\start_m0.cmd
+```
+
+If a previous AntWorld service holds the port, press Ctrl+C in its terminal first. Keep the new terminal open and open [MicroWorld](http://127.0.0.1:8765/) if the browser stays closed. The `.cmd` launcher works with PowerShell script execution restrictions. You can also use your Python executable directly.
+
+```powershell
+& "$env:LOCALAPPDATA\Python\bin\python.exe" -B -X utf8 -m op0 --micro serve
+```
+
+If the page asks for a native build, use a full checkout with Python 3.11 or newer, CMake and the repository's C++ toolchain. The builder reuses the portable toolchain in `.tools` when available. With CMake on PATH it can also use an installed C++ toolchain. Build `antworld_m0_live` once before starting the viewer.
+
+```powershell
+python -B tools/build_m0_live.py
+.\tools\start_m0.cmd
+```
+
+1. Select **New colony**. The C++ Core creates a new world on day zero with a queen in the protected shaft. The default `1×` speed advances one simulated second per elapsed second. The clock shows the day, hours, minutes and seconds. The Web page displays published Core positions and recent events.
+2. Use **Pause** and **Resume** to inspect the current world. Select `60×` for a simulated minute per elapsed second or `86,400×` for up to one simulated day per elapsed second. The Core can run behind the requested speed when it has more work to process.
+3. Select **Save and load**, enter a name, and select **Save colony**. The list shows each save's simulated age, file size and modification time. **Load** restores the saved colony paused at the saved time. Resume to continue. Saving to an existing name asks for confirmation.
+4. Select **Open save folder** to manage the SQLite files in Windows File Explorer. Use **Refresh** in the save window after moving or renaming a file. The default folder is `out/m0-saves` in the checkout. Override it with `.\tools\start_m0.cmd --saves 'D:\AntWorldSaves'`.
+5. Select **Archive replay** to browse the earlier demonstrations and comparisons. The live Core continues while you browse another view or close the browser tab. Pause or save the colony before stopping the local service with Ctrl+C.
+
+The live preview runs one colony and holds its state and history in memory until you save. Each named save holds one full SQLite snapshot and its committed history. While a loaded colony is open, a private working copy keeps its history accessible if you move its save file. The working copy is removed on normal shutdown. Save storage, the archive index and build output use the checkout's drive by default. The live profile is the reviewed Borisovka balanced-shaft fixture with physics 29 and seed 1. Its `ENGINEERING_ONLY` label applies during live observation as it does during archive replay.
+
+## Replay archived colonies
+
+The bundled MicroWorld archive begins with one queen and ends at day 90. A sparse checkout can browse the archives with Python 3.11 or newer and a local browser. It needs no C++ build.
 
 ```powershell
 Set-Location D:\Codex_workspace
-git clone --filter=blob:none --sparse --depth 1 --single-branch --branch codex/m0-microworld https://github.com/Aquaticfuller/AntWorld.git AntWorld-M0
+git clone --filter=blob:none --sparse --depth 1 --single-branch --branch codex/m0-live https://github.com/Aquaticfuller/AntWorld.git AntWorld-M0
 Set-Location AntWorld-M0
 git sparse-checkout set op0 tools experiments/m0/portable-demo research/m0
-.\tools\start_op0.ps1 -MicroWorld
+.\tools\start_m0.cmd --replay
 ```
 
-In an existing MicroWorld checkout, run only the last command from its root. The sparse checkout above is for viewing; it omits the historical experiments and C++ source to save disk space. If the browser stays closed, open [the viewer](http://127.0.0.1:8765/). The terminal window runs the local service. Press Ctrl+C there to stop it. The launcher uses `out/m0-op0-cache` inside the checkout for its disposable browse index. To put the index on another drive, use `-Cache 'D:\AntWorldObservationCache'`. If a PowerShell execution policy blocks the script, the equivalent command is `py -B -m op0 --micro --cache out/m0-op0-cache serve`.
+The archive launcher uses `out/m0-op0-cache` for its disposable browse index. To put the index on another drive, run `python -B -m op0 --micro --cache 'D:\AntWorldObservationCache' serve --replay`. The replay viewer also accepts a stable native save for read-only inspection through `.\tools\start_m0.cmd --replay --import-path 'out\m0-saves\My colony.sqlite'`.
 
 1. Open **MicroWorld · shaft**. A horizontal section through the founding chamber shows the queen. Select **Watch egg placement**. The next scene shows the first egg at its committed position. Scrub just before day 5 to see the first clutch, or select **Watch brood arrangement** to replay an actual handling bout. Change the section between horizontal and either vertical direction to inspect the pocket and shaft.
 2. Select **Brood fed** to jump to a measured handling completion, or **Watch brood feeding** to see its recorded start and end. The event panel identifies the participants and transferred mass. **Larval death** opens a real lost individual. In **Individual**, the nearest prior sampled physiology still carries its own observation date.

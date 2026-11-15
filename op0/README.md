@@ -2,6 +2,8 @@
 
 OP0 replays real AntWorld C++ Simulation Core archives in a browser or terminal. Both clients use the same read-only API. The checked-in demonstration starts with one queen, no workers and a three-dimensional shaft. Its 150-day histories include colony growth and extinction under different resource conditions.
 
+To create and play a live MicroWorld colony, use the [MicroWorld start guide](../research/m0/README.md). It covers real-time controls, manual saves and File Explorer. This page covers the archive viewer.
+
 ## Windows quick start
 
 Install [Git for Windows](https://gitforwindows.org/) and [Python for Windows](https://www.python.org/downloads/windows/) if they are missing. OP0 needs Python 3.11 or newer and a current browser. The viewer uses only the Python standard library and bundled HTML, CSS and JavaScript. It requires no C++ build, Node, package manager or network connection after obtaining the repository. With Windows Package Manager, example installation commands are:

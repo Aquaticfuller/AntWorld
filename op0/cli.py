@@ -321,14 +321,17 @@ class Terminal:
 
 
 def main(argv=None):
-    parser = ArgumentParser(prog="python -m op0", description="Replay committed AntWorld history.")
-    parser.add_argument("--cache", type=Path, default=cache_path())
+    parser = ArgumentParser(prog="python -m op0", description="Run MicroWorld or replay committed AntWorld history.")
+    parser.add_argument("--cache", type=Path)
     parser.add_argument("--no-demos", action="store_true")
-    parser.add_argument("--micro", action="store_true", help="List the MicroWorld demonstrations first.")
+    parser.add_argument("--micro", action="store_true", help="Open MicroWorld and put its demonstrations first.")
     modes = parser.add_subparsers(dest="mode", required=True)
     server = modes.add_parser("serve", help="Open the local web viewer")
     server.add_argument("--port", type=int, default=8765)
     server.add_argument("--no-browser", action="store_true")
+    server.add_argument("--replay", action="store_true", help="Open the archive viewer directly.")
+    server.add_argument("--live-core", type=Path, help="Path to the native MicroWorld executable.")
+    server.add_argument("--saves", type=Path, default=ROOT / "out/m0-saves", help="Folder for manually saved colonies.")
     server.add_argument("--import-path", action="append", type=Path, default=[])
     terminal = modes.add_parser("tui", help="Open the terminal viewer")
     terminal.add_argument("--plain", action="store_true")
@@ -343,7 +346,8 @@ def main(argv=None):
         if args.mode == "pack":
             pack(args.directory, args.output)
             return 0
-        catalog = default_catalog(args.cache, not args.no_demos, args.micro)
+        cache = args.cache or (ROOT / "out/m0-op0-cache" if args.micro else cache_path())
+        catalog = default_catalog(cache, not args.no_demos, args.micro)
         if args.mode == "import":
             worlds, elapsed = register_import(catalog, args.source)
             for meta in worlds:
@@ -357,7 +361,12 @@ def main(argv=None):
             Terminal(api, args.plain, args.language).run()
         else:
             from .server import serve
-            serve(api, args.port, not args.no_browser)
+            if args.micro and not args.replay:
+                from .live import LiveSession, core_path
+                with LiveSession(args.live_core or core_path(), args.saves) as live:
+                    serve(api, args.port, not args.no_browser, live)
+            else:
+                serve(api, args.port, not args.no_browser)
     except ERRORS as err:
         print(f"OP0: {err}", file=sys.stderr)
         return 1

@@ -74,3 +74,32 @@ def clear_centers(geometry, edits, section):
             values.append("1" if upper[b]-lower[b]-upper[a]+lower[a] == 0 else "0")
         rows.append("".join(values))
     return rows
+
+
+def focused_window(geometry, position, axes, radius):
+    solid, origin, quantum = (geometry[key] for key in ("solid", "origin_m", "quantum_m"))
+    u, v = axes
+    x, y = (round((position[a] - origin[a]) / quantum) for a in axes)
+    return (max(solid[u], x - radius), max(solid[v], y - radius),
+            min(solid[u + 3], x + radius), min(solid[v + 3], y + radius))
+
+
+def terrain_view(geometry, edits, axis, layer, window=None, *, roof_focus=None, clearance=False):
+    section = slice_at(geometry, edits, axis, layer, window)
+    if clearance:
+        section["unloaded_body_clear"] = clear_centers(geometry, edits, section)
+    solid = geometry["solid"]
+    roof_window = None
+    roof_area = (solid[3] - solid[0]) * (solid[5] - solid[2])
+    if roof_area > MAX_PIXELS and roof_focus is not None:
+        roof_window = focused_window(geometry, roof_focus, (0, 2), 24)
+    openings = None
+    if roof_window or roof_area <= MAX_PIXELS:
+        roof = slice_at(geometry, edits, "y", solid[4] - 1, roof_window)
+        origin, scale = geometry["origin_m"], geometry["quantum_m"]
+        x, z = roof["bounds_q"][:2]
+        openings = [[origin[0] + (x + col + .5) * scale, origin[1] + solid[4] * scale,
+                     origin[2] + (z + row + .5) * scale]
+                    for row, values in enumerate(roof["rows"]) for col, mat in enumerate(values) if mat == "0"]
+    return dict(slice=section, openings=openings, opening_cell_m=geometry["quantum_m"], revision=len(edits),
+                geometry_bounds_q=solid, cropped=window is not None)

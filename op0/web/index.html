@@ -5,16 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AntWorld · Observation Preview</title>
   <link rel="stylesheet" href="/viewer.css">
+  <script src="/live.js" defer></script>
   <script src="/viewer.js" defer></script>
 </head>
 <body>
   <header class="top">
     <a class="wordmark" href="/" aria-label="AntWorld home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>AntWorld</a>
     <nav aria-label="Viewer" data-i18n-aria>
-      <button id="observe-tab" class="top-tab active" aria-pressed="true">Observe</button>
+      <button id="live-tab" class="top-tab" aria-pressed="false" hidden>Live colony</button>
+      <button id="observe-tab" class="top-tab active" aria-pressed="true">Archive replay</button>
       <button id="compare-tab" class="top-tab" aria-pressed="false">Compare worlds</button>
     </nav>
-    <div class="top-right"><div class="local-state"><span class="status-dot"></span> <span>Local archive</span> <span class="version">OP0</span></div>
+    <div class="top-right"><div class="local-state"><span class="status-dot"></span> <span id="view-source">Local archive</span> <span class="version">OP0</span></div>
       <label for="locale" class="sr-only" data-i18n>Language</label>
       <select id="locale" aria-label="Language" data-i18n-aria><option value="en">English</option><option value="zh-CN">&#20013;&#25991;</option></select></div>
   </header>
@@ -25,12 +27,22 @@
         <h1 id="title">Opening AntWorld</h1>
         <p id="subtitle">Checking the local archive catalogue…</p>
       </div>
-      <div class="world-select"><label for="archive">WORLD ARCHIVE</label><select id="archive" aria-label="World archive"></select>
+      <div id="archive-picker" class="world-select"><label for="archive">WORLD ARCHIVE</label><select id="archive" aria-label="World archive"></select>
         <select id="archived-world" aria-label="World within selected store" hidden></select>
         <details id="identity"><summary>Version, conditions &amp; integrity</summary><div id="identity-content"></div></details>
       </div>
     </section>
     <p id="notice" class="notice" role="status" hidden></p>
+    <section id="live-controls" class="panel live-controls" aria-label="Live simulation controls" hidden>
+      <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span></div>
+      <div class="live-actions">
+        <button id="new-colony" class="primary-button" type="button">New colony</button>
+        <button id="live-pause" type="button">Pause</button>
+        <label for="live-rate" class="sr-only">Simulation speed</label>
+        <select id="live-rate"><option value="1">1× real time</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option><option value="3600">3,600×</option><option value="86400">86,400×</option></select>
+        <button id="open-saves" type="button">Save and load</button>
+      </div>
+    </section>
     <div id="viewer" class="workspace" hidden>
       <section class="population" aria-label="Population at the playback cursor">
         <div><span class="metric-label">QUEEN</span><strong id="queen-state">—</strong><small id="queen-mass"></small></div>
@@ -80,12 +92,13 @@
               <option value="rejected">Rejected actions</option><option value="tasks">Task state</option><option value="all">All facts</option>
             </select><select id="event-range" aria-label="Event range"><option value="day">This day</option><option value="hour">This hour</option><option value="all">Entire archive</option></select></div>
             <div id="event-detail" hidden></div>
+            <p id="live-event-note" class="muted" data-i18n hidden>Recent Core events</p>
             <div id="event-list"></div>
             <button id="more-events" hidden>Next page</button>
           </section>
         </aside>
       </div>
-      <section class="panel timeline" aria-labelledby="timeline-label">
+      <section id="archive-timeline" class="panel timeline" aria-labelledby="timeline-label">
         <div class="timeline-top"><div><h2 id="timeline-label">Colony timeline</h2><div id="time-note">Day 0</div></div>
           <div class="transport"><button id="back" aria-label="Previous day">−1 day</button><button id="play" aria-pressed="false">▶ Play</button><button id="next" aria-label="Next day">+1 day</button>
             <label for="speed" class="sr-only">Playback speed</label><select id="speed"><option value="1">1 day/s</option><option value="5" selected>5 days/s</option><option value="15">15 days/s</option><option value="30">30 days/s</option></select>
@@ -121,7 +134,7 @@
           <p id="hour-note"></p>
         </div>
       </section>
-      <section class="panel dashboard" aria-labelledby="dashboard-label">
+      <section id="archive-dashboard" class="panel dashboard" aria-labelledby="dashboard-label">
         <div class="panel-head"><div><h2 id="dashboard-label">Colony ledger</h2><p>Stock and committed activity at the selected time</p></div>
           <label class="sr-only" for="chart-series">History series</label><select id="chart-series"><option value="resources">Food inventory</option><option value="activity">Committed actions</option><option value="deaths">Deaths by cause</option><option value="soil">Excavation volume</option><option value="queen">Queen physiology</option></select>
         </div>
@@ -141,6 +154,21 @@
       <details open><summary>Input alignment</summary><div id="compare-config"></div></details>
     </section>
   </main>
-  <footer><span data-i18n>AntWorld Observation Preview</span><span>·</span><span data-i18n>Read-only replay of Simulation Core facts</span><span>·</span><span data-i18n>Ant identities are scoped to the opened archive.</span></footer>
+  <dialog id="save-manager" class="panel" aria-labelledby="save-title">
+    <div class="panel-head"><h2 id="save-title">Saved colonies</h2><button id="close-saves" type="button">Close</button></div>
+    <div class="save-content">
+      <form id="save-form">
+        <label for="save-name">Save name</label><input id="save-name" maxlength="64" autocomplete="off" required>
+        <button class="primary-button" type="submit">Save colony</button>
+      </form>
+      <div class="save-folder-row"><p id="save-folder" class="muted"></p><button id="open-save-folder" type="button">Open save folder</button><button id="refresh-saves" type="button">Refresh</button></div>
+      <p id="save-notice" role="status" hidden></p>
+      <div class="save-table"><table>
+        <thead><tr><th data-i18n>Name</th><th data-i18n>Simulated duration</th><th data-i18n>File size</th><th data-i18n>Last modified</th><th></th></tr></thead>
+        <tbody id="saved-colonies"></tbody>
+      </table></div>
+    </div>
+  </dialog>
+  <footer><span data-i18n>AntWorld Observation Preview</span><span>·</span><span id="footer-mode" data-i18n>Read-only replay of Simulation Core facts</span></footer>
 </body>
 </html>

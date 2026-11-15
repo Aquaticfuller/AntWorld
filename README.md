@@ -2,7 +2,7 @@
 
 ## Watch a MicroWorld
 
-The MicroWorld preview starts with one queen in a small 3D nest and replays 90 days of committed Core history. Open the [Windows start guide](research/m0/README.md) to watch the first clutch, individual care, worker movements and real soil edits. Five compact archives are included, with English and Simplified Chinese controls and a read-only terminal option.
+The MicroWorld browser preview can start a live C++ Core colony with one queen in a small 3D nest. It supports real-time and accelerated simulation, manual SQLite saves and archive replay. Open the [Windows start guide](research/m0/README.md) to watch the first clutch, individual care, worker movements and real soil edits. Five compact archives are included, with English and Simplified Chinese controls and a read-only terminal option.
 
 ## Watch a real colony with OP0
 
@@ -20,7 +20,7 @@ The browser opens the **Founding colony** archive. The first view is the queen i
 .\tools\start_op0.ps1 -Terminal
 ~~~
 
-See the [OP0 guide](op0/README.md) for installation, importing another world, replaying the failures, comparing the historical feeding correction and reproducing the checks. OP0 is an offline archive viewer. The displayed models remain engineering previews.
+See the [OP0 archive guide](op0/README.md) for installation, importing another world, replaying the failures, comparing the historical feeding correction and reproducing the checks. The displayed models remain engineering previews.
 
 ## Core development
 

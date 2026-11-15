@@ -10,7 +10,7 @@ import zlib
 
 from . import DAY, SCHEMA
 from .codec import ACTS, CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
-from .geometry import AXES, MAX_PIXELS, clear_centers, slice_at
+from .geometry import AXES, MAX_PIXELS, focused_window, terrain_view
 from .index import BLOCK_RECORDS, COUNTERS, LEDGER
 
 
@@ -365,45 +365,23 @@ class ReadAPI:
         default = (solid[n] + solid[n+3]) // 2
         layer = integer(options, "layer_q", default, solid[n], solid[n+3] - 1)
         window = None
+        micro = (meta.get("scenario") or "").startswith("micro-m0-")
+        focus = meta["colonies"][0]["position_m"] if meta["colonies"] else None
         if "window" in options:
             try:
                 window = tuple(int(x) for x in options["window"].split(","))
             except ValueError:
                 raise ValueError("Use four integer bounds for window") from None
             require(len(window) == 4, "Use four integer bounds for window")
-        elif (meta["settings"]["physics"] in (27, 28, 29, 30) or (meta.get("scenario") or "").startswith("micro-m0-")) and meta["colonies"]:
+        elif (meta["settings"]["physics"] in (27, 28, 29, 30) or micro) and focus is not None:
             # The 30 cm domain is much larger than the founding pocket. Start
             # with a nest-centered section; the surface retains its full extent.
-            focus = meta["colonies"][0]["position_m"]
-            origin, quantum = geometry["origin_m"], geometry["quantum_m"]
-            bounds = []
-            for a in (u, v):
-                center = round((focus[a] - origin[a]) / quantum)
-                low, high = max(solid[a], center - 22), min(solid[a+3], center + 22)
-                bounds.append((low, high))
-            window = bounds[0][0], bounds[1][0], bounds[0][1], bounds[1][1]
+            window = focused_window(geometry, focus, (u, v), 22)
         elif (solid[u+3] - solid[u]) * (solid[v+3] - solid[v]) > MAX_PIXELS:
             window = solid[u], solid[v], min(solid[u+3], solid[u]+480), min(solid[v+3], solid[v]+480)
         edits = [json.loads(raw) for raw, in db.execute("SELECT value FROM edits WHERE event<=? ORDER BY event", (cursor,))]
-        sliced = slice_at(geometry, edits, axis, layer, window)
-        if options.get("clearance") == "1":
-            sliced["unloaded_body_clear"] = clear_centers(geometry, edits, sliced)
-        openings = None
-        roof_window = None
-        if (solid[3] - solid[0]) * (solid[5] - solid[2]) > MAX_PIXELS and (meta.get("scenario") or "").startswith("micro-m0-"):
-            focus = meta["colonies"][0]["position_m"]
-            origin, quantum = geometry["origin_m"], geometry["quantum_m"]
-            x, z = (round((focus[a] - origin[a]) / quantum) for a in (0, 2))
-            roof_window = max(solid[0], x-24), max(solid[2], z-24), min(solid[3], x+24), min(solid[5], z+24)
-        if roof_window or (solid[3] - solid[0]) * (solid[5] - solid[2]) <= MAX_PIXELS:
-            roof = slice_at(geometry, edits, "y", solid[4] - 1, roof_window)
-            origin, scale = geometry["origin_m"], geometry["quantum_m"]
-            x, z = roof["bounds_q"][:2]
-            openings = [[origin[0] + (x + col + .5) * scale, origin[1] + solid[4] * scale,
-                         origin[2] + (z + row + .5) * scale]
-                        for row, values in enumerate(roof["rows"]) for col, mat in enumerate(values) if mat == "0"]
-        return dict(slice=sliced, openings=openings, opening_cell_m=geometry["quantum_m"], revision=len(edits),
-                    geometry_bounds_q=solid, cropped=window is not None)
+        return terrain_view(geometry, edits, axis, layer, window, roof_focus=focus if micro else None,
+                            clearance=options.get("clearance") == "1")
 
     def compare(self, options):
         require(options.get("left") != options.get("right"), "Choose two different archived worlds")
