@@ -53,7 +53,8 @@ def main():
         case = receipt["case"]
         row = dict(batch=path.parent.name,case=case["case"],seed=case["seed"],
                    error=receipt.get("error"),end_ms=receipt["last_valid_ms"],
-                   elapsed_s=receipt["elapsed_s"],peak_rss_bytes=receipt["memory"]["peak_bytes"],
+                   elapsed_s=receipt["elapsed_s"],native_advance_ms=receipt["advance_ms"],
+                   peak_rss_bytes=receipt["memory"]["peak_bytes"],
                    facts=receipt["last_cursor"],frame_bytes=receipt["frame_bytes"],
                    sqlite_bytes=receipt.get("sqlite",{}).get("bytes"),sqlite_save_ms=receipt.get("sqlite",{}).get("save_ms"),
                    sqlite_restore_ms=receipt.get("sqlite",{}).get("restore_ms"),canonical_sha256=receipt["canonical_sha256"])

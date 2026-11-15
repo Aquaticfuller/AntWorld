@@ -32,3 +32,5 @@ experiments/s6_4_founding_cohort_release/** -text whitespace=blank-at-eol,blank-
 experiments/s6_4_founding_cohort_release/tests/*.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 # Preserve the original R0 diagnostic bytes covered by checksum receipts.
 experiments/r0/diagnostics/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/r0_r1/diagnostics/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+experiments/r0_r1/receipts/** -text whitespace=-blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

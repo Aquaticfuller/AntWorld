@@ -1,0 +1,35 @@
+test_fast_forward_stops_at_each_committed_milestone (test_live.LiveTests.test_fast_forward_stops_at_each_committed_milestone) ... ok
+test_local_nest_activity_is_opt_in_and_restorable (test_live.LiveTests.test_local_nest_activity_is_opt_in_and_restorable) ... ok
+test_loopback_origin_and_folder_control (test_live.LiveTests.test_loopback_origin_and_folder_control) ... 127.0.0.1 - - [15/Nov/2026 20:26:00] "POST /api/v1/live/new HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 20:26:00] "POST /api/v1/live/new HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 20:26:00] "POST /api/v1/live/new HTTP/1.1" 403 -
+ok
+test_native_clock_save_metadata_and_exact_resume (test_live.LiveTests.test_native_clock_save_metadata_and_exact_resume) ... ok
+test_nest_dynamics_is_opt_in_and_survives_sqlite (test_live.LiveTests.test_nest_dynamics_is_opt_in_and_survives_sqlite) ... ok
+test_new_colony_matches_reviewed_day_90_checkpoint (test_live.LiveTests.test_new_colony_matches_reviewed_day_90_checkpoint) ... ok
+test_shorter_worker_timing_and_completed_actions_persist (test_live.LiveTests.test_shorter_worker_timing_and_completed_actions_persist) ... ok
+test_two_wide_regions_separated_by_a_narrow_neck (test_morphology.MorphologyTest.test_two_wide_regions_separated_by_a_narrow_neck) ... ok
+test_half_open_rock_and_backfill (test_observation.GeometryTests.test_half_open_rock_and_backfill) ... ok
+test_3d_geometry_uses_ordered_edits_and_event_boundaries (test_observation.ObservationTests.test_3d_geometry_uses_ordered_edits_and_event_boundaries) ... ok
+test_adjacent_physics_versions_use_their_original_settings (test_observation.ObservationTests.test_adjacent_physics_versions_use_their_original_settings) ... ok
+test_canonical_exact_facts_pagination_and_movement (test_observation.ObservationTests.test_canonical_exact_facts_pagination_and_movement) ... ok
+test_catalogue_physics_identity_and_initial_snapshot (test_observation.ObservationTests.test_catalogue_physics_identity_and_initial_snapshot) ... ok
+test_default_physics25_comparison (test_observation.ObservationTests.test_default_physics25_comparison) ... ok
+test_life_history_nonobserved_states_and_early_cohort (test_observation.ObservationTests.test_life_history_nonobserved_states_and_early_cohort) ... ok
+test_micro_world_exact_brood_positions_and_paid_intervals (test_observation.ObservationTests.test_micro_world_exact_brood_positions_and_paid_intervals) ... ok
+test_native_legacy_published_store (test_observation.ObservationTests.test_native_legacy_published_store) ... skipped 'Set OP0_LEGACY_CLI to the native legacy fixture builder'
+test_negative_archive_and_repeated_access (test_observation.ObservationTests.test_negative_archive_and_repeated_access) ... ok
+test_recorded_day_activity_and_step_order (test_observation.ObservationTests.test_recorded_day_activity_and_step_order) ... ok
+test_source_tamper_missing_member_and_export_pack (test_observation.ObservationTests.test_source_tamper_missing_member_and_export_pack) ... ok
+test_sqlite_midpoint_with_wal_and_no_source_writes (test_observation.ObservationTests.test_sqlite_midpoint_with_wal_and_no_source_writes) ... ok
+test_terminal_switches_language_without_resetting_cursor (test_observation.ObservationTests.test_terminal_switches_language_without_resetting_cursor) ... ok
+test_terminal_with_real_world (test_observation.ObservationTests.test_terminal_with_real_world) ... ok
+test_wrong_queries_and_http_is_local_and_read_only (test_observation.ObservationTests.test_wrong_queries_and_http_is_local_and_read_only) ... 127.0.0.1 - - [15/Nov/2026 20:26:26] "GET / HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 20:26:26] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [15/Nov/2026 20:26:26] "POST /api/v1/catalog HTTP/1.1" 501 -
+ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 27.810s
+
+OK (skipped=1)

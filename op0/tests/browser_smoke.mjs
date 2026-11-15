@@ -134,8 +134,9 @@ async function r0r1World() {
     assert.equal(segment.completion.id, mark.id);
     assert.notDeepEqual(segment.start.position_m, segment.move.position_m);
     await screenshot("r0-r1-worker-motor");
-    await wait(() => evaluate("!!app.selectedFact && !app.restReplay"), "Return to the committed motor endpoint");
-    await click("#milestones button[title^='First food delivered']");
+    await wait(() => evaluate(`app.state.cursor === ${JSON.stringify(mark.id)} && !app.restReplay &&
+        $('event-detail').dataset.event === ${JSON.stringify(mark.id)}`), "Return to the committed motor endpoint");
+    await evaluate(`document.querySelector("#milestones button[title^='First food delivered']").click()`);
     await wait(() => evaluate("app.selectedFact?.kind === 'FoodDelivered'"), "Open the actual underground delivery");
     assert.ok(await evaluate("app.selectedFact.mass_ug.some(m => m > 0)"));
     result.motion = {archive:await evaluate("app.meta.archive_sha256"), actor:mark.ant,
@@ -160,7 +161,7 @@ async function r0r1World() {
         assert.equal(await evaluate("$('axis').value"), "y");
         assert.equal(await evaluate("app.state.population.workers"), count);
         const initial = await evaluate("app.state.net_removed_m3");
-        await click("#milestones button[title^='First excavation']");
+        await evaluate(`document.querySelector("#milestones button[title^='First excavation']").click()`);
         await wait(() => evaluate("app.selectedFact?.kind === 'SoilExcavated'"), "Show the first committed excavation");
         assert.ok(await evaluate("app.selectedFact.geometry_edits[0].volume_q3 > 0"));
         const firstCut = await evaluate("app.selectedFact.id");

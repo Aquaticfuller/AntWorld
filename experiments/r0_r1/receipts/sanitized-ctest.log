@@ -1,0 +1,8 @@
+Internal ctest changing into directory: D:/Codex_workspace/AntWorld/out/r0-r1-work/sanitized
+Test project D:/Codex_workspace/AntWorld/out/r0-r1-work/sanitized
+    Start 2: R0_R1_NEST_DYNAMICS
+1/1 Test #2: R0_R1_NEST_DYNAMICS ..............   Passed    4.77 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   4.79 sec

@@ -1,7 +1,7 @@
 {
-  "shell_paint_ms": 508,
-  "world_ready_ms_after_navigation": 663.5,
-  "first_browser_view_ms": 690.78,
+  "shell_paint_ms": null,
+  "world_ready_ms_after_navigation": 244.60000002384186,
+  "first_browser_view_ms": 333.48,
   "motion": {
     "archive": "ab5c322ed35dc3390fe210c6629023bd35f48fe2f5d5955f7c2262287601733f",
     "actor": "24",

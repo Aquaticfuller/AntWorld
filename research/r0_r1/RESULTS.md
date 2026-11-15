@@ -27,7 +27,22 @@ Only workers are initialized here. Initial cavities, rock, geometry, stored ener
 
 The independent analyzer measures one registered plane through each colony depot. Narrow degree-three centerline junctions and broad area cores are separate features. A counted chamber core must fit the loaded envelope on supported reachable floor and exceed the declared width threshold. A projected narrow neck toward a wall or into an unoccupied end does not establish a distinct chamber. Voxel cuts at other levels remain in the geometry ledger and can be inspected at different section heights. This protocol cannot conclude the absence of every three-dimensional branch from one floor projection.
 
+The 24-hour matrix completed all 32 factorial cases and both shielded controls. It produced 17,369,204 committed facts. All four unshielded policies reached one wide core in every group and seed at the final cut. No sampled cut has two reachable wide cores or a narrow junction. Both shielded controls retain the 36 mm² initial floor with zero excavations and deposits, despite actual autonomous movement.
+
+| Initialized workers | R0 mean floor mm² | Hex only | Hex + reinforcement | Full local demand and suppression |
+| ---: | ---: | ---: | ---: | ---: |
+| 15 | 120.63 | 90.50 | 100.25 | 99.50 |
+| 50 | 232.88 | 165.88 | 191.38 | 205.13 |
+| 100 | 259.75 | 227.75 | 268.75 | 316.13 |
+| 300 | 284.75 | 335.50 | 376.63 | 521.38 |
+
+Each mean uses software seeds 1 and 7. The 300-worker full model has higher final area and perimeter than the control, with a lower perimeter-to-area ratio at each final cut. That favors the interpretation of expansion around the original core under these conditions. Compact growth and empirical branched growth remain distinct outcomes. The policy favors neighbors of accessible voids and repeatedly returns excavated parcels toward the same known disposal route. The study did not identify independent effects of widening and branch retention beyond the four registered treatments.
+
 At 50 workers and 90 h (seed 1), the full rule yields 1,618 excavations and 1,613 deposits, with net volume 9,456 voxel quanta. The control yields 564 excavations and deposits and net volume 3,920 quanta. Both retain one wide reachable core. The full score produces a measurable late neck without a new connected room in this run. All numbers are tied to genuinely transported parcels and closed soil budgets. They measure different work distributions under identical inputs. The positive spatial-feedback signal in the full rule amplifies local work in these conditions. The actual return anchor and directional reuse still focus most cuts around a single growing cavity.
+
+For 300 workers (seed 1, 24 h), the floor section grows to 526.75 mm² and its perimeter to 111 mm under the full score. The corresponding R0 measurements are 287.00 mm² and 88 mm. The candidate excavates 1,183.875 mm³ and the reference excavates 502.000 mm³. Both floors still have one wide core and no narrow degree-three junction. The final worker envelope intersections are 3,377 and 13,297, including actual soil load. These counts describe worker placement in seeded construction groups. The motion comparison above tests naturally developed workers separately.
+
+Five optional 90-hour extensions completed. These cover both 50-worker seeds in the R0 and full conditions and the first 300-worker R0 seed. Every completed extension retains a single core. The first 300-worker full extension was stopped after verification of its 42-hour SQLite midpoint. That cut has 2,735,900 facts, floor area 823.50 mm², one wide core and one narrow neck point. Its 42-hour R0 control has floor area 298.25 mm² and one wide core. The 63,488,000-byte midpoint and the large per-case runtime put the remaining optional 300-worker runs outside this iteration's resource budget. The 90-hour result of that candidate remains censored and the two seed-7 extensions were not run. The optional stops do not change the 24-hour matrix or count as failures to form a chamber by 90 hours.
 
 The Toffin 2009 groups of 50 and 300 provide direct species evidence for different frequencies of compact-to-branched transition over 90 h in their planar setup. R0-r1 uses a three-dimensional shaft with finite loaded reach and different substrate, initial space and worker transport rules. The observed short traces offer no fitted reproduction of their transition test. Toffin 2010 shows that granular and cohesive substrates have distinct transition outcomes. R0-r1 represents blocking earth and rock and does not resolve granular cohesion. The reference data support competing mechanisms, with no validated map from their fit parameters to the weights used here. [2009 experiment](https://doi.org/10.1073/pnas.0902685106), [2010 experiment](https://doi.org/10.1098/rspb.2010.0176).
 
@@ -39,4 +54,19 @@ The Toffin 2009 groups of 50 and 300 provide direct species evidence for differe
 - Archived `*.json.gz` diagnostics contain sampled states, per-worker summaries, failures, edits and canonical SHA-256 receipts. Only preselected cases publish full browser witnesses. The longer cases can be rerun via the checked-in runner. The renderer marks the timed interval of a true recorded segment and never adds canonical positions or behavior events.
 - The historical B06 comparison is `INSUFFICIENT`, the inherited application performance qualification is `FAIL`, and all nine root biological issues remain `BIOLOGICAL_BLOCKED`. No observations in this release establish a new calibration or qualify the candidate for promotion.
 
-The [Windows preview guide](README.md) and [frozen experiment protocol](PROTOCOL.md) accompany the results. The unchanged R0 diagnostic matrix remains under [R0 diagnostics](../../experiments/r0/diagnostics).
+The exploratory live preset enables both features. On one 90-day shaft run with seed 1, it produced 14 living workers from a single foundress, 2,676 timed movements, 19 food deliveries, 294 successful transfer facts, 44 excavations and 43 soil placements. A checked frame, input and fact digest accompany that one observation. The protocol uses the separated treatments for conclusions about movement and excavation effects.
+
+## Cost boundary
+
+| Case | Canonical facts | Native peak resident MiB | Host elapsed seconds |
+| --- | ---: | ---: | ---: |
+| 90-day shaft, R0 | 122,605 | 38.6 | 1.58 |
+| 90-day shaft, motor | 93,378 | 38.4 | 1.01 |
+| 300 workers, 24 h, R0, seed 1 | 1,196,477 | 70.0 | 49.67 |
+| 300 workers, 24 h, full, seed 1 | 1,323,536 | 268.1 | 707.54 |
+| 730-day continued shaft, R0 | 13,470,407 | 261.0 | 338.55 |
+| 730-day continued shaft, motor | 3,656,871 | 106.1 | 93.57 |
+
+The dense full treatment uses more time and memory with a different number and distribution of paid digs. The figures are diagnostic host measurements. The 300-worker full case has a measured 13,565,952-byte midpoint SQLite file, a 1.325-second save and a 5.801-second restore. The second 300-worker seed has no midpoint publication, uses about 74 MiB peak and still spends 633 seconds in native Advance calls. This separates the large retention peak during recovery from the much longer advance time in both full cases. The faster 730-day candidate workload has fewer births and facts after the queen dies, which rules out attributing that timing difference to a speedup of equivalent work. Segment publication stores no additional fact per time step. The companion tables retain the advance times, frame size, event counts, peak RSS and per-checkpoint measurements.
+
+The [Windows preview guide](README.md), [frozen experiment protocol](PROTOCOL.md) and [validation](VALIDATION.md) accompany the results. The unchanged R0 diagnostic matrix remains under [R0 diagnostics](../../experiments/r0/diagnostics).
