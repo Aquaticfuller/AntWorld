@@ -223,17 +223,24 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         case ActionKind::DeliverFood: action.kind = ScheduledEvent::Kind::DeliverFood; break;
         case ActionKind::Rest: action.kind = ScheduledEvent::Kind::Rest; break;
         }
+        const bool yielding=action.kind==ScheduledEvent::Kind::Move && !clear_worker_traffic(ant,action.destination,body_half(ant.id));
+        if (yielding) {
+            action.kind=ScheduledEvent::Kind::Rest;
+            action.destination={};
+            action.key.time=later(s.m.now,config.step_duration);
+            f.mode=BehaviorMode::Rest;
+        }
         f.action = tx.insert(action); tx.foragers.set(ant.id, f);
-        if (r.connector_return && !s.connectors.at(ant.id).returning) {
+        if (!yielding && r.connector_return && !s.connectors.at(ant.id).returning) {
             auto link=s.connectors.at(ant.id);
             link.returning=true;
             tx.connectors.set(ant.id,link);
         }
         WorldEvent fact; fact.source = r.event.id; fact.kind = FactKind::ForagingDecision;
         fact.actor = ant.id; fact.colony = ant.colony; fact.position = ant.position; fact.stage = ant.stage;
-        fact.mode = r.decision.mode; fact.reason = r.decision.reason; fact.payload = f.decisions;
+        fact.mode = f.mode; fact.reason = yielding?DecisionReason::NoLegalStep:r.decision.reason; fact.payload = f.decisions;
         fact.forgot_memory = r.decision.forget_memory;
-        fact.random_value = r.decision.trail_evidence;
+        fact.random_value = yielding?0:r.decision.trail_evidence;
         // Count the explicitly recorded local food cue, never an unrecorded global discovery.
         fact.resource = r.decision.resource;
         if (s.care_profile) {

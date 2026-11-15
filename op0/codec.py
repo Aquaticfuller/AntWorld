@@ -47,7 +47,7 @@ OUTCOMES = ("Success", "Partial", "Missing entity", "Dead actor", "Invalid stage
 ACTS = ("Inactive", "Walk", "Approach brood", "Inspect brood", "Arrange brood", "Clean brood", "Transport brood",
         "Feed brood", "Close worker contact", "Collect food", "Deliver food", "Ingest food", "Transfer nutrition",
         "Excavate", "Handle soil", "Revisit brood site", "Pick up brood", "Place brood", "Return to care shelter",
-        "Move to a resting site", "Approach the depot")
+        "Move to a resting site", "Approach the depot", "Approach a nestmate")
 PHASES = ("Opportunity", "Selected", "Started", "Completed", "Interrupted")
 RELATED = {21, 35, 43, 46, 48, 50, 52, 55, 56}
 FACETS = {
@@ -188,7 +188,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33)}
+MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
@@ -242,7 +242,7 @@ def checkpoint(raw, *, verify_hash=True):
                           "cue_minimum_carbs_ug", "water_sip_ug", "cue_response_ppm", "first_ration_ppm"),
                          r.unpack(Struct("<2d4Q2I"))))
         flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28, 30)
-        if outer[0] in (23, 24, 25, 26):
+        if outer[0] in (23, 24, 25, 26, 27):
             flags["brood_space"] = True
             flags["portable_care_motion"] = outer[1] >= 29
         if outer[1] >= 32:
@@ -251,10 +251,13 @@ def checkpoint(raw, *, verify_hash=True):
             interval, dwell = r.unpack(Struct("<2q"))
             require(60000 <= interval <= dwell <= 21600000, "Invalid MicroWorld worker timing")
             flags["worker_activity_timing"] = dict(check_ms=interval, minimum_program_ms=dwell)
-        if outer == (26, 33):
+        if outer[1] >= 33:
             motor, score = r.flag(), r.take(1)[0]
             require(score <= 3 and (motor or score), "Invalid nest dynamics treatment")
             flags["nest_dynamics"] = dict(worker_motor=motor, excavation=score)
+        if outer[1] == 34:
+            require(motor, "Body traffic requires the worker motor")
+            flags["local_traffic"] = True
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.

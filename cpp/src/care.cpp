@@ -124,7 +124,7 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
     }
     return {};
 }
-void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act) {
+void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act,EntityId target) {
     auto& s=*state_;
     const AntRef ref{s.world,ant.id};
     change_behavior(tx,ref,IndividualBehavior::Rest,source,true);
@@ -135,14 +135,14 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
         care.familiar_shelter=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
         care.enrolled_at=s.m.now;
     }
-    care.enabled=true; care.act=act; care.destination=site;
+    care.enabled=true; care.act=act; care.destination=site; care.target=target;
     ScheduledEvent e; e.actor=ant.id; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
     e.key={after(s.m.now,1),Phase::Resolution,0,0,0}; care.pending=tx.insert(e); care.bout=care.pending;
     tx.care.set(ant.id,care);
     auto p=s.physiology.at(ant.id); p.behavior_event=care.pending; tx.physiology.set(ant.id,p);
     WorldEvent fact; fact.kind=FactKind::CareProgramChanged; fact.actor=ant.id; fact.colony=ant.colony;
     fact.stage=ant.stage; fact.position=ant.position; fact.payload=1; tx.fact(fact);
-    observe(tx,ant.id,source,{ObservationPhase::Selected,care.act,{},care.bout,s.m.now,false,site});
+    observe(tx,ant.id,source,{ObservationPhase::Selected,care.act,target,care.bout,s.m.now,false,site});
 }
 void WorldRuntime::configure_biology(const SpeciesCareProfile& profile, const EnvironmentCareProfile& environment) {
     auto& s=*state_;
@@ -555,7 +555,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         else if (c.act==CareAct::CloseWorkerContact && (b.stage!=LifeStage::Adult || b.caste!=Caste::Worker)) outcome=Outcome::InvalidStage;
         else if ((b.colony!=a.colony && (!foreign_assay_stage(s,b.stage) || !foreign_assay_act(c.act))) ||
                  !spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position) ||
-                 !within_distance(a.position,b.position,c.act==CareAct::ApproachBrood?cfg.perception_radius_m:s.config.contact_distance_m,
+                 !within_distance(a.position,b.position,(c.act==CareAct::ApproachBrood || c.act==CareAct::ApproachNestmate)?cfg.perception_radius_m:s.config.contact_distance_m,
                                   s.config.continuous_spatial_motion)) outcome=Outcome::OutOfReach;
         else if (handling && s.care_locks.contains(c.target) && s.care_locks.at(c.target)!=a.id) outcome=Outcome::DuplicateAction;
         else if (s.config.continuous_spatial_motion && c.carrying_brood &&
@@ -574,6 +574,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     }
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
+            (a.caste==Caste::Worker && c.act!=CareAct::ArrangeBrood && !clear_worker_traffic(a,c.destination,half)) ||
             (c.act==CareAct::NestReposition && !clear_resting_site(a,c.destination)) ||
             (c.act==CareAct::DepotApproach && !clear_worker_site(a,c.destination,true)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
@@ -677,6 +678,23 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             autonomy.wake={};
             tx.autonomy.set(a.id,autonomy);
             schedule_autonomy(tx,a.id,{1});
+        }
+        return;
+    }
+    if (c.act==CareAct::ApproachNestmate) {
+        interrupt_care(tx,a.id,outcome,true);
+        const AntRef self{s.world,a.id}, other{s.world,c.target};
+        const auto target=query_ant(other);
+        const auto worker=*query_ant(self);
+        const bool reached=!failed && target && target->alive() && target->colony==a.colony &&
+            within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position);
+        if (reached && brood(target->stage) && local_care_available(self)) start_autonomous_care(tx,self,event.id);
+        else {
+            const auto receiver=reached?query_physiology(other):std::nullopt;
+            const bool offer=s.social->exchange_enabled && receiver &&
+                receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
+                ingredient_min(s.physiology.at(a.id).crop,signaled_need(*receiver,target->stage,s.long_term!=nullptr)).total_ug();
+            change_behavior(tx,self,offer?IndividualBehavior::Nurse:IndividualBehavior::Rest,event.id);
         }
         return;
     }

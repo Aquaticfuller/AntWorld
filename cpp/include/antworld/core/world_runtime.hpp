@@ -164,8 +164,11 @@ private:
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
-    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition);
+    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
+                            EntityId target = {});
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
+    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half) const;
+    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_contact_step(const AntState&) const;
     [[nodiscard]] std::optional<PositionM> worker_depot_step(const AntState&) const;
     void record_worker_move(Transaction&, WorldEvent&, PositionM from, SimTime began, bool autonomous);
     void inspect_decision(const ScheduledEvent&, const ContactSample&, std::uint64_t context,

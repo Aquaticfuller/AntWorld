@@ -65,6 +65,33 @@ class LiveTests(unittest.TestCase):
         self.live.write("new", {})
         self.assertEqual(self.live.read("view", {})["physics"], 29)
 
+    def test_nursery_view_reports_native_motion_and_preserves_it_through_sqlite(self):
+        with patch("op0.live.randbits", return_value=91):
+            self.live.write("nursery", {"traffic": False})
+            control = self.live.read("view", {})
+            self.live.write("nursery", {"traffic": True})
+        initial = self.live.read("view", {})
+        self.assertEqual((control["physics"], initial["physics"], initial["schema_version"]), (33, 34, 27))
+        self.assertEqual((initial["seed"], initial["rate"], initial["time_ms"]), ("17", 1, 0))
+        self.assertTrue(initial["seeded_nursery"])
+        self.assertEqual([(a["id"], a["position_m"]) for a in control["ants"]],
+                         [(a["id"], a["position_m"]) for a in initial["ants"]])
+        self.advance(4_050)
+        self.live.write("clock", {"running": False})
+        frame = self.live.worker.call("FRAME")
+        moving = self.live.read("view", {})
+        ant = next(a for a in moving["ants"] if 0 < (a["motion_plan"] or {}).get("progress", 0) < 1)
+        self.assertEqual(ant["position_m"], ant["motion_plan"]["from_m"])
+        self.assertNotEqual(ant["motion_plan"]["to_m"], ant["position_m"])
+        self.assertEqual(self.live.worker.call("FRAME"), frame)
+        self.live.write("save", {"name": "In motion"})
+        expected = self.live.worker.call("ADVANCE 16000")
+        self.live.write("load", {"name": "In motion"})
+        self.assertEqual(self.live.worker.call("FRAME"), frame)
+        self.assertEqual(self.live.read("view", {})["ants"], moving["ants"])
+        self.assertEqual(self.live.worker.call("ADVANCE 16000"), expected)
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+
     def test_fast_forward_stops_at_each_committed_milestone(self):
         expected, positions = {}, {}
         with ZipFile(WITNESS) as witness, witness.open("facts.bin") as stream:

@@ -36,16 +36,21 @@
     <section id="live-controls" class="panel live-controls" aria-label="Live simulation controls" hidden>
       <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span></div>
       <div class="live-actions">
-        <label for="colony-timing" id="colony-timing-label">New colony worker timing</label>
-        <select id="colony-timing"><option value="standard">Standard worker timing</option><option value="shorter">15-minute worker checks (experimental)</option></select>
-        <label><input type="checkbox" id="nest-activity"> <span data-i18n>Local nest activity (R0)</span></label>
-        <label><input type="checkbox" id="nest-dynamics"> <span data-i18n>Worker motor and dig scoring (R0-r1)</span></label>
-        <button id="new-colony" class="primary-button" type="button">New colony</button>
         <button id="live-pause" type="button">Pause</button>
         <label for="live-rate" class="sr-only">Simulation speed</label>
         <select id="live-rate"><option value="1">1× real time</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option><option value="3600">3,600×</option><option value="86400">86,400×</option></select>
         <button id="open-saves" type="button">Save and load</button>
       </div>
+      <details id="colony-settings" open>
+        <summary data-i18n>Colony setup</summary>
+        <div class="colony-options">
+          <label for="colony-timing" id="colony-timing-label">New colony worker timing</label>
+          <select id="colony-timing"><option value="standard">Standard worker timing</option><option value="shorter">15-minute worker checks (experimental)</option></select>
+          <label><input type="checkbox" id="nest-activity"> <span data-i18n>Local nest activity (R0)</span></label>
+          <label><input type="checkbox" id="nest-dynamics"> <span data-i18n>Worker motor and dig scoring (R0-r1)</span></label>
+          <button id="new-colony" class="primary-button" type="button">New colony</button>
+        </div>
+      </details>
       <div class="live-milestone">
         <label for="live-target">Target event</label>
         <select id="live-target">
@@ -54,6 +59,12 @@
         </select>
         <button id="live-seek" type="button">Fast-forward to event</button>
         <output id="live-stop" role="status" hidden></output>
+      </div>
+      <div class="nursery-launch">
+        <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
+        <label class="sr-only" for="nursery-treatment">Nursery experiment</label>
+        <select id="nursery-treatment"><option value="traffic">Body-aware movement</option><option value="reference">R0-r1 reference</option></select>
+        <span class="muted" data-i18n>Ten initialized workers and nearby brood. Starts immediately at real time.</span>
       </div>
     </section>
     <div id="viewer" class="workspace" hidden>
@@ -73,6 +84,7 @@
             <label id="plane-controls" hidden><span data-i18n>Section</span> <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
               <input id="layer" type="range" aria-label="Section depth"><output id="layer-value"></output></label>
             <label id="clearance-control" hidden><input id="clearance" type="checkbox"><span data-i18n>Body clearance</span></label>
+            <label id="envelope-control" hidden><input id="body-envelopes" type="checkbox"><span data-i18n>Body envelopes</span></label>
             <label id="view-controls">Drag to pan · Scroll to zoom</label>
             <div class="zoom"><button id="show-occupants" type="button">Individuals in view</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>

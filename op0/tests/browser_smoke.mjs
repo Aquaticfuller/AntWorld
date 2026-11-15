@@ -20,7 +20,7 @@ processHandle.on("error", err => { exitMessage = String(err); });
 processHandle.stderr.on("data", message => { browserError = (browserError + message).slice(-3000); });
 const exited = new Promise(resolveExit => processHandle.once("close", resolveExit));
 let socket, sequence = 0;
-const pending = new Map(), exceptions = [], result = {};
+const pending = new Map(), exceptions = [], dialogs = [], result = {};
 const clock = () => performance.now();
 
 async function wait(read, name, timeout = 110_000) {
@@ -350,6 +350,52 @@ async function liveWorld() {
     console.log(JSON.stringify(result, null, 2));
 }
 
+async function nurseryWorld() {
+    await click("#open-nursery");
+    await wait(() => evaluate("liveView.state?.local_traffic && liveView.state.seeded_nursery && app.visible?.length >= 15"),
+        "Render the ten-worker nursery from the native Core");
+    assert.equal(await evaluate("liveView.state.rate"),1);
+    assert.equal(await evaluate("$('map').getBoundingClientRect().bottom <= window.innerHeight"), true);
+    assert.equal(await evaluate("$('colony-settings').open"), false);
+    await evaluate("chooseLiveAnt('7')");
+    const sample=await wait(() => evaluate(`(() => {
+        const ant=app.state.ants.find(a => a.id === app.selected && a.motion_plan?.progress>0 && a.motion_plan?.progress<1);
+        if (!ant) return null;
+        const pose=motorPose(ant);
+        return pose.some((v,i)=>v!==ant.position_m[i]) ? {id:ant.id,progress:ant.motion_plan.progress,
+            time:liveView.state.time_ms, frame:ant.position_m, pose} : null;
+    })()`),"Observe a body move between committed endpoints at native time",20_000);
+    assert.notDeepEqual(sample.pose,sample.frame);
+    await click("#live-pause");
+    await wait(() => evaluate("!liveView.state.running && !liveView.busy"),"Pause nursery at the visible native time");
+    await screenshot("nursery-live");
+    await click("#body-envelopes");
+    assert.equal(await evaluate("$('body-envelopes').checked"),true);
+    await screenshot("nursery-envelopes");
+    await select("locale","zh-CN");
+    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('open-nursery').textContent.includes('\u80b2\u5e7c')"),
+        "Translate the same running UI controls");
+    await screenshot("nursery-chinese");
+    await select("nursery-treatment", "reference");
+    await Promise.all([click("#open-nursery"), (async () => {
+        await wait(() => dialogs.shift(), "Confirm replacement of unsaved nursery progress", 5_000);
+        await send("Page.handleJavaScriptDialog", {accept: true});
+    })()]);
+    await wait(() => evaluate("liveView.state?.physics === 33 && liveView.state.seed === '17' && app.visible?.length >= 15"),
+        "Open the matched native reference nursery", 10_000);
+    await wait(() => evaluate("app.state.ants.some(a => a.motion_plan?.progress>0 && a.motion_plan.progress<1 && motorPose(a).some((n,i) => n !== a.position_m[i]))"),
+        "Use the same segment renderer for the reference", 10_000);
+    await click("#live-pause");
+    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause the reference nursery");
+    await screenshot("nursery-reference");
+    assert.deepEqual(exceptions,[]);
+    result.status="PASS";
+    result.sample=sample;
+    result.browser=(await send("Browser.getVersion")).product;
+    await writeFile(join(output,"nursery-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
+    console.log(JSON.stringify(result,null,2));
+}
+
 async function activityWorld() {
     await click("#open-saves");
     await wait(() => evaluate("$('saved-colonies').textContent.includes('Worker activity test')"), "Find the activity test save");
@@ -404,13 +450,14 @@ try {
             callback(message);
         }
         if (message.method === "Runtime.exceptionThrown") exceptions.push(message.params.exceptionDetails);
+        if (message.method === "Page.javascriptDialogOpening") dialogs.push(message.params);
     });
     await send("Page.enable");
     await send("Runtime.enable");
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (mode === "live" || mode === "activity") {
+        if (mode === "live" || mode === "activity" || mode === "nursery") {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -421,6 +468,8 @@ try {
     });
     if (mode === "live") {
         await liveWorld();
+    } else if (mode === "nursery") {
+        await nurseryWorld();
     } else if (mode === "activity") {
         await activityWorld();
     } else if (mode === "micro") {

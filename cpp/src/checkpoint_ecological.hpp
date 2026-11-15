@@ -15,6 +15,7 @@ inline constexpr unsigned portable_micro_world_no_hatch_physics = 30;
 inline constexpr unsigned worker_timing_schema = 24, worker_timing_physics = 31;
 inline constexpr unsigned nest_activity_schema = 25, nest_activity_physics = 32;
 inline constexpr unsigned nest_dynamics_schema = 26, nest_dynamics_physics = 33;
+inline constexpr unsigned local_traffic_schema = 27, local_traffic_physics = 34;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -22,6 +23,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.local_traffic) return local_traffic_physics;
     if (c.nest_dynamics) return nest_dynamics_physics;
     if (c.local_nest_activity) return nest_activity_physics;
     if (c.worker_activity_timing) return worker_timing_physics;
@@ -32,6 +34,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.local_traffic) return local_traffic_schema;
     if (c.nest_dynamics) return nest_dynamics_schema;
     if (c.local_nest_activity) return nest_activity_schema;
     if (c.worker_activity_timing) return worker_timing_schema;
@@ -67,13 +70,14 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
     c.portable_field = version >= portable_ecological_physics;
     c.suppress_foundress_hatch_cue = version == suppressed_hatch_physics ||
         version == micro_world_no_hatch_physics || version == portable_micro_world_no_hatch_physics;
-    c.local_nest_activity = version == nest_activity_physics || version == nest_dynamics_physics;
+    c.local_traffic = version == local_traffic_physics;
+    c.local_nest_activity = version == nest_activity_physics || version == nest_dynamics_physics || c.local_traffic;
     c.brood_space = micro_world_version(version) || version == worker_timing_physics || c.local_nest_activity;
     c.portable_care_motion = version == portable_micro_world_physics ||
         version == portable_micro_world_no_hatch_physics || version == worker_timing_physics || c.local_nest_activity;
     if (version == worker_timing_physics || (c.local_nest_activity && r.flag()))
         c.worker_activity_timing = WorkerActivityTiming{r.time(), r.time()};
-    if (version == nest_dynamics_physics)
+    if (version == nest_dynamics_physics || c.local_traffic)
         c.nest_dynamics = NestDynamics{r.flag(),static_cast<NestScoring>(r.get(1))};
     validate_ecological_closure(c, world);
     return c;

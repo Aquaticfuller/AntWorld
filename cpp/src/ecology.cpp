@@ -109,6 +109,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EventId cue;
     bool recruited{};
     std::optional<PositionM> resting_site;
+    EntityId contact_target;
     CareAct transit{CareAct::NestReposition};
   };
   std::vector<Choice> choices(0);
@@ -335,6 +336,15 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else {
       inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
     }
+    if (local_traffic(s) && ant.caste==Caste::Worker && can_switch && !urgent && !choice.care && !choice.resting_site &&
+        !care_owned(s,ant.id) && !active_expenditure(p) && (p.behavior==IndividualBehavior::Rest || p.behavior==IndividualBehavior::Paused) &&
+        (choice.behavior==IndividualBehavior::Rest || choice.behavior==IndividualBehavior::Paused)) {
+      if (const auto contact=local_contact_step(ant)) {
+        choice.resting_site=contact->first;
+        choice.contact_target=contact->second;
+        choice.transit=CareAct::ApproachNestmate;
+      }
+    }
     choices.push_back(std::move(choice));
   }
   // Every choice uses the same committed boundary. Submission/enrollment order
@@ -364,7 +374,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (choice.care)
       start_autonomous_care(tx,{s.world,id},choice.event.id);
     else if (choice.resting_site)
-      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit);
+      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit,choice.contact_target);
     else if (choice.behavior != s.physiology.at(id).behavior)
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
     const auto &sample = choice.sample;

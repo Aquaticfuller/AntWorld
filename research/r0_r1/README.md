@@ -20,6 +20,8 @@ Choose **R0-r1 · 50 workers · dig score** or **R0-r1 · 300 workers · dig sco
 
 ## Run the experiment live
 
+The [live nursery comparison](traffic/README.md) opens a small, matched physics 33 and physics 34 experiment with visible workers, brood and body clearance. Its science and performance scope is separate from the naturally founded and excavation runs below.
+
 On a checkout with CMake and a configured C++ toolchain, build the native launcher as described in the [MicroWorld guide](../m0/README.md). Run `python -m tools.build_m0_live`, then `.\tools\start_m0.cmd`. Enable **Worker motor and dig scoring (R0-r1)** before creating a world to opt in to physics 33. This combines both features in a live experiment. The published motion and excavation trials enable one at a time for attribution. The ordinary setup remains available without enabling this option.
 
 ## Reproduce and verify

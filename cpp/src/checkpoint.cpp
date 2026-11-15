@@ -171,7 +171,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==nest_dynamics_schema && version==nest_dynamics_physics) ||
+        ensure((outer_schema==local_traffic_schema && version==local_traffic_physics) ||
+               (outer_schema==nest_dynamics_schema && version==nest_dynamics_physics) ||
                (outer_schema==nest_activity_schema && version==nest_activity_physics) ||
                (outer_schema==worker_timing_schema && version==worker_timing_physics) ||
                (outer_schema==micro_world_schema && micro_world_version(version)) ||
@@ -262,9 +263,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 (extended && (e.kind==FactKind::NestIngested || e.kind==FactKind::ActionRejected)) || founding_fact(e.kind) ||
                 (persistence && e.kind==FactKind::CareTick) || ecological_fact(e.kind) ||
                 (ecological && e.kind==FactKind::ForagingDecision && e.random_value<=7) ||
-                ((ecological_version==nest_activity_physics || ecological_version==nest_dynamics_physics) &&
+                (ecological_version>=nest_activity_physics &&
                     e.kind==FactKind::ExcavationDecision && e.random_value<=1) ||
-                (ecological_version==nest_dynamics_physics && e.kind==FactKind::Moved) ||
+                (ecological_version>=nest_dynamics_physics && e.kind==FactKind::Moved) ||
                 e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");

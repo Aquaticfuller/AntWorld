@@ -29,6 +29,7 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 FRAME_LIMIT = 128 * 1024 * 1024
+NURSERY_WORLD_TAG = 649  # Matches the native nursery fixture.
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
@@ -36,9 +37,13 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
+    paths = (installed.with_stem("antworld_m0_live_v7"), installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
     return next((path for path in paths if path.is_file()), paths[0])
+
+
+def is_nursery(frame):
+    return frame is not None and UUID(frame["world"]).int >> 64 == NURSERY_WORLD_TAG
 
 
 class NativeCore:
@@ -47,8 +52,10 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5"), "Rebuild the live Core for this viewer version.")
-            self.worker_motor = version == b"antworld.m0.live.v5"
+            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6"),
+                    "Rebuild the live Core for this viewer version.")
+            self.worker_motor = version != b"antworld.m0.live.v4"
+            self.nursery = version == b"antworld.m0.live.v6"
         except Exception:
             self.close()
             raise
@@ -115,8 +122,9 @@ def live_motion(data, frame):
                 0<=heading<=10 and 1<=direction<=10 and all(map(isfinite,points)) and
                 points[:3]==frame["ants"][actor]["position_m"] and points[:3]!=points[3:],
                 "Movement lease disagrees with the native frame")
+        progress = min(1,max(0,(now-travel)/(end-travel)))
         result[actor] = dict(from_m=points[:3], to_m=points[3:], begins_ms=begin, translates_ms=travel, ends_ms=end,
-                             heading=heading, target_heading=direction, progress=min(1,max(0,(now-travel)/(end-travel))),
+                             heading=heading, target_heading=direction, progress=progress,
                              evidence="CORE_MOTION_LEASE")
     return result
 
@@ -295,7 +303,7 @@ class LiveSession:
             self.stop_seek("reached", event)
 
     def run_clock(self):
-        while not self.stopping.wait(.10):
+        while not self.stopping.wait(.05 if is_nursery(self.frame) and self.rate == 1 else .10):
             with self.lock:
                 try:
                     self.advance()
@@ -314,6 +322,7 @@ class LiveSession:
         dirty = bool(frame and (not self.saved or self.saved["time_ms"] != frame["time_ms"] or
                                 self.saved["facts"] != frame["cursor"]))
         return dict(enabled=True, core_available=self.binary.is_file(), time_ms=frame["time_ms"] if frame else None,
+                    nursery_available=self.binary.is_file() and (self.worker is None or self.worker.nursery),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -331,7 +340,8 @@ class LiveSession:
             frame = self.frame
             geometry, surface = frame["geometry"], frame["surface"]
             colonies = list(frame["colonies"].values())
-            focus = colonies[0]["position_m"]
+            nursery = is_nursery(frame)
+            focus = (0,colonies[0]["position_m"][1],0) if nursery else colonies[0]["position_m"]
             axis = options.get("axis", "y")
             require(axis in AXES, "Unknown slice axis")
             u, v, n = AXES[axis]
@@ -341,7 +351,7 @@ class LiveSession:
             clearance = options.get("clearance") == "1"
             key = len(frame["edits"]), axis, layer, clearance
             if key not in self.sections:
-                window = focused_window(geometry, focus, (u, v), 22)
+                window = focused_window(geometry, focus, (u, v), 36 if nursery else 22)
                 self.sections[key] = terrain_view(geometry, frame["edits"], axis, layer, window,
                                                    roof_focus=focus, clearance=clearance)
                 if len(self.sections) > 8:
@@ -350,7 +360,9 @@ class LiveSession:
             require(group == "all" or group in LIVE_GROUPS, "Unknown event category")
             dynamics=frame["flags"].get("nest_dynamics", {})
             plans = live_motion(self.worker.call("WORKER_MOTION"),frame) if dynamics.get("worker_motor") else {}
+            traffic = frame["flags"].get("local_traffic",False)
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
+                        local_traffic=traffic, seeded_nursery=nursery,
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         nest_dynamics=dynamics,
@@ -358,7 +370,9 @@ class LiveSession:
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
                         bounds_m=(frame["world_min_m"], frame["world_max_m"]), sources=list(frame["sources"].values()),
-                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])), stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
+                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])),
+                                   loaded=bool(any(ant["carried_ug"]) or ant["id"] in frame["soil_carriers"]),
+                                   stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
                                    program=label(PROGRAMS, ant.get("program")), death_cause=label(DEATHS, ant.get("death_code")))
                               for ant in frame["ants"].values()],
                         events=[e for e in reversed(self.recent) if group == "all" or e["kind"] in LIVE_GROUPS[group]][:16],
@@ -431,7 +445,12 @@ class LiveSession:
 
     def write(self, resource, data):
         with self.lock:
-            if resource == "new":
+            if resource == "nursery":
+                traffic=data.get("traffic",True)
+                require(type(traffic) is bool,"Unknown nursery traffic setting")
+                require(self.core().nursery,"Build the native Core to open the nursery experiment.")
+                self.install(self.core().call(f"NEW_NURSERY {randbits(63) or 1} 17 {int(traffic)}"), running=True)
+            elif resource == "new":
                 timing = data.get("timing", "standard")
                 require(isinstance(timing, str) and timing in NEW_COLONY_TIMINGS, "Unknown worker timing")
                 activity = data.get("local_nest_activity", False)

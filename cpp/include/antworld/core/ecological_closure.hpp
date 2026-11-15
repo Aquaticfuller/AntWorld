@@ -31,6 +31,7 @@ struct EcologicalClosureConfig {
     std::optional<WorkerActivityTiming> worker_activity_timing; // Physics 31. Worker-only review clocks.
     bool local_nest_activity{}; // Physics 32. Paid rest relocation and local floor demand.
     std::optional<NestDynamics> nest_dynamics; // Physics 33. Independent motor and dig scoring.
+    bool local_traffic{}; // Physics 34. Experimental local contact approaches and adult body clearance.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

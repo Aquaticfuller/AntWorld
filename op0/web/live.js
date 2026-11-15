@@ -30,6 +30,7 @@ function liveControls() {
     $("live-rate").value = String(s?.rate || 1);
     $("colony-timing").disabled = $("nest-activity").disabled = $("nest-dynamics").disabled =
         $("new-colony").disabled = liveView.busy || !s?.core_available;
+    $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
@@ -44,6 +45,7 @@ function liveControls() {
 
 function liveVisibility(active) {
     app.live = active;
+    if (!active) document.body.classList.remove("nursery-active");
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
     $("live-activity").hidden = !active;
@@ -79,6 +81,7 @@ function liveActionGroup(event) {
 
 function renderLiveActions() {
     const actions = liveView.state.actions ?? [];
+    $("live-activity").hidden = liveView.state.seeded_nursery && !actions.length;
     const key = language + ":" + actions.map(e => e.id).join(",");
     if (liveView.actionsKey === key) return;
     liveView.actionsKey = key;
@@ -142,6 +145,7 @@ async function refreshLive(alignSection = true) {
         clearance: app.section === "slice" && $("clearance").checked ? 1 : null, group: $("filter").value});
     if (!app.live || request !== liveView.request) return;
     liveView.state = data;
+    document.body.classList.toggle("nursery-active", Boolean(data.seeded_nursery));
     if (!data.world_id) {
         liveControls();
         $("viewer").hidden = true;
@@ -151,6 +155,7 @@ async function refreshLive(alignSection = true) {
     app.meta = {settings: {geometry: data.geometry}, surface: data.surface, bounds_m: data.bounds_m,
         colonies: data.colonies, milestones: [], surface_entrances_m: []};
     if (liveView.epoch !== data.epoch) {
+        $("colony-settings").open = !data.seeded_nursery;
         liveView.epoch = data.epoch;
         liveView.eventsKey = null;
         liveView.actionsKey = null;
@@ -170,6 +175,7 @@ async function refreshLive(alignSection = true) {
         inspect(false);
     }
     app.time = data.time_ms;
+    put("title",data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
     app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
@@ -206,8 +212,8 @@ async function refreshLive(alignSection = true) {
     updatePopulation(p, queen && {...queen, time_ms: queen.updated_ms});
     put("map-time", duration(data.time_ms));
     const timing = data.worker_activity_timing;
-    const description = timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) :
-        tr("Standard worker timing");
+    const description = data.seeded_nursery ? tr(data.local_traffic ? "Nursery · body-aware movement" : "Nursery · R0-r1 reference") :
+        timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
     put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · " + description + " · ENGINEERING_ONLY");
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
@@ -224,7 +230,7 @@ function scheduleLiveView() {
         try { if (!liveView.busy) await refreshLive(); }
         catch (error) { if (app.live) report(error); }
         finally { scheduleLiveView(); }
-    }, liveView.state?.running ? 200 : 1000);
+    }, liveView.state?.running ? (liveView.state.seeded_nursery && liveView.state.rate === 1 ? 65 : 200) : 1000);
 }
 
 async function openLiveView() {
@@ -328,6 +334,10 @@ function bindLive() {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("new", {timing: $("colony-timing").value, local_nest_activity: $("nest-activity").checked,
             nest_dynamics: $("nest-dynamics").checked});
+    });
+    click("open-nursery", () => {
+        if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
+        return liveCommand("nursery", {traffic:$("nursery-treatment").value==="traffic"});
     });
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => {

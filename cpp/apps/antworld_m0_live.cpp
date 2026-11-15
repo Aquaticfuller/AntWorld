@@ -1,6 +1,7 @@
 #include "wp6b_fixture.hpp"
 #include "r0_diagnostic_history.hpp"
 #include "r0r1_fixture.hpp"
+#include "traffic_observer_fixture.hpp"
 #include "process_memory.hpp"
 #include "antworld/storage/store.hpp"
 
@@ -247,7 +248,16 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v5");
+                message("OK", "antworld.m0.live.v6");
+            } else if (command=="NEW_NURSERY") {
+                const auto id=number(request), seed=number(request), traffic=number(request);
+                end(request);
+                require(id && traffic<=1,"invalid nursery options");
+                auto scene=traffic_observer::nursery(id,seed,traffic!=0,limits);
+                auto frame=scene.checkpoint_frame();
+                world.emplace(std::move(scene));
+                search.reset(); r0_history.reset(); r0_assay=false;
+                payload(frame);
             } else if (command=="NEW_R1_DIG") {
                 const auto id=number(request), seed=number(request), group=number(request), mode=number(request);
                 const auto shield=number(request);

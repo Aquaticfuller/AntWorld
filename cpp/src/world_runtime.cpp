@@ -219,6 +219,7 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             const auto length = distance(ant.position, e.destination);
             if (!inside(e.destination, s.config)) f.outcome = Outcome::OutOfBounds;
             else if (!spatially_clear(ant.position,e.destination,body_half(e.actor))) f.outcome = Outcome::Blocked;
+            else if (!clear_worker_traffic(ant,e.destination,body_half(e.actor))) f.outcome = Outcome::Blocked;
             else if (planar && (!s.surface->locate(ant.position) || !s.surface->locate(e.destination))) f.outcome = Outcome::Blocked;
             else if (planar && !adjacent(*s.surface->locate(ant.position), *s.surface->locate(e.destination))) f.outcome = Outcome::NonLocalMove;
             else if (!std::isfinite(length) || (length>0 && (seconds<=0 ||
@@ -243,7 +244,8 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
                 f.outcome=Outcome::OutOfReach;
             else if (available == 0) f.outcome = Outcome::Depleted;
             else if (room == 0) f.outcome = Outcome::Capacity;
-            else if (s.geometry && !spatially_clear(ant.position,ant.position,s.geometry->config.loaded_half_q)) f.outcome = Outcome::Blocked;
+            else if (s.geometry && (!spatially_clear(ant.position,ant.position,s.geometry->config.loaded_half_q) ||
+                                    !clear_worker_traffic(ant,ant.position,s.geometry->config.loaded_half_q))) f.outcome = Outcome::Blocked;
             else {
                 const auto amount = std::min({e.requested_ug, available, room}); f.transferred = portion(food.remaining, amount);
                 tx.touch_ant(i); tx.touch_food(j);

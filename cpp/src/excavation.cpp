@@ -101,7 +101,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
                 return;
             }
             // The larger loaded envelope must already fit at the worker's stationary position.
-            if (!clear_sweep(view,*q,*q,c.loaded_half_q)) {
+            if (!clear_sweep(view,*q,*q,c.loaded_half_q) || !clear_worker_traffic(ant,ant.position,c.loaded_half_q)) {
                 f.outcome = Outcome::Blocked;
                 return;
             }
@@ -234,6 +234,7 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
             f.outcome = Outcome::Blocked;
             return;
         }
+        if (!clear_worker_traffic(ant,ant.position,c.loaded_half_q)) { f.outcome=Outcome::Blocked; return; }
         parcel.state = ParcelState::Carried;
         parcel.carrier = e.actor;
         parcel.position = ant.position;
@@ -485,7 +486,14 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         choices.push_back(choice);
     }
     for (std::size_t i = 0; i < choices.size(); ++i) {
-        const auto &choice = choices[i];
+        auto choice = choices[i];
+        const auto ant = s.ants.get(s.ants.index.at(choice.action.actor));
+        if (choice.action.kind==ScheduledEvent::Kind::Move &&
+            !clear_worker_traffic(ant,choice.action.destination,body_half(ant.id))) {
+            choice.action.kind=ScheduledEvent::Kind::Rest;
+            choice.action.destination={};
+            choice.action.key.time=after(s.m.now,c.decision_delay.milliseconds);
+        }
         auto worker = s.excavators.at(choice.action.actor);
         bump(worker.decisions);
         worker.wake = {};
@@ -503,7 +511,6 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
         f.source = wakes[i].id;
         f.payload = worker.decisions;
         f.random_value=worker.returning_empty ? 1 : 0;
-        const auto ant = s.ants.get(s.ants.index.at(f.actor));
         f.colony = ant.colony;
         f.position = ant.position;
         f.stage = ant.stage;

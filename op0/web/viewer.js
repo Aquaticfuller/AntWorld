@@ -459,8 +459,11 @@ function renderAnt(ant) {
     title.append(headline, node("span", tr(ant.status), "pill" + (ant.status === "Dead" ? " dead" : "")));
     const mother = ant.mother ? button("#" + ant.mother, () => selectAnt(ant.mother).catch(report)) : null;
     const s = ant.sample;
+    const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
     panel.replaceChildren(title, keyValues([["Mother", mother], ["Born", ant.born_ms == null ? null : day(ant.born_ms)],
-        ["Last position at cut", coords(ant.position_m)], ...(ant.died_ms == null ? [] : [["Died", exactTime(ant.died_ms)], ["Cause", tr(ant.death_cause)]])]),
+        ["Last position at cut", coords(ant.position_m)], ...(plan ? [["Current motion", tr(app.time < plan.translates_ms ? "Turning" : "Moving")],
+            ["Position on motion segment", coords(motorPose(ant))], ["Destination", coords(plan.to_m)]] : []),
+        ...(ant.died_ms == null ? [] : [["Died", exactTime(ant.died_ms)], ["Cause", tr(ant.death_cause)]])]),
         node("h4", s ? tr("Physiology · sample on {day}", {day: day(s.time_ms)}) : tr("Physiology · not recorded"), "subhead"));
     if (s) panel.append(keyValues([["Body energy", withUnit(s.energy_nj, "nJ")], ["Body water", withUnit(s.hydration_ug, "µg")],
         ["Tissue protein", withUnit(s.tissue_protein_ug, "µg")], ["Crop C/P/W/other", mass(s.crop_ug)],
@@ -733,10 +736,89 @@ function markerShape(ctx, ant, x, y, selected) {
         ctx.fillText("#" + ant.id, x + 13, y - 4);
     }
 }
-function drawOccupants(ctx, visible, point) {
+function motorPose(ant) {
+    const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
+    return plan ? plan.from_m.map((start, i) => start + plan.progress*(plan.to_m[i]-start)) : ant.position_m;
+}
+
+function planAngle(plan, point) {
+    const origin = point(plan.from_m), goal = point(plan.to_m);
+    const next = Math.atan2(goal[1] - origin[1], goal[0] - origin[0]);
+    if (!plan.heading || app.time >= plan.translates_ms) return next;
+    const compass = (plan.heading - 1) * Math.PI / 4;
+    const v = plan.heading > 8 ? [0, plan.heading === 9 ? 1 : -1, 0] : [Math.cos(compass), 0, Math.sin(compass)];
+    const projected = point(plan.from_m.map((n, i) => n + 0.001 * v[i]));
+    const du = projected[0] - origin[0], dv = projected[1] - origin[1];
+    if (Math.hypot(du, dv) < 1e-6) return next;
+    const before = Math.atan2(dv, du);
+    const turn = Math.atan2(Math.sin(next - before), Math.cos(next - before));
+    return before + turn * (app.time - plan.begins_ms) / (plan.translates_ms - plan.begins_ms);
+}
+
+function drawAdult(ctx, ant, x, y, radius, heading, selected) {
+    const queen = ant.caste === "Queen";
+    ctx.save();
+    ctx.translate(x,y);
+    if ($("body-envelopes").checked) {
+        ctx.fillStyle = "#a6de9b24";
+        ctx.strokeStyle = "#a6de9b90";
+        ctx.fillRect(-radius,-radius,2*radius,2*radius);
+        ctx.strokeRect(-radius,-radius,2*radius,2*radius);
+    }
+    ctx.rotate(heading);
+    ctx.scale(radius,radius);
+    const plan=app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
+    const gait=plan?.progress > 0 ? Math.sin(plan.progress*4*Math.PI)*.19 : 0;
+    ctx.strokeStyle="#281d17";
+    ctx.lineWidth=.092;
+    ctx.lineCap="round";
+    for (const side of [-1,1]) {
+        for (const [index, hip] of [-.19,.00,.19].entries()) {
+            const span=(index-1)*.50+gait*side*(index===1?-1:1);
+            ctx.beginPath();
+            ctx.moveTo(hip,side*.13);
+            ctx.quadraticCurveTo(hip+span*.58,side*.44,hip+span,side*.48);
+            ctx.lineTo(hip+span*.90,side*.68);
+            ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.moveTo(.62,side*.12);
+        ctx.quadraticCurveTo(.97,side*.13,.91,side*.37);
+        ctx.stroke();
+    }
+    const shells=[[-.58,queen ? .42 : .31,queen ? .33 : .23],[-.23,.12,.10],[.02,.29,.19],[.52,.24,.18]];
+    const light=ctx.createLinearGradient(0,-.3,0,.33);
+    light.addColorStop(0,queen?"#b37e51":"#806446");
+    light.addColorStop(.38,queen?"#704230":"#50382a");
+    light.addColorStop(1,"#251c18");
+    for (const [offset,w,h] of shells) {
+        ctx.beginPath();
+        ctx.ellipse(offset,0,w,h,0,0,Math.PI*2);
+        ctx.fillStyle=light;
+        ctx.fill();
+        ctx.strokeStyle="#bf997750";
+        ctx.lineWidth=.025;
+        ctx.stroke();
+    }
+    if (ant.loaded) circle(ctx,.82,0,.16,"#c89b5b","#e4c89a");
+    ctx.restore();
+    if (selected) {
+        ctx.lineWidth=1.25;
+        ctx.strokeStyle="#ffe1a3";
+        ctx.beginPath();
+        ctx.arc(x,y,radius+4,0,Math.PI*2);
+        ctx.stroke();
+        ctx.lineWidth=1;
+        ctx.fillStyle="#fffbd3";
+        ctx.font="11px monospace";
+        ctx.fillText("#"+ant.id,x+radius+8,y-4);
+    }
+}
+
+function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain) {
     const markers = new Map();
     for (const ant of visible) {
-        const [x, y] = point(ant.position_m);
+        const [x, y] = point(motorPose(ant));
         // Only merge coincident projections. Membership retains original 3D coordinates.
         const key = x + "," + y;
         if (!markers.has(key)) markers.set(key, {x, y, ants: []});
@@ -745,8 +827,12 @@ function drawOccupants(ctx, visible, point) {
     app.hits = [];
     for (const {x, y, ants} of markers.values()) {
         if (ants.length === 1) {
-            markerShape(ctx, ants[0], x, y, ants[0].id === app.selected);
-            app.hits.push({id: ants[0].id, x, y, radius: 11, ants});
+            const a=ants[0];
+            const half=terrain && (a.loaded?terrain.loaded_half_q:terrain.body_half_q)*terrain.quantum_m*pixelsPerMeter;
+            if (a.stage==="Adult" && a.caste!=="Male" && half>=5) {
+                drawAdult(ctx,a,x,y,half,a.motion_plan ? planAngle(a.motion_plan, point) : 0,a.id===app.selected);
+            } else markerShape(ctx,a,x,y,a.id===app.selected);
+            app.hits.push({id:a.id,x,y,radius:Math.max(11,a.stage==="Adult"?half||0:0),ants});
             continue;
         }
         const selected = ants.some(a => a.id === app.selected);
@@ -774,6 +860,42 @@ function drawOccupants(ctx, visible, point) {
         app.hits.push({x, y, radius: 15, ants});
     }
 }
+
+let soilGrain;
+function paintSoilEdges(ctx, slice, p, bounds) {
+    if (!soilGrain) {
+        const tile = document.createElement("canvas");
+        tile.width=47; tile.height=41;
+        const brush=tile.getContext("2d");
+        for (let i=0;i<120;i++) {
+            brush.fillStyle=i%3===0?"#f3d6a748":"#27170f33";
+            brush.fillRect((i*23+i*i)%47,(i*19+i*i)%41,i%7===0?2:1,1);
+        }
+        soilGrain=ctx.createPattern(tile,"repeat");
+    }
+    const q=slice.quantum_m;
+    ctx.beginPath();
+    for (const [j,row] of slice.rows.entries()) for (let i=0;i<row.length;i++) if (row[i]!=="0") {
+        const [x0,y0]=p.point(bounds[0]+i*q,bounds[1]+j*q);
+        ctx.rect(x0,y0-q*p.unit,q*p.unit,q*p.unit);
+    }
+    if (soilGrain) { ctx.fillStyle=soilGrain; ctx.fill(); }
+    ctx.beginPath();
+    for (const [j,row] of slice.rows.entries()) for (let i=0;i<row.length;i++) if (row[i]==="0") {
+        const u=bounds[0]+i*q,v=bounds[1]+j*q;
+        const edge=(x1,y1,x2,y2)=>{ctx.moveTo(...p.point(x1,y1));ctx.lineTo(...p.point(x2,y2));};
+        if (i>0 && row[i-1]!=="0") edge(u,v,u,v+q);
+        if (i+1<row.length && row[i+1]!=="0") edge(u+q,v,u+q,v+q);
+        if (j>0 && slice.rows[j-1][i]!=="0") edge(u,v,u+q,v);
+        if (j+1<slice.rows.length && slice.rows[j+1][i]!=="0") edge(u,v+q,u+q,v+q);
+    }
+    ctx.strokeStyle="#301f19";
+    ctx.lineWidth=4;
+    ctx.stroke();
+    ctx.strokeStyle="#dbaf8170";
+    ctx.lineWidth=1;
+    ctx.stroke();
+}
 function renderLocation() {
     $("location").hidden = !app.location;
     if (!app.location) return;
@@ -799,13 +921,16 @@ function showLocation(hit = null) {
 }
 function drawMap() {
     if (app.compare || !app.state) return;
+    $("viewer").classList.toggle("nursery-view",Boolean(app.live && liveView.state?.seeded_nursery));
     const canvas = canvasContext($("map"));
     if (!canvas) return;
     const {ctx, width, height} = canvas;
     const state = app.state, surface = app.meta.surface, slice = app.geometry?.slice;
     const underground = app.section === "slice" && slice;
-    const tracked = app.live && app.follow ? state.ants.find(a => a.id === app.selected)?.position_m : null;
+    const follow = app.live && app.follow && state.ants.find(a => a.id === app.selected);
+    const tracked = follow ? motorPose(follow) : null;
     const terrain = app.meta.settings.geometry, surfaceY = planeSurface();
+    $("envelope-control").hidden=!terrain || !app.live;
     ctx.fillStyle = underground ? "#152019" : "#15241a";
     ctx.fillRect(0, 0, width, height);
     let p, fits, point, orientation;
@@ -817,17 +942,20 @@ function drawMap() {
         point = a => p.point(a[u], a[v]);
         fits = a => Math.floor((a[n] - o[n]) / q + 1e-9) === slice.plane_q;
         orientation = slice.axis === "z" ? "X east / Y up" : slice.axis === "x" ? "Z north / Y up" : "X east / Z north";
+        rect(ctx, p, bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1], "#736550");
         for (const [row, cells] of slice.rows.entries()) {
             let start = 0;
             while (start < cells.length) {
                 let end = start + 1;
                 while (cells[end] === cells[start]) end++;
-                const shade = cells[start] === "0" ? "#222f25" : cells[start] === "2" ? "#707c72" :
-                    (row % 3 === 0 ? "#917451" : "#826647");
-                rect(ctx, p, bounds[0] + start * q, bounds[1] + row * q, (end - start) * q, q, shade);
+                if (cells[start] !== "0") {
+                    const shade = cells[start] === "2" ? "#676869" : "#987657";
+                    rect(ctx, p, bounds[0] + start * q, bounds[1] + row * q, (end - start) * q, q, shade);
+                }
                 start = end;
             }
         }
+        paintSoilEdges(ctx,slice,p,bounds);
         for (const [row, cells] of (slice.unloaded_body_clear || []).entries()) {
             for (let i = 0; i < cells.length; i++) {
                 if (cells[i] === "1") circle(ctx, ...p.point(bounds[0] + i*q, bounds[1] + row*q),
@@ -908,9 +1036,9 @@ function drawMap() {
         if (fits(move.position_m)) circle(ctx, ...point(move.position_m), 2, "#ad9ce18a");
     }
     const segment = app.restReplay;
-    const visible = state.ants.filter(a => fits(a.position_m));
+    const visible = state.ants.filter(a => fits(motorPose(a)));
     app.visible = visible;
-    drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point);
+    drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point, p.unit, terrain);
     if (segment) drawRestSegment(ctx, point, fits, segment);
     const plan = app.live && visible.find(a => a.id === app.selected)?.motion_plan;
     if (plan && fits(plan.from_m) && fits(plan.to_m)) {
@@ -944,6 +1072,7 @@ function drawMap() {
     else if (!app.live && motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     if (segment) notes.push(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
+    if (app.live && liveView.state?.seeded_nursery) notes.push(tr("Moving markers follow the validated Core segments at the current simulation time."));
     if (plan) notes.push(tr("Selected worker · open Core segment · {percent}% through translation", {percent: Math.round(100*plan.progress)}));
     put("map-detail", notes.join(" "));
     renderLocation();
@@ -1442,6 +1571,7 @@ function bind() {
     const click = (id, action) => $(id).addEventListener("click", safe(action));
     const change = (id, action) => $(id).addEventListener("change", safe(action));
     change("locale", () => setLanguage($("locale").value));
+    change("body-envelopes", drawMap);
     change("archive", () => openArchive($("archive").value));
     change("archived-world", () => openArchive($("archive").value, $("archived-world").value));
     click("observe-tab", openArchiveView);
