@@ -33,7 +33,8 @@ struct IndividualCareProfile {
     bool operator==(const IndividualCareProfile&) const = default;
 };
 struct EnvironmentCareProfile {
-    double temperature_c{21}, relative_humidity{0.8}; // Assay metadata only; P04 is excluded.
+    // Declared test conditions. Effective rates are configured separately.
+    double temperature_c{21}, relative_humidity{0.8};
     bool neutral_displacement_assay{};
     double arena_radius_m{}; // Optional care-only disc centered at the test origin.
     bool operator==(const EnvironmentCareProfile&) const = default;
@@ -42,7 +43,8 @@ enum class CareAct : std::uint8_t {
     Inactive, Walk, ApproachBrood, InspectBrood, ArrangeBrood, CleanBrood,
     TransportBrood, FeedBrood, CloseWorkerContact, CollectFood, DeliverFood,
     IngestFood, TransferNutrition, Excavate, HandleSoil, RevisitBroodSite,
-    PickUpBrood, PlaceBrood, ReturnToCareShelter, NestReposition, DepotApproach, ApproachNestmate, YieldToCarrier, Count
+    PickUpBrood, PlaceBrood, ReturnToCareShelter, NestReposition, DepotApproach, ApproachNestmate, YieldToCarrier,
+    EntrancePatrol, EntranceContact, Count
 };
 enum class ObservationPhase : std::uint8_t { Opportunity, Selected, Started, Completed, Interrupted };
 struct BehaviorObservation {

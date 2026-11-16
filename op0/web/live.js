@@ -1,12 +1,15 @@
 "use strict";
 
 const liveView = {state: null, epoch: null, request: 0, timer: null, animation: null, busy: false,
-    saves: [], eventsKey: null, actionsKey: null, environmentKey: null, individualKey: null, shownStop: null};
+    saves: [], eventsKey: null, actionsKey: null, environmentKey: null, climateKey: null, individualKey: null, shownStop: null};
 const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
-    exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation"};
-const followMilestones = new Set(["exit", "delivery", "excavation"]);
-const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9"};
+    exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
+    water: "First collection from the water source", recruitment: "First worker responds to recruitment",
+    patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
+const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact"]);
+const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
+    "Entrance antennal contact": "#b9d6f5"};
 const liveStopLabels = {
     seeking: "Fast-forwarding to {event}…",
     reached: "Reached {event} at {time}. Resume at 1×.",
@@ -32,6 +35,9 @@ function liveControls() {
     $("live-rate").value = String(s?.rate || 1);
     $("colony-timing").disabled = $("nest-activity").disabled = $("nest-dynamics").disabled =
         $("new-colony").disabled = liveView.busy || !s?.core_available;
+    $("new-habitat").disabled = $("habitat-temperature").disabled = $("habitat-humidity").disabled =
+        $("habitat-trails").disabled = $("habitat-plug").disabled = $("habitat-seed").disabled =
+        liveView.busy || !s?.habitat_available;
     $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
     const preset = $("nursery-treatment");
     for (const option of preset.options) if (option.value.startsWith("ecology")) option.disabled = !s?.ecology_available;
@@ -40,6 +46,9 @@ function liveControls() {
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
     $("live-milestone").hidden = Boolean(s?.seeded_nursery && !s.ecology);
+    const target = $("live-target");
+    for (const option of target.querySelectorAll("[data-habitat]")) option.hidden = option.disabled = !s?.habitat;
+    if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("nursery-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
@@ -58,7 +67,11 @@ function liveVisibility(active) {
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
     $("live-activity").hidden = !active;
-    if (!active) $("live-environment").hidden = true;
+    if (!active) {
+        $("live-environment").hidden = $("find-pantry").hidden = $("find-brood").hidden =
+            $("find-entrance").hidden = $("trail-control").hidden = true;
+        put("worker-location", tr("Eclosed and alive"));
+    }
     if (active) $("watch-delivery").hidden = true;
     put("view-source", tr(active ? "Live Core" : "Local archive"));
     put("footer-mode", tr(active ? "Live state published by the Simulation Core" : "Read-only replay of Simulation Core facts"));
@@ -78,23 +91,61 @@ function liveIndividual() {
 }
 
 function liveEnvironment(data) {
-    $("live-environment").hidden = !data.ecology;
-    if (!data.ecology) return;
+    $("live-environment").hidden = !(data.ecology || data.habitat);
+    if ($("live-environment").hidden) return;
     const total = (items, field) => [0, 1, 2].map(i => items.reduce((n, row) => n + row[field][i], 0));
+    const level = data.surface.origin_m[1];
+    const chamber = data.sources.filter(s => s.position_m[1] < level);
     const stocks = [
-        ["External stock", total(data.sources, "stock_ug")],
-        ["Nest stock", total(data.colonies, "stock_ug")],
+        ["External stock", total(data.sources.filter(s => s.position_m[1] >= level), "stock_ug")],
+        ["Nest stock", total(data.colonies, "stock_ug"), data.colonies[0].position_m],
+        ...chamber.map(s => ["Water in the brood chamber", s.stock_ug, s.position_m]),
         ["Unreleased feeder reserve", data.feeder_reserve_ug?.slice(0, 3)]
     ];
     const key = JSON.stringify([language, stocks]);
-    if (liveView.environmentKey === key) return;
-    liveView.environmentKey = key;
-    $("live-resources").replaceChildren(...stocks.map(([label, values]) => {
-        const card = node("div");
-        card.append(node("strong", tr(label)), keyValues(["Carbohydrates", "Protein", "Water"]
-            .map((name, i) => [name, withUnit(values?.[i], "µg")])));
-        return card;
-    }));
+    if (liveView.environmentKey !== key) {
+        liveView.environmentKey = key;
+        $("live-resources").replaceChildren(...stocks.map(([label, values, position]) => {
+            const card = node("div");
+            card.append(node("strong", tr(label)), keyValues([
+                ...["Carbohydrates", "Protein", "Water"].map((name, i) => [name, withUnit(values?.[i], "µg")]),
+                ...(position ? [["Location", coords(position)]] : [])
+            ]));
+            if (position) card.append(button("Locate on map", () => locateLiveSite(position).catch(report)));
+            return card;
+        }));
+    }
+    const climate = data.climate;
+    $("live-climate").hidden = !climate;
+    const climateKey = JSON.stringify([language, climate, data.worker_activity_timing?.check_ms, data.surface.trail_half_life_s]);
+    if (climate && climateKey !== liveView.climateKey) {
+        liveView.climateKey = climateKey;
+        $("live-climate").replaceChildren(...[
+            ["Temperature", withUnit(climate.temperature_c, "°C")],
+            ["Relative humidity", withUnit(climate.humidity_percent, "%")],
+            ["Larval development target", withUnit(climate.larva_ms / DAY, "days")],
+            ["Larval water loss", withUnit(climate.larva_loss_ug_day, "µg/day")],
+            ["Worker decision interval", withUnit(data.worker_activity_timing.check_ms / MINUTE, "min")],
+            ["Surface trail half-life", withUnit(Math.round(data.surface.trail_half_life_s / 6) / 10, "min")]
+        ].map(([name, value]) => {
+            const card = node("div");
+            card.append(node("span", tr(name), "metric-label"), node("strong", value));
+            return card;
+        }));
+    }
+}
+
+async function locateLiveSite(position) {
+    if (!position || !app.live) return;
+    app.follow = false;
+    app.selectedFact = null;
+    app.location = null;
+    toggle("follow", false);
+    $("axis").value = "y";
+    preferView(position);
+    app.map = {zoom: 1, x: 0, y: 0};
+    await refreshLive();
+    $("space-title").scrollIntoView({block: "nearest"});
 }
 
 function renderLiveEvents() {
@@ -108,6 +159,7 @@ function renderLiveEvents() {
 
 function liveActionGroup(event) {
     if (event.kind === "NutritionTransferred") return "Trophallaxis";
+    if (event.action?.act === "Entrance antennal contact") return event.action.act;
     if (event.action || event.kind === "FoundingRation") return "Brood care";
     return "Ingest food";
 }
@@ -175,6 +227,7 @@ async function refreshLive(alignSection = true) {
     if (!app.live) return;
     const request = ++liveView.request;
     const data = await api("live/view", {axis: $("axis").value, layer_q: app.layer,
+        trails: app.section === "surface" && $("show-trails").checked ? 1 : null,
         clearance: app.section === "slice" && $("clearance").checked ? 1 : null, group: $("filter").value});
     if (!app.live || request !== liveView.request) return;
     liveView.state = data;
@@ -211,9 +264,10 @@ async function refreshLive(alignSection = true) {
         inspect(false);
     }
     app.time = data.time_ms;
-    put("title", data.ecology ? tr("Local ecology") : data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
+    put("title", data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
+        data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
-    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources};
+    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, trails: data.trails};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
     const stop = data.fast_forward;
     const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
@@ -246,9 +300,13 @@ async function refreshLive(alignSection = true) {
         pupae: ants.filter(a => a.stage === "Pupa").length};
     const queen = p.queens_alive[0];
     updatePopulation(p, queen && {...queen, time_ms: queen.updated_ms});
+    const outside = ants.filter(a => a.stage === "Adult" && a.caste === "Worker" &&
+        a.position_m[1] >= data.surface.origin_m[1]).length;
+    put("worker-location", tr("{count} on surface", {count: outside}));
     put("map-time", duration(data.time_ms));
     const timing = data.worker_activity_timing;
-    const description = data.ecology ? tr(data.ecology === "water-fed" ? "Finite food and water" : "Finite food · no external water") :
+    const description = data.habitat ? tr("Independent food and water sources") :
+        data.ecology ? tr(data.ecology === "water-fed" ? "Finite food and water" : "Finite food · no external water") :
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
@@ -278,7 +336,7 @@ function scheduleLiveView() {
         try { if (!liveView.busy) await refreshLive(); }
         catch (error) { if (app.live) report(error); }
         finally { scheduleLiveView(); }
-    }, liveView.state?.running ? (liveView.state.seeded_nursery && liveView.state.rate === 1 ? 65 : 200) : 1000);
+    }, liveView.state?.running ? ((liveView.state.seeded_nursery || liveView.state.habitat) && liveView.state.rate === 1 ? 65 : 200) : 1000);
 }
 
 async function openLiveView() {
@@ -386,6 +444,17 @@ function bindLive() {
         return liveCommand("new", {timing: $("colony-timing").value, local_nest_activity: $("nest-activity").checked,
             nest_dynamics: $("nest-dynamics").checked});
     });
+    click("new-habitat", () => {
+        if (!$('habitat-seed').reportValidity()) return;
+        if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
+        return liveCommand("habitat", {temperature: Number($("habitat-temperature").value),
+            humidity: Number($("habitat-humidity").value), trail_half_life: Number($("habitat-trails").value),
+            soil_plug: $("habitat-plug").checked, seed: $("habitat-seed").valueAsNumber});
+    });
+    click("find-pantry", () => locateLiveSite(liveView.state?.colonies?.[0]?.position_m));
+    click("find-brood", () => locateLiveSite(liveView.state?.habitat?.brood_site_m));
+    click("find-entrance", () => locateLiveSite(liveView.state?.terrain?.openings?.[0]));
+    $("show-trails").addEventListener("change", () => refreshLive().catch(report));
     click("open-nursery", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("nursery", {treatment: $("nursery-treatment").value});

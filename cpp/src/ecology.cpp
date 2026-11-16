@@ -124,13 +124,16 @@ void WorldRuntime::resolve_autonomy_wakes(
     choice.event = wake;
     choice.behavior = p.behavior;
     const auto &colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
+    const auto buffer = s.ecological && s.ecological->founding_habitat ?
+        s.ecological->founding_habitat->pantry_buffer_ug : 0;
     // Ongoing journeys and carried resources remain owned by that worker.
     // Stationary workers may nurse locally away from the depot; only a real
     // depot return permits switching out of foraging/excavation.
     const bool at_depot = ant.position == colony.nest_position;
+    const bool foraging_home = !buffer ? at_depot : at_foraging_home(ant);
     const bool stationary = p.behavior != IndividualBehavior::Forage &&
                             p.behavior != IndividualBehavior::Excavate;
-    const bool can_switch = (at_depot || stationary) &&
+    const bool can_switch = (at_depot || (p.behavior==IndividualBehavior::Forage && foraging_home) || stationary) &&
                             !ant.carried_food.total_ug() &&
                             !s.carriers.contains(ant.id);
     const auto timing = worker_timing(s, ant.caste);
@@ -139,8 +142,15 @@ void WorldRuntime::resolve_autonomy_wakes(
         p.behavior == IndividualBehavior::Paused ||
         s.m.now.milliseconds - a.last_program_change.milliseconds >=
             program_time.milliseconds;
-    const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
+    bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
                         p.hydration_ug < p.config.hydration_capacity_ug / 4;
+    if (buffer && timing && ant.caste==Caste::Worker) {
+      // Newly eclosed workers can have healthy short-term reserves well below
+      // the maximum crop and body capacities. Use the actual metabolic budget
+      // before ruling out work, including a response to a returning scout.
+      if (const auto reserve=query_founding({s.world,ant.id}))
+        urgent=founding_resupply_shortfall(s.founding->profile,p,*reserve,false,timing->check_interval).total_ug()!=0;
+    }
     const auto giving_way = yield_to_loaded(s) && ant.caste==Caste::Worker && stationary && can_switch &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? carrier_yield_step(ant) : std::nullopt;
     if (integrated_care(s) && care_owned(s,ant.id)) {
@@ -156,8 +166,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.contact_target=giving_way->second;
       choice.transit=CareAct::YieldToCarrier;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (worker_motor(s) && !a.decisions && p.mother.value &&
-               p.behavior==IndividualBehavior::Paused && !at_depot &&
+    } else if (worker_motor(s) && (!a.decisions ||
+               (buffer && !s.foragers.contains(ant.id) && s.care.contains(ant.id) &&
+                s.care.at(ant.id).act==CareAct::DepotApproach)) && p.mother.value &&
+               p.behavior==IndividualBehavior::Paused && !foraging_home &&
                (choice.resting_site=worker_depot_step(ant))) {
       // Emergence schedules a direct review, before any return notification.
       choice.transit=CareAct::DepotApproach;
@@ -173,7 +185,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (can_switch && wake.payload==1 && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
       ContactSample local;
-      if (at_depot && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
+      if (foraging_home && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
         const auto available = sum(colony.nest_food,founding_gift_supply(s.founding->profile,p));
         if (available.total_ug()) {
           local = sample_contacts({s.world,ant.id},a.decisions ^ UINT64_C(0x45434f4c4f4759));
@@ -208,7 +220,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       // ENGINEERING_FIXTURE. A worker already in contact with the depot can
       // assess this supply. No estimate from a different part of the nest.
       const bool low_pantry = s.ecological && s.ecological->local_pantry_checks && s.surface && nest_contact &&
-          stock.carbs_ug < p.config.transfer_limit_ug;
+          (buffer ? (stock.carbs_ug < buffer || stock.water_ug < buffer) : stock.carbs_ug < p.config.transfer_limit_ug);
       const auto available = sum(p.crop, stock);
       for (const auto other : sample.ants) {
         const auto q = query_physiology(other);
@@ -224,7 +236,7 @@ void WorldRuntime::resolve_autonomy_wakes(
             ingredient_min(p.crop, signaled_need(*q, stage,s.long_term!=nullptr)).total_ug())
           crop_work = true;
       }
-      bool forage = at_depot && can_forage(ant);
+      bool forage = foraging_home && can_forage(ant);
       const bool forage_possible = forage;
       bool refill = false;
       if (forage && local_founding_provisioning(s,ant.id) && s.founding->profile.dietary &&
@@ -270,7 +282,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (s.long_term && s.long_term->demand_feedback) {
         const auto self=signaled_need(p,ant.stage);
         forage=forage && (low_pantry || unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
-        soil=soil && !urgent && local_space_demand({s.world,ant.id},sample.ants.size());
+        const bool exit_work=buffer && at_depot && !forage_possible && low_pantry && shallow_soil_cap(ant.position);
+        soil=!urgent && (exit_work || (soil && local_space_demand({s.world,ant.id},sample.ants.size())));
       }
       if (urgent &&
           ingredient_min(stock, nutrient_demand(p, ant.stage)).total_ug())
@@ -310,19 +323,34 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
           draw -= weight;
         }
-        if (s.ecological && s.ecological->recruitment && forage_possible && !urgent &&
+        // A successful delivery can satisfy the ordinary refill threshold at
+        // the instant it leaves a cue. A local responder can still work toward
+        // one additional load of carbohydrate above that threshold.
+        const bool room_for_recruitment = !buffer || low_pantry || unmet ||
+            stock.carbs_ug < buffer ||
+            stock.carbs_ug-buffer < ant.carrying_capacity_ug;
+        if (s.ecological && s.ecological->recruitment && forage_possible && !urgent && room_for_recruitment &&
             p.behavior != IndividualBehavior::Forage &&
             (!s.foragers.contains(ant.id) || !s.foragers.at(ant.id).collections)) {
-          for (const auto other : sample.ants) {
-            const auto cue = s.recruitment_signals.find(other.id);
-            if (cue == s.recruitment_signals.end() ||
-                s.m.now.milliseconds - cue->second.time.milliseconds >= s.ecological->cue_lifetime.milliseconds ||
-                !within_contact(ant.position, cue->second.position, s.config) ||
-                !spatially_clear(ant.position, cue->second.position)) continue;
-            if (cue->second.fact > choice.cue) {
-              choice.scout = other.id;
-              choice.cue = cue->second.fact;
+          const auto consider=[&](EntityId scout,const auto& cue) {
+            if (scout==ant.id || cue.fact<=choice.cue ||
+                s.m.now.milliseconds-cue.time.milliseconds>=s.ecological->cue_lifetime.milliseconds ||
+                !within_contact(ant.position,cue.position,s.config) ||
+                !spatially_clear(ant.position,cue.position)) return;
+            const auto other=query_ant({s.world,scout});
+            if (other && other->stage==LifeStage::Adult && other->colony==ant.colony) {
+              choice.scout=scout;
+              choice.cue=cue.fact;
             }
+          };
+          if (buffer) {
+            // A cue remains at the handoff point for its declared lifetime.
+            // The other worker can detect it on arrival after the scout has
+            // cleared the passage. Food coordinates are never transferred.
+            for (const auto& [scout,cue]:s.recruitment_signals) consider(scout,cue);
+          } else for (const auto other:sample.ants) {
+            const auto cue=s.recruitment_signals.find(other.id);
+            if (cue!=s.recruitment_signals.end()) consider(other.id,cue->second);
           }
           if (choice.cue.value && choice.behavior != IndividualBehavior::Forage) {
             auto response = individual_rng(s.seed ^ UINT64_C(0x524543525549544d), ant.id, a.decisions);
@@ -334,12 +362,24 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
         }
       }
-      if (worker_motor(s) && !at_depot && !choice.care && stationary &&
+      if (worker_motor(s) && !foraging_home && !choice.care && stationary &&
           ((urgent && !nest_contact) || (!urgent && (unmet || low_pantry) && config.forage_weight &&
             s.surface && (p.crop.total_ug()<p.config.crop_capacity_ug/2 ||
                           choice.behavior==IndividualBehavior::Rest)))) {
         choice.resting_site=worker_depot_step(ant);
         if (choice.resting_site) choice.transit=CareAct::DepotApproach;
+      }
+      if (buffer && stationary && !urgent && !choice.care && !choice.resting_site &&
+          choice.behavior==IndividualBehavior::Rest) {
+        // ENGINEERING_FIXTURE. Adult experience raises a small lottery weight.
+        // Competing work remains eligible at the next local review.
+        const auto age=s.m.now.milliseconds-a.enrolled_at.milliseconds;
+        const auto weight=8+std::min<std::int64_t>(3,age/(2*static_cast<std::int64_t>(founding_day_ms)));
+        auto patrol=individual_rng(s.seed ^ UINT64_C(0x454e5452414e4345),ant.id,a.decisions);
+        if (bounded_draw(patrol,32)<static_cast<std::uint64_t>(weight)) {
+          choice.resting_site=entrance_patrol_step(ant);
+          if (choice.resting_site) choice.transit=CareAct::EntrancePatrol;
+        }
       }
       if (!choice.resting_site && (at_depot || worker_motor(s)) && !urgent &&
           choice.behavior==IndividualBehavior::Rest)

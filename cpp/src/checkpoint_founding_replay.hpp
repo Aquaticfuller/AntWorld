@@ -91,7 +91,7 @@ template<class S> class FoundingReplay {
                    founder(e.actor) && enrolled({e.payload}) && last_hatch->actor==EntityId{e.payload} &&
                    last_hatch->source==e.source && last_hatch->time==e.time && last_hatch->colony==e.colony &&
                    opened_care->source.value==0 && opened_care->id.value+1==e.id.value && opened_care->position==e.position &&
-                   world.colonies.rows[world.colonies.index.at(e.colony)].nest_position==e.position &&
+                   familiar_brood_site(world,world.colonies.rows[world.colonies.index.at(e.colony)])==e.position &&
                    e.random_value<world.m.next_scheduled &&
                    (last_cue==SimTime{} || e.time.milliseconds-last_cue.milliseconds>=founding_hatch_cooldown_ms) &&
                    within_contact(e.position,last_hatch->position,world.config) &&

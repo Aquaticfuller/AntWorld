@@ -17,6 +17,14 @@ struct NestDynamics {
     bool operator==(const NestDynamics&) const = default;
 };
 
+// ENGINEERING_FIXTURE for a single founding chamber and a separate handoff site.
+// The brood site is familiar to the founding queen and her own offspring.
+struct FoundingHabitat {
+    PositionM brood_site;
+    std::uint64_t pantry_buffer_ug{};
+    bool operator==(const FoundingHabitat&) const = default;
+};
+
 // Independent opt-in hypotheses. All numbers are ENGINEERING_FIXTURE.
 struct EcologicalClosureConfig {
     bool distance_clock{}, floor_space{}, recruitment{}, activity_cost{};
@@ -34,6 +42,7 @@ struct EcologicalClosureConfig {
     bool local_traffic{}; // Physics 34. Experimental local contact approaches and adult body clearance.
     bool yield_to_loaded{}; // Physics 35. A stationary worker can clear a locally blocked return.
     bool local_pantry_checks{}; // Physics 35. A locally observed low food store can prompt foraging.
+    std::optional<FoundingHabitat> founding_habitat; // Physics 36. Familiar brood site and local working buffer.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

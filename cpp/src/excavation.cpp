@@ -3,6 +3,7 @@
 #include "ecological_internal.hpp"
 #include "worker_motion.hpp"
 #include "nest_scoring.hpp"
+#include "spatial_navigation.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -248,6 +249,27 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
         f.payload = parcel.id.value;
     }
 }
+std::optional<BoxQ> WorldRuntime::shallow_soil_cap(PositionM from) const {
+    const auto& s=*state_;
+    if (!s.ecological || !s.ecological->founding_habitat || !s.care_profile || !s.geometry || !s.surface) return {};
+    const auto& c=s.geometry->config;
+    const auto point=quantized(from,c);
+    const auto surface=surface_level(s);
+    if (!point || !surface) return {};
+    const auto half=c.loaded_half_q;
+    const auto ground=*surface-half;
+    const auto p=*point;
+    const PointQ stance{p.x,ground-half-1,p.z};
+    if (p.y>stance.y || ground!=c.initial_solid.max.y ||
+        !within_distance(from,physical({p.x,ground,p.z},c),s.care_profile->perception_radius_m,true) ||
+        !spatially_clear(from,physical(stance,c),half)) return {};
+    const auto view=geometry_view(s,limits_);
+    const BoxQ cap{{p.x-half,ground-1,p.z-half},{p.x+half,ground,p.z+half}};
+    if (!shaft_attachment(view,stance,half) || !local_patch(view,stance,cap) ||
+        material_volume(view,cap,Material::Rock) || !material_volume(view,cap,Material::Soil)) return {};
+    return cap;
+}
+
 std::vector<BoxQ> WorldRuntime::local_frontiers(AntRef ref) const {
     const auto &s = *state_;
     const auto ant = query_ant(ref);
@@ -392,6 +414,19 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
                 action.kind = ScheduledEvent::Kind::SoilAction;
                 choice.soil = {ant.id, SoilAction::Drop, {}, carrier->second, s.m.geometry_revision, 0, {}};
             } else follow_inbound();
+        } else if (const auto cap=shallow_soil_cap(ant.position)) {
+            // A thin reachable plug is a local frontier. Each ascent, dig and
+            // loaded return still uses the same timed movement and soil actions.
+            const auto amount=material_volume(view,*cap,Material::Soil);
+            if (amount*(c.dry_ug_per_q3+c.water_ug_per_q3)<=ant.carrying_capacity_ug-ant.carried_food.total_ug()) {
+                if (p.y+c.loaded_half_q==cap->min.y) {
+                    action.kind=ScheduledEvent::Kind::SoilAction;
+                    choice.soil={ant.id, SoilAction::Excavate,*cap,{},s.m.geometry_revision,0,{}};
+                } else {
+                    action.kind=ScheduledEvent::Kind::Move;
+                    action.destination=physical({p.x,p.y+1,p.z},c);
+                }
+            }
         } else if (floor_search && (worker.returning_empty || worker.path_size>=(scored?56U:24U))) {
             choice.returning_empty=worker.path_size>1;
             if (choice.returning_empty) follow_inbound();

@@ -26,8 +26,11 @@ from .query import HOUR, integer
 
 ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
-MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
+HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
+HABITAT_TEMPERATURES = (225, 250, 270)
+HABITAT_HUMIDITIES = (60, 80, 90)
 FRAME_LIMIT = 128 * 1024 * 1024
 ECOLOGY_WORLD_TAGS = {651: "water-fed", 652: "no-external-water"}
 NURSERY_WORLD_TAGS = {649, 650, *ECOLOGY_WORLD_TAGS}  # Matches the native nursery fixtures.
@@ -39,7 +42,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v9"), installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
+    paths = (installed.with_stem("antworld_m0_live_v10"), installed.with_stem("antworld_m0_live_v9"),
+             installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
              installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
     return next((path for path in paths if path.is_file()), paths[0])
@@ -55,13 +59,15 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6",
-                                b"antworld.m0.live.v7", b"antworld.m0.live.v8"),
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 10))
+            require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
-            self.worker_motor = version != b"antworld.m0.live.v4"
-            self.nursery = version in (b"antworld.m0.live.v6", b"antworld.m0.live.v7", b"antworld.m0.live.v8")
-            self.provisioned_nursery = version in (b"antworld.m0.live.v7", b"antworld.m0.live.v8")
-            self.local_ecology = version == b"antworld.m0.live.v8"
+            generation = 4 + protocols.index(version)
+            self.worker_motor = generation >= 5
+            self.nursery = generation >= 6
+            self.provisioned_nursery = generation >= 7
+            self.local_ecology = generation >= 8
+            self.founding_habitat = generation >= 9
         except Exception:
             self.close()
             raise
@@ -204,6 +210,7 @@ class LiveSession:
         self.fast_forward = None
         self.anchor_ns = self.anchor_ms = 0
         self.saved = None
+        self.climate = None
         self.error = None
 
     def __enter__(self):
@@ -252,6 +259,18 @@ class LiveSession:
             discard_stage(self.loaded_copy)
         self.loaded_copy = copy
         self.publish(raw, reset=True)
+        self.climate = None
+        if self.frame["flags"].get("founding_habitat"):
+            fields = self.worker.call("HABITAT_PARAMETERS").split()
+            require(len(fields) == 8, "Invalid native climate parameters")
+            temperature, humidity = map(float, fields[:2])
+            egg, larva, pupa, larva_loss, queen_loss, worker_loss = map(int, fields[2:])
+            require(isfinite(temperature) and 0 <= humidity <= 1 and
+                    min(egg, larva, pupa, larva_loss, queen_loss) > 0 and worker_loss >= 0, "Invalid native climate parameters")
+            self.climate = dict(temperature_c=temperature, humidity_percent=round(humidity * 100),
+                                egg_ms=egg, larva_ms=larva, pupa_ms=pupa,
+                                larva_loss_ug_day=larva_loss, queen_loss_ug_day=queen_loss,
+                                worker_loss_ug_day=worker_loss)
         self.epoch += 1
         self.sections.clear()
         self.running, self.rate, self.saved, self.error = running, 1, saved, None
@@ -274,6 +293,7 @@ class LiveSession:
 
     def start_seek(self, target):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
+        require(target not in HABITAT_MILESTONES or self.frame["flags"].get("founding_habitat"), "Unknown live milestone")
         require(not self.seeking(), "Cancel the current fast-forward first.")
         past = self.worker.call(f"FIND_MILESTONE {target}")
         if past:
@@ -330,6 +350,7 @@ class LiveSession:
         return dict(enabled=True, core_available=self.binary.is_file(), time_ms=frame["time_ms"] if frame else None,
                     nursery_available=self.binary.is_file() and (self.worker is None or self.worker.nursery),
                     ecology_available=self.binary.is_file() and (self.worker is None or self.worker.local_ecology),
+                    habitat_available=self.binary.is_file() and (self.worker is None or self.worker.founding_habitat),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -350,10 +371,19 @@ class LiveSession:
             nursery = is_nursery(frame)
             tag = UUID(frame["world"]).int >> 64
             ecology = ECOLOGY_WORLD_TAGS.get(tag)
+            habitat = frame["flags"].get("founding_habitat")
             reserve = None
-            if ecology and self.worker.local_ecology:
+            if (ecology or habitat) and self.worker.local_ecology:
                 reserve = tuple(map(int, self.worker.call("RESOURCE_RESERVES").split()))
                 require(len(reserve) == 4 and min(reserve) >= 0, "Invalid native resource reserve")
+            trails = []
+            if habitat and options.get("trails") == "1":
+                for line in self.worker.call("SURFACE_TRAILS").splitlines():
+                    x, z, units = line.split()
+                    x, z, units = int(x), int(z), float(units)
+                    require(0 <= x < surface["width"] and 0 <= z < surface["height"] and isfinite(units) and units > 0,
+                            "Invalid native trail observation")
+                    trails.append((x, z, units))
             focus = (0,colonies[0]["position_m"][1],0) if nursery else colonies[0]["position_m"]
             axis = options.get("axis", "y")
             require(axis in AXES, "Unknown slice axis")
@@ -377,7 +407,7 @@ class LiveSession:
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         local_traffic=traffic, seeded_nursery=nursery,
                         provisioned_nursery=tag == 650 or ecology is not None,
-                        ecology=ecology, feeder_reserve_ug=reserve,
+                        ecology=ecology, habitat=habitat, climate=self.climate, feeder_reserve_ug=reserve, trails=trails,
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         nest_dynamics=dynamics,
@@ -461,7 +491,21 @@ class LiveSession:
 
     def write(self, resource, data):
         with self.lock:
-            if resource == "nursery":
+            if resource == "habitat":
+                temperature, humidity = data.get("temperature"), data.get("humidity")
+                require(type(temperature) is int and temperature in HABITAT_TEMPERATURES and
+                        type(humidity) is int and humidity in HABITAT_HUMIDITIES,
+                        "Choose a supported founding temperature and humidity")
+                sealed, trail = data.get("soil_plug", False), data.get("trail_half_life", 1955)
+                seed = data.get("seed", 2)
+                require(type(sealed) is bool and type(trail) is int and trail in (60, 1955),
+                        "Choose a supported entrance and trail setting")
+                require(type(seed) is int and 1 <= seed <= 2**31 - 1, "Choose a whole number between 1 and 2147483647 for the world seed")
+                core = self.core()
+                require(core.founding_habitat, "Build the updated Core to start a founding habitat.")
+                access = "plugged" if sealed else "open"
+                self.install(core.call(f"NEW_HABITAT {randbits(63) or 1} {seed} {temperature} {humidity} {access} {trail}"), running=True)
+            elif resource == "nursery":
                 treatment = data.get("treatment")
                 if treatment is None:
                     traffic = data.get("traffic", True)

@@ -203,6 +203,9 @@ h2 { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
 .ledger strong { display: block; margin: 3px 0 0; font-size: 14px; }
 #live-resources { grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); padding-bottom: 13px; }
 #live-resources dl { margin-bottom: 0; }
+#live-climate { grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr)); }
+.habitat-options { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+#habitat-seed { width: 76px; }
 .comparison { margin-top: 12px; padding-bottom: 14px; }
 #compare-status, .compare-time, #compare-cards, .comparison details { margin: 12px 16px; }
 .compare-time { display: flex; align-items: center; gap: 10px; }

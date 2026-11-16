@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(["nursery", "ecology"].includes(mode) ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
+    ...(["nursery", "ecology", "habitat"].includes(mode) ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
 let browserError = "", exitMessage = "";
@@ -481,6 +481,33 @@ async function activityWorld() {
     console.log(JSON.stringify(result, null, 2));
 }
 
+async function foundingHabitat() {
+    await click("#new-habitat");
+    await wait(() => evaluate("liveView.state?.physics === 36 && !!liveView.state.climate && !liveView.busy"), "Open the founding habitat");
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    assert.equal(await evaluate("liveView.state.surface.trail_half_life_s"), 1955);
+    assert.deepEqual(await evaluate("liveView.state.ants.map(a => a.caste)"), ["Queen"]);
+    await click("#find-entrance");
+    await wait(() => evaluate("app.section === 'surface' && !$('trail-control').hidden"), "Locate the actual opening");
+    await click("#find-pantry");
+    await wait(() => evaluate("app.section === 'slice' && $('live-resources').textContent.includes('Nest stock')"), "Locate the nest depot");
+    await select("live-target", "delivery");
+    await click("#live-seek");
+    await wait(() => evaluate("liveView.state?.fast_forward?.state === 'reached' && !liveView.busy"), "Reach a real foundress-world delivery", 95_000);
+    const delivery = await evaluate("liveView.state.fast_forward.event");
+    assert.equal(delivery.kind, "FoodDelivered");
+    assert.ok(delivery.mass_ug[0] > 0);
+    assert.equal(delivery.actor, await evaluate("app.selected"));
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    assert.equal(await evaluate("liveView.state.running"), false);
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('title').textContent.includes('\u5355\u8681\u540e')"),
+        "Localize the running habitat viewer");
+    await screenshot("founding-habitat-delivery");
+    assert.deepEqual(exceptions, []);
+    console.log(JSON.stringify({status: "PASS", browser: (await send("Browser.getVersion")).product, delivery}, null, 2));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -507,7 +534,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (["live", "activity", "nursery", "ecology"].includes(mode)) {
+        if (["live", "activity", "nursery", "ecology", "habitat"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -522,6 +549,8 @@ try {
         await nurseryWorld();
     } else if (mode === "ecology") {
         await ecologyWorld();
+    } else if (mode === "habitat") {
+        await foundingHabitat();
     } else if (mode === "activity") {
         await activityWorld();
     } else if (mode === "micro") {

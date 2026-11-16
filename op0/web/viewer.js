@@ -460,8 +460,8 @@ function renderAnt(ant) {
     title.append(headline, node("span", tr(ant.status), "pill" + (ant.status === "Dead" ? " dead" : "")));
     const mother = ant.mother ? button("#" + ant.mother, () => selectAnt(ant.mother).catch(report)) : null;
     const s = ant.sample;
-    const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
-    const work = app.live && liveView.state?.seeded_nursery && ant.active_work != null && ant.status === "Alive";
+    const plan = showLiveMotor() ? ant.motion_plan : null;
+    const work = showLiveMotor() && ant.active_work != null && ant.status === "Alive";
     panel.replaceChildren(title, keyValues([["Mother", mother], ["Born", ant.born_ms == null ? null : day(ant.born_ms)],
         ["Last position at cut", coords(ant.position_m)], ...(plan ? [["Current motion", tr(app.time < plan.translates_ms ? "Turning" : "Moving")],
             ["Position on motion segment", coords(motorPose(ant))], ["Destination", coords(plan.to_m)]] : []),
@@ -747,7 +747,7 @@ function markerShape(ctx, ant, x, y, selected) {
 }
 function motorPose(ant) {
     if (ant.display_position_m) return ant.display_position_m;
-    const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
+    const plan = showLiveMotor() ? ant.motion_plan : null;
     return plan ? plan.from_m.map((start, i) => start + plan.progress*(plan.to_m[i]-start)) : ant.position_m;
 }
 
@@ -973,10 +973,29 @@ function showLocation(hit = null) {
     app.location = hit ? {axes, at: [hit.ants[0].position_m[axes[0]], hit.ants[0].position_m[axes[1]]]} : {all: true};
     renderLocation();
 }
+function showLiveMotor() {
+    return app.live && Boolean(liveView.state?.seeded_nursery || liveView.state?.habitat);
+}
+
+function drawSite(ctx, at, label, color, dy = -11, outline = false) {
+    const [x, y] = at;
+    ctx.save();
+    circle(ctx, x, y, 6, outline ? "transparent" : color, outline ? color : "#17231a");
+    ctx.font = '12px "Inter", "Microsoft YaHei", sans-serif';
+    ctx.textBaseline = "middle";
+    const width = ctx.measureText(label).width;
+    ctx.fillStyle = "#152019ee";
+    ctx.fillRect(x + 9, y + dy - 9, width + 12, 20);
+    ctx.fillStyle = "#fff5de";
+    ctx.fillText(label, x + 15, y + dy + 1);
+    ctx.restore();
+}
+
 function drawMap(motionOnly = false) {
     if (app.compare || !app.state) return;
     const nursery = app.live && liveView.state?.seeded_nursery;
-    const display = nursery ? liveMotion.frame(performance.now()) : null;
+    const habitat = app.live && liveView.state?.habitat;
+    const display = showLiveMotor() ? liveMotion.frame(performance.now()) : null;
     if (motionOnly && !display) return;
     if (!motionOnly) $("viewer").classList.toggle("nursery-view", Boolean(nursery));
     const canvas = canvasContext($("map"));
@@ -989,7 +1008,13 @@ function drawMap(motionOnly = false) {
     const follow = app.live && app.follow && state.ants.find(a => a.id === app.selected);
     const tracked = follow ? motorPose(follow) : null;
     const terrain = app.meta.settings.geometry, surfaceY = planeSurface();
-    if (!motionOnly) $("envelope-control").hidden = !terrain || !app.live;
+    if (!motionOnly) {
+        $("envelope-control").hidden = !terrain || !app.live;
+        $("find-pantry").hidden = !app.live;
+        $("find-brood").hidden = !habitat;
+        $("find-entrance").hidden = !habitat || !app.geometry?.openings?.length;
+        $("trail-control").hidden = !habitat || Boolean(underground);
+    }
     ctx.fillStyle = underground ? "#152019" : "#15241a";
     ctx.fillRect(0, 0, width, height);
     let p, fits, point, orientation;
@@ -1003,15 +1028,6 @@ function drawMap(motionOnly = false) {
         orientation = slice.axis === "z" ? "X east / Y up" : slice.axis === "x" ? "Z north / Y up" : "X east / Z north";
         if (nursery) drawNurseryTerrain(ctx, p, bounds, slice, width, height);
         else drawUnderground(ctx, p, bounds, slice);
-        if (nursery && liveView.state.provisioned_nursery) for (const depot of display?.colonies ?? app.meta.colonies) {
-            if (!fits(depot.position_m)) continue;
-            const [x, y] = point(depot.position_m);
-            const store = depot.stock_ug.reduce((total, count) => total + count, 0);
-            circle(ctx, x, y, 3, store ? "#f1ce86" : "#575247", "#eedbb1");
-            ctx.font = '11px "Cascadia Mono", monospace';
-            ctx.fillStyle = "#f5e4c4";
-            ctx.fillText(tr("Nest food · {mass}", {mass: withUnit(store, "µg")}), x + 7, y + 15);
-        }
         if (!motionOnly) {
             put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
                 (app.geometry.cropped ? " · " + tr("Local section of the terrain") : ""));
@@ -1059,6 +1075,15 @@ function drawMap(motionOnly = false) {
             const [x, , z] = terrain.origin_m, q = terrain.quantum_m, s = terrain.solid;
             rect(ctx, p, x + s[0]*q, z + s[2]*q, (s[3]-s[0])*q, (s[5]-s[2])*q, "#354135", "#80936f");
         }
+        if (habitat && surface && $("show-trails").checked) {
+            const [x, , z] = surface.origin_m, step = surface.cell_m;
+            ctx.save();
+            for (const [column, row, units] of state.trails ?? []) {
+                ctx.globalAlpha = Math.min(.65, .12 + .18 * Math.sqrt(units));
+                rect(ctx, p, x + (column - .5)*step, z + (row - .5)*step, step, step, "#be9ddd");
+            }
+            ctx.restore();
+        }
         const openings = app.geometry?.openings || [];
         for (const o of openings) {
             const q = app.geometry.opening_cell_m;
@@ -1070,6 +1095,12 @@ function drawMap(motionOnly = false) {
         for (const s of state.sources.filter(s => fits(s.position_m))) {
             const [x, y] = point(s.position_m);
             const inStock = s.stock_ug.some(v => v > 0);
+            if (habitat) {
+                const water = s.initial_ug[2] > 0 && s.initial_ug[2] === s.initial_ug.reduce((n, part) => n + part, 0);
+                const label = tr(water ? "Water source" : "Food source");
+                drawSite(ctx, [x, y], label + (inStock ? "" : " · " + tr("depleted")), water ? "#91c9db" : colors.food);
+                continue;
+            }
             ctx.fillStyle = inStock ? colors.food : "#52635a";
             ctx.fillRect(x-4, y-4, 8, 8);
             ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
@@ -1080,6 +1111,7 @@ function drawMap(motionOnly = false) {
             put("space-caption", tr("Surface positions at this cut") + " · " +
                 tr(openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
             legend("map-legend", [["entrance", "Opening / surface nest"], ["food", "Source"], ["worker", "Worker"],
+                ...(habitat && $("show-trails").checked ? [["trace", "Trail pheromone"]] : []),
                 ["entrance", "Recent movement points"], ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : [])]);
         }
     }
@@ -1093,6 +1125,22 @@ function drawMap(motionOnly = false) {
     const visible = state.ants.filter(a => fits(motorPose(a)));
     app.visible = visible;
     drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point, p.unit, terrain, time);
+    if (underground && app.live) {
+        for (const depot of display?.colonies ?? app.meta.colonies) {
+            if (!fits(depot.position_m)) continue;
+            const stock = depot.stock_ug.reduce((total, part) => total + part, 0);
+            drawSite(ctx, point(depot.position_m), tr("Nest food · {mass}", {mass: withUnit(stock, "µg")}),
+                stock ? "#f1ce86" : "#a08d67", 17);
+        }
+        if (habitat) {
+            if (fits(habitat.brood_site_m))
+                drawSite(ctx, point(habitat.brood_site_m), tr("Brood chamber"), "#d9a375", -19, true);
+            for (const source of state.sources) if (source.position_m[1] < surfaceY && fits(source.position_m)) {
+                const label = tr("Water in the brood chamber") + " · " + withUnit(source.stock_ug[2], "µg");
+                drawSite(ctx, point(source.position_m), label, "#91c9db", 35, true);
+            }
+        }
+    }
     if (segment) drawRestSegment(ctx, point, fits, segment);
     const selected = app.live && visible.find(a => a.id === app.selected);
     const plan = selected && displayedMotion(selected);
@@ -1141,7 +1189,7 @@ function describeMap(visible, underground, state, trail, motion, segment, plan, 
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     if (segment) notes.push(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
     if (display) notes.push(tr("Live motion follows Core segments with a short display delay."));
-    else if (app.live && liveView.state?.seeded_nursery) notes.push(tr("Moving markers follow the validated Core segments at the current simulation time."));
+    else if (showLiveMotor()) notes.push(tr("Moving markers follow the validated Core segments at the current simulation time."));
     if (plan) notes.push(tr("Selected worker · open Core segment · {percent}% through translation", {percent: Math.round(100*plan.progress)}));
     put("map-detail", notes.join(" "));
     renderLocation();

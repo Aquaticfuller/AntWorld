@@ -132,7 +132,7 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
     if (s.care.contains(ant.id)) care=s.care.at(ant.id);
     else {
         care.profile={CareContext::Worker,{s.m.now.milliseconds-ant.born_at.milliseconds}};
-        care.familiar_shelter=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+        care.familiar_shelter=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(ant.colony)]);
         care.enrolled_at=s.m.now;
     }
     care.enabled=true; care.act=act; care.destination=site; care.target=target;
@@ -155,6 +155,9 @@ void WorldRuntime::configure_biology(const SpeciesCareProfile& profile, const En
 }
 std::optional<SpeciesCareProfile> WorldRuntime::care_profile() const {
     return state_->care_profile ? std::optional<SpeciesCareProfile>{*state_->care_profile} : std::nullopt;
+}
+std::optional<EnvironmentCareProfile> WorldRuntime::care_environment() const {
+    return state_->care_profile ? std::optional{state_->care_environment} : std::nullopt;
 }
 std::optional<CareState> WorldRuntime::query_care(AntRef ref) const {
     if (!query_ant(ref) || !state_->care.contains(ref.id)) return {};
@@ -208,7 +211,7 @@ bool WorldRuntime::local_care_available(AntRef ref) const {
     const auto& s=*state_;
     if (!integrated_care(s) || care_owned(s,ref.id)) return false;
     const auto a=*query_ant(ref);
-    const auto nest=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
+    const auto nest=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(a.colony)]);
     if (a.position!=nest && (!worker_motor(s) || a.caste!=Caste::Worker)) {
         // Only a remembered shelter can resume a failed return, one valid step at a time.
         if (!s.care.contains(a.id)) return false;
@@ -233,7 +236,7 @@ void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId 
     CareState care;
     if (s.care.contains(a.id)) care=s.care.at(a.id);
     else {
-        care.familiar_shelter=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
+        care.familiar_shelter=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(a.colony)]);
         care.enrolled_at=s.m.now;
         care.profile={a.caste==Caste::Queen?CareContext::FoundingQueen:CareContext::Worker,
                       {s.m.now.milliseconds-a.born_at.milliseconds}};
@@ -255,7 +258,7 @@ void WorldRuntime::notify_local_hatch(Transaction& tx, const AntState& larva, Sc
         s.external_resolution(founder)) return;
     const AntRef ref{s.world,founder};
     const auto queen=*query_ant(ref);
-    const auto shelter=s.colonies.rows[s.colonies.index.at(queen.colony)].nest_position;
+    const auto shelter=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(queen.colony)]);
     if (!queen.alive() || queen.colony!=larva.colony || queen.position!=shelter ||
         s.physiology.at(larva.id).mother!=founder || !within_contact(queen.position,larva.position,s.config) ||
         !within_distance(queen.position,larva.position,s.care_profile->perception_radius_m,s.config.continuous_spatial_motion) ||
@@ -576,7 +579,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
             (a.caste==Caste::Worker && c.act!=CareAct::ArrangeBrood && !clear_worker_traffic(a,c.destination,half)) ||
-            (c.act==CareAct::NestReposition && !clear_resting_site(a,c.destination)) ||
+            ((c.act==CareAct::NestReposition || c.act==CareAct::EntrancePatrol) && !clear_resting_site(a,c.destination)) ||
             (c.act==CareAct::DepotApproach && !clear_worker_site(a,c.destination,true)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
             ((timed || (cfg.local_retrieval && c.act==CareAct::TransportBrood)) && c.destination==from))
@@ -678,7 +681,9 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             if (s.queue_index.contains(autonomy.wake)) tx.remove(s.queue_index.at(autonomy.wake));
             autonomy.wake={};
             tx.autonomy.set(a.id,autonomy);
-            schedule_autonomy(tx,a.id,{1});
+            const auto& arrived=s.ants.get(s.ants.index.at(a.id));
+            const bool still_approaching=s.ecological && s.ecological->founding_habitat && !at_foraging_home(arrived);
+            schedule_autonomy(tx,a.id,{still_approaching?0:1});
         }
         return;
     }
@@ -699,7 +704,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         }
         return;
     }
-    if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || local_work) {
+    if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || c.act==CareAct::EntrancePatrol || local_work) {
         interrupt_care(tx,a.id,outcome,true);
         change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
         return;

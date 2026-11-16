@@ -28,12 +28,24 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         throw std::invalid_argument("local traffic requires the worker motor");
     if ((c.yield_to_loaded || c.local_pantry_checks) && !c.local_traffic)
         throw std::invalid_argument("nursery work and traffic policy requires local traffic");
+    if (const auto& habitat=c.founding_habitat; habitat) {
+        const auto& p=habitat->brood_site;
+        if (!c.local_pantry_checks || !c.recruitment || !c.worker_activity_timing ||
+            !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
+            !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
+            p.x<world.min_m.x || p.y<world.min_m.y || p.z<world.min_m.z ||
+            p.x>world.max_m.x || p.y>world.max_m.y || p.z>world.max_m.z)
+            throw std::invalid_argument("invalid founding habitat or local buffer");
+    }
     if (const auto& timing = c.worker_activity_timing;
         timing && (!c.portable_care_motion || c.suppress_foundress_hatch_cue ||
                    timing->check_interval.milliseconds < 60000 ||
                    timing->minimum_program_time < timing->check_interval ||
                    timing->minimum_program_time.milliseconds > 6 * 3600000))
         throw std::invalid_argument("invalid MicroWorld worker review timing ENGINEERING_FIXTURE");
+}
+inline PositionM familiar_brood_site(const auto& s, const Colony& colony) {
+    return s.ecological && s.ecological->founding_habitat ? s.ecological->founding_habitat->brood_site : colony.nest_position;
 }
 inline bool local_nest_activity(const auto& s) {
     return s.ecological && s.ecological->local_nest_activity;

@@ -41,7 +41,9 @@ template<class S> void read_connectors(Reader& r,S& s,const RuntimeLimits& limit
         const auto a=s.ants.get(s.ants.index.at(id));
         const auto home=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
         const auto in_transit=path.cursor+1<path.size;
-        ensure(path.points[0]==home && navigation_cell(s,path.entrance())==f.path[0] &&
+        const bool contact_home=s.ecological && s.ecological->founding_habitat &&
+            within_contact(path.points[0],home,s.config);
+        ensure((path.points[0]==home || contact_home) && navigation_cell(s,path.entrance())==f.path[0] &&
             (!in_transit || f.path_size==1) && (!f.enabled || !in_transit || a.position==path.points[path.cursor]) &&
             (!path.returning || path.cursor || a.carried_food.total_ug()) &&
             s.connectors.emplace(id,path).second,"connector owner or physical endpoint mismatch");

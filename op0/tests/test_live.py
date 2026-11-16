@@ -4,6 +4,7 @@ from contextlib import closing
 from hashlib import sha256
 from http.client import HTTPConnection
 import json
+from math import dist
 import os
 from pathlib import Path
 import sqlite3
@@ -15,11 +16,12 @@ from zipfile import ZipFile
 
 from op0 import DAY
 from op0.archive import prefixed
-from op0.codec import CASTES, checkpoint, decode_fact
+from op0.codec import CASTES, KINDS, checkpoint, decode_fact
 from op0.index import Catalog
 from op0.live import ROOT, LiveSession, NativeCore, core_path, read_live_events
 from op0.query import HOUR, ReadAPI
 from op0.server import bind
+from tools.compare_m0_worker_rhythm import facts
 
 
 BINARY = Path(os.environ.get("M0_LIVE_CORE", core_path())).resolve()
@@ -177,6 +179,129 @@ class LiveTests(unittest.TestCase):
         self.assertEqual((egg["mother"], egg["born_ms"]), ("2", 2 * DAY))
         self.assertTrue(any(fact["kind"] == "AntBorn" and fact["actor"] == egg["id"] for fact in view["events"]))
         self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+
+    def test_foundress_habitat_climate_changes_body_loss_and_hatching(self):
+        core = self.live.core()
+        if not core.founding_habitat:
+            self.skipTest("Build the native live Core with founding habitat")
+        results = {}
+        for temperature, humidity in ((225, 80), (250, 80), (250, 60)):
+            self.live.write("habitat", {"temperature": temperature, "humidity": humidity})
+            view = self.live.read("view", {})
+            self.assertEqual((view["physics"], view["schema_version"], view["rate"]), (36, 29, 1))
+            [queen] = view["ants"]
+            self.assertEqual(queen["caste"], "Queen")
+            self.assertEqual(queen["position_m"], view["habitat"]["brood_site_m"])
+            self.assertNotEqual(queen["position_m"], view["colonies"][0]["position_m"])
+            cut = checkpoint(core.call(f"ADVANCE {2 * DAY}"))
+            loss = cut["ants"][int(queen["id"])]["lost_water_ug"]
+            core.call(f"ADVANCE {26 * DAY}")
+            hatch = core.call("FIND_MILESTONE hatch")
+            results[temperature, humidity] = (view["climate"], view["worker_activity_timing"], loss,
+                                              decode_fact(hatch)[1].time if hatch else None)
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        cool, warm, dry = (results[regime] for regime in ((225, 80), (250, 80), (250, 60)))
+        self.assertGreater(cool[1]["check_ms"], warm[1]["check_ms"])
+        self.assertEqual((cool[3], warm[3]), (247 * DAY // 10, 207 * DAY // 10))
+        self.assertEqual(dry[0]["larva_loss_ug_day"], 2 * warm[0]["larva_loss_ug_day"])
+        self.assertEqual(dry[2], 2 * warm[2])
+        self.assertIsNone(dry[3])
+        for invalid in ({"temperature": 17}, {"soil_plug": 1}, {"trail_half_life": 100}, {"seed": 0}):
+            with self.assertRaises(ValueError):
+                self.live.write("habitat", {"temperature": 250, "humidity": 80} | invalid)
+
+    def test_founding_habitat_collects_and_restores_real_history(self):
+        if not self.live.core().founding_habitat:
+            self.skipTest("Build the native live Core with founding habitat")
+        self.live.write("habitat", {"temperature": 250, "humidity": 80, "trail_half_life": 1955})
+        self.live.write("clock", {"running": False})
+        core = self.live.worker
+        self.assertEqual(self.live.read("view", {})["surface"]["trail_half_life_s"], 1955)
+        saved = core.call(f"ADVANCE {60 * DAY}")
+        saved_cut = checkpoint(saved)
+        self.live.publish(saved)
+        witnessed = {"FoodCollected", "FoodDelivered", "Moved", "StageChanged", "BiologicalObservation",
+                     "RecruitmentCue", "RecruitmentObserved", "RecruitmentActivated", "FoundressWaterIngested"}
+        events = [event.packet() for event in facts(core, saved_cut["cursor"]) if KINDS[event.kind] in witnessed]
+        food = decode_fact(core.call("FIND_MILESTONE delivery"))[1].packet()
+        water = decode_fact(core.call("FIND_MILESTONE water"))[1].packet()
+        self.assertGreater(food["mass_ug"][0], 0)
+        self.assertEqual(water["mass_ug"][:2], (0, 0))
+        self.assertGreater(water["mass_ug"][2], 0)
+        self.assertTrue(any(e["kind"] == "FoundressWaterIngested" and e["mass_ug"][2] for e in events))
+        for identifier in (food["actor"], water["actor"]):
+            history = [e for e in events if e["actor"] == identifier]
+            born = next(e for e in history if e["kind"] == "StageChanged" and e["stage"] == "Adult")
+            out = next(e for e in history if e["kind"] == "Moved" and e["position_m"][1] >= 0)
+            collect = next(e for e in history if e["kind"] == "FoodCollected")
+            return_to_nest = next(e for e in history if e["kind"] == "FoodDelivered")
+            self.assertLess(born["time_ms"], out["time_ms"])
+            self.assertLess(out["time_ms"], collect["time_ms"])
+            self.assertLess(collect["time_ms"], return_to_nest["time_ms"])
+            self.assertLess(return_to_nest["position_m"][1], 0)
+        self.assertTrue(any(e.get("trail_deposited_units", 0) > 0 for e in events))
+        self.assertTrue(core.call("FIND_MILESTONE patrol"))
+        self.live.write("save", {"name": "Founding habitat"})
+        target = 61 * DAY
+        expected = core.call(f"ADVANCE {target}")
+        expected_facts = core.call(f"FACTS_AFTER {saved_cut['cursor'] - 16}")
+        self.live.write("load", {"name": "Founding habitat"})
+        self.assertEqual(core.call("FRAME"), saved)
+        core.call(f"ADVANCE {60 * DAY + 15 * MINUTE}")
+        self.assertEqual(core.call(f"ADVANCE {target}"), expected)
+        self.assertEqual(core.call(f"FACTS_AFTER {saved_cut['cursor'] - 16}"), expected_facts)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_recruited_worker_delivers_and_entrance_contact_is_linked_to_an_arrival(self):
+        with closing(NativeCore(BINARY, self.folder)) as core:
+            if not core.founding_habitat:
+                self.skipTest("Build the native live Core with founding habitat")
+            core.call("NEW_HABITAT 201 3 250 80 open 60")
+            frame = core.call(f"ADVANCE {90 * DAY}")
+            cut = checkpoint(frame)
+            activation = decode_fact(core.call("FIND_MILESTONE recruitment"))[1]
+            contact = decode_fact(core.call("FIND_MILESTONE entrance-contact"))[1]
+            journal = {event.id: event for event in facts(core, cut["cursor"])}
+            cue, observation = journal[activation.aux], journal[activation.id - 1]
+            self.assertEqual((KINDS[cue.kind], KINDS[observation.kind]), ("RecruitmentCue", "RecruitmentObserved"))
+            self.assertEqual((cue.actor, observation.actor), (activation.related, activation.actor))
+            self.assertNotEqual(cue.actor, activation.actor)
+            self.assertGreater(journal[cue.payload].mass[0], 0)
+            self.assertTrue(any(e.actor == activation.actor and e.id > activation.id and e.mass[0] > 0 and
+                                KINDS[e.kind] == "FoodDelivered" for e in journal.values()))
+            arrival = journal[contact.id - 1]
+            self.assertEqual((KINDS[arrival.kind], arrival.actor, arrival.source), ("Moved", contact.related, contact.source))
+            self.assertLessEqual(dist(arrival.position, contact.position), cut["contact_m"] + 1e-12)
+            self.assertNotEqual(contact.actor, contact.related)
+            save_id = "1" * 32
+            core.call(f"SAVE {save_id}")
+            self.assertEqual(core.call(f"LOAD {save_id} {cut['world']}"), frame)
+            self.assertEqual(decode_fact(core.call("FIND_MILESTONE entrance-contact"))[1], contact)
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_only_a_reachable_soil_plug_can_be_opened_in_the_comparison(self):
+        with closing(NativeCore(BINARY, self.folder)) as core:
+            if not core.founding_habitat:
+                self.skipTest("Build the native live Core with founding habitat")
+            for access in ("plugged", "blocked"):
+                with self.subTest(access=access):
+                    initial = checkpoint(core.call(f"NEW_HABITAT 201 2 250 80 {access} 1955"))
+                    self.assertFalse(initial["edits"])
+                    final = checkpoint(core.call(f"ADVANCE {75 * DAY}"))
+                    worker = decode_fact(core.call("FIND_MILESTONE worker"))[1].packet()
+                    self.assertGreater(worker["time_ms"], 0)
+                    exit_fact = core.call("FIND_MILESTONE exit")
+                    delivery = core.call("FIND_MILESTONE delivery")
+                    if access == "blocked":
+                        self.assertEqual((exit_fact, delivery), (b"", b""))
+                    else:
+                        exit_time = decode_fact(exit_fact)[1].time
+                        cap = next(e for e in final["edits"] if e["box_q"][4] == initial["geometry"]["solid"][4])
+                        self.assertLess(cap["time_ms"], exit_time)
+                        self.assertLess(exit_time, decode_fact(delivery)[1].time)
+                        self.assertTrue(any(e.payload == cap["parcel"] and KINDS[e.kind] == "SoilDropped"
+                                            for e in facts(core, final["cursor"])))
+                    self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
     def test_fast_forward_stops_at_each_committed_milestone(self):
         expected, positions = {}, {}

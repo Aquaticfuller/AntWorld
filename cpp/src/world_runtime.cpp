@@ -76,6 +76,8 @@ bool WorldRuntime::cancel(ScheduledId id) {
 }
 ColonyRef WorldRuntime::seed_colony(PositionM nest) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
+    if (s.ecological && s.ecological->founding_habitat && !s.colonies.rows.empty())
+        throw std::invalid_argument("founding habitat supports one colony");
     if (!inside(nest,s.config) || (s.surface && !s.config.continuous_spatial_motion && !s.surface->locate(nest)) ||
         !spatially_clear(nest,nest)) throw std::invalid_argument("invalid physical nest position");
     Transaction tx(s, limits_); tx.entity_budget(); const ColonyId id{take(s.m.next_entity)};
@@ -275,13 +277,16 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         after_action(tx, e, f, before);
         continue_nutrition_behavior(tx, e, f);
         after_excavation_action(tx,e,f,before);
-        if (s.long_term && ant.position==s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position &&
+        if (s.long_term &&
+            (ant.position==s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position ||
+             (s.ecological && s.ecological->founding_habitat && s.foragers.contains(ant.id) && at_foraging_home(ant))) &&
             !ant.carried_food.total_ug() && !s.carriers.contains(ant.id) &&
             (f.kind==FactKind::FoodDelivered || f.kind==FactKind::SoilDropped ||
              (f.kind==FactKind::Moved && s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled &&
                 (s.long_term->complete_depot_visits || s.foragers.at(ant.id).mode==BehaviorMode::Return))))
             notify_return(tx,ant.id);
         tx.fact(f);
+        observe_entrance_contact(tx,f);
         record_recruitment_cue(tx,f);
         if (f.kind==FactKind::SoilFilled || f.kind==FactKind::SoilExcavated) validate_active_care(tx);
         observe_legacy_action(tx,e,f);

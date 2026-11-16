@@ -49,6 +49,7 @@ struct Case {
     bool cohort_assay{};
     bool micro_world{};
     bool seasonal_supply{};
+    double habitat_trail_half_life_s{60};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -60,21 +61,26 @@ inline RuntimeLimits assay_limits(const Case& c) {
 inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM nest) {
     auto& w=scene.world;
     BehaviorConfig behavior;
+    const bool habitat=c.ecological && c.ecological->founding_habitat.has_value();
     behavior.field_interval={6*hour_ms};
+    if (habitat) behavior.trail_half_life_s=c.habitat_trail_half_life_s;
     behavior.step_duration={30'000}; // Retained collection/handling clock, not the travel clock.
     w.configure_surface({{-.15,0,-.15},31,31,.01},{},behavior);
     auto& g=scene.geometry;
     g.origin_m={0,0,0};
     g.initial_solid={{-300,-300,-300},{300,0,300}};
     g.work_duration={hour_ms/2}; g.move_duration={500}; g.decision_delay={60'000};
-    // Compact founding pocket within a larger solid envelope. Connector reach
-    // stays inside the existing bounded local navigation search.
-    scene.voids={{{-4,-10,-4},{4,-4,4}}};
-    const auto top=c.arm=="blocked"?-4:0;
+    // A founding pocket and an entrance-side handoff alcove can share a
+    // narrow traversable neck. The seed geometry is a laboratory fixture.
+    scene.voids=habitat ? std::vector<BoxQ>{{{-12,-10,-5},{-4,-4,5}}, {{-2,-10,-6},{6,-4,6}},
+                                          {{-6,-10,-3},{1,-4,3}}}
+                         : std::vector<BoxQ>{{{-4,-10,-4},{4,-4,4}}};
+    const auto top=c.arm=="blocked"?-4:c.arm=="plugged"?-1:0;
     if (c.dogleg) {
         scene.voids.push_back({{-2,-10,-3},{11,-4,3}});
         if (top==0) scene.voids.push_back({{6,-10,-3},{12,top,3}});
     } else if (top==0) scene.voids.push_back({{-3,-10,-3},{3,top,3}});
+    else if (top==-1) scene.voids.push_back({{-2,-10,-2},{2,top,2}});
     w.configure_geometry(g,scene.voids);
     scene.target={c.seed%2?.03:-.03,0,0};
     require(w.spatially_clear(nest,nest,g.loaded_half_q),"MicroWorld founding site lacks load clearance");
@@ -120,14 +126,17 @@ inline void configure_integrated_assay(wp5::Scene& scene, const Case& c, Positio
 }
 
 inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixture::limits(),
-                        SocialConfig social = closure::day_social(), SpeciesCareProfile care = closure::timed_care(true)) {
+                        SocialConfig social = closure::day_social(), SpeciesCareProfile care = closure::timed_care(true),
+                        EnvironmentCareProfile environment = {}) {
     WorldConfig config;
     config.continuous_spatial_motion = c.integrated_assay;
     if (c.micro_world) { config.min_m={-.155,-.15,-.155}; config.max_m={.155,.005,.155}; }
-    wp5::Scene scene{WorldRuntime({646, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
+    const bool habitat=c.ecological && c.ecological->founding_habitat.has_value();
+    wp5::Scene scene{WorldRuntime({habitat?653ULL:646ULL, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
     auto& w = scene.world;
     if (c.ecological) w.configure_ecological_closure(*c.ecological);
     const PositionM nest{0,c.integrated_assay?-.004:0,0};
+    const auto brood=habitat ? c.ecological->founding_habitat->brood_site : nest;
     w.configure_long_term();
     BehaviorConfig behavior;
     behavior.trails_enabled = false;
@@ -151,9 +160,9 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         w.configure_geometry(scene.geometry, scene.voids);
     } else if (!c.integrated_assay) wp5::configure(scene, {"founding", "on", 0, c.seed});
     w.configure_social(social);
-    w.configure_biology(care);
+    w.configure_biology(care,environment);
     const auto colony = w.seed_colony(nest);
-    scene.queen = w.seed_ant(colony, {nest, LifeStage::Adult, Caste::Queen, 4000});
+    scene.queen = w.seed_ant(colony, {brood, LifeStage::Adult, Caste::Queen, 4000});
     w.enable_founding(scene.queen, c.profile);
     if (c.arm == "contact-blocked") {
         // One legacy assay larva on each side of the wall, at equal distances.
@@ -167,8 +176,9 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     }
     if (c.care) w.set_autonomy(scene.queen);
     if (c.ecological && c.ecological->water_sip_ug) {
-        const auto water=c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
-        require(w.spatially_clear(nest,water)!=c.blocked_water && w.query_material(water)==Material::Void,
+        const auto water=habitat ? PositionM{brood.x,brood.y,brood.z+.001}
+            : c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
+        require(w.spatially_clear(brood,water)!=c.blocked_water && w.query_material(water)==Material::Void,
                 "wrong water contact treatment");
         w.seed_food(water, {0,0,1200,0});
     }

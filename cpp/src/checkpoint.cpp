@@ -171,7 +171,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==carrier_yield_schema && version==carrier_yield_physics) ||
+        ensure((outer_schema==founding_habitat_schema && version==founding_habitat_physics) ||
+               (outer_schema==carrier_yield_schema && version==carrier_yield_physics) ||
                (outer_schema==local_traffic_schema && version==local_traffic_physics) ||
                (outer_schema==nest_dynamics_schema && version==nest_dynamics_physics) ||
                (outer_schema==nest_activity_schema && version==nest_activity_physics) ||
@@ -288,6 +289,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         m.watermark->sequence < m.next_sequence && !s->journal.empty() && previous_time == m.now, "invalid execution watermark");
     auto entity = [&](std::uint64_t id) { ensure(id && id < m.next_entity && entity_ids.insert(id).second, "invalid or duplicate entity ID"); };
     const auto colonies = r.count(limits.entities, 73); FoodMass stored;
+    ensure(!s->ecological || !s->ecological->founding_habitat || colonies<=1, "founding habitat supports one colony");
     for (std::size_t i = 0; i < colonies; ++i) {
         Colony c{{r.get()}, static_cast<Species>(r.get(1)), r.time(), r.position(), r.mass()}; entity(c.id.value);
         ensure(c.species == Species::LasiusNigerEngineeringFixture && c.founded_at == SimTime{} && inside(c.nest_position, s->config), "invalid colony");
@@ -486,7 +488,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                    stages[scout]==LifeStage::Adult && s->ants.get(s->ants.index.at(scout)).colony==e.colony &&
                    e.time.milliseconds-cue->second.time.milliseconds<s->ecological->cue_lifetime.milliseconds &&
                    e.position==positions[e.actor] && within_contact(e.position,cue->second.position,s->config) &&
-                   within_contact(e.position,positions[scout],s->config) && !collected_workers.contains(e.actor) &&
+                   (s->ecological->founding_habitat || within_contact(e.position,positions[scout],s->config)) &&
+                   scout!=e.actor && !collected_workers.contains(e.actor) &&
                    programs[e.actor]!=IndividualBehavior::Forage, "invalid local recruitment observation");
             if (e.kind==FactKind::RecruitmentObserved) cue_observations[e.actor]=e;
             else {

@@ -73,6 +73,15 @@ SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
     return {};
 }
 
+bool WorldRuntime::at_foraging_home(const AntState& ant) const {
+    const auto& s=*state_;
+    const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+    if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
+    if (!within_contact(ant.position,depot,s.config) || !spatially_clear(ant.position,depot)) return false;
+    const auto route=s.connectors.find(ant.id);
+    return route==s.connectors.end() || (!route->second.cursor && ant.position==route->second.points[0]);
+}
+
 bool WorldRuntime::can_forage(const AntState& ant) const {
     const auto& s=*state_;
     if (!s.surface) return false;
@@ -89,7 +98,6 @@ bool WorldRuntime::can_forage(const AntState& ant) const {
 void WorldRuntime::prepare_forager(Transaction& tx,const AntState& ant,ForagerState& f) {
     auto& s=*state_;
     if (!s.surface) throw std::invalid_argument("foraging requires a configured surface");
-    const auto& nest=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     if (f.path_size) {
         const auto it=s.connectors.find(ant.id);
         const auto in_connector=it!=s.connectors.end() && it->second.cursor+1<it->second.size;
@@ -98,7 +106,7 @@ void WorldRuntime::prepare_forager(Transaction& tx,const AntState& ant,ForagerSt
             throw std::invalid_argument("foraging memory no longer ends at worker position");
         return;
     }
-    if (ant.position!=nest || ant.carried_food.total_ug() || !ant.carrying_capacity_ug)
+    if (!at_foraging_home(ant) || ant.carried_food.total_ug() || !ant.carrying_capacity_ug)
         throw std::invalid_argument("first foraging activation requires an unloaded worker at its nest");
     auto cell=navigation_cell(s,ant.position);
     if (mixed_navigation(s)) {

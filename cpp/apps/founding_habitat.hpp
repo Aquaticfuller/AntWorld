@@ -1,0 +1,62 @@
+#pragma once
+
+#include "wp6b_fixture.hpp"
+#include <algorithm>
+
+namespace antworld::founding_habitat {
+struct Temperature {
+    std::uint64_t tenths_c, saturation_pa, activity_permille;
+    std::array<std::int64_t,3> duration_tenths_day;
+};
+
+// Nominal regimes and observed Borisovka stage means from Kipyatkov et al.
+// (2004), Table 2. The stage clocks share a nominal regime, not a fitted curve.
+// Saturation pressure uses the Tetens equation. Activity scaling (Q10=2)
+// and the reference physiological rates are ENGINEERING_FIXTURE.
+inline constexpr std::array<Temperature,3> temperatures{{
+    {225,2726,841,{207,135,204}},
+    {250,3168,1000,{167,102,145}},
+    {270,3565,1149,{147,87,125}}
+}};
+inline constexpr std::uint64_t reference_deficit=3168*20;
+
+inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t tenths_c,std::uint64_t humidity) {
+    const auto climate=std::find_if(temperatures.begin(),temperatures.end(),
+        [tenths_c](const Temperature& t){return t.tenths_c==tenths_c;});
+    wp6b::require(climate!=temperatures.end() && (humidity==60 || humidity==80 || humidity==90),
+        "Choose a supported founding temperature and humidity");
+    const auto deficit=climate->saturation_pa*(100-humidity);
+    const auto loss=[deficit](std::uint64_t baseline) {
+        return std::max<std::uint64_t>(1,(baseline*deficit+reference_deficit/2)/reference_deficit);
+    };
+    for (std::size_t i=0;i<c.profile.brood.size();++i) {
+        c.profile.brood[i].duration={climate->duration_tenths_day[i]*(wp6b::day_ms/10)};
+        c.profile.brood[i].water_ug_per_day=loss(c.profile.brood[i].water_ug_per_day);
+    }
+    c.profile.water_ug_per_day=loss(c.profile.water_ug_per_day);
+    auto& worker=c.profile.worker;
+    const auto baseline_worker_loss=worker.water_loss_ug_per_period*
+        static_cast<std::uint64_t>(wp6b::day_ms/worker.water_loss_period.milliseconds);
+    worker.water_loss_period={wp6b::day_ms};
+    worker.water_loss_ug_per_period=loss(baseline_worker_loss);
+
+    auto& ecology=*c.ecological;
+    ecology.local_nest_activity=ecology.local_traffic=ecology.yield_to_loaded=ecology.local_pantry_checks=true;
+    ecology.nest_dynamics=NestDynamics{true,NestScoring::SpatialDemand};
+    ecology.founding_habitat=FoundingHabitat{{-.004,-.004,0},2000};
+    const auto interval=[&](std::int64_t ms) {
+        return SimTime{ms*1000/static_cast<std::int64_t>(climate->activity_permille)};
+    };
+    ecology.worker_activity_timing=WorkerActivityTiming{interval(900000),interval(wp6b::hour_ms)};
+    ecology.water_sip_ug=25;
+
+    // Split the environmental water budget between the mixed feeder and a
+    // separate water source. The queen's finite wick is registered separately.
+    c.food.water_ug=9000;
+    auto scene=wp6b::setup(c,limits,closure::day_social(),closure::timed_care(true),
+        {static_cast<double>(tenths_c)/10,static_cast<double>(humidity)/100});
+    const auto water=scene.world.seed_food({0,0,.03},{0,0,9000,0});
+    scene.world.configure_resource_cycle(water,{{0,0,2250ULL*c.release_days,0},{0,0,2250,0}});
+    return scene;
+}
+} // namespace antworld::founding_habitat

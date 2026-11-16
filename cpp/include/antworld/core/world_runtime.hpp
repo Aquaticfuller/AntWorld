@@ -138,6 +138,7 @@ private:
     void resolve_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] detail::SurfaceConnector discover_connector(PositionM depot) const;
     [[nodiscard]] bool can_forage(const AntState&) const;
+    [[nodiscard]] bool at_foraging_home(const AntState&) const;
     void prepare_forager(Transaction&,const AntState&,ForagerState&);
     void after_action(Transaction&, const ScheduledEvent&, WorldEvent&, const AntState& before);
     void stop_dead_forager(Transaction&, EntityId);
@@ -171,6 +172,10 @@ private:
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_contact_step(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> carrier_yield_step(const AntState&) const;
     [[nodiscard]] std::optional<PositionM> worker_depot_step(const AntState&) const;
+    [[nodiscard]] std::optional<PositionM> entrance_patrol_step(const AntState&) const;
+    [[nodiscard]] bool inspecting_entrance(const AntState&) const;
+    void observe_entrance_contact(Transaction&, const WorldEvent&);
+    [[nodiscard]] std::optional<BoxQ> shallow_soil_cap(PositionM) const;
     void record_worker_move(Transaction&, WorldEvent&, PositionM from, SimTime began, bool autonomous);
     void inspect_decision(const ScheduledEvent&, const ContactSample&, std::uint64_t context,
                           std::uint64_t choice, EntityId recipient = {}) const;
@@ -214,6 +219,7 @@ public:
     void pause_brood_care(AntRef);
     [[nodiscard]] std::optional<CareState> query_care(AntRef) const;
     [[nodiscard]] std::optional<SpeciesCareProfile> care_profile() const;
+    [[nodiscard]] std::optional<EnvironmentCareProfile> care_environment() const;
     [[nodiscard]] BehaviorWindow behavior_window(AntRef, SimTime begin, SimTime end) const;
 private:
     void resolve_care_wakes(Transaction&, const std::vector<ScheduledEvent>&);

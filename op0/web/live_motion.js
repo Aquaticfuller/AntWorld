@@ -13,7 +13,7 @@ class LiveMotion {
 
     record(data, arrival) {
         const last = this.cuts.at(-1);
-        if (!data.seeded_nursery || !data.running || data.rate !== 1 || data.fast_forward?.state === "seeking") {
+        if (!(data.seeded_nursery || data.habitat) || !data.running || data.rate !== 1 || data.fast_forward?.state === "seeking") {
             this.clear();
             return;
         }
@@ -24,7 +24,7 @@ class LiveMotion {
             this.anchorWall = arrival;
         }
         const cut = {time: data.time_ms, cursor: BigInt(data.cursor), epoch: data.epoch, revision: data.terrain.revision,
-            ants: data.ants, sources: data.sources, colonies: data.colonies};
+            ants: data.ants, sources: data.sources, colonies: data.colonies, trails: data.trails};
         if (this.cuts.at(-1)?.time === cut.time) this.cuts.pop();
         this.cuts.push(cut);
         while (this.cuts.length > 2 && (this.cuts.length > 32 || cut.time - this.cuts[1].time > 1000)) this.cuts.shift();
@@ -65,6 +65,6 @@ class LiveMotion {
             return {...ant, display_position_m: segment.from_m.map((v, i) => v + progress * (segment.to_m[i] - v)),
                 display_motion: {...segment, progress}};
         });
-        return {time, ants, sources: base.sources, colonies: base.colonies};
+        return {time, ants, sources: base.sources, colonies: base.colonies, trails: base.trails};
     }
 }

@@ -1,12 +1,18 @@
 #include "care_internal.hpp"
 #include "social_internal.hpp"
 #include "worker_motion.hpp"
+#include "spatial_navigation.hpp"
 #include <set>
 
 namespace antworld {
 using namespace detail;
 namespace {
 constexpr std::array<Cell,8> horizontal_steps{{{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}};
+
+std::optional<PointQ> nearest_grid_point(PositionM p,const GeometryConfig& g) {
+    const auto snap=[&](double v,double origin) { return origin+std::round((v-origin)/g.quantum_m)*g.quantum_m; };
+    return quantized({snap(p.x,g.origin_m.x),p.y,snap(p.z,g.origin_m.z)},g);
+}
 
 bool physically_overlaps(PositionM a,PositionM b,double width) {
     const auto limit=width-arithmetic_margin(position_scale(a,b),width);
@@ -140,8 +146,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(co
     const auto& s=*state_;
     if (!s.geometry || !s.surface || !integrated_care(s) || ant.position.y>=s.surface->config.origin_m.y) return {};
     const auto& g=s.geometry->config;
-    const auto snap=[&](double v,double origin) { return origin+std::round((v-origin)/g.quantum_m)*g.quantum_m; };
-    const auto origin=quantized({snap(ant.position.x,g.origin_m.x),ant.position.y,snap(ant.position.z,g.origin_m.z)},g);
+    const auto origin=nearest_grid_point(ant.position,g);
     if (!origin) return {};
     const auto reach=s.care_profile->perception_radius_m;
     const auto half=body_half(ant.id);
@@ -163,6 +168,62 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(co
         }
     }
     return {};
+}
+
+std::optional<PositionM> WorldRuntime::entrance_patrol_step(const AntState& ant) const {
+    const auto& s=*state_;
+    if (!s.care_profile || !s.geometry || !s.surface) return {};
+    const auto& g=s.geometry->config;
+    const auto q=nearest_grid_point(ant.position,g);
+    const auto level=surface_level(s);
+    const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+    if (!q || !level || ant.position.y!=depot.y || !within_contact(ant.position,depot,s.config)) return {};
+    const PositionM top{depot.x,physical({0,*level,0},g).y,depot.z};
+    if (!within_distance(ant.position,top,s.care_profile->perception_radius_m,true) ||
+        !spatially_clear(ant.position,top)) return {};
+    const auto local=query_neighborhood({s.world,ant.id},s.care_profile->perception_radius_m);
+    for (const auto peer:local.ants) {
+        const auto other=*query_ant(peer);
+        if (other.colony==ant.colony && inspecting_entrance(other)) return {};
+    }
+    const auto adult_peer=std::any_of(local.ants.begin(),local.ants.end(),[&](AntRef peer) {
+        const auto other=*query_ant(peer);
+        return other.colony==ant.colony && other.stage==LifeStage::Adult && other.caste==Caste::Worker;
+    });
+    if (!adult_peer) return {};
+    const auto offset=s.autonomy.at(ant.id).decisions%horizontal_steps.size();
+    const auto passage=(body_half(ant.id)+g.loaded_half_q)*g.quantum_m;
+    for (int length=1;length<=g.reach_q;++length) for (std::size_t i=0;i<horizontal_steps.size();++i) {
+        const auto d=horizontal_steps[(offset+i)%horizontal_steps.size()];
+        const auto site=physical({q->x+length*d.x,q->y,q->z+length*d.z},g);
+        if (within_contact(site,depot,s.config) && !physically_overlaps(site,depot,passage) &&
+            clear_worker_site(ant,site)) return site;
+    }
+    return {};
+}
+
+bool WorldRuntime::inspecting_entrance(const AntState& ant) const {
+    const auto& s=*state_;
+    if (ant.stage!=LifeStage::Adult || ant.caste!=Caste::Worker) return false;
+    const auto care=s.care.find(ant.id);
+    return care!=s.care.end() && care->second.act==CareAct::EntrancePatrol && !care->second.enabled &&
+        ant.position==care->second.destination && s.physiology.at(ant.id).behavior==IndividualBehavior::Rest &&
+        s.m.now.milliseconds-care->second.began_at.milliseconds<s.ecological->worker_activity_timing->minimum_program_time.milliseconds;
+}
+
+void WorldRuntime::observe_entrance_contact(Transaction& tx,const WorldEvent& arrival) {
+    auto& s=*state_;
+    if (!s.ecological || !s.ecological->founding_habitat || arrival.kind!=FactKind::Moved ||
+        arrival.payload!=connector_move_fact || s.connectors.at(arrival.actor).cursor) return;
+    const auto local=query_neighborhood({s.world,arrival.actor},s.config.contact_distance_m);
+    for (const auto peer:local.ants) {
+        const auto actor=*query_ant(peer);
+        if (actor.colony!=arrival.colony || !inspecting_entrance(actor)) continue;
+        // An instantaneous antennation proxy within the committed contact range.
+        observe(tx,actor.id,arrival.source,{ObservationPhase::Completed,CareAct::EntranceContact,
+                arrival.actor,{},s.m.now,false,arrival.position});
+        break;
+    }
 }
 
 bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool approach_depot) const {
@@ -196,15 +257,18 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const auto& s=*state_;
     if (!s.geometry || !integrated_care(s)) return {};
     const auto& g=s.geometry->config;
-    const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+    const bool habitat=s.ecological && s.ecological->founding_habitat;
+    const auto link=s.connectors.find(ant.id);
+    const auto depot=habitat && link!=s.connectors.end() ? link->second.points[0]
+        : s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     const auto radius=s.care_profile->perception_radius_m;
     if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;
-    const auto origin=quantized(ant.position,g);
+    const auto origin=habitat ? nearest_grid_point(ant.position,g) : quantized(ant.position,g);
     const auto goal=quantized(depot,g);
     if (!origin || !goal || origin->y!=goal->y) return {};
     struct Node { PointQ point, first; };
-    constexpr std::size_t budget=96;
+    const std::size_t budget=habitat ? 256 : 96;
     std::vector<Node> nodes(0);
     std::set<PointQ> examined{*origin};
     nodes.push_back({*origin,{}});
@@ -217,8 +281,13 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
             const auto target=physical(q,g);
             if (portable_care_distance(ant.position,target)>radius || !inside(target,s.config) ||
                 material_at(view,{q.x,q.y-g.loaded_half_q-1,q.z})==Material::Void) continue;
-            if (!spatially_clear(physical(node.point,g),target,half)) continue;
+            if (!spatially_clear(i==0 && habitat ? ant.position : physical(node.point,g),target,half)) continue;
             if (i==0 && !clear_worker_site(ant,target,true)) continue;
+            if (i!=0 && habitat) {
+                auto waypoint=ant;
+                waypoint.position=physical(node.point,g);
+                if (!clear_worker_traffic(waypoint,target,half)) continue;
+            }
             if (!examined.insert(q).second) continue;
             const auto first=i==0?q:node.first;
             if (q==*goal) return physical(first,g);

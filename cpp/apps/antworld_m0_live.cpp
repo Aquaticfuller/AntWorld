@@ -2,6 +2,7 @@
 #include "r0_diagnostic_history.hpp"
 #include "r0r1_fixture.hpp"
 #include "traffic_observer_fixture.hpp"
+#include "founding_habitat.hpp"
 #include "process_memory.hpp"
 #include "antworld/storage/store.hpp"
 
@@ -116,7 +117,7 @@ bool in_place_action(const WorldEvent& e) {
         if (e.observation.phase != ObservationPhase::Completed) return false;
         switch (e.observation.act) {
         case CareAct::InspectBrood: case CareAct::ArrangeBrood: case CareAct::CleanBrood:
-        case CareAct::PickUpBrood: case CareAct::PlaceBrood: return true;
+        case CareAct::PickUpBrood: case CareAct::PlaceBrood: case CareAct::EntranceContact: return true;
         default: return false;
         }
     default: return false;
@@ -140,7 +141,7 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
     send_events(latest);
 }
 
-enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Excavation };
+enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact };
 
 Milestone read_milestone(std::istringstream& request) {
     const auto name = word(request);
@@ -149,7 +150,11 @@ Milestone read_milestone(std::istringstream& request) {
     if (name == "worker") return Milestone::Worker;
     if (name == "exit") return Milestone::Exit;
     if (name == "delivery") return Milestone::Delivery;
+    if (name == "water") return Milestone::Water;
+    if (name == "recruitment") return Milestone::Recruitment;
     if (name == "excavation") return Milestone::Excavation;
+    if (name == "patrol") return Milestone::Patrol;
+    if (name == "entrance-contact") return Milestone::EntranceContact;
     throw std::invalid_argument("Unknown live milestone");
 }
 
@@ -181,9 +186,23 @@ struct MilestoneSearch {
         case Milestone::Worker:
             return fact.kind == FactKind::StageChanged && adult_worker(world, fact);
         case Milestone::Delivery:
-            return fact.kind == FactKind::FoodDelivered && fact.transferred.total_ug() > 0 && adult_worker(world, fact);
+            if (fact.kind != FactKind::FoodDelivered || !fact.transferred.total_ug() || !adult_worker(world,fact))
+                return false;
+            if (const auto ecology=world.ecological_closure(); ecology && ecology->founding_habitat)
+                return fact.transferred.total_ug()!=fact.transferred.water_ug;
+            return true;
+        case Milestone::Water:
+            if (fact.kind != FactKind::FoodCollected || !fact.transferred.water_ug || !adult_worker(world,fact)) return false;
+            if (const auto source=world.query_food({fact.world,fact.resource}))
+                return source->initial.total_ug()==source->initial.water_ug;
+            return false;
+        case Milestone::Recruitment:
+            return fact.kind==FactKind::RecruitmentActivated && adult_worker(world,fact);
         case Milestone::Excavation:
             return fact.kind == FactKind::SoilExcavated && adult_worker(world, fact);
+        case Milestone::Patrol: case Milestone::EntranceContact:
+            return fact.kind==FactKind::BiologicalObservation && fact.observation.phase==ObservationPhase::Completed &&
+                fact.observation.act==(target==Milestone::Patrol?CareAct::EntrancePatrol:CareAct::EntranceContact);
         case Milestone::Exit:
             if (!surface_y) return false;
             if (fact.kind == FactKind::AntDied) underground.erase(fact.actor);
@@ -298,7 +317,24 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v8");
+                message("OK", "antworld.m0.live.v9");
+            } else if (command=="NEW_HABITAT") {
+                const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
+                const auto access=word(request);
+                request >> std::ws;
+                const auto half_life=request.eof() ? 60 : number(request);
+                end(request);
+                require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
+                require(half_life==60 || half_life==1955,"unsupported founding trail half-life");
+                auto c=live_case(id,seed);
+                if (access!="open") c.arm=access;
+                c.habitat_trail_half_life_s=static_cast<double>(half_life);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity);
+                auto frame=scene.world.checkpoint_frame();
+                world.emplace(std::move(scene.world));
+                search.reset();
+                history.attach(*world);
+                payload(frame);
             } else if (command=="NEW_NURSERY") {
                 const auto id=number(request), seed=number(request), treatment=number(request);
                 end(request);
@@ -429,6 +465,27 @@ int main() {
                     const auto mass=world->resource_reserves();
                     std::ostringstream data;
                     data << mass.carbs_ug << ' ' << mass.protein_ug << ' ' << mass.water_ug << ' ' << mass.other_ug;
+                    message("OK",data.str());
+                } else if (command=="SURFACE_TRAILS") {
+                    end(request);
+                    std::ostringstream data;
+                    data.precision(17);
+                    for (const auto& sample:world->trails())
+                        data << sample.cell.x << ' ' << sample.cell.z << ' ' << sample.units << '\n';
+                    message("OK",data.str());
+                } else if (command=="HABITAT_PARAMETERS") {
+                    end(request);
+                    const auto environment=world->care_environment();
+                    const auto profile=world->founding_profile();
+                    const auto ecology=world->ecological_closure();
+                    require(ecology && ecology->founding_habitat && environment && profile,"No founding habitat");
+                    std::ostringstream data;
+                    data.precision(17);
+                    data << environment->temperature_c << ' ' << environment->relative_humidity << ' '
+                         << profile->brood[0].duration.milliseconds << ' ' << profile->brood[1].duration.milliseconds << ' '
+                         << profile->brood[2].duration.milliseconds << ' ' << profile->brood[1].water_ug_per_day << ' '
+                         << profile->water_ug_per_day << ' ' << profile->worker.water_loss_ug_per_period *
+                            static_cast<std::uint64_t>(day_ms/profile->worker.water_loss_period.milliseconds);
                     message("OK",data.str());
                 } else if (command == "RECENT") {
                     end(request);

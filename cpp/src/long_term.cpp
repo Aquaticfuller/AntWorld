@@ -336,7 +336,12 @@ bool WorldRuntime::local_space_demand(AntRef ref, std::size_t contacts) const {
         if (!spatially_clear(ant->position,neighbor.position)) continue;
         bodies+=neighbor.stage==LifeStage::Adult?4:1;
       }
-      return bodies>=8 && bodies+4>useful*4;
+      // Leave one additional working site around an occupied handoff point.
+      // This adds local space pressure, with excavation still chosen locally.
+      const auto& colony=s.colonies.rows[s.colonies.index.at(ant->colony)];
+      const bool handoff=s.ecological->founding_habitat && ant->position==colony.nest_position &&
+                         colony.nest_food.total_ug();
+      return bodies>=8 && bodies+4+(handoff ? 4 : 0)>useful*4;
     }
     return useful < contacts + 1;
   }

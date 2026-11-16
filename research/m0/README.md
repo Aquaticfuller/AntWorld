@@ -39,6 +39,15 @@ Positions hold between committed movements. **Recent in-place actions** lists re
 
 ### Observe local ecology
 
+For a colony that grows its own workers, open **Colony setup** and select **Start single-queen ecology**. The default is seed `2` at 25 °C and 80% relative humidity. It starts at `1×` and has one queen, two linked underground rooms, a finite wet wick, an exterior feeder and an independent water source. Use **Locate brood chamber**, **Locate nest stock** and **Locate nest entrance** to jump to their physical coordinates. The surface view shows deposits of trail pheromone and the number of workers above ground at the current time.
+
+- Use seed `2` for the first food delivery, water collection and entrance patrol. Select **Fast-forward to event** to stop at an actual commit. Resume at `1×` to follow the selected worker.
+- Use seed `6` with the experimental `32.6 minutes` surface trail setting to see a scout's cue change another worker's decision. Select **First worker responds to recruitment**. The short and long surface trail settings are available for comparison.
+- Use seed `3` with the `1 minute` trail setting to see **First entrance antennal contact** in this fixture. It records a returning nestmate meeting a patrolling worker within physical reach. No foreign animal or gatekeeping behavior is implied.
+- Select **Start with a soil-sealed entrance** with seed `2` to see a worker open a thin reachable soil plug, move the soil and later exit to collect supplies. A closed or blocked arena need not become passable.
+
+New habitat histories remain in memory until you make a manual save. See the [habitat report](FOUNDING_HABITAT.md) for the temperature and humidity settings, controls and evidence limitations.
+
 Select **Local ecology with food and water** in the nursery preset list, then select **Open local ecology**. The two-room nest starts with one queen, ten initialized workers and four larvae. A finite reserve releases food into the surface feeder on a daily schedule. The **Food, water and reserves** panel shows the committed stock outside, inside the nest and in the pending supply. **Find first delivery** pauses at a real delivery and follows the carrier. Select the ant to inspect its body energy, water, tissue protein, crop and scheduled absorption.
 
 **Local ecology without external water** uses the same layout, seed, carbohydrate, protein and initial body stores. Its feeder and external reserve contain zero water. Both scenes are experimental, with fixed laboratory conditions and uncalibrated physiology. See the [fixture inputs and verification](../r0_r1/nursery_continuity/LIVE_ECOLOGY.md).

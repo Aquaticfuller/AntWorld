@@ -47,7 +47,8 @@ OUTCOMES = ("Success", "Partial", "Missing entity", "Dead actor", "Invalid stage
 ACTS = ("Inactive", "Walk", "Approach brood", "Inspect brood", "Arrange brood", "Clean brood", "Transport brood",
         "Feed brood", "Close worker contact", "Collect food", "Deliver food", "Ingest food", "Transfer nutrition",
         "Excavate", "Handle soil", "Revisit brood site", "Pick up brood", "Place brood", "Return to care shelter",
-        "Move to a resting site", "Approach the depot", "Approach a nestmate", "Yield to a food carrier")
+        "Move to a resting site", "Approach the depot", "Approach a nestmate", "Yield to a food carrier",
+        "Entrance patrol", "Entrance antennal contact")
 PHASES = ("Opportunity", "Selected", "Started", "Completed", "Interrupted")
 RELATED = {21, 35, 43, 46, 48, 50, 52, 55, 56}
 FACETS = {
@@ -188,7 +189,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35)}
+MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35), (29, 36)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
@@ -258,9 +259,15 @@ def checkpoint(raw, *, verify_hash=True):
         if outer[1] >= 34:
             require(motor, "Body traffic requires the worker motor")
             flags["local_traffic"] = True
-        if outer[1] == 35:
+        if outer[1] >= 35:
             flags["yield_to_loaded"], flags["local_pantry_checks"] = r.flag(), r.flag()
             require(flags["yield_to_loaded"] or flags["local_pantry_checks"], "Invalid nursery work or traffic policy")
+        if outer[1] == 36:
+            brood_site, buffer = r.position(), r.uint()
+            require(flags["local_pantry_checks"] and flags["recruitment"] and 0 < buffer <= 1_000_000_000 and
+                    all(low <= value <= high for value, low, high in zip(brood_site, world_min, world_max)),
+                    "Invalid founding habitat")
+            flags["founding_habitat"] = dict(brood_site_m=brood_site, pantry_buffer_ug=buffer)
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.
@@ -292,7 +299,8 @@ def checkpoint(raw, *, verify_hash=True):
         walkable = bytes(r.take(cells))
         require(set(walkable) <= {0, 1}, "Invalid surface cell mask")
         surface = dict(origin_m=origin, width=width, height=height, cell_m=step, walkable=walkable,
-                       trails_enabled=bool(behavior[0]), memory_enabled=bool(behavior[1]), trail_weight=behavior[-1])
+                       trails_enabled=bool(behavior[0]), memory_enabled=bool(behavior[1]),
+                       trail_weight=behavior[-1], trail_half_life_s=behavior[9])
         r.take(14 * 8 + 16)  # Foraging counters and maintenance handle.
         r.skip_rows(1099)
         for stride in (32, 16, 24, 24):
