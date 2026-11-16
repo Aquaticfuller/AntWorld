@@ -53,7 +53,7 @@
           <button id="new-colony" class="primary-button" type="button">New colony</button>
         </div>
       </details>
-      <div class="live-milestone">
+      <div class="live-milestone" id="live-milestone">
         <label for="live-target">Target event</label>
         <select id="live-target">
           <option value="egg">First egg laid</option><option value="hatch">First hatch</option><option value="worker">First worker eclosed</option>
@@ -64,7 +64,12 @@
       <div class="nursery-launch">
         <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
         <label class="sr-only" for="nursery-treatment">Nursery experiment</label>
-        <select id="nursery-treatment"><option value="provisioned">Nursery with food</option><option value="traffic">Previous nursery</option><option value="reference">R0-r1 reference</option></select>
+        <select id="nursery-treatment">
+          <option value="provisioned">Nursery with food</option>
+          <option value="ecology">Local ecology with food and water</option>
+          <option value="ecology-dry">Local ecology without external water</option>
+          <option value="traffic">Previous nursery</option><option value="reference">R0-r1 reference</option>
+        </select>
         <button id="nursery-delivery" type="button" hidden>Find first delivery</button>
         <span class="muted" data-i18n>Ten initialized workers and nearby brood. Starts immediately at real time.</span>
       </div>
@@ -76,6 +81,12 @@
         <div><span class="metric-label"><i class="egg"></i><span data-i18n>EGGS</span></span><strong id="eggs">0</strong><small>Alive</small></div>
         <div><span class="metric-label"><i class="larva"></i><span data-i18n>LARVAE</span></span><strong id="larvae">0</strong><small>Alive</small></div>
         <div><span class="metric-label"><i class="pupa"></i><span data-i18n>PUPAE</span></span><strong id="pupae">0</strong><small>Alive</small></div>
+      </section>
+      <section id="live-environment" class="panel dashboard" aria-labelledby="live-environment-title" hidden>
+        <div class="panel-head"><div><h2 id="live-environment-title">Food, water and reserves</h2>
+          <p>Fixed laboratory conditions with a finite feeder reserve.</p></div>
+        </div>
+        <div id="live-resources" class="ledger"></div>
       </section>
       <div class="observation">
         <section class="panel space" aria-labelledby="space-title">

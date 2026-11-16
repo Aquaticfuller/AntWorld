@@ -18,12 +18,13 @@ from op0.archive import prefixed
 from op0.codec import CASTES, checkpoint, decode_fact
 from op0.index import Catalog
 from op0.live import ROOT, LiveSession, NativeCore, core_path, read_live_events
-from op0.query import ReadAPI
+from op0.query import HOUR, ReadAPI
 from op0.server import bind
 
 
 BINARY = Path(os.environ.get("M0_LIVE_CORE", core_path())).resolve()
 WITNESS = ROOT / "experiments/m0/portable-demo/borisovka-shaft-1-slots.zip"
+MINUTE = HOUR // 60
 
 
 @unittest.skipUnless(BINARY.is_file(), "Build antworld_m0_live or set M0_LIVE_CORE")
@@ -90,6 +91,91 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(self.live.worker.call("FRAME"), frame)
         self.assertEqual(self.live.read("view", {})["ants"], moving["ants"])
         self.assertEqual(self.live.worker.call("ADVANCE 16000"), expected)
+        self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
+
+    def test_nursery_runs_past_the_former_lifetime_event_limit_without_writing(self):
+        with closing(NativeCore(BINARY, self.folder)) as core:
+            if not core.local_ecology:
+                self.skipTest("Build the native live Core with compact history")
+            core.call("NEW_NURSERY 91 17 2")
+            frame = checkpoint(core.call(f"ADVANCE {54 * HOUR}"))
+            total, hot, packed, budget = map(int, core.call("HISTORY_STORAGE").split())
+            self.assertEqual((frame["time_ms"], total), (54 * HOUR, frame["cursor"]))
+            self.assertGreater(total, 4_000_000)
+            self.assertLess(hot, 65_536)
+            self.assertLess(0, packed)
+            self.assertLess(packed, budget)
+            page = read_live_events(core.call("FACTS_AFTER 4000000"), frame)
+            self.assertEqual([int(fact["id"]) for fact in page], list(range(4_000_001, 4_000_513)))
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        self.assertEqual(list(self.folder.iterdir()), [])
+
+    def test_compressed_history_continues_across_a_saved_prefix(self):
+        with closing(NativeCore(BINARY, self.folder)) as core:
+            if not core.local_ecology:
+                self.skipTest("Build the native live Core with compact history")
+            core.call("NEW_NURSERY 91 17 2")
+            saved = core.call(f"ADVANCE {25 * MINUTE}")
+            saved_cut = checkpoint(saved)
+            save_id = "0" * 32
+            core.call(f"SAVE {save_id}")
+
+            def history_hash(cut):
+                digest = sha256()
+                for after in range(0, cut["cursor"], 512):
+                    page = core.call(f"FACTS_AFTER {after}")
+                    self.assertTrue(page)
+                    digest.update(page)
+                return digest.hexdigest()
+
+            final = core.call(f"ADVANCE {60 * MINUTE}")
+            expected_history = history_hash(checkpoint(final))
+            self.assertEqual(core.call(f"LOAD {save_id} {saved_cut['world']}"), saved)
+            self.assertEqual(int(core.call("HISTORY_STORAGE").split()[2]), 0)
+            # The resumed runtime packs its new suffix while leaving the
+            # verified SQLite prefix accessible through the same history API.
+            core.call(f"ADVANCE {45 * MINUTE}")
+            self.assertEqual(core.call(f"ADVANCE {60 * MINUTE}"), final)
+            self.assertGreater(int(core.call("HISTORY_STORAGE").split()[2]), 0)
+            self.assertEqual(history_hash(checkpoint(final)), expected_history)
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_local_ecology_observes_physical_supply_and_uptake(self):
+        if not self.live.core().local_ecology:
+            self.skipTest("Build the native live Core with local ecology")
+        for treatment, water, scenario in (("ecology", 4000, "water-fed"), ("ecology-dry", 0, "no-external-water")):
+            with self.subTest(treatment=treatment), patch("op0.live.randbits", return_value=91):
+                self.live.write("nursery", {"treatment": treatment})
+                initial = self.live.read("view", {})
+                self.assertEqual((initial["ecology"], initial["physics"], initial["rate"]), (scenario, 35, 1))
+                self.assertEqual(initial["sources"][0]["stock_ug"], (4000, 500, water, 0))
+                self.assertEqual(initial["feeder_reserve_ug"], (7000, 875, 7 * water // 4, 0))
+                self.advance(10 * MINUTE)
+                self.live.write("clock", {"running": False})
+                with self.live.lock:
+                    core, frame = self.live.worker, self.live.frame
+                    facts = [fact for after in range(0, frame["cursor"], 512)
+                             for fact in read_live_events(core.call(f"FACTS_AFTER {after}"), frame)]
+                    delivery = next(f for f in facts if f["kind"] == "FoodDelivered")
+                    self.assertEqual(delivery["mass_ug"][2] > 0, bool(water))
+                    self.assertTrue(any(f["kind"] == "NutritionTransferred" and sum(f["mass_ug"]) for f in facts))
+                    absorbed = [f for f in facts if f["kind"] == "PhysiologyUpdated" and f["actor"] == delivery["actor"]
+                                and f["time_ms"] >= delivery["time_ms"]]
+                    self.assertTrue(any(f["mass_ug"][0] > 0 for f in absorbed))
+                    self.assertEqual(any(f["mass_ug"][2] > 0 for f in absorbed), bool(water))
+                    self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+        self.live.write("nursery", {"treatment": "ecology"})
+        self.live.write("clock", {"running": False})
+        self.live.publish(self.live.worker.call(f"ADVANCE {DAY}"))
+        view = self.live.read("view", {"group": "food"})
+        self.assertEqual(view["feeder_reserve_ug"], (6000, 750, 6000, 0))
+        self.assertTrue(any(fact["kind"] == "ResourceReleased" for fact in view["events"]))
+        self.live.publish(self.live.worker.call(f"ADVANCE {2 * DAY}"))
+        view = self.live.read("view", {"group": "birth"})
+        egg, = (ant for ant in view["ants"] if ant["stage"] == "Egg")
+        self.assertEqual((egg["mother"], egg["born_ms"]), ("2", 2 * DAY))
+        self.assertTrue(any(fact["kind"] == "AntBorn" and fact["actor"] == egg["id"] for fact in view["events"]))
         self.assertEqual(self.live.worker.call("CHECK_LEDGERS"), b"")
 
     def test_fast_forward_stops_at_each_committed_milestone(self):

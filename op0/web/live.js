@@ -1,7 +1,7 @@
 "use strict";
 
 const liveView = {state: null, epoch: null, request: 0, timer: null, animation: null, busy: false,
-    saves: [], eventsKey: null, actionsKey: null, individualKey: null, shownStop: null};
+    saves: [], eventsKey: null, actionsKey: null, environmentKey: null, individualKey: null, shownStop: null};
 const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation"};
@@ -33,8 +33,13 @@ function liveControls() {
     $("colony-timing").disabled = $("nest-activity").disabled = $("nest-dynamics").disabled =
         $("new-colony").disabled = liveView.busy || !s?.core_available;
     $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
+    const preset = $("nursery-treatment");
+    for (const option of preset.options) if (option.value.startsWith("ecology")) option.disabled = !s?.ecology_available;
+    if (preset.selectedOptions[0]?.disabled) preset.value = "provisioned";
+    put("open-nursery", tr(preset.value.startsWith("ecology") ? "Open local ecology" : "Watch the nursery"));
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
+    $("live-milestone").hidden = Boolean(s?.seeded_nursery && !s.ecology);
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("nursery-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
@@ -53,6 +58,7 @@ function liveVisibility(active) {
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
     $("live-activity").hidden = !active;
+    if (!active) $("live-environment").hidden = true;
     if (active) $("watch-delivery").hidden = true;
     put("view-source", tr(active ? "Live Core" : "Local archive"));
     put("footer-mode", tr(active ? "Live state published by the Simulation Core" : "Read-only replay of Simulation Core facts"));
@@ -69,6 +75,26 @@ function liveIndividual() {
     const death = events.find(e => e.kind === "AntDied" && e.actor === ant.id);
     renderAnt({...ant, status: ant.stage === "Dead" ? "Dead" : "Alive", died_ms: death?.time_ms,
         sample: ant.energy_nj == null ? null : {...ant, time_ms: ant.updated_ms}, activity: events});
+}
+
+function liveEnvironment(data) {
+    $("live-environment").hidden = !data.ecology;
+    if (!data.ecology) return;
+    const total = (items, field) => [0, 1, 2].map(i => items.reduce((n, row) => n + row[field][i], 0));
+    const stocks = [
+        ["External stock", total(data.sources, "stock_ug")],
+        ["Nest stock", total(data.colonies, "stock_ug")],
+        ["Unreleased feeder reserve", data.feeder_reserve_ug?.slice(0, 3)]
+    ];
+    const key = JSON.stringify([language, stocks]);
+    if (liveView.environmentKey === key) return;
+    liveView.environmentKey = key;
+    $("live-resources").replaceChildren(...stocks.map(([label, values]) => {
+        const card = node("div");
+        card.append(node("strong", tr(label)), keyValues(["Carbohydrates", "Protein", "Water"]
+            .map((name, i) => [name, withUnit(values?.[i], "µg")])));
+        return card;
+    }));
 }
 
 function renderLiveEvents() {
@@ -156,6 +182,7 @@ async function refreshLive(alignSection = true) {
     if (!data.world_id) {
         liveMotion.clear();
         liveControls();
+        $("live-environment").hidden = true;
         $("viewer").hidden = true;
         put("subtitle", tr(data.core_available ? "Create a colony to start the simulation." : "Build the live Core to start a colony. Archive replay is available."));
         return;
@@ -184,7 +211,7 @@ async function refreshLive(alignSection = true) {
         inspect(false);
     }
     app.time = data.time_ms;
-    put("title",data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
+    put("title", data.ecology ? tr("Local ecology") : data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
     app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
@@ -221,12 +248,14 @@ async function refreshLive(alignSection = true) {
     updatePopulation(p, queen && {...queen, time_ms: queen.updated_ms});
     put("map-time", duration(data.time_ms));
     const timing = data.worker_activity_timing;
-    const description = data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
+    const description = data.ecology ? tr(data.ecology === "water-fed" ? "Finite food and water" : "Finite food · no external water") :
+        data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
     put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · " + description + " · ENGINEERING_ONLY");
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
+    liveEnvironment(data);
     liveIndividual();
     renderLiveActions();
     if (!$("event-panel").hidden) renderLiveEvents();
@@ -361,6 +390,7 @@ function bindLive() {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("nursery", {treatment: $("nursery-treatment").value});
     });
+    $("nursery-treatment").addEventListener("change", liveControls);
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => {
         liveView.shownStop = null;

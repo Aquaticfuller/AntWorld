@@ -9,6 +9,7 @@
 #include <charconv>
 #include <cstdio>
 #include <iostream>
+#include <limits>
 #include <set>
 #include <span>
 #include <sstream>
@@ -212,7 +213,56 @@ struct MilestoneSearch {
     }
 };
 
-void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search) {
+class LiveHistory {
+public:
+    void attach(WorldRuntime& world, bool assay = false) {
+        packed_.reset();
+        assay_ = assay;
+        if (!assay_) world.limit_unpublished_history(hot_limit);
+    }
+
+    void advance(WorldRuntime& world, SimTime target) {
+        auto now = world.summary().now;
+        require(target >= now, "simulation time cannot move backwards");
+        if (assay_ || target == now) {
+            world.advance_to(target);
+            if (world.unpublished_history() >= (assay_ ? hot_limit : packing_threshold)) compact(world);
+            return;
+        }
+
+        // Group consecutive timestamps. If a dense interval exceeds the hot
+        // allowance, advance_to rolls it back and a shorter cut can be retried.
+        std::int64_t span = 30 * 60 * 1000;
+        while (now < target) {
+            require(encoded_bytes() < memory_budget,
+                    "Live history memory limit reached. Save and reopen the world to continue.");
+            const auto step = std::min(span, target.milliseconds - now.milliseconds);
+            const SimTime next{now.milliseconds + step};
+            try {
+                world.advance_to(next);
+            } catch (const std::length_error& error) {
+                if (std::string_view(error.what()) != "unpublished history backpressure") throw;
+                if (step > 1) span = step / 2;
+                else if (world.unpublished_history()) compact(world);
+                else throw;
+                continue;
+            }
+            now = next;
+            if (world.unpublished_history() >= packing_threshold) compact(world);
+        }
+    }
+
+    [[nodiscard]] std::size_t encoded_bytes() const noexcept { return packed_ ? packed_->encoded_bytes() : 0; }
+    static constexpr std::size_t memory_budget = 192 * 1024 * 1024;
+
+private:
+    static constexpr std::size_t hot_limit = 65'536, packing_threshold = 16'384;
+    void compact(WorldRuntime& world) { packed_ = r0::DiagnosticHistory::publish(world); }
+    std::shared_ptr<const r0::DiagnosticHistory> packed_;
+    bool assay_{};
+};
+
+void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search, LiveHistory& history) {
     auto cut = world.summary();
     require(target >= cut.now, "simulation time cannot move backwards");
     require(search.cursor.value == cut.committed_events, "Live milestone search does not match the current history");
@@ -221,8 +271,8 @@ void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search)
     for (int slice = 0; slice < 256; ++slice) {
         const auto next = world.next_scheduled_time();
         if (cut.living_ants == 0 || !next) { message("OK", "exhausted"); return; }
-        if (*next > target) { world.advance_to(target); break; }
-        world.advance_to(*next);
+        if (*next > target) { history.advance(world,target); break; }
+        history.advance(world,*next);
         cut = world.summary();
         if (cut.committed_events != search.cursor.value) {
             if (const auto hit = search.scan(world)) { payload(encode_event(*hit)); return; }
@@ -236,11 +286,11 @@ int main() {
 #ifdef _WIN32
     if (_setmode(_fileno(stdout), _O_BINARY) == -1) return 1;
 #endif
-    const auto limits = assay_limits(live_case(1, 1));
+    auto limits = assay_limits(live_case(1, 1));
+    limits.committed_events = std::numeric_limits<std::size_t>::max();
     std::optional<WorldRuntime> world;
     std::optional<MilestoneSearch> search;
-    bool r0_assay=false;
-    std::shared_ptr<const r0::DiagnosticHistory> r0_history;
+    LiveHistory history;
     std::string line;
     while (std::getline(std::cin, line)) {
         try {
@@ -248,15 +298,16 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v7");
+                message("OK", "antworld.m0.live.v8");
             } else if (command=="NEW_NURSERY") {
                 const auto id=number(request), seed=number(request), treatment=number(request);
                 end(request);
-                require(id && treatment<=static_cast<unsigned>(traffic_observer::Nursery::NoFood),"invalid nursery options");
+                require(id && treatment<=static_cast<unsigned>(traffic_observer::Nursery::DryEcology),"invalid nursery options");
                 auto scene=traffic_observer::nursery(id,seed,static_cast<traffic_observer::Nursery>(treatment),limits);
                 auto frame=scene.checkpoint_frame();
                 world.emplace(std::move(scene));
-                search.reset(); r0_history.reset(); r0_assay=false;
+                search.reset();
+                history.attach(*world);
                 payload(frame);
             } else if (command=="NEW_R1_DIG") {
                 const auto id=number(request), seed=number(request), group=number(request), mode=number(request);
@@ -268,7 +319,8 @@ int main() {
                 auto scene=r0r1::digging(id,seed,static_cast<unsigned>(group),static_cast<NestScoring>(mode),case_limits,shield!=0);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
-                search.reset(); r0_history.reset(); r0_assay=true;
+                search.reset();
+                history.attach(*world,true);
                 payload(frame);
             } else if (command == "NEW" || command == "NEW_NEST" || command=="NEW_MOTOR" || command == "NEW_R0_ASSAY") {
                 const auto id = number(request), seed = number(request);
@@ -303,8 +355,7 @@ int main() {
                 const auto frame = scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
-                r0_assay=command=="NEW_R0_ASSAY";
-                r0_history.reset();
+                history.attach(*world,command=="NEW_R0_ASSAY");
                 payload(frame);
             } else if (command == "LOAD") {
                 const auto path = staged_save(request);
@@ -319,17 +370,14 @@ int main() {
                 const auto frame = loaded.world.checkpoint_frame();
                 world.emplace(std::move(loaded.world));
                 search.reset();
-                r0_assay=false;
-                r0_history.reset();
+                history.attach(*world);
                 payload(frame);
             } else {
                 require(world.has_value(), "Create or load a colony first");
                 if (command == "ADVANCE" || command=="ADVANCE_STEP") {
                     const auto target = read_target(request);
                     end(request);
-                    world->advance_to(target);
-                    if (r0_assay && world->unpublished_history()>=65'536)
-                        r0_history=r0::DiagnosticHistory::publish(*world,r0_history);
+                    history.advance(*world,target);
                     search.reset();
                     if (command=="ADVANCE") payload(world->checkpoint_frame());
                     else message("OK");
@@ -344,7 +392,7 @@ int main() {
                     const auto milestone = read_milestone(request);
                     end(request);
                     require(search && search->target == milestone, "Choose a live milestone before fast-forwarding");
-                    advance_until(*world, target, *search);
+                    advance_until(*world,target,*search,history);
                 } else if (command == "FRAME") {
                     end(request);
                     payload(world->checkpoint_frame());
@@ -370,6 +418,18 @@ int main() {
                     end(request);
                     const auto [current,peak]=performance::memory();
                     message("OK",std::to_string(current)+' '+std::to_string(peak)+' '+std::to_string(world->resident_history_bytes()));
+                } else if (command=="HISTORY_STORAGE") {
+                    end(request);
+                    std::ostringstream data;
+                    data << world->summary().committed_events << ' ' << world->unpublished_history() << ' '
+                         << history.encoded_bytes() << ' ' << LiveHistory::memory_budget;
+                    message("OK",data.str());
+                } else if (command=="RESOURCE_RESERVES") {
+                    end(request);
+                    const auto mass=world->resource_reserves();
+                    std::ostringstream data;
+                    data << mass.carbs_ug << ' ' << mass.protein_ug << ' ' << mass.water_ug << ' ' << mass.other_ug;
+                    message("OK",data.str());
                 } else if (command == "RECENT") {
                     end(request);
                     recent(*world);
@@ -397,7 +457,7 @@ int main() {
                          << p->crop.protein_ug << ' ' << p->crop.water_ug << ' ' << reserves->lipid_ug << ' '
                          << reserves->mobile_protein_ug << ' ' << stock.carbs_ug << ' ' << stock.protein_ug << ' '
                          << stock.water_ug << ' ' << world->resident_history_bytes() << ' '
-                         << (r0_history?r0_history->encoded_bytes():0);
+                         << history.encoded_bytes();
                     message("OK",data.str());
                 } else if (command == "SAVE") {
                     const auto path = staged_save(request);

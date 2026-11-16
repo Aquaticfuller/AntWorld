@@ -31,9 +31,17 @@ python -B tools/build_m0_live.py
 5. Select **Open save folder** to manage the SQLite files in Windows File Explorer. Use **Refresh** in the save window after moving or renaming a file. The default folder is `out/m0-saves` in the checkout. Override it with `.\tools\start_m0.cmd --saves 'D:\AntWorldSaves'`.
 6. Select **Archive replay** to browse the earlier demonstrations and comparisons. The live Core continues while you browse another view or close the browser tab. Pause or save the colony before stopping the local service with Ctrl+C.
 
-The live preview runs one colony and holds its state and history in memory until you save. Each named save holds one full SQLite snapshot and its committed history. While a loaded colony is open, a private working copy keeps its history accessible if you move its save file. The working copy is removed on normal shutdown. Save storage, the archive index and build output use the checkout's drive by default. The live profile is the reviewed Borisovka balanced-shaft fixture with physics 29 and seed 1. Its `ENGINEERING_ONLY` label applies during live observation as it does during archive replay.
+The live preview compresses committed facts in memory. It writes a SQLite snapshot and full history only when you save. If the compressed history reaches the memory budget, save and load the colony to continue with the saved history backed by SQLite. While a loaded colony is open, a private working copy keeps its history accessible if you move its save file. The working copy is removed on normal shutdown. Save storage, the archive index and build output use the checkout's drive by default. **New colony** uses the reviewed Borisovka balanced-shaft fixture with physics 29 and seed 1. Its `ENGINEERING_ONLY` label applies during live observation as it does during archive replay.
+
+If a previous live service stopped with `committed event host budget exceeded`, use **Save and load** in that service to save the last committed cut before closing it. Restart with the updated native executable, load the save, and resume.
 
 Positions hold between committed movements. **Recent in-place actions** lists recent completed feeding, trophallaxis and brood handling. Select a record to inspect the participants, exact timestamp and any transferred material. Short-lived labels sit at the original event locations. The standard fixture uses hourly intake and exchange checks and six-hour task reviews. See [the worker timing experiment](WORKER_ACTIVITY_TIMING.md) for the paired runs and camera-data limits.
+
+### Observe local ecology
+
+Select **Local ecology with food and water** in the nursery preset list, then select **Open local ecology**. The two-room nest starts with one queen, ten initialized workers and four larvae. A finite reserve releases food into the surface feeder on a daily schedule. The **Food, water and reserves** panel shows the committed stock outside, inside the nest and in the pending supply. **Find first delivery** pauses at a real delivery and follows the carrier. Select the ant to inspect its body energy, water, tissue protein, crop and scheduled absorption.
+
+**Local ecology without external water** uses the same layout, seed, carbohydrate, protein and initial body stores. Its feeder and external reserve contain zero water. Both scenes are experimental, with fixed laboratory conditions and uncalibrated physiology. See the [fixture inputs and verification](../r0_r1/nursery_continuity/LIVE_ECOLOGY.md).
 
 ## Replay archived colonies
 

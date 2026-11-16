@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(mode === "nursery" ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
+    ...(["nursery", "ecology"].includes(mode) ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
 let browserError = "", exitMessage = "";
@@ -409,6 +409,43 @@ async function nurseryWorld() {
     console.log(JSON.stringify(result, null, 2));
 }
 
+async function ecologyWorld() {
+    await select("nursery-treatment", "ecology");
+    await click("#open-nursery");
+    await wait(() => evaluate("liveView.state?.ecology === 'water-fed' && !$('live-environment').hidden && app.visible?.length >= 15"),
+        "Show the local ecology and real feeder reserve");
+    assert.deepEqual(await evaluate("liveView.state.feeder_reserve_ug"), [7000, 875, 7000, 0]);
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    await click("#nursery-delivery");
+    await wait(() => evaluate("liveView.state?.fast_forward?.state === 'reached' && !liveView.busy"),
+        "Pause at the actual food delivery", 28_000);
+    const delivery = await evaluate("liveView.state.fast_forward.event");
+    assert.equal(delivery.kind, "FoodDelivered");
+    assert.ok(delivery.mass_ug.slice(0, 3).every(n => n > 0));
+    assert.equal(delivery.actor, await evaluate("app.selected"));
+    await click("#individual-tab");
+    await wait(() => evaluate("$('individual-content').textContent.includes('Next scheduled absorption')"),
+        "Inspect the worker's stored physiology");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('live-resources').textContent.includes('\u6c34\u5206')"),
+        "Show quantities in the Chinese UI");
+    await screenshot("local-ecology");
+    await select("nursery-treatment", "ecology-dry");
+    await Promise.all([click("#open-nursery"), (async () => {
+        await wait(() => dialogs.shift(), "Confirm replacement of unsaved progress", 5_000);
+        await send("Page.handleJavaScriptDialog", {accept: true});
+    })()]);
+    await wait(() => evaluate("liveView.state?.ecology === 'no-external-water' && !liveView.busy"), "Open the dry comparison");
+    assert.equal(await evaluate("liveView.state.feeder_reserve_ug[2]"), 0);
+    assert.equal(await evaluate("liveView.state.sources[0].stock_ug[2]"), 0);
+    assert.deepEqual(exceptions, []);
+    result.status = "PASS";
+    result.delivery = delivery;
+    result.browser = (await send("Browser.getVersion")).product;
+    await writeFile(join(output, "local-ecology-browser.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result, null, 2));
+}
+
 async function activityWorld() {
     await click("#open-saves");
     await wait(() => evaluate("$('saved-colonies').textContent.includes('Worker activity test')"), "Find the activity test save");
@@ -470,7 +507,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (mode === "live" || mode === "activity" || mode === "nursery") {
+        if (["live", "activity", "nursery", "ecology"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -483,6 +520,8 @@ try {
         await liveWorld();
     } else if (mode === "nursery") {
         await nurseryWorld();
+    } else if (mode === "ecology") {
+        await ecologyWorld();
     } else if (mode === "activity") {
         await activityWorld();
     } else if (mode === "micro") {

@@ -42,7 +42,8 @@ function preference() {
 const staticStrings = [];
 function captureStaticStrings() {
     const selectors = "[data-i18n],button,option,small,.local-state span:nth-child(2),h2,#day-title,.panel-head p,.eyebrow,.metric-label,label,.world-select summary";
-    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play", "watch-delivery", "live-pause", "view-source", "footer-mode"]);
+    const dynamic = new Set(["space-caption", "queen-mass", "play", "compare-play", "watch-delivery", "live-pause",
+        "open-nursery", "view-source", "footer-mode"]);
     for (const e of document.querySelectorAll(selectors)) {
         if (!dynamic.has(e.id) && e.children.length === 0 && e.textContent.trim() && !e.closest("#locale")) {
             staticStrings.push([e, null, e.textContent.trim()]);
@@ -471,6 +472,12 @@ function renderAnt(ant) {
         ["Tissue protein", withUnit(s.tissue_protein_ug, "µg")], ["Crop C/P/W/other", mass(s.crop_ug)],
         ["Carried C/P/W/other", mass(s.carried_ug)]]));
     if (app.live) {
+        if (s) panel.append(keyValues([
+            ["Physiology last updated", exactTime(s.updated_ms)],
+            ["Next scheduled absorption", ant.status === "Alive" && s.next_absorption_ms > app.time ? exactTime(s.next_absorption_ms) : null],
+            ["Recorded water loss", withUnit(s.lost_water_ug, "µg")],
+            ["Energy dissipated", withUnit(s.dissipated_nj, "nJ")]
+        ]));
         if (ant.activity.length) panel.append(node("h4", tr("Recent Core events"), "subhead"), ...ant.activity.map(e => eventButton(e)));
         return;
     }

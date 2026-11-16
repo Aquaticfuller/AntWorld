@@ -29,8 +29,9 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 FRAME_LIMIT = 128 * 1024 * 1024
-NURSERY_WORLD_TAGS = {649, 650}  # Matches the native nursery fixtures.
-NURSERY_TREATMENTS = {"reference": 0, "traffic": 1, "provisioned": 2}
+ECOLOGY_WORLD_TAGS = {651: "water-fed", 652: "no-external-water"}
+NURSERY_WORLD_TAGS = {649, 650, *ECOLOGY_WORLD_TAGS}  # Matches the native nursery fixtures.
+NURSERY_TREATMENTS = {"reference": 0, "traffic": 1, "provisioned": 2, "ecology": 5, "ecology-dry": 6}
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
@@ -38,7 +39,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
+    paths = (installed.with_stem("antworld_m0_live_v9"), installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
              installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
     return next((path for path in paths if path.is_file()), paths[0])
@@ -54,11 +55,13 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6", b"antworld.m0.live.v7"),
+            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6",
+                                b"antworld.m0.live.v7", b"antworld.m0.live.v8"),
                     "Rebuild the live Core for this viewer version.")
             self.worker_motor = version != b"antworld.m0.live.v4"
-            self.nursery = version in (b"antworld.m0.live.v6", b"antworld.m0.live.v7")
-            self.provisioned_nursery = version == b"antworld.m0.live.v7"
+            self.nursery = version in (b"antworld.m0.live.v6", b"antworld.m0.live.v7", b"antworld.m0.live.v8")
+            self.provisioned_nursery = version in (b"antworld.m0.live.v7", b"antworld.m0.live.v8")
+            self.local_ecology = version == b"antworld.m0.live.v8"
         except Exception:
             self.close()
             raise
@@ -326,6 +329,7 @@ class LiveSession:
                                 self.saved["facts"] != frame["cursor"]))
         return dict(enabled=True, core_available=self.binary.is_file(), time_ms=frame["time_ms"] if frame else None,
                     nursery_available=self.binary.is_file() and (self.worker is None or self.worker.nursery),
+                    ecology_available=self.binary.is_file() and (self.worker is None or self.worker.local_ecology),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -344,6 +348,12 @@ class LiveSession:
             geometry, surface = frame["geometry"], frame["surface"]
             colonies = list(frame["colonies"].values())
             nursery = is_nursery(frame)
+            tag = UUID(frame["world"]).int >> 64
+            ecology = ECOLOGY_WORLD_TAGS.get(tag)
+            reserve = None
+            if ecology and self.worker.local_ecology:
+                reserve = tuple(map(int, self.worker.call("RESOURCE_RESERVES").split()))
+                require(len(reserve) == 4 and min(reserve) >= 0, "Invalid native resource reserve")
             focus = (0,colonies[0]["position_m"][1],0) if nursery else colonies[0]["position_m"]
             axis = options.get("axis", "y")
             require(axis in AXES, "Unknown slice axis")
@@ -366,7 +376,8 @@ class LiveSession:
             traffic = frame["flags"].get("local_traffic",False)
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         local_traffic=traffic, seeded_nursery=nursery,
-                        provisioned_nursery=UUID(frame["world"]).int >> 64 == 650,
+                        provisioned_nursery=tag == 650 or ecology is not None,
+                        ecology=ecology, feeder_reserve_ug=reserve,
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         nest_dynamics=dynamics,
@@ -460,6 +471,8 @@ class LiveSession:
                 core = self.core()
                 require(core.nursery and (treatment != "provisioned" or core.provisioned_nursery),
                         "Build the native Core to open the nursery experiment.")
+                require(not treatment.startswith("ecology") or core.local_ecology,
+                        "Build the updated native Core to open the ecology experiment.")
                 self.install(core.call(f"NEW_NURSERY {randbits(63) or 1} 17 {NURSERY_TREATMENTS[treatment]}"), running=True)
             elif resource == "new":
                 timing = data.get("timing", "standard")
