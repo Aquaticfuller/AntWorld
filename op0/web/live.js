@@ -1,6 +1,8 @@
 "use strict";
 
-const liveView = {state: null, epoch: null, request: 0, timer: null, busy: false, saves: [], eventsKey: null, actionsKey: null, shownStop: null};
+const liveView = {state: null, epoch: null, request: 0, timer: null, animation: null, busy: false,
+    saves: [], eventsKey: null, actionsKey: null, individualKey: null, shownStop: null};
+const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation"};
 const followMilestones = new Set(["exit", "delivery", "excavation"]);
@@ -33,6 +35,8 @@ function liveControls() {
     $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
     const locked = liveView.busy || !active;
     $("live-pause").disabled = locked;
+    $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
+    $("nursery-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
     const details = stop ? tr(liveStopLabels[stop.state], {
@@ -57,8 +61,11 @@ function liveVisibility(active) {
 
 function liveIndividual() {
     const ant = liveView.state?.ants?.find(a => a.id === app.selected);
+    const events = ant ? liveView.state.events.filter(e => e.actor === ant.id || e.related === ant.id) : [];
+    const key = JSON.stringify([language, ant, events.map(e => e.id)]);
+    if (liveView.individualKey === key) return;
+    liveView.individualKey = key;
     if (!ant) { renderAnt(null); return; }
-    const events = liveView.state.events.filter(e => e.actor === ant.id || e.related === ant.id);
     const death = events.find(e => e.kind === "AntDied" && e.actor === ant.id);
     renderAnt({...ant, status: ant.stage === "Dead" ? "Dead" : "Alive", died_ms: death?.time_ms,
         sample: ant.energy_nj == null ? null : {...ant, time_ms: ant.updated_ms}, activity: events});
@@ -80,7 +87,7 @@ function liveActionGroup(event) {
 }
 
 function renderLiveActions() {
-    const actions = liveView.state.actions ?? [];
+    const actions = (liveView.state.actions ?? []).filter(e => !liveView.state.seeded_nursery || liveView.state.time_ms - e.time_ms <= 8000);
     $("live-activity").hidden = liveView.state.seeded_nursery && !actions.length;
     const key = language + ":" + actions.map(e => e.id).join(",");
     if (liveView.actionsKey === key) return;
@@ -98,19 +105,19 @@ function renderLiveActions() {
     $("live-action-list").replaceChildren(...(latest.length ? latest : [node("p", tr("No in-place actions recorded yet."), "muted")]));
 }
 
-function drawLiveActions(ctx, point, fits) {
+function drawLiveActions(ctx, point, fits, time) {
     const actions = liveView.state?.actions ?? [];
     const cells = new Set();
     ctx.save();
     ctx.font = '600 11px "Cascadia Mono", "Microsoft YaHei", monospace';
     for (const event of actions) {
-        if (app.time - event.time_ms > 8000 || !fits(event.position_m)) continue;
+        if (event.time_ms > time || time - event.time_ms > 8000 || !fits(event.position_m)) continue;
         const [x, y] = point(event.position_m);
         const cell = `${Math.floor(x / 85)},${Math.floor(y / 25)}`;
         if (cells.has(cell)) continue;
         cells.add(cell);
         const group = liveActionGroup(event);
-        const label = tr(group) + " #" + event.actor;
+        const label = tr(event.action?.act ?? group) + " #" + event.actor;
         const width = ctx.measureText(label).width + 12;
         circle(ctx, x, y, 9, "transparent", liveActionColors[group]);
         ctx.fillStyle = "#263327";
@@ -147,6 +154,7 @@ async function refreshLive(alignSection = true) {
     liveView.state = data;
     document.body.classList.toggle("nursery-active", Boolean(data.seeded_nursery));
     if (!data.world_id) {
+        liveMotion.clear();
         liveControls();
         $("viewer").hidden = true;
         put("subtitle", tr(data.core_available ? "Create a colony to start the simulation." : "Build the live Core to start a colony. Archive replay is available."));
@@ -159,6 +167,7 @@ async function refreshLive(alignSection = true) {
         liveView.epoch = data.epoch;
         liveView.eventsKey = null;
         liveView.actionsKey = null;
+        liveView.individualKey = null;
         liveView.shownStop = null;
         app.selected = data.ants.find(a => a.caste === "Queen")?.id ?? null;
         app.follow = false;
@@ -212,7 +221,8 @@ async function refreshLive(alignSection = true) {
     updatePopulation(p, queen && {...queen, time_ms: queen.updated_ms});
     put("map-time", duration(data.time_ms));
     const timing = data.worker_activity_timing;
-    const description = data.seeded_nursery ? tr(data.local_traffic ? "Nursery · body-aware movement" : "Nursery · R0-r1 reference") :
+    const description = data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
+        data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
     put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · " + description + " · ENGINEERING_ONLY");
     updateGeometryControls(app.geometry);
@@ -220,7 +230,16 @@ async function refreshLive(alignSection = true) {
     liveIndividual();
     renderLiveActions();
     if (!$("event-panel").hidden) renderLiveEvents();
+    liveMotion.record(data, performance.now());
     drawMap();
+    if (liveMotion.cuts.length && liveView.animation == null) liveView.animation = requestAnimationFrame(animateLiveMotion);
+}
+
+function animateLiveMotion() {
+    liveView.animation = null;
+    if (!app.live || !liveMotion.cuts.length) return;
+    drawMap(true);
+    liveView.animation = requestAnimationFrame(animateLiveMotion);
 }
 
 function scheduleLiveView() {
@@ -257,6 +276,9 @@ async function openLiveView() {
 
 function leaveLiveView() {
     clearTimeout(liveView.timer);
+    cancelAnimationFrame(liveView.animation);
+    liveView.animation = null;
+    liveMotion.clear();
     ++liveView.request;
     if ($("save-manager").open) $("save-manager").close();
     liveVisibility(false);
@@ -337,12 +359,16 @@ function bindLive() {
     });
     click("open-nursery", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
-        return liveCommand("nursery", {traffic:$("nursery-treatment").value==="traffic"});
+        return liveCommand("nursery", {treatment: $("nursery-treatment").value});
     });
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => {
         liveView.shownStop = null;
         return liveCommand("seek", {target: $("live-target").value});
+    });
+    click("nursery-delivery", () => {
+        liveView.shownStop = null;
+        return liveCommand("seek", {target: "delivery"});
     });
     $("live-rate").addEventListener("change", () => liveCommand("clock", {rate: Number($("live-rate").value)}).catch(report));
     click("open-saves", async () => {

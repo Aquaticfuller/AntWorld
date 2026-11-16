@@ -40,10 +40,11 @@ jobs:
           node-version: "22"
       - name: Verify archives, API, terminal and SQLite publication
         run: python -m unittest discover -s op0/tests -v
-      - name: Syntax-check the offline browser client
+      - name: Check the offline browser client and live motion projection
         run: |
           node --check op0/web/viewer.js
           node --check op0/web/live.js
+          node op0/tests/live_motion.mjs
       - name: Replay real worlds in Chrome
         if: runner.os == 'Linux'
         shell: bash

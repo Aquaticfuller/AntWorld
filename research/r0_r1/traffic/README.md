@@ -2,6 +2,8 @@
 
 ## Open the comparison
 
+The [nursery continuity follow-up](../nursery_continuity/README.md) contains the one-hour stall reproduction and the new provisioned scene. Its menu calls the physics 34 case **Previous nursery**.
+
 In the AntWorld checkout on Windows, run this command from PowerShell.
 
 ```powershell

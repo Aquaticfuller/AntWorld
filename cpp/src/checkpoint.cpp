@@ -171,7 +171,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==local_traffic_schema && version==local_traffic_physics) ||
+        ensure((outer_schema==carrier_yield_schema && version==carrier_yield_physics) ||
+               (outer_schema==local_traffic_schema && version==local_traffic_physics) ||
                (outer_schema==nest_dynamics_schema && version==nest_dynamics_physics) ||
                (outer_schema==nest_activity_schema && version==nest_activity_physics) ||
                (outer_schema==worker_timing_schema && version==worker_timing_physics) ||

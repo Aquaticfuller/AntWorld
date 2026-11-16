@@ -75,7 +75,8 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
              (motion && ((local_nest_activity(s) && c.act==CareAct::NestReposition) ||
                          (worker_motor(s) && c.act==CareAct::DepotApproach)) &&
               c.profile.context==CareContext::Worker && !c.target.value) ||
-             (motion && local_traffic(s) && c.act==CareAct::ApproachNestmate &&
+             (motion && ((local_traffic(s) && c.act==CareAct::ApproachNestmate) ||
+                         (yield_to_loaded(s) && c.act==CareAct::YieldToCarrier)) &&
               c.profile.context==CareContext::Worker && (!c.enabled || c.target.value))) &&
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");
@@ -195,8 +196,9 @@ template<class S> void validate_care_evidence(const S& s) {
                    !o.target.value && e.stage==LifeStage::Adult &&
                    s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
                    "rest relocation outside the local nest activity contract");
-        if (o.act==CareAct::ApproachNestmate)
-            ensure(local_traffic(s) && o.target.value && o.target!=e.actor && e.stage==LifeStage::Adult &&
+        if (o.act==CareAct::ApproachNestmate || o.act==CareAct::YieldToCarrier)
+            ensure((o.act==CareAct::YieldToCarrier?yield_to_loaded(s):local_traffic(s)) &&
+                   o.target.value && o.target!=e.actor && e.stage==LifeStage::Adult &&
                    s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
                    "nestmate approach without a local traffic actor and target");
         if (o.phase==ObservationPhase::Selected && audit.contains(e.actor) && audit.at(e.actor).enabled) {
@@ -224,7 +226,8 @@ template<class S> void validate_care_evidence(const S& s) {
             if (o.duration_known) {
                 ensure(starts.contains(o.bout) && owners.at(o.bout)==e.actor && starts.at(o.bout).act==o.act &&
                     starts.at(o.bout).target==o.target && starts.at(o.bout).began_at==o.began_at,"end without matching start");
-                if ((o.act==CareAct::NestReposition || o.act==CareAct::DepotApproach || o.act==CareAct::ApproachNestmate) &&
+                if ((o.act==CareAct::NestReposition || o.act==CareAct::DepotApproach ||
+                     o.act==CareAct::ApproachNestmate || o.act==CareAct::YieldToCarrier) &&
                     o.phase==ObservationPhase::Completed) {
                     ensure(e.id.value>1,"rest relocation lacks a preceding motion fact");
                     const auto moved=s.journal.at(static_cast<std::size_t>(e.id.value-2));

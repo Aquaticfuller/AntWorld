@@ -13,6 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
+    ...(mode === "nursery" ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
 let browserError = "", exitMessage = "";
@@ -352,48 +353,60 @@ async function liveWorld() {
 
 async function nurseryWorld() {
     await click("#open-nursery");
-    await wait(() => evaluate("liveView.state?.local_traffic && liveView.state.seeded_nursery && app.visible?.length >= 15"),
-        "Render the ten-worker nursery from the native Core");
-    assert.equal(await evaluate("liveView.state.rate"),1);
+    await wait(() => evaluate("liveView.state?.physics === 35 && liveView.state.provisioned_nursery && app.visible?.length >= 15"),
+        "Render the provisioned ten-worker nursery from the native Core");
+    assert.equal(await evaluate("liveView.state.rate"), 1);
     assert.equal(await evaluate("$('map').getBoundingClientRect().bottom <= window.innerHeight"), true);
     assert.equal(await evaluate("$('colony-settings').open"), false);
-    await evaluate("chooseLiveAnt('7')");
-    const sample=await wait(() => evaluate(`(() => {
-        const ant=app.state.ants.find(a => a.id === app.selected && a.motion_plan?.progress>0 && a.motion_plan?.progress<1);
-        if (!ant) return null;
-        const pose=motorPose(ant);
-        return pose.some((v,i)=>v!==ant.position_m[i]) ? {id:ant.id,progress:ant.motion_plan.progress,
-            time:liveView.state.time_ms, frame:ant.position_m, pose} : null;
-    })()`),"Observe a body move between committed endpoints at native time",20_000);
-    assert.notDeepEqual(sample.pose,sample.frame);
-    await click("#live-pause");
-    await wait(() => evaluate("!liveView.state.running && !liveView.busy"),"Pause nursery at the visible native time");
-    await screenshot("nursery-live");
+    const sample = await evaluate(`new Promise(resolve => {
+        const start = performance.now();
+        let previous;
+        function observe() {
+            if (performance.now() - start > 18000) return resolve(null);
+            const ant = app.visible.find(a => a.display_motion?.progress > 0 && a.display_motion.progress < 1);
+            const hit = ant && app.hits.find(h => h.id === ant.id);
+            if (hit) {
+                const now = {id: ant.id, x: hit.x, y: hit.y, begins: ant.display_motion.begins_ms,
+                    view: app.renderedTimeMs, core: liveView.state.time_ms};
+                if (previous && now.id === previous.id && now.begins === previous.begins && now.core === previous.core &&
+                    now.view > previous.view && Math.hypot(now.x - previous.x, now.y - previous.y) > .05)
+                    return resolve({previous, now});
+                previous = now;
+            }
+            requestAnimationFrame(observe);
+        }
+        requestAnimationFrame(observe);
+    })`);
+    assert.ok(sample, "Paint two different poses within a single server cut");
+    assert.ok(sample.now.view <= sample.now.core, "Display never moves beyond validated Core time");
+    await click("#nursery-delivery");
+    await wait(() => evaluate("liveView.state?.fast_forward?.state === 'reached' && !liveView.busy"),
+        "Find and freeze the first actual food delivery", 28_000);
+    const atDelivery = await evaluate("({clock: liveView.state.time_ms, event: liveView.state.fast_forward.event, ant: app.selected})");
+    assert.equal(atDelivery.event.kind, "FoodDelivered");
+    assert.ok(atDelivery.event.mass_ug.reduce((a, b) => a + b) > 0);
+    assert.equal(atDelivery.event.time_ms, atDelivery.clock);
+    assert.equal(atDelivery.event.actor, atDelivery.ant);
+    assert.equal(await evaluate("!liveView.state.running && app.renderedTimeMs === liveView.state.time_ms"), true);
     await click("#body-envelopes");
-    assert.equal(await evaluate("$('body-envelopes').checked"),true);
-    await screenshot("nursery-envelopes");
-    await select("locale","zh-CN");
-    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('open-nursery').textContent.includes('\u80b2\u5e7c')"),
-        "Translate the same running UI controls");
-    await screenshot("nursery-chinese");
-    await select("nursery-treatment", "reference");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('open-nursery').textContent.includes('\\u80b2\\u5e7c')"),
+        "Translate the same native nursery controls");
+    await screenshot("nursery-continuity");
+    await select("nursery-treatment", "traffic");
     await Promise.all([click("#open-nursery"), (async () => {
         await wait(() => dialogs.shift(), "Confirm replacement of unsaved nursery progress", 5_000);
         await send("Page.handleJavaScriptDialog", {accept: true});
     })()]);
-    await wait(() => evaluate("liveView.state?.physics === 33 && liveView.state.seed === '17' && app.visible?.length >= 15"),
-        "Open the matched native reference nursery", 10_000);
-    await wait(() => evaluate("app.state.ants.some(a => a.motion_plan?.progress>0 && a.motion_plan.progress<1 && motorPose(a).some((n,i) => n !== a.position_m[i]))"),
-        "Use the same segment renderer for the reference", 10_000);
-    await click("#live-pause");
-    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause the reference nursery");
-    await screenshot("nursery-reference");
-    assert.deepEqual(exceptions,[]);
-    result.status="PASS";
-    result.sample=sample;
-    result.browser=(await send("Browser.getVersion")).product;
-    await writeFile(join(output,"nursery-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
-    console.log(JSON.stringify(result,null,2));
+    await wait(() => evaluate("liveView.state?.physics === 34 && !liveView.state.provisioned_nursery && app.visible?.length >= 15"),
+        "Open the previous nursery under its original physics version", 10_000);
+    assert.deepEqual(exceptions, []);
+    result.status = "PASS";
+    result.frame_pair = sample;
+    result.delivery = atDelivery;
+    result.browser = (await send("Browser.getVersion")).product;
+    await writeFile(join(output, "nursery-continuity-browser.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result, null, 2));
 }
 
 async function activityWorld() {

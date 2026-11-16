@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AntWorld · Observation Preview</title>
   <link rel="stylesheet" href="/viewer.css">
+  <script src="/live_motion.js" defer></script>
   <script src="/live.js" defer></script>
   <script src="/viewer.js" defer></script>
 </head>
@@ -34,7 +35,8 @@
     </section>
     <p id="notice" class="notice" role="status" hidden></p>
     <section id="live-controls" class="panel live-controls" aria-label="Live simulation controls" hidden>
-      <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span></div>
+      <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span>
+        <output id="live-stop" role="status" hidden></output></div>
       <div class="live-actions">
         <button id="live-pause" type="button">Pause</button>
         <label for="live-rate" class="sr-only">Simulation speed</label>
@@ -58,12 +60,12 @@
           <option value="exit">First worker leaves the nest</option><option value="delivery">First food delivered</option><option value="excavation">First excavation</option>
         </select>
         <button id="live-seek" type="button">Fast-forward to event</button>
-        <output id="live-stop" role="status" hidden></output>
       </div>
       <div class="nursery-launch">
         <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
         <label class="sr-only" for="nursery-treatment">Nursery experiment</label>
-        <select id="nursery-treatment"><option value="traffic">Body-aware movement</option><option value="reference">R0-r1 reference</option></select>
+        <select id="nursery-treatment"><option value="provisioned">Nursery with food</option><option value="traffic">Previous nursery</option><option value="reference">R0-r1 reference</option></select>
+        <button id="nursery-delivery" type="button" hidden>Find first delivery</button>
         <span class="muted" data-i18n>Ten initialized workers and nearby brood. Starts immediately at real time.</span>
       </div>
     </section>

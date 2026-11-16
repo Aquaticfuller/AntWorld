@@ -122,11 +122,11 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   std::map<EntityId, PositionM> positions;
   std::map<EntityId, SimTime> emergence;
   std::map<ScheduledId, WorldEvent> switches;
-  std::optional<WorldEvent> last_r0_rest_source;
+  std::optional<WorldEvent> last_local_action;
   for (const auto &e : s.journal) {
     if (local_nest_activity(s) && (e.kind==FactKind::ExcavationDecision ||
         (e.kind==FactKind::BiologicalObservation && (e.observation.act==CareAct::NestReposition || worker_motor(s)) &&
-         e.observation.phase>=ObservationPhase::Completed))) last_r0_rest_source=e;
+         e.observation.phase>=ObservationPhase::Completed))) last_local_action=e;
     if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) {
       stages[e.actor] = e.stage;
       positions[e.actor] = e.position;
@@ -165,12 +165,14 @@ template <class S> void validate_autonomy_evidence(const S &s) {
     if (e.kind == FactKind::BehaviorChanged) {
       if (audit.contains(e.actor))
         audit.at(e.actor).last_program_change = e.time;
-      const bool local_rest=e.source.value && e.payload==static_cast<std::uint64_t>(IndividualBehavior::Rest) &&
-          last_r0_rest_source && last_r0_rest_source->source==e.source && last_r0_rest_source->actor==e.actor &&
-          last_r0_rest_source->time==e.time && last_r0_rest_source->position==e.position;
-      if (local_rest) {
-        ensure(audit.contains(e.actor) && audit.at(e.actor).enabled,"local rest without an active program");
-        last_r0_rest_source.reset();
+      const bool local_finish=e.source.value && last_local_action && last_local_action->source==e.source &&
+          last_local_action->actor==e.actor && last_local_action->time==e.time && last_local_action->position==e.position;
+      const bool local_offer=local_finish && local_traffic(s) && e.payload==static_cast<std::uint64_t>(IndividualBehavior::Nurse) &&
+          last_local_action->kind==FactKind::BiologicalObservation && last_local_action->observation.act==CareAct::ApproachNestmate &&
+          last_local_action->observation.phase==ObservationPhase::Completed && last_local_action->outcome==Outcome::Success;
+      if ((local_finish && e.payload==static_cast<std::uint64_t>(IndividualBehavior::Rest)) || local_offer) {
+        ensure(audit.contains(e.actor) && audit.at(e.actor).enabled,"local program change without active autonomy");
+        last_local_action.reset();
       } else if (e.source.value)
         ensure(audit.contains(e.actor) && audit.at(e.actor).enabled &&
                    switches.emplace(e.source, e).second,

@@ -29,7 +29,8 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation"}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 FRAME_LIMIT = 128 * 1024 * 1024
-NURSERY_WORLD_TAG = 649  # Matches the native nursery fixture.
+NURSERY_WORLD_TAGS = {649, 650}  # Matches the native nursery fixtures.
+NURSERY_TREATMENTS = {"reference": 0, "traffic": 1, "provisioned": 2}
 LIVE_GROUPS = {name: {KINDS[kind] for kind in kinds} for name, kinds in FACETS.items()}
 LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 
@@ -37,13 +38,14 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v7"), installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
+    paths = (installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
+             installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
     return next((path for path in paths if path.is_file()), paths[0])
 
 
 def is_nursery(frame):
-    return frame is not None and UUID(frame["world"]).int >> 64 == NURSERY_WORLD_TAG
+    return frame is not None and UUID(frame["world"]).int >> 64 in NURSERY_WORLD_TAGS
 
 
 class NativeCore:
@@ -52,10 +54,11 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6"),
+            require(version in (b"antworld.m0.live.v4", b"antworld.m0.live.v5", b"antworld.m0.live.v6", b"antworld.m0.live.v7"),
                     "Rebuild the live Core for this viewer version.")
             self.worker_motor = version != b"antworld.m0.live.v4"
-            self.nursery = version == b"antworld.m0.live.v6"
+            self.nursery = version in (b"antworld.m0.live.v6", b"antworld.m0.live.v7")
+            self.provisioned_nursery = version == b"antworld.m0.live.v7"
         except Exception:
             self.close()
             raise
@@ -363,10 +366,12 @@ class LiveSession:
             traffic = frame["flags"].get("local_traffic",False)
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         local_traffic=traffic, seeded_nursery=nursery,
+                        provisioned_nursery=UUID(frame["world"]).int >> 64 == 650,
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         nest_dynamics=dynamics,
-                        cursor=str(frame["cursor"]), colonies=colonies, geometry=geometry, terrain=self.sections[key],
+                        cursor=str(frame["cursor"]), recent_from_id=self.recent[0]["id"] if self.recent else str(frame["cursor"] + 1),
+                        colonies=colonies, geometry=geometry, terrain=self.sections[key],
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
                         bounds_m=(frame["world_min_m"], frame["world_max_m"]), sources=list(frame["sources"].values()),
@@ -446,10 +451,16 @@ class LiveSession:
     def write(self, resource, data):
         with self.lock:
             if resource == "nursery":
-                traffic=data.get("traffic",True)
-                require(type(traffic) is bool,"Unknown nursery traffic setting")
-                require(self.core().nursery,"Build the native Core to open the nursery experiment.")
-                self.install(self.core().call(f"NEW_NURSERY {randbits(63) or 1} 17 {int(traffic)}"), running=True)
+                treatment = data.get("treatment")
+                if treatment is None:
+                    traffic = data.get("traffic", True)
+                    require(type(traffic) is bool, "Unknown nursery traffic setting")
+                    treatment = "traffic" if traffic else "reference"
+                require(isinstance(treatment, str) and treatment in NURSERY_TREATMENTS, "Unknown nursery treatment")
+                core = self.core()
+                require(core.nursery and (treatment != "provisioned" or core.provisioned_nursery),
+                        "Build the native Core to open the nursery experiment.")
+                self.install(core.call(f"NEW_NURSERY {randbits(63) or 1} 17 {NURSERY_TREATMENTS[treatment]}"), running=True)
             elif resource == "new":
                 timing = data.get("timing", "standard")
                 require(isinstance(timing, str) and timing in NEW_COLONY_TIMINGS, "Unknown worker timing")

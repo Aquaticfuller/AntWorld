@@ -26,6 +26,8 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         throw std::invalid_argument("nest dynamics requires the physical R0 treatment and an explicit mechanism");
     if (c.local_traffic && (!c.nest_dynamics || !c.nest_dynamics->worker_motor))
         throw std::invalid_argument("local traffic requires the worker motor");
+    if ((c.yield_to_loaded || c.local_pantry_checks) && !c.local_traffic)
+        throw std::invalid_argument("nursery work and traffic policy requires local traffic");
     if (const auto& timing = c.worker_activity_timing;
         timing && (!c.portable_care_motion || c.suppress_foundress_hatch_cue ||
                    timing->check_interval.milliseconds < 60000 ||
@@ -41,6 +43,9 @@ inline bool worker_motor(const auto& s) {
 }
 inline bool local_traffic(const auto& s) {
     return s.ecological && s.ecological->local_traffic;
+}
+inline bool yield_to_loaded(const auto& s) {
+    return s.ecological && s.ecological->yield_to_loaded;
 }
 inline NestScoring nest_scoring(const auto& s) {
     return s.ecological && s.ecological->nest_dynamics ? s.ecological->nest_dynamics->excavation : NestScoring::Original;

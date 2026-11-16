@@ -1,0 +1,53 @@
+{
+  "first_browser_view_ms": 99.33,
+  "status": "PASS",
+  "frame_pair": {
+    "previous": {
+      "id": "7",
+      "x": 290.1705734450783,
+      "y": 380.5972836977789,
+      "begins": 4001,
+      "view": 4005.400000035763,
+      "core": 4195
+    },
+    "now": {
+      "id": "7",
+      "x": 291.6585010104706,
+      "y": 379.10935613238655,
+      "begins": 4001,
+      "view": 4017.400000035763,
+      "core": 4195
+    }
+  },
+  "delivery": {
+    "clock": 207962,
+    "event": {
+      "id": "5510",
+      "time_ms": 207962,
+      "kind": "FoodDelivered",
+      "actor": "8",
+      "related": null,
+      "source": "2587",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        -0.008,
+        -0.004,
+        -0.001
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        1883,
+        235,
+        1882,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    "ant": "8"
+  },
+  "browser": "Chrome/157.0.8103.78"
+}

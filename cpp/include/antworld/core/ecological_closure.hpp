@@ -32,6 +32,8 @@ struct EcologicalClosureConfig {
     bool local_nest_activity{}; // Physics 32. Paid rest relocation and local floor demand.
     std::optional<NestDynamics> nest_dynamics; // Physics 33. Independent motor and dig scoring.
     bool local_traffic{}; // Physics 34. Experimental local contact approaches and adult body clearance.
+    bool yield_to_loaded{}; // Physics 35. A stationary worker can clear a locally blocked return.
+    bool local_pantry_checks{}; // Physics 35. A locally observed low food store can prompt foraging.
     bool operator==(const EcologicalClosureConfig&) const = default;
 };
 } // namespace antworld

@@ -460,9 +460,11 @@ function renderAnt(ant) {
     const mother = ant.mother ? button("#" + ant.mother, () => selectAnt(ant.mother).catch(report)) : null;
     const s = ant.sample;
     const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
+    const work = app.live && liveView.state?.seeded_nursery && ant.active_work != null && ant.status === "Alive";
     panel.replaceChildren(title, keyValues([["Mother", mother], ["Born", ant.born_ms == null ? null : day(ant.born_ms)],
         ["Last position at cut", coords(ant.position_m)], ...(plan ? [["Current motion", tr(app.time < plan.translates_ms ? "Turning" : "Moving")],
             ["Position on motion segment", coords(motorPose(ant))], ["Destination", coords(plan.to_m)]] : []),
+        ...(work && !plan ? [["Current action", tr(ant.active_work === "0" ? "No action in progress" : "Action in progress")]] : []),
         ...(ant.died_ms == null ? [] : [["Died", exactTime(ant.died_ms)], ["Cause", tr(ant.death_cause)]])]),
         node("h4", s ? tr("Physiology · sample on {day}", {day: day(s.time_ms)}) : tr("Physiology · not recorded"), "subhead"));
     if (s) panel.append(keyValues([["Body energy", withUnit(s.energy_nj, "nJ")], ["Body water", withUnit(s.hydration_ug, "µg")],
@@ -737,14 +739,15 @@ function markerShape(ctx, ant, x, y, selected) {
     }
 }
 function motorPose(ant) {
+    if (ant.display_position_m) return ant.display_position_m;
     const plan = app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
     return plan ? plan.from_m.map((start, i) => start + plan.progress*(plan.to_m[i]-start)) : ant.position_m;
 }
 
-function planAngle(plan, point) {
+function planAngle(plan, point, time) {
     const origin = point(plan.from_m), goal = point(plan.to_m);
     const next = Math.atan2(goal[1] - origin[1], goal[0] - origin[0]);
-    if (!plan.heading || app.time >= plan.translates_ms) return next;
+    if (!plan.heading || time >= plan.translates_ms) return next;
     const compass = (plan.heading - 1) * Math.PI / 4;
     const v = plan.heading > 8 ? [0, plan.heading === 9 ? 1 : -1, 0] : [Math.cos(compass), 0, Math.sin(compass)];
     const projected = point(plan.from_m.map((n, i) => n + 0.001 * v[i]));
@@ -752,10 +755,10 @@ function planAngle(plan, point) {
     if (Math.hypot(du, dv) < 1e-6) return next;
     const before = Math.atan2(dv, du);
     const turn = Math.atan2(Math.sin(next - before), Math.cos(next - before));
-    return before + turn * (app.time - plan.begins_ms) / (plan.translates_ms - plan.begins_ms);
+    return before + turn * (time - plan.begins_ms) / (plan.translates_ms - plan.begins_ms);
 }
 
-function drawAdult(ctx, ant, x, y, radius, heading, selected) {
+function drawAdult(ctx, ant, x, y, radius, heading, selected, progress, time) {
     const queen = ant.caste === "Queen";
     ctx.save();
     ctx.translate(x,y);
@@ -767,8 +770,7 @@ function drawAdult(ctx, ant, x, y, radius, heading, selected) {
     }
     ctx.rotate(heading);
     ctx.scale(radius,radius);
-    const plan=app.live && liveView.state?.seeded_nursery ? ant.motion_plan : null;
-    const gait=plan?.progress > 0 ? Math.sin(plan.progress*4*Math.PI)*.19 : 0;
+    const gait = progress > 0 ? Math.sin(time * .038) * .19 : 0;
     ctx.strokeStyle="#281d17";
     ctx.lineWidth=.092;
     ctx.lineCap="round";
@@ -815,7 +817,11 @@ function drawAdult(ctx, ant, x, y, radius, heading, selected) {
     }
 }
 
-function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain) {
+function displayedMotion(ant) {
+    return ant.display_position_m ? ant.display_motion : ant.motion_plan;
+}
+
+function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain, time) {
     const markers = new Map();
     for (const ant of visible) {
         const [x, y] = point(motorPose(ant));
@@ -830,7 +836,9 @@ function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain) {
             const a=ants[0];
             const half=terrain && (a.loaded?terrain.loaded_half_q:terrain.body_half_q)*terrain.quantum_m*pixelsPerMeter;
             if (a.stage==="Adult" && a.caste!=="Male" && half>=5) {
-                drawAdult(ctx,a,x,y,half,a.motion_plan ? planAngle(a.motion_plan, point) : 0,a.id===app.selected);
+                const motion = displayedMotion(a);
+                drawAdult(ctx, a, x, y, half, motion ? planAngle(motion, point, time) : 0, a.id === app.selected,
+                    motion?.progress, time);
             } else markerShape(ctx,a,x,y,a.id===app.selected);
             app.hits.push({id:a.id,x,y,radius:Math.max(11,a.stage==="Adult"?half||0:0),ants});
             continue;
@@ -896,6 +904,45 @@ function paintSoilEdges(ctx, slice, p, bounds) {
     ctx.lineWidth=1;
     ctx.stroke();
 }
+function drawUnderground(ctx, p, bounds, slice) {
+    const q = slice.quantum_m;
+    rect(ctx, p, bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1], "#736550");
+    for (const [row, cells] of slice.rows.entries()) {
+        for (let start = 0, end; start < cells.length; start = end) {
+            end = start + 1;
+            while (end < cells.length && cells[end] === cells[start]) end++;
+            if (cells[start] === "0") continue;
+            const shade = cells[start] === "2" ? "#676869" : "#987657";
+            rect(ctx, p, bounds[0] + start * q, bounds[1] + row * q, (end - start) * q, q, shade);
+        }
+    }
+    paintSoilEdges(ctx, slice, p, bounds);
+    for (const [row, cells] of (slice.unloaded_body_clear || []).entries()) {
+        for (let i = 0; i < cells.length; i++) if (cells[i] === "1") {
+            circle(ctx, ...p.point(bounds[0] + i*q, bounds[1] + row*q), Math.min(2.5, p.unit*q/5), "#91be80");
+        }
+    }
+}
+
+let nurseryTerrain;
+function drawNurseryTerrain(ctx, p, bounds, slice, width, height) {
+    const dpr = window.devicePixelRatio || 1, margin = 96;
+    const [x, y] = p.point(bounds[0], bounds[1]);
+    const key = [liveView.state.epoch, app.geometry.revision, slice.axis, slice.plane_q, ...slice.bounds_q,
+        Boolean(slice.unloaded_body_clear), p.unit, width, height, dpr].join(":");
+    if (nurseryTerrain?.key !== key || Math.abs(x - nurseryTerrain.x) >= margin || Math.abs(y - nurseryTerrain.y) >= margin) {
+        const layer = nurseryTerrain?.layer ?? document.createElement("canvas");
+        layer.width = Math.ceil((width + 2 * margin) * dpr);
+        layer.height = Math.ceil((height + 2 * margin) * dpr);
+        const brush = layer.getContext("2d");
+        brush.setTransform(dpr, 0, 0, dpr, margin * dpr, margin * dpr);
+        drawUnderground(brush, p, bounds, slice);
+        nurseryTerrain = {key, layer, x, y};
+    }
+    const {layer} = nurseryTerrain;
+    ctx.drawImage(layer, x - nurseryTerrain.x - margin, y - nurseryTerrain.y - margin, layer.width / dpr, layer.height / dpr);
+}
+
 function renderLocation() {
     $("location").hidden = !app.location;
     if (!app.location) return;
@@ -919,18 +966,23 @@ function showLocation(hit = null) {
     app.location = hit ? {axes, at: [hit.ants[0].position_m[axes[0]], hit.ants[0].position_m[axes[1]]]} : {all: true};
     renderLocation();
 }
-function drawMap() {
+function drawMap(motionOnly = false) {
     if (app.compare || !app.state) return;
-    $("viewer").classList.toggle("nursery-view",Boolean(app.live && liveView.state?.seeded_nursery));
+    const nursery = app.live && liveView.state?.seeded_nursery;
+    const display = nursery ? liveMotion.frame(performance.now()) : null;
+    if (motionOnly && !display) return;
+    if (!motionOnly) $("viewer").classList.toggle("nursery-view", Boolean(nursery));
     const canvas = canvasContext($("map"));
     if (!canvas) return;
     const {ctx, width, height} = canvas;
-    const state = app.state, surface = app.meta.surface, slice = app.geometry?.slice;
+    const state = display ?? app.state, surface = app.meta.surface, slice = app.geometry?.slice;
+    const time = display?.time ?? app.time;
+    app.renderedTimeMs = time;
     const underground = app.section === "slice" && slice;
     const follow = app.live && app.follow && state.ants.find(a => a.id === app.selected);
     const tracked = follow ? motorPose(follow) : null;
     const terrain = app.meta.settings.geometry, surfaceY = planeSurface();
-    $("envelope-control").hidden=!terrain || !app.live;
+    if (!motionOnly) $("envelope-control").hidden = !terrain || !app.live;
     ctx.fillStyle = underground ? "#152019" : "#15241a";
     ctx.fillRect(0, 0, width, height);
     let p, fits, point, orientation;
@@ -942,32 +994,25 @@ function drawMap() {
         point = a => p.point(a[u], a[v]);
         fits = a => Math.floor((a[n] - o[n]) / q + 1e-9) === slice.plane_q;
         orientation = slice.axis === "z" ? "X east / Y up" : slice.axis === "x" ? "Z north / Y up" : "X east / Z north";
-        rect(ctx, p, bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1], "#736550");
-        for (const [row, cells] of slice.rows.entries()) {
-            let start = 0;
-            while (start < cells.length) {
-                let end = start + 1;
-                while (cells[end] === cells[start]) end++;
-                if (cells[start] !== "0") {
-                    const shade = cells[start] === "2" ? "#676869" : "#987657";
-                    rect(ctx, p, bounds[0] + start * q, bounds[1] + row * q, (end - start) * q, q, shade);
-                }
-                start = end;
-            }
+        if (nursery) drawNurseryTerrain(ctx, p, bounds, slice, width, height);
+        else drawUnderground(ctx, p, bounds, slice);
+        if (nursery && liveView.state.provisioned_nursery) for (const depot of display?.colonies ?? app.meta.colonies) {
+            if (!fits(depot.position_m)) continue;
+            const [x, y] = point(depot.position_m);
+            const store = depot.stock_ug.reduce((total, count) => total + count, 0);
+            circle(ctx, x, y, 3, store ? "#f1ce86" : "#575247", "#eedbb1");
+            ctx.font = '11px "Cascadia Mono", monospace';
+            ctx.fillStyle = "#f5e4c4";
+            ctx.fillText(tr("Nest food · {mass}", {mass: withUnit(store, "µg")}), x + 7, y + 15);
         }
-        paintSoilEdges(ctx,slice,p,bounds);
-        for (const [row, cells] of (slice.unloaded_body_clear || []).entries()) {
-            for (let i = 0; i < cells.length; i++) {
-                if (cells[i] === "1") circle(ctx, ...p.point(bounds[0] + i*q, bounds[1] + row*q),
-                    Math.min(2.5, p.unit*q/5), "#91be80");
-            }
+        if (!motionOnly) {
+            put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
+                (app.geometry.cropped ? " · " + tr("Local section of the terrain") : ""));
+            legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["egg", "Eggs"],
+                ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["entrance", "Recent movement points"],
+                ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : []),
+                ...(slice.unloaded_body_clear ? [["entrance", "Unloaded body fits here"]] : [])]);
         }
-        put("space-caption", tr("Quantized material section · {count} committed edits", {count: app.geometry.revision}) +
-            (app.geometry.cropped ? " · " + tr("Local section of the terrain") : ""));
-        legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["void", "Void"], ["queen", "Queen"], ["egg", "Eggs"],
-            ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["entrance", "Recent movement points"],
-            ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : []),
-            ...(slice.unloaded_body_clear ? [["entrance", "Unloaded body fits here"]] : [])]);
     } else {
         const [lo, hi] = app.meta.bounds_m;
         const points = [...state.sources.map(s => s.position_m), ...app.meta.colonies.map(c => c.position_m)];
@@ -1024,23 +1069,26 @@ function drawMap() {
             ctx.fillStyle = "#d3e6d5";
             ctx.fillText(tr("Source #{id}", {id: s.id}) + (inStock ? "" : " · " + tr("depleted")), x + 8, y - 5);
         }
-        put("space-caption", tr("Surface positions at this cut") + " · " +
-            tr(openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
-        legend("map-legend", [["entrance", "Opening / surface nest"], ["food", "Source"], ["worker", "Worker"],
-            ["entrance", "Recent movement points"], ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : [])]);
+        if (!motionOnly) {
+            put("space-caption", tr("Surface positions at this cut") + " · " +
+                tr(openings.length ? "terrain openings from geometry" : "flat grid where recorded"));
+            legend("map-legend", [["entrance", "Opening / surface nest"], ["food", "Source"], ["worker", "Worker"],
+                ["entrance", "Recent movement points"], ...(app.path.length ? [["trace", "Selected individual's recorded positions"]] : [])]);
+        }
     }
     const motion = app.recentMotion;
-    const trail = (motion?.points || []).filter(move => fits(move.position_m));
+    const trail = (motion?.points || []).filter(move => (!display || move.time_ms <= time) && fits(move.position_m));
     for (const move of trail) circle(ctx, ...point(move.position_m), 1.8, "#93d4b07a");
     for (const move of app.path) {
-        if (fits(move.position_m)) circle(ctx, ...point(move.position_m), 2, "#ad9ce18a");
+        if ((!display || move.time_ms <= time) && fits(move.position_m)) circle(ctx, ...point(move.position_m), 2, "#ad9ce18a");
     }
     const segment = app.restReplay;
     const visible = state.ants.filter(a => fits(motorPose(a)));
     app.visible = visible;
-    drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point, p.unit, terrain);
+    drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point, p.unit, terrain, time);
     if (segment) drawRestSegment(ctx, point, fits, segment);
-    const plan = app.live && visible.find(a => a.id === app.selected)?.motion_plan;
+    const selected = app.live && visible.find(a => a.id === app.selected);
+    const plan = selected && displayedMotion(selected);
     if (plan && fits(plan.from_m) && fits(plan.to_m)) {
         ctx.save();
         ctx.strokeStyle = "#e4c791";
@@ -1051,7 +1099,20 @@ function drawMap() {
         ctx.stroke();
         ctx.restore();
     }
-    if (app.live) drawLiveActions(ctx, point, fits);
+    if (app.live) drawLiveActions(ctx, point, fits, time);
+    if (!motionOnly) describeMap(visible, underground, state, trail, motion, segment, plan, display);
+    if (app.selectedFact && fits(app.selectedFact.position_m)) {
+        const [x, y] = point(app.selectedFact.position_m);
+        ctx.strokeStyle = "#ffe1a3";
+        ctx.strokeRect(x - 7, y - 7, 14, 14);
+    }
+    scaleMark(ctx, width, height, p, orientation);
+    ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
+    ctx.fillStyle = "#a9b6a7";
+    ctx.fillText(tr("{count} living", {count: state.ants.length}), 13, height - 13);
+}
+
+function describeMap(visible, underground, state, trail, motion, segment, plan, display) {
     const shared = app.hits.filter(hit => hit.ants.length > 1);
     const largest = shared.reduce((best, item) => !best || item.ants.length > best.ants.length ? item : best, null);
     app.visibleSummary = largest;
@@ -1072,19 +1133,11 @@ function drawMap() {
     else if (!app.live && motion && !motion.points.length) notes.push(tr("No movement recorded in the last 5 simulated minutes."));
     if (motion?.truncated) notes.push(tr("Recent movement display capped at 144 points."));
     if (segment) notes.push(tr("Recorded movement segment shown in slow motion. The heading is the direction of travel."));
-    if (app.live && liveView.state?.seeded_nursery) notes.push(tr("Moving markers follow the validated Core segments at the current simulation time."));
+    if (display) notes.push(tr("Live motion follows Core segments with a short display delay."));
+    else if (app.live && liveView.state?.seeded_nursery) notes.push(tr("Moving markers follow the validated Core segments at the current simulation time."));
     if (plan) notes.push(tr("Selected worker · open Core segment · {percent}% through translation", {percent: Math.round(100*plan.progress)}));
     put("map-detail", notes.join(" "));
     renderLocation();
-    if (app.selectedFact && fits(app.selectedFact.position_m)) {
-        const [x, y] = point(app.selectedFact.position_m);
-        ctx.strokeStyle = "#ffe1a3";
-        ctx.strokeRect(x - 7, y - 7, 14, 14);
-    }
-    scaleMark(ctx, width, height, p, orientation);
-    ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';
-    ctx.fillStyle = "#a9b6a7";
-    ctx.fillText(tr("{count} living", {count: state.ants.length}), 13, height - 13);
 }
 
 function graph(id, tracks, end, stamp, legendId = null, origin = 0) {

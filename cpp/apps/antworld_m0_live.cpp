@@ -248,12 +248,12 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v6");
+                message("OK", "antworld.m0.live.v7");
             } else if (command=="NEW_NURSERY") {
-                const auto id=number(request), seed=number(request), traffic=number(request);
+                const auto id=number(request), seed=number(request), treatment=number(request);
                 end(request);
-                require(id && traffic<=1,"invalid nursery options");
-                auto scene=traffic_observer::nursery(id,seed,traffic!=0,limits);
+                require(id && treatment<=static_cast<unsigned>(traffic_observer::Nursery::NoFood),"invalid nursery options");
+                auto scene=traffic_observer::nursery(id,seed,static_cast<traffic_observer::Nursery>(treatment),limits);
                 auto frame=scene.checkpoint_frame();
                 world.emplace(std::move(scene));
                 search.reset(); r0_history.reset(); r0_assay=false;

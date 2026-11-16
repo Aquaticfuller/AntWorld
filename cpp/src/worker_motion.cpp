@@ -136,6 +136,35 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_contact_step(co
     return best;
 }
 
+std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(const AntState& ant) const {
+    const auto& s=*state_;
+    if (!s.geometry || !s.surface || !integrated_care(s) || ant.position.y>=s.surface->config.origin_m.y) return {};
+    const auto& g=s.geometry->config;
+    const auto snap=[&](double v,double origin) { return origin+std::round((v-origin)/g.quantum_m)*g.quantum_m; };
+    const auto origin=quantized({snap(ant.position.x,g.origin_m.x),ant.position.y,snap(ant.position.z,g.origin_m.z)},g);
+    if (!origin) return {};
+    const auto reach=s.care_profile->perception_radius_m;
+    const auto half=body_half(ant.id);
+    for (const auto ref:query_neighborhood({s.world,ant.id},reach).ants) {
+        const auto other=*query_ant(ref);
+        const auto link=s.connectors.find(other.id);
+        const auto forage=s.foragers.find(other.id);
+        if (other.colony!=ant.colony || other.stage!=LifeStage::Adult || !other.carried_food.total_ug() ||
+            link==s.connectors.end() || !link->second.returning || !link->second.cursor ||
+            forage==s.foragers.end() || !forage->second.enabled || forage->second.mode!=BehaviorMode::Rest ||
+            !spatially_clear(ant.position,other.position)) continue;
+        const auto next=link->second.points[link->second.cursor-1];
+        const auto width=(half+body_half(other.id))*g.quantum_m;
+        if (!sweeps_body(other.position,next,ant.position,ant.position,width)) continue;
+        // The worker can vacate a nearby blocked path. Active work keeps its lease.
+        for (int length=1;length<=4;++length) for (const auto direction:horizontal_steps) {
+            const auto to=physical({origin->x+direction.x*length,origin->y,origin->z+direction.z*length},g);
+            if (!sweeps_body(other.position,next,to,to,width) && clear_worker_site(ant,to)) return std::pair{to,other.id};
+        }
+    }
+    return {};
+}
+
 bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool approach_depot) const {
     const auto& s=*state_;
     const auto& g=s.geometry->config;

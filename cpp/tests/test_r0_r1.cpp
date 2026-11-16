@@ -195,6 +195,49 @@ void nursery_restore(const std::filesystem::path& database) {
     require(observed,"no purposeful local contact approach was observed");
     wp6b::check_ledgers(world);
 }
+
+void provisioned_nursery(const std::filesystem::path& database) {
+    using traffic_observer::Nursery;
+    const auto limits=closure::limits();
+    auto resumed=traffic_observer::nursery(91,41,Nursery::Provisioned,limits);
+    const auto id=resumed.summary().world;
+    std::optional<WorkerMotion> yielding;
+    AntRef yielding_worker;
+    while (const auto time=resumed.next_scheduled_time()) {
+        if (time->milliseconds>300'000 || yielding) break;
+        resumed.advance_to(*time);
+        for (const auto& ant:resumed.ant_states()) {
+            const AntRef who{id,ant.id};
+            const auto action=resumed.query_care(who);
+            if (action && action->act==CareAct::YieldToCarrier && action->target.value) {
+                yielding=resumed.query_worker_motion(who);
+                if (yielding) { yielding_worker=who; break; }
+            }
+        }
+    }
+    require(yielding.has_value(),"the resident did not yield to a blocked carrier");
+    storage::Store store(database,limits,storage::StoreFormat::Segmented);
+    store.save(resumed);
+    auto loaded=store.load(id);
+    require(loaded.world.query_worker_motion(yielding_worker)==yielding &&
+            loaded.world.checkpoint_frame()==resumed.checkpoint_frame(),"save lost the yielding segment");
+    resumed.advance_to({300'000}); loaded.world.advance_to({300'000});
+    require(resumed.checkpoint_frame()==loaded.world.checkpoint_frame(),"the restored delivery differs");
+    bool delivered=false;
+    for (const auto& event:resumed.committed_events())
+        delivered=delivered || (event.kind==FactKind::FoodDelivered && event.transferred.total_ug()>0);
+    require(delivered,"the carrier never reached the provisioned depot");
+    wp6b::check_ledgers(loaded.world);
+
+    auto watched=traffic_observer::nursery(91,17,Nursery::Provisioned,limits);
+    watched.advance_to({2'700'000});
+    const EventId cursor{watched.summary().committed_events};
+    watched.advance_to({3'600'000});
+    const auto late=watched.events_after(cursor,static_cast<std::size_t>(watched.summary().committed_events-cursor.value));
+    require(std::any_of(late.begin(),late.end(),[](const WorldEvent& f) { return f.kind==FactKind::Moved; }),
+            "the preview stopped moving after its initial nursery visits");
+    wp6b::check_ledgers(watched);
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -206,6 +249,7 @@ int main(int argc,char** argv) try {
     morphology();
     adult_traffic();
     nursery_restore(root/"nursery.sqlite");
+    provisioned_nursery(root/"provisioned.sqlite");
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

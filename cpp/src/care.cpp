@@ -555,7 +555,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         else if (c.act==CareAct::CloseWorkerContact && (b.stage!=LifeStage::Adult || b.caste!=Caste::Worker)) outcome=Outcome::InvalidStage;
         else if ((b.colony!=a.colony && (!foreign_assay_stage(s,b.stage) || !foreign_assay_act(c.act))) ||
                  !spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position) ||
-                 !within_distance(a.position,b.position,(c.act==CareAct::ApproachBrood || c.act==CareAct::ApproachNestmate)?cfg.perception_radius_m:s.config.contact_distance_m,
+                 !within_distance(a.position,b.position,(c.act==CareAct::ApproachBrood || c.act==CareAct::ApproachNestmate ||
+                                  c.act==CareAct::YieldToCarrier)?cfg.perception_radius_m:s.config.contact_distance_m,
                                   s.config.continuous_spatial_motion)) outcome=Outcome::OutOfReach;
         else if (handling && s.care_locks.contains(c.target) && s.care_locks.at(c.target)!=a.id) outcome=Outcome::DuplicateAction;
         else if (s.config.continuous_spatial_motion && c.carrying_brood &&
@@ -698,7 +699,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         }
         return;
     }
-    if (c.act==CareAct::NestReposition || local_work) {
+    if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || local_work) {
         interrupt_care(tx,a.id,outcome,true);
         change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
         return;

@@ -47,7 +47,7 @@ OUTCOMES = ("Success", "Partial", "Missing entity", "Dead actor", "Invalid stage
 ACTS = ("Inactive", "Walk", "Approach brood", "Inspect brood", "Arrange brood", "Clean brood", "Transport brood",
         "Feed brood", "Close worker contact", "Collect food", "Deliver food", "Ingest food", "Transfer nutrition",
         "Excavate", "Handle soil", "Revisit brood site", "Pick up brood", "Place brood", "Return to care shelter",
-        "Move to a resting site", "Approach the depot", "Approach a nestmate")
+        "Move to a resting site", "Approach the depot", "Approach a nestmate", "Yield to a food carrier")
 PHASES = ("Opportunity", "Selected", "Started", "Completed", "Interrupted")
 RELATED = {21, 35, 43, 46, 48, 50, 52, 55, 56}
 FACETS = {
@@ -188,7 +188,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34)}
+MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
@@ -242,7 +242,7 @@ def checkpoint(raw, *, verify_hash=True):
                           "cue_minimum_carbs_ug", "water_sip_ug", "cue_response_ppm", "first_ration_ppm"),
                          r.unpack(Struct("<2d4Q2I"))))
         flags["suppress_foundress_hatch_cue"] = outer[1] in (26, 28, 30)
-        if outer[0] in (23, 24, 25, 26, 27):
+        if outer[0] >= 23:
             flags["brood_space"] = True
             flags["portable_care_motion"] = outer[1] >= 29
         if outer[1] >= 32:
@@ -255,9 +255,12 @@ def checkpoint(raw, *, verify_hash=True):
             motor, score = r.flag(), r.take(1)[0]
             require(score <= 3 and (motor or score), "Invalid nest dynamics treatment")
             flags["nest_dynamics"] = dict(worker_motor=motor, excavation=score)
-        if outer[1] == 34:
+        if outer[1] >= 34:
             require(motor, "Body traffic requires the worker motor")
             flags["local_traffic"] = True
+        if outer[1] == 35:
+            flags["yield_to_loaded"], flags["local_pantry_checks"] = r.flag(), r.flag()
+            require(flags["yield_to_loaded"] or flags["local_pantry_checks"], "Invalid nursery work or traffic policy")
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.
@@ -307,12 +310,12 @@ def checkpoint(raw, *, verify_hash=True):
         energy, water, protein, oxidized, lost, dissipated, *_ = r.unpack(Struct("<11Q"))
         updated, absorption, progress, _, _ = r.unpack(Struct("<5Q"))
         program, death = r.unpack(Struct("<2B"))
-        if flags and flags["activity_cost"]:
-            r.take(8)
+        active_work = r.uint() if flags and flags["activity_cost"] else None
         require(identifier in ants, "Physiology snapshot references an unknown ant")
         ants[identifier].update(mother=str(mother) if mother else None, energy_nj=energy, hydration_ug=water,
                                  tissue_protein_ug=protein, crop_ug=crop, program=program, death_code=death,
                                  updated_ms=updated, next_absorption_ms=absorption, stage_progress_ms=progress,
+                                 active_work=str(active_work) if active_work is not None else None,
                                  oxidized_carbs_ug=oxidized, lost_water_ug=lost, dissipated_nj=dissipated)
     geometry, edits, ledger, soil_carriers = None, [], None, set()
     if r.flag():

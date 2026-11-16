@@ -141,12 +141,20 @@ void WorldRuntime::resolve_autonomy_wakes(
             program_time.milliseconds;
     const bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
                         p.hydration_ug < p.config.hydration_capacity_ug / 4;
+    const auto giving_way = yield_to_loaded(s) && ant.caste==Caste::Worker && stationary && can_switch &&
+        !care_owned(s,ant.id) && !active_expenditure(p) ? carrier_yield_step(ant) : std::nullopt;
     if (integrated_care(s) && care_owned(s,ant.id)) {
       // The ordinary wake stays alive while the finite care lease owns motion.
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (ant.caste==Caste::Queen) {
       choice.care=can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (giving_way) {
+      choice.behavior=IndividualBehavior::Rest;
+      choice.resting_site=giving_way->first;
+      choice.contact_target=giving_way->second;
+      choice.transit=CareAct::YieldToCarrier;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (worker_motor(s) && !a.decisions && p.mother.value &&
                p.behavior==IndividualBehavior::Paused && !at_depot &&
@@ -197,6 +205,10 @@ void WorldRuntime::resolve_autonomy_wakes(
                s.surface->locate(colony.nest_position)) &&
           spatially_clear(ant.position, colony.nest_position);
       const auto stock = nest_contact ? colony.nest_food : FoodMass{};
+      // ENGINEERING_FIXTURE. A worker already in contact with the depot can
+      // assess this supply. No estimate from a different part of the nest.
+      const bool low_pantry = s.ecological && s.ecological->local_pantry_checks && s.surface && nest_contact &&
+          stock.carbs_ug < p.config.transfer_limit_ug;
       const auto available = sum(p.crop, stock);
       for (const auto other : sample.ants) {
         const auto q = query_physiology(other);
@@ -257,7 +269,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         soil=s.excavators.at(ant.id).digs!=0;
       if (s.long_term && s.long_term->demand_feedback) {
         const auto self=signaled_need(p,ant.stage);
-        forage=forage && (unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
+        forage=forage && (low_pantry || unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
         soil=soil && !urgent && local_space_demand({s.world,ant.id},sample.ants.size());
       }
       if (urgent &&
@@ -323,7 +335,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
       if (worker_motor(s) && !at_depot && !choice.care && stationary &&
-          ((urgent && !nest_contact) || (!urgent && unmet && config.forage_weight &&
+          ((urgent && !nest_contact) || (!urgent && (unmet || low_pantry) && config.forage_weight &&
             s.surface && (p.crop.total_ug()<p.config.crop_capacity_ug/2 ||
                           choice.behavior==IndividualBehavior::Rest)))) {
         choice.resting_site=worker_depot_step(ant);
