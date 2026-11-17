@@ -1,0 +1,7 @@
+{
+  "source": "a2db1a29e52545ab8a0114baaa153d0baa45514d",
+  "cpp_tree": "a768bd2d31b120b4401dfedad097d68375ef98ab",
+  "binary_sha256": "8872a78f864d107ca03ee4cd60f3c33d45946bf8e8a1c7ad9b6f9c0187e179f6",
+  "platform": "Windows AMD64",
+  "compiler": "LLVM-MinGW Clang 23.1.5 Release"
+}

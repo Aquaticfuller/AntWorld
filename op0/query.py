@@ -208,7 +208,7 @@ class ReadAPI:
     def rest_segment(self, db, meta, options):
         end = self.event(db, meta, options)
         action = end.get("action", {})
-        if (meta["settings"]["physics"] not in (32, 33) or action.get("act") != "Move to a resting site" or
+        if (not (meta["settings"]["ecological"] or {}).get("local_nest_activity") or action.get("act") != "Move to a resting site" or
                 action.get("phase") != "Completed" or end["outcome"] != "Success"):
             return None
         begin = action["began_ms"]

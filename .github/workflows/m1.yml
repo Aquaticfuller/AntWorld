@@ -1,0 +1,62 @@
+name: M1 Observatory
+on:
+  push:
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "experiments/m1/**", "research/m1/**", ".github/workflows/m1.yml"]
+  pull_request:
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "experiments/m1/**", "research/m1/**", ".github/workflows/m1.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+      - name: Build the native Core observer application
+        run: |
+          cmake -S cpp -B build/m1 -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          cmake --build build/m1 --config Release --target antworld_m0_live --parallel 2
+      - name: Check bounded geometry and native SQLite continuation
+        shell: pwsh
+        run: |
+          $exe = @('build/m1/Release/antworld_m0_live.exe', 'build/m1/antworld_m0_live') |
+            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $exe) { throw 'Native live executable was not built' }
+          $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $exe).Path
+          $env:M0_LIVE_TEST_ROOT = $env:RUNNER_TEMP
+          python -B -m unittest op0.tests.test_nest_volume `
+            op0.tests.test_live.LiveTests.test_observatory_presets_preserve_native_geometry_and_resources `
+            op0.tests.test_live.LiveTests.test_reachable_berth_version_and_readonly_history_survive_restore -v
+      - name: Replay physics 36 and verify canonical archives
+        shell: pwsh
+        run: |
+          $exe = @('build/m1/Release/antworld_m0_live.exe', 'build/m1/antworld_m0_live') |
+            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          $receipt = Join-Path $env:RUNNER_TEMP 'm1-legacy-native.jsonl'
+          python -B -m tools.run_m1_habitat archive36 --core $exe > $receipt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_m1_habitat --scratch $env:RUNNER_TEMP --rerun $receipt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_m1_habitat --scratch $env:RUNNER_TEMP
+      - name: Operate the live 3D view and archived controls in Chrome
+        shell: pwsh
+        run: |
+          $exe = @('build/m1/Release/antworld_m0_live.exe', 'build/m1/antworld_m0_live') |
+            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          $chrome = if ($IsWindows) { 'C:/Program Files/Google/Chrome/Application/chrome.exe' } else { (Get-Command google-chrome).Source }
+          $output = Join-Path $env:RUNNER_TEMP 'm1-browser-evidence'
+          python -B -m tools.test_m1_browser --core $exe --browser $chrome --scratch $env:RUNNER_TEMP --output $output
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.test_m1_browser --core $exe --browser $chrome --scratch $env:RUNNER_TEMP --output $output --mode m1-witnesses

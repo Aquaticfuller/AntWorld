@@ -260,14 +260,15 @@ class IndexBuilder:
         checksum, prefix = sha256(), sha256()
         previous, last, revision = 0, 0, 0
         scan = perf_counter()
-        motor = (self.tip["flags"] or {}).get("nest_dynamics", {}).get("worker_motor", False)
+        ecology = self.tip["flags"] or {}
+        motor = ecology.get("nest_dynamics", {}).get("worker_motor", False)
         for head, payload in records:
             ids, fact = decode_fact(payload)
             require(len(payload) == (210 if fact.observation else 159) and (ids[0] << 64) | ids[1] == self.identity
                     and fact.id == last + 1 and previous <= fact.time <= self.tip["time_ms"] and
                     revision < fact.revision <= self.tip["revision"], "Canonical sequence, world or time mismatch")
             if fact.observation and fact.observation[1] == 19:
-                require(self.tip["physics"] in (32, 33), "Rest relocation requires the R0 checkpoint contract")
+                require(ecology.get("local_nest_activity"), "Rest relocation requires the local nest activity contract")
             if fact.observation and fact.observation[1] == 20:
                 require(motor, "Depot approach requires the worker motor")
             if fact.kind == 4 and fact.aux:
