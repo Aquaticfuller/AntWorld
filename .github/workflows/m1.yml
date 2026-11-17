@@ -44,12 +44,38 @@ jobs:
         run: |
           $exe = @('build/m1/Release/antworld_m0_live.exe', 'build/m1/antworld_m0_live') |
             Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-          $receipt = Join-Path $env:RUNNER_TEMP 'm1-legacy-native.jsonl'
-          python -B -m tools.run_m1_habitat archive36 --core $exe > $receipt
+          $evidence = Join-Path $env:RUNNER_TEMP 'm1-platform'
+          $baseline = Join-Path $env:RUNNER_TEMP 'm1-reviewed-native'
+          New-Item -ItemType Directory -Path $evidence, $baseline | Out-Null
+          $reviewed = '36bbf99bd0cd28c992a6fa830dccfb9ff9e419a8'
+          git fetch --no-tags --depth=1 origin $reviewed
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python -B -m tools.verify_m1_habitat --scratch $env:RUNNER_TEMP --rerun $receipt
+          git archive -o "$baseline/core.zip" $reviewed cpp
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Expand-Archive -LiteralPath "$baseline/core.zip" -DestinationPath "$baseline/source"
+          cmake -S "$baseline/source/cpp" -B "$baseline/build" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build "$baseline/build" --config Release --target antworld_m0_live --parallel 2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $old = @("$baseline/build/Release/antworld_m0_live.exe", "$baseline/build/antworld_m0_live") |
+            Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          python -B -m tools.run_m1_habitat archive36 --core $old > "$evidence/reviewed.jsonl"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.run_m1_habitat archive36 --core $exe > "$evidence/m1.jsonl"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_m1_habitat --platform-report "$evidence/m1.jsonl" > "$evidence/windows-comparison.json"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-Content -LiteralPath "$evidence/windows-comparison.json"
+          python -B -m tools.verify_m1_habitat --reference "$evidence/reviewed.jsonl" --rerun "$evidence/m1.jsonl"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_m1_habitat --scratch $env:RUNNER_TEMP
+      - name: Keep the same-platform receipts and Windows comparison
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: m1-native-${{ matrix.os }}
+          path: ${{ runner.temp }}/m1-platform/
+          if-no-files-found: ignore
       - name: Operate the live 3D view and archived controls in Chrome
         shell: pwsh
         run: |

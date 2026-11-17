@@ -1,0 +1,244 @@
+{
+  "first_browser_view_ms": 302.4,
+  "intent": {
+    "horizon_days": 150,
+    "wall_budget_seconds": 180,
+    "sampling_delay_ms": 7500
+  },
+  "status": "COMPLETE",
+  "last_sample": {
+    "time_ms": 12968973845,
+    "cursor": "600180",
+    "error": null,
+    "geometryEdits": 9,
+    "meshRebuilds": 10,
+    "lastDrawMs": 0.30000007152557373
+  },
+  "samples": [
+    {
+      "time_ms": 125,
+      "cursor": "18",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.10000002384185791,
+      "elapsed_ms": 82,
+      "heap_bytes": 4516692
+    },
+    {
+      "time_ms": 643371996,
+      "cursor": "746",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 7591,
+      "heap_bytes": 1935060
+    },
+    {
+      "time_ms": 1282233632,
+      "cursor": "2159",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.40000009536743164,
+      "elapsed_ms": 15108,
+      "heap_bytes": 2035632
+    },
+    {
+      "time_ms": 1944407475,
+      "cursor": "4203",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.6000000238418579,
+      "elapsed_ms": 22621,
+      "heap_bytes": 1823636
+    },
+    {
+      "time_ms": 2581551099,
+      "cursor": "5567",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 30129,
+      "heap_bytes": 2075280
+    },
+    {
+      "time_ms": 3229001266,
+      "cursor": "6775",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 37641,
+      "heap_bytes": 1952976
+    },
+    {
+      "time_ms": 3896274894,
+      "cursor": "8049",
+      "error": null,
+      "geometryEdits": 0,
+      "meshRebuilds": 1,
+      "lastDrawMs": 0.7000000476837158,
+      "elapsed_ms": 45148,
+      "heap_bytes": 1816040
+    },
+    {
+      "time_ms": 4538750090,
+      "cursor": "34309",
+      "error": null,
+      "geometryEdits": 5,
+      "meshRebuilds": 6,
+      "lastDrawMs": 0.2999999523162842,
+      "elapsed_ms": 52660,
+      "heap_bytes": 2101544
+    },
+    {
+      "time_ms": 5177878754,
+      "cursor": "72555",
+      "error": null,
+      "geometryEdits": 5,
+      "meshRebuilds": 6,
+      "lastDrawMs": 0.5999999046325684,
+      "elapsed_ms": 60168,
+      "heap_bytes": 1898428
+    },
+    {
+      "time_ms": 5835364325,
+      "cursor": "109046",
+      "error": null,
+      "geometryEdits": 5,
+      "meshRebuilds": 6,
+      "lastDrawMs": 0.40000009536743164,
+      "elapsed_ms": 67683,
+      "heap_bytes": 2367636
+    },
+    {
+      "time_ms": 6476387118,
+      "cursor": "152841",
+      "error": null,
+      "geometryEdits": 7,
+      "meshRebuilds": 8,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 75195,
+      "heap_bytes": 1709096
+    },
+    {
+      "time_ms": 7125205637,
+      "cursor": "250789",
+      "error": null,
+      "geometryEdits": 7,
+      "meshRebuilds": 8,
+      "lastDrawMs": 0.19999992847442627,
+      "elapsed_ms": 82706,
+      "heap_bytes": 2505524
+    },
+    {
+      "time_ms": 7772991322,
+      "cursor": "484785",
+      "error": null,
+      "geometryEdits": 8,
+      "meshRebuilds": 9,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 90217,
+      "heap_bytes": 1724380
+    },
+    {
+      "time_ms": 8420721642,
+      "cursor": "537111",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.40000009536743164,
+      "elapsed_ms": 97728,
+      "heap_bytes": 1893496
+    },
+    {
+      "time_ms": 9071372878,
+      "cursor": "546089",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.3999999761581421,
+      "elapsed_ms": 105231,
+      "heap_bytes": 2178648
+    },
+    {
+      "time_ms": 9731148196,
+      "cursor": "555167",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.30000007152557373,
+      "elapsed_ms": 112743,
+      "heap_bytes": 2381676
+    },
+    {
+      "time_ms": 10378098289,
+      "cursor": "564335",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.20000004768371582,
+      "elapsed_ms": 120261,
+      "heap_bytes": 2607896
+    },
+    {
+      "time_ms": 11021449312,
+      "cursor": "573232",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.20000004768371582,
+      "elapsed_ms": 127768,
+      "heap_bytes": 2007116
+    },
+    {
+      "time_ms": 11674062536,
+      "cursor": "582259",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.20000004768371582,
+      "elapsed_ms": 135275,
+      "heap_bytes": 2222776
+    },
+    {
+      "time_ms": 12310248261,
+      "cursor": "591028",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.2999999523162842,
+      "elapsed_ms": 142780,
+      "heap_bytes": 2421132
+    },
+    {
+      "time_ms": 12968973845,
+      "cursor": "600180",
+      "error": null,
+      "geometryEdits": 9,
+      "meshRebuilds": 10,
+      "lastDrawMs": 0.30000007152557373,
+      "elapsed_ms": 150295,
+      "heap_bytes": 2548228
+    }
+  ],
+  "browser": "Chrome/157.0.8103.79",
+  "history_storage": [
+    600412,
+    3264,
+    9046617,
+    201326592
+  ],
+  "memory_bytes": [
+    21303296,
+    28127232,
+    1015832
+  ],
+  "native_process_cpu_seconds": 16.203125,
+  "host_process_cpu_seconds": 13.71875,
+  "persisted_save_bytes": 0
+}

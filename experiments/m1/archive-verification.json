@@ -1,0 +1,37 @@
+{
+  "physics36_byte_exact": 16,
+  "paired": 32,
+  "extended": 4,
+  "witnesses": [
+    {
+      "archive": "m1-2-open-absent.zip",
+      "sha256": "18a8f26a757ba5d7e5f7af711dc0c9016c8e4b81e01d1bb78d83d46d89115376",
+      "cursor": 71615,
+      "world_id": "00000000-0000-028d-0000-0000000007d4",
+      "geometry_revision": 12,
+      "volume_bytes": 163840,
+      "source_check": "VERIFIED_PUBLISHED",
+      "indexing": {
+        "scan_ms": 1390.88,
+        "index_ms": 150.36,
+        "cache_bytes": 6676480,
+        "total_import_ms": 1585.64
+      }
+    },
+    {
+      "archive": "m1-2-plugged-finite-day90.zip",
+      "sha256": "eae0f75434efd7a77fbc58979dc559a5341f2c06865ae0f7065747ca7dcbe115",
+      "cursor": 266265,
+      "world_id": "00000000-0000-028d-0000-0000000007d3",
+      "geometry_revision": 32,
+      "volume_bytes": 163840,
+      "source_check": "VERIFIED_PUBLISHED",
+      "indexing": {
+        "scan_ms": 11615.51,
+        "index_ms": 1982.81,
+        "cache_bytes": 25812992,
+        "total_import_ms": 13681.34
+      }
+    }
+  ]
+}

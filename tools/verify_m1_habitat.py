@@ -50,6 +50,20 @@ def verify_physics36(reference, rerun):
     return len(a)
 
 
+def cross_platform_receipt(reference, rerun):
+    before, after = (scenario_rows(path, "archive36") for path in (reference, rerun))
+    fields = ("canonical_sha256", "frame_sha256", "cursor", "live", "queen_death", "delivered_ug", "soil_edits")
+    differences = []
+    for a, b in zip(before, after):
+        require(a["status"] == b["status"] == "COMPLETE", "Platform comparison requires complete runs")
+        cuts = [row["cuts"][0] for row in (a, b)]
+        changes = {field: [cuts[0][field], cuts[1][field]] for field in fields if cuts[0][field] != cuts[1][field]}
+        if changes:
+            differences.append(dict(case=a["inputs"]["case"], changes=changes))
+    return dict(reference=before[0]["identity"], compared=after[0]["identity"], cases=len(before),
+                status="BYTE_EXACT" if not differences else "PLATFORM_DIFFERENCES", differences=differences)
+
+
 def verify_witness(catalog, path, receipt):
     digest = file_hash(path)
     require(digest == receipt["witness"]["sha256"], "Published M1 archive hash mismatch")
@@ -83,9 +97,14 @@ def main():
     parser.add_argument("--data", type=Path, default=ROOT / "experiments/m1")
     parser.add_argument("--scratch", type=Path, default=ROOT / "out")
     parser.add_argument("--rerun", type=Path)
+    parser.add_argument("--reference", type=Path, help="Reviewed native reproduction on the same platform and toolchain")
+    parser.add_argument("--platform-report", type=Path, help="Compare a platform receipt with published Windows data")
     args = parser.parse_args()
     root = args.data
-    checked = verify_physics36(root / "baseline-native.jsonl", args.rerun or root / "baseline-final.jsonl")
+    if args.platform_report:
+        print(json.dumps(cross_platform_receipt(root / "baseline-native.jsonl", args.platform_report), indent=2))
+        return
+    checked = verify_physics36(args.reference or root / "baseline-native.jsonl", args.rerun or root / "baseline-final.jsonl")
     if args.rerun:
         print(json.dumps({"physics36_byte_exact": checked}))
         return

@@ -1,0 +1,168 @@
+{
+  "first_browser_view_ms": 396.07,
+  "first_nest_view_ms": 338.52,
+  "pause_ui_ms": 85.11,
+  "egg": {
+    "id": "00000000-0000-028d-507f-63177bcae3e3",
+    "time": 345600000,
+    "event": {
+      "id": "107",
+      "time_ms": 345600000,
+      "kind": "AntBorn",
+      "actor": "6",
+      "related": "2",
+      "source": "3",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        -0.00475,
+        -0.004,
+        -0.00075
+      ],
+      "stage": "Egg",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        20,
+        65,
+        0
+      ],
+      "payload": "2",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    "actor": "2"
+  },
+  "exit": {
+    "id": "00000000-0000-028d-507f-63177bcae3e3",
+    "time": 3995461319,
+    "event": {
+      "id": "8344",
+      "time_ms": 3995461319,
+      "kind": "Moved",
+      "actor": "16",
+      "related": null,
+      "source": "3488",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "1",
+      "auxiliary": "429496729600",
+      "evidence": "COMMITTED_FACT",
+      "motion": {
+        "begins_ms": 3995461219,
+        "translates_ms": 3995461219,
+        "duration_ms": 100,
+        "turn_ms": 0,
+        "ends_ms": 3995461319
+      }
+    },
+    "actor": "16"
+  },
+  "resume_ui_ms": 137.11,
+  "frame_sample": {
+    "frames": 73,
+    "elapsed_ms": 1200.9000000000015,
+    "draw_ms": 0.5,
+    "mesh_ms": 11.700000047683716,
+    "faces": 29,
+    "occupancy_bytes": 163840
+  },
+  "delivery": {
+    "id": "00000000-0000-028d-507f-63177bcae3e3",
+    "time": 3995541863,
+    "event": {
+      "id": "8484",
+      "time_ms": 3995541863,
+      "kind": "FoodDelivered",
+      "actor": "16",
+      "related": null,
+      "source": "3528",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0,
+        -0.004,
+        0
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        1333,
+        667,
+        2000,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    "actor": "16"
+  },
+  "dig": {
+    "id": "00000000-0000-028d-651c-cd16f3559546",
+    "time": 3996721011,
+    "event": {
+      "id": "8382",
+      "time_ms": 3996721011,
+      "kind": "SoilExcavated",
+      "actor": "16",
+      "related": null,
+      "source": "3480",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0,
+        -0.0015,
+        0
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "32",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT",
+      "parcel": "32",
+      "geometry_edits": [
+        {
+          "edit": 1,
+          "source": 3480,
+          "event": 8382,
+          "actor": "16",
+          "parcel": 32,
+          "kind": 0,
+          "time_ms": 3996721011,
+          "box_q": [
+            -2,
+            -1,
+            -2,
+            2,
+            0,
+            2
+          ],
+          "volume_q3": 16
+        }
+      ]
+    },
+    "actor": "16"
+  },
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS"
+}

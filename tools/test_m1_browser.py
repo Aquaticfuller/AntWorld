@@ -1,17 +1,20 @@
 """Run the observatory's real Chromium test with a private loopback Core session."""
 
 from argparse import ArgumentParser
+import json
 import os
 from pathlib import Path
 from subprocess import run
 from tempfile import TemporaryDirectory
 from threading import Thread
+from time import process_time
 
 from op0.cli import M1_DEMOS
 from op0.index import Catalog
 from op0.live import LiveSession, ROOT, core_path
 from op0.query import ReadAPI
 from op0.server import bind
+from tools.run_m1_habitat import cpu_seconds
 
 
 def main():
@@ -21,7 +24,7 @@ def main():
     parser.add_argument("--scratch", type=Path, default=ROOT / "out")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--node", default="node")
-    parser.add_argument("--mode", default="m1", choices=("m1", "live", "habitat", "nursery", "ecology", "m1-witnesses"))
+    parser.add_argument("--mode", default="m1", choices=("m1", "live", "habitat", "nursery", "ecology", "m1-witnesses", "m1-soak"))
     args = parser.parse_args()
     args.scratch.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=args.scratch, prefix="m1-browser-") as scratch:
@@ -36,11 +39,23 @@ def main():
         with LiveSession(args.core, work / "saves") as live, bind(app, 0, None if args.mode == "m1-witnesses" else live) as server:
             thread = Thread(target=server.serve_forever, daemon=True)
             thread.start()
+            started = process_time()
             try:
                 run([args.node, str(ROOT / "op0/tests/browser_smoke.mjs"), str(args.browser.resolve()),
                      f"http://127.0.0.1:{server.server_port}", str(args.output.resolve()), args.mode],
                     cwd=ROOT, env=os.environ | {"TMPDIR": str(work), "TEMP": str(work), "TMP": str(work)},
                     check=True, timeout=360)
+                if args.mode == "m1-soak":
+                    core = live.worker
+                    with live.lock:
+                        sample = dict(history_storage=list(map(int, core.call("HISTORY_STORAGE").split())),
+                                      memory_bytes=list(map(int, core.call("MEMORY").split())),
+                                      native_process_cpu_seconds=cpu_seconds(core.process.pid),
+                                      host_process_cpu_seconds=round(process_time() - started, 6),
+                                      persisted_save_bytes=sum(p.stat().st_size for p in live.saves.glob("*.sqlite")))
+                    path = args.output / "m1-soak-receipt.json"
+                    report = json.loads(path.read_bytes()) | sample
+                    path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
             finally:
                 server.shutdown()
                 thread.join()

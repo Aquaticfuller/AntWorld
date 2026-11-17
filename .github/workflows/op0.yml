@@ -1,9 +1,9 @@
 name: OP0 Observation Preview
 on:
   push:
-    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/m1/witnesses/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
   pull_request:
-    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
+    paths: ["op0/**", "experiments/m0/portable-demo/**", "experiments/m1/witnesses/**", "experiments/r0/witnesses/**", "experiments/r0_r1/witnesses/**", "tools/start_op0.ps1", "tools/start_m0.cmd", "tools/check_repository.py", ".github/workflows/op0.yml"]
   workflow_dispatch:
 
 permissions:
@@ -26,6 +26,7 @@ jobs:
             tools/start_op0.ps1
             tools/start_m0.cmd
             experiments/m0/portable-demo
+            experiments/m1/witnesses
             experiments/r0/witnesses
             experiments/r0_r1/witnesses
             experiments/s6_4_founding_cohort_release/correction

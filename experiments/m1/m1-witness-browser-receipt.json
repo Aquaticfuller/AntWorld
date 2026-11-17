@@ -1,0 +1,18 @@
+{
+  "shell_paint_ms": 548,
+  "world_ready_ms_after_navigation": 7942.600000023842,
+  "first_browser_view_ms": 8022.93,
+  "shallow_plug": {
+    "id": "00000000-0000-028d-0000-0000000007d3",
+    "facts": 266265,
+    "excavation": "8382"
+  },
+  "absent_supply": {
+    "id": "00000000-0000-028d-0000-0000000007d4",
+    "facts": 71615,
+    "death": "62119",
+    "cause": "Energy depleted"
+  },
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS"
+}

@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(["nursery", "ecology", "habitat", "m1", "m1-witnesses"].includes(mode) ?
+    ...(["nursery", "ecology", "habitat", "m1", "m1-witnesses", "m1-soak"].includes(mode) ?
         ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
@@ -645,6 +645,32 @@ async function observatoryWitnesses() {
     console.log(JSON.stringify(result));
 }
 
+async function observatorySoak() {
+    await click('#observatory-presets [data-preset="open"]');
+    await wait(() => evaluate("nestView.volume && !liveView.busy"), "Open the bounded browser soak");
+    const started = clock(), samples = [];
+    await select("live-rate", "86400");
+    await wait(() => evaluate("liveView.state?.rate === 86400 && !liveView.busy"), "Accelerate the live clock");
+    let snapshot;
+    do {
+        snapshot = await evaluate(`({time_ms:liveView.state.time_ms, cursor:liveView.state.cursor, error:liveView.state.error,
+            geometryEdits:liveView.state.terrain.revision, meshRebuilds:nestView.built, lastDrawMs:nestView.lastDrawMs})`);
+        samples.push({...snapshot, elapsed_ms: Math.round(clock() - started), heap_bytes: (await send("Runtime.getHeapUsage")).usedSize});
+        if (snapshot.time_ms >= 150 * 86400000 || snapshot.error || clock() - started >= 180000) break;
+        await sleep(7500);
+    } while (true);
+    if (await evaluate("liveView.state.running")) await click("#live-pause");
+    await wait(() => evaluate("!liveView.state.running && !liveView.busy"), "Pause after browser soak");
+    result.intent = {horizon_days: 150, wall_budget_seconds: 180, sampling_delay_ms: 7500};
+    result.status = snapshot.time_ms >= 150 * 86400000 ? "COMPLETE" : "STOPPED";
+    result.last_sample = snapshot;
+    result.samples = samples;
+    result.browser = (await send("Browser.getVersion")).product;
+    assert.deepEqual(exceptions, []);
+    await writeFile(join(output, "m1-soak-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify({status: result.status, last_sample: snapshot}));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -671,7 +697,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (["live", "activity", "nursery", "ecology", "habitat", "m1"].includes(mode)) {
+        if (["live", "activity", "nursery", "ecology", "habitat", "m1", "m1-soak"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -692,6 +718,8 @@ try {
         await observatoryWorld();
     } else if (mode === "m1-witnesses") {
         await observatoryWitnesses();
+    } else if (mode === "m1-soak") {
+        await observatorySoak();
     } else if (mode === "activity") {
         await activityWorld();
     } else if (mode === "micro") {

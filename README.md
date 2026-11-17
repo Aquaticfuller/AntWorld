@@ -1,5 +1,9 @@
 # AntWorld
 
+## M1 Live Colony Observatory
+
+Start an open founding nest, a shallow-soil-plug experiment or a no-supply control. In the browser, rotate the 3D nest, follow a worker across the entrance and use the founding milestones to reach committed events. Live saves can be opened for read-only replay. See the [Windows launch steps and reproducible M1 checks](research/m1/README.md).
+
 ## Watch a MicroWorld
 
 The MicroWorld browser preview can start a live C++ Core colony with one queen in a small 3D nest. It supports real-time and accelerated simulation, manual SQLite saves and archive replay. Open the [Windows start guide](research/m0/README.md) to watch the first clutch, individual care, worker movements and real soil edits. Five compact archives are included, with English and Simplified Chinese controls and a read-only terminal option.
