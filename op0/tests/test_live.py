@@ -51,6 +51,52 @@ class LiveTests(unittest.TestCase):
                              sha256(witness.read("final.frame")).digest())
         self.assertEqual(list(self.folder.iterdir()), [])
 
+    def test_observatory_presets_preserve_native_geometry_and_resources(self):
+        if not self.live.core().observatory:
+            self.skipTest("The native core predates the M1 observatory")
+        for name in ("open", "plugged", "absent"):
+            with self.subTest(name=name):
+                self.live.write("observatory", {"preset": name})
+                self.live.write("clock", {"running": False})
+                view = self.live.read("view", {})
+                volume = self.live.read("volume", {"epoch": str(view["epoch"])})
+                self.assertEqual((view["physics"], view["schema_version"], view["seed"]), (36, 29, "2"))
+                self.assertEqual(view["external_supply"], name != "absent")
+                self.assertEqual(bool(view["terrain"]["openings"]), name != "plugged")
+                self.assertEqual((volume["world_id"], volume["revision"]), (view["world_id"], view["terrain"]["revision"]))
+                self.assertEqual(len(view["ants"]), 1)
+                with self.assertRaises(ValueError):
+                    self.live.read("volume", {"epoch": str(view["epoch"] - 1)})
+
+    def test_reachable_berth_version_and_readonly_history_survive_restore(self):
+        worker = self.live.core()
+        if not worker.observatory:
+            self.skipTest("The native core predates the M1 experiment")
+        self.live.install(worker.call("NEW_OBSERVATORY 250 2 250 80 open 1955 reachable finite"), running=False)
+        native = worker.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(native)
+        frame = self.live.frame
+        self.assertEqual((frame["schema"], frame["physics"]), (30, 37))
+        self.assertTrue(frame["flags"]["founding_habitat"]["alternate_berth"])
+        options = {"epoch": str(self.live.epoch)}
+        while True:
+            timeline = self.live.read("chronicle", options)
+            if timeline["through"] == timeline["cursor"]:
+                break
+        milestones = timeline["landmarks"]
+        egg = self.live.read("fact", dict(options, id=milestones["egg"]["id"]))
+        self.assertEqual(egg, milestones["egg"])
+        self.assertEqual(egg["kind"], "AntBorn")
+        life = self.live.read("life", dict(options, id=egg["actor"]))
+        self.assertEqual(life["lifecycle"][0], egg)
+        self.assertEqual(worker.call("FRAME"), native)
+        self.live.write("save", {"name": "M1 reachable"})
+        expected = worker.call(f"ADVANCE {50 * DAY}")
+        self.live.write("load", {"name": "M1 reachable"})
+        self.assertEqual(worker.call("FRAME"), native)
+        self.assertEqual(worker.call(f"ADVANCE {50 * DAY}"), expected)
+        self.assertEqual(worker.call("CHECK_LEDGERS"), b"")
+
     def test_nest_dynamics_is_opt_in_and_survives_sqlite(self):
         self.live.write("new", {"nest_dynamics": True})
         self.live.write("clock", {"running": False})

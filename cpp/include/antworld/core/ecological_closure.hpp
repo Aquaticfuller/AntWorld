@@ -22,6 +22,7 @@ struct NestDynamics {
 struct FoundingHabitat {
     PositionM brood_site;
     std::uint64_t pantry_buffer_ug{};
+    bool alternate_berth{}; // Physics 37. Seek another locally reachable depot contact.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

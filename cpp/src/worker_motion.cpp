@@ -264,6 +264,8 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const auto radius=s.care_profile->perception_radius_m;
     if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;
+    const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth && link==s.connectors.end();
+    if (alternate && within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot)) return {};
     const auto origin=habitat ? nearest_grid_point(ant.position,g) : quantized(ant.position,g);
     const auto goal=quantized(depot,g);
     if (!origin || !goal || origin->y!=goal->y) return {};
@@ -290,7 +292,8 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
             }
             if (!examined.insert(q).second) continue;
             const auto first=i==0?q:node.first;
-            if (q==*goal) return physical(first,g);
+            if (q==*goal || (alternate && within_contact(target,depot,s.config) && spatially_clear(target,depot)))
+                return physical(first,g);
             if (nodes.size()==budget) break;
             nodes.push_back({q,first});
         }

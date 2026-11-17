@@ -13,7 +13,8 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(["nursery", "ecology", "habitat"].includes(mode) ? ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
+    ...(["nursery", "ecology", "habitat", "m1", "m1-witnesses"].includes(mode) ?
+        ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
 let browserError = "", exitMessage = "";
@@ -74,7 +75,8 @@ async function select(id, value) {
         "; e.dispatchEvent(new Event('change')); return e.value; })()");
 }
 async function screenshot(name, includeHours = false) {
-    await evaluate(includeHours ?
+    await evaluate(name.startsWith("m1-") ?
+        "scrollTo(0, Math.max(0, $('space-title').getBoundingClientRect().top + scrollY - 315))" : includeHours ?
         "scrollTo(0, Math.max(0, $('hour-bins').getBoundingClientRect().bottom + scrollY - innerHeight + 45))" : "scrollTo(0, 0)");
     await sleep(250);
     const frame = await send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
@@ -508,6 +510,141 @@ async function foundingHabitat() {
     console.log(JSON.stringify({status: "PASS", browser: (await send("Browser.getVersion")).product, delivery}, null, 2));
 }
 
+async function observatoryWorld() {
+    const waitView = (expression, label, limit) => wait(() => evaluate(expression), label, limit);
+    const stopAt = async target => {
+        await select("live-target", target);
+        await click("#live-seek");
+        await waitView("liveView.state?.fast_forward?.state === 'reached' && !liveView.busy", "Committed " + target, 105_000);
+        const stop = await evaluate("({id: liveView.state.world_id, time: liveView.state.time_ms, event: liveView.state.fast_forward.event, actor: app.selected})");
+        assert.equal(stop.event.time_ms, stop.time);
+        return stop;
+    };
+    const preset = async (type, replace) => {
+        const clickPreset = click(`#observatory-presets button[data-preset="${type}"]`);
+        if (replace) await Promise.all([clickPreset, (async () => {
+            await wait(() => dialogs.shift(), "Confirm replacement of unsaved colony", 5_000);
+            await send("Page.handleJavaScriptDialog", {accept: true});
+        })()]);
+        else await clickPreset;
+        await waitView("nestView.volume && nestView.volume.epoch === liveView.epoch && app.section === 'nest' && !liveView.busy", "3D native cut");
+    };
+    await timed("first_nest_view_ms", () => preset("open", false));
+    assert.deepEqual(await evaluate("liveView.state.ants.map(a => a.caste)"), ["Queen"]);
+    assert.equal(await evaluate("liveView.state.physics"), 36);
+    assert.equal(await evaluate("liveView.state.rate"), 1);
+    await timed("pause_ui_ms", async () => {
+        await click("#live-pause");
+        await waitView("!liveView.state.running && !liveView.busy", "Pause settled");
+    });
+    const paused = await evaluate("liveView.state.time_ms");
+    await clickMap("hit => hit.id === liveView.state.ants[0].id");
+    await waitView("$('live-life-events').querySelector('button')", "Queen life evidence");
+    const before = await evaluate("({edits: nestView.volume.revision, builds: nestView.built, yaw: nestView.yaw})");
+    await evaluate("$('map').focus(); $('map').dispatchEvent(new KeyboardEvent('keydown', {key:'ArrowRight'}))");
+    assert.notEqual(await evaluate("nestView.yaw"), before.yaw);
+    assert.equal(await evaluate("nestView.built"), before.builds);
+    await evaluate("$('nest-depth').value=2; $('nest-depth').dispatchEvent(new Event('input'))");
+    assert.equal(await evaluate("nestView.built"), before.builds + 1);
+    await evaluate("$('nest-depth').value=0; $('nest-depth').dispatchEvent(new Event('input'))");
+    assert.equal(await evaluate("liveView.state.time_ms"), paused);
+    await click("#slice-button");
+    await waitView("app.section === 'slice' && !$('plane-controls').hidden", "Original research section");
+    await click("#nest-button");
+
+    result.egg = await stopAt("egg");
+    assert.equal(result.egg.event.kind, "AntBorn");
+    await click("#individual-tab");
+    await select("locale", "zh-CN");
+    await waitView("document.documentElement.lang === 'zh-CN' && $('chronicle-steps').textContent.includes('\u9996\u6b21')", "Chinese milestones");
+    await screenshot("m1-first-egg");
+    await select("locale", "en");
+    result.exit = await stopAt("exit");
+    assert.equal(result.exit.event.kind, "Moved");
+    assert.equal(result.exit.event.actor, result.exit.actor);
+    assert.ok(result.exit.event.position_m[1] >= 0);
+    assert.equal(await evaluate("app.follow && app.section === 'nest'"), true);
+    await timed("resume_ui_ms", async () => {
+        await click("#live-pause");
+        await waitView("liveView.state.running && !liveView.busy", "Resume settled");
+    });
+    result.frame_sample = await evaluate(`new Promise(resolve => {
+        const times = [], start = performance.now();
+        function sample(time) {
+            times.push(time);
+            if (time - start < 1200) return requestAnimationFrame(sample);
+            resolve({frames: times.length, elapsed_ms: times.at(-1) - times[0], draw_ms: nestView.lastDrawMs,
+                     mesh_ms: nestView.buildMs, faces: nestView.faces.length, occupancy_bytes: nestView.cells.byteLength});
+        }
+        requestAnimationFrame(sample);
+    })`);
+    result.delivery = await stopAt("delivery");
+    assert.equal(result.delivery.event.kind, "FoodDelivered");
+    assert.ok(result.delivery.event.mass_ug[0] > 0);
+    assert.equal(result.delivery.event.actor, result.delivery.actor);
+    await click("#individual-tab");
+    await screenshot("m1-worker-delivery");
+    await click("#open-saves");
+    await evaluate("$('save-name').value='M1 review'; $('save-form').requestSubmit()");
+    await waitView("$('saved-colonies').textContent.includes('M1 review') && !liveView.busy", "Published save");
+    await click("#saved-colonies button:first-child");
+    await waitView("!$('save-manager').open && !liveView.busy && !liveView.state.running", "Restored native save");
+    assert.equal(await evaluate("liveView.state.time_ms"), result.delivery.time);
+    await click("#open-saves");
+    await waitView("$('saved-colonies').textContent.includes('Replay')", "Save replay action");
+    await click("#saved-colonies button:last-child");
+    await opened();
+    assert.equal(await evaluate("app.meta.world_id"), result.delivery.id);
+    const replayed = await evaluate(`world('event', {id:'${result.delivery.event.id}'})`);
+    assert.equal(replayed.time_ms, result.delivery.time);
+    assert.deepEqual(replayed.mass_ug, result.delivery.event.mass_ug);
+
+    await click("#live-tab");
+    await waitView("app.live && !liveView.busy", "Return to live clock");
+    await preset("plugged", false);
+    assert.equal(await evaluate("liveView.state.terrain.openings.length"), 0);
+    result.dig = await stopAt("excavation");
+    assert.equal(result.dig.event.kind, "SoilExcavated");
+    assert.ok(result.dig.event.geometry_edits.length);
+    await waitView("nestView.volume?.revision === liveView.state.terrain.revision", "Geometry published after excavation");
+    await screenshot("m1-excavation");
+    await preset("absent", true);
+    assert.equal(await evaluate("liveView.state.external_supply"), false);
+    assert.deepEqual(await evaluate("liveView.state.feeder_reserve_ug"), [0, 0, 0, 0]);
+    assert.deepEqual(exceptions, []);
+    result.browser = (await send("Browser.getVersion")).product;
+    result.status = "PASS";
+    await writeFile(join(output, "m1-browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result));
+}
+
+async function observatoryWitnesses() {
+    await wait(() => evaluate("app.section === 'nest' && nestView.volume?.world_id === app.meta.world_id"), "Shallow-plug archive geometry");
+    assert.equal(await evaluate("app.meta.integrity"), "VERIFIED_PUBLISHED");
+    assert.equal(await evaluate("app.meta.end_ms"), 90 * 86400000);
+    assert.equal(await evaluate("app.geometry.openings.length"), 0);
+    await click("#milestones button[title^='First excavation']");
+    await wait(() => evaluate("app.selectedFact?.kind === 'SoilExcavated' && nestView.volume?.revision > 0"), "Recorded excavation");
+    assert.equal(await evaluate("app.selectedFact.geometry_edits[0].event"), await evaluate("app.selectedFact.id"));
+    result.shallow_plug = await evaluate("({id: app.meta.world_id, facts: app.meta.facts, excavation: app.selectedFact.id})");
+
+    await select("archive", await evaluate("app.catalog[1].key"));
+    await wait(() => evaluate("app.meta?.end_ms === 240 * DAY && nestView.volume?.world_id === app.meta.world_id"), "No-supply archive geometry");
+    const death = await evaluate("app.meta.milestones.find(m => m.label === 'Queen died')");
+    assert.ok(death, "The no-supply witness records a queen death");
+    await click("#milestones button[title^='Queen died']");
+    await wait(() => evaluate("app.selectedFact?.kind === 'AntDied' && !$('event-detail').hidden"), "Committed no-supply outcome");
+    assert.equal(await evaluate("$('queen-state').textContent"), "Absent");
+    assert.ok(await evaluate("app.selectedFact.death_cause"));
+    result.absent_supply = await evaluate("({id: app.meta.world_id, facts: app.meta.facts, death: app.selectedFact.id, cause: app.selectedFact.death_cause})");
+    await screenshot("m1-no-supply");
+    assert.deepEqual(exceptions, []);
+    result.browser = (await send("Browser.getVersion")).product;
+    result.status = "PASS";
+    await writeFile(join(output, "m1-witness-browser-receipt.json"), JSON.stringify(result, null, 2) + "\n");
+    console.log(JSON.stringify(result));
+}
+
 try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
@@ -534,7 +671,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (["live", "activity", "nursery", "ecology", "habitat"].includes(mode)) {
+        if (["live", "activity", "nursery", "ecology", "habitat", "m1"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -551,6 +688,10 @@ try {
         await ecologyWorld();
     } else if (mode === "habitat") {
         await foundingHabitat();
+    } else if (mode === "m1") {
+        await observatoryWorld();
+    } else if (mode === "m1-witnesses") {
+        await observatoryWitnesses();
     } else if (mode === "activity") {
         await activityWorld();
     } else if (mode === "micro") {

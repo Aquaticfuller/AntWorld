@@ -18,9 +18,10 @@ from time import monotonic_ns
 from uuid import UUID, uuid4
 
 from .archive import SQLITE_ID, key
+from .chronicle import Chronicle, LANDMARKS
 from .codec import (CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32,
                     checkpoint, decode_fact, label, require)
-from .geometry import AXES, focused_window, terrain_view
+from .geometry import AXES, focused_window, nest_volume, terrain_view
 from .query import HOUR, integer
 
 
@@ -31,6 +32,7 @@ MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABIT
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
 HABITAT_HUMIDITIES = (60, 80, 90)
+OBSERVATORY_PRESETS = {"open": ("open", "finite"), "plugged": ("plugged", "finite"), "absent": ("open", "absent")}
 FRAME_LIMIT = 128 * 1024 * 1024
 ECOLOGY_WORLD_TAGS = {651: "water-fed", 652: "no-external-water"}
 NURSERY_WORLD_TAGS = {649, 650, *ECOLOGY_WORLD_TAGS}  # Matches the native nursery fixtures.
@@ -42,7 +44,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v10"), installed.with_stem("antworld_m0_live_v9"),
+    paths = (installed.with_stem("antworld_m0_live_v11"), installed.with_stem("antworld_m0_live_v10"),
+             installed.with_stem("antworld_m0_live_v9"),
              installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
              installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
              ROOT / "build/m0-live/Release" / name, installed.with_stem("antworld_m0_live_v5"))
@@ -59,7 +62,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 10))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 11))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -68,6 +71,7 @@ class NativeCore:
             self.provisioned_nursery = generation >= 7
             self.local_ecology = generation >= 8
             self.founding_habitat = generation >= 9
+            self.observatory = generation >= 10
         except Exception:
             self.close()
             raise
@@ -101,8 +105,8 @@ class NativeCore:
             self.process.stdout.close()
 
 
-def read_live_events(data, frame, *, contiguous=False):
-    offset, previous = 0, None
+def read_live_events(data, frame, *, contiguous=False, after=None):
+    offset, previous = 0, after
     events = []
     expected = UUID(frame["world"]).int
     while offset < len(data):
@@ -113,7 +117,7 @@ def read_live_events(data, frame, *, contiguous=False):
         identity, fact = decode_fact(data[start:end])
         require(expected == ((identity[0] << 64) | identity[1]) and fact.time <= frame["time_ms"] and
                 0 < fact.id <= frame["cursor"] and (previous is None or
-                (fact.id == previous + 1 if contiguous else fact.id > previous)),
+                (fact.id == previous + 1 if contiguous or after is not None else fact.id > previous)),
                 "Live event does not belong to the published cut")
         events.append(fact.packet())
         previous, offset = fact.id, end
@@ -204,6 +208,8 @@ class LiveSession:
         self.recent = []
         self.actions = []
         self.sections = OrderedDict()
+        self.volume = None
+        self.chronicle = Chronicle()
         self.epoch = 0
         self.running = False
         self.rate = 1
@@ -273,6 +279,8 @@ class LiveSession:
                                 worker_loss_ug_day=worker_loss)
         self.epoch += 1
         self.sections.clear()
+        self.volume = None
+        self.chronicle = Chronicle()
         self.running, self.rate, self.saved, self.error = running, 1, saved, None
         self.fast_forward = None
         self.reanchor()
@@ -351,9 +359,30 @@ class LiveSession:
                     nursery_available=self.binary.is_file() and (self.worker is None or self.worker.nursery),
                     ecology_available=self.binary.is_file() and (self.worker is None or self.worker.local_ecology),
                     habitat_available=self.binary.is_file() and (self.worker is None or self.worker.founding_habitat),
+                    observatory_available=self.binary.is_file() and (self.worker is None or self.worker.observatory),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
+
+    def advance_chronicle(self, frame):
+        for _ in range(2):
+            after = self.chronicle.cursor
+            if after >= frame["cursor"]:
+                break
+            events = read_live_events(self.worker.call(f"FACTS_AFTER {after}"), frame, after=after)
+            require(events, "Missing canonical chronicle page")
+            for event in events:
+                self.chronicle.accept(event, frame)
+
+    def exact_fact(self, frame, identifier):
+        command = f"FACTS_AFTER {identifier-1}" + (" 1" if self.worker.observatory else "")
+        events = read_live_events(self.worker.call(command), frame, after=identifier-1)
+        require(events, "The selected fact is not present in the published cut")
+        event = events[0]
+        if event["kind"] in {"SoilExcavated", "SoilDropped"}:
+            event["geometry_edits"] = [edit | {field: str(edit[field]) for field in ("event", "actor", "source", "parcel")}
+                                       for edit in frame["edits"] if edit["event"] == identifier]
+        return event
 
     def read(self, resource, options):
         with self.lock:
@@ -361,6 +390,28 @@ class LiveSession:
                 return self.status()
             if resource == "saves":
                 return self.list_saves()
+            if resource in {"volume", "chronicle", "life", "fact"}:
+                frame = self.frame
+                require(frame is not None and options.get("epoch", str(self.epoch)) == str(self.epoch),
+                        "This observation belongs to a different live colony")
+                if resource == "volume":
+                    revision = len(frame["edits"])
+                    if self.volume is None or self.volume["revision"] != revision:
+                        focus = next(iter(frame["colonies"].values()))["position_m"]
+                        self.volume = nest_volume(frame["geometry"], frame["edits"], focus)
+                    return self.volume | {"epoch": self.epoch, "world_id": frame["world"]}
+                if resource == "fact":
+                    identifier = integer(options, "id", 0, 1, frame["cursor"])
+                    return self.exact_fact(frame, identifier)
+                self.advance_chronicle(frame)
+                progress = dict(through=str(self.chronicle.cursor), cursor=str(frame["cursor"]))
+                if resource == "chronicle":
+                    return progress | {"landmarks": {name: self.chronicle.first.get(name) for name in LANDMARKS}}
+                identifier = integer(options, "id", 0, 1, (1 << 64) - 1)
+                require(identifier in frame["ants"], "Unknown ant in the live colony")
+                key = str(identifier)
+                life = [self.exact_fact(frame, e) for e in self.chronicle.life.get(key, ())]
+                return progress | {"lifecycle": life, "recent_activity": list(self.chronicle.recent.get(key, ()))}
             require(resource == "view", "Unknown live view")
             data = self.status()
             if self.frame is None:
@@ -408,6 +459,7 @@ class LiveSession:
                         local_traffic=traffic, seeded_nursery=nursery,
                         provisioned_nursery=tag == 650 or ecology is not None,
                         ecology=ecology, habitat=habitat, climate=self.climate, feeder_reserve_ug=reserve, trails=trails,
+                        external_supply=any(s["position_m"][1] >= surface["origin_m"][1] for s in frame["sources"].values()),
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
                         nest_dynamics=dynamics,
@@ -416,7 +468,7 @@ class LiveSession:
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
                         bounds_m=(frame["world_min_m"], frame["world_max_m"]), sources=list(frame["sources"].values()),
-                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])),
+                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])), soil_load=ant["id"] in frame["soil_carriers"],
                                    loaded=bool(any(ant["carried_ug"]) or ant["id"] in frame["soil_carriers"]),
                                    stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
                                    program=label(PROGRAMS, ant.get("program")), death_cause=label(DEATHS, ant.get("death_code")))
@@ -491,7 +543,15 @@ class LiveSession:
 
     def write(self, resource, data):
         with self.lock:
-            if resource == "habitat":
+            if resource == "observatory":
+                preset = data.get("preset")
+                require(isinstance(preset, str) and preset in OBSERVATORY_PRESETS, "Unknown observatory preset")
+                entrance, supply = OBSERVATORY_PRESETS[preset]
+                core = self.core()
+                require(core.observatory, "Build the updated Core to start a live observatory.")
+                command = f"NEW_OBSERVATORY {randbits(63) or 1} 2 250 80 {entrance} 1955 reference {supply}"
+                self.install(core.call(command), running=True)
+            elif resource == "habitat":
                 temperature, humidity = data.get("temperature"), data.get("humidity")
                 require(type(temperature) is int and temperature in HABITAT_TEMPERATURES and
                         type(humidity) is int and humidity in HABITAT_HUMIDITIES,

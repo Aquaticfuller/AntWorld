@@ -13,6 +13,7 @@ from . import SCHEMA
 from .archive import json_bytes
 from .cli import ERRORS
 from .locale import CHINESE
+from .live import save_details
 
 
 STATIC = {
@@ -21,6 +22,8 @@ STATIC = {
     "/viewer.js": ("viewer.js", "text/javascript; charset=utf-8"),
     "/live.js": ("live.js", "text/javascript; charset=utf-8"),
     "/live_motion.js": ("live_motion.js", "text/javascript; charset=utf-8"),
+    "/nest_view.js": ("nest_view.js", "text/javascript; charset=utf-8"),
+    "/observatory.js": ("observatory.js", "text/javascript; charset=utf-8"),
 }
 LIVE = "/api/v1/live/"
 
@@ -98,13 +101,21 @@ def bind(api, port, live=None):
                 if not self.local_host() or self.headers.get("Origin") != "http://" + self.headers["Host"]:
                     self.as_json(HTTPStatus.FORBIDDEN, dict(schema=SCHEMA, error="Live commands require the local viewer origin"))
                     return
-                if (resource not in {"new", "nursery", "habitat", "clock", "seek", "save", "load", "folder"} or len(body) < 2 or len(body) != size or
+                if (resource not in {"new", "nursery", "habitat", "observatory", "clock", "seek", "save", "load", "folder", "replay"}
+                        or len(body) < 2 or len(body) != size or
                         self.headers.get_content_type() != "application/json"):
                     raise ValueError("Invalid live command request")
                 data = json.loads(body)
                 if not isinstance(data, dict):
                     raise ValueError("A live command needs a JSON object")
-                self.as_json(HTTPStatus.OK, dict(schema=SCHEMA, data=live.write(resource, data)))
+                if resource == "replay":
+                    with live.lock:
+                        saved = live.name_path(data.get("name"))
+                        save_details(saved)
+                        result = {"archive": api.catalog.register(saved)}
+                else:
+                    result = live.write(resource, data)
+                self.as_json(HTTPStatus.OK, dict(schema=SCHEMA, data=result))
             except ERRORS as err:
                 self.as_json(HTTPStatus.BAD_REQUEST, dict(schema=SCHEMA, error=str(err)))
 

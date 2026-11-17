@@ -1,0 +1,50 @@
+"""Run the observatory's real Chromium test with a private loopback Core session."""
+
+from argparse import ArgumentParser
+import os
+from pathlib import Path
+from subprocess import run
+from tempfile import TemporaryDirectory
+from threading import Thread
+
+from op0.cli import M1_DEMOS
+from op0.index import Catalog
+from op0.live import LiveSession, ROOT, core_path
+from op0.query import ReadAPI
+from op0.server import bind
+
+
+def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--core", type=Path, default=core_path())
+    parser.add_argument("--browser", type=Path, required=True)
+    parser.add_argument("--scratch", type=Path, default=ROOT / "out")
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--node", default="node")
+    parser.add_argument("--mode", default="m1", choices=("m1", "live", "habitat", "nursery", "ecology", "m1-witnesses"))
+    args = parser.parse_args()
+    args.scratch.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(dir=args.scratch, prefix="m1-browser-") as scratch:
+        work = Path(scratch).resolve()
+        catalog = Catalog(work / "index")
+        if args.mode == "m1-witnesses":
+            from tools.verify_m1_habitat import read_jsonl
+            manifest = {row["archive"]: row["sha256"] for row in read_jsonl(M1_DEMOS[0][0] / "archives.jsonl")}
+            for folder, name, title, description in M1_DEMOS:
+                catalog.register(folder / name, title, manifest[name], description)
+        app = ReadAPI(catalog)
+        with LiveSession(args.core, work / "saves") as live, bind(app, 0, None if args.mode == "m1-witnesses" else live) as server:
+            thread = Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                run([args.node, str(ROOT / "op0/tests/browser_smoke.mjs"), str(args.browser.resolve()),
+                     f"http://127.0.0.1:{server.server_port}", str(args.output.resolve()), args.mode],
+                    cwd=ROOT, env=os.environ | {"TMPDIR": str(work), "TEMP": str(work), "TMP": str(work)},
+                    check=True, timeout=360)
+            finally:
+                server.shutdown()
+                thread.join()
+
+
+if __name__ == "__main__":
+    main()

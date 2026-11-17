@@ -11,7 +11,7 @@ import zlib
 from . import DAY, SCHEMA
 from .codec import ACTS, CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MASK, PROGRAMS, STAGES, decode_fact, label, require, sql_id
 from .morphology import floor_shape
-from .geometry import AXES, MAX_PIXELS, focused_window, terrain_view
+from .geometry import AXES, MAX_PIXELS, focused_window, nest_volume, terrain_view
 from .index import BLOCK_RECORDS, COUNTERS, LEDGER
 
 
@@ -505,6 +505,12 @@ class ReadAPI:
             return self.nearby_motion(db, meta, options, stamp, cursor)
         if operation == "geometry":
             return self.geometry(db, meta, options, cursor)
+        if operation == "volume":
+            geometry = meta["settings"]["geometry"]
+            require(geometry is not None and meta["colonies"], "No authoritative nest volume was recorded")
+            # Fetch a new bounded material window only when the client sees a new edit revision.
+            edits = (json.loads(raw) for raw, in db.execute("SELECT value FROM edits WHERE event<=? ORDER BY event", (cursor,)))
+            return nest_volume(geometry, list(edits), meta["colonies"][0]["position_m"]) | {"world_id": meta["world_id"]}
         if operation == "cohort":
             return self.cohort(db, meta, cursor)
         raise ValueError("Unknown world endpoint")

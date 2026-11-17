@@ -24,8 +24,10 @@ function duration(ms) {
 }
 
 function liveControls() {
+    updatePresets();
     const s = liveView.state;
     const active = s?.world_id != null;
+    document.body.classList.toggle("observatory-active", Boolean(app.live && s?.habitat && s.observatory_available));
     const stop = s?.fast_forward, seeking = stop?.state === "seeking";
     put("live-clock", active ? duration(s.time_ms) : "00:00:00");
     const label = active ? (s.running ? "Simulation running" : "Simulation paused") : "No active colony";
@@ -64,9 +66,11 @@ function liveControls() {
 function liveVisibility(active) {
     app.live = active;
     if (!active) document.body.classList.remove("nursery-active");
+    if (!active) document.body.classList.remove("observatory-active");
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
     $("live-controls").hidden = $("live-event-note").hidden = !active;
     $("live-activity").hidden = !active;
+    if (!active) $("live-chronicle").hidden = $("live-life").hidden = true;
     if (!active) {
         $("live-environment").hidden = $("find-pantry").hidden = $("find-brood").hidden =
             $("find-entrance").hidden = $("trail-control").hidden = true;
@@ -143,6 +147,12 @@ async function locateLiveSite(position) {
     toggle("follow", false);
     $("axis").value = "y";
     preferView(position);
+    if (app.section === "nest") {
+        app.layer = null;
+        nestView.focus = position;
+        nestView.x = nestView.y = 0;
+        $("nest-depth").value = 0;
+    }
     app.map = {zoom: 1, x: 0, y: 0};
     await refreshLive();
     $("space-title").scrollIntoView({block: "nearest"});
@@ -216,11 +226,13 @@ function chooseLiveAnt(id) {
     return refreshLive();
 }
 
-function showLiveFact(id) {
-    const fact = liveView.state.events.find(e => e.id === id);
-    if (!fact) throw Error("This event has left the recent list.");
+async function showLiveFact(id) {
+    const epoch = liveView.epoch;
+    const fact = await api("live/fact", {epoch, id});
+    if (!app.live || epoch !== liveView.epoch) return;
     inspect(true);
     showEvent(fact);
+    drawMap();
 }
 
 async function refreshLive(alignSection = true) {
@@ -240,10 +252,10 @@ async function refreshLive(alignSection = true) {
         put("subtitle", tr(data.core_available ? "Create a colony to start the simulation." : "Build the live Core to start a colony. Archive replay is available."));
         return;
     }
-    app.meta = {settings: {geometry: data.geometry}, surface: data.surface, bounds_m: data.bounds_m,
+    app.meta = {world_id: data.world_id, settings: {geometry: data.geometry}, surface: data.surface, bounds_m: data.bounds_m,
         colonies: data.colonies, milestones: [], surface_entrances_m: []};
     if (liveView.epoch !== data.epoch) {
-        $("colony-settings").open = !data.seeded_nursery;
+        $("colony-settings").open = !(data.seeded_nursery || data.habitat);
         liveView.epoch = data.epoch;
         liveView.eventsKey = null;
         liveView.actionsKey = null;
@@ -260,7 +272,7 @@ async function refreshLive(alignSection = true) {
         $("action-replays").replaceChildren();
         $("action-replays").hidden = true;
         $("event-detail").hidden = true;
-        setSection("slice");
+        setSection(data.habitat && (liveView.nextNest || app.section === "nest") ? "nest" : "slice");
         inspect(false);
     }
     app.time = data.time_ms;
@@ -305,7 +317,7 @@ async function refreshLive(alignSection = true) {
     put("worker-location", tr("{count} on surface", {count: outside}));
     put("map-time", duration(data.time_ms));
     const timing = data.worker_activity_timing;
-    const description = data.habitat ? tr("Independent food and water sources") :
+    const description = data.habitat ? tr(data.external_supply ? "Independent food and water sources" : "No external supply") :
         data.ecology ? tr(data.ecology === "water-fed" ? "Finite food and water" : "Finite food · no external water") :
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
@@ -319,6 +331,7 @@ async function refreshLive(alignSection = true) {
     if (!$("event-panel").hidden) renderLiveEvents();
     liveMotion.record(data, performance.now());
     drawMap();
+    updateObservatory();
     if (liveMotion.cuts.length && liveView.animation == null) liveView.animation = requestAnimationFrame(animateLiveMotion);
 }
 
@@ -376,12 +389,10 @@ function leaveLiveView() {
 async function liveCommand(resource, data = {}) {
     if (liveView.busy) return;
     liveView.busy = true;
+    liveView.nextNest = resource === "observatory";
     liveControls();
     try {
-        const result = await fetch("/api/v1/live/" + resource, {method: "POST", headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data)});
-        const payload = await result.json();
-        if (!result.ok || payload.schema !== "antworld.observation.v1") throw Error(payload.error || "The live Core command failed.");
+        await postLive(resource, data);
         if (app.live) {
             show();
             if (resource === "new" || resource === "load") { $("axis").value = "y"; app.layer = null; }
@@ -389,9 +400,27 @@ async function liveCommand(resource, data = {}) {
         }
         scheduleLiveView();
     } finally {
+        liveView.nextNest = false;
         liveView.busy = false;
         if (app.live) liveControls();
     }
+}
+
+async function postLive(resource, data) {
+    const result = await fetch("/api/v1/live/" + resource, {method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)});
+    const payload = await result.json();
+    if (!result.ok || payload.schema !== "antworld.observation.v1") throw Error(payload.error || "The live Core command failed.");
+    return payload.data;
+}
+
+async function replaySave(save) {
+    const {archive} = await postLive("replay", {name: save.name});
+    if (liveView.state?.running) await liveCommand("clock", {running: false});
+    leaveLiveView();
+    app.catalog = await api("catalog");
+    setOptions($("archive"), app.catalog, archive);
+    await openArchive(archive);
 }
 
 function fileSize(bytes) {
@@ -424,7 +453,9 @@ async function refreshSaves() {
             catch (error) { saveNotice(tr(error.message)); load.disabled = false; }
         });
         load.disabled = !save.loadable || !liveView.state?.core_available;
-        actions.append(load);
+        const replay = button("Replay", () => replaySave(save).catch(error => saveNotice(tr(error.message))));
+        replay.disabled = !save.loadable;
+        actions.append(load, replay);
         row.append(actions);
         list.append(row);
     }
@@ -437,6 +468,7 @@ async function refreshSaves() {
 }
 
 function bindLive() {
+    bindObservatory();
     const click = (id, action) => $(id).addEventListener("click", () => Promise.resolve().then(action).catch(report));
     click("live-tab", openLiveView);
     click("new-colony", () => {

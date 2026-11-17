@@ -267,7 +267,8 @@ async function openArchive(key, preferred) {
     app.layer = null;
     app.map = {zoom: 1, x: 0, y: 0};
     $("replay-mode").value = meta.scenario?.startsWith("micro-m0-") ? "scenes" : "overview";
-    setSection(meta.settings.geometry && (meta.initial_queens.length || meta.scenario?.startsWith("r0r1-dig")) ? "slice" : "surface");
+    setSection(meta.settings.geometry && meta.settings.physics >= 36 ? "nest" :
+        meta.settings.geometry && (meta.initial_queens.length || meta.scenario?.startsWith("r0r1-dig")) ? "slice" : "surface");
     $("axis").value = /^(micro-m0-|r0r1-)/.test(meta.scenario || "") ? "y" : "z";
     if (app.section === "slice" && $("axis").value === "y" && meta.colonies.length) preferView(meta.colonies[0].position_m);
     $("ant-id").value = app.selected || "";
@@ -437,7 +438,7 @@ function eventLabel(e) {
 }
 function eventButton(e, extra = false) {
     const b = button("", () => {
-        if (app.live) { inspect(true); showEvent(e); }
+        if (app.live) showLiveFact(e.id).catch(report);
         else jumpEvent(e.id).catch(report);
     });
     b.className = "event-row";
@@ -571,7 +572,7 @@ async function jumpEvent(id, ant = null) {
         app.selected = ant;
         $("ant-id").value = ant;
     }
-    if (["SoilExcavated", "SoilFilled"].includes(e.kind) && e.geometry_edits?.length) {
+    if (app.section !== "nest" && ["SoilExcavated", "SoilFilled"].includes(e.kind) && e.geometry_edits?.length) {
         setSection("slice");
         const edit = e.geometry_edits.at(-1);
         const axis = {x: 0, y: 1, z: 2}[$("axis").value];
@@ -612,12 +613,15 @@ function setSection(section) {
     }
     toggle("surface-button", section === "surface");
     toggle("slice-button", section === "slice");
-    $("plane-controls").hidden = section === "surface" || !app.meta?.settings.geometry;
+    toggle("nest-button", section === "nest");
+    $("nest-button").disabled = !app.meta?.settings.geometry;
+    $("nest-controls").hidden = section !== "nest";
+    $("plane-controls").hidden = section !== "slice" || !app.meta?.settings.geometry;
     $("clearance-control").hidden = $("plane-controls").hidden;
-    $("view-controls").hidden = !$("plane-controls").hidden;
+    $("view-controls").hidden = section !== "surface";
 }
 function preferView(p) {
-    if (!p || !app.meta) return;
+    if (!p || !app.meta || app.section === "nest") return;
     const terrain = app.meta.settings.geometry;
     const surfaceY = planeSurface();
     if (terrain && p[1] < surfaceY - 1e-10) {
@@ -953,7 +957,7 @@ function drawNurseryTerrain(ctx, p, bounds, slice, width, height) {
 function renderLocation() {
     $("location").hidden = !app.location;
     if (!app.location) return;
-    const ants = app.location.all ? app.visible :
+    const ants = app.location.all ? app.visible : app.location.ids ? app.visible.filter(a => app.location.ids.has(a.id)) :
         app.visible.filter(a => a.position_m[app.location.axes[0]] === app.location.at[0] &&
             a.position_m[app.location.axes[1]] === app.location.at[1]);
     put("location-title", tr(app.location.all ? "Individuals in view" : "Individuals at this marker"));
@@ -970,7 +974,8 @@ function renderLocation() {
 }
 function showLocation(hit = null) {
     const axes = app.section === "slice" && app.geometry?.slice ? app.geometry.slice.axes : [0, 2];
-    app.location = hit ? {axes, at: [hit.ants[0].position_m[axes[0]], hit.ants[0].position_m[axes[1]]]} : {all: true};
+    app.location = !hit ? {all: true} : app.section === "nest" ? {ids: new Set(hit.ants.map(a => a.id))} :
+        {axes, at: [hit.ants[0].position_m[axes[0]], hit.ants[0].position_m[axes[1]]]};
     renderLocation();
 }
 function showLiveMotor() {
@@ -995,7 +1000,7 @@ function drawMap(motionOnly = false) {
     if (app.compare || !app.state) return;
     const nursery = app.live && liveView.state?.seeded_nursery;
     const habitat = app.live && liveView.state?.habitat;
-    const display = showLiveMotor() ? liveMotion.frame(performance.now()) : null;
+    const display = showLiveMotor() ? liveMotion.frame(performance.now(), app.section === "nest") : null;
     if (motionOnly && !display) return;
     if (!motionOnly) $("viewer").classList.toggle("nursery-view", Boolean(nursery));
     const canvas = canvasContext($("map"));
@@ -1004,6 +1009,13 @@ function drawMap(motionOnly = false) {
     const state = display ?? app.state, surface = app.meta.surface, slice = app.geometry?.slice;
     const time = display?.time ?? app.time;
     app.renderedTimeMs = time;
+    if (app.section === "nest") {
+        $("trail-control").hidden = $("envelope-control").hidden = true;
+        $("find-pantry").hidden = !app.live;
+        $("find-brood").hidden = !habitat;
+        $("find-entrance").hidden = !habitat || !app.geometry?.openings?.length;
+        return drawNest(canvas, state, motionOnly);
+    }
     const underground = app.section === "slice" && slice;
     const follow = app.live && app.follow && state.ants.find(a => a.id === app.selected);
     const tracked = follow ? motorPose(follow) : null;
@@ -1703,15 +1715,19 @@ function bind() {
         return seek(app.time, app.selectedFact);
     });
     click("surface-button", () => { setSection("surface"); drawMap(); });
+    click("nest-button", () => { setSection("nest"); drawMap(); });
     click("slice-button", () => {
+        setSection("slice");
         const selected = app.state?.ants.find(a => a.id === app.selected);
         if (selected && selected.position_m[1] < planeSurface()) {
             preferView(selected.position_m);
             return seek(app.time, app.selectedFact);
         }
-        setSection("slice");
         drawMap();
     });
+    change("nest-scale", () => { nestView.zoom = 1; nestView.x = nestView.y = 0; nestView.focus = null; drawMap(); });
+    change("nest-transparent", () => drawMap());
+    $("nest-depth").addEventListener("input", () => drawMap());
     change("axis", () => { app.location = null; app.layer = null; return seek(app.time, app.selectedFact); });
     change("clearance", () => seek(app.time, app.selectedFact));
     $("layer").addEventListener("input", safe(() => { app.location = null; app.layer = Number($("layer").value); return seek(app.time, app.selectedFact); }));
@@ -1729,17 +1745,23 @@ function bind() {
     }));
     for (const id of ["time", "compare-time"]) $(id).addEventListener("input", safe(() => { stopPlay(); return seek(Number($(id).value)); }));
     change("chart-series", dashboard);
-    const zoom = factor => { app.map.zoom = Math.max(.25, Math.min(64, app.map.zoom * factor)); drawMap(); };
+    const zoom = factor => {
+        const camera = app.section === "nest" ? nestView : app.map;
+        camera.zoom = Math.max(.25, Math.min(64, camera.zoom * factor));
+        drawMap();
+    };
     click("zoom-in", () => zoom(1.25));
     click("zoom-out", () => zoom(.8));
-    click("reset-map", () => { app.map = {zoom: 1, x: 0, y: 0}; drawMap(); });
+    click("reset-map", () => { resetNestCamera(); app.map = {zoom: 1, x: 0, y: 0}; drawMap(); });
     click("show-occupants", () => showLocation());
     click("show-largest", () => { if (app.visibleSummary) { stopPlay(); showLocation(app.visibleSummary); } });
     click("close-location", () => { app.location = null; renderLocation(); });
     const map = $("map");
     map.addEventListener("wheel", e => { e.preventDefault(); zoom(e.deltaY > 0 ? .9 : 1.12); }, {passive: false});
     map.addEventListener("pointerdown", e => {
-        app.drag = {x: e.clientX, y: e.clientY, left: app.map.x, top: app.map.y, moved: false};
+        const camera = app.section === "nest" ? nestView : app.map;
+        app.drag = {x: e.clientX, y: e.clientY, left: camera.x, top: camera.y, yaw: camera.yaw,
+            pitch: camera.pitch, pan: e.shiftKey, moved: false};
         map.setPointerCapture(e.pointerId);
     });
     map.addEventListener("pointermove", e => {
@@ -1747,7 +1769,14 @@ function bind() {
         if (!d) return;
         const dx = e.clientX - d.x, dy = e.clientY - d.y;
         if (d.moved || Math.abs(dx) + Math.abs(dy) > 5) {
-            d.moved = true; app.map.x = d.left + dx; app.map.y = d.top + dy; drawMap();
+            d.moved = true;
+            const perspective = app.section === "nest";
+            const camera = perspective ? nestView : app.map;
+            if (perspective && !d.pan) {
+                camera.yaw = d.yaw + dx * .012;
+                camera.pitch = Math.max(.12, Math.min(1.54, d.pitch + dy * .012));
+            } else { camera.x = d.left + dx; camera.y = d.top + dy; }
+            drawMap();
         }
     });
     map.addEventListener("pointerup", safe(e => {
@@ -1755,14 +1784,26 @@ function bind() {
         app.drag = null;
         if (!d || d.moved) return;
         const rect = map.getBoundingClientRect();
-        const closest = app.hits.map(hit => ({...hit, distance: Math.hypot(hit.x - (e.clientX - rect.left), hit.y - (e.clientY - rect.top))}))
-            .filter(hit => hit.distance < hit.radius).sort((a, b) => a.distance - b.distance)[0];
+        const matches = app.hits.map(hit => ({...hit, distance: Math.hypot(hit.x - (e.clientX - rect.left), hit.y - (e.clientY - rect.top))}))
+            .filter(hit => hit.distance < hit.radius).sort((a, b) => a.distance - b.distance);
+        const closest = matches[0];
+        if (app.section === "nest" && matches.length > 1) {
+            return showLocation({...closest, ants: matches.flatMap(hit => hit.ants)});
+        }
         if (closest?.ants.length > 1) {
             stopPlay();
             showLocation(closest);
         } else if (closest) return selectAnt(closest.id);
     }));
     map.addEventListener("pointercancel", () => { app.drag = null; });
+    map.addEventListener("keydown", e => {
+        if (app.section !== "nest" || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "-"].includes(e.key)) return;
+        e.preventDefault();
+        if (e.key === "+" || e.key === "-") return zoom(e.key === "+" ? 1.15 : .87);
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") nestView.yaw += e.key === "ArrowLeft" ? -.12 : .12;
+        else nestView.pitch = Math.max(.12, Math.min(1.54, nestView.pitch + (e.key === "ArrowUp" ? .12 : -.12)));
+        drawMap();
+    });
     new ResizeObserver(draw).observe(document.querySelector("main"));
 }
 

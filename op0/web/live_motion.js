@@ -39,7 +39,7 @@ class LiveMotion {
         this.open = new Map(data.ants.filter(a => a.motion_plan).map(a => [a.id, a.motion_plan]));
     }
 
-    frame(now) {
+    frame(now, committedOnly = false) {
         if (!this.cuts.length) return null;
         const newest = this.cuts.at(-1);
         const time = Math.min(newest.time, Math.max(this.cuts[0].time,
@@ -58,7 +58,7 @@ class LiveMotion {
                 break;
             }
             const open = this.open.get(ant.id);
-            if (!segment && open && open.begins_ms <= time && time < open.ends_ms &&
+            if (!committedOnly && !segment && open && open.begins_ms <= time && time < open.ends_ms &&
                 position.every((v, i) => v === open.from_m[i])) segment = open;
             if (!segment) return {...ant, display_position_m: position, display_motion: null};
             const progress = Math.max(0, Math.min(1, (time - segment.translates_ms) / (segment.ends_ms - segment.translates_ms)));

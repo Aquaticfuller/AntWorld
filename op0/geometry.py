@@ -1,10 +1,45 @@
 """Render slices from the Core's half-open, quantized material boxes."""
 
+from base64 import b64encode
+
 from .codec import require
 
 
 AXES = {"x": (2, 1, 0), "y": (0, 2, 1), "z": (0, 1, 2)}
 MAX_PIXELS = 262_144
+VOLUME_RADIUS = 32
+VOLUME_DEPTH = 40
+
+
+def nest_volume(geometry, edits, focus):
+    """Project a bounded window of the authoritative half-open material boxes."""
+    solid = geometry["solid"]
+    x, z, end_x, end_z = focused_window(geometry, focus, (0, 2), VOLUME_RADIUS)
+    y, end_y = max(solid[1], solid[4] - VOLUME_DEPTH), solid[4]
+    require(x < end_x and z < end_z and y < end_y, "The colony lies outside the local geometry")
+    width, depth, height = end_x - x, end_y - y, end_z - z
+    cells = bytearray(b"\x01") * (width * depth * height)
+
+    def paint(box, material):
+        left, right = max(x, box[0]), min(end_x, box[3])
+        if left >= right:
+            return
+        run = bytes([material]) * (right - left)
+        for qz in range(max(z, box[2]), min(end_z, box[5])):
+            for qy in range(max(y, box[1]), min(end_y, box[4])):
+                at = ((qz - z) * depth + qy - y) * width + left - x
+                cells[at:at + len(run)] = run
+
+    for box in geometry["voids"]:
+        paint(box, 0)
+    for edit in edits:
+        paint(edit["box_q"], 0 if edit["kind"] == 0 else 1)
+    for box in geometry["rocks"]:
+        paint(box, 2)
+    bounds = [x, y, z, end_x, end_y, end_z]
+    return dict(bounds_q=bounds, dimensions=[width, depth, height], origin_m=geometry["origin_m"],
+                quantum_m=geometry["quantum_m"], revision=len(edits), cropped=bounds != list(solid),
+                materials_b64=b64encode(cells).decode("ascii"), evidence="RECONSTRUCTED")
 
 
 def slice_at(geometry, edits, axis, plane, window=None):

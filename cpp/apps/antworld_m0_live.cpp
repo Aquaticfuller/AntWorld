@@ -317,19 +317,27 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v9");
-            } else if (command=="NEW_HABITAT") {
+                message("OK", "antworld.m0.live.v10");
+            } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
+                bool alternate_berth=false, external_supply=true;
+                if (command=="NEW_OBSERVATORY") {
+                    const auto policy=word(request), supply=word(request);
+                    require(policy=="reference" || policy=="reachable","invalid depot policy");
+                    require(supply=="finite" || supply=="absent","invalid supply setting");
+                    alternate_berth=policy=="reachable";
+                    external_supply=supply=="finite";
+                }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
                 require(half_life==60 || half_life==1955,"unsupported founding trail half-life");
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
@@ -496,8 +504,11 @@ int main() {
                     recent_actions(*world, cursor);
                 } else if (command == "FACTS_AFTER") {
                     const auto cursor = EventId{number(request)};
+                    request >> std::ws;
+                    const auto limit = request.eof() ? 512 : number(request);
                     end(request);
-                    send_events(world->events_after(cursor, 512));
+                    require(limit>=1 && limit<=512,"invalid observation page size");
+                    send_events(world->events_after(cursor, static_cast<std::size_t>(limit)));
                 } else if (command == "CHECK_LEDGERS") {
                     end(request);
                     check_ledgers(*world);

@@ -6,7 +6,9 @@
   <title>AntWorld · Observation Preview</title>
   <link rel="stylesheet" href="/viewer.css">
   <script src="/live_motion.js" defer></script>
+  <script src="/nest_view.js" defer></script>
   <script src="/live.js" defer></script>
+  <script src="/observatory.js" defer></script>
   <script src="/viewer.js" defer></script>
 </head>
 <body>
@@ -42,6 +44,11 @@
         <label for="live-rate" class="sr-only">Simulation speed</label>
         <select id="live-rate"><option value="1">1× real time</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option><option value="3600">3,600×</option><option value="86400">86,400×</option></select>
         <button id="open-saves" type="button">Save and load</button>
+      </div>
+      <div id="observatory-presets" aria-label="Founding environments" hidden>
+        <button type="button" data-preset="open"><strong data-i18n>Open entrance</strong><small>Founding with finite food and water</small></button>
+        <button type="button" data-preset="plugged"><strong data-i18n>Shallow soil plug</strong><small>Workers can excavate an opening</small></button>
+        <button type="button" data-preset="absent"><strong data-i18n>No external supply</strong><small>Founding with the queen's finite reserves</small></button>
       </div>
       <details id="colony-settings" open>
         <summary data-i18n>Colony setup</summary>
@@ -98,17 +105,10 @@
         <div><span class="metric-label"><i class="larva"></i><span data-i18n>LARVAE</span></span><strong id="larvae">0</strong><small>Alive</small></div>
         <div><span class="metric-label"><i class="pupa"></i><span data-i18n>PUPAE</span></span><strong id="pupae">0</strong><small>Alive</small></div>
       </section>
-      <section id="live-environment" class="panel dashboard" aria-labelledby="live-environment-title" hidden>
-        <div class="panel-head"><div><h2 id="live-environment-title">Food, water and reserves</h2>
-          <p>Fixed laboratory conditions with a finite feeder reserve.</p></div>
-        </div>
-        <div id="live-climate" class="ledger" hidden></div>
-        <div id="live-resources" class="ledger"></div>
-      </section>
       <div class="observation">
         <section class="panel space" aria-labelledby="space-title">
           <div class="panel-head"><div><h2 id="space-title">World space</h2><p id="space-caption">Committed positions and ordered geometry edits</p></div>
-            <div class="segmented" aria-label="Spatial view"><button id="surface-button" aria-pressed="false">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
+            <div class="segmented" aria-label="Spatial view"><button id="nest-button" aria-pressed="false">3D nest</button><button id="surface-button" aria-pressed="false">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
           </div>
           <div class="map-tools">
             <label id="plane-controls" hidden><span data-i18n>Section</span> <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>
@@ -120,6 +120,11 @@
             <button id="find-entrance" type="button" hidden>Locate nest entrance</button>
             <label id="trail-control" hidden><input id="show-trails" type="checkbox" checked><span data-i18n>Trail pheromone</span></label>
             <label id="view-controls">Drag to pan · Scroll to zoom</label>
+            <div id="nest-controls" hidden>
+              <label for="nest-scale">Scale</label><select id="nest-scale"><option value="chamber">Chamber</option><option value="nest" selected>Nest</option><option value="world">Habitat</option></select>
+              <label for="nest-depth">Cut depth</label><input id="nest-depth" type="range" min="0" max="0" value="0"><output id="nest-depth-value">0 mm</output>
+              <label><input id="nest-transparent" type="checkbox" checked><span data-i18n>Transparent ground</span></label>
+            </div>
             <div class="zoom"><button id="show-occupants" type="button">Individuals in view</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>
           <section id="live-activity" class="in-place-activity" aria-labelledby="in-place-title" hidden>
@@ -146,6 +151,7 @@
           <section id="individual-panel">
             <form id="ant-form"><label class="sr-only" for="ant-id">Ant ID</label><input id="ant-id" type="text" inputmode="numeric" placeholder="Enter ant ID" pattern="[0-9]+"><button type="submit">Find</button><button id="follow" type="button" aria-pressed="false">Follow</button></form>
             <div id="individual-content"></div>
+            <section id="live-life" hidden><h3 data-i18n>Life history</h3><div id="live-life-events"></div></section>
           </section>
           <section id="event-panel" hidden>
             <div class="event-controls"><select id="filter" aria-label="Event category">
@@ -161,6 +167,17 @@
           </section>
         </aside>
       </div>
+      <section id="live-chronicle" class="panel" hidden aria-labelledby="chronicle-title">
+        <div class="panel-head"><div><h2 id="chronicle-title">Founding milestones</h2><p id="chronicle-status"></p></div></div>
+        <div id="chronicle-steps"></div>
+      </section>
+      <section id="live-environment" class="panel dashboard" aria-labelledby="live-environment-title" hidden>
+        <div class="panel-head"><div><h2 id="live-environment-title">Food, water and reserves</h2>
+          <p>Fixed laboratory conditions with a finite feeder reserve.</p></div>
+        </div>
+        <div id="live-climate" class="ledger" hidden></div>
+        <div id="live-resources" class="ledger"></div>
+      </section>
       <section id="archive-timeline" class="panel timeline" aria-labelledby="timeline-label">
         <div class="timeline-top"><div><h2 id="timeline-label">Colony timeline</h2><div id="time-note">Day 0</div></div>
           <div class="transport"><button id="back" aria-label="Previous day">−1 day</button><button id="play" aria-pressed="false">▶ Play</button><button id="next" aria-label="Next day">+1 day</button>

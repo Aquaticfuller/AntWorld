@@ -189,7 +189,8 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35), (29, 36)}
+MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
+                       (29, 36), (30, 37)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
@@ -262,12 +263,14 @@ def checkpoint(raw, *, verify_hash=True):
         if outer[1] >= 35:
             flags["yield_to_loaded"], flags["local_pantry_checks"] = r.flag(), r.flag()
             require(flags["yield_to_loaded"] or flags["local_pantry_checks"], "Invalid nursery work or traffic policy")
-        if outer[1] == 36:
+        if outer[1] >= 36:
             brood_site, buffer = r.position(), r.uint()
             require(flags["local_pantry_checks"] and flags["recruitment"] and 0 < buffer <= 1_000_000_000 and
                     all(low <= value <= high for value, low, high in zip(brood_site, world_min, world_max)),
                     "Invalid founding habitat")
             flags["founding_habitat"] = dict(brood_site_m=brood_site, pantry_buffer_ug=buffer)
+            if outer[1] == 37:
+                flags["founding_habitat"]["alternate_berth"] = True
     if r.flag():
         r.take(32)
     r.take(8)  # Executed events on the boundary.

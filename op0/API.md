@@ -20,6 +20,7 @@ English and Simplified Chinese are presentation preferences. The local message c
 | `world/{world}/path` | `id`, `time_ms` or `event`, `limit` (1–200). Returns bounded lists of actual position facts |
 | `world/{world}/series` | Population and resource series at daily or comparable bounded cuts. Recorded queen physiology is separate |
 | `world/{world}/geometry` | `time_ms` or `event`, `axis` (x/y/z), `layer_q`, optional `window=u0,v0,u1,v1` and `clearance=1` |
+| `world/{world}/volume` | `time_ms` or `event`. Bounded material volume around the nest, reconstructed at the exact cursor |
 | `world/{world}/cohort` | `time_ms` or `event`. First recorded living larval census and its outcomes through the cursor. Requires daily individual data |
 | `compare` | `left`, `right` and `time_ms`. Compares aggregate evidence and effective input fields |
 
@@ -42,7 +43,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 ### Limits
 
-- The archive interface is read-only. Supported checkpoint families start at schema 8 and extend through 24. MicroWorld physics 27–31 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
+- The archive interface is read-only. Supported checkpoint families start at schema 8 and extend through 30. MicroWorld physics 27–37 share the original canonical fact layout and retain distinct physics tags. Unknown encodings fail explicitly.
 - Event pages are bounded and share a 12-block cache. Validation streams facts. It loads native frames and sampled cuts during indexing, with a 768 MiB frame limit, 8 GiB member limit and 64 MiB limit per sample CSV. Temporary disk space is needed for a SQLite copy and its index.
 - Space uses axis-aligned slices of quantized 3D material. MicroWorld centers the default underground cut and roof inset on the nest. Large legacy cuts may show a bounded corner of the solid. The full surface grid remains visible. API callers can request another bounded window. OP0 does not reconstruct unknown trajectories or animated meshes.
 - Cross-world identities remain separate. Similar settings do not establish equality of all input fields. Physical and physiological observations describe a particular simulated world.
@@ -56,11 +57,17 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 | `status` | GET | Availability, current WorldId, simulation time, rate, pause state and save status |
 | `view` | GET | A published Core cut, recent canonical facts, the current worker timing and the requested derived terrain section. Accepts `axis`, `layer_q`, `clearance` and `group` |
 | `saves` | GET | Managed directory and save names, world identities, elapsed simulation time, file sizes and modification times |
+| `volume` | GET | Current local material window. Optional `epoch` prevents reading geometry from a replaced world |
+| `chronicle` | GET | First committed milestones. Returns `through` for the history cursor examined so far and `cursor` for the published cut |
+| `life` | GET | `id` of a live or deceased individual. Returns lifecycle facts and a bounded recent interaction sample from the scanned prefix |
+| `fact` | GET | `id` of an exact committed fact and matching geometry edits |
+| `observatory` | POST | `preset` of `open`, `plugged` or `absent`. Starts a physics 36 world at 1× |
 | `new` | POST | Creates a new world in the protected shaft fixture and starts the Core clock at `1×`. `timing` accepts `standard` or the opt-in `shorter` setting |
 | `clock` | POST | `running` and optional `rate` from 1, 10, 60, 600, 3600 and 86400. Returns the published clock after the change |
 | `seek` | POST | `target` of `egg`, `hatch`, `worker`, `exit`, `delivery` or `excavation`. Advance at up to `86,400×` until the first committed milestone. Pause resets the rate to `1×`, including on cancellation or when no living ants or work remain |
 | `save` | POST | `name` and optional `overwrite`. Publishes a finished native SQLite store with its authoritative checkpoint and history |
 | `load` | POST | `name`. Validates a native save and restores its world paused |
+| `replay` | POST | `name` of a managed save. Registers its content identity for verified read-only archive replay |
 | `folder` | POST | Opens the configured save directory in the system file manager |
 
 Live commands take a same-origin local JSON request. The browser observes published cuts. The native clock advances from the host's monotonic clock independently of requests. Current views carry the newest 120 canonical facts at most, with up to 16 listed in the selected group. The browser displays actual positions and recent committed movement points. It does not reconstruct a path between them. The complete history remains in the Core and in each explicitly saved SQLite store.
@@ -70,3 +77,7 @@ The live clock checks fast-forward targets against committed facts. It completes
 `exit` matches a worker's committed movement from below the configured surface plane onto it. `delivery` matches a worker depositing positive food mass in the nest. `excavation` matches a completed soil removal and includes its associated geometry edit. At a new match for these targets the browser follows the worker's published positions across the surface and underground views.
 
 The live view's `actions` retain up to 12 recent completed in-place actions. After a catch-up slice or load, collection examines the latest 4,096 canonical facts at most. The client lists the latest action from each available group and highlights the recorded positions for eight simulated seconds. Positive ingestion and transfer use the transaction facts. Other brood handling uses successful completion observations. The markers leave the underlying positions and timestamps untouched.
+
+The M1 volume has half-open `bounds_q=[x,y,z,end_x,end_y,end_z]` and `dimensions=[width,depth,height]`. Convert a quantized index with `origin_m + q * quantum_m`. `materials_b64` encodes bytes indexed by `(z * depth + y) * width + x` relative to the lower bounds. Codes 0, 1 and 2 mean void, soil and rock. The current envelope is at most 64 × 40 × 64 cells. `revision` counts applied geometry edits. The viewer greedily merges material interfaces and rebuilds the visible faces only for a new volume or cut depth. Local viewport boundaries do not imply physical walls.
+
+Live chronicle scans at most two pages per request and caches first occurrences and lifecycle fact IDs. Absence in an unfinished scan means the fact is not yet observed. Live recent interactions are limited to the latest 12 per tracked identity and 256 identities. The saved canonical journal has no such browsing limit. On 3D live playback at 1×, the delayed display may interpolate a committed move with known endpoints and interval within one geometry revision. It holds the last recorded position through an evidence gap. Paused views and archive jumps show positions at the committed cut.

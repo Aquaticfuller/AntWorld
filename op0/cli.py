@@ -25,6 +25,13 @@ PREVIOUS = ROOT / "experiments/s6_4_ecological_mechanism_closure/portable-physic
 MICRO = ROOT / "experiments/m0/portable-demo"
 R0 = ROOT / "experiments/r0/witnesses"
 R0_R1 = ROOT / "experiments/r0_r1/witnesses"
+M1 = ROOT / "experiments/m1/witnesses"
+M1_DEMOS = (
+    (M1, "m1-2-plugged-finite-day90.zip", "M1 · Shallow soil plug",
+     "Follow a single queen and her own workers through the native 90-day shallow plug experiment."),
+    (M1, "m1-2-open-absent.zip", "M1 · No external supply",
+     "The same founding profile with an open entrance and no external food or water."),
+)
 R0_R1_DEMOS = tuple(
     (R0_R1,file,title,description)
     for file,title,description in (
@@ -91,7 +98,7 @@ def default_catalog(path, include_demos=True, micro_first=False, r0_first=False,
         demos = MICRO_DEMOS + DEMOS if micro_first else DEMOS + MICRO_DEMOS
         demos = R0_DEMOS + demos if r0_first else demos + R0_DEMOS
         demos = R0_R1_DEMOS + demos if r0_r1_first else demos + R0_R1_DEMOS
-        for folder, filename, title, description in demos:
+        for folder, filename, title, description in demos + M1_DEMOS:
             if not (folder / filename).is_file():
                 continue
             if folder not in manifests:
