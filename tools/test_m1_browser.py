@@ -36,15 +36,17 @@ def main():
             for folder, name, title, description in M1_DEMOS:
                 catalog.register(folder / name, title, manifest[name], description)
         app = ReadAPI(catalog)
+        environment = os.environ.copy()
+        if os.name == "nt":
+            environment.update(TMPDIR=str(work), TEMP=str(work), TMP=str(work))
         with LiveSession(args.core, work / "saves") as live, bind(app, 0, None if args.mode == "m1-witnesses" else live) as server:
             thread = Thread(target=server.serve_forever, daemon=True)
             thread.start()
             started = process_time()
             try:
-                run([args.node, str(ROOT / "op0/tests/browser_smoke.mjs"), str(args.browser.resolve()),
+                run([args.node, str(ROOT / "op0/tests/browser_smoke.mjs"), str(args.browser.absolute()),
                      f"http://127.0.0.1:{server.server_port}", str(args.output.resolve()), args.mode],
-                    cwd=ROOT, env=os.environ | {"TMPDIR": str(work), "TEMP": str(work), "TMP": str(work)},
-                    check=True, timeout=360)
+                    cwd=ROOT, env=environment, check=True, timeout=360)
                 if args.mode == "m1-soak":
                     core = live.worker
                     with live.lock:

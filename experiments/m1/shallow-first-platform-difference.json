@@ -1,0 +1,125 @@
+{
+  "world_id": "00000000-0000-028d-0000-0000000007d3",
+  "environments": [
+    "Windows Clang 23.1.5",
+    "Ubuntu GCC 11.4"
+  ],
+  "snapshots": [
+    {
+      "initial.chk": "461e5cabd788d98ab28d91c0d2b748c70567d80ba954aaadcc7326631101a613",
+      "final.frame": "b7b07bb291d70f25a0bec750fb7ec83d842f57fef94eae431c96a216fbdb0bb1"
+    },
+    {
+      "initial.chk": "461e5cabd788d98ab28d91c0d2b748c70567d80ba954aaadcc7326631101a613",
+      "final.frame": "ef7fc82cabfe1ee29cf4bcd03ed342cab575dbc186328c6765efab4523b5d6e9"
+    }
+  ],
+  "first_difference_at_fact": 138444,
+  "common_prefix_sha256": "c53f4911a30ed28e1c2a95b7148148be90cf1d646173f420dec2e443b0e21418",
+  "kind": [
+    "BiologicalObservation",
+    "BiologicalObservation"
+  ],
+  "facts": [
+    {
+      "id": "138444",
+      "time_ms": 6284296144,
+      "kind": "BiologicalObservation",
+      "actor": "16",
+      "related": "61",
+      "source": "48872",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        -0.004,
+        -0.004,
+        -0.0015
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT",
+      "action": {
+        "phase": "Selected",
+        "act": "Approach a nestmate",
+        "bout": "48883",
+        "began_ms": null,
+        "destination_m": [
+          -0.0045000000000000005,
+          -0.004,
+          -0.001
+        ]
+      }
+    },
+    {
+      "id": "138444",
+      "time_ms": 6284296144,
+      "kind": "BiologicalObservation",
+      "actor": "16",
+      "related": "36",
+      "source": "48872",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        -0.004,
+        -0.004,
+        -0.0015
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT",
+      "action": {
+        "phase": "Selected",
+        "act": "Approach a nestmate",
+        "bout": "48883",
+        "began_ms": null,
+        "destination_m": [
+          -0.0035,
+          -0.004,
+          -0.001
+        ]
+      }
+    }
+  ],
+  "changes": {
+    "observation": [
+      [
+        1,
+        21,
+        61,
+        48883,
+        6284296144,
+        0,
+        -0.0045000000000000005,
+        -0.004,
+        -0.001
+      ],
+      [
+        1,
+        21,
+        36,
+        48883,
+        6284296144,
+        0,
+        -0.0035,
+        -0.004,
+        -0.001
+      ]
+    ]
+  }
+}

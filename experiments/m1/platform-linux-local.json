@@ -1,0 +1,80 @@
+{
+  "reference": {
+    "system": "Windows",
+    "machine": "AMD64",
+    "reviewed_reference": "36bbf99bd0cd28c992a6fa830dccfb9ff9e419a8",
+    "binary_sha256": "d1469877c875bd4925efda09836f3f9be21c137df84e014fb330c935b9058cda",
+    "native_protocol": "antworld.m0.live.v9"
+  },
+  "compared": {
+    "system": "Linux",
+    "machine": "x86_64",
+    "reviewed_reference": "36bbf99bd0cd28c992a6fa830dccfb9ff9e419a8",
+    "binary_sha256": "717127851084f7e2579dfd7cb65ecb7cf8c17c6089a309b406f16a3690e83d13",
+    "native_protocol": "antworld.m0.live.v10"
+  },
+  "cases": 16,
+  "status": "PLATFORM_DIFFERENCES",
+  "differences": [
+    {
+      "case": "control-plugged-250-80",
+      "changes": {
+        "canonical_sha256": [
+          "aec8484844d46446275dab298bd66ce290eb9a916927c9ee9cf33216fb37b94c",
+          "3de12540748f89d7237c2004c80182aa062f36ebadcb7f49c586014ba442fdc7"
+        ],
+        "frame_sha256": [
+          "ea413b5c5b896088be5aa69379034464f80b936eb862709037ec293426e351cd",
+          "814ca97879450c619d0440a823f8f3ae6d1677782507867f4d48fec17544297f"
+        ],
+        "cursor": [
+          266265,
+          253140
+        ],
+        "live": [
+          {
+            "Worker": 7,
+            "Pupa": 3,
+            "Larva": 1
+          },
+          {
+            "Worker": 6,
+            "Pupa": 3,
+            "Larva": 1
+          }
+        ],
+        "delivered_ug": [
+          [
+            7998,
+            4002,
+            32000,
+            0
+          ],
+          [
+            6665,
+            3335,
+            30000,
+            0
+          ]
+        ],
+        "soil_edits": [
+          32,
+          30
+        ]
+      }
+    },
+    {
+      "case": "control-blocked-250-80",
+      "changes": {
+        "canonical_sha256": [
+          "51ac49fd37dc0b04210bb3a3b74d6099160c6a82402bde07a147bb2822c7b81b",
+          "b60f628f9e24ccdfd2a53e826413da2d90270cda27d6921fe3be06ddaad31fb8"
+        ],
+        "frame_sha256": [
+          "189a82a7755fbf3bbea09946e67bc2a9d48247df3b6047da92a72168be4b64f7",
+          "1dd41d2f02ed0005377def7d8e30663952cc420a4ec1a18fa289a40408f06b8b"
+        ]
+      }
+    }
+  ]
+}

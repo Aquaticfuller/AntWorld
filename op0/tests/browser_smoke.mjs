@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(["nursery", "ecology", "habitat", "m1", "m1-witnesses", "m1-soak"].includes(mode) ?
+    ...(process.platform === "win32" && ["nursery", "ecology", "habitat", "m1", "m1-witnesses", "m1-soak"].includes(mode) ?
         ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
@@ -675,7 +675,7 @@ try {
     const port = await wait(async () => {
         try { return (await readFile(join(cache, "DevToolsActivePort"), "utf8")).split("\n")[0]; }
         catch { return null; }
-    }, "Chromium testing port", 15000);
+    }, "Chromium testing port", 45000);
     const tabs = await fetch("http://127.0.0.1:" + port + "/json/list").then(r => r.json());
     socket = new WebSocket(tabs.find(t => t.type === "page").webSocketDebuggerUrl);
     await new Promise((success, failure) => {
