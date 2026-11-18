@@ -419,6 +419,72 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(past["time_ms"], expected["excavation"]["time_ms"] + 1250)
         self.assertEqual(list(self.live.saves.rglob("*.sqlite")), [])
 
+    def test_next_birth_skips_the_first_and_continues_after_restore(self):
+        if not self.live.core().next_milestone:
+            self.skipTest("Build the native Core with next-event seeking")
+        with patch("op0.live.randbits", return_value=270001):
+            self.live.write("new", {})
+
+        def seek_birth(occurrence):
+            started = self.live.write("seek", {"target": "egg", "occurrence": occurrence})
+            self.assertEqual(started["fast_forward"]["state"], "seeking")
+            for _ in range(180):
+                stopped = self.advance(1000)
+                if not stopped["running"]:
+                    break
+            hit = stopped["fast_forward"]
+            self.assertEqual(hit["state"], "reached")
+            self.assertEqual((stopped["time_ms"], stopped["rate"]), (hit["event"]["time_ms"], 1))
+            return hit["event"]
+
+        first = seek_birth("first")
+        second = seek_birth("next")
+        self.assertEqual((first["time_ms"], second["time_ms"]), (4 * DAY, 4 * DAY + 2 * HOUR))
+        self.assertGreater(int(second["id"]), int(first["id"]))
+        before = self.live.status()
+        with self.assertRaisesRegex(ValueError, "Choose the first or next event"):
+            self.live.write("seek", {"target": "egg", "occurrence": "previous"})
+        self.assertEqual(self.live.status(), before)
+        self.live.write("save", {"name": "After second birth"})
+        third = seek_birth("next")
+        self.assertGreater(int(third["id"]), int(second["id"]))
+        frame = self.live.worker.call("FRAME")
+        self.live.write("load", {"name": "After second birth"})
+        self.assertEqual(seek_birth("next"), third)
+        self.assertEqual(self.live.worker.call("FRAME"), frame)
+
+    def test_next_exit_uses_current_positions_and_keeps_same_timestamp_matches(self):
+        if not self.live.core().next_milestone:
+            self.skipTest("Build the native Core with next-event seeking")
+        # These two recorded exits were committed in the same atomic timestamp.
+        events = []
+        with ZipFile(WITNESS) as witness, witness.open("facts.bin") as stream:
+            for _, raw in prefixed(stream):
+                _, fact = decode_fact(raw)
+                if fact.id in (52416, 52420):
+                    events.append(fact.packet())
+                if fact.id == 52420:
+                    break
+        self.assertEqual([event["kind"] for event in events], ["Moved", "Moved"])
+        first, second = events
+        self.assertEqual(first["time_ms"], second["time_ms"])
+        stamp = first["time_ms"]
+        with patch("op0.live.randbits", return_value=270001):
+            self.live.write("new", {})
+        self.live.write("clock", {"running": False})
+        self.live.publish(self.live.worker.call(f"ADVANCE {stamp - 1}"))
+
+        request = {"target": "exit", "occurrence": "next"}
+        started = self.live.write("seek", request)
+        self.assertEqual(started["fast_forward"]["state"], "seeking")
+        stopped = self.advance(1000)
+        self.assertEqual(stopped["fast_forward"]["event"], first)
+        frame = self.live.worker.call("FRAME")
+        next_stop = self.live.write("seek", request)
+        self.assertEqual(next_stop["fast_forward"], dict(request, state="reached", event=second))
+        self.assertEqual((next_stop["time_ms"], next_stop["running"], next_stop["rate"]), (stamp, False, 1))
+        self.assertEqual(self.live.worker.call("FRAME"), frame)
+
     def test_native_clock_save_metadata_and_exact_resume(self):
         started = self.live.write("new", {})
         self.assertTrue(started["running"])

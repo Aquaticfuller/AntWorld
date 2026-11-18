@@ -75,14 +75,15 @@
       <div class="live-milestone" id="live-milestone">
         <label for="live-target">Target event</label>
         <select id="live-target">
-          <option value="egg">First egg laid</option><option value="hatch">First hatch</option><option value="worker">First worker eclosed</option>
-          <option value="exit">First worker leaves the nest</option><option value="delivery">First food delivered</option><option value="excavation">First excavation</option>
-          <option value="water" data-habitat hidden disabled>First collection from the water source</option>
-          <option value="recruitment" data-habitat hidden disabled>First worker responds to recruitment</option>
-          <option value="patrol" data-habitat hidden disabled>First entrance patrol</option>
-          <option value="entrance-contact" data-habitat hidden disabled>First entrance antennal contact</option>
+          <option value="egg">Egg laid</option><option value="hatch">Hatch</option><option value="worker">Worker emergence</option>
+          <option value="exit">Worker leaves the nest</option><option value="delivery">Food delivered</option><option value="excavation">Excavation</option>
+          <option value="water" data-habitat hidden disabled>Collection from the water source</option>
+          <option value="recruitment" data-habitat hidden disabled>Recruitment response</option>
+          <option value="patrol" data-habitat hidden disabled>Entrance patrol</option>
+          <option value="entrance-contact" data-habitat hidden disabled>Entrance antennal contact</option>
         </select>
-        <button id="live-seek" type="button">Fast-forward to event</button>
+        <button id="live-seek" type="button">Find first occurrence</button>
+        <button id="live-seek-next" type="button" hidden>Fast-forward to next</button>
       </div>
       <div class="nursery-launch">
         <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
@@ -94,6 +95,7 @@
           <option value="traffic">Previous nursery</option><option value="reference">R0-r1 reference</option>
         </select>
         <button id="nursery-delivery" type="button" hidden>Find first delivery</button>
+        <button id="nursery-next-delivery" type="button" hidden>Find next delivery</button>
         <span class="muted" data-i18n>Ten initialized workers and nearby brood. Starts immediately at real time.</span>
       </div>
     </section>

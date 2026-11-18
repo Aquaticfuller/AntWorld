@@ -54,7 +54,7 @@ Independent archive verification took about 13.7 s for 266,265 facts with a 25.8
 
 ```powershell
 py -3 -B -m tools.build_m0_live --jobs 4
-$core = 'out/m0-live-bin/antworld_m0_live_v11.exe'
+$core = py -3 -B -c 'from op0.live import core_path; print(core_path())'
 py -3 -B -m tools.run_m1_habitat archive36 --core $core > out/m1-physics36.jsonl
 py -3 -B -m tools.verify_m1_habitat --rerun out/m1-physics36.jsonl
 py -3 -B -m tools.run_m1_habitat paired --core $core > out/m1-paired.jsonl

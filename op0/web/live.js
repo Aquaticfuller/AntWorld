@@ -7,6 +7,8 @@ const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "Fi
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
+const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
+    option => [option.value, option.textContent]));
 const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact"]);
 const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
     "Entrance antennal contact": "#b9d6f5"};
@@ -52,11 +54,14 @@ function liveControls() {
     for (const option of target.querySelectorAll("[data-habitat]")) option.hidden = option.disabled = !s?.habitat;
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
-    $("nursery-delivery").disabled = locked || seeking;
-    $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = locked || seeking;
+    $("live-seek-next").hidden = !s?.next_milestone_available;
+    $("nursery-next-delivery").hidden = $("nursery-delivery").hidden || $("live-seek-next").hidden;
+    $("nursery-delivery").disabled = $("nursery-next-delivery").disabled = locked || seeking;
+    $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = $("live-seek-next").disabled = locked || seeking;
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
     const details = stop ? tr(liveStopLabels[stop.state], {
-        event: tr(liveMilestones[stop.target]), time: stop.event ? duration(stop.event.time_ms) : ""
+        event: tr((stop.occurrence === "next" ? liveEventNames : liveMilestones)[stop.target]),
+        time: stop.event ? duration(stop.event.time_ms) : ""
     }) : "";
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;
@@ -406,6 +411,11 @@ async function liveCommand(resource, data = {}) {
     }
 }
 
+function seekLiveEvent(target, occurrence) {
+    liveView.shownStop = null;
+    return liveCommand("seek", {target, occurrence});
+}
+
 async function postLive(resource, data) {
     const result = await fetch("/api/v1/live/" + resource, {method: "POST", headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)});
@@ -493,14 +503,10 @@ function bindLive() {
     });
     $("nursery-treatment").addEventListener("change", liveControls);
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
-    click("live-seek", () => {
-        liveView.shownStop = null;
-        return liveCommand("seek", {target: $("live-target").value});
-    });
-    click("nursery-delivery", () => {
-        liveView.shownStop = null;
-        return liveCommand("seek", {target: "delivery"});
-    });
+    click("live-seek", () => seekLiveEvent($("live-target").value, "first"));
+    click("live-seek-next", () => seekLiveEvent($("live-target").value, "next"));
+    click("nursery-delivery", () => seekLiveEvent("delivery", "first"));
+    click("nursery-next-delivery", () => seekLiveEvent("delivery", "next"));
     $("live-rate").addEventListener("change", () => liveCommand("clock", {rate: Number($("live-rate").value)}).catch(report));
     click("open-saves", async () => {
         $("save-name").value = liveView.state?.saved_name || "";

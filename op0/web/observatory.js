@@ -18,9 +18,9 @@ function renderChronicle(data) {
         const fact = get(key), option = $("live-target").querySelector(`option[value="${key}"]`);
         const canSeek = !fact && option && !option.disabled && liveView.state.ants.some(ant => ant.stage !== "Dead");
         const action = button("", () => {
+            if (option && !option.disabled) $("live-target").value = key;
             if (fact) return showLiveFact(fact.id).catch(report);
-            $("live-target").value = key;
-            return liveCommand("seek", {target: key}).catch(report);
+            return seekLiveEvent(key, "first").catch(report);
         });
         action.disabled = !fact && !canSeek;
         action.classList.toggle("reached", Boolean(fact));

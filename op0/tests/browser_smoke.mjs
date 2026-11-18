@@ -315,7 +315,7 @@ async function liveWorld() {
     assert.equal(await evaluate("$('watch-delivery').hidden"), true);
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     await select("locale", "zh-CN");
-    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('live-seek').textContent === '\u5feb\u8fdb\u5230\u4e8b\u4ef6'"),
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && $('live-seek').textContent === '\u67e5\u627e\u9996\u6b21'"),
         "Translate the live controls without resetting the world");
     assert.equal(await evaluate("liveView.state.time_ms"), savedTime);
     await click("#live-pause");
@@ -512,10 +512,12 @@ async function foundingHabitat() {
 
 async function observatoryWorld() {
     const waitView = (expression, label, limit) => wait(() => evaluate(expression), label, limit);
-    const stopAt = async target => {
+    const stopAt = async (target, occurrence = "first") => {
         await select("live-target", target);
-        await click("#live-seek");
-        await waitView("liveView.state?.fast_forward?.state === 'reached' && !liveView.busy", "Committed " + target, 105_000);
+        await click(occurrence === "next" ? "#live-seek-next" : "#live-seek");
+        await waitView(`liveView.state?.fast_forward?.state === 'reached' && !liveView.busy &&
+            liveView.state.fast_forward.target === '${target}' && (liveView.state.fast_forward.occurrence || 'first') === '${occurrence}'`,
+            "Committed " + target, 105_000);
         const stop = await evaluate("({id: liveView.state.world_id, time: liveView.state.time_ms, event: liveView.state.fast_forward.event, actor: app.selected})");
         assert.equal(stop.event.time_ms, stop.time);
         return stop;
@@ -558,6 +560,12 @@ async function observatoryWorld() {
     await select("locale", "zh-CN");
     await waitView("document.documentElement.lang === 'zh-CN' && $('chronicle-steps').textContent.includes('\u9996\u6b21')", "Chinese milestones");
     await screenshot("m1-first-egg");
+    assert.equal(await evaluate("$('live-seek-next').textContent"), "\u5feb\u8fdb\u5230\u4e0b\u4e00\u6b21");
+    result.next_egg = await stopAt("egg", "next");
+    assert.equal(result.next_egg.event.kind, "AntBorn");
+    assert.ok(BigInt(result.next_egg.event.id) > BigInt(result.egg.event.id));
+    assert.equal(result.next_egg.time - result.egg.time, 2 * 3600000);
+    assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
     await select("locale", "en");
     result.exit = await stopAt("exit");
     assert.equal(result.exit.event.kind, "Moved");

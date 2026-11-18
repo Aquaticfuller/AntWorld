@@ -44,7 +44,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v11"), installed.with_stem("antworld_m0_live_v10"),
+    paths = (installed.with_stem("antworld_m0_live_v12"), installed.with_stem("antworld_m0_live_v11"),
+             installed.with_stem("antworld_m0_live_v10"),
              installed.with_stem("antworld_m0_live_v9"),
              installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
              installed.with_stem("antworld_m0_live_v6"), ROOT / "build/m0-live" / name,
@@ -62,7 +63,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 11))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 12))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -72,6 +73,7 @@ class NativeCore:
             self.local_ecology = generation >= 8
             self.founding_habitat = generation >= 9
             self.observatory = generation >= 10
+            self.next_milestone = generation >= 11
         except Exception:
             self.close()
             raise
@@ -299,17 +301,35 @@ class LiveSession:
                                         for edit in self.frame["edits"] if edit["event"] == event.id]
         return packet
 
-    def start_seek(self, target):
+    def start_seek(self, target, occurrence):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
         require(target not in HABITAT_MILESTONES or self.frame["flags"].get("founding_habitat"), "Unknown live milestone")
         require(not self.seeking(), "Cancel the current fast-forward first.")
-        past = self.worker.call(f"FIND_MILESTONE {target}")
-        if past:
-            self.fast_forward = dict(target=target, state="already", event=self.milestone_event(past))
+        require(occurrence in ("first", "next"), "Choose the first or next event")
+        next_event = occurrence == "next"
+        if next_event:
+            require(self.worker.next_milestone, "Build the updated Core to seek the next event.")
+            previous = self.fast_forward or {}
+            event = previous.get("event")
+            after = 0
+            if (event and previous["state"] == "reached" and previous["target"] == target and
+                    event["time_ms"] == self.frame["time_ms"]):
+                after = event["id"]
+            raw = self.worker.call(f"FIND_NEXT_MILESTONE {target} {after}")
         else:
-            self.fast_forward = dict(target=target, state="seeking", event=None)
+            raw = self.worker.call(f"FIND_MILESTONE {target}")
+        event = self.milestone_event(raw) if raw else None
+        self.fast_forward = dict(target=target, state="seeking", event=None)
+        if next_event:
+            self.fast_forward["occurrence"] = occurrence
+        if event is None:
             self.running, self.rate, self.error = True, RATES[-1], None
             self.reanchor()
+        elif next_event:
+            self.stop_seek("reached", event)
+            self.error = None
+        else:
+            self.fast_forward.update(state="already", event=event)
 
     def stop_seek(self, state, event=None):
         self.fast_forward = self.fast_forward | dict(state=state, event=event)
@@ -360,6 +380,7 @@ class LiveSession:
                     ecology_available=self.binary.is_file() and (self.worker is None or self.worker.local_ecology),
                     habitat_available=self.binary.is_file() and (self.worker is None or self.worker.founding_habitat),
                     observatory_available=self.binary.is_file() and (self.worker is None or self.worker.observatory),
+                    next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -598,7 +619,7 @@ class LiveSession:
                 if resource == "save":
                     self.save(data.get("name"), data.get("overwrite") is True)
                 elif resource == "seek":
-                    self.start_seek(data.get("target"))
+                    self.start_seek(data.get("target"), data.get("occurrence", "first"))
                 elif resource == "clock":
                     rate, running = data.get("rate", self.rate), data.get("running", self.running)
                     require(type(rate) is int and rate in RATES and type(running) is bool, "Invalid live clock settings")

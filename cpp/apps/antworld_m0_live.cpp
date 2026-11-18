@@ -167,6 +167,7 @@ bool adult_worker(const WorldRuntime& world, const WorldEvent& fact) {
 struct MilestoneSearch {
     Milestone target;
     EventId cursor{};
+    std::optional<SimTime> matched_at;
     std::optional<double> surface_y;
     std::set<EntityId> underground;
 
@@ -174,6 +175,15 @@ struct MilestoneSearch {
         if (target == Milestone::Exit) {
             const auto surface = world.surface_snapshot();
             if (surface.configured) surface_y = surface.surface.origin_m.y;
+        }
+    }
+
+    void start_at_tip(const WorldRuntime& world) {
+        cursor = {world.summary().committed_events};
+        if (!surface_y) return;
+        for (const auto& ant : world.ant_states()) {
+            if (ant.stage == LifeStage::Adult && ant.caste == Caste::Worker && ant.position.y < *surface_y)
+                underground.insert(ant.id);
         }
     }
 
@@ -221,11 +231,15 @@ struct MilestoneSearch {
 
     std::optional<WorldEvent> scan(const WorldRuntime& world) {
         constexpr std::size_t page = 512;
+        matched_at.reset();
         while (true) {
             const auto events = world.events_after(cursor, page);
             for (const auto& fact : events) {
                 cursor = fact.id;
-                if (matches(world, fact)) return fact;
+                if (matches(world, fact)) {
+                    matched_at = fact.time;
+                    return fact;
+                }
             }
             if (events.size() < page) return {};
         }
@@ -317,7 +331,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v10");
+                message("OK", "antworld.m0.live.v11");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
@@ -425,10 +439,19 @@ int main() {
                     search.reset();
                     if (command=="ADVANCE") payload(world->checkpoint_frame());
                     else message("OK");
-                } else if (command == "FIND_MILESTONE") {
+                } else if (command == "FIND_MILESTONE" || command == "FIND_NEXT_MILESTONE") {
                     const auto milestone = read_milestone(request);
+                    const bool next = command == "FIND_NEXT_MILESTONE";
+                    const EventId after{next ? number(request) : 0};
                     end(request);
-                    search.emplace(milestone, *world);
+                    if (after.value) {
+                        // Preserve the detector state at a hit within an atomic timestamp.
+                        require(search && search->target == milestone && search->cursor == after &&
+                                search->matched_at == world->summary().now, "Cannot continue this milestone search");
+                    } else {
+                        search.emplace(milestone, *world);
+                        if (next) search->start_at_tip(*world);
+                    }
                     if (const auto hit = search->scan(*world)) payload(encode_event(*hit));
                     else message("OK");
                 } else if (command == "ADVANCE_UNTIL") {

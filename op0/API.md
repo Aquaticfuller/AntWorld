@@ -64,7 +64,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 | `observatory` | POST | `preset` of `open`, `plugged` or `absent`. Starts a physics 36 world at 1× |
 | `new` | POST | Creates a new world in the protected shaft fixture and starts the Core clock at `1×`. `timing` accepts `standard` or the opt-in `shorter` setting |
 | `clock` | POST | `running` and optional `rate` from 1, 10, 60, 600, 3600 and 86400. Returns the published clock after the change |
-| `seek` | POST | `target` of `egg`, `hatch`, `worker`, `exit`, `delivery` or `excavation`. Advance at up to `86,400×` until the first committed milestone. Pause resets the rate to `1×`, including on cancellation or when no living ants or work remain |
+| `seek` | POST | `target` of `egg`, `hatch`, `worker`, `exit`, `delivery`, `excavation` or, in a founding habitat, `water`, `recruitment`, `patrol`, `entrance-contact`. `occurrence` accepts `first` (default) or `next`. Advance at up to `86,400×`. Pause resets the rate to `1×` |
 | `save` | POST | `name` and optional `overwrite`. Publishes a finished native SQLite store with its authoritative checkpoint and history |
 | `load` | POST | `name`. Validates a native save and restores its world paused |
 | `replay` | POST | `name` of a managed save. Registers its content identity for verified read-only archive replay |
@@ -72,7 +72,7 @@ The derived SQLite index uses the cache format, source path and input hashes as 
 
 Live commands take a same-origin local JSON request. The browser observes published cuts. The native clock advances from the host's monotonic clock independently of requests. Current views carry the newest 120 canonical facts at most, with up to 16 listed in the selected group. The browser displays actual positions and recent committed movement points. It does not reconstruct a path between them. The complete history remains in the Core and in each explicitly saved SQLite store.
 
-The live clock checks fast-forward targets against committed facts. It completes all scheduled work at the matching timestamp before pausing. The live `fast_forward` status carries the target, result and matching fact when available. An earlier match is reported through `already` at the current clock position. The stop request is viewer state and goes away on load or when starting a new colony. Saved worlds retain their original history and checkpoint format.
+The live clock checks fast-forward targets against committed facts. It completes all scheduled work at the matching timestamp before pausing. The live `fast_forward` status carries the target, result and matching fact when available. `first` reports a historical match as `already` at the current clock position. `next` starts after the current committed cut. Selecting `next` for the same target immediately after a pause at a match continues from that fact's EventId, including any later matching fact at the same timestamp. `next` requires native protocol `antworld.m0.live.v11` or later. The stop request is viewer state and goes away on load or when starting a new colony. Saved worlds retain their original history and checkpoint format.
 
 `exit` matches a worker's committed movement from below the configured surface plane onto it. `delivery` matches a worker depositing positive food mass in the nest. `excavation` matches a completed soil removal and includes its associated geometry edit. At a new match for these targets the browser follows the worker's published positions across the surface and underground views.
 
