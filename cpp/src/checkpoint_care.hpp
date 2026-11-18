@@ -128,7 +128,7 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
                 ensure(!handling || c.target.value,"care handling has no target");
                 const auto from=c.act==CareAct::ArrangeBrood?s.ants.get(s.ants.index.at(c.target)).position:a.position;
                 auto duration=care_duration(profile,s.config,a.caste,c.act,from,c.destination,portable_care(s));
-                if (a.caste==Caste::Worker && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
+                if (motile_caste(s,a.caste) && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
                     duration=with_worker_turn(s,id,from,c.destination,duration);
                 ensure(e.key.time==after(c.began_at,duration.milliseconds),"care bout duration differs from profile");
                 if (handling && !c.carrying_brood)

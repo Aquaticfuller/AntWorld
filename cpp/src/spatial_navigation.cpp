@@ -1,4 +1,5 @@
 #include "state.hpp"
+#include "ecological_internal.hpp"
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
 #include <queue>
@@ -9,6 +10,7 @@ using namespace detail;
 
 SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
     const auto& s=*state_;
+    if (sealed_chamber(s) && s.geometry_edits.empty()) return {};
     const auto& g=s.geometry->config;
     const auto level=surface_level(s);
     if (!level) return {};
@@ -77,6 +79,7 @@ bool WorldRuntime::at_foraging_home(const AntState& ant) const {
     const auto& s=*state_;
     const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
+    if (sealed_chamber(s) && s.geometry_edits.empty()) return ant.position==depot;
     if (!within_contact(ant.position,depot,s.config) || !spatially_clear(ant.position,depot)) return false;
     const auto route=s.connectors.find(ant.id);
     return route==s.connectors.end() || (!route->second.cursor && ant.position==route->second.points[0]);

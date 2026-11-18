@@ -50,6 +50,7 @@ void LiveHistoryWriter::bind(WorldRuntime& world) const {
 
 bool LiveHistoryWriter::try_submit(WorldRuntime& world,std::optional<SaveToken> expected,const SaveOptions& options) {
     if (pending()) return false;
+    if (world.first_history_cursor()) throw std::invalid_argument("Cannot archive a world with omitted history");
     bind(world);
     const auto started=Clock::now();
     auto checkpoint=world.checkpoint_frame();

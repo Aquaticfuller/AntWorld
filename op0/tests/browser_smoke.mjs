@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(process.platform === "win32" && ["nursery", "ecology", "habitat", "m1", "m1-witnesses", "m1-soak"].includes(mode) ?
+    ...(process.platform === "win32" && ["nursery", "ecology", "habitat", "m1", "m2", "m1-witnesses", "m1-soak"].includes(mode) ?
         ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
@@ -293,6 +293,7 @@ async function liveWorld() {
     await screenshot("m0-live-colony");
     await click("#open-saves");
     await evaluate("$('save-name').value = 'Live browser test'");
+    await select("save-mode","archive");
     await click("#save-form button");
     await wait(() => evaluate("$('saved-colonies').textContent.includes('Live browser test') && !liveView.busy"), "List the native SQLite save");
     assert.match(await evaluate("$('saved-colonies').textContent"), /Day 4|Day 5/);
@@ -510,6 +511,51 @@ async function foundingHabitat() {
     console.log(JSON.stringify({status: "PASS", browser: (await send("Browser.getVersion")).product, delivery}, null, 2));
 }
 
+async function sealedNestWorld() {
+    await click("#new-single-nest");
+    await wait(() => evaluate("liveView.state?.physics===38 && app.section==='nest' && Boolean(nestView.volume) && !liveView.busy"),
+        "Sealed nest in the live viewport");
+    assert.equal(await evaluate("liveView.state.ants.length"), 1);
+    assert.equal(await evaluate("app.geometry.openings.length"), 0);
+    const seek = async (target, kind) => {
+        await select("live-target",target);
+        await click("#live-seek-next");
+        await wait(() => evaluate(`liveView.state?.fast_forward?.state==='reached' &&
+            liveView.state.fast_forward.target==='${target}' && !liveView.busy`), "Next committed " + target);
+        const event = await evaluate("liveView.state.fast_forward.event");
+        assert.equal(event.kind,kind);
+        assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"),false);
+        return event;
+    };
+    result.egg = await seek("egg","AntBorn");
+    result.brood = await seek("brood-moved","BroodMoved");
+    assert.equal(result.brood.related, "2");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('title').textContent==='\u5c01\u95ed\u5efa\u7fa4\u5ba4'"),
+        "Chinese sealed-nest title");
+    await screenshot("m2-brood-zh");
+    result.worker = await seek("worker","StageChanged");
+    result.dig = await seek("excavation","SoilExcavated");
+    result.delivery = await seek("delivery","FoodDelivered");
+    assert.equal(result.dig.actor, result.worker.actor);
+    assert.equal(result.delivery.actor, result.worker.actor);
+    await wait(() => evaluate("liveView.state.soil_piles?.length && nestView.volume?.revision===app.geometry.revision"),
+        "Real deposited soil in the amended nest view");
+    await screenshot("m2-worker-zh");
+    await click("#open-saves");
+    assert.equal(await evaluate("$('save-mode').value"), "snapshot");
+    await evaluate("$('save-name').value='Sealed nest browser'; $('save-form').requestSubmit()");
+    await wait(() => evaluate("liveView.saves.some(s=>s.mode==='snapshot'&&s.history_floor>0)"), "Compact snapshot listed");
+    assert.equal(await evaluate("$('saved-colonies').querySelectorAll('button').length"), 1);
+    await click("#saved-colonies button");
+    await wait(() => evaluate("!$('save-manager').open && liveView.state.history_floor>0 && !$('live-seek-next').disabled"),
+        "Reloaded compact snapshot with next-event navigation");
+    assert.equal(await evaluate("$('live-seek').disabled"), true);
+    result.snapshot = await evaluate("liveView.saves[0].size_bytes");
+    assert.equal(exceptions.length,0,JSON.stringify(exceptions));
+    await writeFile(join(output,"sealed-nest-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
+}
+
 async function observatoryWorld() {
     const waitView = (expression, label, limit) => wait(() => evaluate(expression), label, limit);
     const stopAt = async (target, occurrence = "first") => {
@@ -593,6 +639,7 @@ async function observatoryWorld() {
     await click("#individual-tab");
     await screenshot("m1-worker-delivery");
     await click("#open-saves");
+    await select("save-mode","archive");
     await evaluate("$('save-name').value='M1 review'; $('save-form').requestSubmit()");
     await waitView("$('saved-colonies').textContent.includes('M1 review') && !liveView.busy", "Published save");
     await click("#saved-colonies button:first-child");
@@ -705,7 +752,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (["live", "activity", "nursery", "ecology", "habitat", "m1", "m1-soak"].includes(mode)) {
+        if (["live", "activity", "nursery", "ecology", "habitat", "m1", "m2", "m1-soak"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -722,6 +769,8 @@ try {
         await ecologyWorld();
     } else if (mode === "habitat") {
         await foundingHabitat();
+    } else if (mode === "m2") {
+        await sealedNestWorld();
     } else if (mode === "m1") {
         await observatoryWorld();
     } else if (mode === "m1-witnesses") {

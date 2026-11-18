@@ -552,7 +552,8 @@ function showEvent(e) {
     }
     const antLink = id => id ? button(tr("Ant #{id}", {id}), () => selectAnt(id).catch(report)) : null;
     container.replaceChildren(node("h3", eventLabel(e)), keyValues([["Fact ID", "#" + e.id], ["Canonical event name", e.kind],
-        ["Simulation time", exactTime(e.time_ms)], ["Actor", antLink(e.actor)], ["Participant", antLink(e.related)],
+        ["Simulation time", exactTime(e.time_ms)], [e.kind === "BroodMoved" ? "Brood" : "Actor", antLink(e.actor)],
+        [e.kind === "BroodMoved" ? "Handler" : "Participant", antLink(e.related)],
         ["Resource / parcel", [e.resource, e.parcel].filter(Boolean).map(s => "#" + s).join(" / ") || null],
         ["Outcome", tr(e.outcome)], ["Recorded position", coords(e.position_m)], ["Transferred C/P/W/other", mass(e.mass_ug)],
         ...(e.origin_fact ? [["Preceding committed fact", button("#" + e.origin_fact, () => jumpEvent(e.origin_fact).catch(report))]] : []),
@@ -769,15 +770,15 @@ function planAngle(plan, point, time) {
     return before + turn * (time - plan.begins_ms) / (plan.translates_ms - plan.begins_ms);
 }
 
-function drawAdult(ctx, ant, x, y, radius, heading, selected, progress, time) {
+function drawAdult(ctx, ant, x, y, radius, heading, selected, progress, time, footprint = 0) {
     const queen = ant.caste === "Queen";
     ctx.save();
     ctx.translate(x,y);
-    if ($("body-envelopes").checked) {
+    if (footprint && $("body-envelopes").checked) {
         ctx.fillStyle = "#a6de9b24";
         ctx.strokeStyle = "#a6de9b90";
-        ctx.fillRect(-radius,-radius,2*radius,2*radius);
-        ctx.strokeRect(-radius,-radius,2*radius,2*radius);
+        ctx.fillRect(-footprint,-footprint,2*footprint,2*footprint);
+        ctx.strokeRect(-footprint,-footprint,2*footprint,2*footprint);
     }
     ctx.rotate(heading);
     ctx.scale(radius,radius);
@@ -832,6 +833,51 @@ function displayedMotion(ant) {
     return ant.display_position_m ? ant.display_motion : ant.motion_plan;
 }
 
+function adultGlyphSize(ant, terrain, pixelsPerMeter) {
+    const workerSize = Math.max(4, (terrain?.body_half_q || 1) * (terrain?.quantum_m || .0005) * pixelsPerMeter);
+    return workerSize * (ant.caste === "Queen" ? 1.65 : 1);
+}
+
+function adultHeading(ant, point, time) {
+    const motion = displayedMotion(ant);
+    if (motion) return planAngle(motion, point, time);
+    const habitat = app.live && liveView.state?.habitat;
+    if (ant.caste !== "Queen" || !habitat?.sealed_chamber) return 0;
+    // The laying layout uses the direction of the familiar brood area.
+    const from = motorPose(ant), nursery = habitat.brood_site_m;
+    const dx = nursery[0] - from[0], dz = nursery[2] - from[2];
+    const head = [...from];
+    if (Math.abs(dx) >= Math.abs(dz)) head[0] += dx > 0 ? .001 : -.001;
+    else head[2] += dz > 0 ? .001 : -.001;
+    const [x, y] = point(from), [tx, ty] = point(head);
+    return Math.atan2(ty - y, tx - x);
+}
+
+function drawSoilParcels(ctx, piles, point, visible, pixelsPerMeter) {
+    const deposits = new Map();
+    for (const pile of piles || []) {
+        if (!visible(pile.position_m)) continue;
+        const key = pile.position_m.join(",");
+        const previous = deposits.get(key);
+        deposits.set(key, {position: pile.position_m, volume: pile.volume_mm3 + (previous?.volume || 0)});
+    }
+    for (const {position, volume} of deposits.values()) {
+        const [x, y] = point(position);
+        const radius = Math.max(2, Math.min(13, Math.cbrt(volume) * pixelsPerMeter / 2300));
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.fillStyle = "#d0a16a";
+        ctx.strokeStyle = "#68452d";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, radius, radius * .65, 0, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#f5cd8e";
+        ctx.fillRect(-radius * .3, -radius * .25, Math.max(1, radius * .24), 1);
+        ctx.restore();
+    }
+}
+
 function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain, time) {
     const markers = new Map();
     for (const ant of visible) {
@@ -846,12 +892,13 @@ function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain, time) {
         if (ants.length === 1) {
             const a=ants[0];
             const half=terrain && (a.loaded?terrain.loaded_half_q:terrain.body_half_q)*terrain.quantum_m*pixelsPerMeter;
-            if (a.stage==="Adult" && a.caste!=="Male" && half>=5) {
+            const size = adultGlyphSize(a, terrain, pixelsPerMeter);
+            if (a.stage==="Adult" && a.caste!=="Male") {
                 const motion = displayedMotion(a);
-                drawAdult(ctx, a, x, y, half, motion ? planAngle(motion, point, time) : 0, a.id === app.selected,
-                    motion?.progress, time);
+                drawAdult(ctx, a, x, y, size, adultHeading(a, point, time), a.id === app.selected,
+                    motion?.progress, time, half);
             } else markerShape(ctx,a,x,y,a.id===app.selected);
-            app.hits.push({id:a.id,x,y,radius:Math.max(11,a.stage==="Adult"?half||0:0),ants});
+            app.hits.push({id:a.id,x,y,radius:Math.max(11,a.stage==="Adult"?size:0),ants});
             continue;
         }
         const selected = ants.some(a => a.id === app.selected);
@@ -881,7 +928,7 @@ function drawOccupants(ctx, visible, point, pixelsPerMeter, terrain, time) {
 }
 
 let soilGrain;
-function paintSoilEdges(ctx, slice, p, bounds) {
+function soilTexture(ctx) {
     if (!soilGrain) {
         const tile = document.createElement("canvas");
         tile.width=47; tile.height=41;
@@ -892,13 +939,17 @@ function paintSoilEdges(ctx, slice, p, bounds) {
         }
         soilGrain=ctx.createPattern(tile,"repeat");
     }
+    return soilGrain;
+}
+function paintSoilEdges(ctx, slice, p, bounds) {
+    const grain=soilTexture(ctx);
     const q=slice.quantum_m;
     ctx.beginPath();
     for (const [j,row] of slice.rows.entries()) for (let i=0;i<row.length;i++) if (row[i]!=="0") {
         const [x0,y0]=p.point(bounds[0]+i*q,bounds[1]+j*q);
         ctx.rect(x0,y0-q*p.unit,q*p.unit,q*p.unit);
     }
-    if (soilGrain) { ctx.fillStyle=soilGrain; ctx.fill(); }
+    if (grain) { ctx.fillStyle=grain; ctx.fill(); }
     ctx.beginPath();
     for (const [j,row] of slice.rows.entries()) for (let i=0;i<row.length;i++) if (row[i]==="0") {
         const u=bounds[0]+i*q,v=bounds[1]+j*q;
@@ -1136,6 +1187,7 @@ function drawMap(motionOnly = false) {
     const segment = app.restReplay;
     const visible = state.ants.filter(a => fits(motorPose(a)));
     app.visible = visible;
+    drawSoilParcels(ctx, state.soil_piles, point, fits, p.unit);
     drawOccupants(ctx, segment ? visible.filter(a => a.id !== segment.start.actor) : visible, point, p.unit, terrain, time);
     if (underground && app.live) {
         for (const depot of display?.colonies ?? app.meta.colonies) {
@@ -1146,7 +1198,7 @@ function drawMap(motionOnly = false) {
         }
         if (habitat) {
             if (fits(habitat.brood_site_m))
-                drawSite(ctx, point(habitat.brood_site_m), tr("Brood chamber"), "#d9a375", -19, true);
+                drawSite(ctx, point(habitat.brood_site_m), tr(habitat.sealed_chamber ? "Brood area" : "Brood chamber"), "#d9a375", -19, true);
             for (const source of state.sources) if (source.position_m[1] < surfaceY && fits(source.position_m)) {
                 const label = tr("Water in the brood chamber") + " · " + withUnit(source.stock_ug[2], "µg");
                 drawSite(ctx, point(source.position_m), label, "#91c9db", 35, true);

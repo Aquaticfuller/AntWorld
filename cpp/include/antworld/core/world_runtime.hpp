@@ -116,12 +116,17 @@ public:
     [[nodiscard]] std::vector<ScheduledEvent> pending_events() const;
     [[nodiscard]] std::vector<WorldEvent> committed_events() const;
     [[nodiscard]] std::vector<WorldEvent> events_after(EventId cursor, std::size_t limit) const;
+    [[nodiscard]] std::size_t first_history_cursor() const noexcept;
     [[nodiscard]] std::vector<std::uint8_t> checkpoint() const;
     void restore(std::span<const std::uint8_t> bytes);
     // Application persistence boundary. Call on the sole runtime thread.
     // Capture seals buffers without changing ecological state or copying facts.
     [[nodiscard]] HistoryCapture capture_history() const;
     [[nodiscard]] std::vector<std::uint8_t> checkpoint_frame() const;
+    // Continuation snapshot with a bounded tail. This format does not claim
+    // replay evidence for events before first_history_cursor().
+    [[nodiscard]] std::vector<std::uint8_t> resume_snapshot(std::size_t retained_facts = 2048) const;
+    void restore_snapshot(std::span<const std::uint8_t>);
     void restore_frame(std::span<const std::uint8_t>,std::shared_ptr<const EventPrefix>);
     void acknowledge_history(const HistoryCapture&,std::shared_ptr<const EventPrefix>);
     void limit_unpublished_history(std::size_t count);
@@ -157,6 +162,8 @@ private:
     void validate_nutrition_capacity() const;
     void execute_reproduction(Transaction&, const ScheduledEvent&);
     [[nodiscard]] std::optional<PositionM> local_egg_site(const AntState&) const;
+    [[nodiscard]] std::optional<PositionM> local_brood_berth(const AntState& carrier,const AntState& brood,
+                                                           PositionM nursery) const;
     [[nodiscard]] std::optional<PositionM> arrange_brood_site(const AntState&, PositionM shelter) const;
     [[nodiscard]] bool clear_brood_space(EntityId, PositionM from, PositionM to) const;
     void execute_resource_release(Transaction&, const ScheduledEvent&);
@@ -196,10 +203,11 @@ private:
     void draw_founding_water(Transaction&, const ScheduledEvent&, const AntState&);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
-    static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit,bool frame = false);
-    static void write_checkpoint(detail::Writer&,const State&,bool frame);
+    static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit,bool frame = false,
+                                            std::optional<std::size_t> retained_facts = {});
+    static void write_checkpoint(detail::Writer&,const State&,bool frame,std::optional<std::size_t> retained_facts = {});
     static std::unique_ptr<State> decode(std::span<const std::uint8_t>, const RuntimeLimits&,
-                                         std::shared_ptr<const EventPrefix> prefix = {});
+                                         std::shared_ptr<const EventPrefix> prefix = {},bool resume = false);
 public:
     static constexpr std::uint32_t long_term_schema_version = 9, long_term_physics_version = 11;
     static constexpr std::uint32_t allocation_schema_version = 10, allocation_physics_version = 12;

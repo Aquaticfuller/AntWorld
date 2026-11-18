@@ -30,6 +30,10 @@ inline std::uint8_t actor_facing(const auto& s,EntityId id) {
     return a!=s.autonomy.end()?a->second.facing:0;
 }
 
+inline bool motile_caste(const auto& s,Caste caste) {
+    return caste==Caste::Worker || (sealed_chamber(s) && caste==Caste::Queen);
+}
+
 inline SimTime with_worker_turn(const auto& s,EntityId id,PositionM from,PositionM to,SimTime translation) {
     if (!worker_motor(s) || from==to || !s.autonomy.contains(id)) return translation;
     return after(translation,turn_ms(actor_facing(s,id),movement_facing(from,to)));

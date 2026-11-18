@@ -10,8 +10,10 @@ inline std::int32_t brood_half(const GeometryConfig& g) {
     return std::max(g.body_half_q,static_cast<std::int32_t>(std::ceil(brood_pitch_m/(2*g.quantum_m))));
 }
 
-inline PositionM below_brood(PositionM site,const GeometryConfig& g) {
-    site.y-=static_cast<double>(brood_half(g)+2)*g.quantum_m;
+inline PositionM below_brood(PositionM site,const GeometryConfig& g,bool sealed = false) {
+    // The fine chamber keeps the stepping plane at one loaded-body half
+    // width above the floor. Test inside the supporting material.
+    site.y-=static_cast<double>(sealed?g.loaded_half_q+1:brood_half(g)+2)*g.quantum_m;
     return site;
 }
 
@@ -37,7 +39,25 @@ inline bool intersects_brood(PositionM from, PositionM to, PositionM occupant) {
 
 template<class Clear,class Free,class Neighbors>
 std::optional<PositionM> pick_egg_site(PositionM mother,const WorldConfig& world,
-                                       Clear clear,Free free,Neighbors neighbors) {
+                                       Clear clear,Free free,Neighbors neighbors,
+                                       std::optional<PositionM> nursery = {}) {
+    if (nursery) {
+        // The foundress faces the familiar nursery during laying. Search the
+        // local posterior sector on a 0.125 mm lattice. Brood envelopes still
+        // reserve space for later growth.
+        constexpr double increment=.000125;
+        const auto dx=mother.x-nursery->x, dz=mother.z-nursery->z;
+        const bool along_x=std::abs(dx)>=std::abs(dz);
+        const auto sign=(along_x?dx:dz)<0 ? -1 : 1;
+        for (int rear=9;rear<=16;++rear) for (int offset=0;offset<=12;++offset) {
+            const auto lateral=(offset%2?-1:1)*((offset+1)/2)*increment;
+            const auto displacement=rear*sign*increment;
+            const PositionM site{mother.x+(along_x?displacement:lateral),mother.y,
+                                 mother.z+(along_x?lateral:displacement)};
+            if (inside(site,world) && clear(mother,site) && free(site)) return site;
+        }
+        return {};
+    }
     std::optional<PositionM> best;
     std::size_t best_neighbors{};
     int best_distance{};

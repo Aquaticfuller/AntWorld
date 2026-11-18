@@ -70,6 +70,20 @@ inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM ne
     g.origin_m={0,0,0};
     g.initial_solid={{-300,-300,-300},{300,0,300}};
     g.work_duration={hour_ms/2}; g.move_duration={500}; g.decision_delay={60'000};
+    if (habitat && c.ecological->founding_habitat->sealed_chamber) {
+        // ENGINEERING_FIXTURE. One 12 x 7 mm pocket with a local, closed roof.
+        // The larger solid is parametric; the finer quantum needs no dense grid.
+        g.quantum_m=.00025;
+        g.initial_solid={{-600,-600,-600},{600,0,600}};
+        g.body_half_q=2; g.loaded_half_q=4; g.reach_q=8; g.max_patch_extent_q=8;
+        g.dry_ug_per_q3=12; g.water_ug_per_q3=3; g.dig_energy_nj_per_q3=125;
+        scene.voids={{{-24,-20,-24},{24,-2,4}}};
+        w.configure_geometry(g,scene.voids);
+        scene.target={c.seed%2?.03:-.03,0,0};
+        require(w.spatially_clear(nest,nest,g.loaded_half_q) &&
+                !w.spatially_clear(nest,{0,.001,0},g.loaded_half_q),"Founding chamber lacks its closed roof");
+        return;
+    }
     // A founding pocket and an entrance-side handoff alcove can share a
     // narrow traversable neck. The seed geometry is a laboratory fixture.
     scene.voids=habitat ? std::vector<BoxQ>{{{-12,-10,-5},{-4,-4,5}}, {{-2,-10,-6},{6,-4,6}},
@@ -162,7 +176,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     w.configure_social(social);
     w.configure_biology(care,environment);
     const auto colony = w.seed_colony(nest);
-    scene.queen = w.seed_ant(colony, {brood, LifeStage::Adult, Caste::Queen, 4000});
+    const bool sealed=habitat && c.ecological->founding_habitat->sealed_chamber;
+    scene.queen = w.seed_ant(colony, {sealed?nest:brood, LifeStage::Adult, Caste::Queen, 4000});
     w.enable_founding(scene.queen, c.profile);
     if (c.arm == "contact-blocked") {
         // One legacy assay larva on each side of the wall, at equal distances.
@@ -176,7 +191,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     }
     if (c.care) w.set_autonomy(scene.queen);
     if (c.ecological && c.ecological->water_sip_ug) {
-        const auto water=habitat ? PositionM{brood.x,brood.y,brood.z+.001}
+        const auto water=sealed ? PositionM{nest.x-.001,nest.y,nest.z}
+            : habitat ? PositionM{brood.x,brood.y,brood.z+.001}
             : c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
         require(w.spatially_clear(brood,water)!=c.blocked_water && w.query_material(water)==Material::Void,
                 "wrong water contact treatment");

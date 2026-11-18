@@ -431,12 +431,14 @@ public:
     }
     void fact(WorldEvent e) {
         profiling::Scope profile(profiling::Category::History);
-        if (s.journal.size() >= limits.committed_events) throw std::length_error("committed event host budget exceeded");
+        if (s.journal.size()-s.journal.first_cursor() >= limits.committed_events)
+            throw std::length_error("committed event host budget exceeded");
         s.journal.check_append();
         e.id = {detail::take(s.m.next_event)}; e.world = s.world; e.time = s.m.now;
         detail::bump(s.m.revision); e.revision = s.m.revision; s.journal.push_back(e);
-        if (s.founding) {
+        if (s.founding || s.journal.first_cursor())
             s.m.founding_trace = detail::append_trace_hash(s.m.founding_trace, e);
+        if (s.founding) {
             const auto& persistence = s.founding->profile.feeding_persistence;
             if (persistence && persistence->repeat_ppm) detail::update_founding_meal_memory(s.m.founding_meal, s.founding->founder, e);
         }

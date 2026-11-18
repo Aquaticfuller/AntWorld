@@ -304,7 +304,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 ensure(positions.contains(e.actor) && positions.at(e.actor)==e.position,"invalid MicroWorld maternal origin");
                 const auto site=pick_egg_site(e.position,s.config,
                     [&](PositionM a,PositionM b) {
-                        const auto below=below_brood(b,c);
+                        const auto below=below_brood(b,c,sealed_chamber(s));
                         return inside(b,s.config) && (!s.surface || surface_allows(*s.surface,true,a,b)) &&
                             clear(a,b,brood_half(c)) && !clear(below,below,0);
                     },
@@ -315,7 +315,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                                 s.ants.get(s.ants.index.at(row.first)).colony==e.colony &&
                                 (!s.surface || surface_allows(*s.surface,true,b,row.second)) && clear(b,row.second,0);
                         }));
-                    });
+                    },sealed_chamber(s) ? std::optional{s.ecological->founding_habitat->brood_site} : std::nullopt);
                 ensure(site.has_value()==(e.payload!=0),"MicroWorld no-space outcome contradicts the local clutch");
                 if (site) expected_egg=std::pair{EntityId{e.payload},*site};
             } else if (e.kind==FactKind::AntBorn) ensure(false,"MicroWorld egg lacks a preceding spatial attempt");

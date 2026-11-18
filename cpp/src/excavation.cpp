@@ -259,15 +259,18 @@ std::optional<BoxQ> WorldRuntime::shallow_soil_cap(PositionM from) const {
     const auto half=c.loaded_half_q;
     const auto ground=*surface-half;
     const auto p=*point;
-    const PointQ stance{p.x,ground-half-1,p.z};
-    if (p.y>stance.y || ground!=c.initial_solid.max.y ||
-        !within_distance(from,physical({p.x,ground,p.z},c),s.care_profile->perception_radius_m,true) ||
-        !spatially_clear(from,physical(stance,c),half)) return {};
+    if (ground!=c.initial_solid.max.y ||
+        !within_distance(from,physical({p.x,ground,p.z},c),s.care_profile->perception_radius_m,true)) return {};
     const auto view=geometry_view(s,limits_);
-    const BoxQ cap{{p.x-half,ground-1,p.z-half},{p.x+half,ground,p.z+half}};
-    if (!shaft_attachment(view,stance,half) || !local_patch(view,stance,cap) ||
-        material_volume(view,cap,Material::Rock) || !material_volume(view,cap,Material::Soil)) return {};
-    return cap;
+    const auto layers=sealed_chamber(s)?2:1;
+    for (int thickness=1;thickness<=layers;++thickness) {
+        const PointQ stance{p.x,ground-half-thickness,p.z};
+        if (p.y>stance.y || !spatially_clear(from,physical(stance,c),half)) continue;
+        const BoxQ cap{{p.x-half,ground-thickness,p.z-half},{p.x+half,ground,p.z+half}};
+        if (shaft_attachment(view,stance,half) && local_patch(view,stance,cap) &&
+            !material_volume(view,cap,Material::Rock) && material_volume(view,cap,Material::Soil)) return cap;
+    }
+    return {};
 }
 
 std::vector<BoxQ> WorldRuntime::local_frontiers(AntRef ref) const {

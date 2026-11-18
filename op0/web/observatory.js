@@ -16,7 +16,8 @@ function renderChronicle(data) {
     if (get("queen-death")) names.push("queen-death");
     $("chronicle-steps").replaceChildren(...names.map(key => {
         const fact = get(key), option = $("live-target").querySelector(`option[value="${key}"]`);
-        const canSeek = !fact && option && !option.disabled && liveView.state.ants.some(ant => ant.stage !== "Dead");
+        const canSeek = !liveView.state.history_floor && !fact && option && !option.disabled &&
+            liveView.state.ants.some(ant => ant.stage !== "Dead");
         const action = button("", () => {
             if (option && !option.disabled) $("live-target").value = key;
             if (fact) return showLiveFact(fact.id).catch(report);
@@ -30,7 +31,8 @@ function renderChronicle(data) {
         return action;
     }));
     const death = get("queen-death");
-    put("chronicle-status", death ? tr("Queen died at {time} · {cause}", {time: duration(death.time_ms), cause: tr(death.death_cause)}) :
+    put("chronicle-status", liveView.state.history_floor ? tr("Recent history only") :
+        death ? tr("Queen died at {time} · {cause}", {time: duration(death.time_ms), cause: tr(death.death_cause)}) :
         tr(data.through === data.cursor ? "From committed events" : "Reading earlier committed events…"));
 }
 

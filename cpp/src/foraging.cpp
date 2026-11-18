@@ -137,7 +137,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         LocalObservation local;
         BehaviorDecision decision;
         PositionM destination;
-        bool connector_return{},connector_clock{};
+        bool connector_return{},connector_clock{},dock_here{};
     };
     std::vector<Ready> ready(0); ready.reserve(wakes.size());
     // Freeze all local observations before committing any decisions or proposals.
@@ -161,6 +161,19 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             const auto at_entrance=link->cursor+1==link->size;
             r.destination=returning && at_entrance && ant.position!=link->entrance()?link->entrance():
                 link->points[returning?link->cursor-1:link->cursor+1];
+            if (sealed_chamber(s) && returning && loaded && !at_entrance) {
+                const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+                if (ant.position.y==depot.y && within_contact(ant.position,depot,s.config) &&
+                    spatially_clear(ant.position,depot) && !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
+                    // The carrier has already reached the local handoff
+                    // area. Reuse its real ingress route from this berth.
+                    r.decision.action=ActionKind::DeliverFood;
+                    r.decision.mode=BehaviorMode::Deliver;
+                    r.decision.reason=DecisionReason::NestContact;
+                    r.dock_here=true;
+                    return;
+                }
+            }
             if (spatially_clear(ant.position,r.destination,body_half(ant.id))) {
                 r.decision.action=ActionKind::Move;
                 r.decision.mode=returning?BehaviorMode::Return:BehaviorMode::Explore;
@@ -231,8 +244,13 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             f.mode=BehaviorMode::Rest;
         }
         f.action = tx.insert(action); tx.foragers.set(ant.id, f);
-        if (!yielding && r.connector_return && !s.connectors.at(ant.id).returning) {
+        if (!yielding && r.connector_return && (r.dock_here || !s.connectors.at(ant.id).returning)) {
             auto link=s.connectors.at(ant.id);
+            if (r.dock_here) {
+                std::move(link.points.begin()+link.cursor,link.points.begin()+link.size,link.points.begin());
+                link.size-=link.cursor;
+                link.cursor=0;
+            }
             link.returning=true;
             tx.connectors.set(ant.id,link);
         }

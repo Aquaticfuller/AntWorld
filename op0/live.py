@@ -1,4 +1,4 @@
-"""Host the native MicroWorld clock and its manually saved SQLite snapshots."""
+"""Host the native MicroWorld clock and its explicit continuation and archive saves."""
 
 from collections import OrderedDict
 from contextlib import closing
@@ -19,8 +19,8 @@ from uuid import UUID, uuid4
 
 from .archive import SQLITE_ID, key
 from .chronicle import Chronicle, LANDMARKS
-from .codec import (CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32,
-                    checkpoint, decode_fact, label, require)
+from .codec import (CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32, Reader,
+                    checkpoint, checkpoint_header, decode_fact, label, require, world_id)
 from .geometry import AXES, focused_window, nest_volume, terrain_view
 from .query import HOUR, integer
 
@@ -28,11 +28,13 @@ from .query import HOUR, integer
 ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
 HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
-MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES}
+BROOD_MILESTONES = {"brood-moved", "brood-cleaned"}
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES, *BROOD_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
 HABITAT_HUMIDITIES = (60, 80, 90)
 OBSERVATORY_PRESETS = {"open": ("open", "finite"), "plugged": ("plugged", "finite"), "absent": ("open", "absent")}
+SAVE_SUFFIXES = {"snapshot": ".awstate", "archive": ".sqlite"}
 FRAME_LIMIT = 128 * 1024 * 1024
 ECOLOGY_WORLD_TAGS = {651: "water-fed", 652: "no-external-water"}
 NURSERY_WORLD_TAGS = {649, 650, *ECOLOGY_WORLD_TAGS}  # Matches the native nursery fixtures.
@@ -44,7 +46,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v12"), installed.with_stem("antworld_m0_live_v11"),
+    paths = (installed.with_stem("antworld_m0_live_v13"), installed.with_stem("antworld_m0_live_v12"),
+             installed.with_stem("antworld_m0_live_v11"),
              installed.with_stem("antworld_m0_live_v10"),
              installed.with_stem("antworld_m0_live_v9"),
              installed.with_stem("antworld_m0_live_v8"), installed.with_stem("antworld_m0_live_v7"),
@@ -63,7 +66,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 12))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 13))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -74,6 +77,7 @@ class NativeCore:
             self.founding_habitat = generation >= 9
             self.observatory = generation >= 10
             self.next_milestone = generation >= 11
+            self.single_nest = generation >= 12
         except Exception:
             self.close()
             raise
@@ -170,6 +174,14 @@ def discard_stage(path):
 def save_details(path):
     info = regular_file(path)
     require(info is not None and stable_save(path), "Open a finished MicroWorld save file")
+    if path.suffix.lower() == SAVE_SUFFIXES["snapshot"]:
+        with path.open("rb") as source:
+            header = Reader(source.read(140))
+            framed, snapshot, floor, tip, outer, _, _, _, hi, lo, _, stamp, _ = checkpoint_header(header)
+        require(snapshot and not framed and outer in MICROWORLD_VERSIONS and tip < 1 << 53,
+                "Expected a MicroWorld continuation snapshot")
+        return dict(name=path.stem, world_id=world_id(hi, lo), time_ms=stamp, facts=tip, history_floor=floor,
+                    size_bytes=info.st_size, modified_ms=info.st_mtime_ns // 1_000_000, mode="snapshot", loadable=True)
     with closing(sqlite3.connect(path.as_uri() + "?mode=ro&immutable=1", uri=True)) as db:
         require(db.execute("PRAGMA application_id").fetchone() == (SQLITE_ID,) and
                 db.execute("PRAGMA user_version").fetchone() == (2,), "Expected an AntWorld SQLite save")
@@ -184,7 +196,7 @@ def save_details(path):
     require(isinstance(world, str) and str(UUID(world)) == world and isinstance(cursor, str) and key(cursor) < 1 << 53,
             "Invalid save identity")
     return dict(name=path.stem, world_id=world, time_ms=stamp, facts=key(cursor), size_bytes=info.st_size,
-                modified_ms=info.st_mtime_ns // 1_000_000, loadable=True)
+                modified_ms=info.st_mtime_ns // 1_000_000, mode="archive", loadable=True)
 
 
 def open_folder(path):
@@ -212,6 +224,7 @@ class LiveSession:
         self.sections = OrderedDict()
         self.volume = None
         self.chronicle = Chronicle()
+        self.history_floor = 0
         self.epoch = 0
         self.running = False
         self.rate = 1
@@ -283,6 +296,8 @@ class LiveSession:
         self.sections.clear()
         self.volume = None
         self.chronicle = Chronicle()
+        self.history_floor = saved.get("history_floor", 0) if saved else 0
+        self.chronicle.cursor = self.history_floor
         self.running, self.rate, self.saved, self.error = running, 1, saved, None
         self.fast_forward = None
         self.reanchor()
@@ -303,6 +318,7 @@ class LiveSession:
 
     def start_seek(self, target, occurrence):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
+        require(target not in BROOD_MILESTONES or self.worker.single_nest, "Build the updated Core to seek brood actions.")
         require(target not in HABITAT_MILESTONES or self.frame["flags"].get("founding_habitat"), "Unknown live milestone")
         require(not self.seeking(), "Cancel the current fast-forward first.")
         require(occurrence in ("first", "next"), "Choose the first or next event")
@@ -317,6 +333,7 @@ class LiveSession:
                 after = event["id"]
             raw = self.worker.call(f"FIND_NEXT_MILESTONE {target} {after}")
         else:
+            require(not self.history_floor, "Earlier events are unavailable in this compact save. Search for the next event.")
             raw = self.worker.call(f"FIND_MILESTONE {target}")
         event = self.milestone_event(raw) if raw else None
         self.fast_forward = dict(target=target, state="seeking", event=None)
@@ -380,6 +397,8 @@ class LiveSession:
                     ecology_available=self.binary.is_file() and (self.worker is None or self.worker.local_ecology),
                     habitat_available=self.binary.is_file() and (self.worker is None or self.worker.founding_habitat),
                     observatory_available=self.binary.is_file() and (self.worker is None or self.worker.observatory),
+                    single_nest_available=self.binary.is_file() and (self.worker is None or self.worker.single_nest),
+                    history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
@@ -396,6 +415,7 @@ class LiveSession:
                 self.chronicle.accept(event, frame)
 
     def exact_fact(self, frame, identifier):
+        require(identifier > self.history_floor, "This event predates the saved history window")
         command = f"FACTS_AFTER {identifier-1}" + (" 1" if self.worker.observatory else "")
         events = read_live_events(self.worker.call(command), frame, after=identifier-1)
         require(events, "The selected fact is not present in the published cut")
@@ -480,6 +500,7 @@ class LiveSession:
                         local_traffic=traffic, seeded_nursery=nursery,
                         provisioned_nursery=tag == 650 or ecology is not None,
                         ecology=ecology, habitat=habitat, climate=self.climate, feeder_reserve_ug=reserve, trails=trails,
+                        soil_piles=frame["soil_piles"],
                         external_supply=any(s["position_m"][1] >= surface["origin_m"][1] for s in frame["sources"].values()),
                         worker_activity_timing=frame["flags"].get("worker_activity_timing"),
                         local_nest_activity=bool(frame["flags"].get("local_nest_activity")),
@@ -499,30 +520,37 @@ class LiveSession:
                         actions=list(reversed(self.actions)))
             return data
 
-    def name_path(self, name):
+    def name_path(self, name, mode="archive"):
         require(isinstance(name, str) and 1 <= len(name) <= 64 and name == name.strip() and
                 not name.startswith(".") and not name.endswith(".") and
                 all(ord(c) >= 32 and c not in '<>:"/\\|?*' for c in name) and
                 not re.fullmatch(r"CON|PRN|AUX|NUL|(?:COM|LPT)[1-9¹²³]", name.split(".")[0].strip(), re.IGNORECASE),
                 "Use a save name with 1–64 characters and no path separators or reserved names.")
-        return self.saves / (name + ".sqlite")
+        require(isinstance(mode, str) and mode in SAVE_SUFFIXES, "Unknown save format")
+        return self.saves / (name + SAVE_SUFFIXES[mode])
 
     def list_saves(self):
         entries = []
-        for path in self.saves.glob("*.sqlite"):
+        for path in self.saves.iterdir() if self.saves.is_dir() else ():
+            mode = next((mode for mode, suffix in SAVE_SUFFIXES.items() if suffix == path.suffix.lower()), None)
+            if mode is None:
+                continue
             info = regular_file(path)
             if info is None:
                 continue
             try:
-                self.name_path(path.stem)
+                self.name_path(path.stem, mode)
                 entries.append(save_details(path))
             except (OSError, ValueError, sqlite3.Error):
                 entries.append(dict(name=path.stem, size_bytes=info.st_size, modified_ms=info.st_mtime_ns // 1_000_000,
-                                    time_ms=None, loadable=False))
+                                    time_ms=None, mode=mode, loadable=False))
         return dict(folder=str(self.saves), entries=sorted(entries, key=lambda row: row["modified_ms"], reverse=True))
 
-    def save(self, name, overwrite):
-        path = self.name_path(name)
+    def save(self, name, overwrite, mode):
+        path = self.name_path(name, mode)
+        snapshot = mode == "snapshot"
+        require(not snapshot or self.worker.single_nest, "Build the updated Core to save a compact snapshot.")
+        require(snapshot or not self.history_floor, "Full history is unavailable for this colony")
         exists = os.path.lexists(path)
         if exists:
             require(regular_file(path) and stable_save(path), "The destination is not a finished save slot")
@@ -530,10 +558,13 @@ class LiveSession:
             save_details(path)
         self.advance()
         token = uuid4().hex
-        stage = Path(self.workdir.name) / (token + ".sqlite")
+        stage = Path(self.workdir.name) / (token + path.suffix)
         try:
-            self.worker.call("SAVE " + token)
+            self.worker.call(("SAVE_SNAPSHOT " if snapshot else "SAVE ") + token)
             info = save_details(stage)
+            if snapshot:
+                with stage.open("r+b") as saved:
+                    os.fsync(saved.fileno())
             if exists:
                 os.replace(stage, path)
             elif os.name == "nt":
@@ -545,26 +576,38 @@ class LiveSession:
             discard_stage(stage)
             self.reanchor()
 
-    def load(self, name):
-        path = self.name_path(name)
+    def load(self, name, mode="archive"):
+        path = self.name_path(name, mode)
         save_details(path)
         worker = self.core()
+        snapshot = mode == "snapshot"
+        require(not snapshot or worker.single_nest, "Build the updated Core to load a compact snapshot.")
         token = uuid4().hex
-        stage = Path(self.workdir.name) / (token + ".sqlite")
+        stage = Path(self.workdir.name) / (token + path.suffix)
         try:
             # A loaded Core has a read handle to its history prefix. Keep it
             # independent of the file that the player manages in Explorer.
             copyfile(path, stage)
             details = save_details(stage) | {"name": name}
-            raw = worker.call(f"LOAD {token} {details['world_id']}")
-            self.install(raw, running=False, saved=details, copy=stage)
+            command = "LOAD_SNAPSHOT" if snapshot else "LOAD"
+            raw = worker.call(f"{command} {token} {details['world_id']}")
+            self.install(raw, running=False, saved=details, copy=None if snapshot else stage)
         finally:
             if self.loaded_copy != stage:
                 discard_stage(stage)
 
     def write(self, resource, data):
         with self.lock:
-            if resource == "observatory":
+            if resource == "single-nest":
+                supply = data.get("supply", "finite")
+                require(supply in ("finite", "absent"), "Unknown supply setting")
+                seed = data.get("seed", 2)
+                require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
+                core = self.core()
+                require(core.single_nest, "Build the updated Core to start a sealed founding chamber.")
+                self.install(core.call(f"NEW_SINGLE_NEST {randbits(63) or 1} {seed} 250 80 plugged 1955 reachable {supply}"),
+                             running=True)
+            elif resource == "observatory":
                 preset = data.get("preset")
                 require(isinstance(preset, str) and preset in OBSERVATORY_PRESETS, "Unknown observatory preset")
                 entrance, supply = OBSERVATORY_PRESETS[preset]
@@ -610,14 +653,15 @@ class LiveSession:
                 command = "NEW_MOTOR" if dynamics else "NEW_NEST" if activity else "NEW"
                 self.install(self.core().call(f"{command} {randbits(63) or 1} 1{NEW_COLONY_TIMINGS[timing]}"), running=True)
             elif resource == "load":
-                self.load(data.get("name"))
+                self.load(data.get("name"), data.get("mode", "archive"))
             elif resource == "folder":
                 self.saves.mkdir(parents=True, exist_ok=True)
                 open_folder(self.saves)
             else:
                 require(self.frame is not None, "Create or load a colony first")
                 if resource == "save":
-                    self.save(data.get("name"), data.get("overwrite") is True)
+                    mode = data.get("mode", "archive")
+                    self.save(data.get("name"), data.get("overwrite") is True, mode)
                 elif resource == "seek":
                     self.start_seek(data.get("target"), data.get("occurrence", "first"))
                 elif resource == "clock":

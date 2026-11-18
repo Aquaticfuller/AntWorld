@@ -21,7 +21,7 @@ inline constexpr std::array<Temperature,3> temperatures{{
 inline constexpr std::uint64_t reference_deficit=3168*20;
 
 inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t tenths_c,std::uint64_t humidity,
-                        bool external_supply=true,bool alternate_berth=false) {
+                        bool external_supply=true,bool alternate_berth=false,bool sealed=false) {
     const auto climate=std::find_if(temperatures.begin(),temperatures.end(),
         [tenths_c](const Temperature& t){return t.tenths_c==tenths_c;});
     wp6b::require(climate!=temperatures.end() && (humidity==60 || humidity==80 || humidity==90),
@@ -44,7 +44,7 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     auto& ecology=*c.ecological;
     ecology.local_nest_activity=ecology.local_traffic=ecology.yield_to_loaded=ecology.local_pantry_checks=true;
     ecology.nest_dynamics=NestDynamics{true,NestScoring::SpatialDemand};
-    ecology.founding_habitat=FoundingHabitat{{-.004,-.004,0},2000,alternate_berth};
+    ecology.founding_habitat=FoundingHabitat{{sealed?-.00175:-.004,-.004,0},2000,alternate_berth || sealed,sealed};
     const auto interval=[&](std::int64_t ms) {
         return SimTime{ms*1000/static_cast<std::int64_t>(climate->activity_permille)};
     };
@@ -55,7 +55,12 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     // separate water source. The queen's finite wick is registered separately.
     c.food.water_ug=9000;
     if (!external_supply) c.food={};
-    auto scene=wp6b::setup(c,limits,closure::day_social(),closure::timed_care(true),
+    auto care=closure::timed_care(true);
+    if (sealed) {
+        care.step_m=.0005;
+        care.arrangement_m=.00025;
+    }
+    auto scene=wp6b::setup(c,limits,closure::day_social(),care,
         {static_cast<double>(tenths_c)/10,static_cast<double>(humidity)/100});
     if (external_supply) {
         const auto water=scene.world.seed_food({0,0,.03},{0,0,9000,0});

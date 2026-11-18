@@ -15,12 +15,12 @@ std::size_t HistoryCapture::resident_bytes() const {
 std::vector<WorldEvent> HistoryCapture::read(EventId after,std::size_t limit) const {
     std::vector<WorldEvent> result(0);
     if (after.value>=size_ || !limit) return result;
-    auto cursor=static_cast<std::size_t>(after.value);
+    auto cursor=std::max(first_cursor_,static_cast<std::size_t>(after.value));
     const auto end=cursor+std::min(limit,size_-cursor);
     result.reserve(end-cursor);
     if (prefix_ && cursor<prefix_->size()) {
         const auto count=std::min(end,prefix_->size())-cursor;
-        const auto page=prefix_->read(after,count);
+        const auto page=prefix_->read({cursor},count);
         if (page.size()!=count) throw std::runtime_error("short immutable history prefix");
         result.insert(result.end(),page.begin(),page.end());
         cursor+=count;
@@ -55,10 +55,11 @@ std::size_t EventJournal::resident_bytes() const {
 }
 
 WorldEvent EventJournal::at(std::size_t index) const {
+    if (index<first_cursor_) throw std::out_of_range("history precedes the retained window");
     if (index>=sealed_end_) return active_.at(index-sealed_end_);
     if (index<cold_size()) {
         if (index<cache_begin_ || index-cache_begin_>=cache_.size()) {
-            const auto begin=index-index%page_size;
+            const auto begin=std::max(first_cursor_,index-index%page_size);
             const auto count=std::min(page_size,cold_size()-begin);
             auto page=prefix_->read({begin},count);
             if (page.size()!=count) throw std::runtime_error("short durable journal page");
@@ -75,7 +76,7 @@ WorldEvent EventJournal::at(std::size_t index) const {
 
 std::vector<WorldEvent> EventJournal::read(EventId after,std::size_t limit) const {
     if (after.value>=size() || !limit) return std::vector<WorldEvent>(0);
-    const auto first=static_cast<std::size_t>(after.value);
+    const auto first=std::max(first_cursor_,static_cast<std::size_t>(after.value));
     const auto count=std::min(limit,size()-first);
     if (first>=sealed_end_) {
         const auto begin=active_.begin()+static_cast<std::ptrdiff_t>(first-sealed_end_);
@@ -86,7 +87,7 @@ std::vector<WorldEvent> EventJournal::read(EventId after,std::size_t limit) cons
     std::vector<WorldEvent> result(0);
     if (cursor<cold_size()) {
         const auto count_from_prefix=std::min(end,cold_size())-cursor;
-        result=prefix_->read(after,count_from_prefix);
+        result=prefix_->read({cursor},count_from_prefix);
         if (result.size()!=count_from_prefix) throw std::runtime_error("short durable journal page");
         cursor+=count_from_prefix;
     }
@@ -120,11 +121,13 @@ HistoryCapture EventJournal::capture() const {
     result.prefix_=prefix_;
     result.chunks_=sealed_;
     result.size_=sealed_end_;
+    result.first_cursor_=first_cursor_;
     return result;
 }
 
 void EventJournal::acknowledge(const HistoryCapture& captured,std::shared_ptr<const EventPrefix> published) {
-    if (!published || published->size()!=captured.size_ || captured.prefix_!=prefix_ ||
+    if (!published || published->size()!=captured.size_ || published->first_cursor()!=first_cursor_ ||
+        captured.first_cursor_!=first_cursor_ || captured.prefix_!=prefix_ ||
         captured.chunks_.size()>sealed_.size() ||
         !std::equal(captured.chunks_.begin(),captured.chunks_.end(),sealed_.begin()))
         throw std::invalid_argument("durable acknowledgement is not this runtime's captured prefix");
@@ -135,6 +138,7 @@ void EventJournal::acknowledge(const HistoryCapture& captured,std::shared_ptr<co
 
 void EventJournal::attach(std::shared_ptr<const EventPrefix> prefix) {
     assert(empty() && prefix);
+    first_cursor_=prefix->first_cursor();
     prefix_=std::move(prefix);
     sealed_end_=prefix_->size();
 }

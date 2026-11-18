@@ -19,6 +19,7 @@ inline constexpr unsigned local_traffic_schema = 27, local_traffic_physics = 34;
 inline constexpr unsigned carrier_yield_schema = 28, carrier_yield_physics = 35;
 inline constexpr unsigned founding_habitat_schema = 29, founding_habitat_physics = 36;
 inline constexpr unsigned reachable_berth_schema = 30, reachable_berth_physics = 37;
+inline constexpr unsigned sealed_chamber_schema = 31, sealed_chamber_physics = 38;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -26,6 +27,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->sealed_chamber) return sealed_chamber_physics;
     if (c.founding_habitat)
         return c.founding_habitat->alternate_berth ? reachable_berth_physics : founding_habitat_physics;
     if (c.yield_to_loaded || c.local_pantry_checks) return carrier_yield_physics;
@@ -40,6 +42,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->sealed_chamber) return sealed_chamber_schema;
     if (c.founding_habitat)
         return c.founding_habitat->alternate_berth ? reachable_berth_schema : founding_habitat_schema;
     if (c.yield_to_loaded || c.local_pantry_checks) return carrier_yield_schema;
@@ -87,7 +90,7 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
     c.portable_field = version >= portable_ecological_physics;
     c.suppress_foundress_hatch_cue = version == suppressed_hatch_physics ||
         version == micro_world_no_hatch_physics || version == portable_micro_world_no_hatch_physics;
-    const bool habitat = version == founding_habitat_physics || version == reachable_berth_physics;
+    const bool habitat = version >= founding_habitat_physics;
     c.local_traffic = version == local_traffic_physics || version == carrier_yield_physics || habitat;
     c.local_nest_activity = version == nest_activity_physics || version == nest_dynamics_physics || c.local_traffic;
     c.brood_space = micro_world_version(version) || version == worker_timing_physics || c.local_nest_activity;
@@ -102,7 +105,8 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
         c.local_pantry_checks = r.flag();
         ensure(c.yield_to_loaded || c.local_pantry_checks,"missing nursery work or traffic policy");
     }
-    if (habitat) c.founding_habitat=FoundingHabitat{r.position(), r.get(), version == reachable_berth_physics};
+    if (habitat) c.founding_habitat=FoundingHabitat{r.position(), r.get(), version >= reachable_berth_physics,
+                                                  version == sealed_chamber_physics};
     validate_ecological_closure(c, world);
     return c;
 }

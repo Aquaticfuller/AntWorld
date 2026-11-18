@@ -4,6 +4,7 @@ const liveView = {state: null, epoch: null, request: 0, timer: null, animation: 
     saves: [], eventsKey: null, actionsKey: null, environmentKey: null, climateKey: null, individualKey: null, shownStop: null};
 const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
+    "brood-moved": "First brood move", "brood-cleaned": "First brood cleaning",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
@@ -29,12 +30,15 @@ function liveControls() {
     updatePresets();
     const s = liveView.state;
     const active = s?.world_id != null;
+    document.body.classList.toggle("live-mode", app.live);
+    document.body.classList.toggle("sealed-nest", Boolean(app.live && s?.habitat?.sealed_chamber));
     document.body.classList.toggle("observatory-active", Boolean(app.live && s?.habitat && s.observatory_available));
     const stop = s?.fast_forward, seeking = stop?.state === "seeking";
     put("live-clock", active ? duration(s.time_ms) : "00:00:00");
     const label = active ? (s.running ? "Simulation running" : "Simulation paused") : "No active colony";
     const follow = active && app.follow && app.selected ? " · " + tr("Following ant #{id}", {id: app.selected}) : "";
-    put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : "") + follow);
+    put("live-status", tr(label) + (s?.dirty ? " · " + tr("Unsaved progress") : "") +
+        (s?.history_floor ? " · " + tr("Recent history only") : "") + follow);
     put("live-pause", tr(seeking ? "Cancel fast-forward" : (s?.running ? "Pause" : "Resume")));
     $("live-rate").value = String(s?.rate || 1);
     $("colony-timing").disabled = $("nest-activity").disabled = $("nest-dynamics").disabled =
@@ -43,6 +47,10 @@ function liveControls() {
         $("habitat-trails").disabled = $("habitat-plug").disabled = $("habitat-seed").disabled =
         liveView.busy || !s?.habitat_available;
     $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
+    $("new-single-nest").hidden = !s?.single_nest_available;
+    $("new-single-nest").disabled = liveView.busy;
+    $("new-single-nest").classList.toggle("primary-button", !active);
+    put("find-brood", tr(s?.habitat?.sealed_chamber ? "Locate brood area" : "Locate brood chamber"));
     const preset = $("nursery-treatment");
     for (const option of preset.options) if (option.value.startsWith("ecology")) option.disabled = !s?.ecology_available;
     if (preset.selectedOptions[0]?.disabled) preset.value = "provisioned";
@@ -52,12 +60,14 @@ function liveControls() {
     $("live-milestone").hidden = Boolean(s?.seeded_nursery && !s.ecology);
     const target = $("live-target");
     for (const option of target.querySelectorAll("[data-habitat]")) option.hidden = option.disabled = !s?.habitat;
+    for (const option of target.querySelectorAll("[data-brood]")) option.hidden = option.disabled = !s?.single_nest_available;
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
     $("nursery-next-delivery").hidden = $("nursery-delivery").hidden || $("live-seek-next").hidden;
     $("nursery-delivery").disabled = $("nursery-next-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = $("live-seek-next").disabled = locked || seeking;
+    $("live-seek").disabled ||= Boolean(s?.history_floor);
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
     const details = stop ? tr(liveStopLabels[stop.state], {
         event: tr((stop.occurrence === "next" ? liveEventNames : liveMilestones)[stop.target]),
@@ -70,6 +80,8 @@ function liveControls() {
 
 function liveVisibility(active) {
     app.live = active;
+    document.body.classList.toggle("live-mode", active);
+    if (!active) document.body.classList.remove("sealed-nest");
     if (!active) document.body.classList.remove("nursery-active");
     if (!active) document.body.classList.remove("observatory-active");
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
@@ -277,14 +289,14 @@ async function refreshLive(alignSection = true) {
         $("action-replays").replaceChildren();
         $("action-replays").hidden = true;
         $("event-detail").hidden = true;
-        setSection(data.habitat && (liveView.nextNest || app.section === "nest") ? "nest" : "slice");
+        setSection(data.habitat && (data.habitat.sealed_chamber || liveView.nextNest || app.section === "nest") ? "nest" : "slice");
         inspect(false);
     }
     app.time = data.time_ms;
-    put("title", data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
+    put("title", data.habitat?.sealed_chamber ? tr("Sealed founding chamber") : data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
         data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
-    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, trails: data.trails};
+    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, trails: data.trails, soil_piles: data.soil_piles};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
     const stop = data.fast_forward;
     const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
@@ -394,7 +406,7 @@ function leaveLiveView() {
 async function liveCommand(resource, data = {}) {
     if (liveView.busy) return;
     liveView.busy = true;
-    liveView.nextNest = resource === "observatory";
+    liveView.nextNest = resource === "observatory" || resource === "single-nest";
     liveControls();
     try {
         await postLive(resource, data);
@@ -454,24 +466,26 @@ async function refreshSaves() {
     for (const save of data.entries) {
         const row = node("tr");
         const date = new Date(save.modified_ms).toLocaleString(language);
-        row.append(node("td", save.name), node("td", duration(save.time_ms)), node("td", fileSize(save.size_bytes)), node("td", date));
+        row.append(node("td", save.name), node("td", tr(save.mode === "snapshot" ? "Compact save" : "Full replay archive")),
+            node("td", duration(save.time_ms)), node("td", fileSize(save.size_bytes)), node("td", date));
         const actions = node("td");
         const load = button("Load", async () => {
             if (liveView.state?.dirty && !confirm(tr("Load this save and replace the current unsaved progress?"))) return;
             load.disabled = true;
-            try { await liveCommand("load", {name: save.name}); $("save-manager").close(); }
+            try { await liveCommand("load", {name: save.name, mode: save.mode}); $("save-manager").close(); }
             catch (error) { saveNotice(tr(error.message)); load.disabled = false; }
         });
         load.disabled = !save.loadable || !liveView.state?.core_available;
         const replay = button("Replay", () => replaySave(save).catch(error => saveNotice(tr(error.message))));
         replay.disabled = !save.loadable;
-        actions.append(load, replay);
+        actions.append(load);
+        if (save.mode !== "snapshot") actions.append(replay);
         row.append(actions);
         list.append(row);
     }
     if (!data.entries.length) {
         const row = node("tr"), cell = node("td", tr("No saved colonies yet."), "muted");
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         row.append(cell);
         list.append(row);
     }
@@ -481,6 +495,11 @@ function bindLive() {
     bindObservatory();
     const click = (id, action) => $(id).addEventListener("click", () => Promise.resolve().then(action).catch(report));
     click("live-tab", openLiveView);
+    click("new-single-nest", () => {
+        if (!$("habitat-seed").reportValidity()) return;
+        if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
+        return liveCommand("single-nest", {seed: $("habitat-seed").valueAsNumber});
+    });
     click("new-colony", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("new", {timing: $("colony-timing").value, local_nest_activity: $("nest-activity").checked,
@@ -510,6 +529,10 @@ function bindLive() {
     $("live-rate").addEventListener("change", () => liveCommand("clock", {rate: Number($("live-rate").value)}).catch(report));
     click("open-saves", async () => {
         $("save-name").value = liveView.state?.saved_name || "";
+        const modes = $("save-mode");
+        modes.options[0].disabled = !liveView.state?.single_nest_available;
+        modes.options[1].disabled = Boolean(liveView.state?.history_floor);
+        modes.value = modes.options[0].disabled ? "archive" : "snapshot";
         saveNotice();
         $("save-manager").showModal();
         try { await refreshSaves(); } catch (error) { saveNotice(tr(error.message)); }
@@ -520,11 +543,12 @@ function bindLive() {
     $("save-form").addEventListener("submit", async event => {
         event.preventDefault();
         const name = $("save-name").value.trim();
-        const overwrite = liveView.saves.some(save => save.name.toLowerCase() === name.toLowerCase());
+        const mode = $("save-mode").value;
+        const overwrite = liveView.saves.some(save => save.mode === mode && save.name.toLowerCase() === name.toLowerCase());
         if (overwrite && !confirm(tr("Replace the existing save {name}?", {name}))) return;
         saveNotice(tr("Saving colony…"));
         try {
-            await liveCommand("save", {name, overwrite});
+            await liveCommand("save", {name, overwrite, mode});
             await refreshSaves();
             saveNotice(tr("Colony saved."));
         } catch (error) { saveNotice(tr(error.message)); }

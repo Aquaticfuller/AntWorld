@@ -46,13 +46,35 @@ bool leaving_overlap(PositionM from,PositionM to,PositionM stationary,double wid
            (to.x-from.x)*(from.x-stationary.x)>=0 && (to.y-from.y)*(from.y-stationary.y)>=0 &&
            (to.z-from.z)*(from.z-stationary.z)>=0;
 }
+
+bool supported_wall_segment(const GeometryView& view,PointQ from,PointQ to,int reach) {
+    const std::array origin{from.x,from.y,from.z};
+    const std::array delta{to.x-from.x,to.y-from.y,to.z-from.z};
+    const auto steps=std::max({std::abs(delta[0]),std::abs(delta[1]),std::abs(delta[2])});
+    if (!steps || steps>32) return false;
+    for (std::size_t axis=0;axis<delta.size();++axis) {
+        if (delta[axis]) continue; // The body must keep the same support face.
+        for (const int face:{-reach-1,reach}) {
+            if (axis==1 && face<0) continue; // Floor movement has its own rule.
+            bool attached=true;
+            for (int step=0;step<=steps && attached;++step) {
+                auto p=origin;
+                for (std::size_t i=0;i<p.size();++i) p[i]+=delta[i]*step/steps;
+                p[axis]+=face;
+                attached=material_at(view,{p[0],p[1],p[2]})!=Material::Void;
+            }
+            if (attached) return true;
+        }
+    }
+    return false;
+}
 }
 
 std::optional<WorkerMotion> WorldRuntime::query_worker_motion(AntRef ref) const {
     const auto& s=*state_;
     if (!worker_motor(s)) return {};
     const auto ant=query_ant(ref);
-    if (!ant || ant->stage!=LifeStage::Adult || ant->caste!=Caste::Worker ||
+    if (!ant || ant->stage!=LifeStage::Adult || !motile_caste(s,ant->caste) ||
         !s.autonomy.contains(ref.id)) return {};
     ScheduledId id;
     PositionM to;
@@ -78,7 +100,7 @@ std::optional<WorkerMotion> WorldRuntime::query_worker_motion(AntRef ref) const 
 void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM from,SimTime began,bool autonomous) {
     auto& s=*state_;
     if (!worker_motor(s) || from==fact.position || !s.autonomy.contains(fact.actor) ||
-        s.ants.get(s.ants.index.at(fact.actor)).caste!=Caste::Worker) return;
+        !motile_caste(s,s.ants.get(s.ants.index.at(fact.actor)).caste)) return;
     auto a=s.autonomy.at(fact.actor);
     const auto facing=movement_facing(from,fact.position);
     if (autonomous) {
@@ -233,8 +255,13 @@ bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool app
     const auto q=quantized(site,g);
     const auto half=body_half(ant.id);
     if (!q || ant.position==site || !clear_care_segment(ant.position,site,half) ||
-        (s.surface && site.y>=s.surface->config.origin_m.y) ||
-        material_at(geometry_view(s,limits_),{q->x,q->y-g.loaded_half_q-1,q->z})==Material::Void) return false;
+        (s.surface && site.y>=s.surface->config.origin_m.y)) return false;
+    const auto view=geometry_view(s,limits_);
+    const bool floor=material_at(view,{q->x,q->y-g.loaded_half_q-1,q->z})!=Material::Void;
+    if (!floor || (sealed_chamber(s) && ant.position.y!=site.y)) {
+        const auto from=sealed_chamber(s) && !approach_depot && half==g.body_half_q ? quantized(ant.position,g) : std::nullopt;
+        if (!from || !supported_wall_segment(view,*from,*q,g.loaded_half_q)) return false;
+    }
     if (local_traffic(s)) return (approach_depot || site!=depot) && clear_worker_traffic(ant,site,half);
     // A delivery/contact interface permits transient overlap. A resting berth
     // and the intermediate destination of a local walk reserve adult space.
@@ -264,7 +291,8 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const auto radius=s.care_profile->perception_radius_m;
     if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;
-    const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth && link==s.connectors.end();
+    const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth && link==s.connectors.end() &&
+        (!sealed_chamber(s) || !s.geometry_edits.empty());
     if (alternate && within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot)) return {};
     const auto origin=habitat ? nearest_grid_point(ant.position,g) : quantized(ant.position,g);
     const auto goal=quantized(depot,g);

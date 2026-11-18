@@ -1,5 +1,11 @@
 # AntWorld
 
+## Start a sealed single nest
+
+In Windows PowerShell, run `.\tools\start_m0.cmd` from the repository root and choose **New sealed nest**. The live preview starts with one queen and one fully enclosed chamber. **Fast-forward to next** can stop at a real brood move, worker emergence, excavation or delivery. **Save and load** defaults to compact continuation. The full replay archive is available as a separate format.
+
+See the [single-nest preview guide](research/single_nest/README.md) for the build steps, model limits and verification commands.
+
 ## M1 Live Colony Observatory
 
 Start an open founding nest, a shallow-soil-plug experiment or a no-supply control. In the browser, rotate the 3D nest, follow a worker across the entrance and use the founding milestones to reach committed events. Live saves can be opened for read-only replay. See the [Windows launch steps and reproducible M1 checks](research/m1/README.md).

@@ -1,0 +1,62 @@
+# Sealed Single-Nest Preview
+
+## Launch
+
+From Windows PowerShell at the repository root, build the native executable and open the viewer.
+
+~~~powershell
+py -3 -B -m tools.build_m0_live --jobs 4
+.\tools\start_m0.cmd
+~~~
+
+If Python is installed without the `py` launcher, run `python -B -m tools.build_m0_live --jobs 4`. The launcher works without a PowerShell execution-policy change. The live host uses loopback only. Use `--port 8770` to open a separate window while an older session occupies port 8765.
+
+1. Choose **New sealed nest**. Use **Colony setup** to set the software seed before creating a colony. The default is seed 2.
+2. Choose **Egg laid**, **Brood moved** or **Brood cleaned** under **Target event**. Choose **Fast-forward to next** to stop at the next committed occurrence. **Resume** returns to 1×.
+3. Try **Worker emergence**, **Excavation** and **Food delivered** in order. The same native world advances, with no seeded workers.
+4. Use **3D nest**, **Surface** and **Underground** to change the view. Select a body or enter its Ant ID to inspect it. Rotate by dragging in 3D and use Shift-drag to pan. The language picker switches between English and Simplified Chinese.
+5. Choose **Save and load**, enter a name and save. The default is **Compact save**. **Open save folder** opens the containing folder. Loading a save resumes paused at the saved state. Select **Full replay archive** to keep a replayable SQLite file when the whole fact stream is available.
+
+## Physics and evidence
+
+Physics 38 and ecological schema 31 identify the opt-in layout. It starts with one enclosed 12 × 7 mm founding chamber and one reproductive queen. A brood area and a handoff position are located within the same chamber. The initial bed and the ordered excavation edits remain authoritative. The local soil quantum is 0.25 mm, with a 0.125 mm search increment for deposition behind the queen. A common 0.75 mm brood envelope reserves room for subsequent stages. These dimensions, reach distances, gait timing, placement policy and reserves are ENGINEERING_FIXTURE values.
+
+An egg is deposited near the current foundress position, in the posterior sector of the laying model. Deposition checks floor support, geometry and nearby brood occupancy. Finite capacity can defer an attempt without payment. A queen or worker can approach, pick up, transport and place a brood individual through the existing timed care transaction. The carrier and held individual both need a clear route to a locally available placement. Inspection, cleaning and feeding use a shorter 1.25 mm handling reach. Larval access to a real maternal ration can take precedence over relocation. A cue at hatch requires a local, unblocked observation. The model retains physiological payments, competing deaths and failures to place or reach a target.
+
+Workers seeking external food can find a reachable soil cap and physically excavate it after emergence. Their first viable entrance route follows the actual resulting geometry. The renderer shows loose soil from deposited parcels with remaining mass. Visual motion uses the native event clock. A brood displacement shares a carrier clock only when both moves belong to the same committing action. Adult glyphs are scaled by caste for readability. The optional body-envelope overlay shows the current collision proxy.
+
+A returning loaded worker can hand off at a clear floor position already inside the local depot contact radius when another body obstructs the next route segment. The scheduled delivery and resource debit still use the ordinary transaction. The worker retains the remaining route from the occupied berth. In seed 2, a pre-change worker held 4,000 µg of water within 0.8 mm of the depot and repeated no-legal-step decisions. The paired run produced 10 deliveries by day 150 before the change and 21 after it, with eight workers alive at day 150 after the change.
+
+Local unloaded worker steps can use a wall or the underside of a roof when the body sweep is clear and the same adjacent support face is present along the segment. This is a limited attachment model with axis-aligned envelopes. A whole-colony ceiling route, calibrated attachment forces and body rotation against a surface remain unverified.
+
+Direct black garden ant studies support claustral founding, active maternal care, and retrieval by queens and workers under the studied conditions. The preview adopts that qualitative scope and uses explicit engineering values for the rest. [Colony co-founding in ants is an active process by queens](https://pmc.ncbi.nlm.nih.gov/articles/PMC7419493/), [Ontogeny of superorganisms](https://doi.org/10.1111/1365-2435.14536), [Queen and worker brood retrieval](https://doi.org/10.1002/ece3.4475).
+
+## Compact continuation
+
+`AWRESUM1` stores the current authoritative state, including the queue, RNG, identities, reserves, custody, geometry and local recruitment memory. Up to 2,048 existing canonical facts are retained in the default file. Event IDs stay absolute and the omitted prefix is declared. The native reader checks the checksum and validates state and the retained fact window before installing it. A compact continuation can advance with the same future canonical facts. Earlier history and its full replay audit require the original archive.
+
+In the browser the **Next** action remains available after a compact restore. **First** is disabled when an older prefix is missing. Full SQLite saves and archive replay use the original formats. Compact files can still grow with actual world state, such as more ant identities, pieces of excavated terrain or active resources. The preview writes a persistent file on explicit save, using an atomic replacement in the save directory. The live session can still retain a fuller history in memory.
+
+## Verify locally
+
+~~~powershell
+py -3 -B -m unittest op0.tests.test_live
+py -3 -B -m tools.test_m1_browser --mode m2 --browser 'C:\Program Files\Google\Chrome\Application\chrome.exe' --output out/m2-preview
+~~~
+
+The native integration tests check the single enclosed initial space, posterior deposition, paid maternal transport, worker emergence followed by excavation, soil deposition and food delivery. The continuation test compares an uninterrupted checkpoint frame and every newly committed fact over the same subsequent interval. It also verifies full archive loading, the bounded window, rejection of an altered snapshot and preservation of the active world on failed load.
+
+## Observed cases
+
+Windows Release, seeded native worlds at 25 °C and 80% relative humidity. Worker counts are living adults. The finite arm has separate external food and water inventories. The absent arm retains the same founding queen and her sheltered water site. Seeds are simulation inputs.
+
+| Seed | External supply | Workers at day 60 | Workers at day 90 | Queen at day 150 | Workers at day 150 | Committed facts at day 150 | Eclosed / excavated / delivered |
+| --- | --- | ---: | ---: | --- | ---: | ---: | --- |
+| 1 | Finite | 1 | 5 | Dead | 6 | 2,331,713 | Yes / Yes / Yes |
+| 2 | Finite | 1 | 4 | Dead | 8 | 940,999 | Yes / Yes / Yes |
+| 3 | Finite | 3 | 3 | Dead | 7 | 1,193,123 | Yes / Yes / Yes |
+| 2 | Absent | 0 | 1 | Dead | 0 | 286,994 | Yes / Yes / No |
+
+The 150-day cases ran in memory with no world archive writes. The Chrome acceptance path used seed 2 and committed events for laying, brood movement, emergence, excavation and delivery. Its compact save at the first delivery was approximately 370 KiB. The stock and worker gains leave maternal survival and continuous late supply unresolved.
+
+The preview is ENGINEERING_ONLY. The B06 INSUFFICIENT result, nine BIOLOGICAL_BLOCKED findings and historical application performance FAIL remain in force.

@@ -81,7 +81,8 @@ template<class S> class FoundingReplay {
             if (e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Opportunity)
                 cue_contact |= e.observation.target==cue_target;
             else {
-                ensure(released || (cue_contact && e.observation.phase==ObservationPhase::Selected &&
+                const bool local_approach=sealed_chamber(world) && e.observation.act==CareAct::ApproachBrood;
+                ensure(released || ((cue_contact || local_approach) && e.observation.phase==ObservationPhase::Selected &&
                        e.observation.target==cue_target && e.observation.bout.value), "R2 hatch cue selected an unwitnessed larva");
                 cue_wake={}; cue_target={}; cue_contact=false;
             }
@@ -91,10 +92,10 @@ template<class S> class FoundingReplay {
                    founder(e.actor) && enrolled({e.payload}) && last_hatch->actor==EntityId{e.payload} &&
                    last_hatch->source==e.source && last_hatch->time==e.time && last_hatch->colony==e.colony &&
                    opened_care->source.value==0 && opened_care->id.value+1==e.id.value && opened_care->position==e.position &&
-                   familiar_brood_site(world,world.colonies.rows[world.colonies.index.at(e.colony)])==e.position &&
+                   (sealed_chamber(world) || familiar_brood_site(world,world.colonies.rows[world.colonies.index.at(e.colony)])==e.position) &&
                    e.random_value<world.m.next_scheduled &&
                    (last_cue==SimTime{} || e.time.milliseconds-last_cue.milliseconds>=founding_hatch_cooldown_ms) &&
-                   within_contact(e.position,last_hatch->position,world.config) &&
+                   (sealed_chamber(world) || within_contact(e.position,last_hatch->position,world.config)) &&
                    within_distance(e.position,last_hatch->position,world.care_profile->perception_radius_m,
                                    world.config.continuous_spatial_motion) &&
                    surface_care_clear(world,e.position,last_hatch->position) && clear(e.position,last_hatch->position,0,e.id),

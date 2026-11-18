@@ -68,6 +68,96 @@ class LiveTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.live.read("volume", {"epoch": str(view["epoch"] - 1)})
 
+    def test_single_nest_lays_and_transports_brood_before_workers_open_it(self):
+        core = self.live.core()
+        if not core.single_nest:
+            self.skipTest("The native core predates sealed founding")
+        self.live.write("single-nest", {"seed": 2})
+        self.live.write("clock", {"running": False})
+        initial = self.live.frame
+        self.assertEqual((initial["schema"], initial["physics"], initial["geometry"]["quantum_m"]), (31, 38, .00025))
+        self.assertEqual(len(initial["geometry"]["voids"]), 1)
+        self.assertFalse(self.live.read("view", {})["terrain"]["openings"])
+        queen, = initial["ants"].values()
+        self.assertEqual((queen["caste"], queen["stage"]), (1, 3))
+
+        early = checkpoint(core.call(f"ADVANCE {5 * DAY}"))
+        early_facts = [fact.packet() for fact in facts(core, early["cursor"])]
+        born = next(fact for fact in early_facts if fact["kind"] == "AntBorn")
+        self.assertGreater(born["position_m"][0], queen["position_m"][0])
+        self.assertEqual(early["ants"][int(born["actor"])]["mother"], queen["id"])
+        self.assertTrue(any(fact["kind"] == "Moved" and fact["actor"] == queen["id"]
+                            and fact["motion"]["duration_ms"] > 0 for fact in early_facts))
+        self.assertTrue(any(fact["kind"] == "BroodMoved" and fact["related"] == queen["id"] for fact in early_facts))
+        self.assertFalse(early["edits"])
+
+        later_raw = core.call(f"ADVANCE {60 * DAY}")
+        later = checkpoint(later_raw)
+        evidence = [fact.packet() for fact in facts(core, later["cursor"])
+                    if KINDS[fact.kind] in {"StageChanged", "SoilExcavated", "SoilDropped", "FoodDelivered"}]
+        worker = next(fact for fact in evidence if fact["kind"] == "StageChanged" and fact["stage"] == "Adult")
+        dig = next(fact for fact in evidence if fact["kind"] == "SoilExcavated")
+        delivery = next(fact for fact in evidence if fact["kind"] == "FoodDelivered")
+        self.assertEqual(worker["actor"], dig["actor"])
+        self.assertEqual(dig["actor"], delivery["actor"])
+        self.assertLess(int(worker["id"]), int(dig["id"]))
+        self.assertLess(int(dig["id"]), int(delivery["id"]))
+        self.assertTrue(later["soil_piles"])
+        self.assertTrue(all(pile["volume_mm3"] > 0 for pile in later["soil_piles"]))
+
+    def test_default_viewer_snapshot_keeps_only_a_tail_and_resumes_with_identical_facts(self):
+        core = self.live.core()
+        if not core.single_nest:
+            self.skipTest("The native core predates compact continuation")
+        self.live.write("single-nest", {"seed": 2})
+        with self.live.lock:
+            self.live.running = False
+            original = core.call(f"ADVANCE {65 * DAY}")
+            self.live.publish(original)
+            tip = self.live.frame["cursor"]
+        self.live.write("save", {"name": "Compact nest", "mode": "snapshot"})
+        self.live.write("save", {"name": "Compact nest", "mode": "archive"})
+        files = {entry["mode"]: entry for entry in self.live.list_saves()["entries"]}
+        floor = files["snapshot"]["history_floor"]
+        self.assertEqual(tip - floor, 2048)
+        self.assertLess(files["snapshot"]["size_bytes"], files["archive"]["size_bytes"])
+        path = self.live.saves / "Compact nest.awstate"
+        saved_bytes = path.read_bytes()
+        tail = core.call(f"FACTS_AFTER {floor} 8")
+        expected = core.call(f"ADVANCE {66 * DAY}")
+        end = checkpoint(expected)
+
+        def suffix():
+            cursor = tip
+            packets = []
+            while cursor < end["cursor"]:
+                packet = core.call(f"FACTS_AFTER {cursor} 512")
+                rows = read_live_events(packet, end, after=cursor)
+                self.assertTrue(rows)
+                packets.append(packet)
+                cursor = int(rows[-1]["id"])
+            return packets
+
+        expected_facts = suffix()
+        with self.live.lock:
+            self.live.publish(expected)
+            self.live.load("Compact nest", "archive")
+            self.assertEqual(core.call("FRAME"), original)
+            self.live.load("Compact nest", "snapshot")
+            self.assertEqual(core.call("FRAME"), original)
+            self.assertEqual(core.call("FACTS_AFTER 0 8"), tail)
+            self.assertEqual(self.live.read("view", {})["history_floor"], floor)
+            with self.assertRaisesRegex(ValueError, "predates"):
+                self.live.read("fact", {"id": str(floor)})
+            with self.assertRaisesRegex(ValueError, "Full history"):
+                self.live.save("Cannot archive", False, "archive")
+            self.assertEqual(core.call(f"ADVANCE {66 * DAY}"), expected)
+            self.assertEqual(suffix(), expected_facts)
+        path.write_bytes(saved_bytes[:-9] + bytes([saved_bytes[-9] ^ 1]) + saved_bytes[-8:])
+        with self.assertRaisesRegex(ValueError, "checksum"):
+            self.live.write("load", {"name": "Compact nest", "mode": "snapshot"})
+        self.assertEqual(core.call("FRAME"), expected)
+
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()
         if not worker.observatory:

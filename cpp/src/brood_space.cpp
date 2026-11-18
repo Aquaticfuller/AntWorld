@@ -28,10 +28,11 @@ std::optional<PositionM> WorldRuntime::local_egg_site(const AntState& mother) co
     if (!s.geometry || !spatially_clear(mother.position,mother.position,s.geometry->config.body_half_q)) return {};
     const auto& geometry=s.geometry->config;
     const auto view=geometry_view(s,limits_);
-    const auto local=nearby_brood(s,limits_,mother.position,mother.position,2*brood_pitch_m+brood_adjacency_m);
+    const auto local=nearby_brood(s,limits_,mother.position,mother.position,
+                                 sealed_chamber(s)?.003:2*brood_pitch_m+brood_adjacency_m);
     return pick_egg_site(mother.position,s.config,
         [&](PositionM a,PositionM b) {
-            const auto below=below_brood(b,geometry);
+            const auto below=below_brood(b,geometry,sealed_chamber(s));
             return spatially_clear(a,b,brood_half(geometry)) && !continuous_clear(view,below,below,0);
         },
         [&](PositionM b) {
@@ -42,7 +43,7 @@ std::optional<PositionM> WorldRuntime::local_egg_site(const AntState& mother) co
                 return ant.colony==mother.colony && within_distance(b,ant.position,brood_adjacency_m,true) &&
                     spatially_clear(b,ant.position);
             }));
-        });
+        },sealed_chamber(s) ? std::optional{s.ecological->founding_habitat->brood_site} : std::nullopt);
 }
 
 bool WorldRuntime::clear_brood_space(EntityId id,PositionM from,PositionM to) const {
@@ -52,6 +53,32 @@ bool WorldRuntime::clear_brood_space(EntityId id,PositionM from,PositionM to) co
     return std::none_of(local.begin(),local.end(),[&](const auto& ant) {
         return ant.id!=id && intersects_brood(from,to,ant.position);
     });
+}
+
+std::optional<PositionM> WorldRuntime::local_brood_berth(const AntState& carrier,const AntState& held,
+                                                        PositionM nursery) const {
+    const auto& s=*state_;
+    const auto& geometry=s.geometry->config;
+    const auto view=geometry_view(s,limits_);
+    const auto load=displacement(held.position,carrier.position);
+    const auto half=geometry.loaded_half_q;
+    std::optional<PositionM> best;
+    double distance_to_berth=s.care_profile->perception_radius_m;
+    // Only look for a vacant site in the already familiar brood area. Check
+    // the entire straight route for both bodies before taking a short step.
+    for (int x=-8;x<=8;++x) for (int z=-8;z<=8;++z) {
+        const auto site=PositionM{nursery.x+x*geometry.quantum_m,held.position.y,nursery.z+z*geometry.quantum_m};
+        const auto travel=portable_care_distance(held.position,site);
+        if (travel>=distance_to_berth || !within_contact(site,nursery,s.config)) continue;
+        const auto stance=PositionM{site.x-load.x,site.y-load.y,site.z-load.z};
+        const auto support=below_brood(site,geometry,true);
+        if (continuous_clear(view,support,support,0) ||
+            !clear_care_segment(held.position,site,half) || !clear_brood_space(held.id,held.position,site) ||
+            !clear_care_segment(carrier.position,stance,half) || !clear_worker_traffic(carrier,stance,half)) continue;
+        distance_to_berth=travel;
+        best=stance;
+    }
+    return best;
 }
 
 std::optional<PositionM> WorldRuntime::arrange_brood_site(const AntState& brood_ant,PositionM shelter) const {
@@ -78,7 +105,7 @@ std::optional<PositionM> WorldRuntime::arrange_brood_site(const AntState& brood_
     // without converging every individual onto the same point.
     for (const auto& offset : std::array<PositionM,4>{{{step,0,0},{-step,0,0},{0,0,step},{0,0,-step}}}) {
         const auto to=translated(from,offset);
-        const auto below=below_brood(to,geometry);
+        const auto below=below_brood(to,geometry,sealed_chamber(s));
         if (!within_contact(to,shelter,s.config) || intersects_brood(to,to,shelter) ||
             !clear_care_segment(from,to,brood_half(geometry)) ||
             continuous_clear(view,below,below,0) || !clear_brood_space(brood_ant.id,from,to)) continue;

@@ -39,6 +39,7 @@ bool compatible_frame_contract(std::span<const std::uint8_t> a,std::span<const s
 }
 
 SaveFrame capture_frame(const WorldRuntime& world) {
+    require(!world.first_history_cursor(),"Cannot archive a world with omitted history");
     timing::Scope phase(timing::Phase::CaptureFrame);
     return {world.summary(),world.checkpoint_frame(),world.capture_history(),observe(world),
             world.geometry_snapshot(),world.geometry_edits(),world.ant_states(),world.command_receipts()};

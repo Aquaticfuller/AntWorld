@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--scratch", type=Path, default=ROOT / "out")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--node", default="node")
-    parser.add_argument("--mode", default="m1", choices=("m1", "live", "habitat", "nursery", "ecology", "m1-witnesses", "m1-soak"))
+    parser.add_argument("--mode", default="m1", choices=("m1", "m2", "live", "habitat", "nursery", "ecology", "m1-witnesses", "m1-soak"))
     args = parser.parse_args()
     args.scratch.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=args.scratch, prefix="m1-browser-") as scratch:

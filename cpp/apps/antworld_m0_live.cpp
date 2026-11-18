@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <charconv>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <set>
@@ -73,11 +74,21 @@ SimTime read_target(std::istringstream& request) {
     return {static_cast<std::int64_t>(target)};
 }
 
-std::filesystem::path staged_save(std::istringstream& request) {
+std::filesystem::path staged_save(std::istringstream& request, bool snapshot = false) {
     const auto id = word(request);
     require(id.size() == 32 && id.find_first_not_of("0123456789abcdef") == std::string::npos,
             "Invalid live save staging ID");
-    return id + ".sqlite";
+    return id + (snapshot?".awstate":".sqlite");
+}
+
+std::vector<std::uint8_t> read_snapshot(const std::filesystem::path& path, std::size_t limit) {
+    const auto length=std::filesystem::file_size(path);
+    require(length>0 && length<=limit,"Invalid continuation snapshot size");
+    std::vector<std::uint8_t> bytes(static_cast<std::size_t>(length));
+    std::ifstream input(path,std::ios::binary);
+    require(static_cast<bool>(input.read(reinterpret_cast<char*>(bytes.data()),static_cast<std::streamsize>(bytes.size()))) &&
+            input.peek()==std::char_traits<char>::eof(),"Could not read the continuation snapshot");
+    return bytes;
 }
 
 void message(std::string_view status, std::string_view data = {}) {
@@ -141,7 +152,8 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
     send_events(latest);
 }
 
-enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact };
+enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact,
+                       BroodMoved, BroodCleaned };
 
 Milestone read_milestone(std::istringstream& request) {
     const auto name = word(request);
@@ -155,6 +167,8 @@ Milestone read_milestone(std::istringstream& request) {
     if (name == "excavation") return Milestone::Excavation;
     if (name == "patrol") return Milestone::Patrol;
     if (name == "entrance-contact") return Milestone::EntranceContact;
+    if (name == "brood-moved") return Milestone::BroodMoved;
+    if (name == "brood-cleaned") return Milestone::BroodCleaned;
     throw std::invalid_argument("Unknown live milestone");
 }
 
@@ -171,7 +185,8 @@ struct MilestoneSearch {
     std::optional<double> surface_y;
     std::set<EntityId> underground;
 
-    explicit MilestoneSearch(Milestone milestone, const WorldRuntime& world) : target(milestone) {
+    explicit MilestoneSearch(Milestone milestone, const WorldRuntime& world)
+        : target(milestone), cursor{world.first_history_cursor()} {
         if (target == Milestone::Exit) {
             const auto surface = world.surface_snapshot();
             if (surface.configured) surface_y = surface.surface.origin_m.y;
@@ -210,6 +225,11 @@ struct MilestoneSearch {
             return fact.kind==FactKind::RecruitmentActivated && adult_worker(world,fact);
         case Milestone::Excavation:
             return fact.kind == FactKind::SoilExcavated && adult_worker(world, fact);
+        case Milestone::BroodMoved:
+            return fact.kind==FactKind::BroodMoved;
+        case Milestone::BroodCleaned:
+            return fact.kind==FactKind::BiologicalObservation && fact.observation.phase==ObservationPhase::Completed &&
+                fact.observation.act==CareAct::CleanBrood;
         case Milestone::Patrol: case Milestone::EntranceContact:
             return fact.kind==FactKind::BiologicalObservation && fact.observation.phase==ObservationPhase::Completed &&
                 fact.observation.act==(target==Milestone::Patrol?CareAct::EntrancePatrol:CareAct::EntranceContact);
@@ -331,14 +351,15 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v11");
-            } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY") {
+                message("OK", "antworld.m0.live.v12");
+            } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                if (command=="NEW_OBSERVATORY") {
+                const bool sealed=command=="NEW_SINGLE_NEST";
+                if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
                     require(supply=="finite" || supply=="absent","invalid supply setting");
@@ -347,11 +368,12 @@ int main() {
                 }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
+                require(!sealed || access=="plugged","Single-nest founding begins inside a sealed chamber");
                 require(half_life==60 || half_life==1955,"unsupported founding trail half-life");
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
@@ -415,18 +437,27 @@ int main() {
                 search.reset();
                 history.attach(*world,command=="NEW_R0_ASSAY");
                 payload(frame);
-            } else if (command == "LOAD") {
-                const auto path = staged_save(request);
+            } else if (command == "LOAD" || command == "LOAD_SNAPSHOT") {
+                const bool snapshot=command=="LOAD_SNAPSHOT";
+                const auto path = staged_save(request,snapshot);
                 const auto id = WorldId::parse(word(request));
                 end(request);
                 require(std::filesystem::is_regular_file(path), "Live load snapshot is missing");
-                storage::Store store(path, limits);
-                require(store.format() == storage::StoreFormat::Segmented, "Live load needs a segmented save");
-                auto loaded = store.load(id);
-                const auto model = loaded.world.ecological_closure();
+                auto candidate=[&] {
+                    if (snapshot) {
+                        WorldRuntime state(id,1,{},limits);
+                        state.restore_snapshot(read_snapshot(path,limits.checkpoint_bytes));
+                        require(state.summary().world==id,"Continuation snapshot belongs to another world");
+                        return state;
+                    }
+                    storage::Store store(path,limits);
+                    require(store.format()==storage::StoreFormat::Segmented,"Live load needs a segmented save");
+                    return std::move(store.load(id).world);
+                }();
+                const auto model = candidate.ecological_closure();
                 require(model && model->brood_space, "Live load needs a MicroWorld save");
-                const auto frame = loaded.world.checkpoint_frame();
-                world.emplace(std::move(loaded.world));
+                const auto frame = candidate.checkpoint_frame();
+                world.emplace(std::move(candidate));
                 search.reset();
                 history.attach(*world);
                 payload(frame);
@@ -444,6 +475,7 @@ int main() {
                     const bool next = command == "FIND_NEXT_MILESTONE";
                     const EventId after{next ? number(request) : 0};
                     end(request);
+                    require(next || !world->first_history_cursor(),"Earlier milestones precede the saved history window");
                     if (after.value) {
                         // Preserve the detector state at a hit within an atomic timestamp.
                         require(search && search->target == milestone && search->cursor == after &&
@@ -550,10 +582,21 @@ int main() {
                          << stock.water_ug << ' ' << world->resident_history_bytes() << ' '
                          << history.encoded_bytes();
                     message("OK",data.str());
+                } else if (command == "SAVE_SNAPSHOT") {
+                    const auto path=staged_save(request,true);
+                    end(request);
+                    require(!std::filesystem::exists(path),"Live save staging path already exists");
+                    const auto bytes=world->resume_snapshot();
+                    std::ofstream output(path,std::ios::binary);
+                    output.write(reinterpret_cast<const char*>(bytes.data()),static_cast<std::streamsize>(bytes.size()));
+                    output.close();
+                    require(static_cast<bool>(output),"Could not write the continuation snapshot");
+                    message("OK");
                 } else if (command == "SAVE") {
                     const auto path = staged_save(request);
                     end(request);
                     require(!std::filesystem::exists(path), "Live save staging path already exists");
+                    require(!world->first_history_cursor(),"Full history is unavailable for this colony");
                     {
                         storage::Store store(path, limits, storage::StoreFormat::Segmented);
                         store.save(*world);

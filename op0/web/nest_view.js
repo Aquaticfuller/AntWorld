@@ -120,37 +120,19 @@ function nestPolygon(ctx, polygon, fill, edge) {
 
 function nestAnt(ctx, ant, p, direction, size) {
     const [x, y] = p;
-    const brood = ant.stage !== "Adult";
-    const color = brood ? colors[ant.stage.toLowerCase()] : colors[ant.program] || colors.worker;
+    if (ant.stage === "Adult") {
+        drawAdult(ctx,ant,x,y,size,direction,ant.id===app.selected,ant.display_motion?.progress,app.renderedTimeMs);
+        return;
+    }
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(direction);
-    ctx.fillStyle = ant.caste === "Queen" && !brood ? colors.queen : color || colors.worker;
-    if (brood) {
-        ctx.beginPath();
-        ctx.ellipse(0, 0, size, size * .68, 0, 0, 2 * Math.PI);
-        ctx.fill();
-    } else {
-        ctx.strokeStyle = ctx.fillStyle;
-        ctx.lineWidth = 1.1;
-        for (const spread of [-1, 1]) {
-            ctx.beginPath();
-            for (const joint of [-.34, 0, .34]) {
-                ctx.moveTo(joint * size, 0);
-                ctx.lineTo((joint - .23) * size, spread * size * .72);
-            }
-            ctx.stroke();
-        }
-        for (const [at, radius] of [[-.53, .54], [.11, .36], [.63, .41]]) {
-            ctx.beginPath();
-            ctx.ellipse(at * size, 0, radius * size, radius * size * .72, 0, 0, 2 * Math.PI);
-            ctx.fill();
-        }
-    }
-    if (ant.loaded) {
-        ctx.fillStyle = ant.soil_load ? "#d4a477" : "#80e8d3";
-        ctx.fillRect(.9 * size, -.26 * size, .47 * size, .52 * size);
-    }
+    ctx.fillStyle = colors[ant.stage.toLowerCase()] || colors.worker;
+    ctx.strokeStyle = "#4d3d2c";
+    ctx.lineWidth = .7;
+    ctx.beginPath();
+    ctx.ellipse(0,0,size,size*.68,0,0,2*Math.PI);
+    ctx.fill(); ctx.stroke();
     if (ant.id === app.selected) {
         ctx.strokeStyle = "#f6eac6";
         ctx.lineWidth = 1.2;
@@ -159,9 +141,33 @@ function nestAnt(ctx, ant, p, direction, size) {
     ctx.restore();
 }
 
+function nestCallout(ctx, point, label, color, [dx, dy], width, height) {
+    const [x, y] = point;
+    if (x < 0 || y < 0 || x > width || y > height) return;
+    ctx.save();
+    ctx.font = '600 12px "Inter", "Microsoft YaHei UI", sans-serif';
+    const w = ctx.measureText(label).width + 16;
+    const left = Math.max(8,Math.min(width-w-8,x+dx-(dx<0?w:0)));
+    const top = Math.max(8,Math.min(height-32,y+dy-11));
+    ctx.strokeStyle = color;
+    ctx.lineWidth = .75;
+    ctx.beginPath();
+    ctx.moveTo(x,y); ctx.lineTo(dx < 0 ? left + w : left,top+11);
+    ctx.stroke();
+    circle(ctx,x,y,3,color,"#262b26");
+    ctx.fillStyle = "#172123f2";
+    ctx.beginPath(); ctx.roundRect(left,top,w,22,4); ctx.fill();
+    ctx.textBaseline = "middle"; ctx.fillStyle = "#fff6e4";
+    ctx.fillText(label,left+8,top+11);
+    ctx.restore();
+}
+
 function drawNest(canvas, state, motionOnly) {
     const started = performance.now(), {ctx, width, height} = canvas;
-    ctx.fillStyle = "#101b16";
+    const backdrop = ctx.createRadialGradient(width*.5,height*.43,0,width*.5,height*.43,width*.74);
+    backdrop.addColorStop(0,"#26383a");
+    backdrop.addColorStop(1,"#11191c");
+    ctx.fillStyle = backdrop;
     ctx.fillRect(0, 0, width, height);
     requestNestVolume();
     const volume = nestView.volume;
@@ -181,6 +187,7 @@ function drawNest(canvas, state, motionOnly) {
     const field = scale === "world" ? Math.max(...[0, 2].map(i => app.meta.bounds_m[1][i] - app.meta.bounds_m[0][i])) :
         scale === "chamber" ? 24 * q : Math.max(right - x, far - z) * q * 1.04;
     const {project, depth} = nestProjection(width, height, focus, field);
+    const unit = Math.min(width-40,height*1.12)*nestView.zoom/field;
     const coordinate = point => point.map((value, i) => origin[i] + value * q);
     const cutY = origin[1] + top * q;
     const above = position => position[1] >= planeSurface() - 1e-10;
@@ -209,7 +216,7 @@ function drawNest(canvas, state, motionOnly) {
     for (const f of nestView.faces) {
         if (f.sign * depth[f.axis] < 0) continue;
         // In x-ray mode the real roof remains visible but cannot conceal actors below it.
-        const shade = f.material === 2 ? ["#526162", "#758582", "#465556"] : ["#4a3c2f", "#6a523a", "#554232"];
+        const shade = f.material === 2 ? ["#657379", "#879397", "#515e62"] : ["#8d6247", "#c28e60", "#664433"];
         const polygon = f.points.map(project), order = polygon.reduce((n, p) => n + p[2], 0) / 4;
         layers.push({polygon, order, fill: shade[f.axis], cap: f.cap});
     }
@@ -219,25 +226,23 @@ function drawNest(canvas, state, motionOnly) {
         if (!visible(position)) continue;
         const p = project(position);
         if (p[0] < -15 || p[1] < -15 || p[0] > width + 15 || p[1] > height + 15) continue;
-        const size = ant.caste === "Queen" ? 9 : ant.stage === "Adult" ? 5 : ant.stage === "Egg" ? 2.8 : 3.8;
-        const segment = ant.display_motion;
-        const vector = segment ? segment.to_m : null;
-        const angle = vector ? Math.atan2(project(vector)[1] - project(segment.from_m)[1],
-            project(vector)[0] - project(segment.from_m)[0]) : 0;
+        const size = ant.stage === "Adult" ? adultGlyphSize(ant,app.meta.settings.geometry,unit) :
+            Math.max(2,unit*(ant.stage === "Egg" ? .00019 : .00030));
+        const angle = adultHeading(ant,project,app.renderedTimeMs);
         actors.push({ant, p, size, angle, order: p[2]});
     }
-    const add = (site, message, color) => {
-        if (site && visible(site)) points.push({p: project(site), message, color});
+    const add = (site, message, color, offset) => {
+        if (site && visible(site)) points.push({p: project(site), message, color, offset});
     };
     for (const source of state.sources || []) if (source.stock_ug.some(n => n > 0)) {
         const water = !(source.stock_ug[0] || source.stock_ug[1]);
-        add(source.position_m, water ? "Water" : "Food source", water ? "#92d6ec" : "#92ddb5");
+        add(source.position_m, water ? "Water" : "Food source", water ? "#92d6ec" : "#92ddb5", [-31,-40]);
     }
-    add(center, "Nest depot", "#eed29a");
-    add(app.live ? liveView.state.habitat?.brood_site_m : app.meta.settings.ecological?.founding_habitat?.brood_site_m,
-        "Brood chamber", "#dcb7da");
+    add(center, "Nest depot", "#eed29a", [39,42]);
+    const habitat = app.live ? liveView.state.habitat : app.meta.settings.ecological?.founding_habitat;
+    add(habitat?.brood_site_m, habitat?.sealed_chamber ? "Brood area" : "Brood chamber","#dcb7da", [-32,45]);
     const opening = app.geometry.openings || [];
-    if (opening.length) add(opening[Math.floor(opening.length / 2)], "Open entrance", "#bcdea5");
+    if (opening.length) add(opening[Math.floor(opening.length / 2)], "Open entrance", "#bcdea5", [23,-27]);
     if (app.selectedFact?.position_m && visible(app.selectedFact.position_m)) events.push(app.selectedFact);
     else if (app.live && liveView.state.running && liveView.state.rate === 1) {
         const at = app.renderedTimeMs;
@@ -247,8 +252,13 @@ function drawNest(canvas, state, motionOnly) {
         if (moment) events.push(moment);
     }
     const paintFace = ({polygon, cap, fill}) => {
-        ctx.globalAlpha = cap && transparent ? .20 : transparent ? .78 : 1;
-        nestPolygon(ctx, polygon, fill, null);
+        ctx.globalAlpha = cap && transparent ? .14 : transparent ? .86 : 1;
+        nestPolygon(ctx,polygon,fill,"#eab88f34");
+        const grain = soilTexture(ctx);
+        if (grain && !cap) {
+            ctx.globalAlpha *= .5;
+            nestPolygon(ctx,polygon,grain,null);
+        }
         ctx.globalAlpha = 1;
     };
     const drawActor = ({ant, p, size, angle}) => nestAnt(ctx, ant, p, angle, size);
@@ -258,9 +268,18 @@ function drawNest(canvas, state, motionOnly) {
     } else {
         layers.concat(actors).sort((a, b) => a.order - b.order).forEach(item => item.ant ? drawActor(item) : paintFace(item));
     }
-    for (const {p, message, color} of points) if (p[0] > 0 && p[1] > 0 && p[0] < width && p[1] < height) {
-        drawSite(ctx, p, tr(message), color, -8, true);
-    }
+    drawSoilParcels(ctx,state.soil_piles,project,visible,unit);
+    const scaleMm = unit>40000 ? 1 : unit>9000 ? 2 : unit>2000 ? 10 : 50;
+    const bar = scaleMm*unit/1000, rulerY = height-22;
+    ctx.strokeStyle = "#d9d4bc";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(19,rulerY-3); ctx.lineTo(19,rulerY); ctx.lineTo(19+bar,rulerY); ctx.lineTo(19+bar,rulerY-3);
+    ctx.stroke();
+    ctx.fillStyle = "#d9d4bc"; ctx.font = "11px system-ui";
+    ctx.fillText(withUnit(scaleMm,"mm"),19,rulerY-7);
+    for (const {p, message, color, offset} of points)
+        nestCallout(ctx,p,tr(message),color,offset,width,height);
     if (app.follow && app.path.length) {
         ctx.fillStyle = "#c5b0e9";
         for (const event of app.path) if (visible(event.position_m)) {
@@ -268,8 +287,8 @@ function drawNest(canvas, state, motionOnly) {
             ctx.fillRect(p[0] - 1, p[1] - 1, 2, 2);
         }
     }
-    for (const event of events) drawSite(ctx, project(event.position_m),
-        `${tr(event.kind)} · #${event.id}`, "#f3da94", -17, true);
+    for (const event of events) nestCallout(ctx,project(event.position_m),
+        `${tr(event.kind)} · #${event.id}`,"#f3da94",[44,-44],width,height);
     app.hits = actors.map(({ant, p, size}) => ({x: p[0], y: p[1], radius: size + 6, id: ant.id, ants: [ant]}));
     nestView.lastDrawMs = performance.now() - started;
     if (!motionOnly) {
@@ -283,6 +302,7 @@ function drawNest(canvas, state, motionOnly) {
         put("space-caption", tr("Local material surfaces · {count} committed edits", {count: volume.revision}) +
             (volume.cropped ? " · " + tr("Local section of the terrain") : ""));
         legend("map-legend", [["soil", "Soil"], ["rock", "Rock"], ["queen", "Queen"], ["egg", "Eggs"],
-            ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["food", "Food source"]]);
+            ["larva", "Larvae"], ["pupa", "Pupae"], ["worker", "Worker"], ["food", "Food source"],
+            ...(state.soil_piles?.length ? [["soil", "Deposited soil"]] : [])]);
     }
 }

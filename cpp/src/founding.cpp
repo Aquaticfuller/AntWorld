@@ -14,8 +14,10 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
         throw std::invalid_argument("F1 requires an unenrolled foundress at integrated world setup");
     if (s.ecological && s.ecological->founding_habitat) {
         const auto depot=s.colonies.rows[s.colonies.index.at(ant->colony)].nest_position;
+        const auto nursery=s.ecological->founding_habitat->brood_site;
         if (s.colonies.rows.size()!=1 || !s.geometry || !s.surface ||
-            ant->position!=s.ecological->founding_habitat->brood_site || ant->position==depot ||
+            nursery==depot || (sealed_chamber(s) ? ant->position!=depot ||
+                !spatially_clear(ant->position,nursery,s.geometry->config.body_half_q) : ant->position!=nursery) ||
             !spatially_clear(ant->position,ant->position,s.geometry->config.body_half_q) ||
             !spatially_clear(depot,depot,s.geometry->config.loaded_half_q))
             throw std::invalid_argument("founding habitat needs distinct clear brood and handoff sites");

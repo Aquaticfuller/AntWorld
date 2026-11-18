@@ -32,12 +32,16 @@ template <class S> void read_commands(Reader &r, S &s, const RuntimeLimits &limi
         ensure(receipt.command.id != CommandId{} && receipt.event.value &&
                    receipt.event.value <= s.journal.size(),
                "invalid command identity/evidence");
-        const auto &e = s.journal.at(static_cast<std::size_t>(receipt.event.value - 1));
-        ensure(e.kind == FactKind::FoodPlaced && e.resource == receipt.resource &&
-                   e.time == receipt.applied_at && e.revision == receipt.revision &&
-                   e.position == receipt.command.position && e.transferred == receipt.command.mass &&
-                   linked.insert(e.id).second && s.commands.emplace(receipt.command.id, receipt).second,
-               "command receipt disagrees with committed fact");
+        ensure(s.foods.index.contains(receipt.resource) && receipt.applied_at<=s.m.now &&
+               receipt.revision<=s.m.revision && linked.insert(receipt.event).second &&
+               s.commands.emplace(receipt.command.id,receipt).second,"invalid command receipt");
+        if (receipt.event.value>s.journal.first_cursor()) {
+            const auto e=s.journal.at(static_cast<std::size_t>(receipt.event.value-1));
+            ensure(e.kind==FactKind::FoodPlaced && e.resource==receipt.resource &&
+                   e.time==receipt.applied_at && e.revision==receipt.revision &&
+                   e.position==receipt.command.position && e.transferred==receipt.command.mass,
+                   "command receipt disagrees with committed fact");
+        }
     }
     for (const auto &e : s.journal)
         if (e.kind == FactKind::FoodPlaced)

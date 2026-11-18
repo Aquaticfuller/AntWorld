@@ -36,6 +36,7 @@ PositionM WorldRuntime::care_destination(const CareState& care,const AntState& a
     const auto half=care_extent(s,body_half(actor.id),care.act);
     const auto clear=[&](PositionM next) {
         return clear_care_segment(actor.position,next,half) &&
+            (!sealed_chamber(s) || clear_worker_traffic(actor,next,half)) &&
             (!load || (clear_care_segment(*load,translated(next,care.grip_offset),half) &&
                        clear_brood_space(care.retrieval.target,*load,translated(next,care.grip_offset))));
     };
@@ -113,6 +114,11 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
         std::sort(sites.begin(),sites.end(),[&](auto a,auto b) { return rank(a)<rank(b); });
         for (const auto site:sites)
             if (clear_worker_site(ant,site)) return site;
+        if (sealed_chamber(s))
+            for (const auto lift:{pitch,-pitch}) {
+                const auto site=physical({origin->x,origin->y+lift,origin->z},g);
+                if (clear_worker_site(ant,site)) return site;
+            }
         return {};
     }
     constexpr std::array<Cell,8> bearings{{{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,1},{-1,-1},{1,-1}}};
@@ -212,7 +218,7 @@ bool WorldRuntime::local_care_available(AntRef ref) const {
     if (!integrated_care(s) || care_owned(s,ref.id)) return false;
     const auto a=*query_ant(ref);
     const auto nest=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(a.colony)]);
-    if (a.position!=nest && (!worker_motor(s) || a.caste!=Caste::Worker)) {
+    if (a.position!=nest && (!worker_motor(s) || !motile_caste(s,a.caste))) {
         // Only a remembered shelter can resume a failed return, one valid step at a time.
         if (!s.care.contains(a.id)) return false;
         const auto shelter=s.care.at(a.id).familiar_shelter;
@@ -243,7 +249,7 @@ void WorldRuntime::start_autonomous_care(Transaction& tx,AntRef ref,ScheduledId 
     }
     if (a.caste==Caste::Worker) change_behavior(tx,ref,IndividualBehavior::Nurse,source,true);
     care.enabled=true;
-    care.returning=a.position!=care.familiar_shelter && (!worker_motor(s) || a.caste!=Caste::Worker);
+    care.returning=a.position!=care.familiar_shelter && (!worker_motor(s) || !motile_caste(s,a.caste));
     tx.care.set(a.id,care);
     schedule_care(tx,a.id,after(s.m.now,1),hatch_target);
     WorldEvent f; f.kind=FactKind::CareProgramChanged; f.actor=a.id; f.colony=a.colony;
@@ -259,8 +265,9 @@ void WorldRuntime::notify_local_hatch(Transaction& tx, const AntState& larva, Sc
     const AntRef ref{s.world,founder};
     const auto queen=*query_ant(ref);
     const auto shelter=familiar_brood_site(s,s.colonies.rows[s.colonies.index.at(queen.colony)]);
-    if (!queen.alive() || queen.colony!=larva.colony || queen.position!=shelter ||
-        s.physiology.at(larva.id).mother!=founder || !within_contact(queen.position,larva.position,s.config) ||
+    if (!queen.alive() || queen.colony!=larva.colony ||
+        (!sealed_chamber(s) && (queen.position!=shelter || !within_contact(queen.position,larva.position,s.config))) ||
+        s.physiology.at(larva.id).mother!=founder ||
         !within_distance(queen.position,larva.position,s.care_profile->perception_radius_m,s.config.continuous_spatial_motion) ||
         !surface_care_clear(s,queen.position,larva.position) || !spatially_clear(queen.position,larva.position) ||
         s.care_locks.contains(larva.id)) return;
@@ -354,7 +361,9 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 (within_contact(other.position,c.familiar_shelter,s.config) &&
                  !(c.carrying_brood && c.retrieval.target==ref.id)))) continue;
             if (brood(other.stage)) brood_candidates.push_back(ref);
-            if (within_contact(a.position,other.position,s.config)) {
+            if (brood(other.stage) ? within_distance(a.position,other.position,brood_handling_reach(s),
+                                                     s.config.continuous_spatial_motion) :
+                                     within_contact(a.position,other.position,s.config)) {
                 if (brood(other.stage) || (other.stage==LifeStage::Adult && other.caste==Caste::Worker))
                     opportunities[n].push_back(ref);
                 if (other.stage==LifeStage::Adult && other.caste==Caste::Worker) workers.push_back(ref);
@@ -365,6 +374,11 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         const bool capable=p.body_energy_nj>=p.config.energy_capacity_nj/4 && p.hydration_ug>=p.config.hydration_capacity_ug/4;
         bool continuing=false;
         bool revisiting=false;
+        const auto can_feed_here=[&](const AntState& brood_ant) {
+            return sealed_chamber(s) && founding_foundress(a.id) && brood_ant.stage==LifeStage::Larva &&
+                s.founding_reserves.contains(brood_ant.id) && !s.care_locks.contains(brood_ant.id) &&
+                can_feed_founding(a.id,brood_ant.id);
+        };
         if (cfg.local_retrieval && capable && !c.carrying_brood && !c.returning) {
             const auto displaced=[&](AntRef ref) {
                 const auto other=s.ants.get(s.ants.index.at(ref.id));
@@ -381,7 +395,12 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                 c.retrieval={};
             continuing=c.retrieval.target.value || c.retrieval.pickup_bout.value;
             const bool outside=std::any_of(brood_candidates.begin(),brood_candidates.end(),displaced);
-            if (outside) std::erase_if(brood_candidates,[&](AntRef ref) { return !displaced(ref); });
+            const bool hungry=sealed_chamber(s) && std::any_of(brood_candidates.begin(),brood_candidates.end(),
+                [&](AntRef ref) { return can_feed_here(*query_ant(ref)); });
+            if (hungry) {
+                std::erase_if(brood_candidates,[&](AntRef ref) { return !can_feed_here(*query_ant(ref)); });
+                c.retrieval={}; continuing=false;
+            } else if (outside) std::erase_if(brood_candidates,[&](AntRef ref) { return !displaced(ref); });
             revisiting=continuing && !outside;
         } else if (cfg.local_retrieval && !c.carrying_brood) {
             c.retrieval={};
@@ -407,7 +426,8 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
         if (hatch_cue) {
             const EntityId target{wake.payload};
             std::erase_if(brood_candidates,[&](AntRef other) {
-                return other.id!=target || std::find(opportunities[n].begin(),opportunities[n].end(),other)==opportunities[n].end() ||
+                return other.id!=target || (!sealed_chamber(s) &&
+                       std::find(opportunities[n].begin(),opportunities[n].end(),other)==opportunities[n].end()) ||
                        query_ant(other)->stage!=LifeStage::Larva || s.care_locks.contains(other.id);
             });
             remembered={}; // The single hatch cue is independent of last-meal preference.
@@ -418,9 +438,10 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
             if (within_contact(b.position,c.familiar_shelter,s.config)) c.act=CareAct::PlaceBrood;
             else {
                 c.act=CareAct::TransportBrood;
-                const PositionM goal{a.position.x+(c.familiar_shelter.x-b.position.x),
+                const PositionM center{a.position.x+(c.familiar_shelter.x-b.position.x),
                     a.position.y+(c.familiar_shelter.y-b.position.y),a.position.z+(c.familiar_shelter.z-b.position.z)};
-                c.destination=care_destination(c,a,goal,b.position);
+                const auto berth=sealed_chamber(s)?local_brood_berth(a,b,c.familiar_shelter):std::optional{center};
+                if (berth) c.destination=care_destination(c,a,*berth,b.position);
             }
         } else if (c.returning) {
             if (a.position!=c.familiar_shelter) {
@@ -465,17 +486,18 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
                     }
                 }
                 const auto b=*query_ant({s.world,c.target});
-                const bool displaced=!within_contact(b.position,c.familiar_shelter,s.config);
+                const bool hungry=can_feed_here(b);
+                const bool displaced=!hungry && !within_contact(b.position,c.familiar_shelter,s.config);
                 if (cfg.local_retrieval && displaced && c.retrieval.target!=c.target) {
                     c.retrieval={};
                     c.retrieval.target=c.target;
                 }
-                if (!within_contact(a.position,b.position,s.config)) {
+                if (!within_distance(a.position,b.position,brood_handling_reach(s),s.config.continuous_spatial_motion)) {
                     c.act=CareAct::ApproachBrood; c.destination=care_destination(c,a,b.position);
                 } else if (displaced) {
                     if (cfg.motion) c.act=CareAct::PickUpBrood;
                     else { c.act=CareAct::TransportBrood; c.destination=toward(a.position,c.familiar_shelter,cfg.step_m); }
-                } else if (repeat || first_meal) {
+                } else if (repeat || first_meal || hungry) {
                     c.act=CareAct::FeedBrood;
                     if (repeat) annotations[n]=FoundingCareWake::Repeat;
                 } else {
@@ -559,7 +581,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         else if ((b.colony!=a.colony && (!foreign_assay_stage(s,b.stage) || !foreign_assay_act(c.act))) ||
                  !spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position) ||
                  !within_distance(a.position,b.position,(c.act==CareAct::ApproachBrood || c.act==CareAct::ApproachNestmate ||
-                                  c.act==CareAct::YieldToCarrier)?cfg.perception_radius_m:s.config.contact_distance_m,
+                                  c.act==CareAct::YieldToCarrier)?cfg.perception_radius_m:
+                                  handles_brood(c.act)?brood_handling_reach(s):s.config.contact_distance_m,
                                   s.config.continuous_spatial_motion)) outcome=Outcome::OutOfReach;
         else if (handling && s.care_locks.contains(c.target) && s.care_locks.at(c.target)!=a.id) outcome=Outcome::DuplicateAction;
         else if (s.config.continuous_spatial_motion && c.carrying_brood &&
@@ -578,7 +601,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     }
     if (outcome==Outcome::Success && care_motion(c.act)) {
         if (!clear_care_segment(from,c.destination,half) ||
-            (a.caste==Caste::Worker && c.act!=CareAct::ArrangeBrood && !clear_worker_traffic(a,c.destination,half)) ||
+            (motile_caste(s,a.caste) && c.act!=CareAct::ArrangeBrood && !clear_worker_traffic(a,c.destination,half)) ||
             ((c.act==CareAct::NestReposition || c.act==CareAct::EntrancePatrol) && !clear_resting_site(a,c.destination)) ||
             (c.act==CareAct::DepotApproach && !clear_worker_site(a,c.destination,true)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
@@ -589,7 +612,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         if (handling) tx.care_locks.set(c.target,a.id);
         c.active=true; c.began_at=s.m.now;
         auto duration=care_duration(cfg,s.config,a.caste,c.act,from,c.destination,portable_care(s));
-        if (a.caste==Caste::Worker && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
+        if (motile_caste(s,a.caste) && care_motion(c.act) && c.act!=CareAct::ArrangeBrood)
             duration=with_worker_turn(s,a.id,from,c.destination,duration);
         ScheduledEvent e; e.actor=a.id; e.kind=ScheduledEvent::Kind::CareEnd; e.issued_at=s.m.now;
         e.key={after(s.m.now,duration.milliseconds),Phase::Resolution,0,0,0}; c.pending=tx.insert(e);

@@ -73,6 +73,10 @@ template <class S> void read_social(Reader &r, S &s,bool care_motion) {
              "invalid autonomy identity/state");
     }
   }
+  if (s.journal.first_cursor()) {
+    rebuild_contacts(s);
+    return;
+  }
   std::uint64_t configured = 0;
   for (const auto &e : s.journal)
     if (e.kind == FactKind::SocialConfigured) {
@@ -132,7 +136,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       positions[e.actor] = e.position;
     }
     if (e.kind==FactKind::Moved && worker_motor(s) && audit.contains(e.actor) &&
-        s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && positions.at(e.actor)!=e.position) {
+        motile_caste(s,s.ants.get(s.ants.index.at(e.actor)).caste) && positions.at(e.actor)!=e.position) {
       auto& a=audit.at(e.actor);
       const auto facing=movement_facing(positions.at(e.actor),e.position);
       if (e.random_value) {

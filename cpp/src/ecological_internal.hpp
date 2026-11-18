@@ -31,6 +31,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
     if (const auto& habitat=c.founding_habitat; habitat) {
         const auto& p=habitat->brood_site;
         if (!c.local_pantry_checks || !c.recruitment || !c.worker_activity_timing ||
+            (habitat->sealed_chamber && !habitat->alternate_berth) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
             p.x<world.min_m.x || p.y<world.min_m.y || p.z<world.min_m.z ||
@@ -75,6 +76,22 @@ inline SimTime segment_duration(const EcologicalClosureConfig& c, PositionM from
 }
 inline bool timed_activity(const auto& s) { return s.ecological && s.ecological->activity_cost; }
 inline bool bounded_brood_space(const auto& s) { return s.ecological && s.ecological->brood_space; }
+inline bool sealed_chamber(const auto& s) {
+    return s.ecological && s.ecological->founding_habitat && s.ecological->founding_habitat->sealed_chamber;
+}
+inline bool sealed_seed_shape(const auto& geometry) {
+    if (geometry.voids.size()!=1) return false;
+    const auto& room=geometry.voids.front();
+    const auto& bed=geometry.config.initial_solid;
+    return room.min.x>bed.min.x && room.max.x<bed.max.x &&
+           room.min.y>bed.min.y && room.max.y<bed.max.y &&
+           room.min.z>bed.min.z && room.max.z<bed.max.z;
+}
+inline double brood_handling_reach(const auto& s) {
+    // ENGINEERING_FIXTURE. The legacy contact radius remains available for
+    // social encounters and familiar nursery membership.
+    return sealed_chamber(s) ? std::min(s.config.contact_distance_m,.00125) : s.config.contact_distance_m;
+}
 inline bool hatch_cue_enabled(const auto& s) {
     return s.founding && s.founding->profile.early_access && s.founding->profile.early_access->local_hatch_cue &&
            (!s.ecological || !s.ecological->suppress_foundress_hatch_cue);

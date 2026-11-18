@@ -24,17 +24,23 @@ class LiveMotion {
             this.anchorWall = arrival;
         }
         const cut = {time: data.time_ms, cursor: BigInt(data.cursor), epoch: data.epoch, revision: data.terrain.revision,
-            ants: data.ants, sources: data.sources, colonies: data.colonies, trails: data.trails};
+            ants: data.ants, sources: data.sources, colonies: data.colonies, trails: data.trails, soil_piles: data.soil_piles};
         if (this.cuts.at(-1)?.time === cut.time) this.cuts.pop();
         this.cuts.push(cut);
         while (this.cuts.length > 2 && (this.cuts.length > 32 || cut.time - this.cuts[1].time > 1000)) this.cuts.shift();
         this.knownFrom = BigInt(data.recent_from_id);
         this.moves.clear();
         const floor = this.cuts[0].cursor;
+        const carrierMoves = new Map(data.motion.filter(event => event.kind === "Moved" && event.motion)
+            .map(event => [event.source + "/" + event.actor + "/" + event.time_ms, event.motion]));
         for (const event of data.motion) {
             if (BigInt(event.id) <= floor) continue;
             if (!this.moves.has(event.actor)) this.moves.set(event.actor, []);
-            this.moves.get(event.actor).push({...event, cursor: BigInt(event.id)});
+            // The native transaction commits the brood and handler moves at
+            // the same boundary. A standalone arrangement has no such clock.
+            const motion = event.kind === "BroodMoved" ?
+                carrierMoves.get(event.source + "/" + event.related + "/" + event.time_ms) : event.motion;
+            this.moves.get(event.actor).push({...event, motion, cursor: BigInt(event.id)});
         }
         this.open = new Map(data.ants.filter(a => a.motion_plan).map(a => [a.id, a.motion_plan]));
     }
@@ -65,6 +71,6 @@ class LiveMotion {
             return {...ant, display_position_m: segment.from_m.map((v, i) => v + progress * (segment.to_m[i] - v)),
                 display_motion: {...segment, progress}};
         });
-        return {time, ants, sources: base.sources, colonies: base.colonies, trails: base.trails};
+        return {time, ants, sources: base.sources, colonies: base.colonies, trails: base.trails, soil_piles: base.soil_piles};
     }
 }

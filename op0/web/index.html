@@ -40,17 +40,18 @@
       <div class="live-readout"><output id="live-clock">00:00:00</output><span id="live-status"></span>
         <output id="live-stop" role="status" hidden></output></div>
       <div class="live-actions">
-        <button id="live-pause" type="button">Pause</button>
+        <button id="live-pause" class="primary-button" type="button">Pause</button>
         <label for="live-rate" class="sr-only">Simulation speed</label>
         <select id="live-rate"><option value="1">1× real time</option><option value="10">10×</option><option value="60">60×</option><option value="600">600×</option><option value="3600">3,600×</option><option value="86400">86,400×</option></select>
         <button id="open-saves" type="button">Save and load</button>
+        <button id="new-single-nest" type="button">New sealed nest</button>
       </div>
       <div id="observatory-presets" aria-label="Founding environments" hidden>
         <button type="button" data-preset="open"><strong data-i18n>Open entrance</strong><small>Founding with finite food and water</small></button>
         <button type="button" data-preset="plugged"><strong data-i18n>Shallow soil plug</strong><small>Workers can excavate an opening</small></button>
         <button type="button" data-preset="absent"><strong data-i18n>No external supply</strong><small>Founding with the queen's finite reserves</small></button>
       </div>
-      <details id="colony-settings" open>
+      <details id="colony-settings">
         <summary data-i18n>Colony setup</summary>
         <div class="colony-options">
           <label for="colony-timing" id="colony-timing-label">New colony worker timing</label>
@@ -76,6 +77,8 @@
         <label for="live-target">Target event</label>
         <select id="live-target">
           <option value="egg">Egg laid</option><option value="hatch">Hatch</option><option value="worker">Worker emergence</option>
+          <option value="brood-moved" data-brood hidden disabled>Brood moved</option>
+          <option value="brood-cleaned" data-brood hidden disabled>Brood cleaned</option>
           <option value="exit">Worker leaves the nest</option><option value="delivery">Food delivered</option><option value="excavation">Excavation</option>
           <option value="water" data-habitat hidden disabled>Collection from the water source</option>
           <option value="recruitment" data-habitat hidden disabled>Recruitment response</option>
@@ -129,10 +132,6 @@
             </div>
             <div class="zoom"><button id="show-occupants" type="button">Individuals in view</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button><button id="reset-map" aria-label="Reset map view">Fit</button></div>
           </div>
-          <section id="live-activity" class="in-place-activity" aria-labelledby="in-place-title" hidden>
-            <h3 id="in-place-title" data-i18n>Recent in-place actions</h3>
-            <div id="live-action-list"></div>
-          </section>
           <canvas id="map" tabindex="0" aria-label="World map. Individual positions are also available through the individual panel."></canvas>
           <div id="map-legend" class="legend"></div>
           <div class="map-readout">
@@ -147,6 +146,10 @@
               <button id="close-location" type="button">Close</button></div>
             <div id="location-list" class="location-list"></div>
           </div>
+          <details id="live-activity" class="in-place-activity" hidden>
+            <summary id="in-place-title" data-i18n>Recent in-place actions</summary>
+            <div id="live-action-list"></div>
+          </details>
         </section>
         <aside class="panel inspect" aria-label="Individual and event details">
           <div class="panel-head"><div class="plain-tabs"><button id="individual-tab" class="active" aria-pressed="true">Individual</button><button id="events-tab" aria-pressed="false">Events</button></div></div>
@@ -242,12 +245,15 @@
     <div class="save-content">
       <form id="save-form">
         <label for="save-name">Save name</label><input id="save-name" maxlength="64" autocomplete="off" required>
+        <label for="save-mode" class="sr-only">Save format</label>
+        <select id="save-mode"><option value="snapshot">Compact save</option><option value="archive">Full replay archive</option></select>
         <button class="primary-button" type="submit">Save colony</button>
       </form>
+      <small class="muted">Compact saves resume the colony and keep up to 2,048 recent events.</small>
       <div class="save-folder-row"><p id="save-folder" class="muted"></p><button id="open-save-folder" type="button">Open save folder</button><button id="refresh-saves" type="button">Refresh</button></div>
       <p id="save-notice" role="status" hidden></p>
       <div class="save-table"><table>
-        <thead><tr><th data-i18n>Name</th><th data-i18n>Simulated duration</th><th data-i18n>File size</th><th data-i18n>Last modified</th><th></th></tr></thead>
+        <thead><tr><th data-i18n>Name</th><th data-i18n>Format</th><th data-i18n>Simulated duration</th><th data-i18n>File size</th><th data-i18n>Last modified</th><th></th></tr></thead>
         <tbody id="saved-colonies"></tbody>
       </table></div>
     </div>

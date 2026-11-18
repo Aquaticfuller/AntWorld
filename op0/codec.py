@@ -189,19 +189,19 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
+MICROWORLD_VERSIONS = {(31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
                        (29, 36), (30, 37)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
 
-def checkpoint(raw, *, verify_hash=True):
-    """Read a committed snapshot, without restoring or advancing a runtime."""
-    require(len(raw) >= 124, "Checkpoint is too short")
-    content = memoryview(raw)[:-8]
-    if verify_hash:
-        require(fnv(content) == U64.unpack_from(raw, len(raw) - 8)[0], "Checkpoint checksum mismatch")
-    r = Reader(content)
+def checkpoint_header(r):
     magic = bytes(r.take(8))
+    resume = magic == b"AWRESUM1"
+    first = tip = 0
+    if resume:
+        first, tip, _ = r.unpack(Struct("<3Q"))
+        require(first <= tip and (not tip or first < tip) and tip - first <= 4096, "Invalid continuation history window")
+        magic = bytes(r.take(8))
     framed = magic == b"AWSTATE1"
     if framed:
         magic = bytes(r.take(8))
@@ -221,16 +221,29 @@ def checkpoint(raw, *, verify_hash=True):
         magic = bytes(r.take(8))
     require(magic in INNER and (not founding or magic == b"AWCKPTD\0") and (not ecological or continuous),
             "Unsupported inner checkpoint layout")
-    extended = magic != b"AWCKPT8\0"
     hi, lo, seed, time, revision = r.unpack(Struct("<5Q"))
     require(hi or lo, "Missing checkpoint WorldId")
     require(time <= SAFE_TIME, "Checkpoint time exceeds the browser integer range")
+    return framed, resume, first, tip, outer if ecological else None, version, magic, continuous, hi, lo, seed, time, revision
+
+
+def checkpoint(raw, *, verify_hash=True):
+    """Read a committed snapshot, without restoring or advancing a runtime."""
+    require(len(raw) >= 124, "Checkpoint is too short")
+    content = memoryview(raw)[:-8]
+    if verify_hash:
+        require(fnv(content) == U64.unpack_from(raw, len(raw) - 8)[0], "Checkpoint checksum mismatch")
+    r = Reader(content)
+    framed, resume, first, tip, outer, version, magic, continuous, hi, lo, seed, time, revision = checkpoint_header(r)
+    ecological = outer is not None
+    extended = magic != b"AWCKPT8\0"
     r.take(40)  # Allocators, scheduling sequence and private RNG state.
     r.skip_rows(115)
     cursor = r.uint()
     fact_offset = r.pos
     if not framed:
-        for _ in range(cursor):
+        require(not resume or tip == cursor, "Continuation cursor mismatch")
+        for _ in range(first, cursor):
             require(r.pos + 65 < len(r.raw), "Truncated checkpoint fact prefix")
             length = 210 if r.raw[r.pos + 65] == 42 else 159
             r.take(length)
@@ -269,6 +282,8 @@ def checkpoint(raw, *, verify_hash=True):
                     all(low <= value <= high for value, low, high in zip(brood_site, world_min, world_max)),
                     "Invalid founding habitat")
             flags["founding_habitat"] = dict(brood_site_m=brood_site, pantry_buffer_ug=buffer)
+            if outer[1] == 38:
+                flags["founding_habitat"]["sealed_chamber"] = True
             if outer[1] == 37:
                 flags["founding_habitat"]["alternate_berth"] = True
     if r.flag():
@@ -328,7 +343,7 @@ def checkpoint(raw, *, verify_hash=True):
                                  updated_ms=updated, next_absorption_ms=absorption, stage_progress_ms=progress,
                                  active_work=str(active_work) if active_work is not None else None,
                                  oxidized_carbs_ug=oxidized, lost_water_ug=lost, dissipated_nj=dissipated)
-    geometry, edits, ledger, soil_carriers = None, [], None, set()
+    geometry, edits, ledger, soil_carriers, soil_piles = None, [], None, set(), []
     if r.flag():
         origin = r.position()
         quantum = r.unpack(Struct("<d"))[0]
@@ -348,15 +363,19 @@ def checkpoint(raw, *, verify_hash=True):
         count = r.uint()
         require(count <= (len(r.raw) - r.pos) // parcel.size, "Invalid soil parcel count")
         for _ in range(count):
-            _, _, _, _, carrier, _, _, _, state = r.unpack(parcel)
+            identity, origin_edit, _, amount, carrier, x, y, z, state = r.unpack(parcel)
             if state == 0:
                 require(carrier in ants and str(carrier) not in soil_carriers, "Invalid soil carrier in checkpoint")
                 soil_carriers.add(str(carrier))
+            elif state == 1 and amount:
+                soil_piles.append(dict(id=str(identity), origin_edit=str(origin_edit), position_m=(x, y, z),
+                                       volume_mm3=amount * (quantum * 1000)**3))
     schema, physics = outer if ecological else version
     return dict(world=world_id(hi, lo), seed=seed, time_ms=time, revision=revision, cursor=cursor, framed=framed,
                 schema=schema, physics=physics, inner_schema=version[0], inner_physics=version[1], flags=flags,
                 world_min_m=world_min, world_max_m=world_max, max_speed_m_per_s=max_speed, contact_m=contact,
-                surface=surface, geometry=geometry, edits=edits, soil=ledger, soil_carriers=tuple(sorted(soil_carriers, key=int)),
+                surface=surface, geometry=geometry, edits=edits, soil=ledger, soil_piles=soil_piles,
+                soil_carriers=tuple(sorted(soil_carriers, key=int)), first_history_cursor=first,
                 colonies=colonies, ants=ants,
                 sources=sources, living=living, introduced= introduced, available=available, carried=carried, stored=stored,
                 fact_offset=fact_offset, fact_end=fact_end)

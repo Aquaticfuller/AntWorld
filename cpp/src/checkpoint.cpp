@@ -18,6 +18,8 @@ namespace {
 using namespace detail;
 constexpr std::uint64_t spatial_magic=UINT64_C(0x4554504b435741);
 constexpr std::uint64_t frame_magic=UINT64_C(0x3145544154535741); // AWSTATE1
+constexpr std::uint64_t resume_magic=UINT64_C(0x314d555345525741); // AWRESUM1
+constexpr std::size_t maximum_resume_facts=4096;
 void write_fact(Writer& w, const WorldEvent& e) {
     w.put(e.id.value); w.put(e.world.high); w.put(e.world.low); w.time(e.time); w.put(e.source.value);
     w.put(static_cast<std::uint8_t>(e.action), 1); w.put(e.revision); w.put(e.payload); w.put(e.random_value);
@@ -84,14 +86,16 @@ std::uint64_t trace_hash(const EventJournal& events) {
 }
 } // namespace detail
 
-std::vector<std::uint8_t> WorldRuntime::encode(const State& s,std::size_t byte_limit,bool frame) {
+std::vector<std::uint8_t> WorldRuntime::encode(const State& s,std::size_t byte_limit,bool frame,
+                                               std::optional<std::size_t> retained_facts) {
     Writer w(byte_limit);
-    write_checkpoint(w,s,frame);
+    write_checkpoint(w,s,frame,retained_facts);
     w.put(hash_bytes(w.bytes));
     return w.bytes;
 }
 
-void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
+void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame,
+                                    std::optional<std::size_t> retained_facts) {
     const auto& m = s.m;
     const bool guarded=s.care_profile || has_maternal_reserve(s);
     const bool retrieval=s.care_profile && s.care_profile->local_retrieval;
@@ -104,7 +108,14 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     const bool dietary=s.founding && s.founding->profile.dietary.has_value();
     const bool uptake=dietary && s.founding->profile.dietary->adult_boundary_uptake;
     const bool resupply=uptake && s.founding->profile.dietary->local_resupply;
-    if (frame) w.put(frame_magic);
+    auto first=s.journal.first_cursor();
+    if (retained_facts) {
+        first=std::max(first,s.journal.size()-std::min(*retained_facts,s.journal.size()));
+        w.put(resume_magic);
+        w.put(first);
+        w.put(s.journal.size());
+        w.put(s.founding || s.journal.first_cursor() ? m.founding_trace : trace_hash(s.journal));
+    } else if (frame) w.put(frame_magic);
     if (s.ecological) {
         w.put(ecological_magic);
         w.put(ecological_schema_version(*s.ecological),4);
@@ -127,8 +138,8 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     w.put(s.journal.size());
     if (!frame) {
         profiling::Scope profile(profiling::Category::CheckpointHistory);
-        for (const auto& e : s.journal) write_fact(w, e);
-        profiling::record_work(profiling::Category::CheckpointHistory,s.journal.size());
+        for (EventJournal::Iterator it{&s.journal,first}; it!=s.journal.end();++it) write_fact(w,*it);
+        profiling::record_work(profiling::Category::CheckpointHistory,s.journal.size()-first);
     }
     w.position(s.config.min_m); w.position(s.config.max_m); w.real(s.config.max_speed_m_per_s); w.real(s.config.contact_distance_m);
     if (s.ecological) write_ecological(w,*s.ecological);
@@ -154,24 +165,40 @@ void WorldRuntime::write_checkpoint(Writer& w,const State& s,bool frame) {
     write_long_term(w,s,guarded);
     write_care(w,s);
     write_connectors(w,s);
-    if (s.founding) write_founding(w, s, frame);
+    if (s.founding) write_founding(w,s,frame || retained_facts.has_value());
+    if (retained_facts && first) {
+        w.put(s.recruitment_signals.size());
+        for (const auto& [scout,cue]:s.recruitment_signals) {
+            w.put(scout.value); w.put(cue.fact.value); w.time(cue.time); w.position(cue.position);
+        }
+    }
 }
 std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::uint8_t> bytes,const RuntimeLimits& limits,
-                                                        std::shared_ptr<const EventPrefix> prefix) {
+                                                        std::shared_ptr<const EventPrefix> prefix,bool resume) {
     ensure(bytes.size() >= 124 && bytes.size() <= limits.checkpoint_bytes, "invalid checkpoint size or host budget");
     Reader checksum{bytes.last(8)};
     ensure(hash_bytes(bytes.first(bytes.size()-8)) == checksum.get(), "checkpoint checksum mismatch");
     Reader r{bytes.first(bytes.size()-8)};
     auto header=r.get();
     const bool frame=header==frame_magic;
-    ensure(frame==static_cast<bool>(prefix),"checkpoint frame requires its verified history");
-    if (frame) header=r.get();
+    ensure(frame==static_cast<bool>(prefix) && (!frame || !prefix->first_cursor()),
+           "checkpoint frame requires its complete verified history");
+    ensure(resume==(header==resume_magic),"continuation snapshot requires its own reader");
+    std::uint64_t first=0, resume_tip=0, resume_trace=0;
+    if (resume) {
+        first=r.get(); resume_tip=r.get(); resume_trace=r.get();
+        ensure(first<=resume_tip && resume_tip<std::numeric_limits<std::size_t>::max() &&
+               (!resume_tip || first<resume_tip) && resume_tip-first<=maximum_resume_facts &&
+               resume_tip-first<=limits.committed_events,"invalid continuation history window");
+    }
+    if (frame || resume) header=r.get();
     const bool ecological = header==ecological_magic;
     unsigned ecological_version{};
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==reachable_berth_schema && version==reachable_berth_physics) ||
+        ensure((outer_schema==sealed_chamber_schema && version==sealed_chamber_physics) ||
+               (outer_schema==reachable_berth_schema && version==reachable_berth_physics) ||
                (outer_schema==founding_habitat_schema && version==founding_habitat_physics) ||
                (outer_schema==carrier_yield_schema && version==carrier_yield_physics) ||
                (outer_schema==local_traffic_schema && version==local_traffic_physics) ||
@@ -234,12 +261,30 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         ensure(cursor<=limits.committed_events && cursor==prefix->size(),"checkpoint history cursor mismatch");
         facts=prefix->size();
         s->journal.attach(std::move(prefix));
+    } else if (resume) {
+        ensure(r.get()==resume_tip,"continuation cursor mismatch");
+        facts=static_cast<std::size_t>(resume_tip);
+        s->journal.start_at(static_cast<std::size_t>(first));
     } else facts=r.count(limits.committed_events,159);
     std::uint64_t previous_revision = 0; SimTime previous_time{};
     std::set<ScheduledId> care_ticks, founding_pulses;
     if (founding) m.founding_trace = fnv_offset;
-    for (std::size_t i = 0; i < facts; ++i) {
+    for (auto i=static_cast<std::size_t>(first); i<facts; ++i) {
         const auto e=frame?s->journal.at(i):read_fact(r);
+        if (first) {
+            ensure(e.id.value==i+1 && e.world==world && e.time>=previous_time && e.time<=m.now &&
+                   e.revision>previous_revision && e.revision<=m.revision && finite(e.position) &&
+                   e.kind<=FactKind::FoundressWaterIngested && valid(e.stage) && valid(e.action) &&
+                   e.outcome<=Outcome::InsufficientEnergy && e.mode<=BehaviorMode::Rest &&
+                   e.reason<=DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units>=0 &&
+                   e.source.value<m.next_scheduled &&
+                   (!founding_fact(e.kind) || (founding && valid_founding_payload(e))) &&
+                   (!ecological_fact(e.kind) || (ecological && valid_ecological_payload(e))),
+                   "invalid retained fact");
+            previous_revision=e.revision; previous_time=e.time;
+            s->journal.push_back(e);
+            continue;
+        }
         const auto seeded = e.kind == FactKind::ColonySeeded || e.kind == FactKind::AntSeeded || e.kind == FactKind::FoodSeeded ||
             e.kind == FactKind::SurfaceConfigured || e.kind == FactKind::ForagingStarted ||
             e.kind == FactKind::PhysiologyEnabled || (e.kind == FactKind::BehaviorChanged && !e.source.value) || e.kind==FactKind::GeometryConfigured ||
@@ -280,6 +325,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         previous_time=e.time;
         if (!frame) s->journal.push_back(e);
     }
+    if (resume) {
+        if (first) m.founding_trace=resume_trace;
+        else ensure(resume_trace==(founding?m.founding_trace:trace_hash(s->journal)),"continuation history digest mismatch");
+    }
     s->config = {r.position(),r.position(),r.real(),r.real(),spatial}; validate_config(s->config);
     if (ecological) s->ecological=read_ecological(r,s->config,ecological_version);
     const auto has_watermark = r.get(1); ensure(has_watermark <= 1, "invalid watermark flag");
@@ -316,6 +365,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_surface(r, *s, limits);
     read_physiology(r, *s, limits);
     read_geometry(r,*s,limits,entity_ids);
+    if (sealed_chamber(*s) && s->geometry)
+        ensure(sealed_seed_shape(*s->geometry),"Invalid sealed founding chamber");
     if (bounded_brood_space(*s)) {
         ensure(!s->ants.size() || s->geometry,"MicroWorld entities require physical geometry");
         if (s->geometry) ensure(s->geometry->config.quantum_m>=0.00025 && s->geometry->config.quantum_m<=0.001,
@@ -326,7 +377,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_long_term(r,*s,guarded,founding);
     if (care_contract) read_care(r,*s,limits,retrieval,motion);
     read_connectors(r,*s,limits);
-    if (founding) read_founding(r, *s, limits, frame, resupply ? FoundingProfile::resupply_version : uptake ? FoundingProfile::uptake_version : dietary ? FoundingProfile::dietary_version : provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
+    if (founding) read_founding(r, *s, limits, frame || resume, resupply ? FoundingProfile::resupply_version : uptake ? FoundingProfile::uptake_version : dietary ? FoundingProfile::dietary_version : provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
                                persistence ? FoundingProfile::persistence_version : FoundingProfile::version);
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
@@ -409,6 +460,22 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 else ensure(!e.resource.value && !e.requested_ug, "invalid movement proposal");
             }
         }
+    }
+    if (first) {
+        // Earlier facts are deliberately absent. State readers and the
+        // pending queue still validate the continuation cut.
+        const auto cues=r.count(ants,48);
+        for (std::size_t i=0;i<cues;++i) {
+            const EntityId scout{r.get()};
+            const State::RecruitmentSignal cue{{r.get()},r.time(),r.position()};
+            ensure(s->ecological && s->ecological->recruitment && s->ants.index.contains(scout) &&
+                   s->ants.get(s->ants.index.at(scout)).caste==Caste::Worker && cue.fact.value &&
+                   cue.fact.value<=facts && cue.time<=m.now && inside(cue.position,s->config) &&
+                   s->recruitment_signals.emplace(scout,cue).second,"invalid continuation recruitment cue");
+        }
+        rebuild_nutrition_budget(*s);
+        ensure(m.next_event==facts+1 && r.cursor==r.bytes.size(),"invalid continuation allocator or trailing bytes");
+        return s;
     }
     // Check recorded facts against retained rows; no invented births, transfers or deaths.
     std::set<ColonyId> seeded_colonies; std::set<EntityId> seeded_ants; std::set<ResourceId> seeded_food;
@@ -606,8 +673,17 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     ensure(m.next_event == facts+1 && r.cursor == r.bytes.size(), "invalid event allocator or trailing checkpoint bytes");
     return s;
 }
-std::vector<std::uint8_t> WorldRuntime::checkpoint() const { return encode(*state_, limits_.checkpoint_bytes); }
+std::vector<std::uint8_t> WorldRuntime::checkpoint() const {
+    if (first_history_cursor()) throw std::logic_error("Full history is unavailable after loading a compact snapshot");
+    return encode(*state_,limits_.checkpoint_bytes);
+}
 std::vector<std::uint8_t> WorldRuntime::checkpoint_frame() const { return encode(*state_,limits_.checkpoint_bytes,true); }
+std::vector<std::uint8_t> WorldRuntime::resume_snapshot(std::size_t retained_facts) const {
+    if (!retained_facts || retained_facts>maximum_resume_facts)
+        throw std::invalid_argument("invalid continuation fact limit");
+    return encode(*state_,limits_.checkpoint_bytes,false,retained_facts);
+}
+std::size_t WorldRuntime::first_history_cursor() const noexcept { return state_->journal.first_cursor(); }
 
 WorldSnapshot WorldRuntime::snapshot() const {
     auto result=summary();
@@ -615,8 +691,9 @@ WorldSnapshot WorldRuntime::snapshot() const {
     const auto cold=state_->journal.has_prefix();
     if (!cold && limits_.checkpoint_bytes<8) throw std::length_error("checkpoint byte host budget exceeded");
     Writer w(cold?std::numeric_limits<std::size_t>::max():limits_.checkpoint_bytes-8,&result.state_hash);
-    write_checkpoint(w,*state_,false);
-    result.trace_hash=state_->founding ? state_->m.founding_trace : trace_hash(state_->journal);
+    const bool pruned=first_history_cursor()!=0;
+    write_checkpoint(w,*state_,pruned);
+    result.trace_hash=state_->founding || pruned ? state_->m.founding_trace : trace_hash(state_->journal);
     return result;
 }
 std::size_t WorldRuntime::resident_history_bytes() const {
@@ -624,6 +701,10 @@ std::size_t WorldRuntime::resident_history_bytes() const {
 }
 void WorldRuntime::restore(std::span<const std::uint8_t> bytes) {
     auto restored = decode(bytes, limits_); state_.swap(restored);
+}
+void WorldRuntime::restore_snapshot(std::span<const std::uint8_t> bytes) {
+    auto restored=decode(bytes,limits_,{},true);
+    state_.swap(restored);
 }
 void WorldRuntime::restore_frame(std::span<const std::uint8_t> bytes,std::shared_ptr<const EventPrefix> prefix) {
     auto restored=decode(bytes,limits_,std::move(prefix));
