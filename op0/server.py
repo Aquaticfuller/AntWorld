@@ -19,6 +19,7 @@ from .live import save_details
 STATIC = {
     "/": ("index.html", "text/html; charset=utf-8"),
     "/viewer.css": ("viewer.css", "text/css; charset=utf-8"),
+    "/experience.css": ("experience.css", "text/css; charset=utf-8"),
     "/viewer.js": ("viewer.js", "text/javascript; charset=utf-8"),
     "/live.js": ("live.js", "text/javascript; charset=utf-8"),
     "/live_motion.js": ("live_motion.js", "text/javascript; charset=utf-8"),
