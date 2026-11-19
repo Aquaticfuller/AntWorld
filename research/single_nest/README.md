@@ -60,3 +60,21 @@ Windows Release, seeded native worlds at 25 °C and 80% relative humidity. Worke
 The 150-day cases ran in memory with no world archive writes. The Chrome acceptance path used seed 2 and committed events for laying, brood movement, emergence, excavation and delivery. Its compact save at the first delivery was approximately 370 KiB. The stock and worker gains leave maternal survival and continuous late supply unresolved.
 
 The preview is ENGINEERING_ONLY. The B06 INSUFFICIENT result, nine BIOLOGICAL_BLOCKED findings and historical application performance FAIL remain in force.
+
+
+## Experience-overhaul review branch
+
+The independent experience revision is based on physics 38 without changing its simulation rules. The new optional `experience.css` and `experience.js` provide a calmer, larger local observatory and a focus mode for the existing native C++ world. The 2D/3D adult glyphs now use **illustrative** caste lengths instead of pretending the shared collision cube is an anatomical body. This is a visualization correction, **not** a physical-morphology fix.
+
+From a full repository checkout on Windows:
+
+~~~powershell
+git fetch origin codex/single-nest-experience-overhaul
+git switch --track origin/codex/single-nest-experience-overhaul
+py -3 -B -m tools.build_m0_live --jobs 4
+.\tools\start_m0.cmd
+~~~
+
+Choose **New sealed nest**. Once the actual world is visible, press `F` or use **Focus on colony / 专注观察** above the nest to expand the scene; press `Esc` to restore the analytic panels. The optional focus layer does not issue commands to the Core. Compact state snapshots remain the default; full replay archives remain opt-in.
+
+See [the physical and biological realism review](REALISM_REFOUNDATION.md) for the uncorrected queen/worker collision geometry, head-contact care, deterministic brood-site lattice, wall/ceiling transitions, spoil morphology and biological validation. Do **not** classify those issues as closed merely because the viewing layout has improved.
