@@ -517,6 +517,9 @@ async function sealedNestWorld() {
         "Sealed nest in the live viewport");
     assert.equal(await evaluate("liveView.state.ants.length"), 1);
     assert.equal(await evaluate("app.geometry.openings.length"), 0);
+    await click("#live-pause");
+    await wait(() => evaluate("liveView.state?.running === false && !liveView.busy"),
+        "Pause Core before a presentation-only control test");
     // Presentation-only immersion must never advance or replace the Core cut.
     const intact = await evaluate("({cursor: liveView.state.cursor, time: liveView.state.time_ms})");
     await click("#focus-view");
