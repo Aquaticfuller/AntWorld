@@ -517,6 +517,15 @@ async function sealedNestWorld() {
         "Sealed nest in the live viewport");
     assert.equal(await evaluate("liveView.state.ants.length"), 1);
     assert.equal(await evaluate("app.geometry.openings.length"), 0);
+    // Presentation-only immersion must never advance or replace the Core cut.
+    const intact = await evaluate("({cursor: liveView.state.cursor, time: liveView.state.time_ms})");
+    await click("#focus-view");
+    assert.equal(await evaluate("document.body.classList.contains('focus-view')"), true);
+    await click("#focus-view");
+    assert.equal(await evaluate("document.body.classList.contains('focus-view')"), false);
+    assert.deepEqual(await evaluate("({cursor: liveView.state.cursor, time: liveView.state.time_ms})"), intact);
+    assert.ok(await evaluate("adultGlyphSize({caste:'Queen'}, null, 80000) >
+                              adultGlyphSize({caste:'Worker'}, null, 80000)"));
     const seek = async (target, kind) => {
         await select("live-target",target);
         await click("#live-seek-next");
