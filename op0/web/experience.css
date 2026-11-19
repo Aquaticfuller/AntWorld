@@ -185,3 +185,20 @@ button.primary-button:not(:disabled):hover { color: #132117; background: #e0f2bc
 @media (prefers-reduced-motion: reduce) {
   button, select, input { transition: none !important; }
 }
+
+/* Immersive viewing preserves Core state and all analytical tools on exit. */
+.focus-view-toggle { margin-left: auto; white-space: nowrap; font-size: 12px; border-color: #729570; }
+.focus-view .world-heading,
+.focus-view .population,
+.focus-view .inspect,
+.focus-view #live-chronicle,
+.focus-view .nursery-launch { display: none !important; }
+.focus-view .observation,
+.focus-view.live-mode .observation { display: block; }
+.focus-view .observation > .space { width: 100%; }
+.focus-view #map { height: min(78vh, 1030px); }
+.focus-view .map-tools { padding-block: 10px; }
+@media (max-width: 760px) {
+  .focus-view .space .panel-head { flex-wrap: wrap; }
+  .focus-view #map { height: 65vh; min-height: 360px; }
+}
