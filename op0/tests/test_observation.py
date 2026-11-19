@@ -238,6 +238,12 @@ class ObservationTests(unittest.TestCase):
                     response = conn.getresponse()
                     self.assertEqual(response.status, 200)
                     self.assertIn(b"Simulation time", response.read())
+                    for asset, signature in (("/experience.css", b".live-mode"),
+                                             ("/experience.js", b"focus-view")):
+                        conn.request("GET", asset)
+                        response = conn.getresponse()
+                        self.assertEqual(response.status, 200)
+                        self.assertIn(signature, response.read())
                     conn.request("GET", "/api/v1/catalog")
                     self.assertEqual(json.loads(conn.getresponse().read())["schema"], SCHEMA)
                     conn.request("GET", "/", headers={"Host": "elsewhere.test"})
