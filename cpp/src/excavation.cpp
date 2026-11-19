@@ -262,7 +262,7 @@ std::optional<BoxQ> WorldRuntime::shallow_soil_cap(PositionM from) const {
     if (ground!=c.initial_solid.max.y ||
         !within_distance(from,physical({p.x,ground,p.z},c),s.care_profile->perception_radius_m,true)) return {};
     const auto view=geometry_view(s,limits_);
-    const auto layers=sealed_chamber(s)?2:1;
+    const auto layers=anatomical_nest(s)?4:sealed_chamber(s)?2:1;
     for (int thickness=1;thickness<=layers;++thickness) {
         const PointQ stance{p.x,ground-half-thickness,p.z};
         if (p.y>stance.y || !spatially_clear(from,physical(stance,c),half)) continue;

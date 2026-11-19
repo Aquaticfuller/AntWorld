@@ -1,5 +1,6 @@
 #include "brood_space.hpp"
 #include "ecological_internal.hpp"
+#include "anatomy.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -28,6 +29,14 @@ std::optional<PositionM> WorldRuntime::local_egg_site(const AntState& mother) co
     if (!s.geometry || !spatially_clear(mother.position,mother.position,s.geometry->config.body_half_q)) return {};
     const auto& geometry=s.geometry->config;
     const auto view=geometry_view(s,limits_);
+    if (anatomical_nest(s)) {
+        const auto neighbors=nearby_brood(s,limits_,mother.position,mother.position,.007);
+        return posterior_egg_site(view,*query_body({s.world,mother.id}),s.config,[&](PositionM site) {
+            return std::none_of(neighbors.begin(),neighbors.end(),[&](const auto& b) {
+                return intersects_brood(site,site,b.position);
+            });
+        });
+    }
     const auto local=nearby_brood(s,limits_,mother.position,mother.position,
                                  sealed_chamber(s)?.003:2*brood_pitch_m+brood_adjacency_m);
     return pick_egg_site(mother.position,s.config,
@@ -49,6 +58,8 @@ std::optional<PositionM> WorldRuntime::local_egg_site(const AntState& mother) co
 bool WorldRuntime::clear_brood_space(EntityId id,PositionM from,PositionM to) const {
     const auto& s=*state_;
     if (!bounded_brood_space(s)) return true;
+    if (anatomical_nest(s) && !continuous_box_clear(geometry_view(s,limits_),from,to,
+        brood_half_axes(id.value?s.ants.get(s.ants.index.at(id)).stage:LifeStage::Egg))) return false;
     const auto local=nearby_brood(s,limits_,from,to,brood_pitch_m);
     return std::none_of(local.begin(),local.end(),[&](const auto& ant) {
         return ant.id!=id && intersects_brood(from,to,ant.position);
@@ -68,12 +79,14 @@ std::optional<PositionM> WorldRuntime::local_brood_berth(const AntState& carrier
     // the entire straight route for both bodies before taking a short step.
     for (int x=-8;x<=8;++x) for (int z=-8;z<=8;++z) {
         const auto site=PositionM{nursery.x+x*geometry.quantum_m,held.position.y,nursery.z+z*geometry.quantum_m};
+        const auto settled=anatomical_nest(s)?PositionM{site.x,carrier.position.y-.0005,site.z}:site;
         const auto travel=portable_care_distance(held.position,site);
         if (travel>=distance_to_berth || !within_contact(site,nursery,s.config)) continue;
         const auto stance=PositionM{site.x-load.x,site.y-load.y,site.z-load.z};
-        const auto support=below_brood(site,geometry,true);
+        const auto support=anatomical_nest(s)?translated(settled,{0,-.00065,0}):below_brood(site,geometry,true);
         if (continuous_clear(view,support,support,0) ||
-            !clear_care_segment(held.position,site,half) || !clear_brood_space(held.id,held.position,site) ||
+            !clear_care_segment(held.position,site,anatomical_nest(s)?0:half) || !clear_brood_space(held.id,held.position,site) ||
+            (anatomical_nest(s) && !clear_brood_space(held.id,site,settled)) ||
             !clear_care_segment(carrier.position,stance,half) || !clear_worker_traffic(carrier,stance,half)) continue;
         distance_to_berth=travel;
         best=stance;

@@ -1,6 +1,46 @@
 # Sealed Single-Nest Preview
 
-## Launch
+## Open the anatomical nest
+
+For a fresh Windows checkout, the build requires Python 3.13 or later,
+CMake 3.24 or later and a C++20 compiler. The build script also recognizes
+the workspace's portable Clang, CMake and Ninja tools when present.
+
+From Windows PowerShell at the repository root:
+
+~~~powershell
+git fetch origin codex/single-nest-experience-overhaul
+git switch codex/single-nest-experience-overhaul
+git pull --ff-only
+py -3 -B -m tools.build_m0_live --jobs 4
+.\tools\start_m0.cmd
+~~~
+
+With the standalone Python installer and no `py` launcher, use
+`& "$env:LOCALAPPDATA\Python\bin\python.exe" -B -m tools.build_m0_live --jobs 4`.
+The batch entry point works with the normal PowerShell script policy.
+The observer opens locally at `http://127.0.0.1:8765/`.
+
+1. Select **New sealed nest** for Physics 39. The starting view contains one
+   queen and one sealed pocket. Software seed 3 is the default for the
+   finite-supply demonstration. **Colony setup** contains the seed,
+   supply and model choices.
+2. Keep **1× real time** for close observation. Use **Next occurrence** on
+   the target menu to reach an egg, brood movement, the first worker,
+   excavation or food delivery. The simulation pauses at the committed event.
+3. Drag to rotate the view and scroll to zoom. **Cut depth** reveals a
+   horizontal layer. **Underground** and **Surface** provide the section
+   and ground views. Select an individual and use **Follow**. **Research**
+   exposes the section, body and stock controls.
+4. **Save and load** defaults to a compact continuation. A full SQLite
+   archive is an explicit choice while the history prefix is present.
+   **Reference model** creates the earlier Physics 38 comparison.
+
+See [the anatomical model and assay](OVERHAUL.md) and the
+[review results](OVERHAUL_RESULTS.md). The following sections record the
+history and results of the earlier preview.
+
+## Reference preview launch
 
 From Windows PowerShell at the repository root, build the native executable and open the viewer.
 
@@ -75,6 +115,6 @@ py -3 -B -m tools.build_m0_live --jobs 4
 .\tools\start_m0.cmd
 ~~~
 
-Choose **New sealed nest**. Once the actual world is visible, press `F` or use **Focus on colony / 专注观察** above the nest to expand the scene; press `Esc` to restore the analytic panels. The optional focus layer does not issue commands to the Core. Compact state snapshots remain the default; full replay archives remain opt-in.
+Choose the reference model and select **New sealed nest**. Once the world is visible, press `F` or select **Focus on colony** to expand the scene. Press `Esc` to restore the analytic panels. Compact state snapshots are the default and the save dialog offers full replay archives.
 
 See [the physical and biological realism review](REALISM_REFOUNDATION.md) for the uncorrected queen/worker collision geometry, head-contact care, deterministic brood-site lattice, wall/ceiling transitions, spoil morphology and biological validation. Do **not** classify those issues as closed merely because the viewing layout has improved.

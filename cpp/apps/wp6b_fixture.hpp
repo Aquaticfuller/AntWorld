@@ -78,6 +78,8 @@ inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM ne
         g.body_half_q=2; g.loaded_half_q=4; g.reach_q=8; g.max_patch_extent_q=8;
         g.dry_ug_per_q3=12; g.water_ug_per_q3=3; g.dig_energy_nj_per_q3=125;
         scene.voids={{{-24,-20,-24},{24,-2,4}}};
+        if (c.ecological->founding_habitat->anatomical)
+            scene.voids={{{-36,-20,-36},{36,-4,12}}}; // 18 x 12 x 4 mm; one closed pocket.
         w.configure_geometry(g,scene.voids);
         scene.target={c.seed%2?.03:-.03,0,0};
         require(w.spatially_clear(nest,nest,g.loaded_half_q) &&
@@ -149,7 +151,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     wp5::Scene scene{WorldRuntime({habitat?653ULL:646ULL, c.identity}, c.seed, config, limits), {}, {}, {}, {}, {}, {}};
     auto& w = scene.world;
     if (c.ecological) w.configure_ecological_closure(*c.ecological);
-    const PositionM nest{0,c.integrated_assay?-.004:0,0};
+    const bool anatomical=habitat && c.ecological->founding_habitat->anatomical;
+    const PositionM nest{0,c.integrated_assay?-.004:0,anatomical?.002:0};
     const auto brood=habitat ? c.ecological->founding_habitat->brood_site : nest;
     w.configure_long_term();
     BehaviorConfig behavior;
@@ -177,7 +180,8 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     w.configure_biology(care,environment);
     const auto colony = w.seed_colony(nest);
     const bool sealed=habitat && c.ecological->founding_habitat->sealed_chamber;
-    scene.queen = w.seed_ant(colony, {sealed?nest:brood, LifeStage::Adult, Caste::Queen, 4000});
+    const auto laying_site=anatomical?PositionM{0,nest.y,0}:sealed?nest:brood;
+    scene.queen = w.seed_ant(colony, {laying_site, LifeStage::Adult, Caste::Queen, 4000});
     w.enable_founding(scene.queen, c.profile);
     if (c.arm == "contact-blocked") {
         // One legacy assay larva on each side of the wall, at equal distances.
@@ -191,7 +195,7 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     }
     if (c.care) w.set_autonomy(scene.queen);
     if (c.ecological && c.ecological->water_sip_ug) {
-        const auto water=sealed ? PositionM{nest.x-.001,nest.y,nest.z}
+        const auto water=sealed ? PositionM{laying_site.x-.001,laying_site.y,laying_site.z}
             : habitat ? PositionM{brood.x,brood.y,brood.z+.001}
             : c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
         require(w.spatially_clear(brood,water)!=c.blocked_water && w.query_material(water)==Material::Void,

@@ -40,7 +40,9 @@ jobs:
             op0.tests.test_live.LiveTests.test_observatory_presets_preserve_native_geometry_and_resources `
             op0.tests.test_live.LiveTests.test_reachable_berth_version_and_readonly_history_survive_restore `
             op0.tests.test_live.LiveTests.test_single_nest_lays_and_transports_brood_before_workers_open_it `
-            op0.tests.test_live.LiveTests.test_default_viewer_snapshot_keeps_only_a_tail_and_resumes_with_identical_facts -v
+            op0.tests.test_live.LiveTests.test_default_viewer_snapshot_keeps_only_a_tail_and_resumes_with_identical_facts `
+            op0.tests.test_live.LiveTests.test_anatomical_nest_commits_birth_carry_and_exact_continuation `
+            op0.tests.test_live.LiveTests.test_anatomical_nest_excavates_delivers_and_restores_late -v
       - name: Replay physics 36 and verify canonical archives
         shell: pwsh
         run: |
@@ -90,3 +92,5 @@ jobs:
           python -B -m tools.test_m1_browser --core $exe --browser $chrome --scratch $env:RUNNER_TEMP --output $output --mode m1-witnesses
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.test_m1_browser --core $exe --browser $chrome --scratch $env:RUNNER_TEMP --output $output --mode m2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.test_m1_browser --core $exe --browser $chrome --scratch $env:RUNNER_TEMP --output $output --mode overhaul

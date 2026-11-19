@@ -117,9 +117,12 @@ class Fact:
         if self.kind == 17:
             result["program"] = label(PROGRAMS, self.payload)
         if self.kind == 4 and self.aux:
-            duration, turn = self.aux >> 32, self.aux & 0xffffffff
+            duration, turn = self.aux >> 32, self.aux & 0xffff
+            heading = (self.aux >> 16) & 0xff
             result["motion"] = dict(begins_ms=self.time-duration, translates_ms=self.time-duration+turn,
                                     duration_ms=duration, turn_ms=turn, ends_ms=self.time)
+            if heading:
+                result["motion"]["target_heading"] = heading
         if self.kind in (23, 24, 25, 26):
             result["parcel"] = str(self.payload)
         if self.kind == 11:
@@ -189,7 +192,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
+MICROWORLD_VERSIONS = {(32, 39), (31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
                        (29, 36), (30, 37)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
@@ -282,9 +285,11 @@ def checkpoint(raw, *, verify_hash=True):
                     all(low <= value <= high for value, low, high in zip(brood_site, world_min, world_max)),
                     "Invalid founding habitat")
             flags["founding_habitat"] = dict(brood_site_m=brood_site, pantry_buffer_ug=buffer)
-            if outer[1] == 38:
+            if outer[1] >= 38:
                 flags["founding_habitat"]["sealed_chamber"] = True
-            if outer[1] == 37:
+            if outer[1] == 39:
+                flags["founding_habitat"]["anatomical"] = True
+            if outer[1] >= 37:
                 flags["founding_habitat"]["alternate_berth"] = True
     if r.flag():
         r.take(32)

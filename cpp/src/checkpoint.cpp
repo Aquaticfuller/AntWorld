@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==sealed_chamber_schema && version==sealed_chamber_physics) ||
+        ensure((outer_schema==anatomical_schema && version==anatomical_physics) ||
+               (outer_schema==sealed_chamber_schema && version==sealed_chamber_physics) ||
                (outer_schema==reachable_berth_schema && version==reachable_berth_physics) ||
                (outer_schema==founding_habitat_schema && version==founding_habitat_physics) ||
                (outer_schema==carrier_yield_schema && version==carrier_yield_physics) ||
@@ -664,8 +665,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     for (const auto& f : s->foods.rows) ensure(sum(f.remaining, transferred[f.id]) == sum(f.initial,s->resource_cycles.contains(f.id)?s->resource_cycles.at(f.id).released:FoodMass{}), "source disagrees with transfer facts");
     for (const auto& c : s->colonies.rows) ensure(delivered[c.id] == c.nest_food, "nest inventory disagrees with delivery facts");
     validate_surface_evidence(*s);
-    validate_geometry_evidence(*s,limits);
-    validate_physiology_evidence(*s, limits);
+    std::set<EventId> spatial_waits;
+    validate_geometry_evidence(*s,limits,spatial_waits);
+    validate_physiology_evidence(*s,limits,spatial_waits);
     validate_autonomy_evidence(*s);
     validate_long_term_evidence(*s);
     validate_care_evidence(*s);

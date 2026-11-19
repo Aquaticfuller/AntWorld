@@ -183,7 +183,14 @@ function drawNest(canvas, state, motionOnly) {
     const center = app.meta.colonies[0].position_m;
     const scale = $("nest-scale").value;
     const follow = app.follow && state.ants.find(ant => ant.id === app.selected);
-    const focus = (follow && (follow.display_position_m || follow.position_m)) || nestView.focus || center;
+    const target = (follow && (follow.display_position_m || follow.position_m)) || nestView.focus || center;
+    if (!nestView.cameraFocus || nestView.cameraFocusWorld!==app.meta.world_id) {
+        nestView.cameraFocus = target;
+        nestView.cameraFocusWorld = app.meta.world_id;
+    }
+    const focus = motionOnly && follow ?
+        nestView.cameraFocus.map((v,i)=>v+(target[i]-v)*.18) : target;
+    nestView.cameraFocus = focus;
     const field = scale === "world" ? Math.max(...[0, 2].map(i => app.meta.bounds_m[1][i] - app.meta.bounds_m[0][i])) :
         scale === "chamber" ? 24 * q : Math.max(right - x, far - z) * q * 1.04;
     const {project, depth} = nestProjection(width, height, focus, field);
@@ -226,7 +233,8 @@ function drawNest(canvas, state, motionOnly) {
         if (!visible(position)) continue;
         const p = project(position);
         if (p[0] < -15 || p[1] < -15 || p[0] > width + 15 || p[1] > height + 15) continue;
-        const size = ant.stage === "Adult" ? adultGlyphSize(ant,app.meta.settings.geometry,unit) :
+        const size = ant.body ? Math.max(3,unit*ant.body.segments.reduce((max,p)=>Math.max(max,Math.abs(p[0])+p[1]),0)) :
+            ant.stage === "Adult" ? adultGlyphSize(ant,app.meta.settings.geometry,unit) :
             Math.max(2,unit*(ant.stage === "Egg" ? .00019 : .00030));
         const angle = adultHeading(ant,project,app.renderedTimeMs);
         actors.push({ant, p, size, angle, order: p[2]});
@@ -238,9 +246,12 @@ function drawNest(canvas, state, motionOnly) {
         const water = !(source.stock_ug[0] || source.stock_ug[1]);
         add(source.position_m, water ? "Water" : "Food source", water ? "#92d6ec" : "#92ddb5", [-31,-40]);
     }
-    add(center, "Nest depot", "#eed29a", [39,42]);
     const habitat = app.live ? liveView.state.habitat : app.meta.settings.ecological?.founding_habitat;
-    add(habitat?.brood_site_m, habitat?.sealed_chamber ? "Brood area" : "Brood chamber","#dcb7da", [-32,45]);
+    if (!habitat?.anatomical || document.body.classList.contains("research-view") ||
+        state.ants.some(a=>a.stage==="Adult" && a.caste==="Worker")) {
+        add(center, "Nest depot", "#eed29a", [39,42]);
+        add(habitat?.brood_site_m, habitat?.sealed_chamber ? "Brood area" : "Brood chamber","#dcb7da", [-32,45]);
+    }
     const opening = app.geometry.openings || [];
     if (opening.length) add(opening[Math.floor(opening.length / 2)], "Open entrance", "#bcdea5", [23,-27]);
     if (app.selectedFact?.position_m && visible(app.selectedFact.position_m)) events.push(app.selectedFact);
@@ -262,13 +273,38 @@ function drawNest(canvas, state, motionOnly) {
         ctx.globalAlpha = 1;
     };
     const drawActor = ({ant, p, size, angle}) => nestAnt(ctx, ant, p, angle, size);
-    if (transparent) {
+    const supportedPiles=(state.soil_piles || []).map(pile => {
+        const position=pile.position_m;
+        const cell=position.map((v,i)=>Math.floor((v-origin[i])/q + 1e-9));
+        if (cell[0]<x || cell[0]>=right || cell[2]<z || cell[2]>=far) return pile;
+        for (let layer=Math.min(roof-1,cell[1]-1); layer>=bottom; layer--) {
+            const index=((cell[2]-z)*volume.dimensions[1]+layer-bottom)*volume.dimensions[0]+cell[0]-x;
+            if (nestView.cells[index]) {
+                const ground=origin[1]+(layer+1)*q;
+                return {...pile, base_m:[position[0],ground,position[2]]};
+            }
+        }
+        return pile;
+    });
+    const shaded = state.ants.some(ant => ant.body) && nestScene.draw(ctx,width,height,project,depth,
+        nestView.faces,actors,supportedPiles.filter(p=>visible(p.position_m)),transparent,surfaceY,app.renderedTimeMs);
+    canvas.ctx.canvas.dataset.renderer = shaded ? "webgl2" : "canvas2d";
+    if (shaded) {
+        for (const actor of actors) {
+            if (!actor.ant.body) drawActor(actor);
+            else if (actor.ant.id === app.selected) {
+                const [sx,sy] = actor.p;
+                ctx.beginPath(); ctx.ellipse(sx,sy,actor.size+5,Math.max(6,actor.size*.58),actor.angle,0,2*Math.PI);
+                ctx.strokeStyle="#ffdc95"; ctx.lineWidth=1.4; ctx.stroke();
+            }
+        }
+    } else if (transparent) {
         layers.sort((a, b) => a.order - b.order).forEach(paintFace);
         actors.sort((a, b) => a.order - b.order).forEach(drawActor);
     } else {
         layers.concat(actors).sort((a, b) => a.order - b.order).forEach(item => item.ant ? drawActor(item) : paintFace(item));
     }
-    drawSoilParcels(ctx,state.soil_piles,project,visible,unit);
+    if (!shaded) drawSoilParcels(ctx,state.soil_piles,project,visible,unit);
     const scaleMm = unit>40000 ? 1 : unit>9000 ? 2 : unit>2000 ? 10 : 50;
     const bar = scaleMm*unit/1000, rulerY = height-22;
     ctx.strokeStyle = "#d9d4bc";

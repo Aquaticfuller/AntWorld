@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/viewer.css">
   <link rel="stylesheet" href="/experience.css">
   <script src="/live_motion.js" defer></script>
+  <script src="/nest_scene.js" defer></script>
   <script src="/nest_view.js" defer></script>
   <script src="/live.js" defer></script>
   <script src="/observatory.js" defer></script>
@@ -63,6 +64,18 @@
           <button id="new-colony" class="primary-button" type="button">New colony</button>
         </div>
         <div class="colony-options habitat-options">
+          <label for="sealed-model" data-i18n>Sealed nest model</label>
+          <select id="sealed-model">
+            <option value="anatomical" data-i18n>Anatomical preview</option>
+            <option value="reference" data-i18n>Reference model</option>
+          </select>
+          <label for="sealed-supply" data-i18n>Sealed nest supply</label>
+          <select id="sealed-supply">
+            <option value="finite" data-i18n>Finite food and water</option>
+            <option value="absent" data-i18n>No external supply</option>
+          </select>
+          <label for="sealed-seed" data-i18n>Sealed nest seed</label>
+          <input id="sealed-seed" type="number" value="3" min="1" max="2147483647" step="1" required>
           <label for="habitat-temperature">Temperature</label>
           <select id="habitat-temperature"><option value="225">22.5 °C</option><option value="250" selected>25 °C</option><option value="270">27 °C</option></select>
           <label for="habitat-humidity">Relative humidity</label>
@@ -116,6 +129,7 @@
         <section class="panel space" aria-labelledby="space-title">
           <div class="panel-head"><div><h2 id="space-title">World space</h2><p id="space-caption">Committed positions and ordered geometry edits</p></div>
             <div class="segmented" aria-label="Spatial view"><button id="nest-button" aria-pressed="false">3D nest</button><button id="surface-button" aria-pressed="false">Surface</button><button id="slice-button" aria-pressed="false">Underground</button></div>
+            <button id="research-view" type="button" aria-pressed="false" data-i18n>Research</button>
           </div>
           <div class="map-tools">
             <label id="plane-controls" hidden><span data-i18n>Section</span> <select id="axis" aria-label="Section direction"><option value="z">East / depth</option><option value="x">North / depth</option><option value="y">Horizontal</option></select>

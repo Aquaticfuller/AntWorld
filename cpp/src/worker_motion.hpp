@@ -2,6 +2,7 @@
 
 #include "ecological_internal.hpp"
 #include "physiology_internal.hpp"
+#include "geometry_internal.hpp"
 
 namespace antworld::detail {
 // ENGINEERING_FIXTURE. A turn occupies time before the next swept translation.
@@ -33,13 +34,29 @@ inline std::uint8_t actor_facing(const auto& s,EntityId id) {
 inline bool motile_caste(const auto& s,Caste caste) {
     return caste==Caste::Worker || (sealed_chamber(s) && caste==Caste::Queen);
 }
+std::uint8_t body_travel_heading(const GeometryView&,const AntState&,PositionM,std::uint8_t previous);
+inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,PositionM to) {
+    if (anatomical_nest(s)) {
+        const auto previous=std::max<std::uint8_t>(1,actor_facing(s,id));
+        if (s.care.contains(id) && s.care.at(id).carrying_brood) return previous;
+        auto ant=s.ants.get(s.ants.index.at(id));
+        ant.position=from;
+        return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous);
+    }
+    return movement_facing(from,to);
+}
 
 inline SimTime with_worker_turn(const auto& s,EntityId id,PositionM from,PositionM to,SimTime translation) {
     if (!worker_motor(s) || from==to || !s.autonomy.contains(id)) return translation;
-    return after(translation,turn_ms(actor_facing(s,id),movement_facing(from,to)));
+    return after(translation,turn_ms(actor_facing(s,id),segment_heading(s,id,from,to)));
 }
 
-inline std::uint64_t motion_evidence(std::int64_t duration,std::int64_t turn) {
-    return (static_cast<std::uint64_t>(duration)<<32) | static_cast<std::uint32_t>(turn);
+inline std::uint64_t motion_evidence(std::int64_t duration,std::int64_t turn,std::uint8_t facing=0) {
+    return (static_cast<std::uint64_t>(duration)<<32) | (static_cast<std::uint64_t>(facing)<<16) |
+        static_cast<std::uint32_t>(turn);
+}
+inline std::uint8_t historical_heading(std::uint64_t evidence,PositionM from,PositionM to) {
+    const auto facing=static_cast<std::uint8_t>((evidence>>16)&0xff);
+    return facing?facing:movement_facing(from,to);
 }
 } // namespace antworld::detail

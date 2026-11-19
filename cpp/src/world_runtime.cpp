@@ -89,6 +89,9 @@ AntRef WorldRuntime::seed_ant(ColonyRef colony, const AntSeed& seed) {
     auto& s = *state_; require_seed_time(s.m.now, s.m.watermark.has_value());
     if (colony.world != s.world || !s.colonies.index.contains(colony.id) ||
         !valid(seed.stage) || seed.stage == LifeStage::Dead || seed.caste > Caste::Male ||
+        (anatomical_nest(s) && seed.stage==LifeStage::Adult &&
+            (!s.geometry || !clear_body_motion({{},colony.id,s.m.now,seed.stage,seed.caste,seed.position,0,
+                                              seed.carrying_capacity_ug,{}},seed.position))) ||
         (bounded_brood_space(s) && (!s.geometry || (seed.stage<LifeStage::Adult && !clear_brood_space({},seed.position,seed.position)))) ||
         !inside(seed.position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
             !(s.social && s.geometry) && !s.surface->locate(seed.position)) ||

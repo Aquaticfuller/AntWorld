@@ -16,12 +16,9 @@
 
     const refresh = () => {
       const active = document.body.classList.contains("focus-view");
-      const chinese = document.documentElement.lang === "zh-CN";
-      button.textContent = active
-        ? (chinese ? "退出专注观察" : "Exit focus")
-        : (chinese ? "专注观察" : "Focus on colony");
+      button.textContent = tr(active ? "Exit focus" : "Focus on colony");
       button.setAttribute("aria-pressed", String(active));
-      button.title = chinese ? "按 F 切换，Esc 退出" : "Press F to toggle, Esc to exit";
+      button.title = tr("Press F to toggle, Esc to exit");
     };
 
     const toggle = force => {
@@ -32,6 +29,12 @@
     };
     button.addEventListener("click", () => toggle());
     header.append(button);
+    const research = document.getElementById("research-view");
+    research.addEventListener("click", () => {
+      const open = document.body.classList.toggle("research-view");
+      research.setAttribute("aria-pressed", String(open));
+      window.dispatchEvent(new Event("resize"));
+    });
 
     document.addEventListener("keydown", event => {
       const tag = event.target?.tagName?.toLowerCase();

@@ -1,6 +1,7 @@
 #include "care_internal.hpp"
 #include "social_internal.hpp"
 #include "worker_motion.hpp"
+#include "anatomy.hpp"
 #include "spatial_navigation.hpp"
 #include <set>
 
@@ -70,6 +71,53 @@ bool supported_wall_segment(const GeometryView& view,PointQ from,PointQ to,int r
 }
 }
 
+std::uint8_t detail::body_travel_heading(const GeometryView& view,const AntState& ant,
+                                        PositionM to,std::uint8_t previous) {
+    const auto next=movement_facing(ant.position,to);
+    // An ant beside a wall may take a short backward or lateral step before
+    // there is enough space to turn its longitudinal body.
+    if (anatomy_sweep(view,ant,to,previous,next)) return next;
+    if (previous!=next && anatomy_sweep(view,ant,to,previous,previous)) return previous;
+    if (to.y!=ant.position.y) {
+        // Near the floor or ceiling a vertical body can run out of turning
+        // room. Use a tangential body on the same wall before the next step.
+        for (const auto tangent:std::array<std::uint8_t,4>{1,3,5,7})
+            if (anatomy_sweep(view,ant,to,previous,tangent)) return tangent;
+    }
+    return next;
+}
+
+std::optional<BodyPose> WorldRuntime::query_body(AntRef ref) const {
+    const auto& s=*state_;
+    const auto ant=query_ant(ref);
+    if (!anatomical_nest(s) || !s.geometry || !ant || !ant->alive()) return {};
+    const auto facing=actor_facing(s,ant->id);
+    return body_pose(*ant,facing,attachment(geometry_view(s,limits_),*ant,facing));
+}
+
+bool WorldRuntime::clear_body_motion(const AntState& ant,PositionM to) const {
+    const auto& s=*state_;
+    const auto facing=actor_facing(s,ant.id);
+    return !anatomical_nest(s) || (inside(to,s.config) &&
+        anatomy_sweep(geometry_view(s,limits_),ant,to,facing,
+                      to==ant.position?facing:segment_heading(s,ant.id,ant.position,to)));
+}
+
+bool WorldRuntime::clear_emergence(const AntState& pupa) const {
+    const auto& s=*state_;
+    if (s.care_locks.contains(pupa.id) && s.care.at(s.care_locks.at(pupa.id)).carrying_brood) return false;
+    auto adult=pupa;
+    adult.stage=LifeStage::Adult;
+    const auto view=geometry_view(s,limits_);
+    const auto pose=body_pose(adult,0,attachment(view,adult,0));
+    if (!substrate_clear(view,pose,adult.position)) return false;
+    for (const auto ref:query_neighborhood({s.world,pupa.id},.008).ants) {
+        const auto other=*query_ant(ref);
+        if (other.stage==LifeStage::Adult && physical_overlap(pose,*query_body(ref))) return false;
+    }
+    return true;
+}
+
 std::optional<WorkerMotion> WorldRuntime::query_worker_motion(AntRef ref) const {
     const auto& s=*state_;
     if (!worker_motor(s)) return {};
@@ -91,8 +139,9 @@ std::optional<WorkerMotion> WorldRuntime::query_worker_motion(AntRef ref) const 
     else if (event.kind!=ScheduledEvent::Kind::CareEnd) return {};
     if (to==ant->position) return {};
     if (local_traffic(s) && !spatially_clear(ant->position,to,body_half(ref.id))) return {};
+    if (!clear_body_motion(*ant,to)) return {};
     const auto previous=actor_facing(s,ref.id);
-    const auto heading=movement_facing(ant->position,to);
+    const auto heading=segment_heading(s,ref.id,ant->position,to);
     return WorkerMotion{id,ant->position,to,event.issued_at,after(event.issued_at,turn_ms(previous,heading)),
                         event.key.time,previous,heading};
 }
@@ -102,12 +151,12 @@ void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM
     if (!worker_motor(s) || from==fact.position || !s.autonomy.contains(fact.actor) ||
         !motile_caste(s,s.ants.get(s.ants.index.at(fact.actor)).caste)) return;
     auto a=s.autonomy.at(fact.actor);
-    const auto facing=movement_facing(from,fact.position);
+    const auto facing=segment_heading(s,fact.actor,from,fact.position);
     if (autonomous) {
         const auto elapsed=s.m.now.milliseconds-began.milliseconds;
         const auto turn=turn_ms(a.facing,facing);
         if (elapsed<=turn || elapsed>UINT32_MAX) throw std::logic_error("worker motor exceeded its segment clock");
-        fact.random_value=motion_evidence(elapsed,turn);
+        fact.random_value=motion_evidence(elapsed,turn,anatomical_nest(s)?facing:0);
     }
     a.facing=facing;
     tx.autonomy.set(fact.actor,a);
@@ -116,11 +165,37 @@ void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM
 bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half) const {
     const auto& s=*state_;
     if (!local_traffic(s) || !s.geometry || ant.stage!=LifeStage::Adult) return true;
+    if (!clear_body_motion(ant,to)) return false;
     const auto quantum=s.geometry->config.quantum_m;
+    const bool anatomical=anatomical_nest(s);
+    const auto reach=distance(ant.position,to)+(ant.caste==Caste::Queen?.007:.0055);
+    std::optional<BodyPose> mover;
+    if (anatomical) {
+        const auto heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to);
+        mover=body_pose(ant,heading,attachment(geometry_view(s,limits_),ant,heading));
+    }
     for (const auto& row:s.ants.identities) {
         if (row.id==ant.id) continue;
         const auto other=s.ants.get(s.ants.index.at(row.id));
         if (other.stage!=LifeStage::Adult) continue;
+        if (mover && distance(ant.position,other.position)<=reach) {
+            const auto peer=*query_body({s.world,other.id});
+            auto destination=*mover;
+            destination.center_m=to;
+            if (physical_overlap(destination,peer)) return false;
+            const auto delta=displacement(to,ant.position);
+            for (const auto& part:mover->segments) for (const auto& obstacle:peer.segments) {
+                const auto a=lobe_center(*mover,part), b=lobe_center(peer,obstacle);
+                const auto bound=translated(lobe_extents(*mover,part),lobe_extents(peer,obstacle));
+                // Admit only separation from a pre-existing overlap (e.g. at
+                // eclosion). A new overlap is forbidden along the whole sweep.
+                if (std::abs(a.x-b.x)<bound.x && std::abs(a.y-b.y)<bound.y && std::abs(a.z-b.z)<bound.z &&
+                    dot(delta,displacement(a,b))>=0) continue;
+                const auto normalized=[&](PositionM p){return PositionM{p.x/bound.x,p.y/bound.y,p.z/bound.z};};
+                if (sweeps_body(normalized(a),normalized(translated(a,delta)),normalized(b),normalized(b),1))
+                    return false;
+            }
+        }
         const auto width=(half+body_half(other.id))*quantum;
         const auto plan=query_worker_motion({s.world,other.id});
         if (!plan && leaving_overlap(ant.position,to,other.position,width)) continue;
@@ -256,6 +331,7 @@ bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool app
     const auto half=body_half(ant.id);
     if (!q || ant.position==site || !clear_care_segment(ant.position,site,half) ||
         (s.surface && site.y>=s.surface->config.origin_m.y)) return false;
+    if (anatomical_nest(s)) return (approach_depot || site!=depot) && clear_worker_traffic(ant,site,half);
     const auto view=geometry_view(s,limits_);
     const bool floor=material_at(view,{q->x,q->y-g.loaded_half_q-1,q->z})!=Material::Void;
     if (!floor || (sealed_chamber(s) && ant.position.y!=site.y)) {

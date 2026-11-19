@@ -61,7 +61,8 @@ template <typename S> void read_physiology(Reader& r, S& s, const RuntimeLimits&
 inline bool nutrition_fact(FactKind k) {
     return k == FactKind::CargoIngested || k == FactKind::NestIngested || k == FactKind::NutritionTransferred;
 }
-template <typename S> void validate_physiology_evidence(const S& s, const RuntimeLimits& limits) {
+template <typename S> void validate_physiology_evidence(const S& s, const RuntimeLimits& limits,
+                                                        const std::set<EventId>& spatial_waits) {
     FoundingReplay<S> founding(s, limits);
     std::map<EntityId, PhysiologyState> audit;
     std::map<EntityId, LifeStage> stages;
@@ -160,7 +161,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
             } else if (e.kind == FactKind::PhysiologyUpdated) {
                 if (enrolled && follows_boundary && e.time!=p.next_absorption)
                     ensure(e.transferred==FoodMass{}, "founding boundary duplicated an uptake");
-                else if (enrolled) founding.pulse(p, e, prior_stage);
+                else if (enrolled) founding.pulse(p,e,prior_stage,spatial_waits.contains(e.id));
                 else ensure(p.body_energy_nj && p.hydration_ug && e.time == p.next_absorption && e.transferred == absorb(p, prior_stage),
                     "invalid absorption evidence");
             } else if (e.kind==FactKind::ReproductionAttempt) {
@@ -214,7 +215,9 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 auto a = s.ants.get(s.ants.index.at(e.actor)), b = s.ants.get(s.ants.index.at(target));
                 a.position = positions.at(e.actor); b.position = positions.at(target);
                 ensure(prior_stage == LifeStage::Adult && (a.caste == Caste::Worker || (s.care_profile && a.caste==Caste::Queen && s.care.contains(e.actor))) &&
-                    (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) && contact(a, b, s.config, s.social && s.geometry ? nullptr : s.surface.get()),
+                    (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) &&
+                    ((anatomical_nest(s) && target_stage==LifeStage::Larva) ||
+                     contact(a,b,s.config,s.social && s.geometry ? nullptr : s.surface.get())),
                     "transfer has no living local contact evidence");
                 if (local_founding_provisioning(s,e.actor))
                     ensure(founding.clear(a.position,b.position,0,e.id) &&

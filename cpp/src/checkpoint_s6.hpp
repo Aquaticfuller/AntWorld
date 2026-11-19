@@ -138,11 +138,13 @@ template <class S> void validate_autonomy_evidence(const S &s) {
     if (e.kind==FactKind::Moved && worker_motor(s) && audit.contains(e.actor) &&
         motile_caste(s,s.ants.get(s.ants.index.at(e.actor)).caste) && positions.at(e.actor)!=e.position) {
       auto& a=audit.at(e.actor);
-      const auto facing=movement_facing(positions.at(e.actor),e.position);
+      const auto facing=anatomical_nest(s)?historical_heading(e.random_value,positions.at(e.actor),e.position):
+          movement_facing(positions.at(e.actor),e.position);
+      ensure(facing && facing<=facing_down,"invalid anatomical heading");
       if (e.random_value) {
         const auto duration=e.random_value>>32;
         const auto turn=turn_ms(a.facing,facing);
-        ensure(static_cast<std::uint32_t>(e.random_value)==static_cast<std::uint32_t>(turn) &&
+        ensure(e.random_value==motion_evidence(static_cast<std::int64_t>(duration),turn,anatomical_nest(s)?facing:0) &&
                duration>static_cast<std::uint64_t>(turn) &&
                duration<=static_cast<std::uint64_t>(e.time.milliseconds),"invalid worker motion clock");
       }

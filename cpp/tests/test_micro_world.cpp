@@ -1,5 +1,6 @@
 #include "wp6b_fixture.hpp"
 #include "brood_space.hpp"
+#include "anatomy.hpp"
 #include "antworld/storage/store.hpp"
 #include <array>
 #include <bit>
@@ -182,6 +183,45 @@ void floor_load_feedback() {
         check_ledgers(world);
     }
 }
+
+void anatomical_clearance() {
+    GeometryDefinition terrain;
+    terrain.config.origin_m={};
+    terrain.config.quantum_m=.00025;
+    terrain.config.initial_solid={{-64,-28,-64},{64,0,64}};
+    terrain.voids={{{-36,-20,-36},{36,-4,12}}};
+    const GeometryEdits edits;
+    const EditIndex index;
+    const GeometryView view{terrain,edits,index,16384};
+    AntState queen, worker;
+    queen.stage=worker.stage=LifeStage::Adult;
+    queen.caste=Caste::Queen;
+    worker.caste=Caste::Worker;
+    queen.position=worker.position={0,-.004,0};
+    const auto q=body_pose(queen,1,floor_normal), w=body_pose(worker,1,floor_normal);
+    require(distance(q.mouth_m,q.abdomen_tip_m)>.008 &&
+            distance(w.mouth_m,w.abdomen_tip_m)<.004,"adult anatomy does not distinguish caste");
+    require(!anatomy_sweep(view,queen,{.007,-.004,0},1,1) &&
+            anatomy_sweep(view,worker,{.007,-.004,0},1,1),
+            "a shared cube defeats the queen and worker clearance contrast");
+    require(!anatomy_sweep(view,worker,{0,-.0028,0},1,1),
+            "worker rose into a chamber without any support");
+    worker.position={0,-.004,.002};
+    auto facing=std::uint8_t{1};
+    for (const auto y:{-.00375,-.0035,-.00325,-.003,-.00275,-.0025,-.00225,-.002}) {
+        const PositionM to{0,y,.002};
+        const auto heading=body_travel_heading(view,worker,to,facing);
+        require(anatomy_sweep(view,worker,to,facing,heading),"blocked an attached wall step");
+        worker.position=to;
+        facing=heading;
+    }
+    const PositionM ceiling{0,-.002,.00075};
+    const auto heading=body_travel_heading(view,worker,ceiling,facing);
+    require(anatomy_sweep(view,worker,ceiling,facing,heading),"blocked a supported wall-to-ceiling turn");
+    worker.position=ceiling;
+    require(attachment(view,worker,heading)==PositionM{0,-1,0},"interior ceiling has incorrect support");
+    require(!anatomy_sweep(view,worker,{0,.004,.00075},heading,9),"a move crossed the sealed roof");
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -194,6 +234,7 @@ int main(int argc,char** argv) try {
     diagonal_clock();
     local_nest_motion(folder/"rest-motion.sqlite");
     floor_load_feedback();
+    anatomical_clearance();
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

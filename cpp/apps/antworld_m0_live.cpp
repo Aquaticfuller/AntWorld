@@ -140,7 +140,7 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
     constexpr std::size_t keep = 12;
     std::vector<WorldEvent> latest;
     auto tip = world.summary().committed_events;
-    after = std::max(after, tip > scan ? tip - scan : 0);
+    after = std::max({after,tip > scan ? tip - scan : 0,static_cast<std::uint64_t>(world.first_history_cursor())});
     while (tip > after && latest.size() < keep) {
         const auto count = std::min(page, tip - after);
         const auto events = world.events_after({tip - count}, count);
@@ -351,14 +351,16 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v12");
-            } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST") {
+                message("OK", "antworld.m0.live.v13");
+            } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
+                       command=="NEW_ANATOMICAL_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                const bool sealed=command=="NEW_SINGLE_NEST";
+                const bool anatomical=command=="NEW_ANATOMICAL_NEST";
+                const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
@@ -373,7 +375,7 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();
@@ -499,6 +501,32 @@ int main() {
                     end(request);
                     require(world->summary().now==SimTime{},"Initial frame is available only at time zero");
                     payload(world->checkpoint());
+                } else if (command=="BODY_STATES") {
+                    end(request);
+                    std::ostringstream data;
+                    data.precision(17);
+                    const auto point=[&](PositionM v){ data << ' ' << v.x << ' ' << v.y << ' ' << v.z; };
+                    const auto id=world->summary().world;
+                    for (const auto& ant:world->ant_states()) {
+                        const AntRef ref{id,ant.id};
+                        const auto pose=world->query_body(ref);
+                        if (!pose) continue;
+                        const auto care=world->query_care(ref);
+                        data << ant.id.value << ' ' << pose->segment_count
+                             << ' ' << (care && care->carrying_brood?care->retrieval.target.value:0)
+                             << ' ' << (care && care->active?static_cast<unsigned>(care->act):0)
+                             << ' ' << (care && care->active?care->target.value:0)
+                             << ' ' << (care && care->active?care->began_at.milliseconds:0);
+                        point(pose->forward); point(pose->up);
+                        point(pose->mouth_m); point(pose->abdomen_tip_m);
+                        for (unsigned i=0;i<pose->segment_count;++i) {
+                            const auto& segment=pose->segments[i];
+                            data << ' ' << segment.forward_offset_m;
+                            point(segment.half_axes_m);
+                        }
+                        data << '\n';
+                    }
+                    message("OK",data.str());
                 } else if (command=="WORKER_MOTION") {
                     end(request);
                     std::ostringstream data;

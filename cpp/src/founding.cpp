@@ -16,7 +16,7 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
         const auto depot=s.colonies.rows[s.colonies.index.at(ant->colony)].nest_position;
         const auto nursery=s.ecological->founding_habitat->brood_site;
         if (s.colonies.rows.size()!=1 || !s.geometry || !s.surface ||
-            nursery==depot || (sealed_chamber(s) ? ant->position!=depot ||
+            nursery==depot || (sealed_chamber(s) ? (!anatomical_nest(s) && ant->position!=depot) ||
                 !spatially_clear(ant->position,nursery,s.geometry->config.body_half_q) : ant->position!=nursery) ||
             !spatially_clear(ant->position,ant->position,s.geometry->config.body_half_q) ||
             !spatially_clear(depot,depot,s.geometry->config.loaded_half_q))
@@ -120,7 +120,7 @@ void WorldRuntime::resolve_founding_feed(Transaction& tx, const ScheduledEvent& 
     fact.payload = b.id.value;
     if (!a.alive() || !b.alive()) { fact.outcome = Outcome::DeadActor; return; }
     if (a.stage != LifeStage::Adult || b.stage != LifeStage::Larva) { fact.outcome = Outcome::InvalidStage; return; }
-    if (!contact(a, b, s.config, s.social && s.geometry ? nullptr : s.surface.get()) ||
+    if (!(anatomical_nest(s)?brood_contact(a,b):contact(a,b,s.config,s.social && s.geometry ? nullptr : s.surface.get())) ||
         !spatially_clear(a.position, b.position) || !surface_care_clear(s, a.position, b.position)) {
         fact.outcome = Outcome::OutOfReach;
         return;

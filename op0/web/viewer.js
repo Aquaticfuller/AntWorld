@@ -839,6 +839,7 @@ function displayedMotion(ant) {
 // values with per-individual lengths and orientation from authoritative state.
 const illustrativeBodyLengthM = Object.freeze({Queen: .0085, Worker: .0042, Male: .0042});
 function adultGlyphSize(ant, terrain, pixelsPerMeter) {
+    if (ant.body) return ant.body.segments.reduce((max,part)=>Math.max(max,Math.abs(part[0])+part[1]),0)*pixelsPerMeter;
     const queen = ant.caste === "Queen";
     const length = illustrativeBodyLengthM[ant.caste] || illustrativeBodyLengthM.Worker;
     const minimum = queen ? 6 : 3;
@@ -848,6 +849,11 @@ function adultGlyphSize(ant, terrain, pixelsPerMeter) {
 function adultHeading(ant, point, time) {
     const motion = displayedMotion(ant);
     if (motion) return planAngle(motion, point, time);
+    if (ant.body) {
+        const from=motorPose(ant);
+        const [x,y]=point(from), [tx,ty]=point(from.map((v,i)=>v+ant.body.forward[i]*.001));
+        return Math.atan2(ty-y,tx-x);
+    }
     const habitat = app.live && liveView.state?.habitat;
     if (ant.caste !== "Queen" || !habitat?.sealed_chamber) return 0;
     // The laying layout uses the direction of the familiar brood area.

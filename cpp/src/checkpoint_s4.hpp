@@ -1,4 +1,5 @@
 #pragma once
+#include "anatomy.hpp"
 #include "checkpoint_codec.hpp"
 #include "brood_space.hpp"
 #include "ecological_internal.hpp"
@@ -232,7 +233,8 @@ void read_geometry(Reader &r, S &s, const RuntimeLimits &limits, std::set<std::u
         s.spatial_index.emplace(std::pair{spatial_key(food.position), food.id.value}, std::uint8_t{2});
     }
 }
-template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimits &limits) {
+template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimits &limits,
+                                                  std::set<EventId>& spatial_waits) {
     if (!s.geometry) {
         for (const auto &e : s.journal)
             ensure(e.kind < FactKind::GeometryConfigured || e.kind > FactKind::ExcavationDecision, "geometry fact without authority");
@@ -251,6 +253,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     std::map<EntityId, PositionM> positions;
     std::map<EntityId, FoodMass> cargo;
     std::map<EntityId, LifeStage> stages;
+    std::map<EntityId,std::uint8_t> headings_at_cut;
     std::set<ScheduledId> completed;
     std::set<ResourceId> present_food;
     SoilLedger ledger;
@@ -260,6 +263,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         return carriers.contains(id) || cargo[id].total_ug() ? c.loaded_half_q : c.body_half_q;
     };
     const auto spatial=s.config.continuous_spatial_motion;
+    const bool anatomical=anatomical_nest(s);
     const auto contact_half=spatial?0:1;
     std::map<EntityId,EntityId> held_brood;
     auto clear = [&](PositionM a, PositionM b, std::int32_t radius) {
@@ -276,10 +280,43 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             return row.first!=mover && brood(stages.at(row.first)) && intersects_brood(from,to,row.second);
         });
     };
+    const auto past_ant=[&](EntityId id) {
+        auto ant=s.ants.get(s.ants.index.at(id));
+        ant.stage=stages.at(id);
+        ant.position=positions.at(id);
+        return ant;
+    };
+    const auto past_body=[&](EntityId id) {
+        const auto ant=past_ant(id);
+        const auto heading=headings_at_cut[id];
+        return body_pose(ant,heading,attachment(view(),ant,heading));
+    };
+    const auto emergence_clear=[&](EntityId id) {
+        for (const auto& [carrier,target]:held_brood) {
+            (void)carrier;
+            if (target==id) return false;
+        }
+        auto actor=past_ant(id);
+        actor.stage=LifeStage::Adult;
+        const auto p=body_pose(actor,0,attachment(view(),actor,0));
+        return substrate_clear(view(),p,actor.position) &&
+            std::none_of(positions.begin(),positions.end(),[&](const auto& other) {
+                return other.first!=id && stages.at(other.first)==LifeStage::Adult &&
+                    within_distance(actor.position,other.second,.008,true) && physical_overlap(p,past_body(other.first));
+            });
+    };
     std::optional<std::pair<EntityId,PositionM>> expected_egg;
     for (const auto &e : s.journal) {
         if (spatial && e.kind==FactKind::BiologicalObservation) {
             const auto& o=e.observation;
+            if (anatomical && o.duration_known &&
+                (o.phase==ObservationPhase::Started || o.phase==ObservationPhase::Completed) &&
+                handles_brood(o.act) && o.act!=CareAct::TransportBrood && o.act!=CareAct::PlaceBrood) {
+                const auto b=past_ant(o.target);
+                const auto a=past_body(e.actor);
+                ensure(brood(b.stage) && mouth_reaches(a,b.position,b.stage) && clear(a.mouth_m,b.position,0),
+                       "brood action lacks a clear mouth contact");
+            }
             if (o.act==CareAct::PickUpBrood && o.phase==ObservationPhase::Completed) held_brood[e.actor]=o.target;
             if (o.phase==ObservationPhase::Interrupted || (o.act==CareAct::PlaceBrood && o.phase==ObservationPhase::Completed))
                 held_brood.erase(e.actor);
@@ -292,9 +329,16 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ledger.initial_q3 = material_volume(view(), c.initial_solid, Material::Soil);
             ledger.remaining_q3 = ledger.initial_q3;
         }
-        if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn || e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced || e.kind == FactKind::ColonySeeded)
-            ensure(configured && clear(e.position,e.position,e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn?c.body_half_q:contact_half),
-                   "seed embedded in material");
+        const bool ant_origin=e.kind==FactKind::AntSeeded || e.kind==FactKind::AntBorn;
+        if (anatomical && ant_origin) {
+            auto ant=s.ants.get(s.ants.index.at(e.actor));
+            ant.stage=e.stage;
+            ant.position=e.position;
+            ensure(configured && substrate_clear(view(),body_pose(ant,0,attachment(view(),ant,0)),e.position),
+                   "anatomical birth or seed embedded in material");
+        } else if (ant_origin || e.kind==FactKind::FoodSeeded || e.kind==FactKind::FoodPlaced || e.kind==FactKind::ColonySeeded) {
+            ensure(configured && clear(e.position,e.position,ant_origin?c.body_half_q:contact_half),"seed embedded in material");
+        }
         if (bounded_brood_space(s)) {
             if (expected_egg) {
                 ensure(e.kind==FactKind::AntBorn && expected_egg->first==e.actor && expected_egg->second==e.position,
@@ -302,7 +346,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 expected_egg.reset();
             } else if (e.kind==FactKind::ReproductionAttempt && (e.payload || e.outcome==Outcome::Capacity)) {
                 ensure(positions.contains(e.actor) && positions.at(e.actor)==e.position,"invalid MicroWorld maternal origin");
-                const auto site=pick_egg_site(e.position,s.config,
+                const auto site=anatomical?
+                    posterior_egg_site(view(),past_body(e.actor),s.config,[&](PositionM b) {
+                        return clear_brood({},b,b);
+                    }):pick_egg_site(e.position,s.config,
                     [&](PositionM a,PositionM b) {
                         const auto below=below_brood(b,c,sealed_chamber(s));
                         return inside(b,s.config) && (!s.surface || surface_allows(*s.surface,true,a,b)) &&
@@ -331,8 +378,21 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             const auto carrier=e.kind==FactKind::BroodMoved?EntityId{e.payload}:e.actor;
             const auto held=held_brood.find(carrier);
             const bool loaded_care=held!=held_brood.end() && (carrier==e.actor || held->second==e.actor);
-            ensure(clear(positions.at(e.actor),e.position,loaded_care?c.loaded_half_q:half(e.actor)),
+            const auto from=positions.at(e.actor);
+            ensure(clear(from,e.position,anatomical && e.kind==FactKind::BroodMoved?0:loaded_care?c.loaded_half_q:half(e.actor)),
                    "historical movement crosses solid material");
+            if (anatomical && e.kind==FactKind::Moved && stages.at(e.actor)==LifeStage::Adult) {
+                const auto heading=historical_heading(e.random_value,from,e.position);
+                ensure(heading && heading<=facing_down &&
+                    (heading==(held_brood.contains(e.actor)?std::max<std::uint8_t>(1,headings_at_cut[e.actor]):
+                    body_travel_heading(view(),past_ant(e.actor),e.position,std::max<std::uint8_t>(1,headings_at_cut[e.actor])))) &&
+                    anatomy_sweep(view(),past_ant(e.actor),e.position,headings_at_cut[e.actor],heading),
+                    "historical body crosses solid material");
+                headings_at_cut[e.actor]=heading;
+            }
+            if (anatomical && e.kind==FactKind::BroodMoved)
+                ensure(continuous_box_clear(view(),from,e.position,brood_half_axes(stages.at(e.actor))),
+                       "historical brood carrying crosses solid material");
             if (bounded_brood_space(s) && e.kind==FactKind::BroodMoved)
                 ensure(clear_brood(e.actor,positions.at(e.actor),e.position),"MicroWorld brood movement intersects live brood");
             positions[e.actor] = e.position;
@@ -366,6 +426,13 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         if (e.kind == FactKind::NutritionTransferred)
             ensure(clear(positions.at(e.actor),positions.at(EntityId{e.payload}),contact_half),
                    "trophallaxis crosses solid material");
+        if (anatomical && (e.kind==FactKind::FoundingRation || (e.kind==FactKind::NutritionTransferred &&
+            stages.at(EntityId{e.payload})==LifeStage::Larva))) {
+            const auto b=past_ant({e.payload});
+            const auto a=past_body(e.actor);
+            ensure(brood(b.stage) && mouth_reaches(a,b.position,b.stage) && clear(a.mouth_m,b.position,0),
+                   "larval ration lacks mouth contact");
+        }
         if (e.kind == FactKind::BehaviorChanged) {
             if (e.payload == static_cast<std::uint64_t>(IndividualBehavior::Excavate)) {
                 auto &worker = excavators[e.actor];
@@ -490,6 +557,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             excavators.at(e.actor).enabled = false;
             excavators.at(e.actor).returning_empty=false;
         }
+        if (anatomical && e.kind==FactKind::PhysiologyUpdated && e.stage==LifeStage::Pupa && !emergence_clear(e.actor))
+            spatial_waits.insert(e.id);
+        if (anatomical && e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult)
+            ensure(emergence_clear(e.actor),"adult emergence lacks physical space");
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
             stages[e.actor] = e.stage;
         if (e.actor.value && positions.contains(e.actor)) {

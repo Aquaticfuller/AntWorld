@@ -157,7 +157,17 @@ void WorldRuntime::resolve_autonomy_wakes(
       // The ordinary wake stays alive while the finite care lease owns motion.
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (ant.caste==Caste::Queen) {
-      choice.care=can_switch && !urgent && s.m.now>a.last_program_change &&
+      if (anatomical_nest(s) && can_switch && founding_foundress(ant.id) &&
+          !within_contact(ant.position,colony.nest_position,s.config) &&
+          within_distance(ant.position,colony.nest_position,s.care_profile->perception_radius_m,true) &&
+          spatially_clear(ant.position,colony.nest_position) &&
+          foundress_nest_meal(s.founding->profile,p,s.founding_reserves.at(ant.id),colony.nest_food).total_ug()) {
+        // The already familiar, locally reachable handoff site can cue a
+        // paid approach. Physiology still debits actual stock at intake.
+        choice.resting_site=worker_depot_step(ant);
+        choice.transit=CareAct::DepotApproach;
+      }
+      choice.care=!choice.resting_site && can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (giving_way) {

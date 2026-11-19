@@ -1,0 +1,183 @@
+{
+  "first_browser_view_ms": 2497.85,
+  "egg": {
+    "id": "107",
+    "time_ms": 345600000,
+    "kind": "AntBorn",
+    "actor": "6",
+    "related": "2",
+    "source": "3",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      -0.004625,
+      -0.0045000000000000005,
+      0
+    ],
+    "stage": "Egg",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      20,
+      65,
+      0
+    ],
+    "payload": "2",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "pickup": {
+    "id": "213",
+    "time_ms": 388801018,
+    "kind": "BroodMoved",
+    "actor": "11",
+    "related": "2",
+    "source": "113",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      -0.0015625,
+      -0.00362,
+      0.002625
+    ],
+    "stage": "Egg",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "payload": "2",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "relocation": {
+    "id": "223",
+    "time_ms": 388801187,
+    "kind": "BroodMoved",
+    "actor": "11",
+    "related": "2",
+    "source": "116",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      -0.0020625,
+      -0.00362,
+      0.002625
+    ],
+    "stage": "Egg",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "payload": "2",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "renderer": "webgl2",
+  "render_ms": 0.6000000238418579,
+  "worker": {
+    "id": "7587",
+    "time_ms": 3958560000,
+    "kind": "StageChanged",
+    "actor": "11",
+    "related": null,
+    "source": "4518",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      -0.00425,
+      -0.0045000000000000005,
+      0.00175
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "excavation": {
+    "id": "12462",
+    "time_ms": 4394700901,
+    "kind": "SoilExcavated",
+    "actor": "19",
+    "related": null,
+    "source": "7188",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0,
+      -0.002,
+      0.002
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "payload": "33",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT",
+    "parcel": "33",
+    "geometry_edits": [
+      {
+        "edit": 1,
+        "source": 7188,
+        "event": 12462,
+        "actor": "19",
+        "parcel": 33,
+        "kind": 0,
+        "time_ms": 4394700901,
+        "box_q": [
+          -4,
+          -4,
+          4,
+          4,
+          0,
+          12
+        ],
+        "volume_q3": 256
+      }
+    ]
+  },
+  "delivery": {
+    "id": "15384",
+    "time_ms": 4731382227,
+    "kind": "FoodDelivered",
+    "actor": "21",
+    "related": null,
+    "source": "8865",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0,
+      -0.004,
+      0.002
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      1333,
+      667,
+      2000,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "snapshot_bytes": 366471
+}

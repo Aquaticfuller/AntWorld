@@ -144,16 +144,17 @@ std::array<double,3> geometry_coordinates(PositionM p,const GeometryConfig& c) {
             grid_coordinate(p.y,c.origin_m.y,c.quantum_m),
             grid_coordinate(p.z,c.origin_m.z,c.quantum_m)};
 }
-bool segment_overlaps(BoxQ box,const std::array<double,3>& a,const std::array<double,3>& b,std::int32_t half) {
-    const std::array low{box.min.x-half,box.min.y-half,box.min.z-half};
-    const std::array high{box.max.x+half,box.max.y+half,box.max.z+half};
+bool segment_overlaps(BoxQ box,const std::array<double,3>& a,const std::array<double,3>& b,
+                      const std::array<double,3>& half) {
+    const std::array low{box.min.x-half[0],box.min.y-half[1],box.min.z-half[2]};
+    const std::array high{box.max.x+half[0],box.max.y+half[1],box.max.z+half[2]};
     double enter=0,exit=1;
     for (std::size_t i=0;i<3;++i) {
         const auto delta=b[i]-a[i];
         if (delta==0) {
             // Bodies can touch a wall without positive-volume overlap. Point
             // membership follows the authority's half-open boxes.
-            if (a[i]<low[i] || (half && a[i]==low[i]) || a[i]>=high[i]) return false;
+            if (a[i]<low[i] || (half[i]!=0 && a[i]==low[i]) || a[i]>=high[i]) return false;
             continue;
         }
         auto first=(low[i]-a[i])/delta,last=(high[i]-a[i])/delta;
@@ -167,28 +168,40 @@ bool segment_overlaps(BoxQ box,const std::array<double,3>& a,const std::array<do
 } // namespace
 bool intersects_body(BoxQ box,PositionM p,std::int32_t half,const GeometryConfig& config) {
     const auto a=geometry_coordinates(p,config);
-    return segment_overlaps(box,a,a,half);
+    const auto h=static_cast<double>(half);
+    return segment_overlaps(box,a,a,{h,h,h});
 }
-bool continuous_clear(const GeometryView& v,PositionM from,PositionM to,std::int32_t half) {
-    if (half<0 || half>64) return false;
+namespace {
+bool sweep_clear(const GeometryView& v,PositionM from,PositionM to,const std::array<double,3>& half) {
     const auto& c=v.definition.config;
     const auto a=geometry_coordinates(from,c),b=geometry_coordinates(to,c);
     std::array<std::int32_t,3> low{},high{};
     for (std::size_t i=0;i<3;++i) {
         if (!std::isfinite(a[i]) || !std::isfinite(b[i]) || std::abs(a[i])>1000000 || std::abs(b[i])>1000000)
             return false;
-        low[i]=static_cast<std::int32_t>(std::floor(std::min(a[i],b[i])))-half-1;
-        high[i]=static_cast<std::int32_t>(std::ceil(std::max(a[i],b[i])))+half+1;
+        if (!std::isfinite(half[i]) || half[i]<0 || half[i]>64) return false;
+        low[i]=static_cast<std::int32_t>(std::floor(std::min(a[i],b[i])-half[i]))-1;
+        high[i]=static_cast<std::int32_t>(std::ceil(std::max(a[i],b[i])+half[i]))+1;
     }
     const auto query=intersection(c.initial_solid,{{low[0],low[1],low[2]},{high[0],high[1],high[2]}});
     if (!box_valid(query)) return true;
+    const bool point=half==std::array{0.,0.,0.};
     bool clear=true;
     partition(v,query,[&](BoxQ cell,Material material) {
         if (clear && material!=Material::Void &&
-            (segment_overlaps(cell,a,b,half) || (!half && (segment_overlaps(cell,a,a,0) || segment_overlaps(cell,b,b,0)))))
+            (segment_overlaps(cell,a,b,half) || (point && (segment_overlaps(cell,a,a,half) || segment_overlaps(cell,b,b,half)))))
             clear=false;
     });
     return clear;
+}
+} // namespace
+bool continuous_clear(const GeometryView& v,PositionM from,PositionM to,std::int32_t half) {
+    const auto h=static_cast<double>(half);
+    return sweep_clear(v,from,to,{h,h,h});
+}
+bool continuous_box_clear(const GeometryView& v,PositionM from,PositionM to,PositionM half_m) {
+    const auto quantum=v.definition.config.quantum_m;
+    return sweep_clear(v,from,to,{half_m.x/quantum,half_m.y/quantum,half_m.z/quantum});
 }
 PointQ spatial_key(PositionM p) {
     // ENGINEERING_FIXTURE: 4 mm buckets. Distance and solid barriers still decide eligibility.

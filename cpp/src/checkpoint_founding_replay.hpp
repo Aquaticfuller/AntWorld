@@ -245,22 +245,25 @@ public:
                clear(e.position, e.position, world.geometry ? world.geometry->config.body_half_q : 0, e.id);
     }
 
-    void pulse(PhysiologyState& p, const WorldEvent& e, LifeStage stage) {
+    void pulse(PhysiologyState& p, const WorldEvent& e, LifeStage stage, bool spatial_wait) {
         ensure(p.body_energy_nj && p.hydration_ug, "F1 uptake after exhaustion");
         if (e.time == p.next_absorption) {
             const auto amount=founding_boundary_enabled(profile(),stage)?founding_pulse(p,clocks[e.actor],stage):absorb(p,stage);
             ensure(e.transferred == amount, "invalid F1 crop uptake");
             convert(p, e.actor, stage, e, false);
             if (founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake) last_pulse=e;
-            if (founding_develops(profile(), p, reserves.at(e.actor), stage)) {
+            if (!spatial_wait && founding_develops(profile(), p, reserves.at(e.actor), stage)) {
                 auto transition = e;
                 transition.kind = FactKind::StageChanged;
                 transition.stage = static_cast<LifeStage>(static_cast<unsigned>(stage)+1);
                 transition.transferred = {};
                 expect(transition);
             }
-        } else ensure(stage == LifeStage::Larva && p.stage_progress == p.config.larva_duration && e.transferred == FoodMass{} &&
-                      !founding_develops(profile(), p, reserves.at(e.actor), stage), "unexpected F1 developmental wait");
+        } else ensure(e.transferred==FoodMass{} &&
+                     ((stage==LifeStage::Larva && p.stage_progress==p.config.larva_duration &&
+                       !founding_develops(profile(),p,reserves.at(e.actor),stage)) ||
+                      (spatial_wait && stage==LifeStage::Pupa && p.stage_progress==p.config.pupa_duration)),
+                      "unexpected F1 developmental wait");
     }
 
     void nest_meal(PhysiologyState& p, const WorldEvent& e, FoodMass stock) {
@@ -277,7 +280,7 @@ public:
 
     void ration(PhysiologyState& p, PhysiologyState& receiver, const WorldEvent& e, PositionM b, LifeStage stage) {
         ensure(founder(e.actor) && enrolled({e.payload}) && receiver.mother == e.actor && stage == LifeStage::Larva &&
-               world.social->exchange_enabled && within_contact(e.position, b, world.config) &&
+               world.social->exchange_enabled && (anatomical_nest(world) || within_contact(e.position,b,world.config)) &&
                surface_care_clear(world, e.position, b) && clear(e.position, b, 0, e.id), "F1 ration lacks a living local recipient");
         auto& donor = reserves.at(e.actor);
         auto& larva = reserves.at({e.payload});

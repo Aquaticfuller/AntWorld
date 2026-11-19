@@ -25,6 +25,7 @@ STATIC = {
     "/live.js": ("live.js", "text/javascript; charset=utf-8"),
     "/live_motion.js": ("live_motion.js", "text/javascript; charset=utf-8"),
     "/nest_view.js": ("nest_view.js", "text/javascript; charset=utf-8"),
+    "/nest_scene.js": ("nest_scene.js", "text/javascript; charset=utf-8"),
     "/observatory.js": ("observatory.js", "text/javascript; charset=utf-8"),
 }
 LIVE = "/api/v1/live/"

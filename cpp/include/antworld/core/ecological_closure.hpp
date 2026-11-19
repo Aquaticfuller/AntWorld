@@ -24,6 +24,7 @@ struct FoundingHabitat {
     std::uint64_t pantry_buffer_ug{};
     bool alternate_berth{}; // Physics 37. Seek another locally reachable depot contact.
     bool sealed_chamber{}; // Physics 38. Posterior laying site and close brood handling.
+    bool anatomical{}; // Physics 39. Body-relative birth, contact and swept clearance.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

@@ -137,8 +137,14 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             if (amount) tx.fact(lipid_conversion(s.founding->profile, ant, e.id, amount));
             tx.set_founding(e.actor, *reserve);
         }
-        const bool advance_stage = reserve ? (!mobilized || emitted_pulse) && founding_develops(s.founding->profile, p, *reserve, ant.stage) :
+        bool advance_stage = reserve ? (!mobilized || emitted_pulse) && founding_develops(s.founding->profile, p, *reserve, ant.stage) :
             developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage);
+        if (advance_stage && ant.stage==LifeStage::Pupa && anatomical_nest(s)) {
+            // The same individual must fit as an adult at its actual site.
+            // The completed clock and ordinary upkeep remain in force while
+            // it waits for space. There is no relocation or free reserve.
+            advance_stage=clear_emergence(ant);
+        }
         if (advance_stage) {
             interrupt_care(tx,e.actor,Outcome::InvalidStage);
             tx.touch_ant(i); ant.stage = static_cast<LifeStage>(static_cast<unsigned>(ant.stage)+1); s.ants.set(i, ant);
@@ -263,7 +269,8 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        if (!contact(ant, recipient, s.config, s.social && s.geometry ? nullptr : s.surface.get()) ||
+        if (!(anatomical_nest(s) && recipient.stage==LifeStage::Larva?brood_contact(ant,recipient):
+              contact(ant,recipient,s.config,s.social && s.geometry ? nullptr : s.surface.get())) ||
             query_worker_motion({s.world,recipient.id}) ||
             !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);

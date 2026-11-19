@@ -32,6 +32,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
         const auto& p=habitat->brood_site;
         if (!c.local_pantry_checks || !c.recruitment || !c.worker_activity_timing ||
             (habitat->sealed_chamber && !habitat->alternate_berth) ||
+            (habitat->anatomical && !habitat->sealed_chamber) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
             p.x<world.min_m.x || p.y<world.min_m.y || p.z<world.min_m.z ||
@@ -78,6 +79,9 @@ inline bool timed_activity(const auto& s) { return s.ecological && s.ecological-
 inline bool bounded_brood_space(const auto& s) { return s.ecological && s.ecological->brood_space; }
 inline bool sealed_chamber(const auto& s) {
     return s.ecological && s.ecological->founding_habitat && s.ecological->founding_habitat->sealed_chamber;
+}
+inline bool anatomical_nest(const auto& s) {
+    return sealed_chamber(s) && s.ecological->founding_habitat->anatomical;
 }
 inline bool sealed_seed_shape(const auto& geometry) {
     if (geometry.voids.size()!=1) return false;

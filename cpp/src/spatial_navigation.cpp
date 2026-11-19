@@ -2,14 +2,16 @@
 #include "ecological_internal.hpp"
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
+#include "anatomy.hpp"
 #include <queue>
 #include <tuple>
 
 namespace antworld {
 using namespace detail;
 
-SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
+SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     const auto& s=*state_;
+    const auto depot=ant.position;
     if (sealed_chamber(s) && s.geometry_edits.empty()) return {};
     const auto& g=s.geometry->config;
     const auto level=surface_level(s);
@@ -30,14 +32,23 @@ SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
     const auto remaining=[&](PointQ p) { return static_cast<std::uint32_t>(std::abs(*level-p.y)); };
     using Node=std::tuple<std::uint32_t,std::uint32_t,PointQ>;
     std::priority_queue<Node,std::vector<Node>,std::greater<Node>> open(std::greater<Node>{},std::vector<Node>(0));
-    struct Parent { PointQ point; std::uint32_t depth; };
+    const bool anatomy=anatomical_nest(s);
+    const auto budget=anatomy?std::min(limits_.navigation_nodes,std::size_t{1024}):limits_.navigation_nodes;
+    auto facing=std::max<std::uint8_t>(1,actor_facing(s,ant.id));
+    if (anatomy && attach) {
+        const auto next=body_travel_heading(view,ant,start_pos,facing);
+        if (!anatomy_sweep(view,ant,start_pos,facing,next)) return {};
+        facing=next;
+    }
+    struct Parent { PointQ point; std::uint32_t depth; std::uint8_t facing; };
     std::map<PointQ,Parent> visited;
-    visited.emplace(start,Parent{start,attach});
+    visited.emplace(start,Parent{start,attach,facing});
     open.emplace(attach+remaining(start),remaining(start),start);
     while (!open.empty()) {
         const auto [cost,height,p]=open.top();
         open.pop();
-        const auto depth=visited.at(p).depth;
+        const auto current=visited.at(p);
+        const auto depth=current.depth;
         if (cost!=depth+height || cost>=capacity) continue;
         const auto pos=physical(p,g);
         if (p.y==*level) {
@@ -48,6 +59,11 @@ SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
                     auto center=s.surface->center(next);
                     center.y=pos.y;
                     usable=s.surface->open(next) && spatially_clear(pos,center,half);
+                    if (usable && anatomy) {
+                        auto actor=ant; actor.position=pos;
+                        const auto heading=body_travel_heading(view,actor,center,current.facing);
+                        usable=anatomy_sweep(view,actor,center,current.facing,heading);
+                    }
                 }
                 if (usable) {
                     SurfaceConnector path;
@@ -64,11 +80,19 @@ SurfaceConnector WorldRuntime::discover_connector(PositionM depot) const {
             }
         }
         for (const auto q:portal_neighbors(view,p,half,s.config)) {
-            if (depth+1+remaining(q)>=capacity || !surface_allows(*s.surface,true,pos,physical(q,g))) continue;
+            const auto to=physical(q,g);
+            if (depth+1+remaining(q)>=capacity || !surface_allows(*s.surface,true,pos,to) ||
+                (anatomy && s.care_profile && !within_distance(depot,to,s.care_profile->perception_radius_m,true))) continue;
             const auto old=visited.find(q);
             if (old!=visited.end() && old->second.depth<=depth+1) continue;
-            if (old==visited.end() && visited.size()>=limits_.navigation_nodes) continue;
-            visited.insert_or_assign(q,Parent{p,depth+1});
+            if (old==visited.end() && visited.size()>=budget) continue;
+            auto heading=current.facing;
+            if (anatomy) {
+                auto actor=ant; actor.position=pos;
+                heading=body_travel_heading(view,actor,to,current.facing);
+                if (!anatomy_sweep(view,actor,to,current.facing,heading)) continue;
+            }
+            visited.insert_or_assign(q,Parent{p,depth+1,heading});
             open.emplace(depth+1+remaining(q),remaining(q),q);
         }
     }
@@ -90,7 +114,7 @@ bool WorldRuntime::can_forage(const AntState& ant) const {
     if (!s.surface) return false;
     if (!mixed_navigation(s)) return navigation_cell(s,ant.position) && sense({s.world,ant.id}).step_count;
     const auto known=s.connectors.find(ant.id);
-    if (known==s.connectors.end()) return discover_connector(ant.position).size!=0;
+    if (known==s.connectors.end()) return discover_connector(ant).size!=0;
     const auto& path=known->second;
     if (path.cursor || path.points[0]!=ant.position) return false;
     for (std::uint32_t i=1;i<path.size;++i)
@@ -113,7 +137,7 @@ void WorldRuntime::prepare_forager(Transaction& tx,const AntState& ant,ForagerSt
         throw std::invalid_argument("first foraging activation requires an unloaded worker at its nest");
     auto cell=navigation_cell(s,ant.position);
     if (mixed_navigation(s)) {
-        const auto link=discover_connector(ant.position);
+        const auto link=discover_connector(ant);
         if (!link.size) throw std::invalid_argument("no locally reachable loaded-clearance surface connector");
         cell=navigation_cell(s,link.entrance());
         tx.connectors.set(ant.id,link);

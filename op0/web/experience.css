@@ -202,3 +202,49 @@ button.primary-button:not(:disabled):hover { color: #132117; background: #e0f2bc
   .focus-view .space .panel-head { flex-wrap: wrap; }
   .focus-view #map { height: 65vh; min-height: 360px; }
 }
+
+/* The colony occupies the main canvas; detailed assays remain one click away. */
+#research-view { display: none; }
+.anatomical-nest {
+  --panel: #191917;
+  --line: #423b31;
+  --text: #f6eddd;
+  --gold: #dbc196;
+  font-family: "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+  background: radial-gradient(ellipse at 60% 20%, #28281f, #0e110e 76%);
+}
+.anatomical-nest .top { background: #141713; border-color: #4b453a; }
+.anatomical-nest .live-controls {
+  background: #1b201a;
+  border-color: #414637;
+  margin-bottom: 10px;
+}
+.anatomical-nest #new-single-nest { border-color: #636f54; }
+.anatomical-nest #research-view { display: inline-flex; padding-inline: 12px; }
+.anatomical-nest .world-heading { padding-top: 0; margin-bottom: 8px; }
+.anatomical-nest .world-heading h1 { font-family: Georgia, "Microsoft YaHei UI", serif; font-weight: 500; }
+.anatomical-nest .space { position: relative; border-color: #585044; background: #181b17; }
+.anatomical-nest .space .panel-head { flex-wrap: wrap; gap: 8px; min-height: 54px; }
+.anatomical-nest .space .panel-head > div:first-child { flex: 1; }
+.anatomical-nest #map { height: clamp(400px, calc(100vh - 512px), 950px); }
+.anatomical-nest .map-tools { border-bottom: 1px solid #4a4235; background: #1e241d; }
+.anatomical-nest #nest-controls { border: 0; padding: 0; background: transparent; }
+.anatomical-nest #map-legend { color: #d4c8b5; background: #21221b; }
+.anatomical-nest .inspect { background: #1c211b; border-color: #565146; }
+.anatomical-nest .population { background: #232820; }
+.anatomical-nest:not(.research-view) #observatory-presets,
+.anatomical-nest:not(.research-view) #colony-settings,
+.anatomical-nest:not(.research-view) .nursery-launch,
+.anatomical-nest:not(.research-view) #find-pantry,
+.anatomical-nest:not(.research-view) #find-brood,
+.anatomical-nest:not(.research-view) #find-entrance,
+.anatomical-nest:not(.research-view) #clearance-control,
+.anatomical-nest:not(.research-view) #envelope-control,
+.anatomical-nest:not(.research-view) #view-controls,
+.anatomical-nest:not(.research-view) #map-time,
+.anatomical-nest:not(.research-view) #space-caption { display: none !important; }
+.anatomical-nest .focus-view-toggle { margin-left: 0; }
+.anatomical-nest.focus-view #map { height: 78vh; min-height: 400px; }
+@media (max-width: 760px) {
+  .anatomical-nest #map { height: 58vh; min-height: 340px; }
+}

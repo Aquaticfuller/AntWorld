@@ -19,7 +19,7 @@ from uuid import UUID, uuid4
 
 from .archive import SQLITE_ID, key
 from .chronicle import Chronicle, LANDMARKS
-from .codec import (CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32, Reader,
+from .codec import (ACTS, CASTES, DEATHS, FACETS, HIGHLIGHTS, KINDS, MICROWORLD_VERSIONS, PROGRAMS, STAGES, U32, Reader,
                     checkpoint, checkpoint_header, decode_fact, label, require, world_id)
 from .geometry import AXES, focused_window, nest_volume, terrain_view
 from .query import HOUR, integer
@@ -46,7 +46,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v13"), installed.with_stem("antworld_m0_live_v12"),
+    paths = (installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
+             installed.with_stem("antworld_m0_live_v12"),
              installed.with_stem("antworld_m0_live_v11"),
              installed.with_stem("antworld_m0_live_v10"),
              installed.with_stem("antworld_m0_live_v9"),
@@ -66,7 +67,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 13))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 14))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -78,6 +79,7 @@ class NativeCore:
             self.observatory = generation >= 10
             self.next_milestone = generation >= 11
             self.single_nest = generation >= 12
+            self.anatomical = generation >= 13
         except Exception:
             self.close()
             raise
@@ -109,6 +111,24 @@ class NativeCore:
             self.process.wait()
         finally:
             self.process.stdout.close()
+
+
+def live_bodies(data, frame):
+    bodies = {}
+    for row in data.splitlines():
+        ant, count, held, act, target, began, *columns = row.decode("ascii").split()
+        count, ant_id = int(count), int(ant)
+        act, began = int(act), int(began)
+        values = list(map(float, columns))
+        require(ant_id in frame["ants"] and ant not in bodies and count in (1, 3) and
+                len(values) == 12 + 4 * count and all(map(isfinite, values)) and
+                (held == "0" or int(held) in frame["ants"]) and (target == "0" or int(target) in frame["ants"]) and
+                0 <= act < len(ACTS) and 0 <= began <= frame["time_ms"], "Invalid native body observation")
+        bodies[ant] = dict(forward=values[:3], up=values[3:6], mouth_m=values[6:9], abdomen_tip_m=values[9:12],
+                           segments=[values[i:i+4] for i in range(12, len(values), 4)],
+                           held_id=None if held == "0" else held,
+                           care=dict(act=ACTS[act], target=target, began_ms=began) if act else None)
+    return bodies
 
 
 def read_live_events(data, frame, *, contiguous=False, after=None):
@@ -439,7 +459,8 @@ class LiveSession:
                     revision = len(frame["edits"])
                     if self.volume is None or self.volume["revision"] != revision:
                         focus = next(iter(frame["colonies"].values()))["position_m"]
-                        self.volume = nest_volume(frame["geometry"], frame["edits"], focus)
+                        self.volume = nest_volume(frame["geometry"], frame["edits"], focus,
+                                                  radius=44 if frame["physics"] == 39 else 32)
                     return self.volume | {"epoch": self.epoch, "world_id": frame["world"]}
                 if resource == "fact":
                     identifier = integer(options, "id", 0, 1, frame["cursor"])
@@ -495,6 +516,7 @@ class LiveSession:
             require(group == "all" or group in LIVE_GROUPS, "Unknown event category")
             dynamics=frame["flags"].get("nest_dynamics", {})
             plans = live_motion(self.worker.call("WORKER_MOTION"),frame) if dynamics.get("worker_motor") else {}
+            bodies = live_bodies(self.worker.call("BODY_STATES"), frame) if habitat and habitat.get("anatomical") else {}
             traffic = frame["flags"].get("local_traffic",False)
             data.update(physics=frame["physics"], schema_version=frame["schema"], seed=str(frame["seed"]),
                         local_traffic=traffic, seeded_nursery=nursery,
@@ -510,7 +532,8 @@ class LiveSession:
                         surface={k: v for k, v in surface.items() if k != "walkable"} |
                         {"blocked": [i for i, value in enumerate(surface["walkable"]) if not value]},
                         bounds_m=(frame["world_min_m"], frame["world_max_m"]), sources=list(frame["sources"].values()),
-                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])), soil_load=ant["id"] in frame["soil_carriers"],
+                        ants=[dict(ant, motion_plan=plans.get(int(ant["id"])), body=bodies.get(ant["id"]),
+                                   soil_load=ant["id"] in frame["soil_carriers"],
                                    loaded=bool(any(ant["carried_ug"]) or ant["id"] in frame["soil_carriers"]),
                                    stage=label(STAGES, ant["stage"]), caste=label(CASTES, ant["caste"]),
                                    program=label(PROGRAMS, ant.get("program")), death_cause=label(DEATHS, ant.get("death_code")))
@@ -605,7 +628,11 @@ class LiveSession:
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
                 core = self.core()
                 require(core.single_nest, "Build the updated Core to start a sealed founding chamber.")
-                self.install(core.call(f"NEW_SINGLE_NEST {randbits(63) or 1} {seed} 250 80 plugged 1955 reachable {supply}"),
+                model = data.get("model", "anatomical" if core.anatomical else "reference")
+                require(model in ("anatomical", "reference") and (model == "reference" or core.anatomical),
+                        "Build the updated Core to start the anatomical nest.")
+                command = "NEW_ANATOMICAL_NEST" if model == "anatomical" else "NEW_SINGLE_NEST"
+                self.install(core.call(f"{command} {randbits(63) or 1} {seed} 250 80 plugged 1955 reachable {supply}"),
                              running=True)
             elif resource == "observatory":
                 preset = data.get("preset")

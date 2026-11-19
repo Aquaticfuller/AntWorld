@@ -1,0 +1,7753 @@
+{
+  "assay": "single-nest-physical-assay-v1",
+  "binary_sha256": "e4815863be9861f24f90e71fd5ab7e76c6d636b80f13a7c33b565df8ab2ae4fc",
+  "cases": [
+    {
+      "request": "NEW_SINGLE_NEST 9101 1 250 80 plugged 1955 reachable finite",
+      "world_id": "00000000-0000-028d-0000-00000000238d",
+      "physics": 38,
+      "settings": {
+        "distance_clock": true,
+        "floor_space": true,
+        "recruitment": true,
+        "activity_cost": true,
+        "unloaded_m_per_s": 0.005,
+        "loaded_m_per_s": 0.0025,
+        "soil_handling_ms": 5000,
+        "cue_lifetime_ms": 21600000,
+        "cue_minimum_carbs_ug": 50,
+        "water_sip_ug": 25,
+        "cue_response_ppm": 350000,
+        "first_ration_ppm": 0,
+        "suppress_foundress_hatch_cue": false,
+        "brood_space": true,
+        "portable_care_motion": true,
+        "local_nest_activity": true,
+        "worker_activity_timing": {
+          "check_ms": 900000,
+          "minimum_program_ms": 3600000
+        },
+        "nest_dynamics": {
+          "worker_motor": true,
+          "excavation": 3
+        },
+        "local_traffic": true,
+        "yield_to_loaded": true,
+        "local_pantry_checks": true,
+        "founding_habitat": {
+          "brood_site_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "pantry_buffer_ug": 2000,
+          "sealed_chamber": true,
+          "alternate_berth": true
+        }
+      },
+      "seed_geometry": {
+        "origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quantum_m": 0.00025,
+        "solid": [
+          -600,
+          -600,
+          -600,
+          600,
+          0,
+          600
+        ],
+        "voids": [
+          [
+            -24,
+            -20,
+            -24,
+            24,
+            -2,
+            4
+          ]
+        ],
+        "rocks": [],
+        "body_half_q": 2,
+        "loaded_half_q": 4,
+        "dry_ug_per_q3": 12,
+        "water_ug_per_q3": 3
+      },
+      "sources_at_start": [
+        {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1200,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1200,
+            0
+          ]
+        },
+        {
+          "id": "4",
+          "position_m": [
+            0.03,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ]
+        },
+        {
+          "id": "5",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            9000,
+            0
+          ]
+        }
+      ],
+      "initial_frame_sha256": "a29b2519098ad134574f403758ab11fa4a9ff0840118e866cc21af744a582ed3",
+      "cuts": [
+        {
+          "day": 0,
+          "cursor": 18,
+          "frame_sha256": "a29b2519098ad134574f403758ab11fa4a9ff0840118e866cc21af744a582ed3",
+          "advance_seconds": 1e-06,
+          "stages": {
+            "3": 1
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              0.0,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 0,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1224000000,
+            "hydration_ug": 7000,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 0,
+            "next_absorption_ms": 21600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 0,
+            "dissipated_nj": 0
+          },
+          "balances": {
+            "body_energy_nj": 1224000000,
+            "body_water_ug": 7000,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 5464,
+            "mobile_protein_ug": 1200,
+            "unreleased_carbs_ug": 180000,
+            "unreleased_protein_ug": 90000,
+            "unreleased_water_ug": 540000,
+            "resident_event_bytes": 7936,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 10,
+          "cursor": 1397,
+          "frame_sha256": "a1a9b91ceffe00dfa8d4175ca78d487afa257fd486c385d8e1673b09bde492aa",
+          "advance_seconds": 0.027512,
+          "stages": {
+            "3": 1,
+            "0": 4
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 56,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1243983532,
+            "hydration_ug": 6955,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              25,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 864000000,
+            "next_absorption_ms": 885600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 600,
+            "dissipated_nj": 23440016468
+          },
+          "balances": {
+            "body_energy_nj": 1243983532,
+            "body_water_ug": 6955,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 25,
+            "lipid_ug": 4726,
+            "mobile_protein_ug": 1120,
+            "unreleased_carbs_ug": 165000,
+            "unreleased_protein_ug": 82500,
+            "unreleased_water_ug": 495000,
+            "resident_event_bytes": 507904,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 30,
+          "cursor": 4451,
+          "frame_sha256": "5bb5b4a79658607bd1834b348421a10621ae0add1f4bc90cf5bb6c55545e8d35",
+          "advance_seconds": 0.037337,
+          "stages": {
+            "3": 1,
+            "4": 2,
+            "1": 2,
+            "0": 2
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 168,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1241923541,
+            "hydration_ug": 5710,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 2592000000,
+            "next_absorption_ms": 2613600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 1800,
+            "dissipated_nj": 70260076459
+          },
+          "balances": {
+            "body_energy_nj": 1241923541,
+            "body_water_ug": 5710,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 3267,
+            "mobile_protein_ug": 983,
+            "unreleased_carbs_ug": 135000,
+            "unreleased_protein_ug": 67500,
+            "unreleased_water_ug": 405000,
+            "resident_event_bytes": 2031616,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 60,
+          "cursor": 44225,
+          "frame_sha256": "c5cbd1fcf1ce8f90201a676b3838f02c14405a80c63445d6d024ff9a803cf011",
+          "advance_seconds": 0.810472,
+          "stages": {
+            "3": 2,
+            "4": 3,
+            "2": 3,
+            "0": 2
+          },
+          "workers": 1,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 327,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1253837184,
+            "hydration_ug": 4876,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              48,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 5184000000,
+            "next_absorption_ms": 5205600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2809,
+            "lost_water_ug": 3600,
+            "dissipated_nj": 140490162816
+          },
+          "balances": {
+            "body_energy_nj": 1253837184,
+            "body_water_ug": 4876,
+            "crop_carb_ug": 48,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 1795,
+            "mobile_protein_ug": 931,
+            "unreleased_carbs_ug": 90000,
+            "unreleased_protein_ug": 45000,
+            "unreleased_water_ug": 270000,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 499628
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            2665,
+            3112,
+            12679,
+            0
+          ]
+        },
+        {
+          "day": 90,
+          "cursor": 675669,
+          "frame_sha256": "065e4a8fa3b2f378736f7242c3aba74ea317219e44798974b83eb99036e07103",
+          "advance_seconds": 43.603935,
+          "stages": {
+            "3": 6,
+            "4": 3,
+            "2": 1,
+            "1": 2,
+            "0": 4
+          },
+          "workers": 5,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 381,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1233691254,
+            "hydration_ug": 4482,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 7776000000,
+            "next_absorption_ms": 7797600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 5996,
+            "lost_water_ug": 5400,
+            "dissipated_nj": 210750308746
+          },
+          "balances": {
+            "body_energy_nj": 1233691254,
+            "body_water_ug": 4482,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 355,
+            "mobile_protein_ug": 894,
+            "unreleased_carbs_ug": 45000,
+            "unreleased_protein_ug": 22500,
+            "unreleased_water_ug": 135000,
+            "resident_event_bytes": 2031640,
+            "packed_event_bytes": 9834437
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            3436,
+            2490,
+            0
+          ]
+        },
+        {
+          "day": 120,
+          "cursor": 1271961,
+          "frame_sha256": "cde851632c32aef42a0f74eaa0cf6227ab9b050546fe92ed99e3375d7c220a2a",
+          "advance_seconds": 42.015465,
+          "stages": {
+            "4": 11,
+            "3": 4,
+            "2": 2
+          },
+          "workers": 4,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 385,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 4208,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 8251778833,
+            "next_absorption_ms": 8272800000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 5996,
+            "lost_water_ug": 5730,
+            "dissipated_nj": 223646000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 4208,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 894,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 507928,
+            "packed_event_bytes": 18783551
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            1940,
+            5222,
+            3801,
+            0
+          ]
+        },
+        {
+          "day": 150,
+          "cursor": 2331713,
+          "frame_sha256": "8eb53ef924fcd43ec45492b7555ac6e6f30888c11c02bfeb58a7900a33644f32",
+          "advance_seconds": 80.5514,
+          "stages": {
+            "4": 11,
+            "3": 6
+          },
+          "workers": 6,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 385,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 4208,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 8251778833,
+            "next_absorption_ms": 8272800000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 5996,
+            "lost_water_ug": 5730,
+            "dissipated_nj": 223646000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 4208,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 894,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 24,
+            "packed_event_bytes": 34460344
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            5222,
+            256,
+            0
+          ]
+        }
+      ],
+      "native_memory_bytes": [
+        42999808,
+        52109312,
+        24
+      ],
+      "ledgers": "PASS",
+      "scan_through_id": 44225,
+      "scan_day_ceiling": 60,
+      "scan_counts": {
+        "AntBorn": 9,
+        "Pick up brood Success": 216,
+        "BroodMoved": 2,
+        "Transport brood Success": 2,
+        "Place brood Success": 1,
+        "Transport brood Blocked": 215,
+        "Larva": 7,
+        "FoundingRation": 23,
+        "Feed brood Success": 82,
+        "AntDied": 3,
+        "Pupa": 4,
+        "Adult": 1,
+        "SoilExcavated": 1,
+        "SoilDropped": 1,
+        "FoodCollected": 8,
+        "FoodDelivered": 8,
+        "FoundressNestMeal": 57,
+        "Feed brood Partial": 31
+      },
+      "first_evidence": {
+        "AntBorn": {
+          "id": "107",
+          "time_ms": 345600000,
+          "kind": "AntBorn",
+          "actor": "6",
+          "related": "2",
+          "source": "3",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            20,
+            65,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Pick up brood Success": {
+          "id": "121",
+          "time_ms": 345600502,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "68",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Pick up brood",
+            "bout": "67",
+            "began_ms": 345600002,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "BroodMoved": {
+          "id": "130",
+          "time_ms": 345600671,
+          "kind": "BroodMoved",
+          "actor": "6",
+          "related": "2",
+          "source": "71",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0006250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Transport brood Success": {
+          "id": "132",
+          "time_ms": 345600671,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "71",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0005,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Transport brood",
+            "bout": "70",
+            "began_ms": 345600504,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Place brood Success": {
+          "id": "152",
+          "time_ms": 345601301,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "77",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008750000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Place brood",
+            "bout": "76",
+            "began_ms": 345600801,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Transport brood Blocked": {
+          "id": "238",
+          "time_ms": 367200836,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "9",
+          "source": "109",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008215233091147408,
+            -0.004,
+            -0.0003713906763541038
+          ],
+          "stage": "Adult",
+          "outcome": "Blocked",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Interrupted",
+            "act": "Transport brood",
+            "bout": "109",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Larva": {
+          "id": "3448",
+          "time_ms": 1788480000,
+          "kind": "StageChanged",
+          "actor": "6",
+          "related": null,
+          "source": "1321",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Larva",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoundingRation": {
+          "id": "3507",
+          "time_ms": 1795682002,
+          "kind": "FoundingRation",
+          "actor": "2",
+          "related": "7",
+          "source": "1349",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.00075,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "7",
+          "auxiliary": "6",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Success": {
+          "id": "3508",
+          "time_ms": 1795682002,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "7",
+          "source": "1349",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.00075,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "1348",
+            "began_ms": 1795680002,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "AntDied": {
+          "id": "4045",
+          "time_ms": 2177280000,
+          "kind": "AntDied",
+          "actor": "6",
+          "related": null,
+          "source": "1593",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Dead",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "1",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "death_cause": "Energy depleted"
+        },
+        "Pupa": {
+          "id": "4550",
+          "time_ms": 2676960000,
+          "kind": "StageChanged",
+          "actor": "7",
+          "related": null,
+          "source": "1865",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Pupa",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Adult": {
+          "id": "7010",
+          "time_ms": 3929760000,
+          "kind": "StageChanged",
+          "actor": "7",
+          "related": null,
+          "source": "2861",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "SoilExcavated": {
+          "id": "7145",
+          "time_ms": 3936720650,
+          "kind": "SoilExcavated",
+          "actor": "7",
+          "related": null,
+          "source": "2917",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.0015,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "13",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "13"
+        },
+        "SoilDropped": {
+          "id": "7768",
+          "time_ms": 3948906814,
+          "kind": "SoilDropped",
+          "actor": "7",
+          "related": null,
+          "source": "3165",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "13",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "13"
+        },
+        "FoodCollected": {
+          "id": "8176",
+          "time_ms": 3953501089,
+          "kind": "FoodCollected",
+          "actor": "7",
+          "related": null,
+          "source": "3297",
+          "colony": "1",
+          "resource": "4",
+          "position_m": [
+            0.03,
+            0.001,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            1333,
+            667,
+            2000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoodDelivered": {
+          "id": "8400",
+          "time_ms": 3953577691,
+          "kind": "FoodDelivered",
+          "actor": "7",
+          "related": null,
+          "source": "3361",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            1333,
+            667,
+            2000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoundressNestMeal": {
+          "id": "8665",
+          "time_ms": 3974400000,
+          "kind": "FoundressNestMeal",
+          "actor": "2",
+          "related": null,
+          "source": "3191",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            51,
+            11,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Partial": {
+          "id": "10950",
+          "time_ms": 4007143987,
+          "kind": "BiologicalObservation",
+          "actor": "7",
+          "related": "10",
+          "source": "4180",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Partial",
+          "mass_ug": [
+            3,
+            2,
+            88,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "4180",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "first_four_brood": {
+        "6": [
+          {
+            "id": "107",
+            "time_ms": 345600000,
+            "kind": "AntBorn",
+            "actor": "6",
+            "related": "2",
+            "source": "3",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3448",
+            "time_ms": 1788480000,
+            "kind": "StageChanged",
+            "actor": "6",
+            "related": null,
+            "source": "1321",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4045",
+            "time_ms": 2177280000,
+            "kind": "AntDied",
+            "actor": "6",
+            "related": null,
+            "source": "1593",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "7": [
+          {
+            "id": "176",
+            "time_ms": 352800000,
+            "kind": "AntBorn",
+            "actor": "7",
+            "related": "2",
+            "source": "64",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3493",
+            "time_ms": 1795680000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1328",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3507",
+            "time_ms": 1795682002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1349",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00075,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3571",
+            "time_ms": 1814402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1377",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3594",
+            "time_ms": 1836002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1390",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3618",
+            "time_ms": 1857602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1403",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3644",
+            "time_ms": 1879202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1416",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              1,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3680",
+            "time_ms": 1900802248,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1434",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0012857616545573704,
+              -0.004,
+              -0.00018569533817705186
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3760",
+            "time_ms": 1987202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1480",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3824",
+            "time_ms": 2052002248,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1514",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00125,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3897",
+            "time_ms": 2095202374,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1547",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0008110522135428078,
+              -0.004,
+              -0.00023942606534028664
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4099",
+            "time_ms": 2246402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1637",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00125,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "2",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4143",
+            "time_ms": 2289602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1658",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4182",
+            "time_ms": 2332802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1681",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4411",
+            "time_ms": 2548802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1793",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0012857616545573704,
+              -0.004,
+              -0.00018569533817705186
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4460",
+            "time_ms": 2592002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1820",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4509",
+            "time_ms": 2635202248,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1845",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0012857616545573704,
+              -0.004,
+              -0.00018569533817705186
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4543",
+            "time_ms": 2656802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1861",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4550",
+            "time_ms": 2676960000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1865",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Pupa",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "7010",
+            "time_ms": 3929760000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "2861",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          }
+        ],
+        "8": [
+          {
+            "id": "181",
+            "time_ms": 360000000,
+            "kind": "AntBorn",
+            "actor": "8",
+            "related": "2",
+            "source": "88",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3538",
+            "time_ms": 1802880000,
+            "kind": "StageChanged",
+            "actor": "8",
+            "related": null,
+            "source": "1329",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4059",
+            "time_ms": 2191680000,
+            "kind": "AntDied",
+            "actor": "8",
+            "related": null,
+            "source": "1607",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "9": [
+          {
+            "id": "192",
+            "time_ms": 367200000,
+            "kind": "AntBorn",
+            "actor": "9",
+            "related": "2",
+            "source": "91",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3546",
+            "time_ms": 1810080000,
+            "kind": "StageChanged",
+            "actor": "9",
+            "related": null,
+            "source": "1339",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3985",
+            "time_ms": 2138402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "9",
+            "source": "1581",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0008414677783912825,
+              -0.004,
+              -0.00019111332157989934
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "9",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4303",
+            "time_ms": 2462402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "9",
+            "source": "1741",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0008215233091147408,
+              -0.004,
+              -0.0003713906763541038
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "9",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "4699",
+            "time_ms": 2841120000,
+            "kind": "AntDied",
+            "actor": "9",
+            "related": null,
+            "source": "1944",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Dehydration"
+          }
+        ]
+      }
+    },
+    {
+      "request": "NEW_SINGLE_NEST 9102 2 250 80 plugged 1955 reachable finite",
+      "world_id": "00000000-0000-028d-0000-00000000238e",
+      "physics": 38,
+      "settings": {
+        "distance_clock": true,
+        "floor_space": true,
+        "recruitment": true,
+        "activity_cost": true,
+        "unloaded_m_per_s": 0.005,
+        "loaded_m_per_s": 0.0025,
+        "soil_handling_ms": 5000,
+        "cue_lifetime_ms": 21600000,
+        "cue_minimum_carbs_ug": 50,
+        "water_sip_ug": 25,
+        "cue_response_ppm": 350000,
+        "first_ration_ppm": 0,
+        "suppress_foundress_hatch_cue": false,
+        "brood_space": true,
+        "portable_care_motion": true,
+        "local_nest_activity": true,
+        "worker_activity_timing": {
+          "check_ms": 900000,
+          "minimum_program_ms": 3600000
+        },
+        "nest_dynamics": {
+          "worker_motor": true,
+          "excavation": 3
+        },
+        "local_traffic": true,
+        "yield_to_loaded": true,
+        "local_pantry_checks": true,
+        "founding_habitat": {
+          "brood_site_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "pantry_buffer_ug": 2000,
+          "sealed_chamber": true,
+          "alternate_berth": true
+        }
+      },
+      "seed_geometry": {
+        "origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quantum_m": 0.00025,
+        "solid": [
+          -600,
+          -600,
+          -600,
+          600,
+          0,
+          600
+        ],
+        "voids": [
+          [
+            -24,
+            -20,
+            -24,
+            24,
+            -2,
+            4
+          ]
+        ],
+        "rocks": [],
+        "body_half_q": 2,
+        "loaded_half_q": 4,
+        "dry_ug_per_q3": 12,
+        "water_ug_per_q3": 3
+      },
+      "sources_at_start": [
+        {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1200,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1200,
+            0
+          ]
+        },
+        {
+          "id": "4",
+          "position_m": [
+            -0.03,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ]
+        },
+        {
+          "id": "5",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            9000,
+            0
+          ]
+        }
+      ],
+      "initial_frame_sha256": "a88554ae5737303c67997182e6ee7192fd63b85e75b1c45aa3781a0c540e1b7c",
+      "cuts": [
+        {
+          "day": 0,
+          "cursor": 18,
+          "frame_sha256": "a88554ae5737303c67997182e6ee7192fd63b85e75b1c45aa3781a0c540e1b7c",
+          "advance_seconds": 1e-06,
+          "stages": {
+            "3": 1
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              0.0,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 0,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1224000000,
+            "hydration_ug": 7000,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 0,
+            "next_absorption_ms": 21600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 0,
+            "dissipated_nj": 0
+          },
+          "balances": {
+            "body_energy_nj": 1224000000,
+            "body_water_ug": 7000,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 5464,
+            "mobile_protein_ug": 1200,
+            "unreleased_carbs_ug": 180000,
+            "unreleased_protein_ug": 90000,
+            "unreleased_water_ug": 540000,
+            "resident_event_bytes": 7936,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 10,
+          "cursor": 812,
+          "frame_sha256": "f3184233347659a4cb796fb9600e8bd2070ef5883a9256bd5eca0d67da3ffafe",
+          "advance_seconds": 0.009162,
+          "stages": {
+            "3": 1,
+            "0": 4
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 20,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1243993936,
+            "hydration_ug": 6955,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              25,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 864000000,
+            "next_absorption_ms": 885600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 600,
+            "dissipated_nj": 23440006064
+          },
+          "balances": {
+            "body_energy_nj": 1243993936,
+            "body_water_ug": 6955,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 25,
+            "lipid_ug": 4726,
+            "mobile_protein_ug": 1120,
+            "unreleased_carbs_ug": 165000,
+            "unreleased_protein_ug": 82500,
+            "unreleased_water_ug": 495000,
+            "resident_event_bytes": 253952,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 30,
+          "cursor": 3398,
+          "frame_sha256": "71372f2e13a701810fa4fd5ab2884c35371bf59e7985543a63fa38b982d17083",
+          "advance_seconds": 0.019674,
+          "stages": {
+            "3": 1,
+            "4": 3,
+            "1": 1,
+            "0": 2
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 102,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1241944880,
+            "hydration_ug": 5750,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 2592000000,
+            "next_absorption_ms": 2613600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 1800,
+            "dissipated_nj": 70260055120
+          },
+          "balances": {
+            "body_energy_nj": 1241944880,
+            "body_water_ug": 5750,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 3280,
+            "mobile_protein_ug": 1015,
+            "unreleased_carbs_ug": 135000,
+            "unreleased_protein_ug": 67500,
+            "unreleased_water_ug": 405000,
+            "resident_event_bytes": 1015808,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 60,
+          "cursor": 31170,
+          "frame_sha256": "7f72aceb4a0996ee290c8865eafd8d9d4ae674618de008f18f45f28e95862849",
+          "advance_seconds": 0.249307,
+          "stages": {
+            "3": 2,
+            "4": 3,
+            "2": 3,
+            "0": 1
+          },
+          "workers": 1,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 259,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1255842134,
+            "hydration_ug": 4379,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              47,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 5184000000,
+            "next_absorption_ms": 5205600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2706,
+            "lost_water_ug": 3600,
+            "dissipated_nj": 140480157866
+          },
+          "balances": {
+            "body_energy_nj": 1255842134,
+            "body_water_ug": 4379,
+            "crop_carb_ug": 47,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 1786,
+            "mobile_protein_ug": 930,
+            "unreleased_carbs_ug": 90000,
+            "unreleased_protein_ug": 45000,
+            "unreleased_water_ug": 270000,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 243577
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            2863,
+            3165,
+            14109,
+            0
+          ]
+        },
+        {
+          "day": 90,
+          "cursor": 233870,
+          "frame_sha256": "5c3b666add41876446d390ef694f1c7e19fbe9a264123dfe038d37b4f27b7443",
+          "advance_seconds": 5.101656,
+          "stages": {
+            "3": 5,
+            "4": 3,
+            "2": 1,
+            "1": 3
+          },
+          "workers": 4,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 284,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1227748899,
+            "hydration_ug": 4394,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 7776000000,
+            "next_absorption_ms": 7797600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 7193,
+            "lost_water_ug": 5400,
+            "dissipated_nj": 210710251101
+          },
+          "balances": {
+            "body_energy_nj": 1227748899,
+            "body_water_ug": 4394,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 701,
+            "mobile_protein_ug": 875,
+            "unreleased_carbs_ug": 45000,
+            "unreleased_protein_ug": 22500,
+            "unreleased_water_ug": 135000,
+            "resident_event_bytes": 1015832,
+            "packed_event_bytes": 3479622
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            4247,
+            13559,
+            0
+          ]
+        },
+        {
+          "day": 120,
+          "cursor": 615398,
+          "frame_sha256": "55fd852ee8ae9c6e0472de6816f3d7f88167c422ad6b10343df2dc4f49c2d571",
+          "advance_seconds": 19.744927,
+          "stages": {
+            "4": 9,
+            "3": 3,
+            "2": 2,
+            "1": 3
+          },
+          "workers": 3,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 284,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 6970,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              28,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 8624186175,
+            "next_absorption_ms": 8640000000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 7193,
+            "lost_water_ug": 5989,
+            "dissipated_nj": 233732000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 6970,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 28,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 875,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 507928,
+            "packed_event_bytes": 9284776
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            2943,
+            6477,
+            23448,
+            0
+          ]
+        },
+        {
+          "day": 150,
+          "cursor": 940999,
+          "frame_sha256": "a9cb894922a3c6f1a3f6316c6be6c32f4cfd79bbdb7ac7f8b4ae6bfa08d08e08",
+          "advance_seconds": 33.675332,
+          "stages": {
+            "4": 9,
+            "3": 8
+          },
+          "workers": 8,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 284,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 6970,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              28,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 8624186175,
+            "next_absorption_ms": 8640000000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 7193,
+            "lost_water_ug": 5989,
+            "dissipated_nj": 233732000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 6970,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 28,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 875,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 14091255
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "13",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            1128,
+            6477,
+            20058,
+            0
+          ]
+        }
+      ],
+      "native_memory_bytes": [
+        25432064,
+        30285824,
+        4063256
+      ],
+      "ledgers": "PASS",
+      "scan_through_id": 31170,
+      "scan_day_ceiling": 60,
+      "scan_counts": {
+        "AntBorn": 8,
+        "Pick up brood Success": 207,
+        "BroodMoved": 2,
+        "Transport brood Success": 2,
+        "Place brood Success": 1,
+        "Transport brood Blocked": 206,
+        "Larva": 7,
+        "FoundingRation": 26,
+        "Feed brood Success": 67,
+        "AntDied": 3,
+        "Pupa": 4,
+        "Adult": 1,
+        "SoilExcavated": 1,
+        "SoilDropped": 1,
+        "FoodCollected": 8,
+        "FoodDelivered": 8,
+        "Feed brood Partial": 36,
+        "FoundressNestMeal": 56
+      },
+      "first_evidence": {
+        "AntBorn": {
+          "id": "107",
+          "time_ms": 345600000,
+          "kind": "AntBorn",
+          "actor": "6",
+          "related": "2",
+          "source": "3",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            20,
+            65,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Pick up brood Success": {
+          "id": "121",
+          "time_ms": 345600502,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "68",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Pick up brood",
+            "bout": "67",
+            "began_ms": 345600002,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "BroodMoved": {
+          "id": "130",
+          "time_ms": 345600671,
+          "kind": "BroodMoved",
+          "actor": "6",
+          "related": "2",
+          "source": "71",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0006250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Transport brood Success": {
+          "id": "132",
+          "time_ms": 345600671,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "71",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0005,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Transport brood",
+            "bout": "70",
+            "began_ms": 345600504,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Place brood Success": {
+          "id": "152",
+          "time_ms": 345601301,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "77",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008750000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Place brood",
+            "bout": "76",
+            "began_ms": 345600801,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Transport brood Blocked": {
+          "id": "275",
+          "time_ms": 410400836,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "9",
+          "source": "133",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008215233091147408,
+            -0.004,
+            -0.0003713906763541038
+          ],
+          "stage": "Adult",
+          "outcome": "Blocked",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Interrupted",
+            "act": "Transport brood",
+            "bout": "133",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Larva": {
+          "id": "2668",
+          "time_ms": 1788480000,
+          "kind": "StageChanged",
+          "actor": "6",
+          "related": null,
+          "source": "1100",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Larva",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoundingRation": {
+          "id": "2729",
+          "time_ms": 1802882334,
+          "kind": "FoundingRation",
+          "actor": "2",
+          "related": "7",
+          "source": "1149",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008414677783912825,
+            -0.004,
+            -0.00019111332157989934
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "7",
+          "auxiliary": "6",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Success": {
+          "id": "2730",
+          "time_ms": 1802882334,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "7",
+          "source": "1149",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008414677783912825,
+            -0.004,
+            -0.00019111332157989934
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "1148",
+            "began_ms": 1802880334,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "AntDied": {
+          "id": "3106",
+          "time_ms": 2177280000,
+          "kind": "AntDied",
+          "actor": "6",
+          "related": null,
+          "source": "1351",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Dead",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "1",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "death_cause": "Energy depleted"
+        },
+        "Pupa": {
+          "id": "3471",
+          "time_ms": 2676960000,
+          "kind": "StageChanged",
+          "actor": "7",
+          "related": null,
+          "source": "1571",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Pupa",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Adult": {
+          "id": "5929",
+          "time_ms": 3929760000,
+          "kind": "StageChanged",
+          "actor": "7",
+          "related": null,
+          "source": "2567",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "SoilExcavated": {
+          "id": "6062",
+          "time_ms": 3932220650,
+          "kind": "SoilExcavated",
+          "actor": "7",
+          "related": null,
+          "source": "2599",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.0015,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "13",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "13"
+        },
+        "SoilDropped": {
+          "id": "6140",
+          "time_ms": 3932886814,
+          "kind": "SoilDropped",
+          "actor": "7",
+          "related": null,
+          "source": "2643",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "13",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "13"
+        },
+        "FoodCollected": {
+          "id": "6349",
+          "time_ms": 3938324085,
+          "kind": "FoodCollected",
+          "actor": "7",
+          "related": null,
+          "source": "2715",
+          "colony": "1",
+          "resource": "5",
+          "position_m": [
+            0.0,
+            0.001,
+            0.03
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            4000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoodDelivered": {
+          "id": "6517",
+          "time_ms": 3938368355,
+          "kind": "FoodDelivered",
+          "actor": "7",
+          "related": null,
+          "source": "2763",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            4000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Partial": {
+          "id": "7364",
+          "time_ms": 3986149906,
+          "kind": "BiologicalObservation",
+          "actor": "7",
+          "related": "10",
+          "source": "3099",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Partial",
+          "mass_ug": [
+            9,
+            0,
+            89,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "3099",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "FoundressNestMeal": {
+          "id": "7520",
+          "time_ms": 3996000000,
+          "kind": "FoundressNestMeal",
+          "actor": "2",
+          "related": null,
+          "source": "2952",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            49,
+            4,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        }
+      },
+      "first_four_brood": {
+        "6": [
+          {
+            "id": "107",
+            "time_ms": 345600000,
+            "kind": "AntBorn",
+            "actor": "6",
+            "related": "2",
+            "source": "3",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2668",
+            "time_ms": 1788480000,
+            "kind": "StageChanged",
+            "actor": "6",
+            "related": null,
+            "source": "1100",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3106",
+            "time_ms": 2177280000,
+            "kind": "AntDied",
+            "actor": "6",
+            "related": null,
+            "source": "1351",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "7": [
+          {
+            "id": "176",
+            "time_ms": 352800000,
+            "kind": "AntBorn",
+            "actor": "7",
+            "related": "2",
+            "source": "64",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2686",
+            "time_ms": 1795680000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1124",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2729",
+            "time_ms": 1802882334,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1149",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0008414677783912825,
+              -0.004,
+              -0.00019111332157989934
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2785",
+            "time_ms": 1814402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1173",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2808",
+            "time_ms": 1836002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1186",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2863",
+            "time_ms": 1900802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1219",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2886",
+            "time_ms": 1922402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1232",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              1,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2910",
+            "time_ms": 1944002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1245",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2936",
+            "time_ms": 1965602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1258",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3031",
+            "time_ms": 2073602208,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1315",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0013339748528310783,
+              -0.004,
+              -0.00027735009811261454
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3177",
+            "time_ms": 2289602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1401",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3273",
+            "time_ms": 2440802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1459",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3295",
+            "time_ms": 2462402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1470",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3316",
+            "time_ms": 2484002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1481",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3357",
+            "time_ms": 2527202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1505",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3407",
+            "time_ms": 2592002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1535",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3442",
+            "time_ms": 2635202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1555",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3464",
+            "time_ms": 2656802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "7",
+            "source": "1567",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "7",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3471",
+            "time_ms": 2676960000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1571",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Pupa",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5929",
+            "time_ms": 3929760000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "2567",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          }
+        ],
+        "8": [
+          {
+            "id": "181",
+            "time_ms": 360000000,
+            "kind": "AntBorn",
+            "actor": "8",
+            "related": "2",
+            "source": "88",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2694",
+            "time_ms": 1802880000,
+            "kind": "StageChanged",
+            "actor": "8",
+            "related": null,
+            "source": "1125",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3119",
+            "time_ms": 2191680000,
+            "kind": "AntDied",
+            "actor": "8",
+            "related": null,
+            "source": "1362",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "9": [
+          {
+            "id": "192",
+            "time_ms": 367200000,
+            "kind": "AntBorn",
+            "actor": "9",
+            "related": "2",
+            "source": "91",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2760",
+            "time_ms": 1810080000,
+            "kind": "StageChanged",
+            "actor": "9",
+            "related": null,
+            "source": "1129",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3120",
+            "time_ms": 2198880000,
+            "kind": "AntDied",
+            "actor": "9",
+            "related": null,
+            "source": "1363",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ]
+      }
+    },
+    {
+      "request": "NEW_SINGLE_NEST 9103 3 250 80 plugged 1955 reachable finite",
+      "world_id": "00000000-0000-028d-0000-00000000238f",
+      "physics": 38,
+      "settings": {
+        "distance_clock": true,
+        "floor_space": true,
+        "recruitment": true,
+        "activity_cost": true,
+        "unloaded_m_per_s": 0.005,
+        "loaded_m_per_s": 0.0025,
+        "soil_handling_ms": 5000,
+        "cue_lifetime_ms": 21600000,
+        "cue_minimum_carbs_ug": 50,
+        "water_sip_ug": 25,
+        "cue_response_ppm": 350000,
+        "first_ration_ppm": 0,
+        "suppress_foundress_hatch_cue": false,
+        "brood_space": true,
+        "portable_care_motion": true,
+        "local_nest_activity": true,
+        "worker_activity_timing": {
+          "check_ms": 900000,
+          "minimum_program_ms": 3600000
+        },
+        "nest_dynamics": {
+          "worker_motor": true,
+          "excavation": 3
+        },
+        "local_traffic": true,
+        "yield_to_loaded": true,
+        "local_pantry_checks": true,
+        "founding_habitat": {
+          "brood_site_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "pantry_buffer_ug": 2000,
+          "sealed_chamber": true,
+          "alternate_berth": true
+        }
+      },
+      "seed_geometry": {
+        "origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quantum_m": 0.00025,
+        "solid": [
+          -600,
+          -600,
+          -600,
+          600,
+          0,
+          600
+        ],
+        "voids": [
+          [
+            -24,
+            -20,
+            -24,
+            24,
+            -2,
+            4
+          ]
+        ],
+        "rocks": [],
+        "body_half_q": 2,
+        "loaded_half_q": 4,
+        "dry_ug_per_q3": 12,
+        "water_ug_per_q3": 3
+      },
+      "sources_at_start": [
+        {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1200,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1200,
+            0
+          ]
+        },
+        {
+          "id": "4",
+          "position_m": [
+            0.03,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            6000,
+            3000,
+            9000,
+            0
+          ]
+        },
+        {
+          "id": "5",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            9000,
+            0
+          ]
+        }
+      ],
+      "initial_frame_sha256": "fed890cd6b08567cb6d6242d6ab3cfb431f99867b243fcecb2c4b8aa64e3e231",
+      "cuts": [
+        {
+          "day": 0,
+          "cursor": 18,
+          "frame_sha256": "fed890cd6b08567cb6d6242d6ab3cfb431f99867b243fcecb2c4b8aa64e3e231",
+          "advance_seconds": 1e-06,
+          "stages": {
+            "3": 1
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              0.0,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 0,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1224000000,
+            "hydration_ug": 7000,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 0,
+            "next_absorption_ms": 21600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 0,
+            "dissipated_nj": 0
+          },
+          "balances": {
+            "body_energy_nj": 1224000000,
+            "body_water_ug": 7000,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 5464,
+            "mobile_protein_ug": 1200,
+            "unreleased_carbs_ug": 180000,
+            "unreleased_protein_ug": 90000,
+            "unreleased_water_ug": 540000,
+            "resident_event_bytes": 7936,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 10,
+          "cursor": 2351,
+          "frame_sha256": "99be916a7aeb8c4d6afe676d0fc7995d38d22e30d1797a3dc40ebfaaff51c3ce",
+          "advance_seconds": 0.018346,
+          "stages": {
+            "3": 1,
+            "0": 8
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 117,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1237979143,
+            "hydration_ug": 6695,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              25,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 864000000,
+            "next_absorption_ms": 885600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 600,
+            "dissipated_nj": 23480020857
+          },
+          "balances": {
+            "body_energy_nj": 1237979143,
+            "body_water_ug": 6695,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 25,
+            "lipid_ug": 4677,
+            "mobile_protein_ug": 1040,
+            "unreleased_carbs_ug": 165000,
+            "unreleased_protein_ug": 82500,
+            "unreleased_water_ug": 495000,
+            "resident_event_bytes": 1015808,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 30,
+          "cursor": 6933,
+          "frame_sha256": "2654db60a8997eb7e9f69265ec8917402629c262e73d353bbeefeb6b4801e308",
+          "advance_seconds": 0.031005,
+          "stages": {
+            "3": 1,
+            "4": 5,
+            "1": 3
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 318,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1255920593,
+            "hydration_ug": 5660,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 2592000000,
+            "next_absorption_ms": 2613600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 1800,
+            "dissipated_nj": 70280079407
+          },
+          "balances": {
+            "body_energy_nj": 1255920593,
+            "body_water_ug": 5660,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 3234,
+            "mobile_protein_ug": 864,
+            "unreleased_carbs_ug": 135000,
+            "unreleased_protein_ug": 67500,
+            "unreleased_water_ug": 405000,
+            "resident_event_bytes": 2031616,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 60,
+          "cursor": 122294,
+          "frame_sha256": "c90483fbf7fcd4b3671e63943263a89d0914effcd1b1fba43bef52ccd7f6b011",
+          "advance_seconds": 1.470464,
+          "stages": {
+            "3": 4,
+            "4": 5,
+            "2": 1,
+            "1": 1,
+            "0": 3
+          },
+          "workers": 3,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 523,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1251827071,
+            "hydration_ug": 5759,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 5184000000,
+            "next_absorption_ms": 5205600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2461,
+            "lost_water_ug": 3600,
+            "dissipated_nj": 140530172929
+          },
+          "balances": {
+            "body_energy_nj": 1251827071,
+            "body_water_ug": 5759,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 1614,
+            "mobile_protein_ug": 757,
+            "unreleased_carbs_ug": 90000,
+            "unreleased_protein_ug": 45000,
+            "unreleased_water_ug": 270000,
+            "resident_event_bytes": 2031640,
+            "packed_event_bytes": 1701091
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "16",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            1807,
+            4694,
+            0
+          ]
+        },
+        {
+          "day": 90,
+          "cursor": 534533,
+          "frame_sha256": "a3f54a4143130f77015ec68e0cc1e16679ab29d1b61a7f5725aca5853995bd02",
+          "advance_seconds": 4.179338,
+          "stages": {
+            "4": 10,
+            "3": 3,
+            "2": 1,
+            "1": 1,
+            "0": 2
+          },
+          "workers": 3,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 614,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 4136,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 7154871245,
+            "next_absorption_ms": 7171200000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2461,
+            "lost_water_ug": 4968,
+            "dissipated_nj": 193938000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 4136,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 725,
+            "unreleased_carbs_ug": 45000,
+            "unreleased_protein_ug": 22500,
+            "unreleased_water_ug": 135000,
+            "resident_event_bytes": 1015832,
+            "packed_event_bytes": 7824930
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "16",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            1689,
+            2883,
+            13133,
+            0
+          ]
+        },
+        {
+          "day": 120,
+          "cursor": 654456,
+          "frame_sha256": "51b20458cc6813ef5fde194f932a83a9fc816ee0b1308f7fce6ba7a2667aa8ad",
+          "advance_seconds": 12.517692,
+          "stages": {
+            "4": 10,
+            "3": 7
+          },
+          "workers": 7,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 614,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 4136,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 7154871245,
+            "next_absorption_ms": 7171200000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2461,
+            "lost_water_ug": 4968,
+            "dissipated_nj": 193938000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 4136,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 725,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 2031640,
+            "packed_event_bytes": 9656691
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "16",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            3284,
+            4724,
+            11265,
+            0
+          ]
+        },
+        {
+          "day": 150,
+          "cursor": 1193123,
+          "frame_sha256": "8c658a2fe2502b9088efe107f6f92a45d5899dd958519dd0865cdec3cbf0f4a0",
+          "advance_seconds": 11.579051,
+          "stages": {
+            "4": 10,
+            "3": 7
+          },
+          "workers": 7,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 614,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 4136,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              20,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 7154871245,
+            "next_absorption_ms": 7171200000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 2461,
+            "lost_water_ug": 4968,
+            "dissipated_nj": 193938000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 4136,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 20,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 725,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 17965657
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "16",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            2620,
+            5391,
+            20826,
+            0
+          ]
+        }
+      ],
+      "native_memory_bytes": [
+        28426240,
+        33521664,
+        4063256
+      ],
+      "ledgers": "PASS",
+      "scan_through_id": 122294,
+      "scan_day_ceiling": 60,
+      "scan_counts": {
+        "AntBorn": 13,
+        "Pick up brood Success": 357,
+        "Transport brood Blocked": 357,
+        "Larva": 10,
+        "FoundingRation": 28,
+        "Feed brood Success": 60,
+        "AntDied": 5,
+        "Pupa": 4,
+        "Adult": 3,
+        "SoilExcavated": 1,
+        "SoilDropped": 1,
+        "FoodCollected": 6,
+        "FoodDelivered": 6,
+        "Feed brood Partial": 29,
+        "FoundressNestMeal": 47,
+        "Pick up brood Duplicate action": 7
+      },
+      "first_evidence": {
+        "AntBorn": {
+          "id": "107",
+          "time_ms": 345600000,
+          "kind": "AntBorn",
+          "actor": "6",
+          "related": "2",
+          "source": "3",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            20,
+            65,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Pick up brood Success": {
+          "id": "172",
+          "time_ms": 367200674,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "8",
+          "source": "89",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Pick up brood",
+            "bout": "88",
+            "began_ms": 367200174,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Transport brood Blocked": {
+          "id": "180",
+          "time_ms": 367200676,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "8",
+          "source": "91",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Blocked",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Interrupted",
+            "act": "Transport brood",
+            "bout": "91",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Larva": {
+          "id": "5468",
+          "time_ms": 1788480000,
+          "kind": "StageChanged",
+          "actor": "6",
+          "related": null,
+          "source": "1952",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Larva",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoundingRation": {
+          "id": "5531",
+          "time_ms": 1788482506,
+          "kind": "FoundingRation",
+          "actor": "2",
+          "related": "6",
+          "source": "1980",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "6",
+          "auxiliary": "6",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Success": {
+          "id": "5532",
+          "time_ms": 1788482506,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "6",
+          "source": "1980",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "1979",
+            "began_ms": 1788480506,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "AntDied": {
+          "id": "6556",
+          "time_ms": 2184480000,
+          "kind": "AntDied",
+          "actor": "7",
+          "related": null,
+          "source": "2398",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            -0.00075
+          ],
+          "stage": "Dead",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "1",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "death_cause": "Energy depleted"
+        },
+        "Pupa": {
+          "id": "7259",
+          "time_ms": 2836800000,
+          "kind": "StageChanged",
+          "actor": "10",
+          "related": null,
+          "source": "2761",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Pupa",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Adult": {
+          "id": "10365",
+          "time_ms": 4089600000,
+          "kind": "StageChanged",
+          "actor": "10",
+          "related": null,
+          "source": "3938",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "SoilExcavated": {
+          "id": "10488",
+          "time_ms": 4096560650,
+          "kind": "SoilExcavated",
+          "actor": "10",
+          "related": null,
+          "source": "3996",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.0015,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "16",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "16"
+        },
+        "SoilDropped": {
+          "id": "10566",
+          "time_ms": 4097226814,
+          "kind": "SoilDropped",
+          "actor": "10",
+          "related": null,
+          "source": "4022",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "16",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "16"
+        },
+        "FoodCollected": {
+          "id": "10966",
+          "time_ms": 4115268327,
+          "kind": "FoodCollected",
+          "actor": "10",
+          "related": null,
+          "source": "4173",
+          "colony": "1",
+          "resource": "4",
+          "position_m": [
+            0.03,
+            0.001,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            1333,
+            667,
+            2000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoodDelivered": {
+          "id": "11148",
+          "time_ms": 4115320839,
+          "kind": "FoodDelivered",
+          "actor": "10",
+          "related": null,
+          "source": "4225",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            1333,
+            667,
+            2000,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Partial": {
+          "id": "11379",
+          "time_ms": 4127020877,
+          "kind": "BiologicalObservation",
+          "actor": "10",
+          "related": "14",
+          "source": "4304",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Partial",
+          "mass_ug": [
+            1,
+            0,
+            1,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "4304",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "FoundressNestMeal": {
+          "id": "11634",
+          "time_ms": 4147200000,
+          "kind": "FoundressNestMeal",
+          "actor": "2",
+          "related": null,
+          "source": "4297",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            50,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Pick up brood Duplicate action": {
+          "id": "19434",
+          "time_ms": 4436100003,
+          "kind": "BiologicalObservation",
+          "actor": "13",
+          "related": "15",
+          "source": "7418",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0001249999999999999,
+            -0.004,
+            -0.00075
+          ],
+          "stage": "Adult",
+          "outcome": "Duplicate action",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Interrupted",
+            "act": "Pick up brood",
+            "bout": "7418",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "first_four_brood": {
+        "6": [
+          {
+            "id": "107",
+            "time_ms": 345600000,
+            "kind": "AntBorn",
+            "actor": "6",
+            "related": "2",
+            "source": "3",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5468",
+            "time_ms": 1788480000,
+            "kind": "StageChanged",
+            "actor": "6",
+            "related": null,
+            "source": "1952",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5531",
+            "time_ms": 1788482506,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "6",
+            "source": "1980",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "6",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "6844",
+            "time_ms": 2531520000,
+            "kind": "AntDied",
+            "actor": "6",
+            "related": null,
+            "source": "2582",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Dehydration"
+          }
+        ],
+        "7": [
+          {
+            "id": "118",
+            "time_ms": 352800000,
+            "kind": "AntBorn",
+            "actor": "7",
+            "related": "2",
+            "source": "64",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5612",
+            "time_ms": 1795680000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1960",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "6556",
+            "time_ms": 2184480000,
+            "kind": "AntDied",
+            "actor": "7",
+            "related": null,
+            "source": "2398",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "8": [
+          {
+            "id": "123",
+            "time_ms": 360000000,
+            "kind": "AntBorn",
+            "actor": "8",
+            "related": "2",
+            "source": "70",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5636",
+            "time_ms": 1802880000,
+            "kind": "StageChanged",
+            "actor": "8",
+            "related": null,
+            "source": "1963",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "6559",
+            "time_ms": 2191680000,
+            "kind": "AntDied",
+            "actor": "8",
+            "related": null,
+            "source": "2401",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              0.0
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "9": [
+          {
+            "id": "134",
+            "time_ms": 367200000,
+            "kind": "AntBorn",
+            "actor": "9",
+            "related": "2",
+            "source": "73",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5661",
+            "time_ms": 1810080000,
+            "kind": "StageChanged",
+            "actor": "9",
+            "related": null,
+            "source": "1996",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "6561",
+            "time_ms": 2198880000,
+            "kind": "AntDied",
+            "actor": "9",
+            "related": null,
+            "source": "2404",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.001875,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ]
+      }
+    },
+    {
+      "request": "NEW_SINGLE_NEST 9112 2 250 80 plugged 1955 reachable absent",
+      "world_id": "00000000-0000-028d-0000-000000002398",
+      "physics": 38,
+      "settings": {
+        "distance_clock": true,
+        "floor_space": true,
+        "recruitment": true,
+        "activity_cost": true,
+        "unloaded_m_per_s": 0.005,
+        "loaded_m_per_s": 0.0025,
+        "soil_handling_ms": 5000,
+        "cue_lifetime_ms": 21600000,
+        "cue_minimum_carbs_ug": 50,
+        "water_sip_ug": 25,
+        "cue_response_ppm": 350000,
+        "first_ration_ppm": 0,
+        "suppress_foundress_hatch_cue": false,
+        "brood_space": true,
+        "portable_care_motion": true,
+        "local_nest_activity": true,
+        "worker_activity_timing": {
+          "check_ms": 900000,
+          "minimum_program_ms": 3600000
+        },
+        "nest_dynamics": {
+          "worker_motor": true,
+          "excavation": 3
+        },
+        "local_traffic": true,
+        "yield_to_loaded": true,
+        "local_pantry_checks": true,
+        "founding_habitat": {
+          "brood_site_m": [
+            -0.00175,
+            -0.004,
+            0.0
+          ],
+          "pantry_buffer_ug": 2000,
+          "sealed_chamber": true,
+          "alternate_berth": true
+        }
+      },
+      "seed_geometry": {
+        "origin_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quantum_m": 0.00025,
+        "solid": [
+          -600,
+          -600,
+          -600,
+          600,
+          0,
+          600
+        ],
+        "voids": [
+          [
+            -24,
+            -20,
+            -24,
+            24,
+            -2,
+            4
+          ]
+        ],
+        "rocks": [],
+        "body_half_q": 2,
+        "loaded_half_q": 4,
+        "dry_ug_per_q3": 12,
+        "water_ug_per_q3": 3
+      },
+      "sources_at_start": [
+        {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1200,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1200,
+            0
+          ]
+        }
+      ],
+      "initial_frame_sha256": "bac642e3a084bdb42d697e67188aed33a041c8a667791ccd7c0c4829d01375cb",
+      "cuts": [
+        {
+          "day": 0,
+          "cursor": 14,
+          "frame_sha256": "bac642e3a084bdb42d697e67188aed33a041c8a667791ccd7c0c4829d01375cb",
+          "advance_seconds": 1e-06,
+          "stages": {
+            "3": 1
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              0.0,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 0,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1224000000,
+            "hydration_ug": 7000,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 0,
+            "next_absorption_ms": 21600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 0,
+            "dissipated_nj": 0
+          },
+          "balances": {
+            "body_energy_nj": 1224000000,
+            "body_water_ug": 7000,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 5464,
+            "mobile_protein_ug": 1200,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 3968,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 10,
+          "cursor": 788,
+          "frame_sha256": "b16c5a62374df3b914ad4ec8487992394be05261e08c3031e3642bb667cadd69",
+          "advance_seconds": 0.006538,
+          "stages": {
+            "3": 1,
+            "0": 4
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 20,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1243993936,
+            "hydration_ug": 6955,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              25,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 864000000,
+            "next_absorption_ms": 885600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 600,
+            "dissipated_nj": 23440006064
+          },
+          "balances": {
+            "body_energy_nj": 1243993936,
+            "body_water_ug": 6955,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 25,
+            "lipid_ug": 4726,
+            "mobile_protein_ug": 1120,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 253952,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 30,
+          "cursor": 3334,
+          "frame_sha256": "0b438cfe0923d59da6d40d2cc5614ea6baf2103f960b32aed60b649850500c1f",
+          "advance_seconds": 0.019137,
+          "stages": {
+            "3": 1,
+            "4": 3,
+            "1": 1,
+            "0": 2
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 102,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1241944880,
+            "hydration_ug": 5750,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 2592000000,
+            "next_absorption_ms": 2613600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 1800,
+            "dissipated_nj": 70260055120
+          },
+          "balances": {
+            "body_energy_nj": 1241944880,
+            "body_water_ug": 5750,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 3280,
+            "mobile_protein_ug": 1015,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 1015808,
+            "packed_event_bytes": 0
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975808,
+            0,
+            0,
+            0,
+            0
+          ],
+          "soil_piles": [],
+          "edit_count": 0,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 60,
+          "cursor": 149591,
+          "frame_sha256": "505b755128db38730945339b10bf7201cadaaae0aeda397ccc0c3a1a657c3816",
+          "advance_seconds": 1.077714,
+          "stages": {
+            "3": 1,
+            "4": 6,
+            "2": 1,
+            "0": 3
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 3,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 278,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 1245854748,
+            "hydration_ug": 3450,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 0,
+            "updated_ms": 5184000000,
+            "next_absorption_ms": 5205600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 3600,
+            "dissipated_nj": 140500145252
+          },
+          "balances": {
+            "body_energy_nj": 1245854748,
+            "body_water_ug": 3450,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 1120,
+            "mobile_protein_ug": 870,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 2143097
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "11",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 90,
+          "cursor": 263636,
+          "frame_sha256": "a1f78161c8c696eb4f7af88798db11af0dc9c6506f24a8d10841066ef0db0e8e",
+          "advance_seconds": 0.810407,
+          "stages": {
+            "4": 10,
+            "3": 1
+          },
+          "workers": 1,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 382,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 2335,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 6588325011,
+            "next_absorption_ms": 6609600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 4575,
+            "dissipated_nj": 178534000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 2335,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 805,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 2031640,
+            "packed_event_bytes": 4070912
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "11",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 120,
+          "cursor": 286874,
+          "frame_sha256": "7a1091160ea33bba79d2073452bf097dc93a5fefc35f970ae52b0a3003f650f0",
+          "advance_seconds": 0.130025,
+          "stages": {
+            "4": 11
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 382,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 2335,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 6588325011,
+            "next_absorption_ms": 6609600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 4575,
+            "dissipated_nj": 178534000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 2335,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 805,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 4337878
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "11",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "day": 150,
+          "cursor": 286994,
+          "frame_sha256": "36328087ee634aafaac505d61760447a991f524c3c6c69b46326832e3c5e803e",
+          "advance_seconds": 0.001167,
+          "stages": {
+            "4": 11
+          },
+          "workers": 0,
+          "queen": {
+            "id": "2",
+            "colony": "1",
+            "born_ms": 0,
+            "stage": 4,
+            "caste": 1,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "position_revision": 382,
+            "carrying_capacity_ug": 4000,
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "mother": null,
+            "energy_nj": 0,
+            "hydration_ug": 2335,
+            "tissue_protein_ug": 0,
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": 0,
+            "death_code": 1,
+            "updated_ms": 6588325011,
+            "next_absorption_ms": 6609600000,
+            "stage_progress_ms": 0,
+            "active_work": "0",
+            "oxidized_carbs_ug": 0,
+            "lost_water_ug": 4575,
+            "dissipated_nj": 178534000000
+          },
+          "balances": {
+            "body_energy_nj": 0,
+            "body_water_ug": 2335,
+            "crop_carb_ug": 0,
+            "crop_protein_ug": 0,
+            "crop_water_ug": 0,
+            "lipid_ug": 0,
+            "mobile_protein_ug": 805,
+            "unreleased_carbs_ug": 0,
+            "unreleased_protein_ug": 0,
+            "unreleased_water_ug": 0,
+            "resident_event_bytes": 4063256,
+            "packed_event_bytes": 4337878
+          },
+          "soil_ledger_q3": [
+            863975808,
+            863975680,
+            0,
+            128,
+            128,
+            0
+          ],
+          "soil_piles": [
+            {
+              "id": "11",
+              "origin_edit": "1",
+              "position_m": [
+                0.0,
+                -0.004,
+                0.0
+              ],
+              "volume_mm3": 2.0
+            }
+          ],
+          "edit_count": 1,
+          "stock_ug": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "native_memory_bytes": [
+        16187392,
+        20508672,
+        4063256
+      ],
+      "ledgers": "PASS",
+      "scan_through_id": 131072,
+      "scan_day_ceiling": 60,
+      "scan_counts": {
+        "AntBorn": 10,
+        "Pick up brood Success": 47,
+        "BroodMoved": 2,
+        "Transport brood Success": 2,
+        "Place brood Success": 1,
+        "Transport brood Blocked": 46,
+        "Larva": 7,
+        "FoundingRation": 25,
+        "Feed brood Success": 25,
+        "AntDied": 5,
+        "Pupa": 2,
+        "Adult": 1,
+        "SoilExcavated": 1,
+        "SoilDropped": 1
+      },
+      "first_evidence": {
+        "AntBorn": {
+          "id": "95",
+          "time_ms": 345600000,
+          "kind": "AntBorn",
+          "actor": "4",
+          "related": "2",
+          "source": "3",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0011250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            20,
+            65,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Pick up brood Success": {
+          "id": "109",
+          "time_ms": 345600502,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "4",
+          "source": "58",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Pick up brood",
+            "bout": "57",
+            "began_ms": 345600002,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "BroodMoved": {
+          "id": "118",
+          "time_ms": 345600671,
+          "kind": "BroodMoved",
+          "actor": "4",
+          "related": "2",
+          "source": "61",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0006250000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Egg",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "2",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Transport brood Success": {
+          "id": "120",
+          "time_ms": 345600671,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "4",
+          "source": "61",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0005,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Transport brood",
+            "bout": "60",
+            "began_ms": 345600504,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Place brood Success": {
+          "id": "140",
+          "time_ms": 345601301,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "4",
+          "source": "67",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008750000000000001,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Place brood",
+            "bout": "66",
+            "began_ms": 345600801,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Transport brood Blocked": {
+          "id": "263",
+          "time_ms": 410400836,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "7",
+          "source": "123",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008215233091147408,
+            -0.004,
+            -0.0003713906763541038
+          ],
+          "stage": "Adult",
+          "outcome": "Blocked",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Interrupted",
+            "act": "Transport brood",
+            "bout": "123",
+            "began_ms": null,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "Larva": {
+          "id": "2624",
+          "time_ms": 1788480000,
+          "kind": "StageChanged",
+          "actor": "4",
+          "related": null,
+          "source": "1058",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Larva",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "FoundingRation": {
+          "id": "2685",
+          "time_ms": 1802882334,
+          "kind": "FoundingRation",
+          "actor": "2",
+          "related": "5",
+          "source": "1107",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008414677783912825,
+            -0.004,
+            -0.00019111332157989934
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "5",
+          "auxiliary": "6",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Feed brood Success": {
+          "id": "2686",
+          "time_ms": 1802882334,
+          "kind": "BiologicalObservation",
+          "actor": "2",
+          "related": "5",
+          "source": "1107",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0008414677783912825,
+            -0.004,
+            -0.00019111332157989934
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            16,
+            20,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "action": {
+            "phase": "Completed",
+            "act": "Feed brood",
+            "bout": "1106",
+            "began_ms": 1802880334,
+            "destination_m": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "AntDied": {
+          "id": "3052",
+          "time_ms": 2177280000,
+          "kind": "AntDied",
+          "actor": "4",
+          "related": null,
+          "source": "1301",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.00025,
+            -0.004,
+            0.0
+          ],
+          "stage": "Dead",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "1",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "death_cause": "Energy depleted"
+        },
+        "Pupa": {
+          "id": "3407",
+          "time_ms": 2676960000,
+          "kind": "StageChanged",
+          "actor": "5",
+          "related": null,
+          "source": "1509",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Pupa",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "Adult": {
+          "id": "5835",
+          "time_ms": 3929760000,
+          "kind": "StageChanged",
+          "actor": "5",
+          "related": null,
+          "source": "2475",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            -0.0006249999999999999,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "0",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT"
+        },
+        "SoilExcavated": {
+          "id": "5995",
+          "time_ms": 3938520650,
+          "kind": "SoilExcavated",
+          "actor": "5",
+          "related": null,
+          "source": "2541",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.0015,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "11",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "11"
+        },
+        "SoilDropped": {
+          "id": "6073",
+          "time_ms": 3939186814,
+          "kind": "SoilDropped",
+          "actor": "5",
+          "related": null,
+          "source": "2568",
+          "colony": "1",
+          "resource": null,
+          "position_m": [
+            0.0,
+            -0.004,
+            0.0
+          ],
+          "stage": "Adult",
+          "outcome": "Success",
+          "mass_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "payload": "11",
+          "auxiliary": "0",
+          "evidence": "COMMITTED_FACT",
+          "parcel": "11"
+        }
+      },
+      "first_four_brood": {
+        "4": [
+          {
+            "id": "95",
+            "time_ms": 345600000,
+            "kind": "AntBorn",
+            "actor": "4",
+            "related": "2",
+            "source": "3",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0011250000000000001,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2624",
+            "time_ms": 1788480000,
+            "kind": "StageChanged",
+            "actor": "4",
+            "related": null,
+            "source": "1058",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3052",
+            "time_ms": 2177280000,
+            "kind": "AntDied",
+            "actor": "4",
+            "related": null,
+            "source": "1301",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.00025,
+              -0.004,
+              0.0
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "5": [
+          {
+            "id": "164",
+            "time_ms": 352800000,
+            "kind": "AntBorn",
+            "actor": "5",
+            "related": "2",
+            "source": "54",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2642",
+            "time_ms": 1795680000,
+            "kind": "StageChanged",
+            "actor": "5",
+            "related": null,
+            "source": "1082",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2685",
+            "time_ms": 1802882334,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1107",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0008414677783912825,
+              -0.004,
+              -0.00019111332157989934
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2739",
+            "time_ms": 1814402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1129",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2762",
+            "time_ms": 1836002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1142",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2815",
+            "time_ms": 1900802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1173",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              16,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2838",
+            "time_ms": 1922402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1186",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              1,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2862",
+            "time_ms": 1944002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1199",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "6",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2888",
+            "time_ms": 1965602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1212",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2979",
+            "time_ms": 2073602208,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1265",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0013339748528310783,
+              -0.004,
+              -0.00027735009811261454
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3121",
+            "time_ms": 2289602002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1347",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "3",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3213",
+            "time_ms": 2440802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1401",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3235",
+            "time_ms": 2462402002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1412",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3256",
+            "time_ms": 2484002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1423",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3295",
+            "time_ms": 2527202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1445",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3343",
+            "time_ms": 2592002002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1473",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3378",
+            "time_ms": 2635202002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1493",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "1",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3400",
+            "time_ms": 2656802002,
+            "kind": "FoundingRation",
+            "actor": "2",
+            "related": "5",
+            "source": "1505",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.00175,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              20,
+              0
+            ],
+            "payload": "5",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3407",
+            "time_ms": 2676960000,
+            "kind": "StageChanged",
+            "actor": "5",
+            "related": null,
+            "source": "1509",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Pupa",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "5835",
+            "time_ms": 3929760000,
+            "kind": "StageChanged",
+            "actor": "5",
+            "related": null,
+            "source": "2475",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              0.0
+            ],
+            "stage": "Adult",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          }
+        ],
+        "6": [
+          {
+            "id": "169",
+            "time_ms": 360000000,
+            "kind": "AntBorn",
+            "actor": "6",
+            "related": "2",
+            "source": "78",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2650",
+            "time_ms": 1802880000,
+            "kind": "StageChanged",
+            "actor": "6",
+            "related": null,
+            "source": "1083",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3065",
+            "time_ms": 2191680000,
+            "kind": "AntDied",
+            "actor": "6",
+            "related": null,
+            "source": "1310",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              -0.0006249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ],
+        "7": [
+          {
+            "id": "180",
+            "time_ms": 367200000,
+            "kind": "AntBorn",
+            "actor": "7",
+            "related": "2",
+            "source": "81",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Egg",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              20,
+              65,
+              0
+            ],
+            "payload": "2",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "2716",
+            "time_ms": 1810080000,
+            "kind": "StageChanged",
+            "actor": "7",
+            "related": null,
+            "source": "1087",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Larva",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "0",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT"
+          },
+          {
+            "id": "3066",
+            "time_ms": 2198880000,
+            "kind": "AntDied",
+            "actor": "7",
+            "related": null,
+            "source": "1311",
+            "colony": "1",
+            "resource": null,
+            "position_m": [
+              0.0001249999999999999,
+              -0.004,
+              -0.00075
+            ],
+            "stage": "Dead",
+            "outcome": "Success",
+            "mass_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "payload": "1",
+            "auxiliary": "0",
+            "evidence": "COMMITTED_FACT",
+            "death_cause": "Energy depleted"
+          }
+        ]
+      }
+    }
+  ],
+  "extracted_from_sha256": "3ce332d4cd1689ded8a57da56948cf1d2c463f7918548354aa97c6cb958ee286"
+}

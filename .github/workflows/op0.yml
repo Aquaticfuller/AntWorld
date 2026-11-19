@@ -25,6 +25,7 @@ jobs:
             op0
             tools/start_op0.ps1
             tools/start_m0.cmd
+            tools/compare_m0_worker_rhythm.py
             experiments/m0/portable-demo
             experiments/m1/witnesses
             experiments/r0/witnesses

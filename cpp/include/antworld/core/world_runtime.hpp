@@ -7,6 +7,7 @@
 #include "antworld/core/command.hpp"
 #include "antworld/core/history.hpp"
 #include "antworld/core/social.hpp"
+#include "antworld/core/body.hpp"
 
 #include <memory>
 #include <optional>
@@ -104,6 +105,7 @@ public:
     // Cheap metadata query; hash fields are zero. snapshot() additionally computes audit hashes.
     [[nodiscard]] WorldSnapshot summary() const;
     [[nodiscard]] std::optional<AntState> query_ant(AntRef ref) const;
+    [[nodiscard]] std::optional<BodyPose> query_body(AntRef ref) const;
     [[nodiscard]] std::optional<Colony> query_colony(ColonyRef ref) const;
     [[nodiscard]] std::optional<FoodSource> query_food(FoodRef ref) const;
     [[nodiscard]] WorldConfig config() const;
@@ -141,7 +143,7 @@ private:
     void resolve_actions(Transaction&, const std::vector<ScheduledEvent>&);
     void execute(Transaction&, const ScheduledEvent&);
     void resolve_wakes(Transaction&, const std::vector<ScheduledEvent>&);
-    [[nodiscard]] detail::SurfaceConnector discover_connector(PositionM depot) const;
+    [[nodiscard]] detail::SurfaceConnector discover_connector(const AntState&) const;
     [[nodiscard]] bool can_forage(const AntState&) const;
     [[nodiscard]] bool at_foraging_home(const AntState&) const;
     void prepare_forager(Transaction&,const AntState&,ForagerState&);
@@ -176,6 +178,12 @@ private:
                             EntityId target = {});
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
     [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half) const;
+    [[nodiscard]] bool clear_body_motion(const AntState&, PositionM) const;
+    [[nodiscard]] bool clear_emergence(const AntState&) const;
+    [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
+    [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
+    void commit_brood_position(Transaction&, EntityId, EntityId, ScheduledId, PositionM);
+    void release_brood_on_floor(Transaction&, const CareState&, EntityId, ScheduledId);
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_contact_step(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> carrier_yield_step(const AntState&) const;
     [[nodiscard]] std::optional<PositionM> worker_depot_step(const AntState&) const;

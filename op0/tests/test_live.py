@@ -18,7 +18,7 @@ from op0 import DAY
 from op0.archive import prefixed
 from op0.codec import CASTES, KINDS, checkpoint, decode_fact
 from op0.index import Catalog
-from op0.live import ROOT, LiveSession, NativeCore, core_path, read_live_events
+from op0.live import ROOT, LiveSession, NativeCore, core_path, live_bodies, read_live_events
 from op0.query import HOUR, ReadAPI
 from op0.server import bind
 from tools.compare_m0_worker_rhythm import facts
@@ -72,7 +72,7 @@ class LiveTests(unittest.TestCase):
         core = self.live.core()
         if not core.single_nest:
             self.skipTest("The native core predates sealed founding")
-        self.live.write("single-nest", {"seed": 2})
+        self.live.write("single-nest", {"seed": 2, "model": "reference"})
         self.live.write("clock", {"running": False})
         initial = self.live.frame
         self.assertEqual((initial["schema"], initial["physics"], initial["geometry"]["quantum_m"]), (31, 38, .00025))
@@ -109,7 +109,7 @@ class LiveTests(unittest.TestCase):
         core = self.live.core()
         if not core.single_nest:
             self.skipTest("The native core predates compact continuation")
-        self.live.write("single-nest", {"seed": 2})
+        self.live.write("single-nest", {"seed": 2, "model": "reference"})
         with self.live.lock:
             self.live.running = False
             original = core.call(f"ADVANCE {65 * DAY}")
@@ -157,6 +157,98 @@ class LiveTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "checksum"):
             self.live.write("load", {"name": "Compact nest", "mode": "snapshot"})
         self.assertEqual(core.call("FRAME"), expected)
+
+    def test_anatomical_nest_commits_birth_carry_and_exact_continuation(self):
+        core = self.live.core()
+        if not core.anatomical:
+            self.skipTest("The native core predates the anatomical nest")
+        # The demonstration fixture has a completed carry on both platforms.
+        # The separate platform receipt retains the seed 2 trajectory divergence.
+        self.live.write("single-nest", {"seed": 3, "model": "anatomical"})
+        self.live.write("clock", {"running": False})
+        initial = self.live.frame
+        self.assertEqual((initial["schema"], initial["physics"]), (32, 39))
+        self.assertEqual(len(initial["geometry"]["voids"]), 1)
+        self.assertFalse(self.live.read("view", {})["terrain"]["openings"])
+        queen, = initial["ants"].values()
+        body = live_bodies(core.call("BODY_STATES"), initial)[queen["id"]]
+        self.assertAlmostEqual(dist(body["mouth_m"], body["abdomen_tip_m"]), .0085)
+        with self.live.lock:
+            original = core.call(f"ADVANCE {12 * DAY}")
+            self.live.publish(original)
+        cut = self.live.frame
+        recorded = [f.packet() for f in facts(core, cut["cursor"])]
+        lay = next(e for e in recorded if e["kind"] == "AntBorn")
+        self.assertLess(dist(lay["position_m"],body["abdomen_tip_m"]), .0015)
+        self.assertGreater(dist(lay["position_m"],queen["position_m"]), .004)
+        care = [e for e in recorded if e.get("action", {}).get("phase") == "Completed" and e["actor"] == queen["id"]]
+        pickup = next(e for e in care if e["action"]["act"] == "Pick up brood")
+        transport = next(e for e in care if e["action"]["act"] == "Transport brood" and e["related"] == pickup["related"])
+        place = next(e for e in care if e["action"]["act"] == "Place brood" and e["related"] == pickup["related"]
+                     and int(e["id"]) > int(transport["id"]))
+        self.assertLess(pickup["time_ms"],transport["time_ms"])
+        self.assertLess(transport["time_ms"],place["time_ms"])
+        self.assertNotEqual(place["position_m"],pickup["position_m"])
+        self.assertGreater(len({e["related"] for e in care if e["related"]}), 2)
+        self.assertTrue(any(e["action"]["act"]=="Clean brood" for e in care))
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        self.live.write("save", {"name": "Anatomical", "mode": "snapshot"})
+        self.live.write("save", {"name": "Anatomical", "mode": "archive"})
+        future = core.call(f"ADVANCE {13 * DAY}")
+        expected = core.call(f"FACTS_AFTER {cut['cursor']} 512")
+        for mode in ("archive", "snapshot"):
+            with self.live.lock:
+                self.live.load("Anatomical", mode)
+                self.assertEqual(core.call("FRAME"), original)
+                core.call(f"ADVANCE {12 * DAY + HOUR}")
+                self.assertEqual(core.call(f"ADVANCE {13 * DAY}"), future)
+                self.assertEqual(core.call(f"FACTS_AFTER {cut['cursor']} 512"), expected)
+        self.live.write("single-nest", {"seed": 3, "model": "anatomical"})
+        self.live.write("clock", {"running": False})
+        with self.live.lock:
+            suspended = core.call(f"ADVANCE {pickup['time_ms']}")
+            self.live.publish(suspended)
+            bodies = live_bodies(core.call("BODY_STATES"), self.live.frame)
+            self.assertEqual(bodies[queen["id"]]["held_id"], pickup["related"])
+            self.live.save("In custody", False, "snapshot")
+            settled = core.call(f"ADVANCE {place['time_ms']+1}")
+            self.live.load("In custody", "snapshot")
+            self.assertEqual(core.call("FRAME"), suspended)
+            self.assertEqual(core.call(f"ADVANCE {place['time_ms']+1}"), settled)
+
+    def test_anatomical_nest_excavates_delivers_and_restores_late(self):
+        core = self.live.core()
+        if not core.anatomical:
+            self.skipTest("The native core predates the anatomical nest")
+        self.live.write("single-nest", {"model": "anatomical", "seed": 3})
+        self.live.write("clock", {"running": False})
+        with self.live.lock:
+            original = core.call(f"ADVANCE {60 * DAY}")
+            self.live.publish(original)
+            cut = self.live.frame
+            chain = [f.packet() for f in facts(core, cut["cursor"])
+                     if KINDS[f.kind] in ("StageChanged", "SoilExcavated", "SoilDropped", "FoodCollected", "FoodDelivered")]
+            dig = next(e for e in chain if e["kind"] == "SoilExcavated")
+            drop = next(e for e in chain if e["kind"] == "SoilDropped")
+            delivery = next(e for e in chain if e["kind"] == "FoodDelivered")
+            collected = next(e for e in chain if e["kind"] == "FoodCollected" and e["actor"] == delivery["actor"])
+            self.assertEqual(drop["actor"], dig["actor"])
+            self.assertEqual(drop["payload"], dig["payload"])
+            self.assertGreater(sum(delivery["mass_ug"]), 0)
+            self.assertLess(int(collected["id"]), int(delivery["id"]))
+            self.assertTrue(any(e["kind"] == "StageChanged" and e["stage"] == "Adult" and
+                                e["actor"] == delivery["actor"] for e in chain))
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+            for mode in ("archive", "snapshot"):
+                self.live.save("After delivery", False, mode)
+            expected = core.call(f"ADVANCE {61 * DAY}")
+            for mode in ("archive", "snapshot"):
+                self.live.load("After delivery", mode)
+                self.assertEqual(core.call("FRAME"), original)
+                if mode == "snapshot":
+                    self.assertEqual(cut["cursor"]-self.live.history_floor, 2048)
+                    self.assertEqual(len({e["id"] for e in self.live.actions}), len(self.live.actions))
+                self.assertEqual(core.call(f"ADVANCE {61 * DAY}"), expected)
 
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()

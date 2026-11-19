@@ -11,10 +11,10 @@ VOLUME_RADIUS = 32
 VOLUME_DEPTH = 40
 
 
-def nest_volume(geometry, edits, focus):
+def nest_volume(geometry, edits, focus, *, radius=VOLUME_RADIUS):
     """Project a bounded window of the authoritative half-open material boxes."""
     solid = geometry["solid"]
-    x, z, end_x, end_z = focused_window(geometry, focus, (0, 2), VOLUME_RADIUS)
+    x, z, end_x, end_z = focused_window(geometry, focus, (0, 2), radius)
     y, end_y = max(solid[1], solid[4] - VOLUME_DEPTH), solid[4]
     require(x < end_x and z < end_z and y < end_y, "The colony lies outside the local geometry")
     width, depth, height = end_x - x, end_y - y, end_z - z

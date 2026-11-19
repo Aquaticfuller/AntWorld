@@ -89,6 +89,7 @@ std::uint64_t material_volume(const GeometryView &, BoxQ, Material);
 double signed_distance(const GeometryView &, PointQ);
 bool clear_sweep(const GeometryView &, PointQ from, PointQ to, std::int32_t half);
 bool continuous_clear(const GeometryView &,PositionM from,PositionM to,std::int32_t half);
+bool continuous_box_clear(const GeometryView &,PositionM from,PositionM to,PositionM half_m);
 bool intersects_body(BoxQ,PositionM center,std::int32_t half,const GeometryConfig&);
 PointQ spatial_key(PositionM);
 inline GeometryView geometry_view(const auto &s, const RuntimeLimits &limits) {

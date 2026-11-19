@@ -32,6 +32,7 @@ function liveControls() {
     const active = s?.world_id != null;
     document.body.classList.toggle("live-mode", app.live);
     document.body.classList.toggle("sealed-nest", Boolean(app.live && s?.habitat?.sealed_chamber));
+    document.body.classList.toggle("anatomical-nest", Boolean(app.live && s?.habitat?.anatomical));
     document.body.classList.toggle("observatory-active", Boolean(app.live && s?.habitat && s.observatory_available));
     const stop = s?.fast_forward, seeking = stop?.state === "seeking";
     put("live-clock", active ? duration(s.time_ms) : "00:00:00");
@@ -82,6 +83,7 @@ function liveVisibility(active) {
     app.live = active;
     document.body.classList.toggle("live-mode", active);
     if (!active) document.body.classList.remove("sealed-nest");
+    if (!active) document.body.classList.remove("anatomical-nest");
     if (!active) document.body.classList.remove("nursery-active");
     if (!active) document.body.classList.remove("observatory-active");
     for (const id of ["archive-timeline", "archive-dashboard", "archive-picker", "compare-tab", "event-range"]) $(id).hidden = active;
@@ -496,9 +498,10 @@ function bindLive() {
     const click = (id, action) => $(id).addEventListener("click", () => Promise.resolve().then(action).catch(report));
     click("live-tab", openLiveView);
     click("new-single-nest", () => {
-        if (!$("habitat-seed").reportValidity()) return;
+        if (!$("sealed-seed").reportValidity()) return;
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
-        return liveCommand("single-nest", {seed: $("habitat-seed").valueAsNumber});
+        return liveCommand("single-nest", {seed: $("sealed-seed").valueAsNumber,
+            model: $("sealed-model").value, supply: $("sealed-supply").value});
     });
     click("new-colony", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;

@@ -85,7 +85,7 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
         if (s.config.continuous_spatial_motion && c.carrying_brood) {
             ensure(finite(c.grip_offset) && s.ants.index.contains(c.retrieval.target),"invalid grip offset target");
             const auto b=s.ants.get(s.ants.index.at(c.retrieval.target));
-            ensure(valid_grip(a.position,b.position,c.grip_offset,s.config),"held brood disagrees with acquisition offset");
+            ensure(valid_grip(a.position,b.position,c.grip_offset,s.config,anatomical_nest(s)),"held brood disagrees with acquisition offset");
         }
         ensure(a.caste!=Caste::Male && (a.caste==Caste::Worker)==(c.profile.context==CareContext::Worker) &&
             (a.stage==LifeStage::Adult || (!a.alive() && !c.enabled)) &&
@@ -206,7 +206,9 @@ template<class S> void validate_care_evidence(const S& s) {
             ensure(local_nest_activity(s) && (o.act==CareAct::NestReposition || worker_motor(s)) &&
                    (o.act!=CareAct::EntrancePatrol || s.ecological->founding_habitat) &&
                    !o.target.value && e.stage==LifeStage::Adult &&
-                   s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
+                   (s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker ||
+                    (anatomical_nest(s) && s.founding && o.act==CareAct::DepotApproach && e.actor==s.founding->founder)) &&
+                   o.phase!=ObservationPhase::Opportunity,
                    "rest relocation outside the local nest activity contract");
         if (o.act==CareAct::ApproachNestmate || o.act==CareAct::YieldToCarrier)
             ensure((o.act==CareAct::YieldToCarrier?yield_to_loaded(s):local_traffic(s)) &&
@@ -261,17 +263,18 @@ template<class S> void validate_care_evidence(const S& s) {
                     ensure(!a.held.value && o.target.value && o.duration_known,"invalid observed brood pickup");
                     a.held=o.target;
                     if (spatial) {
-                        ensure(e.position==positions.at(e.actor) && within_contact(e.position,positions.at(o.target),s.config),
+                        ensure(e.position==positions.at(e.actor) && (anatomical_nest(s) ||
+                               within_contact(e.position,positions.at(o.target),s.config)),
                                "pickup outside physical contact");
                         a.grip=displacement(positions.at(o.target),e.position);
                     }
                 } else if (spatial && o.act==CareAct::TransportBrood && o.phase==ObservationPhase::Completed) {
                     ensure(a.held==o.target && e.position==positions.at(e.actor) &&
-                        valid_grip(e.position,positions.at(o.target),a.grip,s.config),"transport altered the acquired grip");
+                        valid_grip(e.position,positions.at(o.target),a.grip,s.config,anatomical_nest(s)),"transport altered the acquired grip");
                 } else if (o.act==CareAct::PlaceBrood || o.phase==ObservationPhase::Interrupted) {
                     if (o.act==CareAct::PlaceBrood && o.phase==ObservationPhase::Completed) {
                         ensure(a.held.value && a.held==o.target && o.duration_known,"placement without a real pickup");
-                        if (spatial) ensure(valid_grip(e.position,positions.at(o.target),a.grip,s.config) &&
+                        if (spatial) ensure(valid_grip(e.position,positions.at(o.target),a.grip,s.config,anatomical_nest(s)) &&
                             within_contact(positions.at(o.target),s.care.at(e.actor).familiar_shelter,s.config),
                             "placement lacks physical grip or shelter contact");
                     }

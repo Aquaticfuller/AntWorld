@@ -110,9 +110,10 @@ inline PositionM care_toward(const auto& s,PositionM a,PositionM b,double step) 
     }
     return best;
 }
-inline bool valid_grip(PositionM carrier,PositionM brood_position,PositionM offset,const WorldConfig& world) {
+inline bool valid_grip(PositionM carrier,PositionM brood_position,PositionM offset,const WorldConfig& world,
+                       bool anatomical=false) {
     const auto expected=translated(carrier,offset);
-    return within_contact(carrier,brood_position,world) &&
+    return (anatomical?within_distance(carrier,brood_position,.0052,true):within_contact(carrier,brood_position,world)) &&
         distance(expected,brood_position)<=arithmetic_margin(position_scale(expected,brood_position),world.contact_distance_m);
 }
 inline SimTime care_duration(const SpeciesCareProfile& cfg,const WorldConfig& world,Caste caste,
