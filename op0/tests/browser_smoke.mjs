@@ -524,8 +524,7 @@ async function sealedNestWorld() {
     await click("#focus-view");
     assert.equal(await evaluate("document.body.classList.contains('focus-view')"), false);
     assert.deepEqual(await evaluate("({cursor: liveView.state.cursor, time: liveView.state.time_ms})"), intact);
-    assert.ok(await evaluate("adultGlyphSize({caste:'Queen'}, null, 80000) >
-                              adultGlyphSize({caste:'Worker'}, null, 80000)"));
+    assert.ok(await evaluate("adultGlyphSize({caste:'Queen'}, null, 80000) > adultGlyphSize({caste:'Worker'}, null, 80000)"));
     const seek = async (target, kind) => {
         await select("live-target",target);
         await click("#live-seek-next");
