@@ -833,9 +833,16 @@ function displayedMotion(ant) {
     return ant.display_position_m ? ant.display_motion : ant.motion_plan;
 }
 
+// Illustrative body lengths for the local Lasius niger preview, NOT the
+// Core collision envelope. Keep the queen/worker size ratio at every zoom.
+// The future morphology contract must replace these explicit presentation
+// values with per-individual lengths and orientation from authoritative state.
+const illustrativeBodyLengthM = Object.freeze({Queen: .0085, Worker: .0042, Male: .0042});
 function adultGlyphSize(ant, terrain, pixelsPerMeter) {
-    const workerSize = Math.max(4, (terrain?.body_half_q || 1) * (terrain?.quantum_m || .0005) * pixelsPerMeter);
-    return workerSize * (ant.caste === "Queen" ? 1.65 : 1);
+    const queen = ant.caste === "Queen";
+    const length = illustrativeBodyLengthM[ant.caste] || illustrativeBodyLengthM.Worker;
+    const minimum = queen ? 6 : 3;
+    return Math.max(minimum, length * .5 * pixelsPerMeter);
 }
 
 function adultHeading(ant, point, time) {
