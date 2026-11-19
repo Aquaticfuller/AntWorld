@@ -27,6 +27,16 @@ The recorded founder brood-food rations by day 60 were 65, 57 and 76 in the fini
 
 The finite arm failed sustained colony operation. The founders accumulated zero oxidized carbohydrate in these four Physics 39 runs. At death, the seed 1 founder had zero body water and 365,792,628 nJ of energy. Seeds 2 and 3 had 420 and 719 µg body water and exhausted their energy. Each finite case retained positive depot food or water at day 150. This locates a failure between resource delivery and maternal use. A stock entry alone leaves the local approach, timing of access, crop filling and absorption unresolved. The next assay should separate these gates with matched depot contact, ration accessibility and time-to-absorption endpoints.
 
+The follow-up advanced the same finite worlds to day 90 and selected the queen's committed `PhysiologyUpdated` facts between first `FoodDelivered` and her `AntDied` event. The table compares the recorded ant center at those updates with the committed delivery site using the current 2 mm intake radius. These are recorded updates. They do not enumerate unobserved approaches between updates or distinguish the cause of every missed approach.
+
+| Seed | First delivery fact | Founder updates | Updates within 2 mm | Closest observed center-to-depot distance |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 10,207 | 84 | 0 | 8.123 mm |
+| 2 | 9,783 | 88 | 0 | 5.664 mm |
+| 3 | 15,384 | 57 | 0 | 6.310 mm |
+
+The follow-up narrows the observed bottleneck to contact before uptake. No direct founder meal or approach to the depot was recorded after the first delivery in these cases. The next candidate should test access at a legal mouth stance or a worker relay along the actual route. It should retain the existing dietary stock, uptake and mortality controls.
+
 Spatial behavior near the day-zero pocket is demonstrable. Terrain-controlled climbing has a wall-to-ceiling clearance fixture and the complete seeded colonies commit shaft ascents and descents. Continuous six-leg contacts, performance under crowded ceiling traffic, arbitrary chamber expansion and food handling with deformable cargo remain out of scope for this qualification. A deposited parcel is shown at the nearest supporting plane under the committed drop location. Only a fill edit makes it collidable geometry. The 3D view supports a horizontal cut and the analytic view offers the three orthogonal directions. The underlying gross emergence constraint and body contacts are engineering hypotheses.
 
 The three finite seeds each exercised actual digging, material accounting, collection and delivery. They do not estimate a species founding probability. Independent survival and excavation records are still needed. The original B06 `INSUFFICIENT`, historical application performance `FAIL`, and nine `BIOLOGICAL_BLOCKED` conclusions remain.

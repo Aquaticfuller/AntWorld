@@ -69,11 +69,11 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
                     SurfaceConnector path;
                     path.size=depth+1;
                     path.points[0]=depot;
-                    auto current=p;
+                    auto route_point=p;
                     for (auto i=depth;;--i) {
-                        path.points[i]=physical(current,g);
-                        if (current==start) break;
-                        current=visited.at(current).point;
+                        path.points[i]=physical(route_point,g);
+                        if (route_point==start) break;
+                        route_point=visited.at(route_point).point;
                     }
                     return path;
                 }

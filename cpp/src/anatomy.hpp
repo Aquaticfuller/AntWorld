@@ -25,10 +25,10 @@ inline constexpr PositionM floor_normal{0,1,0};
 inline constexpr std::array<PositionM,6> normals{{
     floor_normal,{1,0,0},{-1,0,0},{0,0,1},{0,0,-1},{0,-1,0}
 }};
-inline constexpr double diagonal=0.7071067811865476;
+inline constexpr double compass_diagonal=0.7071067811865476;
 inline constexpr std::array<PositionM,10> headings{{
-    {1,0,0},{diagonal,0,diagonal},{0,0,1},{-diagonal,0,diagonal},{-1,0,0},
-    {-diagonal,0,-diagonal},{0,0,-1},{diagonal,0,-diagonal},{0,1,0},{0,-1,0}
+    {1,0,0},{compass_diagonal,0,compass_diagonal},{0,0,1},{-compass_diagonal,0,compass_diagonal},{-1,0,0},
+    {-compass_diagonal,0,-compass_diagonal},{0,0,-1},{compass_diagonal,0,-compass_diagonal},{0,1,0},{0,-1,0}
 }};
 inline PositionM scale(PositionM v,double n) { return {v.x*n,v.y*n,v.z*n}; }
 inline double dot(PositionM a,PositionM b) { return (a.x*b.x+a.y*b.y)+a.z*b.z; }

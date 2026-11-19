@@ -23,6 +23,8 @@ Windows Release CTest passed all 291 tests after building all targets. An earlie
 
 Windows Debug passed the native `M0_BROOD_SPACE` CTest and both live confirmation cases. The batch launcher's `--help` returned the live server options. The final browser receipt records a 2.50 s first view, a 0.60 ms sample of CPU draw time and a 366,471-byte compact save after delivery. The local sandbox blocked a Chrome crash-reporter startup and one loopback socket test. Browser verification used the ordinary Windows process and local socket permissions.
 
+Windows Release passed all 25 live and bounded-geometry Python tests with loopback available. The first hosted [Windows M1 build](https://github.com/Aquaticfuller/AntWorld/actions/runs/44627111451/job/135923760998) failed because MSVC treated two name-shadowing warnings as errors. The follow-up renames the compass constant and the connector backtracking point. No route, physical value or qualification threshold changes in that fix.
+
 The Physics 38 native comparison used the existing v13 binary and the Physics 39-capable build in reference mode. On the same Windows machine the refactor preserved reference frames through days 0, 10, 60 and 150 in the tested recipe. The day-150 SHA-256 before the final local-search ranking adjustment was `a9cb894922a3c6f1a3f6316c6be6c32f4cfd79bbdb7ac7f8b4ae6bfa08d08e08`. The new ranking operates only inside the Physics 39 brood approach.
 
 ## Linux and cross-build limits
