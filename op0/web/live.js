@@ -305,7 +305,8 @@ async function refreshLive(alignSection = true) {
         inspect(false);
     }
     app.time = data.time_ms;
-    put("title", data.habitat?.sealed_chamber ? tr("Sealed founding chamber") : data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
+    const chamberTitle = data.terrain?.openings?.length ? "Founding nest with an open entrance" : "Sealed founding chamber";
+    put("title", data.habitat?.sealed_chamber ? tr(chamberTitle) : data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
         data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
     app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, trails: data.trails, soil_piles: data.soil_piles};

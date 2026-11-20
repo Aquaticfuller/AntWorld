@@ -212,6 +212,8 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_contact_step(co
     const auto crop=s.physiology.at(ant.id).crop;
     std::optional<std::pair<PositionM,EntityId>> best;
     double best_score=0;
+    const bool portable=mouth_access(s);
+    const auto length_m=portable?portable_care_distance:distance;
     for (const auto ref:query_neighborhood({s.world,ant.id},reach).ants) {
         const auto target=*query_ant(ref);
         if (!target.alive() || target.colony!=ant.colony || within_contact(ant.position,target.position,s.config)) continue;
@@ -219,15 +221,20 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_contact_step(co
         const bool donation=s.social->exchange_enabled && receiver && receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
             ingredient_min(crop,signaled_need(*receiver,target.stage,s.long_term!=nullptr)).total_ug();
         if (!brood(target.stage) && !donation) continue;
-        const auto before=distance(ant.position,target.position);
+        const auto before=length_m(ant.position,target.position);
         for (int length=1;length<=3;++length) for (const auto direction:horizontal_steps) {
             const auto to=physical({origin->x+direction.x*length,origin->y,origin->z+direction.z*length},g);
-            const auto progress=before-distance(to,target.position);
+            const auto progress=before-length_m(to,target.position);
             if (progress<=0.25*g.quantum_m || !spatially_clear(to,target.position)) continue;
-            const auto travel=distance(ant.position,to);
+            const auto travel=length_m(ant.position,to);
             const auto turn=turn_ms(actor_facing(s,ant.id),movement_facing(ant.position,to));
-            const auto score=progress-0.2*travel-static_cast<double>(turn)*g.quantum_m/1000;
-            if (score>best_score && clear_worker_site(ant,to)) {
+            const auto gain=progress-0.2*travel-static_cast<double>(turn)*g.quantum_m/1000;
+            // Different libm implementations can split a symmetric contact
+            // by one ulp. Rank below one micrometre by identity and position.
+            const auto score=portable?static_cast<double>(std::llround(gain*1'000'000)):gain;
+            const bool tied=portable && best && score==best_score &&
+                std::tie(target.id,to.x,to.y,to.z)<std::tie(best->second,best->first.x,best->first.y,best->first.z);
+            if ((score>best_score || tied) && clear_worker_site(ant,to)) {
                 best_score=score;
                 best=std::pair{to,target.id};
             }

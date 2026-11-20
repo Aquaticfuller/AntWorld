@@ -632,6 +632,8 @@ async function founderAccessWorld() {
     await click("#new-single-nest");
     await wait(() => evaluate("liveView.state?.physics===40 && !liveView.busy"),"New experimental sealed nest");
     assert.equal(await evaluate("liveView.state.ants.length"),1);
+    assert.equal(await evaluate("app.geometry.openings.length"),0);
+    assert.equal(await evaluate("$('title').textContent"),"\u5c01\u95ed\u5efa\u7fa4\u5ba4");
     for (const target of ["delivery","queen-meal","queen-uptake"]) {
         await select("live-target",target);
         await click("#live-seek-next");
@@ -649,7 +651,8 @@ async function founderAccessWorld() {
     assert.ok(result["queen-uptake"].mass_ug[0]>0);
     assert.ok(result.delivery.time_ms<result["queen-meal"].time_ms &&
               result["queen-meal"].time_ms<result["queen-uptake"].time_ms);
-    assert.match(await evaluate("$('live-stop').textContent"),/已从嗉囊吸收/);
+    assert.match(await evaluate("$('live-stop').textContent"),/\u5df2\u4ece\u55c9\u56ca\u5438\u6536/);
+    assert.equal(await evaluate("$('title').textContent"),"\u5efa\u7fa4\u5de2 \u00b7 \u5de2\u53e3\u5df2\u6253\u5f00");
     await screenshot("queen-uptake-zh");
     await writeFile(join(output,"founder-access-browser.json"),JSON.stringify(result,null,2)+"\n");
 }

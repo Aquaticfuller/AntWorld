@@ -31,6 +31,9 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
     chain = []
     workers = set()
     worker_outcomes = Counter()
+    stock = list(checkpoint(initial)["stored"])
+    transfers = {}
+    stock_at_founder_death = None
     for day in cuts:
         raw = initial if not day else core.call(f"ADVANCE {day * DAY}")
         frame = checkpoint(raw)
@@ -49,11 +52,22 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                 if fact.id != cursor or cursor > frame["cursor"]:
                     raise ValueError("Noncontiguous event page")
                 kind = KINDS[fact.kind]
+                if kind in ("FoodDelivered", "ProteinRecycled", "NestIngested", "FoundressNestMeal"):
+                    direction = 1 if kind in ("FoodDelivered", "ProteinRecycled") else -1
+                    stock = [stored + direction * mass for stored, mass in zip(stock, fact.mass)]
+                    if min(stock) < 0:
+                        raise ValueError(f"Unfunded nest transaction at event {fact.id}")
+                if kind == "NutritionTransferred":
+                    recipient = "queen" if fact.payload == 2 else "other"
+                    entry = transfers.setdefault(recipient, dict(count=0, mass_ug=[0, 0, 0, 0]))
+                    entry["count"] += 1
+                    entry["mass_ug"] = [a + b for a, b in zip(entry["mass_ug"], fact.mass)]
                 if kind == "StageChanged" and fact.stage == 3:
                     key = "eclosion"
                     workers.add(fact.actor)
                 elif kind == "AntDied" and fact.actor == 2:
                     key = "queen_death"
+                    stock_at_founder_death = list(stock)
                 elif kind == "AntDied" and fact.actor in workers:
                     worker_outcomes[fact.packet()["death_cause"]] += 1
                     key = "worker_death"
@@ -85,6 +99,8 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                         total[i] += mass
         if core.call("CHECK_LEDGERS"):
             raise ValueError("Unexpected ledger response")
+        if tuple(stock) != tuple(frame["stored"]):
+            raise ValueError(f"Nest inventory disagrees with the canonical cut at day {day}")
         queen = frame["ants"][2]
         series.append(dict(day=day, cursor=cursor, state_sha256=sha256(raw).hexdigest(), events_sha256=trace.hexdigest(),
                            workers=sum(a["caste"] == 0 and a["stage"] == 3 for a in frame["ants"].values()),
@@ -93,6 +109,7 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                            stock_ug=frame["stored"]))
     return dict(request=request, seed=seed, supply=supply, physics=physics, cuts=series, first=first, counts=dict(counts),
                 totals_ug=totals, worker_death_causes=dict(worker_outcomes), ledger_cuts=len(series),
+                transfers_to=transfers, stock_at_founder_death_ug=stock_at_founder_death,
                 carbohydrate_chain=chain, ordered_access=len(chain)==3,
                 native_memory_bytes=list(map(int, core.call("MEMORY").split())))
 
@@ -118,7 +135,8 @@ def compare_receipts(left_path, right_path):
             else:
                 fields = ", ".join(key for key in a if a[key] != b.get(key))
                 errors.append(f"{left['seed']} {left['supply']} day {a['day']}: {fields}")
-        for key in ("counts", "totals_ug", "first", "carbohydrate_chain", "ordered_access", "worker_death_causes"):
+        for key in ("counts", "totals_ug", "first", "carbohydrate_chain", "ordered_access", "worker_death_causes",
+                    "transfers_to", "stock_at_founder_death_ug"):
             if left[key] != right[key]:
                 errors.append(f"{left['seed']} {left['supply']}: {key}")
     print(f"{matched}/{len(CASES) * len(CUTS)} matching frame, canonical history and ledger cuts")
