@@ -173,6 +173,10 @@ inline bool supply_in_reach(const BodyPose& adult,PositionM supply) {
     const auto gap=displacement(supply,adult.mouth_m);
     return dot(gap,adult.forward)>=-.00012 && within_distance(adult.mouth_m,supply,.00065,true);
 }
+inline bool mouths_meet(const BodyPose& donor,const BodyPose& receiver) {
+    return supply_in_reach(donor,receiver.mouth_m) && supply_in_reach(receiver,donor.mouth_m) &&
+        !physical_overlap(donor,receiver);
+}
 template<class Free>
 std::optional<PositionM> posterior_egg_site(const GeometryView& view,const BodyPose& mother,
                                            const WorldConfig& world,Free free) {

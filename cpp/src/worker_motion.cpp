@@ -216,6 +216,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_contact_step(co
     const auto length_m=portable?portable_care_distance:distance;
     for (const auto ref:query_neighborhood({s.world,ant.id},reach).ants) {
         const auto target=*query_ant(ref);
+        if (adult_offers(s) && target.stage==LifeStage::Adult) continue;
         if (!target.alive() || target.colony!=ant.colony || within_contact(ant.position,target.position,s.config)) continue;
         const auto receiver=query_physiology(ref);
         const bool donation=s.social->exchange_enabled && receiver && receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&

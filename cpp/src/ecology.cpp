@@ -422,7 +422,14 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (local_traffic(s) && ant.caste==Caste::Worker && can_switch && !urgent && !choice.care && !choice.resting_site &&
         !care_owned(s,ant.id) && !active_expenditure(p) && (p.behavior==IndividualBehavior::Rest || p.behavior==IndividualBehavior::Paused) &&
         (choice.behavior==IndividualBehavior::Rest || choice.behavior==IndividualBehavior::Paused)) {
-      if (const auto contact=local_contact_step(ant)) {
+      if (const auto offer=local_food_offer(ant)) {
+        choice.contact_target=offer->second;
+        if (offer->first==ant.position) choice.behavior=IndividualBehavior::Nurse;
+        else {
+          choice.resting_site=offer->first;
+          choice.transit=CareAct::ApproachNestmate;
+        }
+      } else if (const auto contact=local_contact_step(ant)) {
         choice.resting_site=contact->first;
         choice.contact_target=contact->second;
         choice.transit=CareAct::ApproachNestmate;
@@ -460,7 +467,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit,
                          choice.contact_target,choice.meal_steps);
     else if (choice.behavior != s.physiology.at(id).behavior)
-      change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
+      change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id,false,choice.contact_target);
     const auto &sample = choice.sample;
     auto &work = s.m.contact_work;
     bump(work.decisions);

@@ -70,7 +70,46 @@ bool WorldRuntime::seeks_nest_meal(const AntState& adult,const PhysiologyState& 
     return visible ? ingredient_min(need,colony.nest_food).total_ug()!=0 : familiar && need.total_ug()!=0;
 }
 
-PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,std::optional<LifeStage> stage) const {
+bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
+    const auto& s=*state_;
+    if (a.stage!=LifeStage::Adult || b.stage!=LifeStage::Adult || a.id==b.id || a.colony!=b.colony) return false;
+    const auto donor=*query_body({s.world,a.id}), receiver=*query_body({s.world,b.id});
+    return mouths_meet(donor,receiver) && spatially_clear(donor.mouth_m,receiver.mouth_m);
+}
+
+std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(const AntState& ant) const {
+    const auto& s=*state_;
+    if (!adult_offers(s) || !s.social->exchange_enabled || !s.founding ||
+        !s.founding_reserves.contains(ant.id)) return {};
+    const auto supply=founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id}));
+    if (!supply.total_ug()) return {};
+    const auto donor=*query_body({s.world,ant.id});
+    const auto radius=s.care_profile->perception_radius_m;
+    std::optional<std::pair<std::int64_t,EntityId>> nearest;
+    for (const auto ref:query_neighborhood({s.world,ant.id},radius).ants) {
+        const auto peer=*query_ant(ref);
+        if (peer.id==ant.id || peer.colony!=ant.colony || peer.stage!=LifeStage::Adult ||
+            query_worker_motion(ref)) continue;
+        const auto mouth=query_body(ref)->mouth_m;
+        if (!within_distance(donor.mouth_m,mouth,radius,true) || !spatially_clear(donor.mouth_m,mouth)) continue;
+        if (oral_contact(ant,peer)) {
+            const auto p=*query_physiology(ref);
+            if (p.crop.total_ug()<p.config.crop_capacity_ug && ingredient_min(supply,signaled_need(p,peer.stage,true)).total_ug())
+                return std::pair{ant.position,peer.id};
+            continue;
+        }
+        const auto rank=std::pair{std::int64_t(std::llround(portable_care_distance(donor.mouth_m,mouth)*1'000'000)),peer.id};
+        if (!nearest || rank<*nearest) nearest=rank;
+    }
+    if (nearest) {
+        const auto other=*query_body({s.world,nearest->second});
+        const auto next=mouth_approach(ant,other.mouth_m,{},&other);
+        if (next!=ant.position) return std::pair{next,nearest->second};
+    }
+    return {};
+}
+
+PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,std::optional<LifeStage> stage,const BodyPose* partner) const {
     const auto& s=*state_;
     const auto pose=*query_body({s.world,adult.id});
     const auto reach=portable_care_distance(adult.position,pose.mouth_m);
@@ -105,7 +144,8 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return std::any_of(nearby.begin(),nearby.end(),[&](const auto& peer){return physical_overlap(candidate,peer);});
     };
     const auto reaches=[&](const BodyPose& body) {
-        return stage ? mouth_reaches(body,target,*stage) : supply_in_reach(body,target);
+        return stage ? mouth_reaches(body,target,*stage) : supply_in_reach(body,target) &&
+            (!partner || supply_in_reach(*partner,body.mouth_m));
     };
     std::array<std::optional<PositionM>,8> stances;
     for (std::uint8_t dir=1;dir<=8;++dir) {
@@ -962,15 +1002,20 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         const AntRef self{s.world,a.id}, other{s.world,c.target};
         const auto target=query_ant(other);
         const auto worker=*query_ant(self);
+        const bool oral=adult_offers(s) && target && target->stage==LifeStage::Adult;
         const bool reached=!failed && target && target->alive() && target->colony==a.colony &&
-            within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position);
+            (oral ? oral_contact(worker,*target) && !query_worker_motion(other) :
+            within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position));
         if (reached && brood(target->stage) && local_care_available(self)) start_autonomous_care(tx,self,event.id);
         else {
             const auto receiver=reached?query_physiology(other):std::nullopt;
+            const auto& p=s.physiology.at(a.id);
+            const auto available=oral?founding_gift_supply(s.founding->profile,p):p.crop;
             const bool offer=s.social->exchange_enabled && receiver &&
                 receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
-                ingredient_min(s.physiology.at(a.id).crop,signaled_need(*receiver,target->stage,s.long_term!=nullptr)).total_ug();
-            change_behavior(tx,self,offer?IndividualBehavior::Nurse:IndividualBehavior::Rest,event.id);
+                ingredient_min(available,signaled_need(*receiver,target->stage,s.long_term!=nullptr)).total_ug();
+            change_behavior(tx,self,offer?IndividualBehavior::Nurse:IndividualBehavior::Rest,event.id,false,
+                            offer && oral ? other.id : EntityId{});
         }
         return;
     }

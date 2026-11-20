@@ -304,6 +304,49 @@ class LiveTests(unittest.TestCase):
                 self.assertEqual(core.call(f"FACTS_AFTER {cut['cursor']} 512"), after)
                 self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_late_worker_contacts_have_a_portable_canonical_cut(self):
+        core = self.live.core()
+        if not core.mouth_access:
+            self.skipTest("Build the Physics 40 Core")
+        core.call("NEW_ORAL_NEST 9203 3 250 80 plugged 1955 reachable finite")
+        frame = core.call(f"ADVANCE {90 * DAY}")
+        self.assertEqual(checkpoint(frame)["cursor"], 33892)
+        self.assertEqual(sha256(frame).hexdigest(), "72d70b9f54a994cff6f7a525693c7bfa111b0fb2e1da9570a4babf0d194ed3fb")
+        pages = sha256()
+        for cursor in range(0, 33892, 512):
+            pages.update(core.call(f"FACTS_AFTER {cursor} 512"))
+        self.assertEqual(pages.hexdigest(), "cfdd8dded0b4ff95e52626baf021b450e4bd55879307f3c553def163f645c1db")
+
+    def test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake(self):
+        core = self.live.core()
+        if not core.adult_offers:
+            self.skipTest("Build the Physics 41 Core")
+        self.live.install(core.call("NEW_OFFER_NEST 9203 3 250 80 plugged 1955 reachable finite"), running=False)
+        self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (34, 41))
+        core.call("ADVANCE 5082175761")
+        water = decode_fact(core.call("FIND_MILESTONE queen-gift"))[1]
+        self.assertEqual((water.payload, tuple(water.mass)), (2, (0, 0, 20, 0)))
+        before = core.call("FRAME")
+        self.live.publish(before)
+        for mode in ("archive", "snapshot"):
+            self.live.save("Before oral exchange", False, mode)
+        self.assertEqual(core.call("FIND_NEXT_MILESTONE queen-gift 0"), b"")
+        donor = decode_fact(core.call("ADVANCE_UNTIL 5082175762 queen-gift"))[1]
+        expected = core.call("ADVANCE 5097600000")
+        self.assertEqual((donor.id, donor.time, donor.actor, donor.payload, tuple(donor.mass)),
+                         (18938, 5082175762, 23, 2, (12, 0, 88, 0)))
+        for mode in ("archive", "snapshot"):
+            with self.subTest(mode=mode):
+                self.live.load("Before oral exchange", mode)
+                self.assertEqual(core.call("FRAME"), before)
+                self.assertEqual(core.call("FIND_NEXT_MILESTONE queen-gift 0"), b"")
+                self.assertEqual(decode_fact(core.call(f"ADVANCE_UNTIL {donor.time} queen-gift"))[1], donor)
+                self.assertEqual(core.call("FIND_NEXT_MILESTONE queen-uptake 0"), b"")
+                uptake = decode_fact(core.call("ADVANCE_UNTIL 5097600000 queen-uptake"))[1]
+                self.assertEqual((uptake.time, uptake.actor, tuple(uptake.mass)), (5097600000, 2, (12, 0, 88, 0)))
+                self.assertEqual(core.call("FRAME"), expected)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()
         if not worker.observatory:

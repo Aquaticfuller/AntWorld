@@ -6,13 +6,14 @@ const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     "brood-moved": "First brood move", "brood-cleaned": "First brood cleaning",
     "queen-meal": "First queen meal from nest stores", "queen-uptake": "First queen carbohydrate uptake",
+    "queen-gift": "First transfer from a worker to the queen",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
 const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
     option => [option.value, option.textContent]));
 const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact",
-    "queen-meal", "queen-uptake"]);
+    "queen-meal", "queen-uptake", "queen-gift"]);
 const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
     "Entrance antennal contact": "#b9d6f5"};
 const liveStopLabels = {
@@ -66,6 +67,8 @@ function liveControls() {
     for (const option of target.querySelectorAll("[data-brood]")) option.hidden = option.disabled = !s?.single_nest_available;
     for (const option of target.querySelectorAll("[data-founder]"))
         option.hidden = option.disabled = !(s?.habitat && s.founder_meals_available);
+    for (const option of target.querySelectorAll("[data-offer]"))
+        option.hidden = option.disabled = !(s?.habitat && s.queen_gifts_available);
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
@@ -83,6 +86,11 @@ function liveControls() {
         details += " · " + (stop.target === "queen-meal"
             ? tr("Into crop: {c} µg carbohydrate, {p} µg protein, {w} µg water", {c: carbs, p: protein, w: water})
             : tr("From crop: {c} µg carbohydrate absorbed", {c: carbs}));
+    }
+    if (stop?.event && stop.target === "queen-gift") {
+        const e = stop.event;
+        details += " · " + tr("Worker #{donor} to queen #{queen}: {c} µg carbohydrate, {p} µg protein, {w} µg water",
+            {donor: e.actor, queen: e.recipient, c: e.mass_ug[0], p: e.mass_ug[1], w: e.mass_ug[2]});
     }
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;
@@ -113,7 +121,7 @@ function liveVisibility(active) {
 
 function liveIndividual() {
     const ant = liveView.state?.ants?.find(a => a.id === app.selected);
-    const events = ant ? liveView.state.events.filter(e => e.actor === ant.id || e.related === ant.id) : [];
+    const events = ant ? liveView.state.events.filter(e => e.actor === ant.id || e.related === ant.id || e.recipient === ant.id) : [];
     const key = JSON.stringify([language, ant, events.map(e => e.id)]);
     if (liveView.individualKey === key) return;
     liveView.individualKey = key;

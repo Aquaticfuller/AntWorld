@@ -199,6 +199,14 @@ void anatomical_clearance() {
     worker.caste=Caste::Worker;
     queen.position=worker.position={0,-.004,0};
     const auto q=body_pose(queen,1,floor_normal), w=body_pose(worker,1,floor_normal);
+    auto caller=worker;
+    caller.position.x=q.mouth_m.x+(w.mouth_m.x-w.center_m.x)+.0004;
+    const auto offering=body_pose(caller,5,floor_normal);
+    require(mouths_meet(offering,q) && continuous_clear(view,offering.mouth_m,q.mouth_m,0) &&
+            !mouths_meet(body_pose(caller,1,floor_normal),q),"oral offer requires both mouth positions and facing");
+    require(!mouths_meet(w,w),"coincident adult bodies cannot qualify as mouth contact");
+    caller.position.x+=.001;
+    require(!mouths_meet(body_pose(caller,5,floor_normal),q),"separate mouths cannot exchange food");
     for (const auto& body:{q,w}) {
         const auto in_front=translated(body.mouth_m,scale(body.forward,.0004));
         const auto behind=translated(body.mouth_m,scale(body.forward,-.0004));

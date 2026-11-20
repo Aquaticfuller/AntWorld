@@ -30,7 +30,7 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
 BROOD_MILESTONES = {"brood-moved", "brood-cleaned"}
 FOUNDER_MILESTONES = {"queen-meal", "queen-uptake"}
-MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES,
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", "queen-gift", *HABITAT_MILESTONES,
               *BROOD_MILESTONES, *FOUNDER_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
@@ -48,7 +48,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v15"), installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
+    paths = (installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
+             installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
              installed.with_stem("antworld_m0_live_v12"),
              installed.with_stem("antworld_m0_live_v11"),
              installed.with_stem("antworld_m0_live_v10"),
@@ -69,7 +70,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 15))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 16))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -83,6 +84,7 @@ class NativeCore:
             self.single_nest = generation >= 12
             self.anatomical = generation >= 13
             self.mouth_access = generation >= 14
+            self.adult_offers = generation >= 15
         except Exception:
             self.close()
             raise
@@ -114,6 +116,17 @@ class NativeCore:
             self.process.wait()
         finally:
             self.process.stdout.close()
+
+
+def founding_balance(core, frame, identifier):
+    raw = core.call(f"FOUNDING_BALANCE {identifier}")
+    if not raw:
+        return None
+    values = list(map(int, raw.split()))
+    require(len(values) == 9 and values[0] == frame["time_ms"] and min(values) >= 0,
+            "Invalid founding physiology observation")
+    time, energy, water, lipid, protein, *crop = values
+    return dict(time_ms=time, energy_nj=energy, water_ug=water, lipid_ug=lipid, mobile_protein_ug=protein, crop_ug=crop)
 
 
 def live_bodies(data, frame):
@@ -342,9 +355,12 @@ class LiveSession:
     def start_seek(self, target, occurrence):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
         require(target not in BROOD_MILESTONES or self.worker.single_nest, "Build the updated Core to seek brood actions.")
-        require(target not in HABITAT_MILESTONES or self.frame["flags"].get("founding_habitat"), "Unknown live milestone")
-        require(target not in FOUNDER_MILESTONES or (self.worker.mouth_access and self.frame["flags"].get("founding_habitat")),
+        habitat = (self.frame["flags"] or {}).get("founding_habitat")
+        require(target not in HABITAT_MILESTONES or habitat, "Unknown live milestone")
+        require(target not in FOUNDER_MILESTONES or (self.worker.mouth_access and habitat),
                 "Founder meal milestones need the updated Core and a founding habitat.")
+        require(target != "queen-gift" or (self.worker.adult_offers and habitat),
+                "Queen transfer milestones need the updated Core and a founding habitat.")
         require(not self.seeking(), "Cancel the current fast-forward first.")
         require(occurrence in ("first", "next"), "Choose the first or next event")
         next_event = occurrence == "next"
@@ -424,6 +440,7 @@ class LiveSession:
                     observatory_available=self.binary.is_file() and (self.worker is None or self.worker.observatory),
                     single_nest_available=self.binary.is_file() and (self.worker is None or self.worker.single_nest),
                     founder_meals_available=bool(self.worker and self.worker.mouth_access),
+                    queen_gifts_available=bool(self.worker and self.worker.adult_offers),
                     history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
@@ -479,7 +496,10 @@ class LiveSession:
                 require(identifier in frame["ants"], "Unknown ant in the live colony")
                 key = str(identifier)
                 life = [self.exact_fact(frame, e) for e in self.chronicle.life.get(key, ())]
-                return progress | {"lifecycle": life, "recent_activity": list(self.chronicle.recent.get(key, ()))}
+                balance = founding_balance(self.worker, frame, identifier) if (
+                    self.worker.adult_offers and (frame["flags"] or {}).get("founding_habitat")) else None
+                return progress | {"lifecycle": life, "recent_activity": list(self.chronicle.recent.get(key, ())),
+                                   "balance": balance}
             require(resource == "view", "Unknown live view")
             data = self.status()
             if self.frame is None:
@@ -639,6 +659,8 @@ class LiveSession:
                     models["anatomical"] = "NEW_ANATOMICAL_NEST"
                 if core.mouth_access:
                     models["oral"] = "NEW_ORAL_NEST"
+                if core.adult_offers:
+                    models["offers"] = "NEW_OFFER_NEST"
                 model = data.get("model", "anatomical" if core.anatomical else "reference")
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
                 command = models[model]

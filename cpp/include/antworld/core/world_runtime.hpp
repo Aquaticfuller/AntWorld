@@ -182,7 +182,9 @@ private:
     [[nodiscard]] bool clear_emergence(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
     [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
-    [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>) const;
+    [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>, const BodyPose* partner=nullptr) const;
+    [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
+    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&) const;
     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
     [[nodiscard]] bool seeks_nest_meal(const AntState&, const PhysiologyState&) const;
     void commit_brood_position(Transaction&, EntityId, EntityId, ScheduledId, PositionM);
@@ -204,7 +206,8 @@ private:
     void activate_excavator(Transaction&, EntityId);
     void index_position(Transaction&, EntityId, PositionM from, PositionM to);
     void index_contact(Transaction&, EntityId, std::optional<PositionM>);
-    void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {}, bool care_motor = false);
+    void change_behavior(Transaction&, AntRef, IndividualBehavior, ScheduledId source = {}, bool care_motor = false,
+                         EntityId contacted_recipient = {});
     void change_autonomy(Transaction&, AntRef, bool);
     void schedule_autonomy(Transaction&, EntityId, SimTime delay = {});
     void stop_autonomy(Transaction&, EntityId);

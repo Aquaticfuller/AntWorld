@@ -26,7 +26,7 @@ class Chronicle:
         if kind in LIFE and actor:
             self.life.setdefault(actor, []).append(self.cursor)
         if kind in ACTIVITY and actor:
-            for identity in {actor, event["related"]} - {None}:
+            for identity in {actor, event["related"], event.get("recipient")} - {None}:
                 if identity not in self.recent:
                     self.recent[identity] = deque(maxlen=12)
                 self.recent[identity].append(event)

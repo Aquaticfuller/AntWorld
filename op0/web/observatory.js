@@ -49,7 +49,10 @@ function updateObservatory() {
         $("chronicle-steps").replaceChildren();
         $("live-life-events").replaceChildren();
     }
-    if (observatory.selected !== actor) $("live-life-events").replaceChildren();
+    if (reset || observatory.selected !== actor) {
+        $("live-balance").replaceChildren();
+        $("live-life-events").replaceChildren();
+    }
     const sameView = observatory.selected === actor && observatory.language === language;
     if (observatory.busy || (sameView && ((observatory.filled && observatory.cursor === live.cursor) ||
         performance.now() - observatory.last < 400))) return;
@@ -63,6 +66,13 @@ function updateObservatory() {
         if (actor && actor === app.selected) {
             const life = await api("live/life", {epoch, id: actor});
             if (!app.live || observatory.generation !== generation || actor !== app.selected) return;
+            const b = life.balance;
+            $("live-balance").replaceChildren(...(b ? [
+                node("h3", tr("Body reserves at {time}", {time: duration(b.time_ms)})),
+                keyValues([["Body energy", withUnit(b.energy_nj / 1e6, "mJ")], ["Body water", withUnit(b.water_ug, "µg")],
+                    ["Lipid reserve", withUnit(b.lipid_ug, "µg")], ["Mobilizable protein", withUnit(b.mobile_protein_ug, "µg")],
+                    ["Carbohydrate in crop", withUnit(b.crop_ug[0], "µg")]])
+            ] : []));
             const rows = [...life.lifecycle, ...life.recent_activity];
             const facts = [...new Map(rows.map(e => [e.id, e])).values()].sort((a, b) => a.time_ms - b.time_ms ||
                 (BigInt(a.id) < BigInt(b.id) ? -1 : 1));

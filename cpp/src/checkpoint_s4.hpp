@@ -434,9 +434,15 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         }
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::CargoIngested)
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
-        if (e.kind == FactKind::NutritionTransferred)
-            ensure(clear(positions.at(e.actor),positions.at(EntityId{e.payload}),contact_half),
-                   "trophallaxis crosses solid material");
+        if (e.kind == FactKind::NutritionTransferred) {
+            const EntityId recipient{e.payload};
+            if (adult_offers(s) && stages.at(recipient)==LifeStage::Adult) {
+                const auto donor=past_body(e.actor), receiver=past_body(recipient);
+                ensure(mouths_meet(donor,receiver) &&
+                       clear(donor.mouth_m,receiver.mouth_m,0),"adult food transfer lacks mutual mouth contact");
+            } else ensure(clear(positions.at(e.actor),positions.at(recipient),contact_half),
+                          "trophallaxis crosses solid material");
+        }
         if (anatomical && (e.kind==FactKind::FoundingRation || (e.kind==FactKind::NutritionTransferred &&
             stages.at(EntityId{e.payload})==LifeStage::Larva))) {
             const auto b=past_ant({e.payload});

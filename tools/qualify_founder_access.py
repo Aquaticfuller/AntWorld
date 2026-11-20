@@ -10,12 +10,36 @@ from tempfile import TemporaryDirectory
 
 from op0 import DAY
 from op0.codec import KINDS, U32, checkpoint, decode_fact
-from op0.live import NativeCore, core_path
+from op0.live import NativeCore, core_path, founding_balance, live_bodies
 
 
 CUTS = (0, 4, 5, 12, 30, 60, 90, 120, 150)
 CASES = ((1, "finite"), (2, "finite"), (3, "finite"), (2, "absent"))
-COMMAND = {39: "NEW_ANATOMICAL_NEST", 40: "NEW_ORAL_NEST"}
+COMMAND = {39: "NEW_ANATOMICAL_NEST", 40: "NEW_ORAL_NEST", 41: "NEW_OFFER_NEST"}
+
+
+def death_boundary(core, request, death):
+    core.call(request)
+    timestamp = death["time_ms"]
+    raw = core.call(f"ADVANCE {timestamp - 1}")
+    frame = checkpoint(raw)
+    bodies = live_bodies(core.call("BODY_STATES"), frame)
+    adults = {}
+    for identifier, ant in frame["ants"].items():
+        if ant["stage"] != 3:
+            continue
+        key = str(identifier)
+        adults[key] = dict(position_m=ant["position_m"], mouth_m=bodies[key]["mouth_m"],
+                           forward=bodies[key]["forward"], program=ant["program"],
+                           cargo_ug=ant["carried_ug"], balance=founding_balance(core, frame, identifier))
+    if "2" not in adults or core.call("FRAME") != raw:
+        raise ValueError("Pre-death observations changed the cut or omitted the living founder")
+    after = checkpoint(core.call(f"ADVANCE {timestamp}"))
+    page = core.call(f"FACTS_AFTER {int(death['id']) - 1} 1")
+    if after["ants"][2]["stage"] != 4 or decode_fact(page[U32.size:])[1].packet() != death:
+        raise ValueError("Replaying the death boundary changed the canonical death event")
+    return dict(time_ms=timestamp - 1, state_sha256=sha256(raw).hexdigest(), adults=adults,
+                depot=frame["colonies"][1], sources=frame["sources"], available_ug=frame["available"])
 
 
 def run_case(core, physics, seed, supply, cuts=CUTS):
@@ -30,9 +54,12 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
     series = []
     chain = []
     workers = set()
+    stages = {}
     worker_outcomes = Counter()
     stock = list(checkpoint(initial)["stored"])
     transfers = {}
+    pairs = {}
+    founder_gift_chain = []
     stock_at_founder_death = None
     for day in cuts:
         raw = initial if not day else core.call(f"ADVANCE {day * DAY}")
@@ -52,16 +79,33 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                 if fact.id != cursor or cursor > frame["cursor"]:
                     raise ValueError("Noncontiguous event page")
                 kind = KINDS[fact.kind]
+                if kind in ("AntSeeded", "AntBorn", "StageChanged", "AntDied"):
+                    stages[fact.actor] = fact.stage
                 if kind in ("FoodDelivered", "ProteinRecycled", "NestIngested", "FoundressNestMeal"):
                     direction = 1 if kind in ("FoodDelivered", "ProteinRecycled") else -1
                     stock = [stored + direction * mass for stored, mass in zip(stock, fact.mass)]
                     if min(stock) < 0:
                         raise ValueError(f"Unfunded nest transaction at event {fact.id}")
                 if kind == "NutritionTransferred":
-                    recipient = "queen" if fact.payload == 2 else "other"
+                    if fact.actor not in workers or fact.payload == fact.actor or not any(fact.mass):
+                        raise ValueError("Invalid positive worker gift")
+                    if stages.get(fact.payload) == 1:
+                        recipient = "larva"
+                    elif stages.get(fact.payload) == 3:
+                        recipient = "queen" if fact.payload == 2 else "worker"
+                    else:
+                        raise ValueError("Positive gift to an ineligible stage")
                     entry = transfers.setdefault(recipient, dict(count=0, mass_ug=[0, 0, 0, 0]))
-                    entry["count"] += 1
-                    entry["mass_ug"] = [a + b for a, b in zip(entry["mass_ug"], fact.mass)]
+                    pair = pairs.setdefault(f"{fact.actor}>{fact.payload}", dict(count=0, mass_ug=[0, 0, 0, 0]))
+                    for item in (entry, pair):
+                        item["count"] += 1
+                        item["mass_ug"] = [a + b for a, b in zip(item["mass_ug"], fact.mass)]
+                    if recipient == "queen" and fact.mass[0] and not founder_gift_chain:
+                        founder_gift_chain.append(fact.packet())
+                if len(founder_gift_chain) == 1 and fact.actor == 2 and fact.mass[0] and (
+                        kind in ("PhysiologyUpdated", "FoundingBoundaryUptake")
+                        and fact.time > founder_gift_chain[0]["time_ms"]):
+                    founder_gift_chain.append(fact.packet())
                 if kind == "StageChanged" and fact.stage == 3:
                     key = "eclosion"
                     workers.add(fact.actor)
@@ -107,11 +151,14 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                            queen_alive=queen["stage"] == 3, energy_nj=queen["energy_nj"], water_ug=queen["hydration_ug"],
                            queen_pos_m=queen["position_m"], crop_ug=queen["crop_ug"], oxidized_ug=queen["oxidized_carbs_ug"],
                            stock_ug=frame["stored"]))
-    return dict(request=request, seed=seed, supply=supply, physics=physics, cuts=series, first=first, counts=dict(counts),
+    memory = list(map(int, core.call("MEMORY").split()))
+    before_death = death_boundary(core, request, first["queen_death"]) if "queen_death" in first else None
+    return dict(receipt_version=2, request=request, seed=seed, supply=supply, physics=physics, cuts=series, first=first, counts=dict(counts),
                 totals_ug=totals, worker_death_causes=dict(worker_outcomes), ledger_cuts=len(series),
-                transfers_to=transfers, stock_at_founder_death_ug=stock_at_founder_death,
+                transfers_to=transfers, directed_gifts=pairs, founder_gift_chain=founder_gift_chain,
+                stock_at_founder_death_ug=stock_at_founder_death, before_death=before_death,
                 carbohydrate_chain=chain, ordered_access=len(chain)==3,
-                native_memory_bytes=list(map(int, core.call("MEMORY").split())))
+                native_memory_bytes=memory)
 
 
 def compare_receipts(left_path, right_path):
@@ -126,6 +173,8 @@ def compare_receipts(left_path, right_path):
     for left, right in zip(load(left_path), load(right_path)):
         if left["request"] != right["request"]:
             raise ValueError("World inputs differ between receipts")
+        if left.get("receipt_version") != right.get("receipt_version"):
+            raise ValueError("Different observation schemas")
         for row in (left, right):
             if tuple(cut["day"] for cut in row["cuts"]) != CUTS or row["ledger_cuts"] != len(CUTS):
                 raise ValueError("Missing observation or ledger cut")
@@ -139,6 +188,12 @@ def compare_receipts(left_path, right_path):
                     "transfers_to", "stock_at_founder_death_ug"):
             if left[key] != right[key]:
                 errors.append(f"{left['seed']} {left['supply']}: {key}")
+        if left["physics"] >= 41 and left["founder_gift_chain"] != right["founder_gift_chain"]:
+            errors.append(f"{left['seed']} {left['supply']}: founder gift chain")
+        if left.get("receipt_version") == 2:
+            for key in ("directed_gifts", "before_death"):
+                if left[key] != right[key]:
+                    errors.append(f"{left['seed']} {left['supply']}: {key}")
     print(f"{matched}/{len(CASES) * len(CUTS)} matching frame, canonical history and ledger cuts")
     if errors:
         raise SystemExit("\n".join(errors))

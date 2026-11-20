@@ -68,6 +68,7 @@
           <select id="sealed-model">
             <option value="anatomical" data-i18n>Anatomical preview</option>
             <option value="oral" data-i18n>Food access experiment · Physics 40</option>
+            <option value="offers" data-i18n>Worker food offers · Physics 41</option>
             <option value="reference" data-i18n>Reference model</option>
           </select>
           <label for="sealed-supply" data-i18n>Sealed nest supply</label>
@@ -96,6 +97,7 @@
           <option value="brood-moved" data-brood hidden disabled>Brood moved</option>
           <option value="brood-cleaned" data-brood hidden disabled>Brood cleaned</option>
           <option value="queen-meal" data-founder hidden disabled>Queen eats from nest stores</option>
+          <option value="queen-gift" data-offer hidden disabled>Worker feeds the queen</option>
           <option value="queen-uptake" data-founder hidden disabled>Queen absorbs carbohydrate</option>
           <option value="exit">Worker leaves the nest</option><option value="delivery">Food delivered</option><option value="excavation">Excavation</option>
           <option value="water" data-habitat hidden disabled>Collection from the water source</option>
@@ -175,7 +177,7 @@
           <section id="individual-panel">
             <form id="ant-form"><label class="sr-only" for="ant-id">Ant ID</label><input id="ant-id" type="text" inputmode="numeric" placeholder="Enter ant ID" pattern="[0-9]+"><button type="submit">Find</button><button id="follow" type="button" aria-pressed="false">Follow</button></form>
             <div id="individual-content"></div>
-            <section id="live-life" hidden><h3 data-i18n>Life history</h3><div id="live-life-events"></div></section>
+            <section id="live-life" hidden><div id="live-balance"></div><h3 data-i18n>Life history</h3><div id="live-life-events"></div></section>
           </section>
           <section id="event-panel" hidden>
             <div class="event-controls"><select id="filter" aria-label="Event category">

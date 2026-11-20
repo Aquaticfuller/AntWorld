@@ -655,6 +655,37 @@ async function founderAccessWorld() {
     assert.equal(await evaluate("$('title').textContent"),"\u5efa\u7fa4\u5de2 \u00b7 \u5de2\u53e3\u5df2\u6253\u5f00");
     await screenshot("queen-uptake-zh");
     await writeFile(join(output,"founder-access-browser.json"),JSON.stringify(result,null,2)+"\n");
+    await select("sealed-model","offers");
+    await Promise.all([click("#new-single-nest"), (async () => {
+        await wait(() => dialogs.shift(), "Replace the finite food-access world", 5_000);
+        await send("Page.handleJavaScriptDialog", {accept: true});
+    })()]);
+    await wait(() => evaluate("liveView.state?.physics===41 && !liveView.busy"),"New adult food-offer experiment");
+    const offers = [];
+    for (const target of ["queen-gift","queen-gift","queen-uptake"]) {
+        await select("live-target", target);
+        await click("#live-seek-next");
+        await wait(() => evaluate(`liveView.state.fast_forward?.target==='${target}' &&
+            liveView.state.fast_forward.state==='reached' && !liveView.busy`),"Observe " + target);
+        const event = await evaluate("liveView.state.fast_forward.event");
+        assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"), false);
+        assert.equal(await evaluate("app.selected"), event.actor);
+        offers.push(event);
+        if (target === "queen-gift") {
+            assert.equal(event.kind, "NutritionTransferred");
+            assert.equal(event.recipient,"2");
+            assert.notEqual(event.actor,event.recipient);
+            assert.ok(event.mass_ug.some(x => x > 0));
+            assert.ok((await evaluate("$('live-stop').textContent")).includes("#" + event.actor));
+            if (event.mass_ug[0]) await screenshot("worker-feeds-queen-zh");
+        }
+    }
+    assert.equal(offers[0].mass_ug[0],0);
+    assert.ok(offers[1].mass_ug[0] > 0);
+    assert.equal(offers[2].actor, offers[1].recipient);
+    assert.ok(offers[0].time_ms < offers[1].time_ms && offers[1].time_ms < offers[2].time_ms);
+    assert.equal(exceptions.length,0,JSON.stringify(exceptions));
+    await writeFile(join(output,"local-offer-browser.json"),JSON.stringify(offers,null,2)+"\n");
 }
 
 async function observatoryWorld() {

@@ -26,6 +26,7 @@ struct FoundingHabitat {
     bool sealed_chamber{}; // Physics 38. Posterior laying site and close brood handling.
     bool anatomical{}; // Physics 39. Body-relative birth, contact and swept clearance.
     bool mouth_access{}; // Physics 40. Local oral access to supplies in the sealed pocket.
+    bool adult_offers{}; // Physics 41. A payable offer at mutual oral contact.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

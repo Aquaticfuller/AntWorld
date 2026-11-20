@@ -196,7 +196,8 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     if (state_->autonomy.contains(ref.id) && state_->autonomy.at(ref.id).enabled) change_autonomy(tx,ref,false);
     tx.commit();
 }
-void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source, bool care_motor) {
+void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source, bool care_motor,
+                                   EntityId contacted_recipient) {
     auto& s = *state_; const auto ant = query_ant(ref);
     if (!ant || !ant->alive() || !s.physiology.contains(ref.id) || behavior > IndividualBehavior::Excavate ||
         (behavior != IndividualBehavior::Paused && (ant->stage != LifeStage::Adult || ant->caste != Caste::Worker)))
@@ -236,11 +237,24 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         const auto timing = worker_timing(s, ant->caste);
         const auto interval = timing ? timing->check_interval : p.config.behavior_interval;
         e.key = {after(s.m.now, interval.milliseconds), Phase::Perception, 0, 0, 0};
+        if (contacted_recipient.value) {
+            if (!adult_offers(s) || behavior!=IndividualBehavior::Nurse || !source.value)
+                throw std::logic_error("invalid unattended food offer");
+            e.kind=ScheduledEvent::Kind::Trophallaxis;
+            e.payload=contacted_recipient.value;
+            e.requested_ug=p.config.transfer_limit_ug;
+            e.observed_position_revision=ant->position_revision;
+            e.key={after(s.m.now,s.care_profile->motion->manipulation_duration.milliseconds),Phase::Resolution,0,0,0};
+        }
         p.behavior_event = tx.insert(e); tx.physiology.set(ref.id, p);
     }
     schedule_physiology(tx, ref.id);
     WorldEvent f; f.kind = FactKind::BehaviorChanged; f.actor = ref.id; f.colony = ant->colony; f.stage = ant->stage;
     f.source=source; f.position = ant->position; f.payload = static_cast<std::uint64_t>(behavior); tx.fact(f);
+    if (contacted_recipient.value) {
+        set_activity_work(tx,ref.id,p.behavior_event);
+        observe(tx,ref.id,source,{ObservationPhase::Selected,CareAct::TransferNutrition,contacted_recipient,p.behavior_event,s.m.now,false});
+    }
     if (s.autonomy.contains(ref.id)) { auto a=s.autonomy.at(ref.id); a.last_program_change=s.m.now; tx.autonomy.set(ref.id,a); }
 }
 ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
@@ -271,10 +285,13 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        if (!(anatomical_nest(s) && recipient.stage==LifeStage::Larva?brood_contact(ant,recipient):
-              contact(ant,recipient,s.config,s.social && s.geometry ? nullptr : s.surface.get())) ||
-            query_worker_motion({s.world,recipient.id}) ||
-            !spatially_clear(ant.position,recipient.position)) { f.outcome = Outcome::OutOfReach; return; }
+        const bool adult_offer=adult_offers(s) && recipient.stage==LifeStage::Adult;
+        const bool in_contact=adult_offer ? oral_contact(ant,recipient) :
+              anatomical_nest(s) && recipient.stage==LifeStage::Larva?brood_contact(ant,recipient):
+              contact(ant,recipient,s.config,s.social && s.geometry ? nullptr : s.surface.get());
+        if (!in_contact ||
+            query_worker_motion({s.world,recipient.id}) || (adult_offers(s) && query_worker_motion({s.world,ant.id})) ||
+            (!adult_offer && !spatially_clear(ant.position,recipient.position))) { f.outcome=Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
@@ -381,7 +398,8 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             }
             for (const auto id : candidates) {
                 const auto other = s.ants.get(s.ants.index.at(id));
-                if (id == ant.id || !other.alive() || !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get())) continue;
+                if (id == ant.id || !other.alive() || (adult_offers(s) && other.stage==LifeStage::Adult ?
+                    !oral_contact(ant,other) : !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get()))) continue;
                 const auto q = *query_physiology({s.world, id});
                 const bool hungry_larva = other.stage == LifeStage::Larva && supply.protein_ug &&
                     add(q.tissue_protein_ug, q.crop.protein_ug) < q.config.larval_protein_requirement_ug;

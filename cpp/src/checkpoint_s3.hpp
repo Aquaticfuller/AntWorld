@@ -216,11 +216,11 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 a.position = positions.at(e.actor); b.position = positions.at(target);
                 ensure(prior_stage == LifeStage::Adult && (a.caste == Caste::Worker || (s.care_profile && a.caste==Caste::Queen && s.care.contains(e.actor))) &&
                     (target_stage == LifeStage::Adult || target_stage == LifeStage::Larva) &&
-                    ((anatomical_nest(s) && target_stage==LifeStage::Larva) ||
+                    ((adult_offers(s) && target_stage==LifeStage::Adult) || (anatomical_nest(s) && target_stage==LifeStage::Larva) ||
                      contact(a,b,s.config,s.social && s.geometry ? nullptr : s.surface.get())),
                     "transfer has no living local contact evidence");
                 if (local_founding_provisioning(s,e.actor))
-                    ensure(founding.clear(a.position,b.position,0,e.id) &&
+                    ensure(((adult_offers(s) && target_stage==LifeStage::Adult) || founding.clear(a.position,b.position,0,e.id)) &&
                            ingredient_min(founding_gift_supply(founding.profile(),p),e.transferred)==e.transferred,
                            "founding gift exceeds the locally payable crop");
                 if (s.social) {
@@ -284,7 +284,9 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(work.actor==id && work.key.phase==Phase::Resolution &&
                        (work.kind==ScheduledEvent::Kind::Move || work.kind==ScheduledEvent::Kind::CollectFood ||
                         work.kind==ScheduledEvent::Kind::DeliverFood || work.kind==ScheduledEvent::Kind::SoilAction ||
-                        work.kind==ScheduledEvent::Kind::CareEnd || (mouth_access(s) && work.kind==ScheduledEvent::Kind::IngestCargo &&
+                        work.kind==ScheduledEvent::Kind::CareEnd || (adult_offers(s) && work.kind==ScheduledEvent::Kind::Trophallaxis &&
+                        saved.behavior==IndividualBehavior::Nurse && saved.behavior_event==work.id) ||
+                        (mouth_access(s) && work.kind==ScheduledEvent::Kind::IngestCargo &&
                         s.foragers.contains(id) && s.foragers.at(id).action==work.id)), "activity owns unrelated work");
             }
         } else ensure(!saved.physiology_event.value && !saved.behavior_event.value && saved.behavior == IndividualBehavior::Paused,
