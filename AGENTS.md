@@ -32,6 +32,12 @@ You are implementing AntWorld, a long-term ant colony ecosystem simulator. **Rea
 - Build from a clean repo with reproducible commands; pin any external build dependencies. Never require machine-specific paths or secrets.
 - Do not wire external model APIs, persistent shell/network tools or API keys into the C++ core.
 
+## Local storage
+
+- Keep active generated workspace data below 10 GB. Reuse the current incremental build and check available space before launching a large batch.
+- Use a temporary directory under `out/` for local tests, browser profiles and intermediate experiments. Keep small receipts or explicitly requested evidence. Remove obsolete local experiment outputs when verification is complete, including outputs from failed attempts after recording their outcomes.
+- Keep player saves, original research downloads and checked-in evidence. Use the compact save for ordinary live play. Create a full history export when the user requests one or a verification protocol requires it.
+
 ## Development and verification
 
 - Read `docs/23_S0_Exact_Tasks_and_Test_Cases.md` for S0 expected behavior and tests T00–T13.

@@ -462,6 +462,8 @@
   "Unsupported ecological checkpoint version": "该生态检查点版本不受支持",
   "Unsupported checkpoint or RNG version": "检查点或随机数版本不受支持",
   "Source changed during import; import a stable backup": "导入期间源文件发生变化，请导入稳定备份",
+  "Source SQLite changed before import; import a stable backup": "导入前源 SQLite 已发生变化，请导入稳定的备份。",
+  "The replay index reached its storage limit. Clear derived indexes or increase the cache limit.": "回放索引已达到存储上限。请清理派生索引或提高缓存上限。",
   "FRAME_MATCHED · HISTORY NOT INDEXED": "FRAME_MATCHED · 历史待校验",
   "Diagnostic": "诊断事件",
   "AntSeeded": "初始化个体",

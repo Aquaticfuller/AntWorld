@@ -979,7 +979,12 @@ class LiveTests(unittest.TestCase):
             self.assertEqual(restarted.write("load", {"name": "Moved in Explorer"})["time_ms"], target)
             self.assertEqual(restarted.worker.call("FRAME"), continued)
         catalogue = Catalog(self.folder / "replay")
-        worlds, _, _ = catalogue.browse(catalogue.register(path.with_name("Moved in Explorer.sqlite")))
+        source = path.with_name("Moved in Explorer.sqlite")
+        before_hash = sha256(source.read_bytes()).digest()
+        with patch("op0.archive.shutil.copyfile", side_effect=AssertionError("Closed SQLite replay should read the source directly")):
+            worlds, _, _ = catalogue.browse(catalogue.register(source))
+        self.assertEqual(sha256(source.read_bytes()).digest(), before_hash)
+        self.assertFalse(source.with_name(source.name + "-shm").exists())
         self.assertEqual((worlds[0]["world_id"], worlds[0]["end_ms"], worlds[0]["facts"]),
                          (updated["world_id"], target, updated["facts"]))
         broken = self.live.saves / "Broken.sqlite"

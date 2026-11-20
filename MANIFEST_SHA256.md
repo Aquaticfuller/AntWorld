@@ -7,7 +7,7 @@ Files: 77 (excluding the manifest itself).
 
 | Path | SHA-256 | Bytes |
 |---|---|---:|
-| `AGENTS.md` | `e153e47bb97faa14a7a79b45f823e5a78e990a76900a22894b6fb985ddebc1e9` | 4674 |
+| `AGENTS.md` | `49352f13a895f9032a9b8f78ac519a10dcc37a2aac8b63448c57afae3c6618ff` | 5356 |
 | `CODEX_START_HERE.md` | `56258dafc07ba3e7ed71f455ba73fd70dad7e85f9b85f514b0d7791f950f6ec5` | 7800 |
 | `codex_tasks/S0_KICKOFF_PROMPT.md` | `451135222f6a67f3669059ecad7b42defc833eeb68b081228dbba1e400faa4e3` | 2845 |
 | `codex_tasks/S1_NEXT_STAGE_PROMPT.md` | `d0b5ae6dc4b2087ddfbb6a71e4b57cfcd2843386581a041b1aebe833e032e89f` | 935 |

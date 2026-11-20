@@ -21,6 +21,8 @@ from .codec import ArchiveError, DEATHS, HIGHLIGHTS, decode_fact, label, require
 CACHE_VERSION = 7
 BLOCK_RECORDS = 2048
 META = "meta.json"
+DEFAULT_CACHE_BYTES = 512 * 1024**2
+CACHE_FULL = "The replay index reached its storage limit. Clear derived indexes or increase the cache limit."
 TABLES = """
 CREATE TABLE facts(id INTEGER PRIMARY KEY, time INTEGER NOT NULL, kind INTEGER NOT NULL, actor INTEGER, related INTEGER,
                    offset INTEGER NOT NULL);
@@ -335,9 +337,14 @@ class IndexBuilder:
         return perf_counter() - scan
 
 
-def write_cache(db_path, first, tip, checkpoints, records, capture):
+def write_cache(db_path, first, tip, checkpoints, records, capture, byte_limit):
     with closing(sqlite3.connect(db_path)) as db:
-        db.executescript("PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA cache_size=-16384; PRAGMA temp_store=FILE;" + TABLES)
+        db.executescript("PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; PRAGMA cache_size=-16384; PRAGMA temp_store=MEMORY;")
+        page_size, = db.execute("PRAGMA page_size").fetchone()
+        pages = byte_limit // page_size
+        require(pages > 0, CACHE_FULL)
+        db.execute(f"PRAGMA max_page_count={pages:d}")
+        db.executescript(TABLES)
         builder = IndexBuilder(db, tip, capture, checkpoints)
         scan_s = builder.index(records)
         started = perf_counter()
@@ -370,11 +377,26 @@ def write_cache(db_path, first, tip, checkpoints, records, capture):
 
 
 class Catalog:
-    def __init__(self, cache):
+    def __init__(self, cache, *, cache_limit_bytes=DEFAULT_CACHE_BYTES):
+        require(cache_limit_bytes > 0, "The replay cache limit must be positive")
         self.root = cache.resolve()
         self.root.mkdir(parents=True, exist_ok=True)
+        self.cache_limit_bytes = cache_limit_bytes
         self.import_lock = Lock()
         self.entries = {}
+
+    def cache_bytes(self):
+        total = 0
+        for folder in self.root.iterdir():
+            if folder.is_dir() and folder.name.startswith("build-"):
+                total += sum(file.stat().st_size for file in folder.rglob("*") if file.is_file())
+                continue
+            if len(folder.name) != 24 or any(char not in "0123456789abcdef" for char in folder.name):
+                continue
+            if not (folder / META).is_file():
+                continue
+            total += sum(file.stat().st_size for file in folder.iterdir() if file.name == META or file.suffix == ".sqlite")
+        return total
 
     def register(self, path, title=None, expected=None, description=None, producer=None):
         path = path.resolve(strict=True)
@@ -398,13 +420,24 @@ class Catalog:
         with self.import_lock:
             if (cache / META).is_file():
                 return self.cached(cache), True, (perf_counter() - started) * 1000
+            available = self.cache_limit_bytes - self.cache_bytes()
+            source = entry["path"]
+            if "wal" in entry["members"]:
+                available -= source.stat().st_size + source.with_name(source.name + "-wal").stat().st_size
+            require(available > 0, CACHE_FULL)
             with TemporaryDirectory(dir=self.root, prefix="build-") as temp:
                 work = Path(temp) / "complete"
                 work.mkdir()
                 with source_inputs(entry["path"], Path(temp), entry["members"]) as inputs:
                     result = []
                     for i, (first, tip, cuts, records, capture) in enumerate(inputs):
-                        data = write_cache(work / f"{i}.sqlite", first, tip, cuts, records, capture)
+                        try:
+                            data = write_cache(work / f"{i}.sqlite", first, tip, cuts, records, capture, available)
+                        except sqlite3.OperationalError as err:
+                            if getattr(err, "sqlite_errorcode", None) == sqlite3.SQLITE_FULL:
+                                raise ArchiveError(CACHE_FULL) from err
+                            raise
+                        available -= data["timings"]["cache_bytes"]
                         title = entry["title"] if i == 0 else f"{entry['title']} · world {i + 1}"
                         data.update(key=f"{archive}.{i}", title=title, description=entry["description"],
                                     archive_sha256=entry["members"]["archive"], source_wal_sha256=entry["members"].get("wal"),
@@ -416,7 +449,9 @@ class Catalog:
                 elapsed = (perf_counter() - started) * 1000
                 for data in result:
                     data["timings"]["total_import_ms"] = round(elapsed, 2)
-                (work / META).write_bytes(json_bytes(result))
+                metadata = json_bytes(result)
+                require(len(metadata) <= available, CACHE_FULL)
+                (work / META).write_bytes(metadata)
                 try:
                     work.rename(cache)
                 except OSError:

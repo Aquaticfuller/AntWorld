@@ -14,7 +14,7 @@ from zipfile import BadZipFile
 from . import DAY
 from .archive import pack, zip_terminal_frame
 from .codec import ArchiveError, require
-from .index import Catalog
+from .index import DEFAULT_CACHE_BYTES, Catalog
 from .locale import LANGUAGES, translator
 from .query import HOUR, ReadAPI
 
@@ -86,12 +86,13 @@ ERRORS = (ArchiveError, ValueError, KeyError, TypeError, OSError, sqlite3.Error,
 
 def cache_path():
     if os.name == "nt":
-        return Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local")) / "AntWorld/OP0"
+        return ROOT / "out/op0-cache"
     return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "antworld/op0"
 
 
-def default_catalog(path, include_demos=True, micro_first=False, r0_first=False, r0_r1_first=False):
-    catalog = Catalog(path)
+def default_catalog(path, include_demos=True, micro_first=False, r0_first=False, r0_r1_first=False, *,
+                    cache_limit_bytes=DEFAULT_CACHE_BYTES):
+    catalog = Catalog(path, cache_limit_bytes=cache_limit_bytes)
     if include_demos:
         manifests = {}
         producers = {}
@@ -360,6 +361,8 @@ class Terminal:
 def main(argv=None):
     parser = ArgumentParser(prog="python -m op0", description="Run MicroWorld or replay committed AntWorld history.")
     parser.add_argument("--cache", type=Path)
+    parser.add_argument("--cache-limit-mib", type=int, default=DEFAULT_CACHE_BYTES // 1024**2,
+                        help="Storage budget for replay indexes and temporary SQLite imports (default: %(default)s MiB).")
     parser.add_argument("--no-demos", action="store_true")
     parser.add_argument("--micro", action="store_true", help="Open MicroWorld and put its demonstrations first.")
     parser.add_argument("--r0", action="store_true", help="Put the paired R0 nests first in the archive catalogue.")
@@ -388,7 +391,8 @@ def main(argv=None):
             pack(args.directory, args.output)
             return 0
         cache = args.cache or (ROOT / "out/m0-op0-cache" if args.micro else cache_path())
-        catalog = default_catalog(cache, not args.no_demos, args.micro, args.r0, args.r0_r1)
+        catalog = default_catalog(cache, not args.no_demos, args.micro, args.r0, args.r0_r1,
+                                  cache_limit_bytes=args.cache_limit_mib * 1024**2)
         if args.mode == "import":
             worlds, elapsed = register_import(catalog, args.source)
             for meta in worlds:

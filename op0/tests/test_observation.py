@@ -20,7 +20,7 @@ from op0.archive import file_hash, pack
 from op0.cli import DEMOS, M1_DEMOS, MICRO_DEMOS, R0_DEMOS, R0_R1_DEMOS, ROOT, VERIFIED, api_get, default_catalog
 from op0.codec import ArchiveError
 from op0.geometry import clear_centers, slice_at
-from op0.index import Catalog
+from op0.index import CACHE_FULL, Catalog
 from op0.locale import translator
 from op0.query import ReadAPI
 from op0.server import bind
@@ -43,6 +43,26 @@ def selected_facts(source, wanted):
             checksum.update(payload)
             total += 1
     return result, total, checksum.hexdigest()
+
+
+class ReplayStorageTests(unittest.TestCase):
+    def test_small_budget_rejects_without_leaving_a_partial_index(self):
+        with TemporaryDirectory(prefix="op0-cache-limit-") as temp:
+            folder, name, *_ = MICRO_DEMOS[0]
+            source = folder / name
+            cache = Catalog(Path(temp), cache_limit_bytes=64 * 1024)
+            archive = cache.register(source)
+            with self.assertRaises(ArchiveError) as error:
+                cache.browse(archive)
+            self.assertEqual(str(error.exception), CACHE_FULL)
+            self.assertEqual(list(cache.root.iterdir()), [])
+            abandoned = cache.root / "build-interrupted"
+            abandoned.mkdir()
+            (abandoned / "scratch").write_bytes(b"x" * (64 * 1024))
+            self.assertEqual(cache.cache_bytes(), 64 * 1024)
+            with self.assertRaises(ArchiveError):
+                cache.browse(archive)
+            self.assertEqual(list(cache.root.iterdir()), [abandoned])
 
 
 class ObservationTests(unittest.TestCase):

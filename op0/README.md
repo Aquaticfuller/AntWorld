@@ -27,7 +27,7 @@ Keep that PowerShell window open. If the browser does not launch, visit [the loc
 py -X utf8 -m op0 serve
 ~~~
 
-To choose a particular Python installation, pass its complete executable path with `-Python`. The default cache lives at `$env:LOCALAPPDATA\AntWorld\OP0`. Pass `-Cache 'E:\AntWorldObservationCache'` to use another drive with space. The largest bundled archive needs roughly 193 MiB of index space. Initial indexing may take several seconds. `Ctrl+C` stops the program.
+To choose a particular Python installation, pass its complete executable path with `-Python`. On Windows the cache defaults to `out/op0-cache` in the checkout. MicroWorld uses `out/m0-op0-cache`. Pass `-Cache 'E:\AntWorldObservationCache'` to put it elsewhere or point to an existing cache from an older installation. The largest bundled archive needs roughly 193 MiB of index space. Initial indexing may take several seconds. `Ctrl+C` stops the program.
 
 Use the language selector in the top-right corner to switch between English and Simplified Chinese. The viewer keeps the current world, time, selected individual and comparison. The browser remembers the setting for this localhost address. Raw event names, parameters, evidence statuses and archive hashes remain available for review.
 
@@ -58,7 +58,9 @@ Enter `lang zh-CN` or `lang en` at any terminal prompt. The terminal remembers t
 
 ## Add an experiment after a Core change
 
-Import a stable backup of a native AntWorld SQLite store or a witness ZIP. For a SQLite backup that has a still-required WAL, place the matching `-wal` next to it. Close the source writer or export a consistent backup first. OP0 uses a temporary private copy and never creates a SQLite sidecar next to the source. A malformed or mismatched file fails verification.
+Import a stable backup of a native AntWorld SQLite store or a witness ZIP. Close the source writer or export a consistent backup first. OP0 reads a closed SQLite database without a WAL directly in read-only mode. When the backup requires its WAL, place the matching `-wal` next to it. OP0 verifies and opens a temporary private copy for that case, then removes the copy. A malformed or mismatched file fails verification.
+
+New replay indexes and private SQLite import copies share a 512 MiB budget per viewer. The viewer checks the existing cache size before starting a new index and discards incomplete indexes. To browse more history, close the viewer and clear its derived index folders or choose a separate cache path and budget with `python -m op0 --cache <path> --cache-limit-mib <size> serve`. The source ZIP, SQLite files and manual saves are separate from the browse cache.
 
 ~~~powershell
 py -X utf8 -m op0 import 'D:\Experiments\new-world.zip'

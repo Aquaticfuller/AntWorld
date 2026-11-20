@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--core", type=Path, default=core_path())
     parser.add_argument("--browser", type=Path, required=True)
     parser.add_argument("--scratch", type=Path, default=ROOT / "out")
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path, help="Keep screenshots and receipts in this directory.")
     parser.add_argument("--node", default="node")
     parser.add_argument("--mode", default="m1", choices=("m1", "m2", "overhaul", "founder-access", "live", "habitat", "nursery",
                                                         "ecology", "m1-witnesses", "m1-soak"))
@@ -30,6 +30,7 @@ def main():
     args.scratch.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(dir=args.scratch, prefix="m1-browser-") as scratch:
         work = Path(scratch).resolve()
+        output = args.output.resolve() if args.output else work / "evidence"
         catalog = Catalog(work / "index")
         if args.mode == "m1-witnesses":
             from tools.verify_m1_habitat import read_jsonl
@@ -46,7 +47,7 @@ def main():
             started = process_time()
             try:
                 run([args.node, str(ROOT / "op0/tests/browser_smoke.mjs"), str(args.browser.absolute()),
-                     f"http://127.0.0.1:{server.server_port}", str(args.output.resolve()), args.mode],
+                     f"http://127.0.0.1:{server.server_port}", str(output), args.mode],
                     cwd=ROOT, env=environment, check=True, timeout=360)
                 if args.mode == "m1-soak":
                     core = live.worker
@@ -56,7 +57,7 @@ def main():
                                       native_process_cpu_seconds=cpu_seconds(core.process.pid),
                                       host_process_cpu_seconds=round(process_time() - started, 6),
                                       persisted_save_bytes=sum(p.stat().st_size for p in live.saves.glob("*.sqlite")))
-                    path = args.output / "m1-soak-receipt.json"
+                    path = output / "m1-soak-receipt.json"
                     report = json.loads(path.read_bytes()) | sample
                     path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
             finally:

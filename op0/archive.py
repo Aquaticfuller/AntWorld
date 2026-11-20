@@ -43,8 +43,11 @@ def json_bytes(value):
     return json.dumps(value, ensure_ascii=True, allow_nan=False, separators=(",", ":")).encode()
 
 
-def read_db(path):
-    db = sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)
+def read_db(path, *, immutable=False):
+    uri = path.resolve().as_uri() + "?mode=ro"
+    if immutable:
+        uri += "&immutable=1"
+    db = sqlite3.connect(uri, uri=True)
     db.execute("PRAGMA trusted_schema=OFF")
     db.execute("PRAGMA query_only=ON")
     return db
@@ -225,8 +228,8 @@ def legacy_records(db, world):
         yield U32.pack(len(raw)), raw
 
 
-def sqlite_inputs(path):
-    with closing(read_db(path)) as db:
+def sqlite_inputs(path, *, immutable=False):
+    with closing(read_db(path, immutable=immutable)) as db:
         db.execute("BEGIN")
         application, = db.execute("PRAGMA application_id").fetchone()
         version, = db.execute("PRAGMA user_version").fetchone()
@@ -272,15 +275,21 @@ def source_inputs(path, scratch, fingerprinted):
         with closing(zip_inputs(path)) as inputs:
             yield inputs
         return
+    if "wal" not in fingerprinted:
+        require(file_hash(path) == fingerprinted["archive"], "Source SQLite changed before import; import a stable backup")
+        # The catalogue checks the fingerprint again before publishing the index.
+        # A verified, closed database can be read without a copy or a sidecar.
+        with closing(sqlite_inputs(path, immutable=True)) as inputs:
+            yield inputs
+        return
     with TemporaryDirectory(dir=scratch, prefix="source-") as folder:
         copy = Path(folder) / "input.sqlite"
         shutil.copyfile(path, copy)
         require(file_hash(copy) == fingerprinted["archive"], "Source SQLite changed during copy; import a stable backup")
-        if "wal" in fingerprinted:
-            wal = path.with_name(path.name + "-wal")
-            copy_wal = copy.with_name(copy.name + "-wal")
-            shutil.copyfile(wal, copy_wal)
-            require(file_hash(copy_wal) == fingerprinted["wal"], "Source WAL changed during copy; import a stable backup")
+        wal = path.with_name(path.name + "-wal")
+        copy_wal = copy.with_name(copy.name + "-wal")
+        shutil.copyfile(wal, copy_wal)
+        require(file_hash(copy_wal) == fingerprinted["wal"], "Source WAL changed during copy; import a stable backup")
         with closing(sqlite_inputs(copy)) as inputs:
             yield inputs
 
