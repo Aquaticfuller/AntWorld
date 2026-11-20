@@ -77,6 +77,14 @@ Windows LLVM/MinGW and Linux GCC agree at all 36 cuts in each of Physics 40, 41,
 
 Full SQLite replay exposed an independent engineering defect. After a legal change of floor berth, the verifier compared an earlier committed journey with the final shortened connector. The verifier now reconstructs the discarded prefix from committed adjacent outward steps and checks the paid local handoff, surviving suffix, cursor and actual subsequent moves. On seed 2, the compact snapshot one millisecond before the first wall delivery and the full archive just after it both reproduce the same native frame and subsequent facts as uninterrupted execution. Neither format or its history was rewritten. Event seeking advances in cancellable native timestamp batches. Actual playback resumes at 1× and the event panels report a committed transfer even when some of its components are zero.
 
+### Time to see the wall delivery
+
+The Windows hosted browser timed out after 90 seconds with simulation time at 7,169,437,372 ms. The target handoff occurs at 9,190,050,198 ms. The local reference spent 58.70 of 59.12 seconds inside native simulation advance calls when driven one batch at a time. The observer's encoded frame and event replies accounted for little of the delay. [Original Windows failure and exact stop](https://github.com/Aquaticfuller/AntWorld/actions/runs/44764376319/job/136384969906)
+
+Small collision queries now retain their integer partition boundaries on the stack. Stationary, zero-width support probes read their half-open material cell directly when the original query budget permits it. Larger queries retain the sorted partition, ordered edits and budget checks. Tests cover a clipped wall, half-open cell faces, negative coordinates, overlapping fill and excavation, heap spill and a budget rejection. Cancelling a seek returns the last complete published timestamp immediately.
+
+A paired Windows Release measurement took 59.12 seconds with the reference and 10.00 seconds with the change. Both processed the same 312 batches, returned byte-for-byte identical final frames and complete canonical histories, stopped at event 196,147 with a committed tip of 196,150, and returned the same number of bytes for every observer command. One pair characterizes this workload. The browser continues to use the original 90-second deadline. The historical S6.4 application performance result remains `FAIL`. [Exact timings, workload and hashes](evidence/founder-access/wall-seek-cost.json)
+
 From a full Windows checkout use the following commands. Build first. The live observers and assays share the resulting binary. A Linux CMake build can supply its executable with `--core`. Only compact receipts are written by the unattended assay.
 
 ~~~powershell
@@ -92,4 +100,7 @@ py -3 -B -m tools.profile_founder_activity "$data/physics41-windows.jsonl" --see
 py -3 -B -m tools.profile_founder_activity "$data/physics44-windows.jsonl" --seed 2 --output out/workload44.json
 py -3 -B -m tools.qualify_founder_access --fork "$data/physics43-windows.jsonl" "$data/physics44-windows.jsonl" --seed 2 --output out/empty-return-fork.json
 py -3 -B -m tools.test_m1_browser --mode founder-access --browser 'C:\Program Files\Google\Chrome\Application\chrome.exe' --output out/founder-browser
+py -3 -B -m tools.profile_single_nest_seek --reference out/m0-live-bin/antworld_m0_live_v19.exe --candidate out/m0-live-bin/antworld_m0_live_v20.exe --output out/wall-seek-cost.json
 ~~~
+
+For the paired measurement on a new installation, build the reference executable from commit `d05a14b8ca583785238ebcd69dfa2e3941aa7ed3` and pass its path to `--reference`. The two builds must use the same toolchain and configuration. The benchmark uses a temporary directory, streams the journal hash, and writes one small JSON receipt.

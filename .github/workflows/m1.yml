@@ -44,11 +44,13 @@ jobs:
           if (-not $exe) { throw 'Native live executable was not built' }
           $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $exe).Path
           $env:M0_LIVE_TEST_ROOT = $env:RUNNER_TEMP
-          $receipt = Join-Path $env:RUNNER_TEMP 'founder-44.jsonl'
-          python -B -m tools.qualify_founder_access --core $exe --physics 44 --scratch $env:RUNNER_TEMP --output $receipt
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python -B -m tools.qualify_founder_access --compare research/single_nest/evidence/founder-access/physics44-windows.jsonl $receipt
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($version in 43, 44) {
+            $receipt = Join-Path $env:RUNNER_TEMP "founder-$version.jsonl"
+            python -B -m tools.qualify_founder_access --core $exe --physics $version --scratch $env:RUNNER_TEMP --output $receipt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            python -B -m tools.qualify_founder_access --compare "research/single_nest/evidence/founder-access/physics$version-windows.jsonl" $receipt
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
           python -B -m unittest op0.tests.test_nest_volume `
             op0.tests.test_live.LiveTests.test_observatory_presets_preserve_native_geometry_and_resources `
             op0.tests.test_live.LiveTests.test_reachable_berth_version_and_readonly_history_survive_restore `

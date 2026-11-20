@@ -237,6 +237,44 @@ void anatomical_clearance() {
     require(attachment(view,worker,heading)==PositionM{0,-1,0},"interior ceiling has incorrect support");
     require(!anatomy_sweep(view,worker,{0,.004,.00075},heading,9),"a move crossed the sealed roof");
 }
+
+void chamber_partition_boundaries() {
+    GeometryDefinition terrain;
+    terrain.config.origin_m={};
+    terrain.config.quantum_m=.00025;
+    terrain.config.initial_solid={{-16,-2,-2},{16,2,2}};
+    for (int x=-15;x<16;x+=2) terrain.voids.push_back({{x,-2,-2},{x+1,2,2}});
+    terrain.rocks.push_back({{4,-2,-2},{5,2,2}});
+    GeometryEdits edits;
+    EditIndex index;
+    for (const auto action:{SoilAction::Excavate,SoilAction::Fill}) {
+        GeometryEdit edit;
+        edit.id={edits.size()+1};
+        edit.kind=action;
+        edit.box={{action==SoilAction::Excavate ? -8 : -7,-2,-2},{-6,2,2}};
+        edits.emplace(edit.id,edit);
+        for (const auto key:overlapping_bricks(edit.box,terrain.config.brick_q,100))
+            index.emplace(std::pair{key,edit.id},0);
+    }
+    const GeometryView view{terrain,edits,index,1024}, limited{terrain,edits,index,26};
+    std::uint64_t expected_volume{};
+    for (int x=-17;x<=16;++x) {
+        const bool outside=x < -16 || x >= 16;
+        const bool empty=outside || x == -8 || (x != -7 && x % 2 != 0);
+        if (!outside && empty) expected_volume+=16;
+        for (const double offset:{0.,.375}) {
+            const PositionM p{(x+offset)*terrain.config.quantum_m,0,0};
+            require(continuous_clear(view,p,p,0)==empty && continuous_clear(limited,p,p,0)==empty,
+                    "stationary body probe disagrees with the ordered half-open cells");
+        }
+    }
+    require(material_volume(view,terrain.config.initial_solid,Material::Void)==expected_volume,
+            "large partition lost a boundary after spilling to heap storage");
+    bool rejected=false;
+    try { (void)material_volume(limited,terrain.config.initial_solid,Material::Void); }
+    catch (const std::length_error&) { rejected=true; }
+    require(rejected,"exact partition silently exceeded its cell budget");
+}
 } // namespace
 
 int main(int argc,char** argv) try {
@@ -250,6 +288,7 @@ int main(int argc,char** argv) try {
     local_nest_motion(folder/"rest-motion.sqlite");
     floor_load_feedback();
     anatomical_clearance();
+    chamber_partition_boundaries();
     return 0;
 } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';

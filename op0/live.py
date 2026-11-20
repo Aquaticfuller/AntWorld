@@ -48,7 +48,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v19"), installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
+    paths = (installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
+             installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
              installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
              installed.with_stem("antworld_m0_live_v12"),
@@ -740,9 +741,10 @@ class LiveSession:
                 elif resource == "clock":
                     rate, running = data.get("rate", self.rate), data.get("running", self.running)
                     require(type(rate) is int and rate in RATES and type(running) is bool, "Invalid live clock settings")
-                    self.advance()
                     if self.seeking():
                         self.stop_seek("cancelled")
+                    else:
+                        self.advance()
                     self.running = data.get("running", self.running)
                     self.rate = data.get("rate", self.rate)
                     if self.running:

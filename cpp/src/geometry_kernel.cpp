@@ -26,25 +26,49 @@ Material classify(const GeometryView &v, PointQ p, const std::vector<GeometryEdi
             return Material::Void;
     return Material::Soil;
 }
+// Most body sweeps intersect only one or two material boundaries. Larger
+// queries spill to a vector and use exactly the same sorted partition.
+class PartitionAxis {
+    std::array<std::int32_t, 8> local_;
+    std::size_t size_{};
+    std::vector<std::int32_t> overflow_;
+public:
+    PartitionAxis(std::int32_t lo, std::int32_t hi) : size_(2) {
+        local_[0] = lo;
+        local_[1] = hi;
+    }
+    void split(std::int32_t value) {
+        if (value == local_[0] || value == local_[1]) return;
+        if (size_ < local_.size()) local_[size_] = value;
+        else {
+            if (overflow_.empty()) overflow_.assign(local_.begin(), local_.end());
+            overflow_.push_back(value);
+        }
+        ++size_;
+    }
+    std::span<const std::int32_t> finish() {
+        if (size_ == 2) return {local_.data(), size_};
+        auto values = overflow_.empty() ? std::span(local_).first(size_) : std::span(overflow_);
+        std::sort(values.begin(), values.end());
+        return values.first(static_cast<std::size_t>(std::unique(values.begin(), values.end()) - values.begin()));
+    }
+};
 template <class F> void partition(const GeometryView &v, BoxQ query, F visit) {
     if (!box_valid(query))
         throw std::invalid_argument("empty geometry query box");
     const auto ids = relevant_edits(v, query);
-    std::array<std::vector<std::int32_t>, 3> axes{std::vector<std::int32_t>(0), std::vector<std::int32_t>(0),
-                                                  std::vector<std::int32_t>(0)};
-    axes[0] = {query.min.x, query.max.x};
-    axes[1] = {query.min.y, query.max.y};
-    axes[2] = {query.min.z, query.max.z};
+    std::array cuts{PartitionAxis(query.min.x, query.max.x), PartitionAxis(query.min.y, query.max.y),
+                    PartitionAxis(query.min.z, query.max.z)};
     auto split = [&](BoxQ b) {
         b = intersection(b, query);
         if (!box_valid(b))
             return;
-        axes[0].push_back(b.min.x);
-        axes[0].push_back(b.max.x);
-        axes[1].push_back(b.min.y);
-        axes[1].push_back(b.max.y);
-        axes[2].push_back(b.min.z);
-        axes[2].push_back(b.max.z);
+        cuts[0].split(b.min.x);
+        cuts[0].split(b.max.x);
+        cuts[1].split(b.min.y);
+        cuts[1].split(b.max.y);
+        cuts[2].split(b.min.z);
+        cuts[2].split(b.max.z);
     };
     split(v.definition.config.initial_solid);
     for (auto b : v.definition.voids)
@@ -53,10 +77,9 @@ template <class F> void partition(const GeometryView &v, BoxQ query, F visit) {
         split(b);
     for (auto id : ids)
         split(v.edits.at(id).box);
+    const std::array axes{cuts[0].finish(), cuts[1].finish(), cuts[2].finish()};
     std::size_t cells = 1;
-    for (auto &axis : axes) {
-        std::sort(axis.begin(), axis.end());
-        axis.erase(std::unique(axis.begin(), axis.end()), axis.end());
+    for (auto axis : axes) {
         if (axis.size() - 1 > v.partition_budget / cells)
             throw std::length_error("exact geometry partition budget exceeded");
         cells *= axis.size() - 1;
@@ -83,12 +106,14 @@ std::vector<PointQ> overlapping_bricks(BoxQ b, std::int32_t side, std::size_t bu
     return result;
 }
 std::vector<GeometryEditId> relevant_edits(const GeometryView &v, BoxQ b) {
+    if (v.index.empty()) return {};
     const auto side = v.definition.config.brick_q;
     const auto lo = brick_key(b.min, side), hi = brick_key({b.max.x - 1, b.max.y - 1, b.max.z - 1}, side);
     std::set<GeometryEditId> ids;
-    // Large administrative queries may scan the compact index; local queries only visit buckets.
+    // A small filtered index costs less to scan than allocating a list of
+    // brick coordinates. Honour the original brick-enumeration budget.
     const BoxQ keys{lo, {hi.x + 1, hi.y + 1, hi.z + 1}};
-    if (volume(keys) > v.index.size()) {
+    if (volume(keys) > v.index.size() || (v.index.size() <= 8 && v.partition_budget >= v.index.size())) {
         for (const auto &[key, unused] : v.index) {
             (void)unused;
             if (contains(keys, key.first) && box_valid(intersection(v.edits.at(key.second).box, b)))
@@ -186,6 +211,14 @@ bool sweep_clear(const GeometryView& v,PositionM from,PositionM to,const std::ar
     const auto query=intersection(c.initial_solid,{{low[0],low[1],low[2]},{high[0],high[1],high[2]}});
     if (!box_valid(query)) return true;
     const bool point=half==std::array{0.,0.,0.};
+    if (point && a == b && v.partition_budget >= 27 && v.partition_budget >= v.index.size()) {
+        // A stationary point occupies one half-open material cell. Its padded
+        // query spans at most 3 cells per axis, including nonintegral inputs.
+        const PointQ cell{static_cast<std::int32_t>(std::floor(a[0])),
+                          static_cast<std::int32_t>(std::floor(a[1])),
+                          static_cast<std::int32_t>(std::floor(a[2]))};
+        return material_at(v, cell) == Material::Void;
+    }
     bool clear=true;
     partition(v,query,[&](BoxQ cell,Material material) {
         if (clear && material!=Material::Void &&

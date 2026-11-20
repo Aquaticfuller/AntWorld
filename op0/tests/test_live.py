@@ -776,7 +776,10 @@ class LiveTests(unittest.TestCase):
 
         self.live.write("seek", {"target": "egg"})
         self.advance(100)
-        cancelled = self.live.write("clock", {"running": False})
+        with self.live.lock:
+            current_cut = self.live.worker.call("FRAME")
+            cancelled = self.live.write("clock", {"running": False})
+            self.assertEqual(self.live.worker.call("FRAME"), current_cut)
         self.assertEqual((cancelled["fast_forward"]["state"], cancelled["running"], cancelled["rate"]),
                          ("cancelled", False, 1))
 
