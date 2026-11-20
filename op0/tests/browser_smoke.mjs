@@ -116,10 +116,16 @@ async function r0World() {
     assert.equal(await evaluate("app.reference.title"), "R0 · matched reference");
     assert.match(await evaluate("$('compare-cards').textContent"), /Physics 32.*Physics 29/s);
     await screenshot("r0-matched-nest-comparison");
+    await evaluate("window.testOriginalCut = app.comparisonCut; window.testOriginalCut.key");
+    const comparisonReads = "performance.getEntriesByType('resource').filter(r => new URL(r.name).pathname === '/api/v1/compare').length";
+    const readCount = await evaluate(comparisonReads);
     await select("locale", "zh-CN");
-    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && document.querySelectorAll('.compare-nest').length === 2"),
+    await wait(() => evaluate("document.documentElement.lang === 'zh-CN' && document.querySelectorAll('.compare-nest').length === 2 && $('compare-cards').textContent.includes('\\u914d\\u5bf9\\u5bf9\\u7167')"),
         "Localized comparison");
     assert.match(await evaluate("$('compare-cards').textContent"), /\u914d\u5bf9\u5bf9\u7167/);
+    assert.equal(await evaluate("app.comparisonCut === window.testOriginalCut"), true);
+    assert.equal(await evaluate(comparisonReads), readCount);
+    await evaluate("delete window.testOriginalCut");
     assert.deepEqual(exceptions, []);
     result.segment = {start: segment.start.id, end: segment.completion.id, actor: mark.ant, time_ms: mark.time_ms};
     result.status = "PASS";

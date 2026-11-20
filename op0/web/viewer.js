@@ -26,7 +26,7 @@ const app = {
     visibleSummary: null,
     map: {zoom: 1, x: 0, y: 0}, drag: null, activity: null, activityVersion: 0, playVersion: 0, playingDelivery: false,
     eventAfter: null, eventListVersion: 0, seekVersion: 0, openVersion: 0, playback: null,
-    compare: false, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0, live: false
+    compare: false, comparisonCut: null, reference: null, referenceSeries: [], compareVersion: 0, referenceVersion: 0, live: false
 };
 
 function tr(message, values = {}) {
@@ -286,6 +286,7 @@ async function openArchive(key, preferred) {
 
 function setMode(compare) {
     app.compare = compare;
+    if (!compare) app.comparisonCut = null;
     $("viewer").hidden = compare;
     $("comparison").hidden = !compare;
     toggle("compare-tab", compare);
@@ -1458,12 +1459,18 @@ async function loadReference(preferred) {
 async function updateComparison() {
     const version = ++app.compareVersion;
     const nest = [app.meta, app.reference].some(m => [32,33].includes(m.settings?.physics || m.physics)) ? "1" : "0";
-    const [data, lists] = await Promise.all([api("compare", {left: app.meta.key, right: app.reference.key, time_ms: app.time, nest}),
-        Promise.all([app.meta, app.reference].map(m => {
-            const low = Math.floor(Math.min(app.time, m.end_ms) / DAY) * DAY;
-            return api("world/" + m.key + "/events", {group: "highlights", since_ms: low, until_ms: Math.min(low + DAY - 1, m.end_ms), limit: 5});
-        }))]);
-    if (!app.compare || version !== app.compareVersion) return;
+    const request = {left: app.meta.key, right: app.reference.key, time_ms: app.time, nest};
+    const key = JSON.stringify(request);
+    if (app.comparisonCut?.key !== key) {
+        const [data, lists] = await Promise.all([api("compare", request),
+            Promise.all([app.meta, app.reference].map(m => {
+                const low = Math.floor(Math.min(request.time_ms, m.end_ms) / DAY) * DAY;
+                return api("world/" + m.key + "/events", {group: "highlights", since_ms: low, until_ms: Math.min(low + DAY - 1, m.end_ms), limit: 5});
+            }))]);
+        if (!app.compare || version !== app.compareVersion) return;
+        app.comparisonCut = {key, data, lists};
+    }
+    const {data, lists} = app.comparisonCut;
     $("compare-marker-option").hidden = !data.worlds.some(trial => trial.nest);
     const differing = Object.values(data.settings).filter(s => s.status === "different").length;
     const unknown = Object.values(data.settings).filter(s => s.status === "unknown").length;
