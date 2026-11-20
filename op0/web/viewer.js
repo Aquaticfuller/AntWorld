@@ -540,6 +540,44 @@ async function selectAnt(id) {
     inspect(false);
     await seek(app.time, app.selectedFact);
 }
+function pinnedAtDisplayedCut(event) {
+    return Boolean(event?.position_m && (!app.live || (!liveView.state?.running && event.time_ms === app.time)));
+}
+
+function liveTransferSites(event, view) {
+    if (!event?.position_m || !view || view.running || event.time_ms !== view.time_ms || !event.mass_ug?.some(n => n > 0)) return null;
+    const exchange = view.habitat?.adult_offers && event.kind === "NutritionTransferred";
+    const meal = view.habitat?.mouth_access && event.kind === "FoundressNestMeal";
+    const wallDelivery = view.habitat?.wall_handoff && event.kind === "FoodDelivered" && event.payload === "1";
+    if (!exchange && !meal && !wallDelivery) return null;
+    const actor = view.ants.find(ant => ant.id === event.actor);
+    if (actor?.stage !== "Adult" || !actor.body ||
+        !actor.position_m.every((v,i) => Math.abs(v - event.position_m[i]) < 1e-9)) return null;
+    let other;
+    if (exchange) {
+        const receiver = view.ants.find(ant => ant.id === event.recipient);
+        if (receiver?.stage !== "Adult" || !receiver.body) return null;
+        other = receiver.body.mouth_m;
+    } else other = view.colonies.find(colony => colony.id === event.colony)?.position_m;
+    if (!other) return null;
+    const mouth = actor.body.mouth_m;
+    const gap = Math.hypot(...mouth.map((v,i) => v - other[i]));
+    return {mouth, other, label: tr(exchange ? "Mouth separation {distance}" :
+        "Mouth to depot {distance}", {distance: withUnit(gap * 1000,"mm")})};
+}
+
+function drawTransferSites(ctx, sites, project, visible, width, height) {
+    if (!visible(sites.mouth) || !visible(sites.other)) return;
+    const a = project(sites.mouth), b = project(sites.other);
+    nestCallout(ctx,a,sites.label,"#ffe4a1",[28,-32],width,height);
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]);
+    ctx.strokeStyle = "#fff2c7"; ctx.lineWidth = 1.5; ctx.stroke();
+    circle(ctx,a[0],a[1],3,"#ffe4a1","#2b231d");
+    circle(ctx,b[0],b[1],5,"transparent","#99e5db");
+    ctx.restore();
+}
+
 function transferReceipt(e) {
     if (!e.mass_ug || !["NutritionTransferred", "FoodDelivered", "FoundressNestMeal"].includes(e.kind)) return null;
     const individual = id => {
@@ -568,6 +606,8 @@ function transferReceipt(e) {
         masses.append(ingredient);
     }
     card.append(route, masses);
+    const sites = app.live && liveTransferSites(e,liveView.state);
+    if (sites) card.append(node("p",tr("At this cut · {measurement}",{measurement:sites.label}),"flow-contact"));
     return card;
 }
 function showEvent(e) {
@@ -1270,10 +1310,14 @@ function drawMap(motionOnly = false) {
     }
     if (app.live) drawLiveActions(ctx, point, fits, time);
     if (!motionOnly) describeMap(visible, underground, state, trail, motion, segment, plan, display);
-    if (app.selectedFact && fits(app.selectedFact.position_m)) {
-        const [x, y] = point(app.selectedFact.position_m);
-        ctx.strokeStyle = "#ffe1a3";
-        ctx.strokeRect(x - 7, y - 7, 14, 14);
+    if (pinnedAtDisplayedCut(app.selectedFact)) {
+        const sites = app.live && liveTransferSites(app.selectedFact,liveView.state);
+        if (sites) drawTransferSites(ctx,sites,point,fits,width,height);
+        else if (fits(app.selectedFact.position_m)) {
+            const [x, y] = point(app.selectedFact.position_m);
+            ctx.strokeStyle = "#ffe1a3";
+            ctx.strokeRect(x - 7, y - 7, 14, 14);
+        }
     }
     scaleMark(ctx, width, height, p, orientation);
     ctx.font = '11px "Cascadia Mono", "Microsoft YaHei", monospace';

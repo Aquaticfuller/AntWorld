@@ -254,7 +254,7 @@ function drawNest(canvas, state, motionOnly) {
     }
     const opening = app.geometry.openings || [];
     if (opening.length) add(opening[Math.floor(opening.length / 2)], "Open entrance", "#bcdea5", [23,-27]);
-    if (app.selectedFact?.position_m && visible(app.selectedFact.position_m)) events.push(app.selectedFact);
+    if (pinnedAtDisplayedCut(app.selectedFact) && visible(app.selectedFact.position_m)) events.push(app.selectedFact);
     else if (app.live && liveView.state.running && liveView.state.rate === 1) {
         const at = app.renderedTimeMs;
         const recent = [...liveView.state.actions, ...liveView.state.events.filter(event =>
@@ -323,8 +323,11 @@ function drawNest(canvas, state, motionOnly) {
             ctx.fillRect(p[0] - 1, p[1] - 1, 2, 2);
         }
     }
-    for (const event of events) nestCallout(ctx,project(event.position_m),
-        `${tr(event.kind)} · #${event.id}`,"#f3da94",[44,-44],width,height);
+    for (const event of events) {
+        const sites = app.live && liveTransferSites(event,liveView.state);
+        if (sites) drawTransferSites(ctx,sites,project,visible,width,height);
+        else nestCallout(ctx,project(event.position_m),`${tr(event.kind)} · #${event.id}`,"#f3da94",[44,-44],width,height);
+    }
     app.hits = actors.map(({ant, p, size}) => ({x: p[0], y: p[1], radius: size + 6, id: ant.id, ants: [ant]}));
     nestView.lastDrawMs = performance.now() - started;
     if (!motionOnly) {

@@ -8,6 +8,10 @@ Run `.\tools\start_m0.cmd`. Under **Colony setup**, choose **Worker food offers 
 
 To see the other route, select **Food access experiment · Physics 40**, finite seed 3. Follow **Food delivery**, **Queen eats from nest stores**, then **Queen absorbs carbohydrate**. The worker delivered at 5,056,972,669 ms and the queen took her first meal at 5,184,000,000 ms. The browser stops at the actual event and returns to 1×. [Uptake screenshot](evidence/founder-access/queen-uptake-zh.png) · [Browser receipt](evidence/founder-access/founder-access-browser.json)
 
+### Reading a contact in the nest view
+
+At the second worker-to-queen transfer the two native mouth positions are 0.524 mm apart. At the wall delivery the native worker mouth is 0.450 mm from the depot. The filled marker shows the actor's mouth and the outlined marker shows the other mouth or the depot. Both are sampled at the paused timestamp. Their separation is a model measurement in a world with a 0.65 mm contact allowance. The biological contact distance for these conditions remains uncalibrated. The inspector preserves the canonical event position and the ingredient amounts. Resuming the clock releases the pinned markers. Historical worlds without the corresponding body and contact data show only their original event positions. [Worker and queen](evidence/founder-access/oral-contact-zh.webp) · [Worker and depot](evidence/founder-access/wall-mouth-contact-zh.webp) · [Source coordinates in metres](evidence/founder-access/live-contact-cuts.json)
+
 ## From mechanism to outcome
 
 For the obstructed carrier, select **Wall-side food delivery · Physics 43**, finite seed **2** and **Worker unloads from a wall → Next occurrence**. Worker 13 deposits its cargo on day 106. The event card links to the individual and lists each resource component, including a measured zero. For a worker-to-queen transfer, selecting the recipient opens her life panel at the same instant. The details disclosure exposes the full event ID and recorded position. [Wall delivery in the observer](evidence/founder-access/worker-unloads-from-wall-zh.png) · [Browser event](evidence/founder-access/wall-delivery-browser.json)

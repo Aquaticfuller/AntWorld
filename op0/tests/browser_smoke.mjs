@@ -74,13 +74,14 @@ async function select(id, value) {
     return evaluate("(() => { const e = $(" + JSON.stringify(id) + "); e.value = " + JSON.stringify(value) +
         "; e.dispatchEvent(new Event('change')); return e.value; })()");
 }
-async function screenshot(name, includeHours = false) {
+async function screenshot(name, includeHours = false, format = "png") {
     await evaluate(name.startsWith("m1-") ?
         "scrollTo(0, Math.max(0, $('space-title').getBoundingClientRect().top + scrollY - 315))" : includeHours ?
         "scrollTo(0, Math.max(0, $('hour-bins').getBoundingClientRect().bottom + scrollY - innerHeight + 45))" : "scrollTo(0, 0)");
     await sleep(250);
-    const frame = await send("Page.captureScreenshot", {format: "png", captureBeyondViewport: false});
-    await writeFile(join(output, name + ".png"), Buffer.from(frame.data, "base64"));
+    const frame = await send("Page.captureScreenshot", {format, captureBeyondViewport: false,
+        ...(format === "webp" ? {quality:94} : {})});
+    await writeFile(join(output, name + "." + format), Buffer.from(frame.data, "base64"));
 }
 async function opened() {
     await wait(async () => {
@@ -661,7 +662,29 @@ async function founderAccessWorld() {
         await send("Page.handleJavaScriptDialog", {accept: true});
     })()]);
     await wait(() => evaluate("liveView.state?.physics===41 && !liveView.busy"),"New adult food-offer experiment");
-    const offers = [];
+    const offers = [], contactCuts = [];
+    async function checkContact(event, destination) {
+        const data = await evaluate(`(() => {
+            const view = liveView.state, fact = app.selectedFact;
+            const actor = view.ants.find(a => a.id === fact.actor);
+            const other = ${destination === "recipient" ? "view.ants.find(a => a.id === fact.recipient).body.mouth_m" : "view.colonies.find(c => c.id === fact.colony).position_m"};
+            const sites = liveTransferSites(fact,view);
+            return {id:fact.id, time_ms:view.time_ms, actor_mouth_m:actor.body.mouth_m, other_m:other,
+                marked:[sites?.mouth,sites?.other], card:$('event-detail').querySelector('.flow-contact')?.textContent,
+                unsupported:liveTransferSites(fact,{...view,habitat:{anatomical:true}}),
+                later:liveTransferSites(fact,{...view,time_ms:view.time_ms+1}),
+                missing:liveTransferSites(fact,{...view,ants:view.ants.filter(a => a.id !== fact.actor)})};
+        })()`);
+        assert.equal(data.id,event.id);
+        assert.equal(data.time_ms,event.time_ms);
+        assert.deepEqual(data.marked,[data.actor_mouth_m,data.other_m]);
+        assert.deepEqual([data.unsupported,data.later,data.missing],[null,null,null]);
+        const distance = 1000 * Math.hypot(...data.actor_mouth_m.map((v,i) => v-data.other_m[i]));
+        assert.ok(distance>=0 && distance<=0.65, `Native contact gap ${distance} mm`);
+        assert.ok(data.card.includes(new Intl.NumberFormat('zh-CN',{maximumFractionDigits:3}).format(distance)+' mm'));
+        contactCuts.push({event_id:event.id,time_ms:event.time_ms,actor:event.actor,other:event.recipient || event.colony,
+            destination,actor_mouth_m:data.actor_mouth_m,other_m:data.other_m,gap_mm:distance});
+    }
     for (const target of ["queen-gift","queen-gift","queen-uptake"]) {
         await select("live-target", target);
         await click("#live-seek-next");
@@ -682,9 +705,22 @@ async function founderAccessWorld() {
                 assert.match(masses[0], /^12\D/);
                 assert.match(masses[1], /^0\D/);
                 assert.match(masses[2], /^88\D/);
-                await screenshot("worker-feeds-queen-zh");
+                await checkContact(event,"recipient");
+                await screenshot("oral-contact-zh",false,"webp");
+                await select('locale','en');
+                await wait(() => evaluate("$('event-detail').querySelector('.flow-contact')?.textContent.includes('Mouth separation')"),
+                    "Read the same mouth measurement in English");
+                assert.equal(await evaluate("app.time"),event.time_ms);
+                await select('locale','zh-CN');
+                await wait(() => evaluate("$('event-detail').querySelector('.flow-contact')?.textContent.includes('\\u53e3\\u5668')"),
+                    "Restore the Chinese contact receipt");
                 await click('#event-detail .food-flow button[data-ant="2"]');
                 await wait(() => evaluate("app.selected==='2' && !liveView.state.running"),"Inspect the actual recipient while paused");
+                await click('#live-pause');
+                await wait(() => evaluate(`liveView.state.running && app.time>${event.time_ms} && !liveView.busy &&
+                    !pinnedAtDisplayedCut(app.selectedFact)`),"Release the old interaction marker during 1x playback");
+                await click('#live-pause');
+                await wait(() => evaluate("!liveView.state.running && !liveView.busy"),"Pause after leaving the oral contact");
             }
         }
     }
@@ -723,7 +759,9 @@ async function founderAccessWorld() {
     assert.ok(await evaluate("app.follow"));
     assert.match(await evaluate("$('live-stop').textContent"),/\u5b58\u5165\u5de2\u5185/);
     assert.equal(exceptions.length,0,JSON.stringify(exceptions));
-    await screenshot("worker-unloads-from-wall-zh");
+    await checkContact(handoff,"depot");
+    await screenshot("wall-mouth-contact-zh",false,"webp");
+    await writeFile(join(output,"live-contact-cuts.json"),JSON.stringify(contactCuts,null,2)+"\n");
     await writeFile(join(output,"wall-delivery-browser.json"),JSON.stringify(handoff,null,2)+"\n");
 }
 

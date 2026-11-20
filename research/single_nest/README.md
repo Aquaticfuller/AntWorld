@@ -44,6 +44,8 @@ In **Colony setup**, select **Worker food offers · Physics 41**, **Finite food 
 
 **Food access experiment · Physics 40** plays the comparison with anatomical access to nest stores. In seed 3, select **Food delivered**, **Queen eats from nest stores** and **Queen absorbs carbohydrate** in that order. The three events have separate IDs. The ordinary new-nest choice remains Physics 39. Saved worlds retain their own model version. An absent resource feeder and software seeds 1 and 2 are available from the same controls. See [the paired worlds, failure diagnoses and evidence](FOUNDER_ACCESS_RESULTS.md).
 
+At a paused oral exchange, the filled gold point marks the donor's mouth and the green ring marks the recipient's mouth. For depot transactions the ring marks the storage point. The distance uses the simulation's 3D coordinates and stays the same when you rotate the view. Resume at 1× to release the markers and follow the selected individual. [Actual exchange](evidence/founder-access/oral-contact-zh.webp)
+
 See [the anatomical model and assay](OVERHAUL.md) and the
 [review results](OVERHAUL_RESULTS.md). The following sections record the
 history and results of the earlier preview.
