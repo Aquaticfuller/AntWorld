@@ -1,4 +1,5 @@
 #include "antworld/core/world_runtime.hpp"
+#include <array>
 #include <cstdlib>
 #include <cstdio>
 #include <exception>
@@ -116,6 +117,13 @@ void s3_sweeps() {
 void s4_sweeps() {
     WorldRuntime world({4,1},9); GeometryConfig config; const BoxQ room{{2,2,2},{14,22,22}},patch{{14,10,10},{15,14,14}};
     sweep("geometry_configuration",world,[&] { world.configure_geometry(config,std::span{&room,1}); });
+    std::array<BoxQ,6> pockets{};
+    int x=1;
+    for (auto& pocket:pockets) {
+        pocket={{x,2,2},{x+1,4,4}};
+        x+=3;
+    }
+    sweep("geometry_partition_spill",world,[&] { world.configure_geometry(config,pockets); });
     world.configure_geometry(config,std::span{&room,1}); const PositionM point{.006,-.010,.006}; const auto colony=world.seed_colony(point);
     sweep("geometry_actor_index",world,[&] { world.seed_ant(colony,{point,LifeStage::Adult,Caste::Worker,20000}); });
     const auto ant=world.seed_ant(colony,{point,LifeStage::Adult,Caste::Worker,20000}); world.enable_physiology(ant);

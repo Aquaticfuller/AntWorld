@@ -48,7 +48,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
+    paths = (installed.with_stem("antworld_m0_live_v21"), installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
              installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
              installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),

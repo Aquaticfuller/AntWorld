@@ -89,6 +89,8 @@ Small collision queries now retain their integer partition boundaries on the sta
 
 A paired Windows Release measurement took 59.12 seconds with the reference and 10.00 seconds with the change. Both processed the same 312 batches, returned byte-for-byte identical final frames and complete canonical histories, stopped at event 196,147 with a committed tip of 196,150, and returned the same number of bytes for every observer command. One pair characterizes this workload. The browser continues to use the original 90-second deadline. The historical S6.4 application performance result remains `FAIL`. [Exact timings, workload and hashes](evidence/founder-access/wall-seek-cost.json)
 
+The Windows MSVC Debug fault injector subsequently terminated at allocation 8 during initial geometry configuration. An empty STL vector can allocate its debug iterator proxy inside a nonthrowing constructor. The corrected code uses the throwing size constructor on an empty edit lookup and constructs the partition overflow vector only when its inline storage fills. An additional fault sweep configures six disjoint pockets and checks byte-identical rollback after each injected failure. On Windows Release this exercised 15 failure positions. A fresh reference/corrected pair took 56.03 and 9.42 seconds with the same event, state, complete history and reply volumes. [Original Debug failure](https://github.com/Aquaticfuller/AntWorld/actions/runs/44772684753/job/136414176156) · [Corrected build timing and identities](evidence/founder-access/wall-seek-recovery-cost.json)
+
 From a full Windows checkout use the following commands. Build first. The live observers and assays share the resulting binary. A Linux CMake build can supply its executable with `--core`. Only compact receipts are written by the unattended assay.
 
 ~~~powershell
@@ -105,6 +107,7 @@ py -3 -B -m tools.profile_founder_activity "$data/physics44-windows.jsonl" --see
 py -3 -B -m tools.qualify_founder_access --fork "$data/physics43-windows.jsonl" "$data/physics44-windows.jsonl" --seed 2 --output out/empty-return-fork.json
 py -3 -B -m tools.test_m1_browser --mode founder-access --browser 'C:\Program Files\Google\Chrome\Application\chrome.exe' --output out/founder-browser
 py -3 -B -m tools.profile_single_nest_seek --reference out/m0-live-bin/antworld_m0_live_v19.exe --candidate out/m0-live-bin/antworld_m0_live_v20.exe --output out/wall-seek-cost.json
+py -3 -B -m tools.profile_single_nest_seek --reference out/m0-live-bin/antworld_m0_live_v19.exe --candidate out/m0-live-bin/antworld_m0_live_v21.exe --output out/wall-seek-recovery-cost.json
 ~~~
 
-For the paired measurement on a new installation, build the reference executable from commit `d05a14b8ca583785238ebcd69dfa2e3941aa7ed3` and pass its path to `--reference`. The two builds must use the same toolchain and configuration. The benchmark uses a temporary directory, streams the journal hash, and writes one small JSON receipt.
+For the paired measurement on a new installation, build the reference executable from commit `d05a14b8ca583785238ebcd69dfa2e3941aa7ed3` and pass its path to `--reference`. The v20 comparator comes from `cf1b1a7c38ffcb9d24e84fb755e9a24e3004245e`. The current build installs v21. Both sides of each pair must use the same toolchain and configuration. The benchmark uses a temporary directory, streams the journal hash, and writes one small JSON receipt.

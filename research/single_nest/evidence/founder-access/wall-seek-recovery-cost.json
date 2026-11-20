@@ -1,0 +1,106 @@
+{
+  "reference": {
+    "request": "NEW_MOUTH_HANDOFF_NEST 9202 2 250 80 plugged 1955 reachable finite",
+    "core_sha256": "5953d7f6948b6ab6385bbcd112362b0e23c4dca235a7461006beb465761803c3",
+    "event": {
+      "id": "196147",
+      "time_ms": 9190050198,
+      "kind": "FoodDelivered",
+      "actor": "13",
+      "related": null,
+      "source": "97796",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        1302,
+        667,
+        1931,
+        0
+      ],
+      "payload": "1",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    "cursor": 196150,
+    "frame_sha256": "dac7a61c23cf8524ef96c492e768a6c3b7f166db9a161aef44719894eb769912",
+    "canonical_sha256": "2e84ce18c4da80eccd405355fd7ab09c6d627b746f10c019110eaf6447be4d2c",
+    "seconds": 56.02907600009348,
+    "calls": {
+      "ADVANCE_UNTIL": 312,
+      "FRAME": 312,
+      "RECENT": 312,
+      "RECENT_ACTIONS": 312
+    },
+    "reply_bytes": {
+      "ADVANCE_UNTIL": 159,
+      "FRAME": 9530109,
+      "RECENT": 6487976,
+      "RECENT_ACTIONS": 120088
+    },
+    "native_seconds": {
+      "ADVANCE_UNTIL": 55.63819059950765,
+      "FRAME": 0.07642230065539479,
+      "RECENT": 0.05410820071119815,
+      "RECENT_ACTIONS": 0.05227500037290156
+    }
+  },
+  "candidate": {
+    "request": "NEW_MOUTH_HANDOFF_NEST 9202 2 250 80 plugged 1955 reachable finite",
+    "core_sha256": "086c5e067d97d71a3375a21faeb6c82960dad0ebb1d3c0f94dbee09c6bc61f89",
+    "event": {
+      "id": "196147",
+      "time_ms": 9190050198,
+      "kind": "FoodDelivered",
+      "actor": "13",
+      "related": null,
+      "source": "97796",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        1302,
+        667,
+        1931,
+        0
+      ],
+      "payload": "1",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    "cursor": 196150,
+    "frame_sha256": "dac7a61c23cf8524ef96c492e768a6c3b7f166db9a161aef44719894eb769912",
+    "canonical_sha256": "2e84ce18c4da80eccd405355fd7ab09c6d627b746f10c019110eaf6447be4d2c",
+    "seconds": 9.423262100084685,
+    "calls": {
+      "ADVANCE_UNTIL": 312,
+      "FRAME": 312,
+      "RECENT": 312,
+      "RECENT_ACTIONS": 312
+    },
+    "reply_bytes": {
+      "ADVANCE_UNTIL": 159,
+      "FRAME": 9530109,
+      "RECENT": 6487976,
+      "RECENT_ACTIONS": 120088
+    },
+    "native_seconds": {
+      "ADVANCE_UNTIL": 9.070479201502167,
+      "FRAME": 0.06565370049793273,
+      "RECENT": 0.0458272002870217,
+      "RECENT_ACTIONS": 0.03905879962258041
+    }
+  }
+}

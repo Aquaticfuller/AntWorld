@@ -1,5 +1,6 @@
 #include "geometry_internal.hpp"
 #include <array>
+#include <optional>
 #include <set>
 
 namespace antworld::detail {
@@ -31,7 +32,7 @@ Material classify(const GeometryView &v, PointQ p, const std::vector<GeometryEdi
 class PartitionAxis {
     std::array<std::int32_t, 8> local_;
     std::size_t size_{};
-    std::vector<std::int32_t> overflow_;
+    std::optional<std::vector<std::int32_t>> overflow_;
 public:
     PartitionAxis(std::int32_t lo, std::int32_t hi) : size_(2) {
         local_[0] = lo;
@@ -41,14 +42,14 @@ public:
         if (value == local_[0] || value == local_[1]) return;
         if (size_ < local_.size()) local_[size_] = value;
         else {
-            if (overflow_.empty()) overflow_.assign(local_.begin(), local_.end());
-            overflow_.push_back(value);
+            if (!overflow_) overflow_.emplace(local_.begin(), local_.end());
+            overflow_->push_back(value);
         }
         ++size_;
     }
     std::span<const std::int32_t> finish() {
         if (size_ == 2) return {local_.data(), size_};
-        auto values = overflow_.empty() ? std::span(local_).first(size_) : std::span(overflow_);
+        auto values = overflow_ ? std::span(*overflow_) : std::span(local_).first(size_);
         std::sort(values.begin(), values.end());
         return values.first(static_cast<std::size_t>(std::unique(values.begin(), values.end()) - values.begin()));
     }
@@ -106,7 +107,9 @@ std::vector<PointQ> overlapping_bricks(BoxQ b, std::int32_t side, std::size_t bu
     return result;
 }
 std::vector<GeometryEditId> relevant_edits(const GeometryView &v, BoxQ b) {
-    if (v.index.empty()) return {};
+    // MSVC's debug iterators can allocate a proxy even for an empty vector.
+    // The size constructor permits that allocation failure to reach the transaction.
+    if (v.index.empty()) return std::vector<GeometryEditId>(0);
     const auto side = v.definition.config.brick_q;
     const auto lo = brick_key(b.min, side), hi = brick_key({b.max.x - 1, b.max.y - 1, b.max.z - 1}, side);
     std::set<GeometryEditId> ids;
