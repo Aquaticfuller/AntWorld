@@ -1,0 +1,26 @@
+{
+  "id": "196147",
+  "time_ms": 9190050198,
+  "kind": "FoodDelivered",
+  "actor": "13",
+  "related": null,
+  "source": "97796",
+  "colony": "1",
+  "resource": null,
+  "position_m": [
+    0,
+    -0.00175,
+    0.002
+  ],
+  "stage": "Adult",
+  "outcome": "Success",
+  "mass_ug": [
+    1302,
+    667,
+    1931,
+    0
+  ],
+  "payload": "1",
+  "auxiliary": "0",
+  "evidence": "COMMITTED_FACT"
+}

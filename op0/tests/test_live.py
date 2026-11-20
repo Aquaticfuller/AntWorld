@@ -363,26 +363,25 @@ class LiveTests(unittest.TestCase):
         if not core.anatomical_handoff:
             self.skipTest("Build the Physics 43 Core")
         request = "NEW_MOUTH_HANDOFF_NEST 9202 2 250 80 plugged 1955 reachable finite"
-        core.call(request)
-        core.call(f"ADVANCE {150 * DAY}")
-        match = decode_fact(core.call("FIND_MILESTONE wall-delivery"))[1]
-        self.assertEqual((KINDS[match.kind], match.payload, match.actor), ("FoodDelivered", 1, 13))
-
         self.live.install(core.call(request), running=False)
         self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (36, 43))
-        before = core.call(f"ADVANCE {match.time - 1}")
+        handoff_ms = 9_190_050_198  # First positive wall delivery in the published seed-2 receipt.
+        before = core.call(f"ADVANCE {handoff_ms - 1}")
         self.live.publish(before)
         cut = self.live.frame
+        self.assertEqual(core.call("FIND_MILESTONE wall-delivery"), b"")
+        self.live.save("Loaded on wall", False, "snapshot")
+        completed = core.call(f"ADVANCE {handoff_ms}")
+        match = decode_fact(core.call("FIND_MILESTONE wall-delivery"))[1]
+        self.assertEqual((KINDS[match.kind], match.payload, match.actor, match.time), ("FoodDelivered", 1, 13, handoff_ms))
         ant = cut["ants"][match.actor]
         depot = cut["colonies"][match.colony]
-        body = live_bodies(core.call("BODY_STATES"), cut)[str(match.actor)]
+        self.live.publish(completed)
+        body = live_bodies(core.call("BODY_STATES"), self.live.frame)[str(match.actor)]
         self.assertGreater(dist(ant["position_m"], depot["position_m"]), .002)
         self.assertLessEqual(dist(body["mouth_m"], depot["position_m"]), .00065)
         self.assertEqual(tuple(ant["carried_ug"]), tuple(match.mass))
         self.assertGreater(match.mass[0], 0)
-        self.live.save("Loaded on wall", False, "snapshot")
-
-        completed = core.call(f"ADVANCE {match.time}")
         after = checkpoint(completed)
         self.assertEqual(tuple(after["ants"][match.actor]["carried_ug"]), (0, 0, 0, 0))
         delta = tuple(b - a for a, b in zip(cut["stored"], after["stored"]))
@@ -391,21 +390,48 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(decode_fact(core.call("FIND_MILESTONE wall-delivery"))[1], match)
         self.assertEqual(core.call("CHECK_LEDGERS"), b"")
         page = core.call(f"FACTS_AFTER {cut['cursor']} 512")
+        # Publish full history before loading the deliberately bounded snapshot.
+        self.live.save("Delivered from wall", False, "archive")
+        end = match.time + HOUR
+        continued = core.call(f"ADVANCE {end}")
         self.live.load("Loaded on wall", "snapshot")
         self.assertEqual(core.call("FRAME"), before)
         self.assertEqual(core.call(f"ADVANCE {match.time}"), completed)
         self.assertEqual(core.call(f"FACTS_AFTER {cut['cursor']} 512"), page)
 
         # Full replay must validate the historical mouth pose as well as the current ledger.
-        self.live.install(core.call(request), running=False)
-        self.live.publish(core.call(f"ADVANCE {match.time}"))
-        self.live.save("Delivered from wall", False, "archive")
-        end = match.time + HOUR
-        continued = core.call(f"ADVANCE {end}")
         self.live.load("Delivered from wall", "archive")
         self.assertEqual(core.call("FRAME"), completed)
         self.assertEqual(core.call(f"ADVANCE {end}"), continued)
         self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_familiar_return_replays_the_first_reassessment_without_warping_the_worker(self):
+        core = self.live.core()
+        if not core.familiar_return:
+            self.skipTest("Build the Physics 44 Core")
+        self.live.install(core.call("NEW_FAMILIAR_RETURN_NEST 9202 2 250 80 plugged 1955 reachable finite"), running=False)
+        self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (37, 44))
+        self.assertTrue(self.live.frame["flags"]["founding_habitat"]["familiar_return"])
+        arrival = 3_966_699_773
+        frame = core.call(f"ADVANCE {arrival - 1}")
+        self.live.publish(frame)
+        cursor = self.live.frame["cursor"]
+        for mode in ("archive", "snapshot"):
+            self.live.save("Approaching a familiar berth", False, mode)
+        end = arrival + MINUTE
+        continued = core.call(f"ADVANCE {end}")
+        page = core.call(f"FACTS_AFTER {cursor} 512")
+        move = decode_fact(core.call("FACTS_AFTER 10467 1")[4:])[1]
+        self.assertEqual((KINDS[move.kind], move.actor, move.time, move.position),
+                         ("Moved", 6, arrival, (0, -.00175, .002)))
+        self.assertEqual(move.packet()["motion"]["duration_ms"], 50)
+        for mode in ("archive", "snapshot"):
+            with self.subTest(mode=mode):
+                self.live.load("Approaching a familiar berth", mode)
+                self.assertEqual(core.call("FRAME"), frame)
+                self.assertEqual(core.call(f"ADVANCE {end}"), continued)
+                self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()

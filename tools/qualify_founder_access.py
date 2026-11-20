@@ -16,7 +16,7 @@ from op0.live import NativeCore, core_path, founding_balance, live_bodies
 CUTS = (0, 4, 5, 12, 30, 60, 90, 120, 150)
 CASES = ((1, "finite"), (2, "finite"), (3, "finite"), (2, "absent"))
 COMMAND = {39: "NEW_ANATOMICAL_NEST", 40: "NEW_ORAL_NEST", 41: "NEW_OFFER_NEST",
-           42: "NEW_WALL_HANDOFF_NEST", 43: "NEW_MOUTH_HANDOFF_NEST"}
+           42: "NEW_WALL_HANDOFF_NEST", 43: "NEW_MOUTH_HANDOFF_NEST", 44: "NEW_FAMILIAR_RETURN_NEST"}
 
 
 def death_boundary(core, request, death):
@@ -205,16 +205,81 @@ def compare_receipts(left_path, right_path):
         raise SystemExit("\n".join(errors))
 
 
+def first_fork(core_path, scratch, receipts, seed):
+    """Find the first changed canonical fact between two paired published histories."""
+    from contextlib import ExitStack
+    from dataclasses import fields
+    from itertools import zip_longest
+    from tools.compare_m0_worker_rhythm import facts
+
+    rows = []
+    for path in receipts:
+        cases = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+        rows.append(next(r for r in cases if r["seed"] == seed and r["supply"] == "finite"))
+    a, b = rows
+    if a["request"].split()[1:] != b["request"].split()[1:]:
+        raise ValueError("World, seed, resource supply and climate must match")
+    cuts = next(((x, y) for x, y in zip(a["cuts"], b["cuts"], strict=True)
+                 if x["events_sha256"] != y["events_sha256"]), None)
+    if not cuts or cuts[0]["day"] != cuts[1]["day"]:
+        raise ValueError("No comparable cut with a different canonical history")
+    with TemporaryDirectory(dir=scratch) as folder, ExitStack() as processes:
+        streams = []
+        for row, cut in zip(rows, cuts):
+            core = processes.enter_context(closing(NativeCore(core_path, Path(folder))))
+            core.call(row["request"])
+            frame = core.call(f"ADVANCE {cut['day'] * DAY}")
+            if sha256(frame).hexdigest() != cut["state_sha256"]:
+                raise ValueError("The diagnostic did not reproduce its published state")
+            streams.append(facts(core, cut["cursor"]))
+        previous = None
+        witness = None
+        for left, right in zip_longest(*streams):
+            if left != right:
+                packets = [f.packet() if f else None for f in (left, right)]
+                if witness is None:
+                    changes = {f.name: [getattr(left, f.name), getattr(right, f.name)] for f in fields(left)
+                               if getattr(left, f.name) != getattr(right, f.name)} if left and right else {}
+                    witness = dict(seed=seed, requests=[r["request"] for r in rows], enclosing_day=cuts[0]["day"],
+                                   preceding_common_fact=previous.packet() if previous else None,
+                                   first_difference=packets, different_fields=changes)
+                if packets[0] != packets[1]:
+                    witness.setdefault("first_player_visible_difference", packets)
+                    # A queue reschedule can renumber a bout before the worker
+                    # changes its activity. Retain both boundaries.
+                    activities = []
+                    for packet in packets:
+                        semantic = {k: v for k, v in (packet or {}).items() if k not in ("id", "source", "origin_fact")}
+                        if "action" in semantic:
+                            semantic["action"] = {k: v for k, v in semantic["action"].items() if k != "bout"}
+                        activities.append(semantic)
+                    if activities[0] != activities[1]:
+                        return witness | {"first_activity_difference": packets}
+            previous = left
+        if witness:
+            return {"first_player_visible_difference": None} | witness | {"first_activity_difference": None}
+    raise ValueError("Distinct event digests decoded to identical histories")
+
+
 def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
     parser.add_argument("--physics", type=int, choices=COMMAND)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--compare", type=Path, nargs=2, metavar=("WINDOWS", "LINUX"))
+    parser.add_argument("--fork", type=Path, nargs=2, metavar=("CONTROL", "CANDIDATE"))
+    parser.add_argument("--seed", type=int, default=2, help="Finite-supply pair for --fork")
     parser.add_argument("--scratch", type=Path, default=Path("out"))
     args = parser.parse_args()
     if args.compare:
         compare_receipts(*args.compare)
+        return
+    if args.fork:
+        if not args.output:
+            parser.error("--fork requires --output")
+        args.scratch.mkdir(parents=True, exist_ok=True)
+        witness = first_fork(args.core.resolve(), args.scratch, args.fork, args.seed)
+        args.output.write_text(json.dumps(witness, indent=2) + "\n", encoding="utf-8")
         return
     if args.physics is None or args.output is None:
         parser.error("simulation requires --physics and --output")

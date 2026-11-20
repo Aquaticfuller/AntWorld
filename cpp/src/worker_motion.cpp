@@ -367,7 +367,8 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const auto& g=s.geometry->config;
     const bool habitat=s.ecological && s.ecological->founding_habitat;
     const auto link=s.connectors.find(ant.id);
-    const auto depot=habitat && link!=s.connectors.end() ? link->second.points[0]
+    const bool rejoin=familiar_return(s) && link!=s.connectors.end() && !s.foragers.at(ant.id).enabled;
+    const auto depot=habitat && link!=s.connectors.end() ? link->second.points[rejoin?link->second.cursor:0]
         : s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     const auto radius=s.care_profile->perception_radius_m;
     if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};

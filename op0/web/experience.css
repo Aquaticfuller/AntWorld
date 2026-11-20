@@ -248,3 +248,13 @@ button.primary-button:not(:disabled):hover { color: #132117; background: #e0f2bc
 @media (max-width: 760px) {
   .anatomical-nest #map { height: 58vh; min-height: 340px; }
 }
+.food-flow { margin: .7rem 0; }
+.food-flow-route { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.food-flow-route > span[aria-label] { color: #c3a87d; }
+.flow-store { font-weight: 600; }
+.flow-ingredients { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: .4rem; margin: .9rem 0 .65rem; }
+.flow-ingredients > div { border-inline-start: 2px solid #bf9a66; padding-inline-start: .45rem; }
+.flow-ingredients > .zero { border-color: #657264; }
+.flow-ingredients dt { font-size: .75rem; color: #c1c9b7; }
+.flow-ingredients dd { margin: .2rem 0 0; font-variant-numeric: tabular-nums; font-size: .95rem; }
+.flow-fact summary { cursor: pointer; font-size: .8rem; color: #c7cfba; }

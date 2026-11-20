@@ -677,7 +677,15 @@ async function founderAccessWorld() {
             assert.notEqual(event.actor,event.recipient);
             assert.ok(event.mass_ug.some(x => x > 0));
             assert.ok((await evaluate("$('live-stop').textContent")).includes("#" + event.actor));
-            if (event.mass_ug[0]) await screenshot("worker-feeds-queen-zh");
+            if (event.mass_ug[0]) {
+                const masses = await evaluate("[...document.querySelectorAll('#event-detail .flow-ingredients dd')].map(e=>e.textContent)");
+                assert.match(masses[0], /^12\D/);
+                assert.match(masses[1], /^0\D/);
+                assert.match(masses[2], /^88\D/);
+                await screenshot("worker-feeds-queen-zh");
+                await click('#event-detail .food-flow button[data-ant="2"]');
+                await wait(() => evaluate("app.selected==='2' && !liveView.state.running"),"Inspect the actual recipient while paused");
+            }
         }
     }
     assert.equal(offers[0].mass_ug[0],0);
@@ -693,9 +701,19 @@ async function founderAccessWorld() {
         await send("Page.handleJavaScriptDialog", {accept: true});
     })()]);
     await wait(() => evaluate("liveView.state?.physics===43 && !liveView.busy"),"New wall-side delivery world");
+    assert.equal(await evaluate("liveView.state.seed"), "2");
     await select("live-target","wall-delivery");
+    assert.equal(await evaluate("$('live-target').value"), "wall-delivery");
     await click("#live-seek-next");
-    await wait(() => evaluate("liveView.state?.fast_forward?.state==='reached' && !liveView.busy"),"Wall-side delivery",90_000);
+    await wait(async () => {
+        const cut = await evaluate("({stop:liveView.state.fast_forward,time:liveView.state.time_ms,error:liveView.state.error})");
+        if (cut.error || ["exhausted","cancelled","already"].includes(cut.stop?.state))
+            throw Error("Wall delivery ended early: " + JSON.stringify(cut));
+        return cut.stop?.target === "wall-delivery" && cut.stop.state === "reached" && !(await evaluate("liveView.busy"));
+    },"Wall-side delivery",90_000).catch(async error => {
+        const cut = await evaluate("({seed:liveView.state.seed,stop:liveView.state.fast_forward,time:liveView.state.time_ms,error:liveView.state.error,control:$('live-stop').textContent})");
+        throw Error(error.message + " at " + JSON.stringify(cut));
+    });
     const handoff = await evaluate("liveView.state.fast_forward.event");
     assert.equal(handoff.kind,"FoodDelivered");
     assert.equal(handoff.payload,"1");

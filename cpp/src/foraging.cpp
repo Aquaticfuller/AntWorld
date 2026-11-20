@@ -138,7 +138,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         LocalObservation local;
         BehaviorDecision decision;
         PositionM destination;
-        bool connector_return{},connector_clock{},dock_here{},wall_delivery{};
+        bool connector_return{},connector_clock{},dock_here{},wall_delivery{},leave_berth{};
         std::uint64_t cargo_meal_ug{};
     };
     std::vector<Ready> ready(0); ready.reserve(wakes.size());
@@ -163,6 +163,19 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             const auto at_entrance=link->cursor+1==link->size;
             r.destination=returning && at_entrance && ant.position!=link->entrance()?link->entrance():
                 link->points[returning?link->cursor-1:link->cursor+1];
+            if (familiar_return(s) && returning && !loaded && !at_entrance && at_foraging_home(ant) &&
+                !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
+                const auto outward=link->points[link->cursor+1];
+                if (spatially_clear(ant.position,outward,body_half(ant.id)) &&
+                    clear_worker_traffic(ant,outward,body_half(ant.id))) {
+                    r.destination=outward;
+                    r.decision.action=ActionKind::Move;
+                    r.decision.mode=BehaviorMode::Explore;
+                    r.decision.reason=DecisionReason::NestContact;
+                    r.leave_berth=true;
+                    return;
+                }
+            }
             if (sealed_chamber(s) && returning && loaded && !at_entrance) {
                 const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
                 const bool off_floor=ant.position.y!=depot.y;
@@ -270,14 +283,14 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             f.mode=BehaviorMode::Rest;
         }
         f.action = tx.insert(action); tx.foragers.set(ant.id, f);
-        if (!yielding && r.connector_return && (r.dock_here || !s.connectors.at(ant.id).returning)) {
+        if (!yielding && r.connector_return && (r.leave_berth || r.dock_here || !s.connectors.at(ant.id).returning)) {
             auto link=s.connectors.at(ant.id);
             if (r.dock_here) {
                 std::move(link.points.begin()+link.cursor,link.points.begin()+link.size,link.points.begin());
                 link.size-=link.cursor;
                 link.cursor=0;
             }
-            link.returning=true;
+            link.returning=!r.leave_berth;
             tx.connectors.set(ant.id,link);
         }
         WorldEvent fact; fact.source = r.event.id; fact.kind = FactKind::ForagingDecision;

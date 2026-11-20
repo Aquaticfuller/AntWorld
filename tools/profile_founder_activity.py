@@ -9,7 +9,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from op0 import DAY
-from op0.codec import ACTS, FORAGING_REASONS, KINDS, OUTCOMES, PHASES, checkpoint
+from op0.codec import ACTS, FORAGING_MODES, FORAGING_REASONS, KINDS, OUTCOMES, PHASES, checkpoint
 from op0.live import NativeCore, core_path, live_bodies
 from tools.compare_m0_worker_rhythm import facts
 
@@ -31,6 +31,8 @@ def main():
     for end in range(30, cut["day"] + 1, 30):
         windows.append(dict(end_day=end, events=Counter(), rejections=Counter(), actions=Counter(),
                             foraging_reasons=Counter(), waiting_workers=Counter()))
+        if row["physics"] >= 44:
+            windows[-1]["individual_work"] = {}
     with TemporaryDirectory(dir=args.scratch) as tmp, closing(NativeCore(args.core.resolve(), Path(tmp))) as core:
         core.call(row["request"])
         raw = core.call(f"ADVANCE {duration}")
@@ -38,10 +40,25 @@ def main():
             raise ValueError("The final frame differs from the published world")
         seen = 0
         wall_handoffs = {}
+        adults = set()
+        adult_deaths = []
+        outward_choices = {}
         for fact in facts(core, cut["cursor"]):
             window = windows[max(0, fact.time - 1) // (30 * DAY)]
             kind = KINDS[fact.kind]
             window["events"][kind] += 1
+            if "individual_work" in window:
+                if kind in ("AntSeeded", "StageChanged") and fact.stage == 3:
+                    adults.add(fact.actor)
+                if kind == "AntDied" and fact.actor in adults:
+                    adult_deaths.append(fact.packet())
+                if kind == "Moved" or (kind in ("NestIngested", "CargoIngested", "FoodDelivered") and sum(fact.mass)):
+                    work = window["individual_work"].setdefault(fact.actor, Counter())
+                    work[kind] += 1
+                if kind == "ForagingDecision" and FORAGING_MODES[fact.mode] == "Explore" and FORAGING_REASONS[fact.reason] == "Nest contact":
+                    choices = outward_choices.setdefault(fact.actor, dict(count=0, first=fact.packet()))
+                    choices["count"] += 1
+                    choices["last"] = fact.packet()
             if row["physics"] >= 42 and kind == "FoodDelivered" and fact.payload == 1:
                 handoffs = wall_handoffs.setdefault(fact.actor, [])
                 handoffs.append(dict(delivery=fact.packet(), next_movement=None))
@@ -71,6 +88,8 @@ def main():
                   depot=frame["colonies"][1], intervals=windows)
     if row["physics"] >= 42:
         output["wall_handoffs"] = wall_handoffs
+    if row["physics"] >= 44:
+        output.update(adult_deaths=adult_deaths, familiar_berth_departures=outward_choices)
     args.output.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 

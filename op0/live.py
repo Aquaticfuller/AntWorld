@@ -48,7 +48,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
+    paths = (installed.with_stem("antworld_m0_live_v19"), installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
              installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
              installed.with_stem("antworld_m0_live_v12"),
@@ -71,7 +71,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 18))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 19))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -88,6 +88,7 @@ class NativeCore:
             self.adult_offers = generation >= 15
             self.wall_handoff = generation >= 16
             self.anatomical_handoff = generation >= 17
+            self.familiar_return = generation >= 18
         except Exception:
             self.close()
             raise
@@ -404,7 +405,9 @@ class LiveSession:
         stamp = self.frame["time_ms"]
         desired = self.anchor_ms + (self.clock() - self.anchor_ns) * self.rate // 1_000_000
         # Bound one Core call so a pause or save can still take the controller lock.
-        target = min(desired, stamp + 12 * HOUR)
+        # Event search advances to the next committed event at the Core's pace.
+        # The native request also caps work at 256 indivisible timestamps.
+        target = stamp + 12 * HOUR if self.seeking() else min(desired, stamp + 12 * HOUR)
         if target <= stamp:
             return
         if not self.seeking():
@@ -420,7 +423,7 @@ class LiveSession:
             self.stop_seek("reached", event)
 
     def run_clock(self):
-        while not self.stopping.wait(.05 if is_nursery(self.frame) and self.rate == 1 else .10):
+        while not self.stopping.wait(.02 if self.seeking() else .05 if is_nursery(self.frame) and self.rate == 1 else .10):
             with self.lock:
                 try:
                     self.advance()
@@ -670,6 +673,8 @@ class LiveSession:
                     models["wall"] = "NEW_WALL_HANDOFF_NEST"
                 if core.anatomical_handoff:
                     models["mouth-handoff"] = "NEW_MOUTH_HANDOFF_NEST"
+                if core.familiar_return:
+                    models["familiar"] = "NEW_FAMILIAR_RETURN_NEST"
                 model = data.get("model", "anatomical" if core.anatomical else "reference")
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
                 command = models[model]

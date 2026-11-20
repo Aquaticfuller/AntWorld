@@ -1,0 +1,690 @@
+{
+  "adult_deaths": [
+    {
+      "actor": "6",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "42210",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        -0.0045625,
+        -0.00175,
+        -0.0003125
+      ],
+      "related": null,
+      "resource": null,
+      "source": "21693",
+      "stage": "Dead",
+      "time_ms": 4473847869
+    },
+    {
+      "actor": "9",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "55327",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        0.00025,
+        -0.0045000000000000005,
+        -0.00775
+      ],
+      "related": null,
+      "resource": null,
+      "source": "28487",
+      "stage": "Dead",
+      "time_ms": 4666026055
+    },
+    {
+      "actor": "19",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Dehydration",
+      "evidence": "COMMITTED_FACT",
+      "id": "108134",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "2",
+      "position_m": [
+        -0.00575,
+        -0.0045000000000000005,
+        -0.0005
+      ],
+      "related": null,
+      "resource": null,
+      "source": "54998",
+      "stage": "Dead",
+      "time_ms": 5614560000
+    },
+    {
+      "actor": "2",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "121299",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        -0.003375,
+        -0.004,
+        -0.0061875
+      ],
+      "related": null,
+      "resource": null,
+      "source": "61533",
+      "stage": "Dead",
+      "time_ms": 5992016061
+    },
+    {
+      "actor": "13",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "137021",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        0.0015,
+        -0.004,
+        0.0025
+      ],
+      "related": null,
+      "resource": null,
+      "source": "69722",
+      "stage": "Dead",
+      "time_ms": 6536383380
+    },
+    {
+      "actor": "18",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "168785",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        -0.0022500000000000003,
+        -0.004,
+        -0.0009375
+      ],
+      "related": null,
+      "resource": null,
+      "source": "86104",
+      "stage": "Dead",
+      "time_ms": 8040395786
+    },
+    {
+      "actor": "17",
+      "auxiliary": "0",
+      "colony": "1",
+      "death_cause": "Energy depleted",
+      "evidence": "COMMITTED_FACT",
+      "id": "217097",
+      "kind": "AntDied",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outcome": "Success",
+      "payload": "1",
+      "position_m": [
+        0.0015,
+        -0.004,
+        0.001
+      ],
+      "related": null,
+      "resource": null,
+      "source": "106158",
+      "stage": "Dead",
+      "time_ms": 8534494220
+    }
+  ],
+  "cursor": 243408,
+  "depot": {
+    "founded_ms": 0,
+    "id": "1",
+    "position_m": [
+      0.0,
+      -0.004,
+      0.002
+    ],
+    "species": 0,
+    "stock_ug": [
+      1520,
+      2001,
+      6182,
+      0
+    ]
+  },
+  "familiar_berth_departures": {},
+  "frame_sha256": "06ddfa3730cb4069b86a740e1460fce1501d1784e545b94beae48eeb2585dd31",
+  "intervals": [
+    {
+      "actions": {
+        "Approach brood / Completed": 70,
+        "Approach brood / Interrupted": 2,
+        "Approach brood / Selected": 72,
+        "Approach brood / Started": 70,
+        "Clean brood / Completed": 27,
+        "Clean brood / Selected": 27,
+        "Clean brood / Started": 27,
+        "Feed brood / Completed": 24,
+        "Feed brood / Selected": 24,
+        "Feed brood / Started": 24,
+        "Inspect brood / Opportunity": 148
+      },
+      "end_day": 30,
+      "events": {
+        "ActivityChanged": 242,
+        "AntBorn": 19,
+        "AntDied": 7,
+        "AntSeeded": 1,
+        "AutonomyChanged": 20,
+        "AutonomyDecision": 120,
+        "BehaviorChanged": 114,
+        "BiologicalObservation": 515,
+        "BiologyConfigured": 1,
+        "CareProgramChanged": 229,
+        "CareTick": 428,
+        "ColonySeeded": 1,
+        "FoodSeeded": 3,
+        "FoundingConfigured": 1,
+        "FoundingEggFunded": 19,
+        "FoundingHatchCue": 10,
+        "FoundingLipidConverted": 346,
+        "FoundingRation": 24,
+        "FoundingReserveSeeded": 1,
+        "FoundressWaterIngested": 55,
+        "GeometryConfigured": 1,
+        "LongTermConfigured": 1,
+        "Moved": 70,
+        "PhysiologyEnabled": 1,
+        "PhysiologyUpdated": 1488,
+        "ReproductionAttempt": 24,
+        "ReproductionEnabled": 1,
+        "ResourceCycleConfigured": 2,
+        "ResourceReleased": 60,
+        "SocialConfigured": 1,
+        "StageChanged": 13,
+        "SurfaceConfigured": 1,
+        "TrailMaintenance": 120
+      },
+      "foraging_reasons": {},
+      "individual_work": {
+        "2": {
+          "Moved": 70
+        }
+      },
+      "rejections": {},
+      "waiting_workers": {}
+    },
+    {
+      "actions": {
+        "Approach a nestmate / Completed": 3279,
+        "Approach a nestmate / Interrupted": 9,
+        "Approach a nestmate / Selected": 3288,
+        "Approach a nestmate / Started": 3288,
+        "Approach brood / Completed": 391,
+        "Approach brood / Interrupted": 9,
+        "Approach brood / Selected": 400,
+        "Approach brood / Started": 392,
+        "Approach the depot / Completed": 385,
+        "Approach the depot / Selected": 385,
+        "Approach the depot / Started": 385,
+        "Clean brood / Completed": 27,
+        "Clean brood / Selected": 27,
+        "Clean brood / Started": 27,
+        "Close worker contact / Opportunity": 251,
+        "Collect food / Completed": 4,
+        "Collect food / Selected": 4,
+        "Collect food / Started": 4,
+        "Deliver food / Completed": 4,
+        "Deliver food / Selected": 4,
+        "Deliver food / Started": 4,
+        "Entrance patrol / Completed": 20,
+        "Entrance patrol / Selected": 20,
+        "Entrance patrol / Started": 20,
+        "Excavate / Completed": 1,
+        "Excavate / Selected": 1,
+        "Excavate / Started": 1,
+        "Feed brood / Completed": 43,
+        "Feed brood / Interrupted": 44,
+        "Feed brood / Opportunity": 66,
+        "Feed brood / Selected": 87,
+        "Feed brood / Started": 43,
+        "Handle soil / Completed": 1,
+        "Handle soil / Selected": 1,
+        "Handle soil / Started": 1,
+        "Inactive / Completed": 194,
+        "Inactive / Selected": 206,
+        "Inactive / Started": 194,
+        "Ingest food / Completed": 42,
+        "Ingest food / Selected": 43,
+        "Ingest food / Started": 42,
+        "Inspect brood / Completed": 49,
+        "Inspect brood / Opportunity": 423,
+        "Inspect brood / Selected": 49,
+        "Inspect brood / Started": 49,
+        "Pick up brood / Completed": 1,
+        "Pick up brood / Selected": 1,
+        "Pick up brood / Started": 1,
+        "Place brood / Completed": 1,
+        "Place brood / Selected": 1,
+        "Place brood / Started": 1,
+        "Transfer nutrition / Completed": 19,
+        "Transfer nutrition / Opportunity": 61,
+        "Transfer nutrition / Selected": 19,
+        "Transfer nutrition / Started": 19,
+        "Transport brood / Completed": 1,
+        "Transport brood / Selected": 1,
+        "Transport brood / Started": 1,
+        "Walk / Completed": 508,
+        "Walk / Selected": 513,
+        "Walk / Started": 508
+      },
+      "end_day": 60,
+      "events": {
+        "ActionRejected": 44,
+        "ActivityChanged": 9504,
+        "AntBorn": 8,
+        "AntDied": 7,
+        "AutonomyChanged": 8,
+        "AutonomyDecision": 6193,
+        "BehaviorChanged": 15845,
+        "BiologicalObservation": 15863,
+        "BroodMoved": 3,
+        "CareProgramChanged": 13107,
+        "CareTick": 11674,
+        "CargoIngested": 4,
+        "ExcavationDecision": 18,
+        "FoodCollected": 4,
+        "FoodDelivered": 4,
+        "ForagingDecision": 509,
+        "ForagingStarted": 2,
+        "FoundingEggFunded": 8,
+        "FoundingHatchCue": 7,
+        "FoundingLipidConverted": 502,
+        "FoundingRation": 42,
+        "Moved": 4584,
+        "NestIngested": 38,
+        "NutritionDecision": 290,
+        "NutritionTransferred": 20,
+        "PhysiologyUpdated": 2136,
+        "RecruitmentCue": 2,
+        "ReproductionAttempt": 15,
+        "ResourceReleased": 60,
+        "Rested": 194,
+        "SoilDropped": 1,
+        "SoilExcavated": 1,
+        "StageChanged": 26,
+        "TrailMaintenance": 120
+      },
+      "foraging_reasons": {
+        "Home trace": 196,
+        "Local food": 16,
+        "Nest contact": 4,
+        "Search": 280,
+        "Trail": 13
+      },
+      "individual_work": {
+        "2": {
+          "Moved": 105
+        },
+        "6": {
+          "CargoIngested": 3,
+          "FoodDelivered": 3,
+          "Moved": 975
+        },
+        "9": {
+          "Moved": 581,
+          "NestIngested": 4
+        },
+        "12": {
+          "CargoIngested": 1,
+          "FoodDelivered": 1,
+          "Moved": 868,
+          "NestIngested": 14
+        },
+        "13": {
+          "Moved": 733,
+          "NestIngested": 11
+        },
+        "17": {
+          "Moved": 719,
+          "NestIngested": 6
+        },
+        "18": {
+          "Moved": 603,
+          "NestIngested": 3
+        }
+      },
+      "rejections": {
+        "Out of reach": 44
+      },
+      "waiting_workers": {
+        "6": 3,
+        "12": 1
+      }
+    },
+    {
+      "actions": {
+        "Approach a nestmate / Completed": 582,
+        "Approach a nestmate / Selected": 582,
+        "Approach a nestmate / Started": 582,
+        "Approach brood / Completed": 306,
+        "Approach brood / Interrupted": 5,
+        "Approach brood / Selected": 311,
+        "Approach brood / Started": 306,
+        "Approach the depot / Completed": 341,
+        "Approach the depot / Selected": 341,
+        "Approach the depot / Started": 341,
+        "Clean brood / Completed": 37,
+        "Clean brood / Selected": 37,
+        "Clean brood / Started": 37,
+        "Close worker contact / Opportunity": 301,
+        "Collect food / Completed": 2,
+        "Collect food / Selected": 2,
+        "Collect food / Started": 2,
+        "Deliver food / Completed": 2,
+        "Deliver food / Selected": 2,
+        "Deliver food / Started": 2,
+        "Entrance patrol / Completed": 330,
+        "Entrance patrol / Selected": 330,
+        "Entrance patrol / Started": 330,
+        "Feed brood / Completed": 1,
+        "Feed brood / Interrupted": 8,
+        "Feed brood / Opportunity": 16,
+        "Feed brood / Selected": 9,
+        "Feed brood / Started": 1,
+        "Inactive / Completed": 6977,
+        "Inactive / Selected": 6987,
+        "Inactive / Started": 6977,
+        "Ingest food / Completed": 423,
+        "Ingest food / Interrupted": 679,
+        "Ingest food / Selected": 1102,
+        "Ingest food / Started": 423,
+        "Inspect brood / Completed": 44,
+        "Inspect brood / Opportunity": 349,
+        "Inspect brood / Selected": 44,
+        "Inspect brood / Started": 44,
+        "Transfer nutrition / Completed": 27,
+        "Transfer nutrition / Opportunity": 21,
+        "Transfer nutrition / Selected": 27,
+        "Transfer nutrition / Started": 27,
+        "Walk / Completed": 118,
+        "Walk / Selected": 120,
+        "Walk / Started": 118
+      },
+      "end_day": 90,
+      "events": {
+        "ActionRejected": 687,
+        "ActivityChanged": 3572,
+        "AntDied": 11,
+        "AutonomyDecision": 10539,
+        "BehaviorChanged": 6074,
+        "BiologicalObservation": 29653,
+        "CareProgramChanged": 4858,
+        "CareTick": 4769,
+        "CargoIngested": 2,
+        "FoodCollected": 2,
+        "FoodDelivered": 2,
+        "ForagingDecision": 126,
+        "ForagingStarted": 1,
+        "FoundingLipidConverted": 71,
+        "Moved": 1677,
+        "NestIngested": 421,
+        "NutritionDecision": 8103,
+        "NutritionTransferred": 28,
+        "PhysiologyUpdated": 603,
+        "RecruitmentCue": 1,
+        "ReproductionAttempt": 5,
+        "ResourceReleased": 60,
+        "Rested": 6977,
+        "StageChanged": 2,
+        "TrailMaintenance": 120
+      },
+      "foraging_reasons": {
+        "Home trace": 54,
+        "Local food": 8,
+        "Nest contact": 2,
+        "Search": 62
+      },
+      "individual_work": {
+        "2": {
+          "Moved": 2
+        },
+        "12": {
+          "Moved": 362,
+          "NestIngested": 334
+        },
+        "13": {
+          "CargoIngested": 2,
+          "FoodDelivered": 2,
+          "Moved": 576,
+          "NestIngested": 8
+        },
+        "17": {
+          "Moved": 578,
+          "NestIngested": 55
+        },
+        "18": {
+          "Moved": 154,
+          "NestIngested": 24
+        },
+        "19": {
+          "Moved": 5
+        }
+      },
+      "rejections": {
+        "Empty inventory": 679,
+        "Out of reach": 8
+      },
+      "waiting_workers": {
+        "13": 2
+      }
+    },
+    {
+      "actions": {
+        "Approach the depot / Completed": 8,
+        "Approach the depot / Selected": 8,
+        "Approach the depot / Started": 8,
+        "Entrance patrol / Completed": 51,
+        "Entrance patrol / Selected": 51,
+        "Entrance patrol / Started": 51,
+        "Inactive / Completed": 9824,
+        "Inactive / Selected": 9873,
+        "Inactive / Started": 9824,
+        "Ingest food / Completed": 328,
+        "Ingest food / Interrupted": 1984,
+        "Ingest food / Selected": 2312,
+        "Ingest food / Started": 328,
+        "Transfer nutrition / Opportunity": 560
+      },
+      "end_day": 120,
+      "events": {
+        "ActionRejected": 1984,
+        "ActivityChanged": 118,
+        "AntDied": 2,
+        "AutonomyDecision": 4025,
+        "BehaviorChanged": 271,
+        "BiologicalObservation": 35210,
+        "CareProgramChanged": 118,
+        "CareTick": 118,
+        "ForagingDecision": 8550,
+        "ForagingStarted": 1,
+        "Moved": 59,
+        "NestIngested": 328,
+        "NutritionDecision": 3635,
+        "PhysiologyUpdated": 167,
+        "ResourceReleased": 60,
+        "Rested": 9824,
+        "TrailMaintenance": 120
+      },
+      "foraging_reasons": {
+        "No legal step": 8550
+      },
+      "individual_work": {
+        "12": {
+          "NestIngested": 328
+        },
+        "17": {
+          "Moved": 59
+        }
+      },
+      "rejections": {
+        "Empty inventory": 1984
+      },
+      "waiting_workers": {
+        "17": 8550
+      }
+    },
+    {
+      "actions": {
+        "Ingest food / Completed": 972,
+        "Ingest food / Interrupted": 1908,
+        "Ingest food / Selected": 2880,
+        "Ingest food / Started": 972
+      },
+      "end_day": 150,
+      "events": {
+        "ActionRejected": 1908,
+        "AutonomyDecision": 2880,
+        "BiologicalObservation": 6732,
+        "NestIngested": 972,
+        "NutritionDecision": 2880,
+        "PhysiologyUpdated": 120,
+        "ResourceReleased": 60,
+        "TrailMaintenance": 120
+      },
+      "foraging_reasons": {},
+      "individual_work": {
+        "12": {
+          "NestIngested": 972
+        }
+      },
+      "rejections": {
+        "Empty inventory": 1908
+      },
+      "waiting_workers": {}
+    }
+  ],
+  "request": "NEW_FAMILIAR_RETURN_NEST 9202 2 250 80 plugged 1955 reachable finite",
+  "survivors": {
+    "12": {
+      "body": {
+        "abdomen_tip_m": [
+          0.0,
+          -0.004,
+          -0.0018625
+        ],
+        "care": null,
+        "forward": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "held_id": null,
+        "mouth_m": [
+          0.0,
+          -0.004,
+          0.0017375
+        ],
+        "segments": [
+          [
+            0.00132,
+            0.00048,
+            0.00032,
+            0.00039
+          ],
+          [
+            0.00036,
+            0.00062,
+            0.00033,
+            0.00032
+          ],
+          [
+            -0.00089,
+            0.00091,
+            0.0004,
+            0.00049
+          ]
+        ],
+        "up": [
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "cargo_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "crop_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "position_m": [
+        0.0,
+        -0.004,
+        -6.25e-05
+      ],
+      "program": 1
+    }
+  },
+  "wall_handoffs": {}
+}

@@ -104,8 +104,13 @@ bool WorldRuntime::at_foraging_home(const AntState& ant) const {
     const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
     if (sealed_chamber(s) && s.geometry_edits.empty()) return ant.position==depot;
-    if (!within_contact(ant.position,depot,s.config) || !spatially_clear(ant.position,depot)) return false;
     const auto route=s.connectors.find(ant.id);
+    if (familiar_return(s) && route!=s.connectors.end() && route->second.cursor &&
+        route->second.cursor+1<route->second.size && ant.position==route->second.points[route->second.cursor] &&
+        (route->second.returning || !s.foragers.at(ant.id).enabled) && !ant.carried_food.total_ug() &&
+        s.autonomy.contains(ant.id) && s.autonomy.at(ant.id).knows_depot)
+        return mouth_at_supply(ant,depot) && spatially_clear(ant.position,depot);
+    if (!within_contact(ant.position,depot,s.config) || !spatially_clear(ant.position,depot)) return false;
     return route==s.connectors.end() || (!route->second.cursor && ant.position==route->second.points[0]);
 }
 
@@ -116,8 +121,8 @@ bool WorldRuntime::can_forage(const AntState& ant) const {
     const auto known=s.connectors.find(ant.id);
     if (known==s.connectors.end()) return discover_connector(ant).size!=0;
     const auto& path=known->second;
-    if (path.cursor || path.points[0]!=ant.position) return false;
-    for (std::uint32_t i=1;i<path.size;++i)
+    if (path.points[path.cursor]!=ant.position || (path.cursor && !(familiar_return(s) && at_foraging_home(ant)))) return false;
+    for (std::uint32_t i=path.cursor+1;i<path.size;++i)
         if (!spatially_clear(path.points[i-1],path.points[i],s.geometry->config.loaded_half_q)) return false;
     return true;
 }

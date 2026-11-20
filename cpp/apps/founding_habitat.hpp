@@ -22,7 +22,8 @@ inline constexpr std::uint64_t reference_deficit=3168*20;
 
 inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t tenths_c,std::uint64_t humidity,
                         bool external_supply=true,bool alternate_berth=false,bool sealed=false,bool anatomical=false,
-                        bool mouth_access=false,bool adult_offers=false,bool wall_handoff=false,bool anatomical_handoff=false) {
+                        bool mouth_access=false,bool adult_offers=false,bool wall_handoff=false,bool anatomical_handoff=false,
+                        bool familiar_return=false) {
     const auto climate=std::find_if(temperatures.begin(),temperatures.end(),
         [tenths_c](const Temperature& t){return t.tenths_c==tenths_c;});
     wp6b::require(climate!=temperatures.end() && (humidity==60 || humidity==80 || humidity==90),
@@ -46,7 +47,8 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     ecology.local_nest_activity=ecology.local_traffic=ecology.yield_to_loaded=ecology.local_pantry_checks=true;
     ecology.nest_dynamics=NestDynamics{true,NestScoring::SpatialDemand};
     ecology.founding_habitat=FoundingHabitat{{anatomical?-.005:sealed?-.00175:-.004,-.004,0},2000,
-                                           alternate_berth || sealed,sealed,anatomical,mouth_access,adult_offers,wall_handoff,anatomical_handoff};
+                                           alternate_berth || sealed,sealed,anatomical,mouth_access,adult_offers,wall_handoff,anatomical_handoff,
+                                           familiar_return};
     const auto interval=[&](std::int64_t ms) {
         return SimTime{ms*1000/static_cast<std::int64_t>(climate->activity_permille)};
     };

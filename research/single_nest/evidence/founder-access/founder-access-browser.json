@@ -1,0 +1,81 @@
+{
+  "first_browser_view_ms": 452.64,
+  "delivery": {
+    "id": "18642",
+    "time_ms": 5056972669,
+    "kind": "FoodDelivered",
+    "actor": "23",
+    "related": null,
+    "source": "10038",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0,
+      -0.004,
+      0.002
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      1321,
+      667,
+      1912,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "queen-meal": {
+    "id": "21408",
+    "time_ms": 5184000000,
+    "kind": "FoundressNestMeal",
+    "actor": "2",
+    "related": null,
+    "source": "11120",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0,
+      -0.004,
+      -0.0025
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      49,
+      20,
+      0,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "queen-uptake": {
+    "id": "21622",
+    "time_ms": 5205600000,
+    "kind": "PhysiologyUpdated",
+    "actor": "2",
+    "related": null,
+    "source": "11268",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0,
+      -0.004,
+      -0.0025
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      49,
+      0,
+      0,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  }
+}

@@ -150,6 +150,26 @@ inline bool locally_reachable(const SurfaceDefinition& surface, Cell from, Cell 
     }
     return false;
 }
+// An occupied floor berth can shorten an individual's route. Its earlier legal
+// steps are still in the journal. Rebuild that discarded prefix from committed
+// outward motion, then join it to the surviving checkpoint suffix.
+struct ConnectorReplay {
+    std::vector<PositionM> points;
+    std::size_t cursor{}, anchor{};
+    bool found_suffix{};
+
+    void join_suffix(const SurfaceConnector& saved) {
+        if (points.back()!=saved.points[0]) return;
+        if (points.size()>1) {
+            for (std::uint32_t i=1;i<saved.size;++i)
+                ensure(std::find(points.begin(),points.end(),saved.points[i])==points.end(),
+                       "historical connector prefix overlaps its retained suffix");
+        }
+        points.insert(points.end(),saved.points.begin()+1,saved.points.begin()+saved.size);
+        found_suffix=true;
+    }
+};
+
 template <typename S> void validate_surface_evidence(const S& s) {
     if (!s.surface) {
         for (const auto& e : s.journal) ensure(e.deposited_units == 0 && !e.forgot_memory, "surface evidence without configuration");
@@ -179,7 +199,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
     typename S::Edges audit_edges; typename S::Discoveries audit_discoveries;
     std::map<EntityId, PositionM> positions; std::map<EntityId, FoodMass> cargo;
     std::map<ResourceId, FoodMass> remaining;
-    std::map<EntityId,std::uint32_t> connector_cursors;
+    std::map<EntityId,ConnectorReplay> routes;
     ForagingCounters counts; bool configured = false;
     const auto portable=s.ecological && s.ecological->portable_field;
     for (const auto& e : s.journal) {
@@ -200,8 +220,12 @@ template <typename S> void validate_surface_evidence(const S& s) {
             ensure(home && surface.open(*home) && (connector || !e.payload),"invalid forager home cell");
             if (connector) {
                 const auto& link=s.connectors.at(e.actor);
-                ensure(link.points[0]==e.position && navigation_cell(s,link.entrance())==home,"connector lacks depot evidence");
-                connector_cursors[e.actor]=0;
+                const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
+                ensure((link.points[0]==e.position || (sealed_chamber(s) && within_contact(e.position,depot,s.config))) &&
+                    navigation_cell(s,link.entrance())==home,"connector lacks depot evidence");
+                auto& route=routes[e.actor];
+                route.points.push_back(e.position);
+                route.join_suffix(link);
             }
             auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *home; f.path_size = 1;
             f.heading = initial_heading(s.seed, e.actor); audit_visits.try_emplace(f.path[0], 0);
@@ -215,6 +239,15 @@ template <typename S> void validate_surface_evidence(const S& s) {
             }
             ensure(audit_agents.contains(e.actor) && audit_agents.at(e.actor).enabled && e.position == positions[e.actor] &&
                 e.reason != DecisionReason::None, "invalid individual decision evidence");
+            if (connector && sealed_chamber(s) && e.mode==BehaviorMode::Deliver && e.reason==DecisionReason::NestContact) {
+                auto& route=routes.at(e.actor);
+                const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
+                if (route.cursor>route.anchor && (e.position.y==depot.y || !anatomical_handoff(s))) {
+                    ensure(cargo.at(e.actor).total_ug() && route.points[route.cursor]==e.position &&
+                        within_contact(e.position,depot,s.config),"connector handoff lacks local paid cargo");
+                    route.anchor=route.cursor;
+                }
+            }
             auto& f = audit_agents.at(e.actor); ++f.decisions; ++counts.decisions; f.mode = e.mode;
             ensure(e.payload == f.decisions, "individual RNG/decision counter mismatch");
             if (e.forgot_memory) { f.memory = {}; f.memory_size = 0; ++counts.memory_failures; }
@@ -242,12 +275,23 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 if (active && !on_connector) ensure(old && to && (*old==*to || adjacent(*old,*to)),"invalid foraging surface segment");
             } else if (!mixed || active) ensure(old && to && adjacent(*old,*to),"movement history crosses blocked/nonlocal surface");
             if (on_connector) {
-                const auto& path=s.connectors.at(e.actor);
-                auto& cursor=connector_cursors.at(e.actor);
-                ensure((e.mode==BehaviorMode::Return && cursor>0) ||
-                    (e.mode==BehaviorMode::Explore && cursor+1<path.size),"connector history has no next waypoint");
+                auto& route=routes.at(e.actor);
+                auto& cursor=route.cursor;
+                if (e.mode==BehaviorMode::Explore && cursor+1==route.points.size() && !route.found_suffix) {
+                    const auto& g=s.geometry->config;
+                    const auto a=quantized(route.points.back(),g), b=quantized(e.position,g);
+                    const bool adjacent_cells=a && b && std::abs(a->x-b->x)+std::abs(a->y-b->y)+std::abs(a->z-b->z)==1;
+                    ensure(b && (adjacent_cells || (cursor==0 && within_distance(e.position,route.points[0],g.quantum_m,true))) &&
+                        std::find(route.points.begin(),route.points.end(),e.position)==route.points.end(),
+                        "invalid historical connector waypoint");
+                    route.points.push_back(e.position);
+                    route.join_suffix(s.connectors.at(e.actor));
+                    ensure(route.points.size()<=p.route_capacity,"historical connector exceeds its route limit");
+                }
+                ensure((e.mode==BehaviorMode::Return && cursor>route.anchor) ||
+                    (e.mode==BehaviorMode::Explore && cursor+1<route.points.size()),"connector history has no next waypoint");
                 const auto next=e.mode==BehaviorMode::Return?cursor-1:cursor+1;
-                ensure(path.points[cursor]==positions[e.actor] && path.points[next]==e.position &&
+                ensure(route.points[cursor]==positions[e.actor] && route.points[next]==e.position &&
                     audit_agents.at(e.actor).mode==e.mode && e.deposited_units==0,"connector history skips a physical segment");
                 cursor=next;
             } else if (active && (!spatial || old!=to)) {
@@ -333,7 +377,12 @@ template <typename S> void validate_surface_evidence(const S& s) {
     for (const auto& [id, f] : s.foragers) {
         auto expected = audit_agents.at(id); expected.wake = f.wake; expected.action = f.action;
         ensure(f == expected, "individual memory/path disagrees with experienced history");
-        if (connector) ensure(connector_cursors.at(id)==s.connectors.at(id).cursor,"connector cursor differs from committed motion");
+        if (connector) {
+            const auto& route=routes.at(id);
+            const auto& saved=s.connectors.at(id);
+            ensure(route.found_suffix && route.points.size()-route.anchor==saved.size &&
+                route.cursor==route.anchor+saved.cursor,"connector berth or cursor differs from committed motion");
+        }
     }
 }
 } // namespace antworld::detail

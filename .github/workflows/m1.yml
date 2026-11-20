@@ -28,7 +28,7 @@ jobs:
         shell: pwsh
         run: |
           $dir = 'research/single_nest/evidence/founder-access'
-          foreach ($version in 40, 41, 42, 43) {
+          foreach ($version in 40, 41, 42, 43, 44) {
             python -B -m tools.qualify_founder_access --compare "$dir/physics$version-windows.jsonl" "$dir/physics$version-linux.jsonl"
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
@@ -44,6 +44,11 @@ jobs:
           if (-not $exe) { throw 'Native live executable was not built' }
           $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $exe).Path
           $env:M0_LIVE_TEST_ROOT = $env:RUNNER_TEMP
+          $receipt = Join-Path $env:RUNNER_TEMP 'founder-44.jsonl'
+          python -B -m tools.qualify_founder_access --core $exe --physics 44 --scratch $env:RUNNER_TEMP --output $receipt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.qualify_founder_access --compare research/single_nest/evidence/founder-access/physics44-windows.jsonl $receipt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m unittest op0.tests.test_nest_volume `
             op0.tests.test_live.LiveTests.test_observatory_presets_preserve_native_geometry_and_resources `
             op0.tests.test_live.LiveTests.test_reachable_berth_version_and_readonly_history_survive_restore `
@@ -54,7 +59,8 @@ jobs:
             op0.tests.test_live.LiveTests.test_portable_mouth_approach_keeps_the_first_step_and_canonical_history `
             op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes `
             op0.tests.test_live.LiveTests.test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake `
-            op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction -v
+            op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction `
+            op0.tests.test_live.LiveTests.test_familiar_return_replays_the_first_reassessment_without_warping_the_worker -v
       - name: Replay physics 36 and verify canonical archives
         shell: pwsh
         run: |

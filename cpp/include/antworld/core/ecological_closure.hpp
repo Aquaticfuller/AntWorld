@@ -31,6 +31,7 @@ struct FoundingHabitat {
     bool adult_offers{}; // Physics 41. A payable offer at mutual oral contact.
     bool wall_handoff{}; // Physics 42. A blocked returning carrier can unload from a real mouth contact.
     bool anatomical_handoff{}; // Physics 43. Use mouth reach at that handoff and keep the actual connector.
+    bool familiar_return{}; // Physics 44. An empty returner can recognize its own mouth-contact berth.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

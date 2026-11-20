@@ -1,0 +1,240 @@
+{
+  "seed": 2,
+  "requests": [
+    "NEW_MOUTH_HANDOFF_NEST 9202 2 250 80 plugged 1955 reachable finite",
+    "NEW_FAMILIAR_RETURN_NEST 9202 2 250 80 plugged 1955 reachable finite"
+  ],
+  "enclosing_day": 60,
+  "preceding_common_fact": {
+    "id": "10467",
+    "time_ms": 3966699773,
+    "kind": "ActivityChanged",
+    "actor": "6",
+    "related": null,
+    "source": "5418",
+    "colony": "1",
+    "resource": null,
+    "position_m": [
+      0.0,
+      -0.0015,
+      0.002
+    ],
+    "stage": "Adult",
+    "outcome": "Success",
+    "mass_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "payload": "0",
+    "auxiliary": "0",
+    "evidence": "COMMITTED_FACT"
+  },
+  "first_difference": [
+    {
+      "id": "10468",
+      "time_ms": 3966699773,
+      "kind": "Moved",
+      "actor": "6",
+      "related": null,
+      "source": "5418",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "1",
+      "auxiliary": "214749020160",
+      "evidence": "COMMITTED_FACT",
+      "motion": {
+        "begins_ms": 3966699723,
+        "translates_ms": 3966699723,
+        "duration_ms": 50,
+        "turn_ms": 0,
+        "ends_ms": 3966699773,
+        "target_heading": 10
+      }
+    },
+    {
+      "id": "10468",
+      "time_ms": 3966699773,
+      "kind": "Moved",
+      "actor": "6",
+      "related": null,
+      "source": "5418",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "1",
+      "auxiliary": "214749020160",
+      "evidence": "COMMITTED_FACT",
+      "motion": {
+        "begins_ms": 3966699723,
+        "translates_ms": 3966699723,
+        "duration_ms": 50,
+        "turn_ms": 0,
+        "ends_ms": 3966699773,
+        "target_heading": 10
+      }
+    }
+  ],
+  "different_fields": {
+    "revision": [
+      15888,
+      15889
+    ]
+  },
+  "first_player_visible_difference": [
+    {
+      "id": "10471",
+      "time_ms": 3966699774,
+      "kind": "BiologicalObservation",
+      "actor": "6",
+      "related": null,
+      "source": "5419",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT",
+      "action": {
+        "phase": "Selected",
+        "act": "Walk",
+        "bout": "5420",
+        "began_ms": null,
+        "destination_m": [
+          0.0,
+          -0.002,
+          0.002
+        ]
+      }
+    },
+    {
+      "id": "10471",
+      "time_ms": 3966699774,
+      "kind": "BiologicalObservation",
+      "actor": "6",
+      "related": null,
+      "source": "5419",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT",
+      "action": {
+        "phase": "Selected",
+        "act": "Walk",
+        "bout": "5421",
+        "began_ms": null,
+        "destination_m": [
+          0.0,
+          -0.002,
+          0.002
+        ]
+      }
+    }
+  ],
+  "first_activity_difference": [
+    {
+      "id": "10474",
+      "time_ms": 3966699824,
+      "kind": "ActivityChanged",
+      "actor": "6",
+      "related": null,
+      "source": "5420",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    },
+    {
+      "id": "10474",
+      "time_ms": 3966699774,
+      "kind": "ActivityChanged",
+      "actor": "6",
+      "related": null,
+      "source": "5421",
+      "colony": "1",
+      "resource": null,
+      "position_m": [
+        0.0,
+        -0.00175,
+        0.002
+      ],
+      "stage": "Adult",
+      "outcome": "Success",
+      "mass_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "payload": "0",
+      "auxiliary": "0",
+      "evidence": "COMMITTED_FACT"
+    }
+  ]
+}

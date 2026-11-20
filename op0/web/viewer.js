@@ -540,6 +540,36 @@ async function selectAnt(id) {
     inspect(false);
     await seek(app.time, app.selectedFact);
 }
+function transferReceipt(e) {
+    if (!e.mass_ug || !["NutritionTransferred", "FoodDelivered", "FoundressNestMeal"].includes(e.kind)) return null;
+    const individual = id => {
+        if (!id) return node("span", tr("Not recorded"));
+        const ants = app.live ? liveView.state.ants : app.state?.ants;
+        const ant = ants?.find(a => a.id === id);
+        const label = ant?.caste ? tr(ant.caste) + " #" + id : tr("Ant #{id}", {id});
+        const control = button(label, () => selectAnt(id).catch(report));
+        control.dataset.ant = id;
+        return control;
+    };
+    const store = node("span", tr("Nest stock"), "flow-store");
+    const from = e.kind === "FoundressNestMeal" ? store : individual(e.actor);
+    const to = e.kind === "FoodDelivered" ? store : individual(e.kind === "FoundressNestMeal" ? e.actor : e.recipient || e.related);
+    const card = node("div", null, "food-flow");
+    const route = node("div", null, "food-flow-route");
+    const arrow = node("span", "→");
+    arrow.setAttribute("aria-label", tr("To"));
+    route.append(from, arrow, to);
+    const masses = node("dl", null, "flow-ingredients");
+    const labels = ["Carbohydrates", "Protein", "Water", "Other material"];
+    for (const [i, value] of e.mass_ug.entries()) {
+        if (i === 3 && !value) continue;
+        const ingredient = node("div", null, value ? "transferred" : "zero");
+        ingredient.append(node("dt", tr(labels[i])), node("dd", withUnit(value, "µg")));
+        masses.append(ingredient);
+    }
+    card.append(route, masses);
+    return card;
+}
 function showEvent(e) {
     if (app.live) app.selectedFact = e;
     const container = $("event-detail");
@@ -551,7 +581,7 @@ function showEvent(e) {
             ["Material edited", withUnit(edit.volume_q3 * target.quantum_m ** 3 * 1e9, "mm³")]);
     }
     const antLink = id => id ? button(tr("Ant #{id}", {id}), () => selectAnt(id).catch(report)) : null;
-    container.replaceChildren(node("h3", eventLabel(e)), keyValues([["Fact ID", "#" + e.id], ["Canonical event name", e.kind],
+    const fields = keyValues([["Fact ID", "#" + e.id], ["Canonical event name", e.kind],
         ["Simulation time", exactTime(e.time_ms)], [e.kind === "BroodMoved" ? "Brood" : "Actor", antLink(e.actor)],
         [e.kind === "BroodMoved" ? "Handler" : "Participant", antLink(e.related)],
         ["Resource / parcel", [e.resource, e.parcel].filter(Boolean).map(s => "#" + s).join(" / ") || null],
@@ -559,7 +589,14 @@ function showEvent(e) {
         ...(e.origin_fact ? [["Preceding committed fact", button("#" + e.origin_fact, () => jumpEvent(e.origin_fact).catch(report))]] : []),
         ...(e.death_cause ? [["Death cause", tr(e.death_cause)]] : []),
         ...(e.mode ? [["Foraging mode", tr(e.mode)], ["Decision label", tr(e.reason)]] : []),
-        ...(e.trail_deposited_units ? [["Deposited trail units", decimal.format(e.trail_deposited_units)]] : []), ...editList]));
+        ...(e.trail_deposited_units ? [["Deposited trail units", decimal.format(e.trail_deposited_units)]] : []), ...editList]);
+    container.replaceChildren(node("h3", eventLabel(e)));
+    const transfer = transferReceipt(e);
+    if (transfer) {
+        const details = node("details", null, "flow-fact");
+        details.append(node("summary", tr("Event record #{id}", {id: e.id})), fields);
+        container.append(transfer, details);
+    } else container.append(fields);
     container.hidden = false;
     container.dataset.event = e.id;
 }
