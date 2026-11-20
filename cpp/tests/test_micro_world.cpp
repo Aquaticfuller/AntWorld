@@ -254,7 +254,7 @@ void chamber_partition_boundaries() {
         edit.box={{action==SoilAction::Excavate ? -8 : -7,-2,-2},{-6,2,2}};
         edits.emplace(edit.id,edit);
         for (const auto key:overlapping_bricks(edit.box,terrain.config.brick_q,100))
-            index.emplace(std::pair{key,edit.id},0);
+            index.emplace(std::pair{key,edit.id},std::uint8_t{0});
     }
     const GeometryView view{terrain,edits,index,1024}, limited{terrain,edits,index,26};
     std::uint64_t expected_volume{};

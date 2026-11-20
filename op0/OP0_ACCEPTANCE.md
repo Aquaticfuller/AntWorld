@@ -100,6 +100,12 @@ py -X utf8 -m unittest discover -s op0/tests -v
 
 See [OP0 CI](https://github.com/Aquaticfuller/AntWorld/actions/workflows/op0.yml) for the Windows and Linux checks by git commit, and [Core CI](https://github.com/Aquaticfuller/AntWorld/actions/workflows/ci.yml) for the inherited native checks. OP0 does not modify the previous Core CI workflow.
 
+## Live single-nest follow-up
+
+The Windows walkthrough also exercises two local interactions in opt-in live worlds. In Physics 41 with finite supplies and seed 3, selecting the next worker-to-queen exchange stops at worker 23 feeding queen 2. The next exchange includes carbohydrate. The inspector can then follow the queen to a later positive uptake. In Physics 43 with seed 2, the wall-delivery seek pauses on worker 13 unloading at its mouth on day 106. Resume at 1× to see subsequent committed actions. [Launch and controls](../research/single_nest/README.md) · [Feeding receipt on screen](../research/single_nest/evidence/founder-access/worker-feeds-queen-zh.png) · [Wall delivery on screen](../research/single_nest/evidence/founder-access/worker-unloads-from-wall-zh.png)
+
+The original hosted Windows seek exceeded the 90-second browser deadline. On the same local Windows machine, the native and service portion of that seek took 59.12 seconds before the collision-query change and 10.00 seconds after it. Both returned the identical canonical history of 196,150 events and identical final frame. The local Chrome walkthrough reached the handoff within its original deadline. The paired times exclude browser rendering and apply only to this workload. [Workload, hashes and historical timeout](../research/single_nest/FOUNDER_ACCESS_RESULTS.md#time-to-see-the-wall-delivery)
+
 ## Known limits and review decision
 
 The spatial viewer offers quantized 3D slices and recorded points. It does not infer between-event trajectories, chamber function or the internal cause of a decision. The 12-block decoded cache does not avoid loading published cut tables during indexing. A new native encoding requires a new reader contract. Unsupported versions and malformed inputs are explicit errors. Directory imports use the CLI and become available to the Web viewer after restart. User-level acceptance is replay of a stable archive. Live Core control, Unity and a biological readiness decision are out of this package. The S6.4 formal gate remains `FAIL`, the B06 match remains `INSUFFICIENT`, and the nine historical root blockers remain `BIOLOGICAL_BLOCKED`.
