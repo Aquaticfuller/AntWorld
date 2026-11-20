@@ -25,6 +25,7 @@ struct FoundingHabitat {
     bool alternate_berth{}; // Physics 37. Seek another locally reachable depot contact.
     bool sealed_chamber{}; // Physics 38. Posterior laying site and close brood handling.
     bool anatomical{}; // Physics 39. Body-relative birth, contact and swept clearance.
+    bool mouth_access{}; // Physics 40. Local oral access to supplies in the sealed pocket.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

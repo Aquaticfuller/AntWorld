@@ -2,6 +2,7 @@
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
 #include "ecological_internal.hpp"
+#include "social_internal.hpp"
 #include "worker_motion.hpp"
 #include <algorithm>
 
@@ -138,6 +139,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         BehaviorDecision decision;
         PositionM destination;
         bool connector_return{},connector_clock{},dock_here{};
+        std::uint64_t cargo_meal_ug{};
     };
     std::vector<Ready> ready(0); ready.reserve(wakes.size());
     // Freeze all local observations before committing any decisions or proposals.
@@ -180,7 +182,20 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 r.decision.reason=returning?DecisionReason::HomeTrace:DecisionReason::Search;
             }
         };
-        if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
+        if (mouth_access(s) && loaded && f.mode==BehaviorMode::Return && f.last_collected.value &&
+            s.founding_reserves.contains(ant.id)) {
+            const auto& source=s.foods.rows[s.foods.index.at(f.last_collected)];
+            if (within_contact(ant.position,source.position,s.config) && spatially_clear(ant.position,source.position)) {
+                const auto p=*query_physiology({s.world,ant.id});
+                const auto need=ingredient_min(ant.carried_food,nutrient_demand(p,ant.stage));
+                r.cargo_meal_ug=std::min({need.total_ug(),p.config.transfer_limit_ug,p.config.crop_capacity_ug-p.crop.total_ug()});
+            }
+        }
+        if (r.cargo_meal_ug) {
+            // Handle one mouthful of owned cargo at the source before the return trip.
+            r.decision.mode=BehaviorMode::Rest;
+            r.decision.reason=DecisionReason::LocalFood;
+        } else if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
         else {
             r.local=sense({s.world,e.actor});
             r.decision=choose_behavior(s.seed,e.actor,loaded,f,r.local,config,s.ecological.has_value());
@@ -234,7 +249,10 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             action.kind = ScheduledEvent::Kind::CollectFood; action.resource = r.decision.resource;
             action.requested_ug = ant.carrying_capacity_ug; bump(s.m.foraging.collection_attempts); break;
         case ActionKind::DeliverFood: action.kind = ScheduledEvent::Kind::DeliverFood; break;
-        case ActionKind::Rest: action.kind = ScheduledEvent::Kind::Rest; break;
+        case ActionKind::Rest:
+            action.kind=r.cargo_meal_ug ? ScheduledEvent::Kind::IngestCargo : ScheduledEvent::Kind::Rest;
+            action.requested_ug=r.cargo_meal_ug;
+            break;
         }
         const bool yielding=action.kind==ScheduledEvent::Kind::Move && !clear_worker_traffic(ant,action.destination,body_half(ant.id));
         if (yielding) {
@@ -263,7 +281,8 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         fact.resource = r.decision.resource;
         if (s.care_profile) {
             const auto act=action.kind==ScheduledEvent::Kind::Move?CareAct::Walk:action.kind==ScheduledEvent::Kind::CollectFood?
-                CareAct::CollectFood:action.kind==ScheduledEvent::Kind::DeliverFood?CareAct::DeliverFood:CareAct::Inactive;
+                CareAct::CollectFood:action.kind==ScheduledEvent::Kind::DeliverFood?CareAct::DeliverFood:
+                action.kind==ScheduledEvent::Kind::IngestCargo?CareAct::IngestFood:CareAct::Inactive;
             observe(tx,ant.id,r.event.id,{ObservationPhase::Selected,act,{},f.action,s.m.now,false,
                 physical_clock && act==CareAct::Walk ? action.destination : PositionM{}});
         }
@@ -271,7 +290,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         if (fact.resource.value && !s.discoveries.contains(fact.resource)) tx.discoveries.set(fact.resource, {s.m.now, ant.id});
         tx.fact(fact);
         if (action.kind==ScheduledEvent::Kind::Move || action.kind==ScheduledEvent::Kind::CollectFood ||
-            action.kind==ScheduledEvent::Kind::DeliverFood) set_activity_work(tx,ant.id,f.action);
+            action.kind==ScheduledEvent::Kind::DeliverFood || r.cargo_meal_ug) set_activity_work(tx,ant.id,f.action);
     }
 }
 void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldEvent& fact, const AntState& before) {

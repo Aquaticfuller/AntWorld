@@ -21,6 +21,7 @@ inline constexpr unsigned founding_habitat_schema = 29, founding_habitat_physics
 inline constexpr unsigned reachable_berth_schema = 30, reachable_berth_physics = 37;
 inline constexpr unsigned sealed_chamber_schema = 31, sealed_chamber_physics = 38;
 inline constexpr unsigned anatomical_schema = 32, anatomical_physics = 39;
+inline constexpr unsigned mouth_access_schema = 33, mouth_access_physics = 40;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -28,6 +29,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->mouth_access) return mouth_access_physics;
     if (c.founding_habitat && c.founding_habitat->anatomical) return anatomical_physics;
     if (c.founding_habitat && c.founding_habitat->sealed_chamber) return sealed_chamber_physics;
     if (c.founding_habitat)
@@ -44,6 +46,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->mouth_access) return mouth_access_schema;
     if (c.founding_habitat && c.founding_habitat->anatomical) return anatomical_schema;
     if (c.founding_habitat && c.founding_habitat->sealed_chamber) return sealed_chamber_schema;
     if (c.founding_habitat)
@@ -109,7 +112,8 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
         ensure(c.yield_to_loaded || c.local_pantry_checks,"missing nursery work or traffic policy");
     }
     if (habitat) c.founding_habitat=FoundingHabitat{r.position(), r.get(), version >= reachable_berth_physics,
-                                                  version >= sealed_chamber_physics,version == anatomical_physics};
+                                                  version >= sealed_chamber_physics,version >= anatomical_physics,
+                                                  version == mouth_access_physics};
     validate_ecological_closure(c, world);
     return c;
 }

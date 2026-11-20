@@ -16,6 +16,7 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
         const auto depot=s.colonies.rows[s.colonies.index.at(ant->colony)].nest_position;
         const auto nursery=s.ecological->founding_habitat->brood_site;
         if (s.colonies.rows.size()!=1 || !s.geometry || !s.surface ||
+            (mouth_access(s) && (!within_contact(ant->position,depot,s.config) || !spatially_clear(ant->position,depot))) ||
             nursery==depot || (sealed_chamber(s) ? (!anatomical_nest(s) && ant->position!=depot) ||
                 !spatially_clear(ant->position,nursery,s.geometry->config.body_half_q) : ant->position!=nursery) ||
             !spatially_clear(ant->position,ant->position,s.geometry->config.body_half_q) ||

@@ -167,6 +167,12 @@ inline bool mouth_reaches(const BodyPose& adult,PositionM brood_position,LifeSta
     return dot(gap,adult.forward)>=-.00012 &&
         within_distance(adult.mouth_m,brood_position,.00048+brood_half_axes(stage).z,true);
 }
+// ENGINEERING_FIXTURE. The handoff is a point within reach of the mouthparts.
+// Small head excursions are allowed; solid material is checked by the caller.
+inline bool supply_in_reach(const BodyPose& adult,PositionM supply) {
+    const auto gap=displacement(supply,adult.mouth_m);
+    return dot(gap,adult.forward)>=-.00012 && within_distance(adult.mouth_m,supply,.00065,true);
+}
 template<class Free>
 std::optional<PositionM> posterior_egg_site(const GeometryView& view,const BodyPose& mother,
                                            const WorldConfig& world,Free free) {

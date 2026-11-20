@@ -199,6 +199,13 @@ void anatomical_clearance() {
     worker.caste=Caste::Worker;
     queen.position=worker.position={0,-.004,0};
     const auto q=body_pose(queen,1,floor_normal), w=body_pose(worker,1,floor_normal);
+    for (const auto& body:{q,w}) {
+        const auto in_front=translated(body.mouth_m,scale(body.forward,.0004));
+        const auto behind=translated(body.mouth_m,scale(body.forward,-.0004));
+        require(supply_in_reach(body,in_front) && !supply_in_reach(body,behind) &&
+                !supply_in_reach(body,translated(body.mouth_m,scale(body.forward,.0008))) &&
+                !supply_in_reach(body,body.center_m),"feeding requires an oriented, local mouth contact");
+    }
     require(distance(q.mouth_m,q.abdomen_tip_m)>.008 &&
             distance(w.mouth_m,w.abdomen_tip_m)<.004,"adult anatomy does not distinguish caste");
     require(!anatomy_sweep(view,queen,{.007,-.004,0},1,1) &&

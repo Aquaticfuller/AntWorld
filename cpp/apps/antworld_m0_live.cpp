@@ -153,7 +153,7 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
 }
 
 enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact,
-                       BroodMoved, BroodCleaned };
+                       BroodMoved, BroodCleaned, FounderMeal, FounderUptake };
 
 Milestone read_milestone(std::istringstream& request) {
     const auto name = word(request);
@@ -169,6 +169,8 @@ Milestone read_milestone(std::istringstream& request) {
     if (name == "entrance-contact") return Milestone::EntranceContact;
     if (name == "brood-moved") return Milestone::BroodMoved;
     if (name == "brood-cleaned") return Milestone::BroodCleaned;
+    if (name == "queen-meal") return Milestone::FounderMeal;
+    if (name == "queen-uptake") return Milestone::FounderUptake;
     throw std::invalid_argument("Unknown live milestone");
 }
 
@@ -227,6 +229,13 @@ struct MilestoneSearch {
             return fact.kind == FactKind::SoilExcavated && adult_worker(world, fact);
         case Milestone::BroodMoved:
             return fact.kind==FactKind::BroodMoved;
+        case Milestone::FounderMeal:
+            return fact.kind==FactKind::FoundressNestMeal && fact.transferred.total_ug();
+        case Milestone::FounderUptake:
+            if ((fact.kind!=FactKind::PhysiologyUpdated && fact.kind!=FactKind::FoundingBoundaryUptake) ||
+                !fact.transferred.carbs_ug || fact.stage!=LifeStage::Adult) return false;
+            if (const auto ant=world.query_ant({fact.world,fact.actor})) return ant->caste==Caste::Queen;
+            return false;
         case Milestone::BroodCleaned:
             return fact.kind==FactKind::BiologicalObservation && fact.observation.phase==ObservationPhase::Completed &&
                 fact.observation.act==CareAct::CleanBrood;
@@ -351,15 +360,16 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v13");
+                message("OK", "antworld.m0.live.v14");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
-                       command=="NEW_ANATOMICAL_NEST") {
+                       command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                const bool anatomical=command=="NEW_ANATOMICAL_NEST";
+                const bool oral=command=="NEW_ORAL_NEST";
+                const bool anatomical=command=="NEW_ANATOMICAL_NEST" || oral;
                 const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
@@ -375,7 +385,7 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical,oral);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();

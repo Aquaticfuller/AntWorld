@@ -418,9 +418,20 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                    "food crosses solid material");
             cargo[e.actor] = sum(cargo[e.actor], e.transferred);
         }
-        if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::NestIngested || e.kind==FactKind::ProteinRecycled)
+        if (e.kind == FactKind::FoodDelivered || (!mouth_access(s) && e.kind==FactKind::NestIngested) || e.kind==FactKind::ProteinRecycled)
             ensure(clear(positions.at(e.actor),s.colonies.rows[s.colonies.index.at(e.colony)].nest_position,contact_half),
                    "nest inventory crosses solid material");
+        if (mouth_access(s) && e.kind==FactKind::FoundingConfigured) {
+            const auto founder=past_ant(s.founding->founder);
+            const auto depot=s.colonies.rows[s.colonies.index.at(founder.colony)].nest_position;
+            ensure(within_contact(founder.position,depot,s.config) && clear(founder.position,depot,0),
+                   "founder lacks local experience of the handoff site");
+        }
+        if (mouth_access(s) && (e.kind==FactKind::FoundressNestMeal || e.kind==FactKind::NestIngested)) {
+            const auto body=past_body(e.actor);
+            const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
+            ensure(supply_in_reach(body,depot) && clear(body.mouth_m,depot,0),"meal lacks historical mouth contact");
+        }
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::CargoIngested)
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::NutritionTransferred)

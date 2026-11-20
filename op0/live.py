@@ -29,7 +29,9 @@ ROOT = Path(__file__).resolve().parent.parent
 RATES = (1, 10, 60, 600, 3600, 86400)
 HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
 BROOD_MILESTONES = {"brood-moved", "brood-cleaned"}
-MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES, *BROOD_MILESTONES}
+FOUNDER_MILESTONES = {"queen-meal", "queen-uptake"}
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", *HABITAT_MILESTONES,
+              *BROOD_MILESTONES, *FOUNDER_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
 HABITAT_HUMIDITIES = (60, 80, 90)
@@ -46,7 +48,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
+    paths = (installed.with_stem("antworld_m0_live_v15"), installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
              installed.with_stem("antworld_m0_live_v12"),
              installed.with_stem("antworld_m0_live_v11"),
              installed.with_stem("antworld_m0_live_v10"),
@@ -67,7 +69,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 14))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 15))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -80,6 +82,7 @@ class NativeCore:
             self.next_milestone = generation >= 11
             self.single_nest = generation >= 12
             self.anatomical = generation >= 13
+            self.mouth_access = generation >= 14
         except Exception:
             self.close()
             raise
@@ -340,6 +343,8 @@ class LiveSession:
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
         require(target not in BROOD_MILESTONES or self.worker.single_nest, "Build the updated Core to seek brood actions.")
         require(target not in HABITAT_MILESTONES or self.frame["flags"].get("founding_habitat"), "Unknown live milestone")
+        require(target not in FOUNDER_MILESTONES or (self.worker.mouth_access and self.frame["flags"].get("founding_habitat")),
+                "Founder meal milestones need the updated Core and a founding habitat.")
         require(not self.seeking(), "Cancel the current fast-forward first.")
         require(occurrence in ("first", "next"), "Choose the first or next event")
         next_event = occurrence == "next"
@@ -418,6 +423,7 @@ class LiveSession:
                     habitat_available=self.binary.is_file() and (self.worker is None or self.worker.founding_habitat),
                     observatory_available=self.binary.is_file() and (self.worker is None or self.worker.observatory),
                     single_nest_available=self.binary.is_file() and (self.worker is None or self.worker.single_nest),
+                    founder_meals_available=bool(self.worker and self.worker.mouth_access),
                     history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
@@ -460,7 +466,7 @@ class LiveSession:
                     if self.volume is None or self.volume["revision"] != revision:
                         focus = next(iter(frame["colonies"].values()))["position_m"]
                         self.volume = nest_volume(frame["geometry"], frame["edits"], focus,
-                                                  radius=44 if frame["physics"] == 39 else 32)
+                                                  radius=44 if frame["physics"] >= 39 else 32)
                     return self.volume | {"epoch": self.epoch, "world_id": frame["world"]}
                 if resource == "fact":
                     identifier = integer(options, "id", 0, 1, frame["cursor"])
@@ -628,10 +634,14 @@ class LiveSession:
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
                 core = self.core()
                 require(core.single_nest, "Build the updated Core to start a sealed founding chamber.")
+                models = {"reference": "NEW_SINGLE_NEST"}
+                if core.anatomical:
+                    models["anatomical"] = "NEW_ANATOMICAL_NEST"
+                if core.mouth_access:
+                    models["oral"] = "NEW_ORAL_NEST"
                 model = data.get("model", "anatomical" if core.anatomical else "reference")
-                require(model in ("anatomical", "reference") and (model == "reference" or core.anatomical),
-                        "Build the updated Core to start the anatomical nest.")
-                command = "NEW_ANATOMICAL_NEST" if model == "anatomical" else "NEW_SINGLE_NEST"
+                require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
+                command = models[model]
                 self.install(core.call(f"{command} {randbits(63) or 1} {seed} 250 80 plugged 1955 reachable {supply}"),
                              running=True)
             elif resource == "observatory":

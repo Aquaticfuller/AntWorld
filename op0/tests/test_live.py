@@ -250,6 +250,60 @@ class LiveTests(unittest.TestCase):
                     self.assertEqual(len({e["id"] for e in self.live.actions}), len(self.live.actions))
                 self.assertEqual(core.call(f"ADVANCE {61 * DAY}"), expected)
 
+    def test_portable_mouth_approach_keeps_the_first_step_and_canonical_history(self):
+        core = self.live.core()
+        if not core.mouth_access:
+            self.skipTest("Build the Physics 40 Core")
+        core.call("NEW_ORAL_NEST 9202 2 250 80 plugged 1955 reachable finite")
+        cut = checkpoint(core.call(f"ADVANCE {5 * DAY}"))
+        self.assertEqual((cut["physics"], cut["cursor"]), (40, 347))
+        digest = sha256(core.call("FACTS_AFTER 0 512")).hexdigest()
+        self.assertEqual(digest, "6b6db69fa667c2091a1a2ddeac32b35dd276beaa5e937f06042ca8ba4b36c7c2")
+
+    def test_oral_depot_meal_uptake_and_both_save_modes(self):
+        core = self.live.core()
+        if not core.mouth_access:
+            self.skipTest("Build the Physics 40 Core")
+        self.live.install(core.call("NEW_ORAL_NEST 9203 3 250 80 plugged 1955 reachable finite"), running=False)
+        end = 90 * DAY
+        def next_event(target):
+            self.assertEqual(core.call(f"FIND_NEXT_MILESTONE {target} 0"), b"")
+            while checkpoint(core.call("FRAME"))["time_ms"] < end:
+                reply = core.call(f"ADVANCE_UNTIL {end} {target}")
+                self.assertNotEqual(reply, b"exhausted", target)
+                if reply:
+                    return decode_fact(reply)[1]
+            self.fail(f"No {target} by day 90")
+
+        delivery = next_event("delivery")
+        self.assertEqual(KINDS[delivery.kind], "FoodDelivered")
+        meal = next_event("queen-meal")
+        self.assertEqual((KINDS[meal.kind], meal.actor), ("FoundressNestMeal", 2))
+        self.assertGreater(sum(meal.mass), 0)
+        self.assertGreater(meal.time, delivery.time)
+        absorbed = next_event("queen-uptake")
+        self.assertGreater(absorbed.time, meal.time)
+        self.assertEqual(absorbed.actor, 2)
+        self.assertGreater(absorbed.mass[0], 0)
+        original = core.call("FRAME")
+        self.live.publish(original)
+        cut = self.live.frame
+        self.assertEqual(cut["time_ms"], absorbed.time)
+        self.assertNotEqual(meal.position, cut["colonies"][meal.colony]["position_m"])
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        for mode in ("archive", "snapshot"):
+            self.live.save("Oral contact", False, mode)
+        expected = core.call(f"ADVANCE {absorbed.time + DAY}")
+        after = core.call(f"FACTS_AFTER {cut['cursor']} 512")
+        self.assertTrue(after)
+        for mode in ("archive", "snapshot"):
+            with self.subTest(mode=mode):
+                self.live.load("Oral contact", mode)
+                self.assertEqual(core.call("FRAME"), original)
+                self.assertEqual(core.call(f"ADVANCE {absorbed.time + DAY}"), expected)
+                self.assertEqual(core.call(f"FACTS_AFTER {cut['cursor']} 512"), after)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()
         if not worker.observatory:

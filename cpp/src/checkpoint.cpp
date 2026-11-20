@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==anatomical_schema && version==anatomical_physics) ||
+        ensure((outer_schema==mouth_access_schema && version==mouth_access_physics) ||
+               (outer_schema==anatomical_schema && version==anatomical_physics) ||
                (outer_schema==sealed_chamber_schema && version==sealed_chamber_physics) ||
                (outer_schema==reachable_berth_schema && version==reachable_berth_physics) ||
                (outer_schema==founding_habitat_schema && version==founding_habitat_physics) ||
@@ -606,7 +607,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::CargoIngested:
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); break;
         case FactKind::NestIngested: case FactKind::FoundressNestMeal:
-            ensure(within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
+            ensure(mouth_access(*s) ? e.position==positions.at(e.actor) :
+                   within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
                 "nest ingestion has no physical contact");
             delivered[e.colony] = subtract(delivered[e.colony], e.transferred); break;
         case FactKind::ProteinRecycled:

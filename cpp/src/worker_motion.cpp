@@ -10,11 +10,6 @@ using namespace detail;
 namespace {
 constexpr std::array<Cell,8> horizontal_steps{{{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}};
 
-std::optional<PointQ> nearest_grid_point(PositionM p,const GeometryConfig& g) {
-    const auto snap=[&](double v,double origin) { return origin+std::round((v-origin)/g.quantum_m)*g.quantum_m; };
-    return quantized({snap(p.x,g.origin_m.x),p.y,snap(p.z,g.origin_m.z)},g);
-}
-
 bool physically_overlaps(PositionM a,PositionM b,double width) {
     const auto limit=width-arithmetic_margin(position_scale(a,b),width);
     return std::abs(a.x-b.x)<limit && std::abs(a.y-b.y)<limit && std::abs(a.z-b.z)<limit;
@@ -209,7 +204,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_contact_step(co
     if (!local_traffic(s) || !s.geometry || !integrated_care(s) ||
         (s.surface && ant.position.y>=s.surface->config.origin_m.y)) return {};
     const auto& g=s.geometry->config;
-    const auto origin=quantized(ant.position,g);
+    // Quantize the search origin only. Check every proposed sweep from the
+    // worker's actual micron-scale berth before committing any movement.
+    const auto origin=mouth_access(s)?nearest_grid_point(ant.position,g,true):quantized(ant.position,g);
     if (!origin) return {};
     const auto reach=s.care_profile->perception_radius_m;
     const auto crop=s.physiology.at(ant.id).crop;
@@ -329,7 +326,7 @@ bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool app
     const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     const auto q=quantized(site,g);
     const auto half=body_half(ant.id);
-    if (!q || ant.position==site || !clear_care_segment(ant.position,site,half) ||
+    if ((!q && !mouth_access(s)) || ant.position==site || !clear_care_segment(ant.position,site,half) ||
         (s.surface && site.y>=s.surface->config.origin_m.y)) return false;
     if (anatomical_nest(s)) return (approach_depot || site!=depot) && clear_worker_traffic(ant,site,half);
     const auto view=geometry_view(s,limits_);
@@ -370,8 +367,10 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth && link==s.connectors.end() &&
         (!sealed_chamber(s) || !s.geometry_edits.empty());
     if (alternate && within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot)) return {};
-    const auto origin=habitat ? nearest_grid_point(ant.position,g) : quantized(ant.position,g);
-    const auto goal=quantized(depot,g);
+    const auto origin=habitat ? nearest_grid_point(ant.position,g,mouth_access(s)) : quantized(ant.position,g);
+    // A remembered connector can start at a lawful subvoxel berth. Use
+    // terrain cells to search, and the real endpoint for the final sweep.
+    const auto goal=mouth_access(s)?nearest_grid_point(depot,g,true):quantized(depot,g);
     if (!origin || !goal || origin->y!=goal->y) return {};
     struct Node { PointQ point, first; };
     const std::size_t budget=habitat ? 256 : 96;

@@ -192,7 +192,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(32, 39), (31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
+MICROWORLD_VERSIONS = {(33, 40), (32, 39), (31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
                        (29, 36), (30, 37)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
@@ -287,8 +287,10 @@ def checkpoint(raw, *, verify_hash=True):
             flags["founding_habitat"] = dict(brood_site_m=brood_site, pantry_buffer_ug=buffer)
             if outer[1] >= 38:
                 flags["founding_habitat"]["sealed_chamber"] = True
-            if outer[1] == 39:
+            if outer[1] >= 39:
                 flags["founding_habitat"]["anatomical"] = True
+            if outer[1] == 40:
+                flags["founding_habitat"]["mouth_access"] = True
             if outer[1] >= 37:
                 flags["founding_habitat"]["alternate_berth"] = True
     if r.flag():

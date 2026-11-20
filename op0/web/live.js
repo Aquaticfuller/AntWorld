@@ -5,12 +5,14 @@ const liveView = {state: null, epoch: null, request: 0, timer: null, animation: 
 const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     "brood-moved": "First brood move", "brood-cleaned": "First brood cleaning",
+    "queen-meal": "First queen meal from nest stores", "queen-uptake": "First queen carbohydrate uptake",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
 const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
     option => [option.value, option.textContent]));
-const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact"]);
+const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact",
+    "queen-meal", "queen-uptake"]);
 const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
     "Entrance antennal contact": "#b9d6f5"};
 const liveStopLabels = {
@@ -62,6 +64,8 @@ function liveControls() {
     const target = $("live-target");
     for (const option of target.querySelectorAll("[data-habitat]")) option.hidden = option.disabled = !s?.habitat;
     for (const option of target.querySelectorAll("[data-brood]")) option.hidden = option.disabled = !s?.single_nest_available;
+    for (const option of target.querySelectorAll("[data-founder]"))
+        option.hidden = option.disabled = !(s?.habitat && s.founder_meals_available);
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
@@ -70,10 +74,16 @@ function liveControls() {
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = $("live-seek-next").disabled = locked || seeking;
     $("live-seek").disabled ||= Boolean(s?.history_floor);
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
-    const details = stop ? tr(liveStopLabels[stop.state], {
+    let details = stop ? tr(liveStopLabels[stop.state], {
         event: tr((stop.occurrence === "next" ? liveEventNames : liveMilestones)[stop.target]),
         time: stop.event ? duration(stop.event.time_ms) : ""
     }) : "";
+    if (stop?.event && (stop.target === "queen-meal" || stop.target === "queen-uptake")) {
+        const [carbs, protein, water] = stop.event.mass_ug;
+        details += " · " + (stop.target === "queen-meal"
+            ? tr("Into crop: {c} µg carbohydrate, {p} µg protein, {w} µg water", {c: carbs, p: protein, w: water})
+            : tr("From crop: {c} µg carbohydrate absorbed", {c: carbs}));
+    }
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;
     if (s?.error) show(tr(s.error), true);
@@ -305,12 +315,12 @@ async function refreshLive(alignSection = true) {
     if (key && liveView.shownStop !== key) {
         liveView.shownStop = key;
         if (stop.state === "reached" && followMilestones.has(stop.target)) {
-            const worker = app.state.ants.find(a => a.id === stop.event.actor && a.caste === "Worker");
-            if (worker) {
-                app.selected = worker.id;
+            const actor = app.state.ants.find(a => a.id === stop.event.actor);
+            if (actor) {
+                app.selected = actor.id;
                 app.follow = true;
                 app.map.x = app.map.y = 0;
-                $("ant-id").value = worker.id;
+                $("ant-id").value = actor.id;
                 toggle("follow", true);
             }
         }

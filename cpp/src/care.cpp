@@ -43,19 +43,80 @@ bool WorldRuntime::brood_contact(const AntState& adult,const AntState& young) co
 PositionM WorldRuntime::brood_approach(const CareState& care,const AntState& adult,const AntState& young) const {
     const auto& s=*state_;
     if (!anatomical_nest(s)) return care_destination(care,adult,young.position);
+    return mouth_approach(adult,young.position,young.stage);
+}
+
+bool WorldRuntime::mouth_at_supply(const AntState& adult,PositionM target) const {
+    const auto body=query_body({state_->world,adult.id});
+    return body && supply_in_reach(*body,target) && spatially_clear(body->mouth_m,target);
+}
+
+bool WorldRuntime::seeks_nest_meal(const AntState& adult,const PhysiologyState& p) const {
+    const auto& s=*state_;
+    if (!mouth_access(s) || !s.founding || !s.founding->profile.dietary ||
+        !s.founding->profile.dietary->local_nest_intake || !s.founding_reserves.contains(adult.id) ||
+        p.crop.total_ug()>=p.config.crop_capacity_ug) return false;
+    const auto& colony=s.colonies.rows[s.colonies.index.at(adult.colony)];
+    const auto mouth=query_body({s.world,adult.id})->mouth_m;
+    const bool visible=within_distance(mouth,colony.nest_position,s.care_profile->perception_radius_m,true) &&
+                       spatially_clear(mouth,colony.nest_position);
+    const auto& reserve=s.founding_reserves.at(adult.id);
+    const bool founder=founding_foundress(adult.id);
+    if (visible && founder) return foundress_nest_meal(s.founding->profile,p,reserve,colony.nest_food).total_ug()!=0;
+    const auto need=founding_resupply_shortfall(s.founding->profile,p,reserve,founder,p.config.absorption_period);
+    // Remember the site, not its current inventory. Workers learn it only
+    // through their own completed delivery or withdrawal.
+    const bool familiar=founder || (s.autonomy.contains(adult.id) && s.autonomy.at(adult.id).knows_depot);
+    return visible ? ingredient_min(need,colony.nest_food).total_ug()!=0 : familiar && need.total_ug()!=0;
+}
+
+PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,std::optional<LifeStage> stage) const {
+    const auto& s=*state_;
     const auto pose=*query_body({s.world,adult.id});
     const auto reach=portable_care_distance(adult.position,pose.mouth_m);
     const auto view=geometry_view(s,limits_);
+    const auto radius=s.care_profile->perception_radius_m;
+    if (!stage && portable_care_distance(adult.position,target)>radius) {
+        // Approach a familiar place using only this body's next visible step.
+        // Its current stock and any obstacles at the remote site are unknown.
+        auto best=adult.position;
+        auto remaining=std::llround(portable_care_distance(best,target)*1'000'000);
+        for (std::uint8_t dir=1;dir<=8;++dir) {
+            auto next=snap_micro(translated(adult.position,scale(body_heading(dir),.001)));
+            next.y=adult.position.y;
+            const auto gap=std::llround(portable_care_distance(next,target)*1'000'000);
+            if (gap<remaining && clear_care_segment(adult.position,next,body_half(adult.id)) &&
+                clear_worker_traffic(adult,next,body_half(adult.id))) {
+                remaining=gap;
+                best=next;
+            }
+        }
+        return best;
+    }
+    std::vector<BodyPose> nearby;
+    if (!stage) {
+        for (const auto ref:query_neighborhood({s.world,adult.id},radius).ants) {
+            const auto peer=*query_ant(ref);
+            if (ref.id!=adult.id && peer.stage==LifeStage::Adult && spatially_clear(pose.mouth_m,peer.position))
+                nearby.push_back(*query_body(ref));
+        }
+    }
+    const auto occupied=[&](const BodyPose& candidate) {
+        return std::any_of(nearby.begin(),nearby.end(),[&](const auto& peer){return physical_overlap(candidate,peer);});
+    };
+    const auto reaches=[&](const BodyPose& body) {
+        return stage ? mouth_reaches(body,target,*stage) : supply_in_reach(body,target);
+    };
     std::array<std::optional<PositionM>,8> stances;
     for (std::uint8_t dir=1;dir<=8;++dir) {
         const auto bearing=body_heading(dir);
-        auto stance=snap_micro(translated(young.position,scale(bearing,-reach-.00024)));
+        auto stance=snap_micro(translated(target,scale(bearing,-reach-.00024)));
         stance.y=adult.position.y;
         auto candidate=adult;
         candidate.position=stance;
-        const auto final=body_pose(candidate,dir,floor_normal);
-        if (!mouth_reaches(final,young.position,young.stage) || !substrate_clear(view,final,stance)) continue;
-        if (continuous_clear(view,final.mouth_m,young.position,0)) stances[dir-1]=stance;
+        const auto final=body_pose(candidate,dir,stage?floor_normal:attachment(view,candidate,dir));
+        if (!reaches(final) || !substrate_clear(view,final,stance) || occupied(final)) continue;
+        if (continuous_clear(view,final.mouth_m,target,0)) stances[dir-1]=stance;
     }
     if (std::none_of(stances.begin(),stances.end(),[](const auto& p){return p.has_value();}))
         return adult.position;
@@ -65,9 +126,16 @@ PositionM WorldRuntime::brood_approach(const CareState& care,const AntState& adu
         std::uint8_t facing;
         bool initial;
     };
-    const auto closer=[](const Node& a,const Node& b) {
-        return std::tuple{a.estimate_um,a.travelled_um,a.site.x,a.site.z,a.facing}>
-            std::tuple{b.estimate_um,b.travelled_um,b.site.x,b.site.z,b.facing};
+    const bool portable=mouth_access(s);
+    const auto closer=[portable](const Node& a,const Node& b) {
+        const auto priority=[](const Node& n) {
+            return std::tuple{n.estimate_um,n.travelled_um,n.site.x,n.site.z,n.facing};
+        };
+        const auto left=priority(a),right=priority(b);
+        if (left!=right || !portable) return left>right;
+        // Two equal-cost paths can reach the same pose via different first
+        // movements. A library heap does not preserve their insertion order.
+        return std::tie(a.first.x,a.first.z)>std::tie(b.first.x,b.first.z);
     };
     const auto path_length=[](PositionM from,PositionM to) {
         // Rank near-ties below the motion lattice precision in integer micrometres.
@@ -75,7 +143,6 @@ PositionM WorldRuntime::brood_approach(const CareState& care,const AntState& adu
     };
     std::priority_queue<Node,std::vector<Node>,decltype(closer)> open(closer,std::vector<Node>(0));
     std::set<std::tuple<double,double,std::uint8_t>> seen;
-    const auto radius=s.care_profile->perception_radius_m;
     open.push({adult.position,adult.position,0,0,std::max<std::uint8_t>(1,actor_facing(s,adult.id)),true});
     for (unsigned iteration=0;!open.empty() && iteration<160;++iteration) {
         const auto current=open.top(); open.pop();
@@ -83,14 +150,19 @@ PositionM WorldRuntime::brood_approach(const CareState& care,const AntState& adu
         auto actor=adult;
         actor.position=current.site;
         const auto legal=[&](PositionM to,std::uint8_t heading) {
+            if (!nearby.empty()) {
+                auto candidate=adult;
+                candidate.position=to;
+                if (occupied(body_pose(candidate,heading,attachment(view,candidate,heading)))) return false;
+            }
             return to!=current.site && portable_care_distance(adult.position,to)<=radius &&
                 clear_care_segment(current.site,to,body_half(adult.id)) &&
                 anatomy_sweep(view,actor,to,current.facing,heading) &&
                 (!current.initial || clear_worker_traffic(adult,to,body_half(adult.id)));
         };
-        const auto head=body_pose(actor,current.facing,floor_normal);
-        if (!current.initial && mouth_reaches(head,young.position,young.stage) &&
-            continuous_clear(view,head.mouth_m,young.position,0)) return current.first;
+        const auto head=body_pose(actor,current.facing,stage?floor_normal:attachment(view,actor,current.facing));
+        if (!current.initial && reaches(head) &&
+            continuous_clear(view,head.mouth_m,target,0)) return current.first;
         for (std::uint8_t dir=1;dir<=8;++dir) if (const auto& site=stances[dir-1]) {
             if (portable_care_distance(current.site,*site)<=.002 &&
                 movement_facing(current.site,*site)==dir && legal(*site,dir))
@@ -172,7 +244,7 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
     const auto& s=*state_;
     if (!local_nest_activity(s) || !s.geometry || !integrated_care(s)) return {};
     const auto& g=s.geometry->config;
-    const auto origin=quantized(ant.position,g);
+    const auto origin=mouth_access(s)?nearest_grid_point(ant.position,g,true):quantized(ant.position,g);
     if (!origin || (s.surface && ant.position.y>=s.surface->config.origin_m.y)) return {};
     const auto span=2*body_half(ant.id);
     const auto width=span*g.quantum_m;
@@ -216,7 +288,8 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
     }
     return {};
 }
-void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act,EntityId target) {
+void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act,
+                                     EntityId target,std::uint8_t remaining) {
     auto& s=*state_;
     const AntRef ref{s.world,ant.id};
     if (ant.caste==Caste::Worker) change_behavior(tx,ref,IndividualBehavior::Rest,source,true);
@@ -229,6 +302,7 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
         care.enrolled_at=s.m.now;
     }
     care.enabled=true; care.act=act; care.destination=site; care.target=target;
+    if (mouth_access(s) && act==CareAct::DepotApproach) care.search_remaining=remaining;
     ScheduledEvent e; e.actor=ant.id; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
     e.key={after(s.m.now,1),Phase::Resolution,0,0,0}; care.pending=tx.insert(e); care.bout=care.pending;
     tx.care.set(ant.id,care);
@@ -744,7 +818,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         if (!clear_care_segment(from,c.destination,half) ||
             (motile_caste(s,a.caste) && c.act!=CareAct::ArrangeBrood && !clear_worker_traffic(a,c.destination,half)) ||
             ((c.act==CareAct::NestReposition || c.act==CareAct::EntrancePatrol) && !clear_resting_site(a,c.destination)) ||
-            (c.act==CareAct::DepotApproach && !clear_worker_site(a,c.destination,true)) ||
+            (c.act==CareAct::DepotApproach && !(mouth_access(s) && c.search_remaining) &&
+             !clear_worker_site(a,c.destination,true)) ||
             (c.act==CareAct::ArrangeBrood && !clear_brood_space(c.target,from,c.destination)) ||
             ((timed || (cfg.local_retrieval && c.act==CareAct::TransportBrood)) && c.destination==from))
             outcome=Outcome::Blocked;
@@ -856,6 +931,20 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     }
     if (c.act==CareAct::DepotApproach) {
         interrupt_care(tx,a.id,outcome,true);
+        if (!failed && c.search_remaining && mouth_access(s)) {
+            const auto arrived=*query_ant({s.world,a.id});
+            const auto depot=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
+            if (seeks_nest_meal(arrived,*query_physiology({s.world,a.id}))) {
+                if (mouth_at_supply(arrived,depot)) {
+                    if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
+                } else if (c.search_remaining>1) {
+                    const auto next=mouth_approach(arrived,depot,{});
+                    if (next!=arrived.position)
+                        start_resting_move(tx,arrived,next,event.id,c.act,{},c.search_remaining-1);
+                }
+            }
+            return;
+        }
         // Reassess upon contact. A failed trip waits for the regular decision.
         if (!failed && a.caste==Caste::Worker && s.autonomy.at(a.id).enabled) {
             auto autonomy=s.autonomy.at(a.id);

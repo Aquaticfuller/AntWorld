@@ -36,6 +36,7 @@ template <class S> void write_social(Writer &w, const S &s) {
       w.time(p.last_program_change);
       w.put(p.wake.value);
       if (worker_motor(s)) w.put(p.facing,1);
+      if (mouth_access(s)) w.put(p.knows_depot,1);
     }
   }
 }
@@ -58,14 +59,16 @@ template <class S> void read_social(Reader &r, S &s,bool care_motion) {
     ensure(s.long_term || (c->decision_interval.milliseconds<=60000 && c->minimum_program_time.milliseconds<=3600000),"legacy social interval exceeds its contract");
     s.social = std::move(c);
     s.m.contact_work = {r.get(), r.get(), r.get(), r.get(), r.get()};
-    const auto count = r.count(s.ants.size(), worker_motor(s)?42:41);
+    const auto count = r.count(s.ants.size(), mouth_access(s)?43:worker_motor(s)?42:41);
     for (std::size_t i = 0; i < count; ++i) {
       const EntityId id{r.get()};
       AutonomyState a{r.flag(), r.get(), r.time(), r.time(), {r.get()}};
       if (worker_motor(s)) a.facing=static_cast<std::uint8_t>(r.get(1));
+      if (mouth_access(s)) a.knows_depot=r.flag();
       ensure(s.ants.index.contains(id) && s.physiology.contains(id) &&
                  (s.ants.get(s.ants.index.at(id)).caste == Caste::Worker ||
                   (care_motion && s.ants.get(s.ants.index.at(id)).caste == Caste::Queen)) &&
+                 (!a.knows_depot || s.ants.get(s.ants.index.at(id)).caste==Caste::Worker) &&
                  a.enrolled_at <= s.m.now &&
                  a.last_program_change >= a.enrolled_at &&
                  a.last_program_change <= s.m.now && a.facing<=facing_down &&
@@ -128,6 +131,9 @@ template <class S> void validate_autonomy_evidence(const S &s) {
   std::map<ScheduledId, WorldEvent> switches;
   std::optional<WorldEvent> last_local_action;
   for (const auto &e : s.journal) {
+    if (mouth_access(s) && (e.kind==FactKind::FoodDelivered || e.kind==FactKind::NestIngested) &&
+        audit.contains(e.actor) && s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker)
+      audit.at(e.actor).knows_depot=true;
     if (local_nest_activity(s) && (e.kind==FactKind::ExcavationDecision ||
         (e.kind==FactKind::BiologicalObservation && (e.observation.act==CareAct::NestReposition || worker_motor(s)) &&
          e.observation.phase>=ObservationPhase::Completed))) last_local_action=e;

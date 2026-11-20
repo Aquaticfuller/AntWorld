@@ -32,6 +32,7 @@ struct AutonomyState {
   SimTime enrolled_at, last_program_change;
   ScheduledId wake;
   std::uint8_t facing{}; // Physics 33. 0 unknown, 1–8 compass, 9 up, 10 down.
+  bool knows_depot{}; // Physics 40. The worker has actually deposited or eaten food there.
   bool operator==(const AutonomyState &) const = default;
 };
 

@@ -13,7 +13,7 @@ await mkdir(output, {recursive: true});
 const processHandle = spawn(browser, ["--headless=new", "--disable-background-networking", "--no-first-run", "--disable-spell-checking",
     "--no-default-browser-check", "--remote-debugging-port=0", "--user-data-dir=" + cache,
     "--window-size=1540,1160", "--disable-dev-shm-usage",
-    ...(process.platform === "win32" && ["nursery", "ecology", "habitat", "m1", "m2", "overhaul", "m1-witnesses", "m1-soak"].includes(mode) ?
+    ...(process.platform === "win32" && ["nursery", "ecology", "habitat", "m1", "m2", "overhaul", "founder-access", "m1-witnesses", "m1-soak"].includes(mode) ?
         ["--disable-component-update", "--disable-gpu-shader-disk-cache", "--disk-cache-size=1"] : []),
     ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []), "about:blank"],
     {windowsHide: true, stdio: ["ignore", "ignore", "pipe"]});
@@ -625,6 +625,35 @@ async function anatomicalNestWorld() {
     await writeFile(join(output,"anatomical-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
 }
 
+async function founderAccessWorld() {
+    await select("locale","zh-CN");
+    await click("#colony-settings summary");
+    await select("sealed-model","oral");
+    await click("#new-single-nest");
+    await wait(() => evaluate("liveView.state?.physics===40 && !liveView.busy"),"New experimental sealed nest");
+    assert.equal(await evaluate("liveView.state.ants.length"),1);
+    for (const target of ["delivery","queen-meal","queen-uptake"]) {
+        await select("live-target",target);
+        await click("#live-seek-next");
+        await wait(() => evaluate(`liveView.state.fast_forward?.target==='${target}' &&
+            liveView.state.fast_forward.state==='reached' && !liveView.busy`),"Committed " + target);
+        const event=await evaluate("liveView.state.fast_forward.event");
+        assert.ok(event.mass_ug.some(x => x>0));
+        assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"),false);
+        assert.equal(await evaluate("app.selected"),event.actor);
+        assert.equal(await evaluate("app.follow"),true);
+        result[target]=event;
+    }
+    assert.equal(result["queen-meal"].kind,"FoundressNestMeal");
+    assert.ok(["PhysiologyUpdated","FoundingBoundaryUptake"].includes(result["queen-uptake"].kind));
+    assert.ok(result["queen-uptake"].mass_ug[0]>0);
+    assert.ok(result.delivery.time_ms<result["queen-meal"].time_ms &&
+              result["queen-meal"].time_ms<result["queen-uptake"].time_ms);
+    assert.match(await evaluate("$('live-stop').textContent"),/已从嗉囊吸收/);
+    await screenshot("queen-uptake-zh");
+    await writeFile(join(output,"founder-access-browser.json"),JSON.stringify(result,null,2)+"\n");
+}
+
 async function observatoryWorld() {
     const waitView = (expression, label, limit) => wait(() => evaluate(expression), label, limit);
     const stopAt = async (target, occurrence = "first") => {
@@ -821,7 +850,7 @@ try {
     await send("Emulation.setDeviceMetricsOverride", {width: 1480, height: 1080, deviceScaleFactor: 1, mobile: false});
     await timed("first_browser_view_ms", async () => {
         await send("Page.navigate", {url: host});
-        if (["live", "activity", "nursery", "ecology", "habitat", "m1", "m2", "overhaul", "m1-soak"].includes(mode)) {
+        if (["live", "activity", "nursery", "ecology", "habitat", "m1", "m2", "overhaul", "founder-access", "m1-soak"].includes(mode)) {
             await wait(() => evaluate("typeof app !== 'undefined' && app.live && liveView.state?.core_available && !$('new-colony').disabled"),
                 "Live controls ready");
             return;
@@ -842,6 +871,8 @@ try {
         await sealedNestWorld();
     } else if (mode === "overhaul") {
         await anatomicalNestWorld();
+    } else if (mode === "founder-access") {
+        await founderAccessWorld();
     } else if (mode === "m1") {
         await observatoryWorld();
     } else if (mode === "m1-witnesses") {

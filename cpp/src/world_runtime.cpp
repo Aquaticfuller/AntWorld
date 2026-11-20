@@ -277,6 +277,14 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         } else {
             throw std::logic_error("invalid action event kind");
         }
+        if (mouth_access(s) && ant.caste==Caste::Worker && s.autonomy.contains(ant.id) &&
+            (f.kind==FactKind::FoodDelivered || f.kind==FactKind::NestIngested)) {
+            auto memory=s.autonomy.at(ant.id);
+            if (!memory.knows_depot) {
+                memory.knows_depot=true;
+                tx.autonomy.set(ant.id,memory);
+            }
+        }
         after_action(tx, e, f, before);
         continue_nutrition_behavior(tx, e, f);
         after_excavation_action(tx,e,f,before);

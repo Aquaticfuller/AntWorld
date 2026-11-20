@@ -165,7 +165,9 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake) {
                 const auto j=s.colonies.index.at(ant.colony);
                 auto& colony=s.colonies.rows[j];
-                if (within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position)) {
+                const bool reachable=mouth_access(s)?mouth_at_supply(ant,colony.nest_position):
+                    within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position);
+                if (reachable) {
                     const auto meal=foundress_nest_meal(s.founding->profile,p,*reserve,colony.nest_food);
                     if (meal.total_ug()) {
                         tx.touch_colony(j);
@@ -279,13 +281,18 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
         if (s.social && s.social->demand_sensitive)
             supply = ingredient_min(supply,nutrient_demand(*receiver,recipient.stage));
-    } else if (e.kind == ScheduledEvent::Kind::IngestCargo) supply = ant.carried_food;
+    } else if (e.kind == ScheduledEvent::Kind::IngestCargo) {
+        supply=ant.carried_food;
+        if (mouth_access(s) && s.foragers.contains(e.actor) && s.foragers.at(e.actor).action==e.id)
+            supply=ingredient_min(supply,nutrient_demand(p,ant.stage));
+    }
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
-        if (!within_contact(ant.position,colony.nest_position,s.config) ||
+        const bool oral=mouth_access(s) && e.kind==ScheduledEvent::Kind::WithdrawNest;
+        if ((oral ? !mouth_at_supply(ant,colony.nest_position) : !within_contact(ant.position,colony.nest_position,s.config)) ||
             (s.surface && !s.config.continuous_spatial_motion && !(s.social && s.geometry) &&
              s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)) ||
-            !spatially_clear(ant.position,colony.nest_position)) { f.outcome=Outcome::NotAtNest; return; }
+            (!oral && !spatially_clear(ant.position,colony.nest_position))) { f.outcome=Outcome::NotAtNest; return; }
         supply = colony.nest_food;
         if (e.kind == ScheduledEvent::Kind::ReturnProtein) {
             const auto amount = std::min(p.crop.protein_ug, e.requested_ug);
@@ -394,11 +401,13 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         }
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
-            else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && colony.nest_food.total_ug() &&
-                within_contact(ant.position,colony.nest_position,s.config) &&
-                (!s.surface || s.config.continuous_spatial_motion || (s.social && s.geometry) ||
-                 s.surface->locate(ant.position)==s.surface->locate(colony.nest_position)) &&
-                spatially_clear(ant.position,colony.nest_position)) action.kind=ScheduledEvent::Kind::WithdrawNest;
+            else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 &&
+                (mouth_access(s) ? mouth_at_supply(ant,colony.nest_position) :
+                (within_contact(ant.position,colony.nest_position,s.config) &&
+                 (!s.surface || s.config.continuous_spatial_motion || (s.social && s.geometry) ||
+                  s.surface->locate(ant.position)==s.surface->locate(colony.nest_position)) &&
+                 spatially_clear(ant.position,colony.nest_position))) && colony.nest_food.total_ug())
+                action.kind=ScheduledEvent::Kind::WithdrawNest;
             else if (!gift_priority) choose_gift();
         }
         if (action.kind != ScheduledEvent::Kind::Rest) action.requested_ug = p.config.transfer_limit_ug;

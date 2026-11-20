@@ -271,7 +271,8 @@ public:
                last_pulse && last_pulse->source==e.source && last_pulse->time==e.time,
                "foundress meal lacks its physiological pulse");
         const auto nest=world.colonies.rows[world.colonies.index.at(e.colony)].nest_position;
-        ensure(within_contact(e.position,nest,world.config) && clear(e.position,nest,0,e.id) &&
+        // The terrain replay verifies the historical mouth pose in Physics 40.
+        ensure((mouth_access(world) || (within_contact(e.position,nest,world.config) && clear(e.position,nest,0,e.id))) &&
                foundress_nest_meal(profile(),p,reserves.at(e.actor),stock)==e.transferred,
                "foundress meal lacks reachable local stock or crop room");
         p.crop=sum(p.crop,e.transferred);

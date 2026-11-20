@@ -175,13 +175,16 @@ private:
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
     void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
-                            EntityId target = {});
+                            EntityId target = {}, std::uint8_t remaining = 0);
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
     [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half) const;
     [[nodiscard]] bool clear_body_motion(const AntState&, PositionM) const;
     [[nodiscard]] bool clear_emergence(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
     [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
+    [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>) const;
+    [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
+    [[nodiscard]] bool seeks_nest_meal(const AntState&, const PhysiologyState&) const;
     void commit_brood_position(Transaction&, EntityId, EntityId, ScheduledId, PositionM);
     void release_brood_on_floor(Transaction&, const CareState&, EntityId, ScheduledId);
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_contact_step(const AntState&) const;

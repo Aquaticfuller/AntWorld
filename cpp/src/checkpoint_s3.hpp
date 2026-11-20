@@ -284,7 +284,8 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(work.actor==id && work.key.phase==Phase::Resolution &&
                        (work.kind==ScheduledEvent::Kind::Move || work.kind==ScheduledEvent::Kind::CollectFood ||
                         work.kind==ScheduledEvent::Kind::DeliverFood || work.kind==ScheduledEvent::Kind::SoilAction ||
-                        work.kind==ScheduledEvent::Kind::CareEnd), "activity owns unrelated work");
+                        work.kind==ScheduledEvent::Kind::CareEnd || (mouth_access(s) && work.kind==ScheduledEvent::Kind::IngestCargo &&
+                        s.foragers.contains(id) && s.foragers.at(id).action==work.id)), "activity owns unrelated work");
             }
         } else ensure(!saved.physiology_event.value && !saved.behavior_event.value && saved.behavior == IndividualBehavior::Paused,
             "dead physiology still scheduled");

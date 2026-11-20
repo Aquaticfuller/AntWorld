@@ -72,6 +72,9 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
         ensure(s.ants.index.contains(id) && s.physiology.contains(id) && c.profile.context<=CareContext::Worker &&
             (c.act<=CareAct::CloseWorkerContact || (retrieval && c.act==CareAct::RevisitBroodSite) ||
              (motion && c.act>=CareAct::PickUpBrood && c.act<=CareAct::ReturnToCareShelter) ||
+             (motion && mouth_access(s) && c.act==CareAct::DepotApproach &&
+              c.profile.context==CareContext::FoundingQueen && s.ants.get(s.ants.index.at(id)).caste==Caste::Queen &&
+              !c.target.value) ||
              (motion && ((local_nest_activity(s) && c.act==CareAct::NestReposition) ||
                          (worker_motor(s) && c.act==CareAct::DepotApproach) ||
                          (s.ecological && s.ecological->founding_habitat && c.act==CareAct::EntrancePatrol)) &&

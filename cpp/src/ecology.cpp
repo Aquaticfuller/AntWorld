@@ -111,6 +111,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     std::optional<PositionM> resting_site;
     EntityId contact_target;
     CareAct transit{CareAct::NestReposition};
+    std::uint8_t meal_steps{};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -153,11 +154,31 @@ void WorldRuntime::resolve_autonomy_wakes(
     }
     const auto giving_way = yield_to_loaded(s) && ant.caste==Caste::Worker && stationary && can_switch &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? carrier_yield_step(ant) : std::nullopt;
+    bool at_meal=false;
+    std::optional<PositionM> meal_step;
+    if (can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
+      const auto depot=colony.nest_position;
+      at_meal=mouth_at_supply(ant,depot);
+      if (!at_meal) {
+        const auto next=mouth_approach(ant,depot,{});
+        if (next!=ant.position) meal_step=next;
+      }
+    }
     if (integrated_care(s) && care_owned(s,ant.id)) {
       // The ordinary wake stays alive while the finite care lease owns motion.
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (at_meal || meal_step) {
+      if (at_meal) {
+        if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+        urgent=true;
+      } else {
+        choice.resting_site=meal_step;
+        choice.transit=CareAct::DepotApproach;
+        choice.meal_steps=s.care_profile->motion->search_steps;
+      }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (ant.caste==Caste::Queen) {
-      if (anatomical_nest(s) && can_switch && founding_foundress(ant.id) &&
+      if (!mouth_access(s) && anatomical_nest(s) && can_switch && founding_foundress(ant.id) &&
           !within_contact(ant.position,colony.nest_position,s.config) &&
           within_distance(ant.position,colony.nest_position,s.care_profile->perception_radius_m,true) &&
           spatially_clear(ant.position,colony.nest_position) &&
@@ -436,7 +457,8 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (choice.care)
       start_autonomous_care(tx,{s.world,id},choice.event.id);
     else if (choice.resting_site)
-      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit,choice.contact_target);
+      start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit,
+                         choice.contact_target,choice.meal_steps);
     else if (choice.behavior != s.physiology.at(id).behavior)
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id);
     const auto &sample = choice.sample;

@@ -5,6 +5,12 @@
 #include "geometry_internal.hpp"
 
 namespace antworld::detail {
+inline std::optional<PointQ> nearest_grid_point(PositionM p,const GeometryConfig& g,bool include_height=false) {
+    const auto snap=[&](double value,double origin) {
+        return origin+std::round((value-origin)/g.quantum_m)*g.quantum_m;
+    };
+    return quantized({snap(p.x,g.origin_m.x),include_height?snap(p.y,g.origin_m.y):p.y,snap(p.z,g.origin_m.z)},g);
+}
 // ENGINEERING_FIXTURE. A turn occupies time before the next swept translation.
 inline constexpr std::int64_t compass_turn_ms = 40;
 inline constexpr std::uint8_t facing_down = 10;
