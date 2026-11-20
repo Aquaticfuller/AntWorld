@@ -7,13 +7,14 @@ const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "Fi
     "brood-moved": "First brood move", "brood-cleaned": "First brood cleaning",
     "queen-meal": "First queen meal from nest stores", "queen-uptake": "First queen carbohydrate uptake",
     "queen-gift": "First transfer from a worker to the queen",
+    "wall-delivery": "First food delivery from a wall",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
 const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
     option => [option.value, option.textContent]));
 const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact",
-    "queen-meal", "queen-uptake", "queen-gift"]);
+    "queen-meal", "queen-uptake", "queen-gift", "wall-delivery"]);
 const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
     "Entrance antennal contact": "#b9d6f5"};
 const liveStopLabels = {
@@ -69,6 +70,8 @@ function liveControls() {
         option.hidden = option.disabled = !(s?.habitat && s.founder_meals_available);
     for (const option of target.querySelectorAll("[data-offer]"))
         option.hidden = option.disabled = !(s?.habitat && s.queen_gifts_available);
+    for (const option of target.querySelectorAll("[data-wall]"))
+        option.hidden = option.disabled = s?.physics !== 42;
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
@@ -91,6 +94,10 @@ function liveControls() {
         const e = stop.event;
         details += " · " + tr("Worker #{donor} to queen #{queen}: {c} µg carbohydrate, {p} µg protein, {w} µg water",
             {donor: e.actor, queen: e.recipient, c: e.mass_ug[0], p: e.mass_ug[1], w: e.mass_ug[2]});
+    }
+    if (stop?.event && stop.target === "wall-delivery") {
+        const [c, p, w] = stop.event.mass_ug;
+        details += " · " + tr("Into nest stores: {c} µg carbohydrate, {p} µg protein, {w} µg water", {c, p, w});
     }
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;

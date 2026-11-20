@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==adult_offer_schema && version==adult_offer_physics) ||
+        ensure((outer_schema==wall_handoff_schema && version==wall_handoff_physics) ||
+               (outer_schema==adult_offer_schema && version==adult_offer_physics) ||
                (outer_schema==mouth_access_schema && version==mouth_access_physics) ||
                (outer_schema==anatomical_schema && version==anatomical_physics) ||
                (outer_schema==sealed_chamber_schema && version==sealed_chamber_physics) ||
@@ -446,7 +447,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                     "invalid nutrition recipient");
             }
         } else {
-            ensure(s->ants.index.contains(e.actor) && e.action == DiagnosticAction::Record && !e.payload &&
+            const bool wall_delivery=e.kind==ScheduledEvent::Kind::DeliverFood && wall_handoff(*s) &&
+                e.payload==wall_delivery_payload && s->connectors.contains(e.actor) &&
+                s->connectors.at(e.actor).returning && s->connectors.at(e.actor).cursor==0 &&
+                s->foragers.contains(e.actor) && s->foragers.at(e.actor).action==e.id;
+            ensure(s->ants.index.contains(e.actor) && e.action == DiagnosticAction::Record && (!e.payload || wall_delivery) &&
                 e.key.priority == 0 && e.key.tie == 0, "invalid scheduled actor");
             const auto a = s->ants.get(s->ants.index.at(e.actor));
             ensure(e.observed_position_revision <= a.position_revision, "invalid observed position version");
@@ -598,6 +603,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             ensure(seeded_ants.contains(e.actor) && e.outcome > Outcome::Partial && e.transferred == FoodMass{}, "invalid rejected action fact"); break;
         case FactKind::FoodDelivered:
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult && e.transferred.total_ug() &&
+                (!wall_handoff(*s) || !e.payload || e.payload==wall_delivery_payload) &&
                 within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
                 "invalid physical delivery fact");
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred);

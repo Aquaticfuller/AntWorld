@@ -427,10 +427,13 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             ensure(within_contact(founder.position,depot,s.config) && clear(founder.position,depot,0),
                    "founder lacks local experience of the handoff site");
         }
-        if (mouth_access(s) && (e.kind==FactKind::FoundressNestMeal || e.kind==FactKind::NestIngested)) {
+        const bool wall_delivery=e.kind==FactKind::FoodDelivered && wall_handoff(s) && e.payload==wall_delivery_payload;
+        if (mouth_access(s) && (e.kind==FactKind::FoundressNestMeal || e.kind==FactKind::NestIngested || wall_delivery)) {
             const auto body=past_body(e.actor);
             const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
-            ensure(supply_in_reach(body,depot) && clear(body.mouth_m,depot,0),"meal lacks historical mouth contact");
+            ensure(supply_in_reach(body,depot) && clear(body.mouth_m,depot,0),"depot exchange lacks historical mouth contact");
+            if (wall_delivery) ensure(body.center_m.y!=depot.y && positions.at(e.actor)==e.position,
+                                      "wall delivery has no historical off-floor berth");
         }
         if (e.kind == FactKind::FoodDelivered || e.kind == FactKind::CargoIngested)
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);

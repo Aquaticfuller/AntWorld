@@ -10,6 +10,8 @@ struct WorkerActivityTiming {
 };
 
 enum class NestScoring : std::uint8_t { Original, Hex, Reinforcement, SpatialDemand };
+// FoodDelivered carries this tag only for a blocked carrier's off-floor oral handoff in Physics 42.
+inline constexpr std::uint64_t wall_delivery_payload=1;
 
 struct NestDynamics {
     bool worker_motor{};
@@ -27,6 +29,7 @@ struct FoundingHabitat {
     bool anatomical{}; // Physics 39. Body-relative birth, contact and swept clearance.
     bool mouth_access{}; // Physics 40. Local oral access to supplies in the sealed pocket.
     bool adult_offers{}; // Physics 41. A payable offer at mutual oral contact.
+    bool wall_handoff{}; // Physics 42. A blocked returning carrier can unload from a real mouth contact.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

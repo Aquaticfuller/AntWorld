@@ -138,7 +138,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         LocalObservation local;
         BehaviorDecision decision;
         PositionM destination;
-        bool connector_return{},connector_clock{},dock_here{};
+        bool connector_return{},connector_clock{},dock_here{},wall_delivery{};
         std::uint64_t cargo_meal_ug{};
     };
     std::vector<Ready> ready(0); ready.reserve(wakes.size());
@@ -165,7 +165,9 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 link->points[returning?link->cursor-1:link->cursor+1];
             if (sealed_chamber(s) && returning && loaded && !at_entrance) {
                 const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
-                if (ant.position.y==depot.y && within_contact(ant.position,depot,s.config) &&
+                const bool off_floor=ant.position.y!=depot.y;
+                const bool can_unload=!off_floor || (wall_handoff(s) && mouth_at_supply(ant,depot));
+                if (can_unload && within_contact(ant.position,depot,s.config) &&
                     spatially_clear(ant.position,depot) && !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
                     // The carrier has already reached the local handoff
                     // area. Reuse its real ingress route from this berth.
@@ -173,6 +175,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                     r.decision.mode=BehaviorMode::Deliver;
                     r.decision.reason=DecisionReason::NestContact;
                     r.dock_here=true;
+                    r.wall_delivery=off_floor;
                     return;
                 }
             }
@@ -248,7 +251,10 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         case ActionKind::CollectFood:
             action.kind = ScheduledEvent::Kind::CollectFood; action.resource = r.decision.resource;
             action.requested_ug = ant.carrying_capacity_ug; bump(s.m.foraging.collection_attempts); break;
-        case ActionKind::DeliverFood: action.kind = ScheduledEvent::Kind::DeliverFood; break;
+        case ActionKind::DeliverFood:
+            action.kind=ScheduledEvent::Kind::DeliverFood;
+            if (r.wall_delivery) action.payload=wall_delivery_payload;
+            break;
         case ActionKind::Rest:
             action.kind=r.cargo_meal_ug ? ScheduledEvent::Kind::IngestCargo : ScheduledEvent::Kind::Rest;
             action.requested_ug=r.cargo_meal_ug;

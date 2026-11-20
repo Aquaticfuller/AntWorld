@@ -153,7 +153,7 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
 }
 
 enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact,
-                       BroodMoved, BroodCleaned, FounderMeal, FounderUptake, WorkerFeedsQueen };
+                       BroodMoved, BroodCleaned, FounderMeal, FounderUptake, WorkerFeedsQueen, WallDelivery };
 
 Milestone read_milestone(std::istringstream& request) {
     const auto name = word(request);
@@ -172,6 +172,7 @@ Milestone read_milestone(std::istringstream& request) {
     if (name == "queen-meal") return Milestone::FounderMeal;
     if (name == "queen-uptake") return Milestone::FounderUptake;
     if (name == "queen-gift") return Milestone::WorkerFeedsQueen;
+    if (name == "wall-delivery") return Milestone::WallDelivery;
     throw std::invalid_argument("Unknown live milestone");
 }
 
@@ -213,6 +214,12 @@ struct MilestoneSearch {
             return fact.kind == FactKind::StageChanged && fact.stage == LifeStage::Larva;
         case Milestone::Worker:
             return fact.kind == FactKind::StageChanged && adult_worker(world, fact);
+        case Milestone::WallDelivery:
+            if (fact.kind==FactKind::FoodDelivered && fact.payload==wall_delivery_payload && fact.transferred.total_ug()) {
+                const auto ecology=world.ecological_closure();
+                return ecology && ecology->founding_habitat && ecology->founding_habitat->wall_handoff;
+            }
+            return false;
         case Milestone::Delivery:
             if (fact.kind != FactKind::FoodDelivered || !fact.transferred.total_ug() || !adult_worker(world,fact))
                 return false;
@@ -367,15 +374,17 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v15");
+                message("OK", "antworld.m0.live.v16");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
-                       command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST") {
+                       command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
+                       command=="NEW_WALL_HANDOFF_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                const bool offers=command=="NEW_OFFER_NEST";
+                const bool wall=command=="NEW_WALL_HANDOFF_NEST";
+                const bool offers=command=="NEW_OFFER_NEST" || wall;
                 const bool oral=command=="NEW_ORAL_NEST" || offers;
                 const bool anatomical=command=="NEW_ANATOMICAL_NEST" || oral;
                 const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
@@ -393,7 +402,7 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical,oral,offers);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical,oral,offers,wall);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();

@@ -30,7 +30,7 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
 BROOD_MILESTONES = {"brood-moved", "brood-cleaned"}
 FOUNDER_MILESTONES = {"queen-meal", "queen-uptake"}
-MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "excavation", "queen-gift", *HABITAT_MILESTONES,
+MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "wall-delivery", "excavation", "queen-gift", *HABITAT_MILESTONES,
               *BROOD_MILESTONES, *FOUNDER_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
@@ -48,7 +48,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
+    paths = (installed.with_stem("antworld_m0_live_v17"), installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
              installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
              installed.with_stem("antworld_m0_live_v12"),
              installed.with_stem("antworld_m0_live_v11"),
@@ -70,7 +70,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 16))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 17))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -85,6 +85,7 @@ class NativeCore:
             self.anatomical = generation >= 13
             self.mouth_access = generation >= 14
             self.adult_offers = generation >= 15
+            self.wall_handoff = generation >= 16
         except Exception:
             self.close()
             raise
@@ -361,6 +362,8 @@ class LiveSession:
                 "Founder meal milestones need the updated Core and a founding habitat.")
         require(target != "queen-gift" or (self.worker.adult_offers and habitat),
                 "Queen transfer milestones need the updated Core and a founding habitat.")
+        require(target != "wall-delivery" or (self.worker.wall_handoff and habitat and habitat.get("wall_handoff")),
+                "Wall deliveries require a Physics 42 nest.")
         require(not self.seeking(), "Cancel the current fast-forward first.")
         require(occurrence in ("first", "next"), "Choose the first or next event")
         next_event = occurrence == "next"
@@ -661,6 +664,8 @@ class LiveSession:
                     models["oral"] = "NEW_ORAL_NEST"
                 if core.adult_offers:
                     models["offers"] = "NEW_OFFER_NEST"
+                if core.wall_handoff:
+                    models["wall"] = "NEW_WALL_HANDOFF_NEST"
                 model = data.get("model", "anatomical" if core.anatomical else "reference")
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
                 command = models[model]
