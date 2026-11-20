@@ -16,6 +16,8 @@
 #include <span>
 #include <sstream>
 #include <string_view>
+#include <utility>
+#include <vector>
 #ifdef _WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -155,8 +157,7 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
 enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact,
                        BroodMoved, BroodCleaned, FounderMeal, FounderUptake, WorkerFeedsQueen, WallDelivery };
 
-Milestone read_milestone(std::istringstream& request) {
-    const auto name = word(request);
+Milestone parse_milestone(std::string_view name) {
     if (name == "egg") return Milestone::Egg;
     if (name == "hatch") return Milestone::Hatch;
     if (name == "worker") return Milestone::Worker;
@@ -176,22 +177,44 @@ Milestone read_milestone(std::istringstream& request) {
     throw std::invalid_argument("Unknown live milestone");
 }
 
+std::vector<Milestone> read_milestones(std::istringstream& request) {
+    std::vector<Milestone> targets;
+    for (std::string name; request >> name;) {
+        const auto target = parse_milestone(name);
+        require(std::find(targets.begin(), targets.end(), target) == targets.end(), "Choose distinct target events.");
+        targets.push_back(target);
+    }
+    require(!targets.empty(), "Choose at least one target event.");
+    return targets;
+}
+
 bool adult_worker(const WorldRuntime& world, const WorldEvent& fact) {
     if (fact.stage != LifeStage::Adult) return false;
     const auto ant = world.query_ant({fact.world, fact.actor});
     return ant && ant->caste == Caste::Worker;
 }
 
+struct MilestoneHit {
+    std::size_t index;
+    WorldEvent fact;
+};
+
+void send_milestone(const MilestoneHit& hit, bool grouped) {
+    auto bytes = encode_event(hit.fact);
+    if (grouped) bytes.insert(bytes.begin(), static_cast<std::uint8_t>(hit.index));
+    payload(bytes);
+}
+
 struct MilestoneSearch {
-    Milestone target;
+    std::vector<Milestone> targets;
     EventId cursor{};
     std::optional<SimTime> matched_at;
     std::optional<double> surface_y;
     std::set<EntityId> underground;
 
-    explicit MilestoneSearch(Milestone milestone, const WorldRuntime& world)
-        : target(milestone), cursor{world.first_history_cursor()} {
-        if (target == Milestone::Exit) {
+    explicit MilestoneSearch(std::vector<Milestone> milestones, const WorldRuntime& world)
+        : targets(std::move(milestones)), cursor{world.first_history_cursor()} {
+        if (std::find(targets.begin(), targets.end(), Milestone::Exit) != targets.end()) {
             const auto surface = world.surface_snapshot();
             if (surface.configured) surface_y = surface.surface.origin_m.y;
         }
@@ -206,7 +229,7 @@ struct MilestoneSearch {
         }
     }
 
-    bool matches(const WorldRuntime& world, const WorldEvent& fact) {
+    bool matches(Milestone target, const WorldRuntime& world, const WorldEvent& fact) {
         switch (target) {
         case Milestone::Egg:
             return fact.kind == FactKind::AntBorn && fact.stage == LifeStage::Egg;
@@ -272,16 +295,21 @@ struct MilestoneSearch {
         return false;
     }
 
-    std::optional<WorldEvent> scan(const WorldRuntime& world) {
+    std::optional<MilestoneHit> scan(const WorldRuntime& world) {
         constexpr std::size_t page = 512;
         matched_at.reset();
         while (true) {
             const auto events = world.events_after(cursor, page);
             for (const auto& fact : events) {
                 cursor = fact.id;
-                if (matches(world, fact)) {
+                std::optional<std::size_t> match;
+                // The exit detector must also see a worker's emergence when it is a hit for another target.
+                for (std::size_t index = 0; index < targets.size(); ++index) {
+                    if (matches(targets[index], world, fact) && !match) match = index;
+                }
+                if (match) {
                     matched_at = fact.time;
-                    return fact;
+                    return MilestoneHit{*match, fact};
                 }
             }
             if (events.size() < page) return {};
@@ -338,7 +366,7 @@ private:
     bool assay_{};
 };
 
-void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search, LiveHistory& history) {
+void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search, LiveHistory& history, bool grouped) {
     auto cut = world.summary();
     require(target >= cut.now, "simulation time cannot move backwards");
     require(search.cursor.value == cut.committed_events, "Live milestone search does not match the current history");
@@ -351,7 +379,7 @@ void advance_until(WorldRuntime& world, SimTime target, MilestoneSearch& search,
         history.advance(world,*next);
         cut = world.summary();
         if (cut.committed_events != search.cursor.value) {
-            if (const auto hit = search.scan(world)) { payload(encode_event(*hit)); return; }
+            if (const auto hit = search.scan(world)) { send_milestone(*hit, grouped); return; }
         }
     }
     message("OK");
@@ -374,7 +402,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v18");
+                message("OK", "antworld.m0.live.v19");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -503,28 +531,31 @@ int main() {
                     search.reset();
                     if (command=="ADVANCE") payload(world->checkpoint_frame());
                     else message("OK");
-                } else if (command == "FIND_MILESTONE" || command == "FIND_NEXT_MILESTONE") {
-                    const auto milestone = read_milestone(request);
-                    const bool next = command == "FIND_NEXT_MILESTONE";
-                    const EventId after{next ? number(request) : 0};
+                } else if (command == "FIND_MILESTONE" || command == "FIND_NEXT_MILESTONE" || command == "FIND_NEXT_MILESTONES") {
+                    const bool grouped = command == "FIND_NEXT_MILESTONES";
+                    const bool next = command != "FIND_MILESTONE";
+                    const EventId group_after{grouped ? number(request) : 0};
+                    auto targets = grouped ? read_milestones(request) : std::vector{parse_milestone(word(request))};
+                    const EventId after = next && !grouped ? EventId{number(request)} : group_after;
                     end(request);
                     require(next || !world->first_history_cursor(),"Earlier milestones precede the saved history window");
                     if (after.value) {
                         // Preserve the detector state at a hit within an atomic timestamp.
-                        require(search && search->target == milestone && search->cursor == after &&
+                        require(search && search->targets == targets && search->cursor == after &&
                                 search->matched_at == world->summary().now, "Cannot continue this milestone search");
                     } else {
-                        search.emplace(milestone, *world);
+                        search.emplace(std::move(targets), *world);
                         if (next) search->start_at_tip(*world);
                     }
-                    if (const auto hit = search->scan(*world)) payload(encode_event(*hit));
+                    if (const auto hit = search->scan(*world)) send_milestone(*hit, grouped);
                     else message("OK");
-                } else if (command == "ADVANCE_UNTIL") {
+                } else if (command == "ADVANCE_UNTIL" || command == "ADVANCE_UNTIL_ANY") {
                     const auto target = read_target(request);
-                    const auto milestone = read_milestone(request);
+                    const bool grouped = command == "ADVANCE_UNTIL_ANY";
+                    const auto targets = grouped ? read_milestones(request) : std::vector{parse_milestone(word(request))};
                     end(request);
-                    require(search && search->target == milestone, "Choose a live milestone before fast-forwarding");
-                    advance_until(*world,target,*search,history);
+                    require(search && search->targets == targets, "Choose a live milestone before fast-forwarding");
+                    advance_until(*world, target, *search, history, grouped);
                 } else if (command == "FRAME") {
                     end(request);
                     payload(world->checkpoint_frame());

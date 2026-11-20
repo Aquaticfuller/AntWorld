@@ -842,6 +842,50 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(seek_birth("next"), third)
         self.assertEqual(self.live.worker.call("FRAME"), frame)
 
+    def test_next_group_stops_at_the_first_selected_fact_and_can_be_cancelled(self):
+        if not self.live.core().group_milestones:
+            self.skipTest("Build the native Core with grouped event seeking")
+        with patch("op0.live.randbits", return_value=270001):
+            self.live.write("new", {})
+        self.live.write("clock", {"running": False})
+        before = self.live.status()
+        for payload in ({"targets": []}, {"targets": None}, {"targets": "egg"}, {"targets": ["egg", "egg"]},
+                        {"targets": ["egg", "unknown"]}, {"targets": ["egg", "wall-delivery"]},
+                        {"target": "egg", "targets": ["egg"]}, {"targets": ["egg"], "occurrence": "first"}):
+            with self.subTest(payload=payload), self.assertRaises(ValueError):
+                self.live.write("seek", payload)
+        self.assertEqual(self.live.status(), before)
+
+        self.live.write("seek", {"targets": ["hatch", "egg"]})
+        cancelled = self.live.write("clock", {"running": False})
+        self.assertEqual((cancelled["fast_forward"]["state"], cancelled["time_ms"], cancelled["rate"]),
+                         ("cancelled", before["time_ms"], 1))
+
+        with closing(NativeCore(BINARY, self.folder)) as reference:
+            reference.call("NEW 270001 1")
+            for targets, winner, kind, expected_time in (
+                (["hatch", "egg"], "egg", "AntBorn", 4 * DAY),
+                (["egg", "hatch"], "egg", "AntBorn", 4 * DAY + 2 * HOUR),
+                (["worker", "hatch"], "hatch", "StageChanged", None),
+            ):
+                with self.subTest(targets=targets):
+                    started = self.live.write("seek", {"targets": targets})
+                    self.assertEqual(started["fast_forward"], dict(target=None, targets=sorted(targets),
+                                                                   occurrence="next", state="seeking", event=None))
+                    for _ in range(180):
+                        stopped = self.advance(1000)
+                        if not stopped["running"]:
+                            break
+                    hit = stopped["fast_forward"]
+                    self.assertEqual((hit["state"], hit["target"], hit["event"]["kind"]), ("reached", winner, kind))
+                    stamp = hit["event"]["time_ms"]
+                    self.assertEqual((stopped["time_ms"], stopped["running"], stopped["rate"]), (stamp, False, 1))
+                    if expected_time is not None:
+                        self.assertEqual(stamp, expected_time)
+                    else:
+                        self.assertEqual(hit["event"]["stage"], "Larva")
+                    self.assertEqual(self.live.worker.call("FRAME"), reference.call(f"ADVANCE {stamp}"))
+
     def test_next_exit_uses_current_positions_and_keeps_same_timestamp_matches(self):
         if not self.live.core().next_milestone:
             self.skipTest("Build the native Core with next-event seeking")
@@ -858,21 +902,27 @@ class LiveTests(unittest.TestCase):
         first, second = events
         self.assertEqual(first["time_ms"], second["time_ms"])
         stamp = first["time_ms"]
-        with patch("op0.live.randbits", return_value=270001):
-            self.live.write("new", {})
-        self.live.write("clock", {"running": False})
-        self.live.publish(self.live.worker.call(f"ADVANCE {stamp - 1}"))
-
-        request = {"target": "exit", "occurrence": "next"}
-        started = self.live.write("seek", request)
-        self.assertEqual(started["fast_forward"]["state"], "seeking")
-        stopped = self.advance(1000)
-        self.assertEqual(stopped["fast_forward"]["event"], first)
-        frame = self.live.worker.call("FRAME")
-        next_stop = self.live.write("seek", request)
-        self.assertEqual(next_stop["fast_forward"], dict(request, state="reached", event=second))
-        self.assertEqual((next_stop["time_ms"], next_stop["running"], next_stop["rate"]), (stamp, False, 1))
-        self.assertEqual(self.live.worker.call("FRAME"), frame)
+        single = {"target": "exit", "occurrence": "next"}
+        requests = [single]
+        if self.live.worker.group_milestones:
+            requests.append({"targets": ["exit", "delivery"]})
+        for request in requests:
+            with self.subTest(request=request):
+                with patch("op0.live.randbits", return_value=270001):
+                    self.live.write("new", {})
+                self.live.write("clock", {"running": False})
+                self.live.publish(self.live.worker.call(f"ADVANCE {stamp - 1}"))
+                started = self.live.write("seek", request)
+                self.assertEqual(started["fast_forward"]["state"], "seeking")
+                stopped = self.advance(1000)
+                self.assertEqual(stopped["fast_forward"]["event"], first)
+                self.assertEqual(stopped["fast_forward"]["target"], "exit")
+                frame = self.live.worker.call("FRAME")
+                followup = {"targets": ["delivery", "exit"]} if "targets" in request else request
+                next_stop = self.live.write("seek", followup)
+                self.assertEqual(next_stop["fast_forward"], single | followup | dict(state="reached", event=second))
+                self.assertEqual((next_stop["time_ms"], next_stop["running"], next_stop["rate"]), (stamp, False, 1))
+                self.assertEqual(self.live.worker.call("FRAME"), frame)
 
     def test_native_clock_save_metadata_and_exact_resume(self):
         started = self.live.write("new", {})

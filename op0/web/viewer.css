@@ -95,7 +95,17 @@ h1 { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(34px, 4vw
 #live-action-list .event-row { margin: 0; }
 button.primary-button { background: var(--green); border-color: var(--green); color: #182216; font-weight: 700; }
 #save-manager { width: min(750px, calc(100% - 32px)); max-height: 85vh; padding: 0; color: var(--text); }
-#save-manager::backdrop { background: #080e0bbd; }
+#save-manager::backdrop, #live-group-picker::backdrop { background: #080e0bbd; }
+#live-group-picker { width: min(520px, calc(100% - 32px)); max-height: 85vh; padding: 0; color: var(--text); }
+#live-group-form { display: grid; gap: 14px; padding: 16px; }
+#live-group-help, #live-group-count { font-size: 13px; color: var(--muted); }
+.live-group-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr)); gap: 6px;
+  min-inline-size: 0; border: 0; margin: 0; padding: 0; }
+.live-group-options label { display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 6px 9px;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--raised); cursor: pointer; font-size: 13px; }
+.live-group-options label:has(input:checked) { border-color: #6d8c57; background: #273e2d; }
+.live-group-options input { margin: 0; min-height: auto; accent-color: var(--green); }
+.live-group-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .save-content { display: grid; gap: 14px; padding: 16px; }
 #save-form input { flex: 1; min-width: 120px; }
 .save-folder-row p { flex: 1; min-width: 140px; overflow-wrap: anywhere; }

@@ -48,7 +48,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v21"), installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
+    paths = (installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
+             installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
              installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
              installed.with_stem("antworld_m0_live_v14"), installed.with_stem("antworld_m0_live_v13"),
@@ -72,7 +73,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 19))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 20))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -90,6 +91,7 @@ class NativeCore:
             self.wall_handoff = generation >= 16
             self.anatomical_handoff = generation >= 17
             self.familiar_return = generation >= 18
+            self.group_milestones = generation >= 19
         except Exception:
             self.close()
             raise
@@ -357,7 +359,7 @@ class LiveSession:
                                         for edit in self.frame["edits"] if edit["event"] == event.id]
         return packet
 
-    def start_seek(self, target, occurrence):
+    def validate_milestone(self, target):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
         require(target not in BROOD_MILESTONES or self.worker.single_nest, "Build the updated Core to seek brood actions.")
         habitat = (self.frame["flags"] or {}).get("founding_habitat")
@@ -368,6 +370,19 @@ class LiveSession:
                 "Queen transfer milestones need the updated Core and a founding habitat.")
         require(target != "wall-delivery" or (self.worker.wall_handoff and habitat and habitat.get("wall_handoff")),
                 "Wall deliveries require a wall-handoff nest.")
+
+    def start_group_seek(self, targets):
+        require(isinstance(targets, list) and 1 <= len(targets) <= len(MILESTONES), "Choose at least one target event.")
+        for target in targets:
+            self.validate_milestone(target)
+        require(len(set(targets)) == len(targets), "Choose distinct target events.")
+        require(self.worker.group_milestones, "Build the updated Core to seek a group of events.")
+        self.start_seek(None, "next", targets=sorted(targets))
+
+    def start_seek(self, target, occurrence, *, targets=None):
+        grouped = targets is not None
+        if not grouped:
+            self.validate_milestone(target)
         require(not self.seeking(), "Cancel the current fast-forward first.")
         require(occurrence in ("first", "next"), "Choose the first or next event")
         next_event = occurrence == "next"
@@ -375,29 +390,45 @@ class LiveSession:
             require(self.worker.next_milestone, "Build the updated Core to seek the next event.")
             previous = self.fast_forward or {}
             event = previous.get("event")
+            same_search = previous.get("targets") == targets and (grouped or previous.get("target") == target)
             after = 0
-            if (event and previous["state"] == "reached" and previous["target"] == target and
+            if (event and previous["state"] == "reached" and same_search and
                     event["time_ms"] == self.frame["time_ms"]):
                 after = event["id"]
-            raw = self.worker.call(f"FIND_NEXT_MILESTONE {target} {after}")
+            command = (f"FIND_NEXT_MILESTONES {after} {' '.join(targets)}" if grouped
+                       else f"FIND_NEXT_MILESTONE {target} {after}")
+            raw = self.worker.call(command)
         else:
             require(not self.history_floor, "Earlier events are unavailable in this compact save. Search for the next event.")
             raw = self.worker.call(f"FIND_MILESTONE {target}")
-        event = self.milestone_event(raw) if raw else None
-        self.fast_forward = dict(target=target, state="seeking", event=None)
+        search = dict(target=target, state="seeking", event=None)
+        if grouped:
+            search["targets"] = targets
         if next_event:
-            self.fast_forward["occurrence"] = occurrence
-        if event is None:
+            search["occurrence"] = occurrence
+        if raw:
+            match, event = self.seek_hit(raw, search)
+        self.fast_forward = search
+        if not raw:
             self.running, self.rate, self.error = True, RATES[-1], None
             self.reanchor()
         elif next_event:
-            self.stop_seek("reached", event)
+            self.stop_seek("reached", event, match)
             self.error = None
         else:
             self.fast_forward.update(state="already", event=event)
 
-    def stop_seek(self, state, event=None):
+    def seek_hit(self, raw, search):
+        targets = search.get("targets")
+        if targets is None:
+            return search["target"], self.milestone_event(raw)
+        require(len(raw) > 1 and raw[0] < len(targets), "Invalid live milestone group result.")
+        return targets[raw[0]], self.milestone_event(raw[1:])
+
+    def stop_seek(self, state, event=None, target=None):
         self.fast_forward = self.fast_forward | dict(state=state, event=event)
+        if target is not None:
+            self.fast_forward["target"] = target
         self.running, self.rate = False, 1
 
     def advance(self):
@@ -414,14 +445,18 @@ class LiveSession:
         if not self.seeking():
             self.publish(self.worker.call(f"ADVANCE {target}"))
             return
-        reply = self.worker.call(f"ADVANCE_UNTIL {target} {self.fast_forward['target']}")
+        search = self.fast_forward
+        targets = search.get("targets")
+        command = (f"ADVANCE_UNTIL_ANY {target} {' '.join(targets)}" if targets is not None
+                   else f"ADVANCE_UNTIL {target} {search['target']}")
+        reply = self.worker.call(command)
         self.publish(self.worker.call("FRAME"))
         if reply == b"exhausted":
             self.stop_seek("exhausted")
         elif reply:
-            event = self.milestone_event(reply)
+            match, event = self.seek_hit(reply, search)
             require(event["time_ms"] == self.frame["time_ms"], "The Core did not stop at the live milestone")
-            self.stop_seek("reached", event)
+            self.stop_seek("reached", event, match)
 
     def run_clock(self):
         while not self.stopping.wait(.02 if self.seeking() else .05 if is_nursery(self.frame) and self.rate == 1 else .10):
@@ -452,6 +487,7 @@ class LiveSession:
                     queen_gifts_available=bool(self.worker and self.worker.adult_offers),
                     history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
+                    group_milestones_available=bool(self.worker and self.worker.group_milestones),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -737,7 +773,12 @@ class LiveSession:
                     mode = data.get("mode", "archive")
                     self.save(data.get("name"), data.get("overwrite") is True, mode)
                 elif resource == "seek":
-                    self.start_seek(data.get("target"), data.get("occurrence", "first"))
+                    if "targets" in data:
+                        require("target" not in data and data.get("occurrence", "next") == "next",
+                                "Choose either one event or a group of next events.")
+                        self.start_group_seek(data["targets"])
+                    else:
+                        self.start_seek(data.get("target"), data.get("occurrence", "first"))
                 elif resource == "clock":
                     rate, running = data.get("rate", self.rate), data.get("running", self.running)
                     require(type(rate) is int and rate in RATES and type(running) is bool, "Invalid live clock settings")

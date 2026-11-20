@@ -110,6 +110,7 @@
         </select>
         <button id="live-seek" type="button">Find first occurrence</button>
         <button id="live-seek-next" type="button" hidden>Fast-forward to next</button>
+        <button id="live-seek-group" type="button" aria-haspopup="dialog" hidden>Fast-forward to next in group</button>
       </div>
       <div class="nursery-launch">
         <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
@@ -264,6 +265,20 @@
       <details open><summary>Input alignment</summary><div id="compare-config"></div></details>
     </section>
   </main>
+  <dialog id="live-group-picker" class="panel" aria-labelledby="live-group-title" aria-describedby="live-group-help">
+    <div class="panel-head">
+      <h2 id="live-group-title">Fast-forward to next in group</h2>
+      <form method="dialog"><button type="submit">Close</button></form>
+    </div>
+    <form id="live-group-form">
+      <p id="live-group-help" class="muted" data-i18n>Select the events that can pause the simulation.</p>
+      <fieldset class="live-group-options" id="live-group-options" aria-label="Target events"></fieldset>
+      <div class="live-group-actions">
+        <output id="live-group-count" aria-live="polite"></output>
+        <button id="live-group-start" type="submit" class="primary-button" disabled>Start fast-forward</button>
+      </div>
+    </form>
+  </dialog>
   <dialog id="save-manager" class="panel" aria-labelledby="save-title">
     <div class="panel-head"><h2 id="save-title">Saved colonies</h2><button id="close-saves" type="button">Close</button></div>
     <div class="save-content">

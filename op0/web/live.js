@@ -1,7 +1,8 @@
 "use strict";
 
 const liveView = {state: null, epoch: null, request: 0, timer: null, animation: null, busy: false,
-    saves: [], eventsKey: null, actionsKey: null, environmentKey: null, climateKey: null, individualKey: null, shownStop: null};
+    saves: [], eventsKey: null, actionsKey: null, environmentKey: null, climateKey: null, individualKey: null, shownStop: null,
+    groupTargets: []};
 const liveMotion = new LiveMotion();
 const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "First worker eclosed",
     "brood-moved": "First brood move", "brood-cleaned": "First brood cleaning",
@@ -75,13 +76,18 @@ function liveControls() {
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
+    $("live-seek-group").hidden = !s?.group_milestones_available;
     $("nursery-next-delivery").hidden = $("nursery-delivery").hidden || $("live-seek-next").hidden;
     $("nursery-delivery").disabled = $("nursery-next-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = $("live-seek-next").disabled = locked || seeking;
+    $("live-seek-group").disabled = locked || seeking;
     $("live-seek").disabled ||= Boolean(s?.history_floor);
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
+    const eventName = stop?.targets && !stop.target
+        ? new Intl.ListFormat(language, {type: "disjunction"}).format(stop.targets.map(target => tr(liveEventNames[target])))
+        : tr((stop?.occurrence === "next" ? liveEventNames : liveMilestones)[stop?.target]);
     let details = stop ? tr(liveStopLabels[stop.state], {
-        event: tr((stop.occurrence === "next" ? liveEventNames : liveMilestones)[stop.target]),
+        event: eventName,
         time: stop.event ? duration(stop.event.time_ms) : ""
     }) : "";
     if (stop?.event && (stop.target === "queen-meal" || stop.target === "queen-uptake")) {
@@ -456,6 +462,32 @@ function seekLiveEvent(target, occurrence) {
     return liveCommand("seek", {target, occurrence});
 }
 
+function selectedLiveGroup() {
+    return Array.from($("live-group-options").querySelectorAll("input:checked"), input => input.value);
+}
+
+function updateLiveGroupCount() {
+    const count = selectedLiveGroup().length;
+    put("live-group-count", tr("{count} selected", {count}));
+    $("live-group-start").disabled = count === 0;
+}
+
+function openLiveGroup() {
+    const available = Array.from($("live-target").options).filter(option => !option.disabled && !option.hidden);
+    $("live-group-options").replaceChildren(...available.map(option => {
+        const input = node("input");
+        input.type = "checkbox";
+        input.value = option.value;
+        input.checked = liveView.groupTargets.includes(option.value);
+        const label = node("label");
+        label.append(input, tr(liveEventNames[option.value]));
+        return label;
+    }));
+    updateLiveGroupCount();
+    $("live-group-picker").showModal();
+    ($("live-group-options").querySelector("input:checked") ?? $("live-group-options").querySelector("input"))?.focus();
+}
+
 async function postLive(resource, data) {
     const result = await fetch("/api/v1/live/" + resource, {method: "POST", headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)});
@@ -553,6 +585,17 @@ function bindLive() {
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => seekLiveEvent($("live-target").value, "first"));
     click("live-seek-next", () => seekLiveEvent($("live-target").value, "next"));
+    click("live-seek-group", openLiveGroup);
+    $("live-group-options").addEventListener("change", updateLiveGroupCount);
+    $("live-group-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const targets = selectedLiveGroup();
+        if (!targets.length) return;
+        liveView.groupTargets = targets;
+        liveView.shownStop = null;
+        $("live-group-picker").close();
+        liveCommand("seek", {targets}).catch(report);
+    });
     click("nursery-delivery", () => seekLiveEvent("delivery", "first"));
     click("nursery-next-delivery", () => seekLiveEvent("delivery", "next"));
     $("live-rate").addEventListener("change", () => liveCommand("clock", {rate: Number($("live-rate").value)}).catch(report));

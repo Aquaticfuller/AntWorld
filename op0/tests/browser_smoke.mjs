@@ -545,11 +545,33 @@ async function sealedNestWorld() {
         assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"),false);
         return event;
     };
-    result.egg = await seek("egg","AntBorn");
+    await click("#live-seek-group");
+    assert.equal(await evaluate("$('live-group-title').textContent"), "Fast-forward to next in group");
+    assert.equal(await evaluate("$('live-group-start').disabled"), true);
+    await click("#live-group-picker .panel-head button");
+    await select("locale", "zh-CN");
+    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('live-seek-group').textContent === '\u5feb\u8fdb\u5230\u4e0b\u4e00\u7ec4'"),
+        "Chinese event group control");
+    await click("#live-seek-group");
+    await click('#live-group-options input[value="hatch"]');
+    await click('#live-group-options input[value="egg"]');
+    assert.equal(await evaluate("$('live-group-count').textContent"), "\u5df2\u9009 2 \u9879");
+    await click("#live-group-start");
+    result.egg = await wait(() => evaluate("(() => {" +
+        "const stop = liveView.state.fast_forward;" +
+        "return stop?.state === 'reached' && stop.targets?.length === 2 && !liveView.busy && !$('event-detail').hidden ? stop.event : null; })()"),
+        "Pause at the first selected event");
+    assert.equal(result.egg.kind, "AntBorn");
+    assert.equal(await evaluate("liveView.state.fast_forward.target"), "egg");
+    assert.equal(await evaluate("liveView.state.time_ms"), result.egg.time_ms);
+    assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
+    assert.match(await evaluate("$('live-stop').textContent"), /\u4ea7\u5375/);
+    await click("#live-seek-group");
+    assert.deepEqual(await evaluate("selectedLiveGroup()"), ["egg", "hatch"]);
+    await click("#live-group-picker .panel-head button");
     result.brood = await seek("brood-moved","BroodMoved");
     assert.equal(result.brood.related, "2");
-    await select("locale", "zh-CN");
-    await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('title').textContent==='\u5c01\u95ed\u5efa\u7fa4\u5ba4'"),
+    await wait(() => evaluate("$('title').textContent==='\u5c01\u95ed\u5efa\u7fa4\u5ba4'"),
         "Chinese sealed-nest title");
     await screenshot("m2-brood-zh");
     result.worker = await seek("worker","StageChanged");
