@@ -18,7 +18,7 @@ from op0 import DAY
 from op0.archive import prefixed
 from op0.codec import CASTES, KINDS, checkpoint, decode_fact
 from op0.index import Catalog
-from op0.live import ROOT, LiveSession, NativeCore, core_path, live_bodies, read_live_events
+from op0.live import ROOT, LiveSession, NativeCore, core_path, founding_balance, live_bodies, read_live_events
 from op0.query import HOUR, ReadAPI
 from op0.server import bind
 from tools.compare_m0_worker_rhythm import facts
@@ -328,10 +328,21 @@ class LiveTests(unittest.TestCase):
         self.assertEqual((water.payload, tuple(water.mass)), (2, (0, 0, 20, 0)))
         before = core.call("FRAME")
         self.live.publish(before)
+        positions = live_bodies(core.call("BODY_STATES"), self.live.frame)
+        self.assertLessEqual(dist(positions["23"]["mouth_m"], positions["2"]["mouth_m"]), .00065)
+        donor_before = founding_balance(core, self.live.frame, 23)
+        queen_before = self.live.read("life", {"id": "2"})["balance"]
+        self.assertEqual(queen_before["time_ms"], 5082175761)
+        self.assertEqual(core.call("FRAME"), before)
         for mode in ("archive", "snapshot"):
             self.live.save("Before oral exchange", False, mode)
         self.assertEqual(core.call("FIND_NEXT_MILESTONE queen-gift 0"), b"")
         donor = decode_fact(core.call("ADVANCE_UNTIL 5082175762 queen-gift"))[1]
+        transfer_cut = checkpoint(core.call("FRAME"))
+        donor_after = founding_balance(core, transfer_cut, 23)
+        queen_after = founding_balance(core, transfer_cut, 2)
+        self.assertEqual(tuple(b-a for b, a in zip(donor_before["crop_ug"], donor_after["crop_ug"])), tuple(donor.mass))
+        self.assertEqual(tuple(a-b for a, b in zip(queen_after["crop_ug"], queen_before["crop_ug"])), tuple(donor.mass))
         expected = core.call("ADVANCE 5097600000")
         self.assertEqual((donor.id, donor.time, donor.actor, donor.payload, tuple(donor.mass)),
                          (18938, 5082175762, 23, 2, (12, 0, 88, 0)))
@@ -346,6 +357,55 @@ class LiveTests(unittest.TestCase):
                 self.assertEqual((uptake.time, uptake.actor, tuple(uptake.mass)), (5097600000, 2, (12, 0, 88, 0)))
                 self.assertEqual(core.call("FRAME"), expected)
                 self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction(self):
+        core = self.live.core()
+        if not core.anatomical_handoff:
+            self.skipTest("Build the Physics 43 Core")
+        request = "NEW_MOUTH_HANDOFF_NEST 9202 2 250 80 plugged 1955 reachable finite"
+        core.call(request)
+        core.call(f"ADVANCE {150 * DAY}")
+        match = decode_fact(core.call("FIND_MILESTONE wall-delivery"))[1]
+        self.assertEqual((KINDS[match.kind], match.payload, match.actor), ("FoodDelivered", 1, 13))
+
+        self.live.install(core.call(request), running=False)
+        self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (36, 43))
+        before = core.call(f"ADVANCE {match.time - 1}")
+        self.live.publish(before)
+        cut = self.live.frame
+        ant = cut["ants"][match.actor]
+        depot = cut["colonies"][match.colony]
+        body = live_bodies(core.call("BODY_STATES"), cut)[str(match.actor)]
+        self.assertGreater(dist(ant["position_m"], depot["position_m"]), .002)
+        self.assertLessEqual(dist(body["mouth_m"], depot["position_m"]), .00065)
+        self.assertEqual(tuple(ant["carried_ug"]), tuple(match.mass))
+        self.assertGreater(match.mass[0], 0)
+        self.live.save("Loaded on wall", False, "snapshot")
+
+        completed = core.call(f"ADVANCE {match.time}")
+        after = checkpoint(completed)
+        self.assertEqual(tuple(after["ants"][match.actor]["carried_ug"]), (0, 0, 0, 0))
+        delta = tuple(b - a for a, b in zip(cut["stored"], after["stored"]))
+        self.assertEqual(delta, tuple(match.mass))
+        self.assertEqual(after["ants"][match.actor]["position_m"], ant["position_m"])
+        self.assertEqual(decode_fact(core.call("FIND_MILESTONE wall-delivery"))[1], match)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        page = core.call(f"FACTS_AFTER {cut['cursor']} 512")
+        self.live.load("Loaded on wall", "snapshot")
+        self.assertEqual(core.call("FRAME"), before)
+        self.assertEqual(core.call(f"ADVANCE {match.time}"), completed)
+        self.assertEqual(core.call(f"FACTS_AFTER {cut['cursor']} 512"), page)
+
+        # Full replay must validate the historical mouth pose as well as the current ledger.
+        self.live.install(core.call(request), running=False)
+        self.live.publish(core.call(f"ADVANCE {match.time}"))
+        self.live.save("Delivered from wall", False, "archive")
+        end = match.time + HOUR
+        continued = core.call(f"ADVANCE {end}")
+        self.live.load("Delivered from wall", "archive")
+        self.assertEqual(core.call("FRAME"), completed)
+        self.assertEqual(core.call(f"ADVANCE {end}"), continued)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()

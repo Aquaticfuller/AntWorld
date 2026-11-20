@@ -36,6 +36,12 @@ The observer opens locally at `http://127.0.0.1:8765/`.
    archive is an explicit choice while the history prefix is present.
    **Reference model** creates the earlier Physics 38 comparison.
 
+## Watch food reach the queen
+
+In **Colony setup**, select **Worker food offers · Physics 41**, **Finite food and water** and software seed **3**. Select **New sealed nest**. In the event menu select **Worker feeds the queen** and **Next occurrence**. The scene pauses at a water transfer. Select **Next occurrence** again to see worker #23 transfer carbohydrate and water to queen #2. Select **Queen absorbs carbohydrate** and **Next occurrence** to follow the queen until the next positive absorption. Each stop shows the committed timestamp, individuals and amounts. **Resume** runs at 1×. The individual's life panel includes crop carbohydrate, body energy, water, lipid and mobilizable protein at the displayed sampling time.
+
+**Food access experiment · Physics 40** plays the comparison with anatomical access to nest stores. In seed 3, select **Food delivered**, **Queen eats from nest stores** and **Queen absorbs carbohydrate** in that order. The three events have separate IDs. The ordinary new-nest choice remains Physics 39. Saved worlds retain their own model version. An absent resource feeder and software seeds 1 and 2 are available from the same controls. See [the paired worlds, failure diagnoses and evidence](FOUNDER_ACCESS_RESULTS.md).
+
 See [the anatomical model and assay](OVERHAUL.md) and the
 [review results](OVERHAUL_RESULTS.md). The following sections record the
 history and results of the earlier preview.

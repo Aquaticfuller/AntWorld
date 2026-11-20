@@ -15,7 +15,8 @@ from op0.live import NativeCore, core_path, founding_balance, live_bodies
 
 CUTS = (0, 4, 5, 12, 30, 60, 90, 120, 150)
 CASES = ((1, "finite"), (2, "finite"), (3, "finite"), (2, "absent"))
-COMMAND = {39: "NEW_ANATOMICAL_NEST", 40: "NEW_ORAL_NEST", 41: "NEW_OFFER_NEST", 42: "NEW_WALL_HANDOFF_NEST"}
+COMMAND = {39: "NEW_ANATOMICAL_NEST", 40: "NEW_ORAL_NEST", 41: "NEW_OFFER_NEST",
+           42: "NEW_WALL_HANDOFF_NEST", 43: "NEW_MOUTH_HANDOFF_NEST"}
 
 
 def death_boundary(core, request, death):
@@ -80,7 +81,7 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                 if fact.id != cursor or cursor > frame["cursor"]:
                     raise ValueError("Noncontiguous event page")
                 kind = KINDS[fact.kind]
-                if physics == 42 and kind == "FoodDelivered" and fact.payload == 1:
+                if physics >= 42 and kind == "FoodDelivered" and fact.payload == 1:
                     wall_deliveries.append(fact.packet())
                 if kind in ("AntSeeded", "AntBorn", "StageChanged", "AntDied"):
                     stages[fact.actor] = fact.stage
@@ -161,7 +162,7 @@ def run_case(core, physics, seed, supply, cuts=CUTS):
                 transfers_to=transfers, directed_gifts=pairs, founder_gift_chain=founder_gift_chain,
                 stock_at_founder_death_ug=stock_at_founder_death, before_death=before_death,
                 carbohydrate_chain=chain, ordered_access=len(chain)==3,
-                native_memory_bytes=memory, **({"wall_deliveries": wall_deliveries} if physics == 42 else {}))
+                native_memory_bytes=memory, **({"wall_deliveries": wall_deliveries} if physics >= 42 else {}))
 
 
 def compare_receipts(left_path, right_path):
@@ -193,7 +194,7 @@ def compare_receipts(left_path, right_path):
                 errors.append(f"{left['seed']} {left['supply']}: {key}")
         if left["physics"] >= 41 and left["founder_gift_chain"] != right["founder_gift_chain"]:
             errors.append(f"{left['seed']} {left['supply']}: founder gift chain")
-        if left["physics"] == 42 and left["wall_deliveries"] != right["wall_deliveries"]:
+        if left["physics"] >= 42 and left["wall_deliveries"] != right["wall_deliveries"]:
             errors.append(f"{left['seed']} {left['supply']}: wall deliveries")
         if left.get("receipt_version") == 2:
             for key in ("directed_gifts", "before_death"):

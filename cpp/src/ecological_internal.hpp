@@ -35,6 +35,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical && !habitat->sealed_chamber) ||
             (habitat->mouth_access && !habitat->anatomical) || (habitat->adult_offers && !habitat->mouth_access) ||
             (habitat->wall_handoff && !habitat->adult_offers) ||
+            (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
             p.x<world.min_m.x || p.y<world.min_m.y || p.z<world.min_m.z ||
@@ -93,6 +94,9 @@ inline bool adult_offers(const auto& s) {
 }
 inline bool wall_handoff(const auto& s) {
     return adult_offers(s) && s.ecological->founding_habitat->wall_handoff;
+}
+inline bool anatomical_handoff(const auto& s) {
+    return wall_handoff(s) && s.ecological->founding_habitat->anatomical_handoff;
 }
 inline bool sealed_seed_shape(const auto& geometry) {
     if (geometry.voids.size()!=1) return false;

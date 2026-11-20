@@ -55,7 +55,8 @@ template<class S> void read_connectors(Reader& r,S& s,const RuntimeLimits& limit
                     path.points[path.returning?path.cursor-1:path.cursor+1];
                 ensure(event.destination==target,"pending connector movement has no local waypoint");
             } else ensure(event.kind==ScheduledEvent::Kind::Rest ||
-                (event.kind==ScheduledEvent::Kind::DeliverFood && path.returning && !path.cursor),
+                (event.kind==ScheduledEvent::Kind::DeliverFood && path.returning &&
+                 (!path.cursor || (anatomical_handoff(s) && event.payload==wall_delivery_payload && in_transit))),
                 "action incompatible with connector transit");
         }
     }

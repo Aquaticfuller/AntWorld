@@ -1,9 +1,9 @@
 name: M1 Observatory
 on:
   push:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "experiments/m1/**", "research/m1/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   pull_request:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "experiments/m1/**", "research/m1/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   workflow_dispatch:
 
 permissions:
@@ -24,6 +24,14 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
+      - name: Compare the published founder access and transfer evidence
+        shell: pwsh
+        run: |
+          $dir = 'research/single_nest/evidence/founder-access'
+          foreach ($version in 40, 41, 42, 43) {
+            python -B -m tools.qualify_founder_access --compare "$dir/physics$version-windows.jsonl" "$dir/physics$version-linux.jsonl"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
       - name: Build the native Core observer application
         run: |
           cmake -S cpp -B build/m1 -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
@@ -44,7 +52,9 @@ jobs:
             op0.tests.test_live.LiveTests.test_anatomical_nest_commits_birth_carry_and_exact_continuation `
             op0.tests.test_live.LiveTests.test_anatomical_nest_excavates_delivers_and_restores_late `
             op0.tests.test_live.LiveTests.test_portable_mouth_approach_keeps_the_first_step_and_canonical_history `
-            op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes -v
+            op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes `
+            op0.tests.test_live.LiveTests.test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake `
+            op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction -v
       - name: Replay physics 36 and verify canonical archives
         shell: pwsh
         run: |

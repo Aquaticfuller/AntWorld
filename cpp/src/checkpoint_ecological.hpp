@@ -24,6 +24,7 @@ inline constexpr unsigned anatomical_schema = 32, anatomical_physics = 39;
 inline constexpr unsigned mouth_access_schema = 33, mouth_access_physics = 40;
 inline constexpr unsigned adult_offer_schema = 34, adult_offer_physics = 41;
 inline constexpr unsigned wall_handoff_schema = 35, wall_handoff_physics = 42;
+inline constexpr unsigned anatomical_handoff_schema = 36, anatomical_handoff_physics = 43;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -31,6 +32,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->anatomical_handoff) return anatomical_handoff_physics;
     if (c.founding_habitat && c.founding_habitat->wall_handoff) return wall_handoff_physics;
     if (c.founding_habitat && c.founding_habitat->adult_offers) return adult_offer_physics;
     if (c.founding_habitat && c.founding_habitat->mouth_access) return mouth_access_physics;
@@ -50,6 +52,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->anatomical_handoff) return anatomical_handoff_schema;
     if (c.founding_habitat && c.founding_habitat->wall_handoff) return wall_handoff_schema;
     if (c.founding_habitat && c.founding_habitat->adult_offers) return adult_offer_schema;
     if (c.founding_habitat && c.founding_habitat->mouth_access) return mouth_access_schema;
@@ -120,7 +123,7 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
     if (habitat) c.founding_habitat=FoundingHabitat{r.position(), r.get(), version >= reachable_berth_physics,
                                                   version >= sealed_chamber_physics,version >= anatomical_physics,
                                                   version >= mouth_access_physics,version >= adult_offer_physics,
-                                                  version == wall_handoff_physics};
+                                                  version >= wall_handoff_physics,version == anatomical_handoff_physics};
     validate_ecological_closure(c, world);
     return c;
 }

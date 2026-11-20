@@ -166,15 +166,17 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             if (sealed_chamber(s) && returning && loaded && !at_entrance) {
                 const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
                 const bool off_floor=ant.position.y!=depot.y;
-                const bool can_unload=!off_floor || (wall_handoff(s) && mouth_at_supply(ant,depot));
-                if (can_unload && within_contact(ant.position,depot,s.config) &&
-                    spatially_clear(ant.position,depot) && !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
+                const bool center_contact=within_contact(ant.position,depot,s.config);
+                const bool can_unload=off_floor ? wall_handoff(s) && (anatomical_handoff(s) || center_contact) &&
+                    mouth_at_supply(ant,depot) : center_contact;
+                if (can_unload && spatially_clear(ant.position,depot) &&
+                    !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
                     // The carrier has already reached the local handoff
                     // area. Reuse its real ingress route from this berth.
                     r.decision.action=ActionKind::DeliverFood;
                     r.decision.mode=BehaviorMode::Deliver;
                     r.decision.reason=DecisionReason::NestContact;
-                    r.dock_here=true;
+                    r.dock_here=!(off_floor && anatomical_handoff(s));
                     r.wall_delivery=off_floor;
                     return;
                 }

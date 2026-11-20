@@ -71,7 +71,7 @@ function liveControls() {
     for (const option of target.querySelectorAll("[data-offer]"))
         option.hidden = option.disabled = !(s?.habitat && s.queen_gifts_available);
     for (const option of target.querySelectorAll("[data-wall]"))
-        option.hidden = option.disabled = s?.physics !== 42;
+        option.hidden = option.disabled = !s?.habitat?.wall_handoff;
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;

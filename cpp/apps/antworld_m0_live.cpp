@@ -374,16 +374,17 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v16");
+                message("OK", "antworld.m0.live.v17");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
-                       command=="NEW_WALL_HANDOFF_NEST") {
+                       command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                const bool wall=command=="NEW_WALL_HANDOFF_NEST";
+                const bool mouth_handoff=command=="NEW_MOUTH_HANDOFF_NEST";
+                const bool wall=command=="NEW_WALL_HANDOFF_NEST" || mouth_handoff;
                 const bool offers=command=="NEW_OFFER_NEST" || wall;
                 const bool oral=command=="NEW_ORAL_NEST" || offers;
                 const bool anatomical=command=="NEW_ANATOMICAL_NEST" || oral;
@@ -402,7 +403,8 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
-                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,anatomical,oral,offers,wall);
+                auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,
+                    anatomical,oral,offers,wall,mouth_handoff);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();

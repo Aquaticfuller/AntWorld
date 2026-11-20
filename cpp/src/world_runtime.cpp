@@ -262,9 +262,10 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             }
         } else if (e.kind == ScheduledEvent::Kind::DeliverFood) {
             const auto j = s.colonies.index.at(ant.colony); auto& colony = s.colonies.rows[j];
-            if (!within_contact(ant.position,colony.nest_position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
-                s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position) ||
-                (wall_handoff(s) && e.payload==wall_delivery_payload && !mouth_at_supply(ant,colony.nest_position)))
+            const bool oral=wall_handoff(s) && e.payload==wall_delivery_payload;
+            const bool center_ok=(oral && anatomical_handoff(s)) || within_contact(ant.position,colony.nest_position,s.config);
+            if (!center_ok || (oral && !mouth_at_supply(ant,colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position) ||
+                (s.surface && !s.config.continuous_spatial_motion && s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)))
                 f.outcome=Outcome::NotAtNest;
             else if (ant.carried_food.total_ug() == 0) f.outcome = Outcome::EmptyInventory;
             else {

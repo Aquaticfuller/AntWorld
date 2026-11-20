@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==wall_handoff_schema && version==wall_handoff_physics) ||
+        ensure((outer_schema==anatomical_handoff_schema && version==anatomical_handoff_physics) ||
+               (outer_schema==wall_handoff_schema && version==wall_handoff_physics) ||
                (outer_schema==adult_offer_schema && version==adult_offer_physics) ||
                (outer_schema==mouth_access_schema && version==mouth_access_physics) ||
                (outer_schema==anatomical_schema && version==anatomical_physics) ||
@@ -449,7 +450,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         } else {
             const bool wall_delivery=e.kind==ScheduledEvent::Kind::DeliverFood && wall_handoff(*s) &&
                 e.payload==wall_delivery_payload && s->connectors.contains(e.actor) &&
-                s->connectors.at(e.actor).returning && s->connectors.at(e.actor).cursor==0 &&
+                s->connectors.at(e.actor).returning &&
+                (anatomical_handoff(*s) ? s->connectors.at(e.actor).cursor>0 : s->connectors.at(e.actor).cursor==0) &&
                 s->foragers.contains(e.actor) && s->foragers.at(e.actor).action==e.id;
             ensure(s->ants.index.contains(e.actor) && e.action == DiagnosticAction::Record && (!e.payload || wall_delivery) &&
                 e.key.priority == 0 && e.key.tie == 0, "invalid scheduled actor");
@@ -604,7 +606,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         case FactKind::FoodDelivered:
             ensure(seeded_ants.contains(e.actor) && stages[e.actor] == LifeStage::Adult && e.transferred.total_ug() &&
                 (!wall_handoff(*s) || !e.payload || e.payload==wall_delivery_payload) &&
-                within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config),
+                ((anatomical_handoff(*s) && e.payload==wall_delivery_payload) ||
+                 within_contact(e.position,s->colonies.rows[s->colonies.index.at(e.colony)].nest_position,s->config)),
                 "invalid physical delivery fact");
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred); delivered[e.colony] = sum(delivered[e.colony], e.transferred);
             if (s->ecological && s->ecological->recruitment) scout_deliveries[e.actor]=e;

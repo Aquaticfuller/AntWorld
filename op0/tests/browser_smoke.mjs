@@ -686,6 +686,27 @@ async function founderAccessWorld() {
     assert.ok(offers[0].time_ms < offers[1].time_ms && offers[1].time_ms < offers[2].time_ms);
     assert.equal(exceptions.length,0,JSON.stringify(exceptions));
     await writeFile(join(output,"local-offer-browser.json"),JSON.stringify(offers,null,2)+"\n");
+    await select("sealed-model","mouth-handoff");
+    await evaluate("$('sealed-seed').value='2'");
+    await Promise.all([click("#new-single-nest"), (async () => {
+        await wait(() => dialogs.shift(), "Open the wall-delivery control", 5_000);
+        await send("Page.handleJavaScriptDialog", {accept: true});
+    })()]);
+    await wait(() => evaluate("liveView.state?.physics===43 && !liveView.busy"),"New wall-side delivery world");
+    await select("live-target","wall-delivery");
+    await click("#live-seek-next");
+    await wait(() => evaluate("liveView.state?.fast_forward?.state==='reached' && !liveView.busy"),"Wall-side delivery",90_000);
+    const handoff = await evaluate("liveView.state.fast_forward.event");
+    assert.equal(handoff.kind,"FoodDelivered");
+    assert.equal(handoff.payload,"1");
+    assert.ok(handoff.mass_ug[0]>0);
+    assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"),false);
+    assert.equal(await evaluate("app.selected"),handoff.actor);
+    assert.ok(await evaluate("app.follow"));
+    assert.match(await evaluate("$('live-stop').textContent"),/\u5b58\u5165\u5de2\u5185/);
+    assert.equal(exceptions.length,0,JSON.stringify(exceptions));
+    await screenshot("worker-unloads-from-wall-zh");
+    await writeFile(join(output,"wall-delivery-browser.json"),JSON.stringify(handoff,null,2)+"\n");
 }
 
 async function observatoryWorld() {

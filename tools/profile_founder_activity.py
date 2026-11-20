@@ -42,7 +42,7 @@ def main():
             window = windows[max(0, fact.time - 1) // (30 * DAY)]
             kind = KINDS[fact.kind]
             window["events"][kind] += 1
-            if row["physics"] == 42 and kind == "FoodDelivered" and fact.payload == 1:
+            if row["physics"] >= 42 and kind == "FoodDelivered" and fact.payload == 1:
                 handoffs = wall_handoffs.setdefault(fact.actor, [])
                 handoffs.append(dict(delivery=fact.packet(), next_movement=None))
             if kind == "Moved" and fact.actor in wall_handoffs:
@@ -69,7 +69,7 @@ def main():
                      for a in frame["ants"].values() if a["stage"] == 3}
     output = dict(request=row["request"], frame_sha256=cut["state_sha256"], cursor=seen, survivors=survivors,
                   depot=frame["colonies"][1], intervals=windows)
-    if row["physics"] == 42:
+    if row["physics"] >= 42:
         output["wall_handoffs"] = wall_handoffs
     args.output.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
