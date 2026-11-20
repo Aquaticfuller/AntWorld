@@ -43,7 +43,7 @@ For the obstructed carrier, select **Wall-side food delivery · Physics 43**, fi
 | 44 | Finite | 3 | 7 | 2 | 35 | 2,642 | 36 | 78.18 | 0 |
 | 44 | Absent | 2 | 7 | 0 | 0 | 0 | 0 | 68.95 | 0 |
 
-The ordered delivery, depot meal and later uptake endpoint passes its prespecified 2/3 finite and 0/1 absent criteria for both 40 and 41. The additional funded worker-to-founder carbohydrate gift occurred in 1/3 finite worlds with Physics 41. A living queen **and** worker at day 150 occurred in **0/3** for each version. Every observed founder died through the Core's energy-depletion rule. These are paired software seeds and no species survival probability is estimated.
+The ordered delivery, depot meal and later uptake endpoint passes its prespecified 2/3 finite and 0/1 absent criteria for both 40 and 41. The additional funded worker-to-founder carbohydrate gift occurred in 1/3 finite worlds with Physics 41. A living queen **and** worker at day 150 occurred in **0/3** for each version. All 20 founder deaths in versions 40–44 were attributed to energy depletion on both platforms. The historical Physics 39 Windows control includes a dehydration death in finite seed 1 at event 20,559. Its living founder still had 365,792,656 nJ and 1 µg of body water one millisecond earlier. The corresponding historical Linux run recorded energy depletion. These are paired software seeds and no species survival probability is estimated. [Historical Windows events](evidence/founder-access/physics39-windows.jsonl) · [Historical Linux events](evidence/founder-access/physics39-linux.jsonl)
 
 ## Where the food stopped
 

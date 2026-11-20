@@ -250,6 +250,27 @@ class LiveTests(unittest.TestCase):
                     self.assertEqual(len({e["id"] for e in self.live.actions}), len(self.live.actions))
                 self.assertEqual(core.call(f"ADVANCE {61 * DAY}"), expected)
 
+    def test_founder_death_shown_in_the_view_matches_its_terminal_budget(self):
+        from tools.qualify_founder_access import death_boundary
+
+        core = self.live.core()
+        if not core.mouth_access:
+            self.skipTest("Build the Physics 40 Core")
+        for command in ("NEW_ANATOMICAL_NEST", "NEW_ORAL_NEST"):
+            with self.subTest(command=command):
+                request = f"{command} 9201 1 250 80 plugged 1955 reachable finite"
+                self.live.install(core.call(request), running=False)
+                final = checkpoint(core.call(f"ADVANCE {90 * DAY}"))
+                death = next(f.packet() for f in facts(core, final["cursor"])
+                             if KINDS[f.kind] == "AntDied" and f.actor == 2)
+                before = death_boundary(core, request, death)
+                self.assertEqual(before["time_ms"], death["time_ms"] - 1)
+                self.live.publish(core.call("FRAME"))
+                queen = next(a for a in self.live.read("view", {})["ants"] if a["id"] == "2")
+                self.assertEqual((queen["stage"], queen["death_cause"]), ("Dead", death["death_cause"]))
+                reserve = {"Dehydration": "hydration_ug", "Energy depleted": "energy_nj"}[queen["death_cause"]]
+                self.assertEqual(queen[reserve], 0)
+
     def test_portable_mouth_approach_keeps_the_first_step_and_canonical_history(self):
         core = self.live.core()
         if not core.mouth_access:

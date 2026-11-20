@@ -37,8 +37,14 @@ def death_boundary(core, request, death):
         raise ValueError("Pre-death observations changed the cut or omitted the living founder")
     after = checkpoint(core.call(f"ADVANCE {timestamp}"))
     page = core.call(f"FACTS_AFTER {int(death['id']) - 1} 1")
-    if after["ants"][2]["stage"] != 4 or decode_fact(page[U32.size:])[1].packet() != death:
+    queen = after["ants"][2]
+    if queen["stage"] != 4 or decode_fact(page[U32.size:])[1].packet() != death:
         raise ValueError("Replaying the death boundary changed the canonical death event")
+    if queen["death_code"] != int(death["payload"]):
+        raise ValueError("The founder's terminal physiology disagrees with the committed death cause")
+    exhausted = {"Energy depleted": "energy_nj", "Dehydration": "hydration_ug"}.get(death["death_cause"])
+    if exhausted and queen[exhausted] != 0:
+        raise ValueError(f"Founder died of {death['death_cause']} with a positive {exhausted} balance")
     return dict(time_ms=timestamp - 1, state_sha256=sha256(raw).hexdigest(), adults=adults,
                 depot=frame["colonies"][1], sources=frame["sources"], available_ug=frame["available"])
 
