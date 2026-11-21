@@ -483,6 +483,13 @@ function updateLiveGroupCount() {
     put("live-group-count", tr("{count} selected", {count: selectedLiveGroup().length}));
 }
 
+function setLiveGroupSelection(checked) {
+    for (const input of $("live-group-options").querySelectorAll('input[type="checkbox"]')) {
+        input.checked = checked;
+    }
+    updateLiveGroupCount();
+}
+
 function openLiveGroup() {
     $("live-group-options").replaceChildren(...availableLiveGroupOptions().map(option => {
         const input = node("input");
@@ -608,6 +615,8 @@ function bindLive() {
         liveView.shownStop = null;
         return liveCommand("seek", {targets});
     });
+    click("live-group-select-all", () => setLiveGroupSelection(true));
+    click("live-group-deselect-all", () => setLiveGroupSelection(false));
     $("live-group-options").addEventListener("change", updateLiveGroupCount);
     $("live-group-form").addEventListener("submit", event => {
         event.preventDefault();

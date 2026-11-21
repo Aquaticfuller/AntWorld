@@ -277,7 +277,11 @@
       <p id="live-group-help" class="muted" data-i18n>Select the events that can pause the simulation.</p>
       <fieldset class="live-group-options" id="live-group-options" aria-label="Target events"></fieldset>
       <div class="live-group-actions">
-        <output id="live-group-count" aria-live="polite"></output>
+        <div class="live-group-controls">
+          <button id="live-group-select-all" type="button" aria-controls="live-group-options">Select all</button>
+          <button id="live-group-deselect-all" type="button" aria-controls="live-group-options">Deselect all</button>
+          <output id="live-group-count" aria-live="polite"></output>
+        </div>
         <button type="submit" class="primary-button">Save event group</button>
       </div>
     </form>

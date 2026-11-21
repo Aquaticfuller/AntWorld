@@ -602,6 +602,8 @@
   "Configure event group": "配置事件组",
   "Select the events that can pause the simulation.": "勾选要等待的事件，任意一项发生时就会暂停。",
   "Target events": "要等待的事件",
+  "Select all": "全选",
+  "Deselect all": "取消全选",
   "{count} selected": "已选 {count} 项",
   "Save event group": "保存配置",
   "Worker emergence": "工蚁羽化",
