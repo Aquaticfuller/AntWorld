@@ -83,10 +83,10 @@ async function screenshot(name, includeHours = false, format = "png") {
         ...(format === "webp" ? {quality:94} : {})});
     await writeFile(join(output, name + "." + format), Buffer.from(frame.data, "base64"));
 }
-async function opened() {
+async function opened(ready = 'document.documentElement?.dataset.ready === "true" && typeof app !== "undefined" && !!app.state') {
     await wait(async () => {
         try {
-            return await evaluate('document.documentElement?.dataset.ready === "true" && typeof app !== "undefined" && !!app.state');
+            return await evaluate(ready);
         } catch (error) {
             // A navigation can replace the document between polling and evaluation.
             if (/Execution context was destroyed|Cannot find context with specified id/.test(error.message)) return false;
@@ -545,18 +545,36 @@ async function sealedNestWorld() {
         assert.equal(await evaluate("liveView.state.running || liveView.state.rate!==1"),false);
         return event;
     };
-    await click("#live-seek-group");
-    assert.equal(await evaluate("$('live-group-title').textContent"), "Fast-forward to next in group");
-    assert.equal(await evaluate("$('live-group-start').disabled"), true);
+    assert.equal(await evaluate("$('live-seek-group').disabled"), true);
+    await click("#live-group-configure");
+    assert.equal(await evaluate("$('live-group-title').textContent"), "Configure event group");
+    assert.deepEqual(await evaluate("selectedLiveGroup()"), []);
     await click("#live-group-picker .panel-head button");
     await select("locale", "zh-CN");
     await wait(() => evaluate("document.documentElement.lang==='zh-CN' && $('live-seek-group').textContent === '\u5feb\u8fdb\u5230\u4e0b\u4e00\u7ec4'"),
         "Chinese event group control");
-    await click("#live-seek-group");
+    await click("#live-group-configure");
+    assert.equal(await evaluate("$('live-group-title').textContent"), "\u914d\u7f6e\u4e8b\u4ef6\u7ec4");
     await click('#live-group-options input[value="hatch"]');
     await click('#live-group-options input[value="egg"]');
     assert.equal(await evaluate("$('live-group-count').textContent"), "\u5df2\u9009 2 \u9879");
-    await click("#live-group-start");
+    await click("#live-group-form button");
+    assert.equal(await evaluate("$('live-group-picker').open || $('live-seek-group').disabled"), false);
+    assert.deepEqual(await evaluate("({cursor: liveView.state.cursor, time: liveView.state.time_ms})"), intact);
+    assert.equal(await evaluate("liveView.state.running"), false);
+
+    await click("#live-group-configure");
+    assert.deepEqual(await evaluate("selectedLiveGroup()"), ["egg", "hatch"]);
+    await click('#live-group-options input[value="egg"]');
+    await click("#live-group-picker .panel-head button");
+    const previousPage = await evaluate("performance.timeOrigin");
+    await send("Page.reload");
+    await opened("performance.timeOrigin > " + previousPage +
+        " && typeof app !== 'undefined' && app.live && !!app.state && !$('viewer').hidden");
+    assert.equal(await evaluate("$('live-seek-group').disabled"), false);
+    assert.equal(await evaluate("$('live-seek-group').title"), "\u4ea7\u5375 \u00b7 \u5b75\u5316");
+
+    await click("#live-seek-group");
     result.egg = await wait(() => evaluate("(() => {" +
         "const stop = liveView.state.fast_forward;" +
         "return stop?.state === 'reached' && stop.targets?.length === 2 && !liveView.busy && !$('event-detail').hidden ? stop.event : null; })()"),
@@ -566,14 +584,20 @@ async function sealedNestWorld() {
     assert.equal(await evaluate("liveView.state.time_ms"), result.egg.time_ms);
     assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
     assert.match(await evaluate("$('live-stop').textContent"), /\u4ea7\u5375/);
-    await click("#live-seek-group");
-    assert.deepEqual(await evaluate("selectedLiveGroup()"), ["egg", "hatch"]);
-    await click("#live-group-picker .panel-head button");
+    assert.equal(await evaluate("$('live-group-picker').open"), false);
     result.brood = await seek("brood-moved","BroodMoved");
     assert.equal(result.brood.related, "2");
     await wait(() => evaluate("$('title').textContent==='\u5c01\u95ed\u5efa\u7fa4\u5ba4'"),
         "Chinese sealed-nest title");
     await screenshot("m2-brood-zh");
+
+    await click("#live-seek-group");
+    result.next_group_event = await wait(() => evaluate("(() => {" +
+        "const stop = liveView.state.fast_forward;" +
+        "return stop?.state === 'reached' && stop.event.id !== " + JSON.stringify(result.egg.id) +
+        " && !liveView.busy ? stop.event : null; })()"), "Repeat the group in one click");
+    assert.ok(BigInt(result.next_group_event.id) > BigInt(result.egg.id));
+    assert.equal(await evaluate("$('live-group-picker').open || liveView.state.running || liveView.state.rate !== 1"), false);
     result.worker = await seek("worker","StageChanged");
     result.dig = await seek("excavation","SoilExcavated");
     result.delivery = await seek("delivery","FoodDelivered");

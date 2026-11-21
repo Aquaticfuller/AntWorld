@@ -110,7 +110,10 @@
         </select>
         <button id="live-seek" type="button">Find first occurrence</button>
         <button id="live-seek-next" type="button" hidden>Fast-forward to next</button>
-        <button id="live-seek-group" type="button" aria-haspopup="dialog" hidden>Fast-forward to next in group</button>
+        <div id="live-group-controls" class="live-group-controls" hidden>
+          <button id="live-seek-group" type="button" disabled>Fast-forward to next in group</button>
+          <button id="live-group-configure" type="button" aria-haspopup="dialog" aria-controls="live-group-picker">Configure event group</button>
+        </div>
       </div>
       <div class="nursery-launch">
         <button id="open-nursery" class="primary-button" type="button">Watch the nursery</button>
@@ -267,7 +270,7 @@
   </main>
   <dialog id="live-group-picker" class="panel" aria-labelledby="live-group-title" aria-describedby="live-group-help">
     <div class="panel-head">
-      <h2 id="live-group-title">Fast-forward to next in group</h2>
+      <h2 id="live-group-title">Configure event group</h2>
       <form method="dialog"><button type="submit">Close</button></form>
     </div>
     <form id="live-group-form">
@@ -275,7 +278,7 @@
       <fieldset class="live-group-options" id="live-group-options" aria-label="Target events"></fieldset>
       <div class="live-group-actions">
         <output id="live-group-count" aria-live="polite"></output>
-        <button id="live-group-start" type="submit" class="primary-button" disabled>Start fast-forward</button>
+        <button type="submit" class="primary-button">Save event group</button>
       </div>
     </form>
   </dialog>

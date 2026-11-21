@@ -14,6 +14,7 @@ const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "Fi
     patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
 const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
     option => [option.value, option.textContent]));
+const LIVE_GROUP_KEY = "antworld.op0.event-group";
 const followMilestones = new Set(["exit", "delivery", "excavation", "water", "recruitment", "patrol", "entrance-contact",
     "queen-meal", "queen-uptake", "queen-gift", "wall-delivery"]);
 const liveActionColors = {"Ingest food": "#efd49a", Trophallaxis: "#b0e3cf", "Brood care": "#e1bdd9",
@@ -76,11 +77,14 @@ function liveControls() {
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
-    $("live-seek-group").hidden = !s?.group_milestones_available;
+    $("live-group-controls").hidden = !s?.group_milestones_available;
     $("nursery-next-delivery").hidden = $("nursery-delivery").hidden || $("live-seek-next").hidden;
     $("nursery-delivery").disabled = $("nursery-next-delivery").disabled = locked || seeking;
     $("live-rate").disabled = $("live-target").disabled = $("live-seek").disabled = $("live-seek-next").disabled = locked || seeking;
-    $("live-seek-group").disabled = locked || seeking;
+    const group = configuredLiveGroup();
+    $("live-group-configure").disabled = locked || seeking;
+    $("live-seek-group").disabled = locked || seeking || group.length === 0;
+    $("live-seek-group").title = group.map(event => tr(liveEventNames[event])).join(" · ");
     $("live-seek").disabled ||= Boolean(s?.history_floor);
     $("save-name").disabled = $("save-form").querySelector("button").disabled = locked;
     const eventName = stop?.targets && !stop.target
@@ -432,6 +436,7 @@ function leaveLiveView() {
     liveMotion.clear();
     ++liveView.request;
     if ($("save-manager").open) $("save-manager").close();
+    if ($("live-group-picker").open) $("live-group-picker").close();
     liveVisibility(false);
     app.state = app.meta = null;
     $("viewer").hidden = true;
@@ -466,15 +471,20 @@ function selectedLiveGroup() {
     return Array.from($("live-group-options").querySelectorAll("input:checked"), input => input.value);
 }
 
+function availableLiveGroupOptions() {
+    return Array.from($("live-target").options).filter(option => !option.disabled && !option.hidden);
+}
+
+function configuredLiveGroup() {
+    return availableLiveGroupOptions().map(option => option.value).filter(event => liveView.groupTargets.includes(event));
+}
+
 function updateLiveGroupCount() {
-    const count = selectedLiveGroup().length;
-    put("live-group-count", tr("{count} selected", {count}));
-    $("live-group-start").disabled = count === 0;
+    put("live-group-count", tr("{count} selected", {count: selectedLiveGroup().length}));
 }
 
 function openLiveGroup() {
-    const available = Array.from($("live-target").options).filter(option => !option.disabled && !option.hidden);
-    $("live-group-options").replaceChildren(...available.map(option => {
+    $("live-group-options").replaceChildren(...availableLiveGroupOptions().map(option => {
         const input = node("input");
         input.type = "checkbox";
         input.value = option.value;
@@ -553,6 +563,12 @@ async function refreshSaves() {
 
 function bindLive() {
     bindObservatory();
+    try {
+        const saved = JSON.parse(localStorage.getItem(LIVE_GROUP_KEY));
+        if (Array.isArray(saved)) {
+            liveView.groupTargets = saved.filter(event => typeof event === "string" && Object.hasOwn(liveEventNames, event));
+        }
+    } catch { /* The event group is still configurable in the current tab. */ }
     const click = (id, action) => $(id).addEventListener("click", () => Promise.resolve().then(action).catch(report));
     click("live-tab", openLiveView);
     click("new-single-nest", () => {
@@ -585,16 +601,24 @@ function bindLive() {
     click("live-pause", () => liveCommand("clock", {running: !liveView.state.running}));
     click("live-seek", () => seekLiveEvent($("live-target").value, "first"));
     click("live-seek-next", () => seekLiveEvent($("live-target").value, "next"));
-    click("live-seek-group", openLiveGroup);
+    click("live-group-configure", openLiveGroup);
+    click("live-seek-group", () => {
+        const targets = configuredLiveGroup();
+        if (!targets.length) return;
+        liveView.shownStop = null;
+        return liveCommand("seek", {targets});
+    });
     $("live-group-options").addEventListener("change", updateLiveGroupCount);
     $("live-group-form").addEventListener("submit", event => {
         event.preventDefault();
         const targets = selectedLiveGroup();
-        if (!targets.length) return;
-        liveView.groupTargets = targets;
-        liveView.shownStop = null;
+        const preference = JSON.stringify(targets);
+        if (preference !== JSON.stringify(liveView.groupTargets)) {
+            liveView.groupTargets = targets;
+            try { localStorage.setItem(LIVE_GROUP_KEY, preference); } catch { /* Keep the choice for this tab. */ }
+        }
         $("live-group-picker").close();
-        liveCommand("seek", {targets}).catch(report);
+        liveControls();
     });
     click("nursery-delivery", () => seekLiveEvent("delivery", "first"));
     click("nursery-next-delivery", () => seekLiveEvent("delivery", "next"));

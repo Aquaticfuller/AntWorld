@@ -28,9 +28,10 @@ The observer opens locally at `http://127.0.0.1:8765/`.
 2. Keep **1× real time** for close observation. Use **Next occurrence** on
    the target menu to reach an egg, brood movement, the first worker,
    excavation or food delivery. The simulation pauses at the committed event.
-   Use **Fast-forward to next in group** to select several targets at once.
-   The first matching event pauses the clock and opens its details. Open the
-   group again to repeat the same choices and use **Resume** to observe at 1×.
+   Use **Configure event group** to select and save several targets. The
+   browser remembers the group across reloads. Each click on **Fast-forward to
+   next in group** immediately searches for the next matching event, pauses
+   the clock and opens its details. Use **Resume** to observe at 1×.
 3. Drag to rotate the view and scroll to zoom. **Cut depth** reveals a
    horizontal layer. **Underground** and **Surface** provide the section
    and ground views. Select an individual and use **Follow**. **Research**
