@@ -298,7 +298,7 @@ public:
                surface_care_clear(world, e.position, b) && clear(e.position, b, 0, e.id), "F1 ration lacks a living local recipient");
         auto& donor = reserves.at(e.actor);
         auto& larva = reserves.at({e.payload});
-        const auto amount = founding_ration(profile(), p, donor, receiver, larva,local_founding_feeding(world));
+        const auto amount = founding_ration(profile(), p, donor, receiver, larva,local_founding_feeding(world),provision_callow_water(world));
         ensure(amount == FoundingRation{e.random_value, e.transferred}, "F1 ration exceeds real local stock or demand");
         apply_founding_ration(amount, p, donor, receiver, larva,local_founding_feeding(world));
     }

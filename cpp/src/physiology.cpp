@@ -314,7 +314,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         if (s.social && s.social->demand_sensitive) {
             const auto demand=local_founding_feeding(s) && recipient.stage==LifeStage::Larva &&
                 s.founding_reserves.contains(recipient.id) ?
-                founding_larval_demand(s.founding->profile,*receiver,s.founding_reserves.at(recipient.id)) :
+                founding_larval_demand(s.founding->profile,*receiver,s.founding_reserves.at(recipient.id),provision_callow_water(s)) :
                 nutrient_demand(*receiver,recipient.stage);
             supply=ingredient_min(supply,demand);
         }

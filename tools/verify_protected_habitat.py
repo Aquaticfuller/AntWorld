@@ -1,6 +1,7 @@
 """Independently verify published protected-founding receipts and print per-seed outcomes."""
 
 import json
+from collections import Counter
 from pathlib import Path
 from statistics import median
 
@@ -68,11 +69,44 @@ def check(row):
             raise ValueError("Individual emergence records disagree with the cohort total")
 
 
+def check_adult_budgets(trace, receipt):
+    if any(trace[k] != receipt[k] for k in ("command", "initial_sha256", "final_sha256")):
+        raise ValueError("Adult trace does not identify the census world")
+    expected = Counter({k.removeprefix("Adult: "): v for k, v in receipt["offspring_deaths"].items() if k.startswith("Adult: ")})
+    causes = Counter()
+    cuts = []
+    for life in trace["lives"].values():
+        birth = life["emergence"]
+        cuts.append(birth)
+        if death := life.get("death"):
+            if not (birth["fact"] < death["fact"] and birth["time_ms"] <= death["time_ms"] <= trace["end_ms"]):
+                raise ValueError("Invalid adult life interval")
+            causes[death["cause"]] += 1
+            depleted = {"Dehydration": "body_water_ug", "Energy depleted": "body_energy_nj"}
+            if death["cause"] in depleted and death[depleted[death["cause"]]] != 0:
+                raise ValueError("Dead adult retains the depleted body resource")
+            cuts.append(death)
+    if causes != expected or len(trace["lives"]) != receipt["transitions"].get("eclosed_workers", 0):
+        raise ValueError("Incomplete adult hydration trace")
+    ordered = sorted(cuts, key=lambda cut: cut["fact"])
+    for i, cut in enumerate(ordered):
+        if min(cut["body_water_ug"], cut["wick_water_ug"], *cut["crop_ug"], *cut["depot_cpw_ug"]) < 0:
+            raise ValueError("Negative water or food balance")
+        if i and (cut["fact"] == ordered[i-1]["fact"] or cut["wick_water_ug"] > ordered[i-1]["wick_water_ug"]):
+            raise ValueError("Duplicate adult event or unfunded replenishment of a finite wick")
+
+
 def main():
     experiments = rows("PROTECTED_HABITAT_RECEIPTS.jsonl")
     previous = [r for r in rows("SUSTAINED_FOUNDING_RECEIPTS.jsonl") if r["run"] == "sustained_candidate"]
     for row in experiments + previous:
         check(row)
+    traces = rows("PROTECTED_ADULT_BUDGETS.jsonl")
+    if len(traces) != len({(t["run"], t["seed"]) for t in traces}):
+        raise ValueError("Duplicate adult trace")
+    for trace in traces:
+        receipt, = [r for r in experiments if (r["run"], r["seed"]) == (trace["run"], trace["seed"])]
+        check_adult_budgets(trace, receipt)
     for group, group_rows in (
             ("P47", previous),
             ("P48", [r for r in experiments if r["run"] == "protected"]),

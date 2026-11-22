@@ -1,6 +1,6 @@
 {
   "Carbohydrate at death (µg): crop {crop}, nest {nest}, outside {outside}": "死亡时的糖量（µg）｜嗉囊 {crop}，巢内库存 {nest}，地表 {outside}",
-  "Water at death (µg): body {body}, crop {crop}": "死亡时的水量（µg）｜体内 {body}，嗉囊 {crop}",
+  "Water at death (µg): body {body}, crop {crop}, wick {wick}, nest food {food}": "死亡时的水量（µg）｜体内 {body}，嗉囊 {crop}，湿棉剩余 {wick}，巢内食物含水 {food}",
   "AntWorld · Observation Preview": "AntWorld · 蚁群观察预览",
   "AntWorld Observation Preview": "AntWorld 蚁群观察预览",
   "Viewer": "观察器导航",
@@ -731,6 +731,8 @@
   "Local brood feeding · Physics 46": "巢内供养对照 · Physics 46",
   "Resource-aware founding · Physics 46": "营养与产卵调节 · Physics 46",
   "Local excavation · Physics 49": "就地细粒挖掘 · Physics 49",
+  "New worker hydration trial · Physics 50": "初生工蚁水分储备实验 · Physics 50",
+  "Brood-site wick trial · 1.5 mL of water": "育幼区湿棉实验 · 1.5 毫升水",
   "Nearby surface feeder · 730 days": "巢口附近地表补给 · 730 天",
   "Protected founding · Physics 48": "保护性建群 · Physics 48",
   "Food symbols show mass. Liquid in the nest inventory has no recorded container.": "食物图形表示质量份额。巢内液体有库存记录，未记录容器位置。",

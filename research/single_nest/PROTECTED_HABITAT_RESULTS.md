@@ -27,6 +27,8 @@ Black garden ant workers collect liquid in their crops and exchange it orally. T
 
 Kramer et al. report 250 ± 79 workers (range 122–392) at approximately 20 months in source colonies that experienced two winters and received food after first emergence. That observation motivates checking sustained growth alongside the day-49 count. Neither the age nor the seasonal and feeding conditions match a two-year constant-temperature simulation. [Methods, source colonies](https://doi.org/10.1016/j.exger.2016.09.008)
 
+Majidifar et al. followed 24 newly mated queens for 93 days. Twenty-two survived and 17 of the 22 produced workers. In their direct behavioral assay queens sharply reduced their own care after workers emerged. A worker-addition experiment also reduced maternal care within 20 hours. The measured behavior was active manipulation of brood; the paper gives no conversion factor from those observations to delivered micrograms or individual egg survival. In the nearby-feeder simulation only two of five queens survived to day 93. Separately, Tragust et al. observed that some surviving queens produced replacement brood following experimental loss. A rule that forbids any further laying after a juvenile death would contradict that observation. [Majidifar et al., section 3 and Fig. 1](https://doi.org/10.1111/1365-2435.14536) · [Tragust et al., brood loss after founding](https://doi.org/10.3389/fevo.2020.00076)
+
 ## What improved, and where growth still fails
 
 In the original default's first brood, four of twelve eggs reached adulthood. None of those four lived to adult age seven days. Four other first-brood individuals received no positive feed. In Physics 48 with the 30 mm feeder and the same seed, all five first-brood eggs reached adulthood and their workers survived at least seven days; one survived to age 30 days. The day-73 census held the queen, one worker, two larvae and one egg. Paid deliveries provided 11.562 mg of carbohydrate over the run. The queen took 11.027 mg from the depot and oxidized 10.981 mg. The last carbohydrate delivery occurred on day 65.12. The queen subsequently exhausted energy on day 110.93, with zero depot carbohydrate and 159.367 mg outside. Eleven larvae died of energy depletion during this run. By day 150 there were no survivors.
@@ -49,6 +51,14 @@ Physics 49 produced no carbohydrate deliveries in any of the five supplied world
 
 **Sustained growth remains failed.** First-brood survival, worker drinking and worker-to-larva provisioning require separate checks. The model does not support a projection to hundreds or thousands of workers. The historical B06 result is `INSUFFICIENT`, the historical application performance gate is `FAIL`, and all nine independent biological gates remain `BIOLOGICAL_BLOCKED`.
 
+## Why new workers died despite remaining water
+
+The [individual adult balances](PROTECTED_ADULT_BUDGETS.jsonl) join each worker's actual emergence and death event to the exact native frame at that timestamp, including crop, body, colony stock and finite wick. The two-year end frame must equal the original assay hash. Stock measured at a death cut is shared colony stock, not a meal for the dying worker.
+
+In nearby seed 3, all 18 dehydration deaths were workers that eclosed with 7–8 µg of body water and zero crop water. All died 6.1–7.9 hours after emergence. At their deaths the wick still held at least 1,499,525 µg of water; the mixed nest inventory contained 21,671–219,561 µg of water. Their centre-to-wick distances at death were 6.54–8.40 mm; a straight-line distance does not establish a traversable mouth approach. The five first-brood workers began adult life with 327–507 µg of body water. The seed-1 far control produced three adults with 172–419 µg at emergence; all three exhausted energy, with an empty depot and zero exterior deliveries.
+
+The implementation budgets larval support through just the first adult absorption period. A feeding decision can therefore count a larva as funded even though it will start adult life with only hours of water. A stationary worker with a local wick cue can approach and drink, but an ongoing foraging or excavation action has different ownership and a worker may fail to reach the contact point. Even a reachable reserve requires a completed sip and uptake. This is a specific survival problem in the simulation. The data do not measure natural callow water content or show that every death could be prevented by changing the location of the wick.
+
 ## Engineering checks
 
 Windows Release passed 292/292 native tests. The Windows live Python suite ran 58 tests with one skipped and no failures; the additional granular-roof continuation check and the final nearby-default archive and snapshot continuation check each passed separately. Chrome exercised the protected startup, finite stock symbols, resource controls and the death card. The seed-3 protected 30 mm witness reproduced all 120,267 facts by count, the day-150 frame SHA-256, each first-brood feed and stage transition, and the exact founder death balance across the original and rebuilt executables. This check does not assert a byte comparison of the full event stream. The independent receipt checker runs in Core CI and checks the compact individual histories and terminal census. No complete two-year SQLite history was written by the lifecycle assay.
@@ -70,4 +80,6 @@ py -3 -B -m tools.measure_single_nest_lifecycle --treatment local-dig --supply a
 py -3 -B -m tools.measure_single_nest_lifecycle --treatment anatomical --supply finite --seed 3 --days 73 --individuals
 py -3 -B -m tools.measure_single_nest_lifecycle --treatment protected --supply extended --wick wet-wick --seed 3 --days 150 --individuals
 py -3 -B -m tools.verify_protected_habitat
+py -3 -B -m tools.trace_worker_hydration --run nearby --seed 3
+py -3 -B -m tools.trace_worker_hydration --run protected --seed 1
 ~~~

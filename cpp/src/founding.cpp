@@ -110,7 +110,7 @@ bool WorldRuntime::can_feed_founding(EntityId donor, EntityId larva, bool requir
     if (!s.social->exchange_enabled || !s.founding_reserves.contains(larva)) return false;
     const auto q = query_physiology({s.world, donor}), p = query_physiology({s.world, larva});
     const auto a = query_founding({s.world, donor}), b = query_founding({s.world, larva});
-    const auto ration = founding_ration(s.founding->profile, *q, *a, *p, *b,local_founding_feeding(s));
+    const auto ration = founding_ration(s.founding->profile, *q, *a, *p, *b,local_founding_feeding(s),provision_callow_water(s));
     return require_protein ? ration.crop.protein_ug != 0 : ration.lipid_ug || ration.crop.total_ug();
 }
 
@@ -131,7 +131,7 @@ void WorldRuntime::resolve_founding_feed(Transaction& tx, const ScheduledEvent& 
     auto donor = s.physiology.at(a.id), recipient = s.physiology.at(b.id);
     auto maternal = s.founding_reserves.at(a.id), larva = s.founding_reserves.at(b.id);
     const auto& profile = s.founding->profile;
-    const auto amount = founding_ration(profile, donor, maternal, recipient, larva,local_founding_feeding(s));
+    const auto amount = founding_ration(profile, donor, maternal, recipient, larva,local_founding_feeding(s),provision_callow_water(s));
     if (!s.social->exchange_enabled || (!amount.lipid_ug && !amount.crop.total_ug())) {
         fact.outcome = Outcome::EmptyInventory;
         return;

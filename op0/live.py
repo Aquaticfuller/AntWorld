@@ -50,7 +50,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
+    paths = (installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
              installed.with_stem("antworld_m0_live_v28"), installed.with_stem("antworld_m0_live_v26"), installed.with_stem("antworld_m0_live_v25"),
              installed.with_stem("antworld_m0_live_v24"), installed.with_stem("antworld_m0_live_v23"),
              installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
@@ -78,7 +78,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 27))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 28))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -104,6 +104,7 @@ class NativeCore:
             self.protected_nest = generation >= 24
             self.local_dig = generation >= 25
             self.nearby_feeder = generation >= 26
+            self.callow_hydration = generation >= 27
         except Exception:
             self.close()
             raise
@@ -271,7 +272,7 @@ class LiveSession:
         self.stopping = Event()
         self.thread = None
         self.worker = None
-        self.founding_capabilities = (False, False, False)
+        self.founding_capabilities = (False, False, False, False)
         self.workdir = None
         self.loaded_copy = None
         self.frame = None
@@ -296,7 +297,7 @@ class LiveSession:
             # must advertise its treatments before the viewer selects one.
             try:
                 with closing(NativeCore(self.binary, self.binary.parent)) as probe:
-                    self.founding_capabilities = (probe.protected_nest, probe.local_dig, probe.nearby_feeder)
+                    self.founding_capabilities = (probe.protected_nest, probe.local_dig, probe.nearby_feeder, probe.callow_hydration)
             except (ValueError, OSError) as exc:
                 self.error = str(exc)
         self.thread = Thread(target=self.run_clock, name="m0-core-clock", daemon=True)
@@ -526,6 +527,7 @@ class LiveSession:
                     protected_nest_available=self.worker.protected_nest if self.worker else self.founding_capabilities[0],
                     local_dig_available=self.worker.local_dig if self.worker else self.founding_capabilities[1],
                     nearby_feeder_available=self.worker.nearby_feeder if self.worker else self.founding_capabilities[2],
+                    callow_available=self.worker.callow_hydration if self.worker else self.founding_capabilities[3],
                     sustained_nest_available=self.binary.is_file() and (self.worker is None or self.worker.sustained_nest),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
@@ -757,23 +759,27 @@ class LiveSession:
                     models["protected"] = "NEW_PROVISIONED_NEST"
                 if core.local_dig:
                     models["local-dig"] = "NEW_PROVISIONED_NEST"
+                if core.callow_hydration:
+                    models["callow"] = "NEW_PROVISIONED_NEST"
                 model = data.get("model", "protected" if core.protected_nest else "anatomical" if core.anatomical else "reference")
-                seed = data.get("seed", 3 if model in ("protected", "local-dig") else 2)
+                protected = model in ("protected", "local-dig", "callow")
+                seed = data.get("seed", 3 if protected else 2)
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
-                default_supply = "extended" if model in ("protected", "local-dig") else "finite"
-                if model == "protected" and core.nearby_feeder:
+                default_supply = "extended" if protected else "finite"
+                if model in ("protected", "callow") and core.nearby_feeder:
                     default_supply = "nearby"
                 supply = data.get("supply", default_supply)
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
-                variable = model in ("variable", "feeding", "budget", "sustained", "protected", "local-dig")
+                variable = protected or model in ("variable", "feeding", "budget", "sustained")
                 require(supply in ("finite", "absent") or (variable and supply == "extended") or
-                        (core.nearby_feeder and model in ("protected","local-dig") and supply=="nearby"),
+                        (core.nearby_feeder and protected and supply=="nearby"),
                         "Unknown supply setting")
                 temperature, humidity, half_life = 250, 80, 1955
                 exposure = ""
-                wick = data.get("wick", "wet-wick" if model in ("protected", "local-dig") else "small-wick")
-                require(wick in ("small-wick", "wet-wick") and
-                        (wick == "small-wick" or core.sustained_nest and model in ("feeding", "budget", "sustained", "protected", "local-dig")),
+                wick = data.get("wick", "wet-wick" if protected else "small-wick")
+                require(wick == "small-wick" or
+                        (wick == "wet-wick" and core.sustained_nest and (protected or model in ("feeding", "budget", "sustained"))) or
+                        (wick == "nursery-wick" and core.callow_hydration and model == "protected"),
                         "Unsupported founding water setting")
                 if variable:
                     temperature, humidity, half_life = (data.get("temperature", 250), data.get("humidity", 80),
@@ -787,7 +793,7 @@ class LiveSession:
                     exposure = f" {air} {substrate}"
                     if model != "variable":
                         exposure += f" {model}"
-                    if wick == "wet-wick":
+                    if wick != "small-wick":
                         exposure += f" {wick}"
                 command = (f"{models[model]} {randbits(63) or 1} {seed} {temperature} {humidity} "
                            f"plugged {half_life} reachable {supply}{exposure}")

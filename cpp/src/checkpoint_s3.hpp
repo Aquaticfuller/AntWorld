@@ -184,11 +184,11 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                         auto child=audit.at(id);
                         auto reserve=founding.reserves.at(id);
                         settle_founding(founding.profile(),child,reserve,stage,false,e.time);
-                        reserve_for_brood(demand,founding.profile(),child,reserve,stage);
+                        reserve_for_brood(demand,founding.profile(),child,reserve,stage,provision_callow_water(s));
                         if (protected_founding(s) && stage==LifeStage::Larva)
                             urgent_larva|=urgent_larval_upkeep(founding.profile(),child,reserve);
                     }
-                    funded=!urgent_larva && funds_brood_budget(founding.profile(),p,founding.reserves.at(e.actor),demand);
+                    funded=!urgent_larva && funds_brood_budget(founding.profile(),p,founding.reserves.at(e.actor),demand,provision_callow_water(s));
                     deferred_for_brood=!funded;
                 }
                 ensure(e.random_value==static_cast<std::uint64_t>(deferred_for_brood),"invalid brood allocation evidence");
@@ -251,7 +251,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     ensure(s.social->exchange_enabled,"transfer in a no-response control");
                     if (s.social->demand_sensitive) {
                         const auto demand=local_founding_feeding(s) && target_stage==LifeStage::Larva && founding.enrolled(target) ?
-                            founding_larval_demand(founding.profile(),recipient,founding.reserves.at(target)) :
+                            founding_larval_demand(founding.profile(),recipient,founding.reserves.at(target),provision_callow_water(s)) :
                             nutrient_demand(recipient,target_stage);
                         ensure(ingredient_min(e.transferred,demand)==e.transferred,
                             "transfer exceeds contacted recipient demand");

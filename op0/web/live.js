@@ -37,16 +37,20 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const active = ["variable", "feeding", "budget", "sustained", "protected", "local-dig"].includes(model);
+    const protectedModel = ["protected", "local-dig", "callow"].includes(model);
+    const active = protectedModel || ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
-    const wick = liveView.state?.sustained_nest_available && ["feeding", "budget", "sustained", "protected", "local-dig"].includes(model);
+    const wick = liveView.state?.sustained_nest_available && (protectedModel || ["feeding", "budget", "sustained"].includes(model));
     for (const element of document.querySelectorAll("[data-live-wick]")) element.hidden = !wick;
     $("sealed-wick").disabled = !wick;
+    const nurseryWick = $("sealed-wick").querySelector('[value="nursery-wick"]');
+    nurseryWick.hidden = nurseryWick.disabled = !(liveView.state?.callow_available && model === "protected");
+    if (nurseryWick.disabled && $("sealed-wick").value === "nursery-wick") $("sealed-wick").value = "wet-wick";
     const supply = $("sealed-supply");
     const extended = supply.querySelector('[value="extended"]');
     extended.hidden = extended.disabled = !active;
     const nearby = supply.querySelector('[value="nearby"]');
-    nearby.hidden = nearby.disabled = !(liveView.state?.nearby_feeder_available && ["protected","local-dig"].includes(model));
+    nearby.hidden = nearby.disabled = !(liveView.state?.nearby_feeder_available && protectedModel);
     if (nearby.disabled && supply.value === "nearby") supply.value = active ? "extended" : "finite";
     if (!active && supply.value === "extended") supply.value = "finite";
 }
@@ -80,6 +84,7 @@ function liveControls() {
     $("sealed-model").querySelector("[data-sustained]").disabled = !s?.sustained_nest_available;
     $("sealed-model").querySelector("[data-protected]").disabled = !s?.protected_nest_available;
     $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
+    $("sealed-model").querySelector('[value="callow"]').disabled = !s?.callow_available;
     if (!liveView.setupInitialized && s?.single_nest_available) {
         liveView.setupInitialized = true;
         $("sealed-model").value = s.protected_nest_available ? "protected" : "anatomical";
@@ -156,8 +161,11 @@ function liveControls() {
                 const sugar = exterior.reduce((mass, source) => mass + source.stock_ug[0], 0);
                 details += " · " + tr("Carbohydrate at death (µg): crop {crop}, nest {nest}, outside {outside}",
                     {crop: ant.crop_ug[0], nest: depot.stock_ug[0], outside: sugar});
-                details += " · " + tr("Water at death (µg): body {body}, crop {crop}",
-                    {body: ant.hydration_ug, crop: ant.crop_ug[2]});
+                const wick = s.sources.filter(source => source.position_m[1] < s.surface.origin_m[1]
+                    && source.initial_ug?.[2] > 0 && source.initial_ug.every((mass,i) => i === 2 || mass === 0));
+                const wickWater = wick.reduce((mass, source) => mass + source.stock_ug[2], 0);
+                details += " · " + tr("Water at death (µg): body {body}, crop {crop}, wick {wick}, nest food {food}",
+                    {body: ant.hydration_ug, crop: ant.crop_ug[2], wick: wickWater, food: depot.stock_ug[2]});
             }
         }
     }
@@ -471,7 +479,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "local-dig" ? tr("Local excavation · Physics 49") :
+    const nutrition = data.habitat?.nutrition === "callow" ? tr("New worker hydration trial · Physics 50") :
+        data.habitat?.nutrition === "local-dig" ? tr("Local excavation · Physics 49") :
         data.habitat?.nutrition === "protected" ? tr("Protected founding · Physics 48") :
         data.habitat?.nutrition === "sustained" ? tr("Local water and repeat foraging") :
         data.habitat?.nutrition === "budget" ? tr("Brood budget") :

@@ -78,7 +78,7 @@ FoodMass WorldRuntime::local_provisioning_shortfall(const AntState& adult, FoodM
         const auto reserve=query_founding(ref);
         if (!p || !reserve || p->crop.total_ug()==p->config.crop_capacity_ug) continue;
         const auto need=queen ? founding_resupply_shortfall(s.founding->profile,*p,*reserve,true,p->config.absorption_period) :
-            founding_larval_demand(s.founding->profile,*p,*reserve);
+            founding_larval_demand(s.founding->profile,*p,*reserve,provision_callow_water(s));
         demand.carbs_ug=std::max(demand.carbs_ug,deficit(need.carbs_ug,available.carbs_ug));
         demand.protein_ug=std::max(demand.protein_ug,deficit(need.protein_ug,available.protein_ug));
         demand.water_ug=std::max(demand.water_ug,deficit(need.water_ug,available.water_ug));
@@ -703,7 +703,7 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
             const auto brood_reserve=query_founding({s.world,brood_ant.id});
             return receiver && brood_reserve && receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
                 ingredient_min(founding_gift_supply(s.founding->profile,p),
-                    founding_larval_demand(s.founding->profile,*receiver,*brood_reserve)).total_ug();
+                    founding_larval_demand(s.founding->profile,*receiver,*brood_reserve,provision_callow_water(s))).total_ug();
         };
         if (cfg.local_retrieval && capable && !c.carrying_brood && !c.returning) {
             const auto displaced=[&](AntRef ref) {

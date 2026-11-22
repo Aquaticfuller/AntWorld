@@ -680,9 +680,10 @@ async function sealedNestWorld() {
     assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
     assert.equal(await evaluate("liveView.state.time_ms"), result.death.time_ms);
     assert.equal(await evaluate("$('ant-id').value"), result.death.actor);
-    await wait(() => evaluate("$('live-stop').textContent.includes(tr('Water at death (µg): body {body}, crop {crop}'," +
-        " (() => { const a=liveView.state.ants.find(x => x.id===liveView.state.fast_forward.event.actor);" +
-        "return {body:a.hydration_ug,crop:a.crop_ug[2]}; })()))"), "Show actual water balances at the death cut");
+    await wait(() => evaluate("$('live-stop').textContent.includes(tr('Water at death (µg): body {body}, crop {crop}, wick {wick}, nest food {food}'," +
+        " (() => { const s=liveView.state,a=s.ants.find(x => x.id===s.fast_forward.event.actor);" +
+        "return {body:a.hydration_ug,crop:a.crop_ug[2],wick:s.sources.filter(x=>x.position_m[1]<0).reduce((v,x)=>v+x.stock_ug[2],0)," +
+        "food:s.colonies.find(c=>c.id===a.colony).stock_ug[2]}; })()))"), "Show actual water balances at the death cut");
     assert.match(await evaluate("$('event-detail').textContent"), /\u8131\u6c34/);
     if (await evaluate("liveView.state.sustained_nest_available")) {
         await select("sealed-model", "sustained");

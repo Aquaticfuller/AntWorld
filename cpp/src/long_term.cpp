@@ -103,13 +103,13 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
       const auto state=query_physiology(ref);
       if (state && state->mother==mother.id) {
         if (const auto reserve=query_founding(ref)) {
-          reserve_for_brood(demand,*founding,*state,*reserve,child.stage);
+          reserve_for_brood(demand,*founding,*state,*reserve,child.stage,provision_callow_water(s));
           if (protected_founding(s) && child.stage==LifeStage::Larva)
             urgent_larva|=urgent_larval_upkeep(*founding,*state,*reserve);
         }
       }
     }
-    resources=!urgent_larva && funds_brood_budget(*founding,p,s.founding_reserves.at(mother.id),demand);
+    resources=!urgent_larva && funds_brood_budget(*founding,p,s.founding_reserves.at(mother.id),demand,provision_callow_water(s));
     deferred_for_brood=!resources;
   }
   const auto site=!resources ? std::nullopt : bounded_brood_space(s) ? local_egg_site(mother) :

@@ -453,7 +453,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v26");
+                message("OK", "antworld.m0.live.v27");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -476,6 +476,7 @@ int main() {
                 auto nutrition=FoundingNutrition::Original;
                 bool extended_supply=false, nearby_feeder=false;
                 bool wet_wick=false;
+                bool nursery_wick=false;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
@@ -495,16 +496,20 @@ int main() {
                 if (provisioned) {
                     const auto treatment=word(request);
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
-                            treatment=="protected" || treatment=="local-dig", "invalid founding nutrition treatment");
+                            treatment=="protected" || treatment=="local-dig" || treatment=="callow", "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="callow" ? FoundingNutrition::CallowHydration :
                         treatment=="local-dig" ? FoundingNutrition::LocalExcavation : FoundingNutrition::SustainedSupply;
                     request >> std::ws;
                     if (!request.eof()) {
                         const auto wick=word(request);
-                        require(wick=="small-wick" || wick=="wet-wick", "invalid founding water fixture");
-                        wet_wick=wick=="wet-wick";
+                        nursery_wick=wick=="nursery-wick";
+                        require(wick=="small-wick" || wick=="wet-wick" ||
+                                (nursery_wick && nutrition==FoundingNutrition::ProtectedFounding),
+                                "invalid founding water fixture");
+                        wet_wick=wick!="small-wick";
                     }
                 }
                 end(request);
@@ -516,6 +521,7 @@ int main() {
                 if (extended_supply) c.release_days=730;
                 require(!nearby_feeder || nutrition>=FoundingNutrition::ProtectedFounding,"nearby feeder requires protected founding");
                 c.nearby_surface_feeder=nearby_feeder;
+                c.nursery_wick=nursery_wick;
                 // 1.5 mL of water behind cotton in the protected founding
                 // protocol (Turi et al., doi:10.1111/imb.12809). The spatial
                 // wick is an ENGINEERING_FIXTURE. No automatic hydration.

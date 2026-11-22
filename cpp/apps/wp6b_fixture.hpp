@@ -52,6 +52,7 @@ struct Case {
     double habitat_trail_half_life_s{60};
     std::uint64_t habitat_wick_ug{1200};
     bool nearby_surface_feeder{};
+    bool nursery_wick{};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -214,7 +215,7 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
     }
     if (c.care) w.set_autonomy(scene.queen);
     if (c.ecological && c.ecological->water_sip_ug) {
-        const auto water=sealed ? PositionM{laying_site.x-.001,laying_site.y,laying_site.z}
+        const auto water=c.nursery_wick ? brood : sealed ? PositionM{laying_site.x-.001,laying_site.y,laying_site.z}
             : habitat ? PositionM{brood.x,brood.y,brood.z+.001}
             : c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
         require(w.spatially_clear(brood,water)!=c.blocked_water && w.query_material(water)==Material::Void,

@@ -16,7 +16,7 @@ from tools.compare_m0_worker_rhythm import facts
 
 DAYS = (7, 14, 30, 49, 55, 60, 90, 112, 150, 163, 180, 226, 286, 365, 730)
 WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800, "nearby": 3 * 2**32 + 9800}
-TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig")
+TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 NO_LEGAL_STEP = FORAGING_REASONS.index("No legal step")
@@ -181,14 +181,17 @@ def measure(core, seed, supply, treatment, days, wick="small-wick", individual_r
     case_id = WORLD_BASES[supply] + seed + TREATMENTS.index(treatment) * (2**34)
     if wick == "wet-wick":
         case_id += 2**39
+    elif wick == "nursery-wick":
+        require(treatment == "protected", "Nursery wick requires the protected founding environment")
+        case_id += 2**40
     settings = f"{case_id} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral"
     command = (f"NEW_VARIABLE_NEST {settings}" if treatment == "reference"
                else f"NEW_PROVISIONED_NEST {settings} {treatment}")
     if treatment == "anatomical":
         require(supply != "extended" and wick == "small-wick", "Unsupported anatomical reference conditions")
         command = f"NEW_ANATOMICAL_NEST {case_id} {seed} 250 80 plugged 1955 reachable {supply}"
-    if wick == "wet-wick":
-        command += " wet-wick"
+    if wick != "small-wick":
+        command += f" {wick}"
     initial = raw = core.call(command)
     frame = checkpoint(initial)
     queen, = (identifier for identifier, ant in frame["ants"].items() if ant["caste"] == QUEEN)
@@ -254,7 +257,7 @@ def main():
     parser.add_argument("--supply", choices=WORLD_BASES, default="extended")
     parser.add_argument("--treatment", choices=TREATMENTS, default="reference")
     parser.add_argument("--days", type=int, default=730)
-    parser.add_argument("--wick", choices=("small-wick", "wet-wick"), default="small-wick")
+    parser.add_argument("--wick", choices=("small-wick", "wet-wick", "nursery-wick"), default="small-wick")
     parser.add_argument("--individuals", action="store_true", help="Include first-brood stage, feed and death witnesses.")
     args = parser.parse_args()
     seeds = args.seed or (1, 2, 3)
@@ -270,6 +273,8 @@ def main():
         require(core.variable_nest, "Build the variable-nest live executable first")
         require(args.treatment == "reference" or core.provisioned_nest, "Build the provisioned-nest live executable first")
         require(args.treatment != "local-dig" or core.local_dig, "Build the local excavation executable first")
+        require((args.treatment != "callow" and args.wick != "nursery-wick") or core.callow_hydration,
+                "Rebuild the live Core for the worker hydration trial")
         require(args.treatment != "protected" or core.protected_nest, "Build the protected founding executable first")
         require(args.treatment != "sustained" and args.wick == "small-wick" or core.sustained_nest,
                 "Build the sustained-supply live executable first")

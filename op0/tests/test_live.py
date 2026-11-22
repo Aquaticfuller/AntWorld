@@ -593,6 +593,36 @@ class LiveTests(unittest.TestCase):
             self.assertEqual(core.call(f"FACTS_AFTER {cutoff} 512"), page)
             self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_callow_water_and_nursery_wick_keep_distinct_world_inputs(self):
+        core = self.live.core()
+        if not core.callow_hydration:
+            self.skipTest("Build the Physics 50 Core")
+        water_sources = []
+        for model, wick, physics in (("protected", "wet-wick", 48), ("protected", "nursery-wick", 48),
+                                     ("callow", "wet-wick", 50)):
+            self.live.write("single-nest", {"model":model, "wick":wick, "supply":"nearby", "seed":3})
+            self.live.write("clock", {"running":False})
+            frame = self.live.frame
+            self.assertEqual((frame["physics"], frame["flags"]["founding_habitat"]["nutrition"]), (physics, model))
+            source, = [s for s in frame["sources"].values() if s["position_m"][1] < 0]
+            self.assertEqual(source["initial_ug"], (0, 0, 1_500_000, 0))
+            water_sources.append(source["position_m"])
+        self.assertEqual(water_sources[0], water_sources[2])
+        self.assertNotEqual(water_sources[0], water_sources[1])
+        raw = core.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(raw)
+        cursor = self.live.frame["cursor"]
+        self.assertIn("FoundingRation", {KINDS[f.kind] for f in facts(core, cursor)})
+        self.live.save("Callow budget", False, "archive")
+        expected = core.call(f"ADVANCE {50 * DAY}")
+        page = core.call(f"FACTS_AFTER {cursor} 512")
+        self.assertTrue(page)
+        self.live.load("Callow budget", "archive")
+        self.assertEqual(core.call("FRAME"), raw)
+        self.assertEqual(core.call(f"ADVANCE {50 * DAY}"), expected)
+        self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_local_roof_bites_preserve_material_and_resume(self):
         core = self.live.core()
         if not core.local_dig:
