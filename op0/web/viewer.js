@@ -628,6 +628,7 @@ function showEvent(e) {
         ["Resource / parcel", [e.resource, e.parcel].filter(Boolean).map(s => "#" + s).join(" / ") || null],
         ["Outcome", tr(e.outcome)], ["Recorded position", coords(e.position_m)], ["Transferred C/P/W/other", mass(e.mass_ug)],
         ...(e.origin_fact ? [["Preceding committed fact", button("#" + e.origin_fact, () => jumpEvent(e.origin_fact).catch(report))]] : []),
+        ...(e.before_death_stage ? [["Stage before death", tr(e.before_death_stage)]] : []),
         ...(e.death_cause ? [["Death cause", tr(e.death_cause)]] : []),
         ...(e.mode ? [["Foraging mode", tr(e.mode)], ["Decision label", tr(e.reason)]] : []),
         ...(e.trail_deposited_units ? [["Deposited trail units", decimal.format(e.trail_deposited_units)]] : []), ...editList]);

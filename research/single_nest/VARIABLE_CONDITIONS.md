@@ -105,3 +105,47 @@ history and passed `CHECK_LEDGERS`. Earlier R0 experiments with 730 days of
 accounted release supported 52–54 live workers by day 730. This preview
 has no validated trajectory to a mature, thousand-worker colony.
 [Historical R0 controls](../r0/RESULTS.md)
+
+## First-bout survival check
+
+In the three finite worlds, all 36 eggs laid within 24 hours of the first
+paid birth hatched. Twenty-four died as larvae and one died as a pupa.
+The remaining 11 eclosed as female workers. In seed 1, the eight
+individuals that died before adulthood received 186 µg lipid, 369 µg
+protein and 820 µg water through paid egg provisioning and subsequent
+maternal rations. These are gross transfers into those individuals.
+
+The experimental comparison used the same finite worlds and modeled
+conditions listed above. A temporary copy of `antworld_m0_live.cpp` set
+`c.profile.opening_width = {6 * hour_ms};` for `NEW_VARIABLE_NEST` just
+after `live_case(id,seed)`. The normal build used the nominal 24-hour
+window. Both executables linked the same Core. Advance to days 49 and 90
+with `ADVANCE 4233600000` and `ADVANCE 7776000000`. Match the queen's
+committed `AntBorn` records to each individual's `StageChanged` and
+`AntDied` records using `FACTS_AFTER`. Count eclosions through day 90.
+All six runs passed `CHECK_LEDGERS`.
+
+| Seed | First 24 h eggs, normal / shorter | First-bout worker eclosions, normal / shorter | All worker eclosions by day 90, normal / shorter | Queen death day, normal / shorter |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 11 / 4 | 3 / 4 | 5 / 8 | 71.19 / 69.84 |
+| 2 | 13 / 3 | 4 / 2 | 7 / 7 | 77.22 / 80.37 |
+| 3 | 12 / 3 | 4 / 2 | 8 / 10 | 71.57 / 72.72 |
+
+The shorter window raised first-bout survival from 11/36 to 8/10 and
+reduced the absolute first-bout worker count in two seeds. The later
+cadence still permitted 18–23 paid births before the first worker in the
+shorter-window runs, compared with 25–30 in the normal runs. All three
+queens died before day 90 in each treatment. The experiment demonstrates
+sensitivity to the timing of investment under the current provisioning
+rules. Estimating wild survival or optimal brood size would require
+different data and an experimental design at the colony level.
+
+Recalculation of Szabó et al. Appendix S1 gives 15.27 live workers
+(sample SD 4.73) and 18.73 pupae plus workers (SD 4.74) at day 49 for 30
+unfed, undisturbed single queens kept at 24.5 ± 0.5 °C with wet cotton over
+a water reservoir. The corresponding finite simulation worlds held one
+or two live workers each on day 49 in both treatments. The paper records
+live counts at the experimental endpoint and has no individual birth
+denominator for comparison with the model's first 24-hour egg cohort.
+The water exposure and founding environment also differ. [Original
+study and Appendix S1](https://doi.org/10.1093/biolinnean/blad149)

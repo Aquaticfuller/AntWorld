@@ -559,6 +559,8 @@ async function sealedNestWorld() {
     assert.equal(await evaluate("$('live-group-deselect-all').textContent"), "\u53d6\u6d88\u5168\u9009");
     const availableEvents = await evaluate("availableLiveGroupOptions().map(option => option.value)");
     assert.ok(availableEvents.length > 2);
+    for (const target of ["death", "egg-death", "larva-death", "pupa-death", "worker-death", "queen-death",
+        "energy-death", "dehydration-death"]) assert.ok(availableEvents.includes(target), target);
     await click("#live-group-select-all");
     assert.deepEqual(await evaluate("selectedLiveGroup()"), availableEvents);
     assert.equal(await evaluate("$('live-group-count').textContent"), "\u5df2\u9009 " + availableEvents.length + " \u9879");
@@ -645,6 +647,27 @@ async function sealedNestWorld() {
     await evaluate("setSection('surface')");
     await wait(() => evaluate("app.section === 'surface' && app.state.sources.length === 5"),"Surface with real food and water");
     await screenshot("variable-surface");
+
+    await evaluate("liveCommand('single-nest',{model:'variable',seed:3,temperature:270,humidity:60,supply:'absent'})");
+    await wait(() => evaluate("liveView.state?.climate.humidity_percent === 60 && !liveView.busy"), "Dry founding control");
+    assert.equal(await evaluate("$('live-target').querySelector('[value=egg-death]').textContent"), "\u5375\u6b7b\u4ea1");
+    await click("#live-group-configure");
+    await click("#live-group-deselect-all");
+    await click('#live-group-options input[value="egg-death"]');
+    await click('#live-group-options input[value="worker"]');
+    await click('#live-group-form button[type="submit"]');
+    await click("#live-seek-group");
+    result.death = await wait(() => evaluate("(() => { const stop = liveView.state.fast_forward;" +
+        "return stop?.state === 'reached' && !liveView.busy && !$('event-detail').hidden ? stop.event : null; })()"),
+        "Pause at an egg death in the configured group");
+    assert.equal(await evaluate("liveView.state.fast_forward.target"), "egg-death");
+    assert.equal(result.death.kind, "AntDied");
+    assert.equal(result.death.before_death_stage, "Egg");
+    assert.equal(result.death.death_cause, "Dehydration");
+    assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
+    assert.equal(await evaluate("liveView.state.time_ms"), result.death.time_ms);
+    assert.equal(await evaluate("$('ant-id').value"), result.death.actor);
+    assert.match(await evaluate("$('event-detail').textContent"), /\u8131\u6c34/);
     assert.equal(exceptions.length,0,JSON.stringify(exceptions));
     await writeFile(join(output,"sealed-nest-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
 }

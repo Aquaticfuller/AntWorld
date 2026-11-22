@@ -30,8 +30,10 @@ RATES = (1, 10, 60, 600, 3600, 86400)
 HABITAT_MILESTONES = {"water", "recruitment", "patrol", "entrance-contact"}
 BROOD_MILESTONES = {"brood-moved", "brood-cleaned"}
 FOUNDER_MILESTONES = {"queen-meal", "queen-uptake"}
+DEATH_MILESTONES = {"death", "egg-death", "larva-death", "pupa-death", "worker-death", "queen-death",
+                    "energy-death", "dehydration-death"}
 MILESTONES = {"egg", "hatch", "worker", "exit", "delivery", "wall-delivery", "excavation", "queen-gift", *HABITAT_MILESTONES,
-              *BROOD_MILESTONES, *FOUNDER_MILESTONES}
+              *BROOD_MILESTONES, *FOUNDER_MILESTONES, *DEATH_MILESTONES}
 NEW_COLONY_TIMINGS = {"standard": "", "shorter": " 900000 3600000"}
 HABITAT_TEMPERATURES = (225, 250, 270)
 HABITAT_HUMIDITIES = (60, 80, 90)
@@ -48,7 +50,8 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v23"), installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
+    paths = (installed.with_stem("antworld_m0_live_v24"), installed.with_stem("antworld_m0_live_v23"),
+             installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
              installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
              installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
@@ -73,7 +76,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 21))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 22))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -93,6 +96,7 @@ class NativeCore:
             self.familiar_return = generation >= 18
             self.group_milestones = generation >= 19
             self.variable_nest = generation >= 20
+            self.death_milestones = generation >= 21
         except Exception:
             self.close()
             raise
@@ -349,12 +353,20 @@ class LiveSession:
     def seeking(self):
         return self.fast_forward is not None and self.fast_forward["state"] == "seeking"
 
-    def milestone_event(self, raw):
+    def milestone_event(self, raw, target):
+        death_stage = None
+        if target in DEATH_MILESTONES:
+            # The protocol prefixes death hits with the stage before death, or 255 if unknown.
+            require(bool(raw) and (raw[0] < len(STAGES) - 1 or raw[0] == 255), "Invalid live death stage.")
+            death_stage, raw = label(STAGES, raw[0]), raw[1:]
         identity, event = decode_fact(raw)
         require(UUID(self.frame["world"]).int == ((identity[0] << 64) | identity[1]) and
                 event.id <= self.frame["cursor"] and event.time <= self.frame["time_ms"],
                 "Live milestone does not belong to the published cut")
         packet = event.packet()
+        if death_stage is not None:
+            require(packet["kind"] == "AntDied", "Expected a committed death fact.")
+            packet["before_death_stage"] = death_stage
         if packet["kind"] == "SoilExcavated":
             packet["geometry_edits"] = [edit | {"actor": str(edit["actor"])}
                                         for edit in self.frame["edits"] if edit["event"] == event.id]
@@ -362,6 +374,8 @@ class LiveSession:
 
     def validate_milestone(self, target):
         require(isinstance(target, str) and target in MILESTONES, "Unknown live milestone")
+        require(target not in DEATH_MILESTONES or self.worker.death_milestones,
+                "Build the updated Core to seek deaths.")
         require(target not in BROOD_MILESTONES or self.worker.single_nest, "Build the updated Core to seek brood actions.")
         habitat = (self.frame["flags"] or {}).get("founding_habitat")
         require(target not in HABITAT_MILESTONES or habitat, "Unknown live milestone")
@@ -421,10 +435,11 @@ class LiveSession:
 
     def seek_hit(self, raw, search):
         targets = search.get("targets")
-        if targets is None:
-            return search["target"], self.milestone_event(raw)
-        require(len(raw) > 1 and raw[0] < len(targets), "Invalid live milestone group result.")
-        return targets[raw[0]], self.milestone_event(raw[1:])
+        target = search["target"]
+        if targets is not None:
+            require(len(raw) > 1 and raw[0] < len(targets), "Invalid live milestone group result.")
+            target, raw = targets[raw[0]], raw[1:]
+        return target, self.milestone_event(raw, target)
 
     def stop_seek(self, state, event=None, target=None):
         self.fast_forward = self.fast_forward | dict(state=state, event=event)
@@ -489,6 +504,7 @@ class LiveSession:
                     history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     group_milestones_available=bool(self.worker and self.worker.group_milestones),
+                    death_milestones_available=bool(self.worker and self.worker.death_milestones),
                     variable_nest_available=self.binary.is_file() and (self.worker is None or self.worker.variable_nest),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,

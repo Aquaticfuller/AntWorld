@@ -16,7 +16,7 @@ from zipfile import ZipFile
 
 from op0 import DAY
 from op0.archive import prefixed
-from op0.codec import CASTES, KINDS, checkpoint, decode_fact
+from op0.codec import CASTES, KINDS, STAGES, checkpoint, decode_fact
 from op0.index import Catalog
 from op0.live import ROOT, LiveSession, NativeCore, core_path, founding_balance, live_bodies, read_live_events
 from op0.query import HOUR, ReadAPI
@@ -933,6 +933,71 @@ class LiveTests(unittest.TestCase):
                     else:
                         self.assertEqual(hit["event"]["stage"], "Larva")
                     self.assertEqual(self.live.worker.call("FRAME"), reference.call(f"ADVANCE {stamp}"))
+
+    def test_death_targets_use_committed_causes_and_previous_stages(self):
+        core = self.live.core()
+        if not core.death_milestones:
+            self.skipTest("Build the native Core with death milestones")
+        command = "NEW_VARIABLE_NEST 9801 1 250 80 plugged 1955 reachable finite sheltered mineral"
+        self.live.install(core.call(command), running=False)
+        frame = core.call(f"ADVANCE {90 * DAY}")
+        self.live.publish(frame)
+        pre_death, expected = {}, {}
+        for fact in facts(core, self.live.frame["cursor"]):
+            kind = KINDS[fact.kind]
+            if kind in ("AntSeeded", "AntBorn", "StageChanged"):
+                pre_death[fact.actor] = STAGES[fact.stage]
+            if kind != "AntDied":
+                continue
+            stage = pre_death.pop(fact.actor)
+            event = fact.packet() | {"before_death_stage": stage}
+            caste = CASTES[self.live.frame["ants"][fact.actor]["caste"]]
+            expected.setdefault("death", event)
+            expected.setdefault((caste if stage == "Adult" else stage).lower() + "-death", event)
+            cause = {"Energy depleted": "energy-death", "Dehydration": "dehydration-death"}.get(event["death_cause"])
+            if cause:
+                expected.setdefault(cause, event)
+
+        targets = {"death", "larva-death", "pupa-death", "worker-death", "queen-death", "energy-death", "dehydration-death"}
+        self.assertEqual(set(expected), targets)
+        self.assertEqual(core.call("FIND_MILESTONE egg-death"), b"")
+        for target, event in expected.items():
+            with self.subTest(target=target):
+                status = self.live.write("seek", {"target": target})
+                self.assertEqual(status["fast_forward"], dict(target=target, event=event, state="already"))
+                self.assertEqual(core.call("FRAME"), frame)
+
+    def test_death_group_pauses_at_a_real_egg_death_after_compact_restore(self):
+        core = self.live.core()
+        if not core.death_milestones:
+            self.skipTest("Build the native Core with death milestones")
+        command = "NEW_VARIABLE_NEST 9803 3 270 60 plugged 1955 reachable absent sheltered mineral"
+        self.live.install(core.call(command), running=False)
+        with closing(NativeCore(BINARY, self.folder)) as reference:
+            reference.call(command)
+            cut = checkpoint(reference.call(f"ADVANCE {20 * DAY}"))
+            death = next(f for f in facts(reference, cut["cursor"]) if KINDS[f.kind] == "AntDied")
+            self.assertEqual(STAGES[cut["ants"][death.actor]["stage"]], "Dead")
+            self.assertEqual(death.packet()["death_cause"], "Dehydration")
+            reference.call(command)
+            intact = reference.call(f"ADVANCE {death.time}")
+
+        self.live.publish(core.call(f"ADVANCE {death.time - 1}"))
+        self.assertEqual(STAGES[self.live.frame["ants"][death.actor]["stage"]], "Egg")
+        self.live.write("save", {"name": "Before death", "mode": "snapshot"})
+        for request in ({"target": "egg-death", "occurrence": "next"}, {"targets": ["worker", "egg-death"]}):
+            with self.subTest(request=request):
+                self.live.write("load", {"name": "Before death", "mode": "snapshot"})
+                self.assertGreater(self.live.history_floor, 0)
+                with self.assertRaisesRegex(ValueError, "Earlier events are unavailable"):
+                    self.live.write("seek", {"target": "egg-death"})
+                self.live.write("seek", request)
+                stopped = self.advance(1000)
+                hit = stopped["fast_forward"]
+                self.assertEqual((hit["state"], hit["target"]), ("reached", "egg-death"))
+                self.assertEqual(hit["event"], death.packet() | {"before_death_stage": "Egg"})
+                self.assertEqual((stopped["time_ms"], stopped["running"], stopped["rate"]), (death.time, False, 1))
+                self.assertEqual(core.call("FRAME"), intact)
 
     def test_next_exit_uses_current_positions_and_keeps_same_timestamp_matches(self):
         if not self.live.core().next_milestone:

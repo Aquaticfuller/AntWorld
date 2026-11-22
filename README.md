@@ -2,7 +2,7 @@
 
 ## Start a sealed single nest
 
-In Windows PowerShell, run `.\tools\start_m0.cmd` from the repository root and choose **New sealed nest**. The live preview starts with one queen and one fully enclosed chamber. **Fast-forward to next** can stop at a real brood move, worker emergence, excavation or delivery. **Save and load** defaults to compact continuation. The full replay archive is available as a separate format.
+In Windows PowerShell, run `.\tools\start_m0.cmd` from the repository root and choose **New sealed nest**. The live preview starts with one queen and one fully enclosed chamber. Choose a **Target event** or **Configure event group**, then fast-forward to the next match. Death targets include any death, specific life stages or castes, energy depletion and dehydration. The death card shows the recorded death cause and the prior stage when available. **Save and load** defaults to compact continuation. The full replay archive is available as a separate format.
 
 See the [single-nest preview guide](research/single_nest/README.md) for the build steps, model limits and verification commands.
 

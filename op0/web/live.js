@@ -11,7 +11,10 @@ const liveMilestones = {egg: "First egg laid", hatch: "First hatch", worker: "Fi
     "wall-delivery": "First food delivery from a wall",
     exit: "First worker leaves the nest", delivery: "First food delivered", excavation: "First excavation",
     water: "First collection from the water source", recruitment: "First worker responds to recruitment",
-    patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact"};
+    patrol: "First entrance patrol", "entrance-contact": "First entrance antennal contact",
+    death: "First death", "egg-death": "First egg death", "larva-death": "First larval death",
+    "pupa-death": "First pupal death", "worker-death": "First worker death", "queen-death": "First queen death",
+    "energy-death": "First death from energy depletion", "dehydration-death": "First death from dehydration"};
 const liveEventNames = Object.fromEntries(Array.from(document.querySelectorAll("#live-target option"),
     option => [option.value, option.textContent]));
 const LIVE_GROUP_KEY = "antworld.op0.event-group";
@@ -85,6 +88,8 @@ function liveControls() {
         option.hidden = option.disabled = !(s?.habitat && s.queen_gifts_available);
     for (const option of target.querySelectorAll("[data-wall]"))
         option.hidden = option.disabled = !s?.habitat?.wall_handoff;
+    for (const option of target.querySelectorAll("[data-death]"))
+        option.hidden = option.disabled = !s?.death_milestones_available;
     if (target.selectedOptions[0]?.disabled) target.value = "egg";
     $("nursery-delivery").hidden = !active || !s.provisioned_nursery;
     $("live-seek-next").hidden = !s?.next_milestone_available;
@@ -120,6 +125,10 @@ function liveControls() {
         const [c, p, w] = stop.event.mass_ug;
         details += " · " + tr("Into nest stores: {c} µg carbohydrate, {p} µg protein, {w} µg water", {c, p, w});
     }
+    if (stop?.event?.kind === "AntDied") {
+        const e = stop.event;
+        details += " · " + tr("Ant #{id}", {id: e.actor}) + " · " + tr(e.before_death_stage) + " · " + tr(e.death_cause);
+    }
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;
     if (s?.error) show(tr(s.error), true);
@@ -150,6 +159,8 @@ function liveVisibility(active) {
 function liveIndividual() {
     const ant = liveView.state?.ants?.find(a => a.id === app.selected);
     const events = ant ? liveView.state.events.filter(e => e.actor === ant.id || e.related === ant.id || e.recipient === ant.id) : [];
+    const hit = liveView.state?.fast_forward?.event;
+    if (ant && hit?.kind === "AntDied" && hit.actor === ant.id && !events.some(e => e.id === hit.id)) events.unshift(hit);
     const key = JSON.stringify([language, ant, events.map(e => e.id)]);
     if (liveView.individualKey === key) return;
     liveView.individualKey = key;
@@ -356,7 +367,12 @@ async function refreshLive(alignSection = true) {
     const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
     if (key && liveView.shownStop !== key) {
         liveView.shownStop = key;
-        if (stop.state === "reached" && followMilestones.has(stop.target)) {
+        if (stop.event.kind === "AntDied") {
+            app.selected = stop.event.actor;
+            app.follow = false;
+            $("ant-id").value = stop.event.actor;
+            toggle("follow", false);
+        } else if (stop.state === "reached" && followMilestones.has(stop.target)) {
             const actor = app.state.ants.find(a => a.id === stop.event.actor);
             if (actor) {
                 app.selected = actor.id;

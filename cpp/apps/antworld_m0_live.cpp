@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <set>
 #include <span>
 #include <sstream>
@@ -155,7 +156,8 @@ void recent_actions(const WorldRuntime& world, std::uint64_t after) {
 }
 
 enum class Milestone { Egg, Hatch, Worker, Exit, Delivery, Water, Recruitment, Excavation, Patrol, EntranceContact,
-                       BroodMoved, BroodCleaned, FounderMeal, FounderUptake, WorkerFeedsQueen, WallDelivery };
+                       BroodMoved, BroodCleaned, FounderMeal, FounderUptake, WorkerFeedsQueen, WallDelivery,
+                       Death, EggDeath, LarvaDeath, PupaDeath, WorkerDeath, QueenDeath, EnergyDeath, DehydrationDeath };
 
 Milestone parse_milestone(std::string_view name) {
     if (name == "egg") return Milestone::Egg;
@@ -174,6 +176,14 @@ Milestone parse_milestone(std::string_view name) {
     if (name == "queen-uptake") return Milestone::FounderUptake;
     if (name == "queen-gift") return Milestone::WorkerFeedsQueen;
     if (name == "wall-delivery") return Milestone::WallDelivery;
+    if (name == "death") return Milestone::Death;
+    if (name == "egg-death") return Milestone::EggDeath;
+    if (name == "larva-death") return Milestone::LarvaDeath;
+    if (name == "pupa-death") return Milestone::PupaDeath;
+    if (name == "worker-death") return Milestone::WorkerDeath;
+    if (name == "queen-death") return Milestone::QueenDeath;
+    if (name == "energy-death") return Milestone::EnergyDeath;
+    if (name == "dehydration-death") return Milestone::DehydrationDeath;
     throw std::invalid_argument("Unknown live milestone");
 }
 
@@ -197,10 +207,15 @@ bool adult_worker(const WorldRuntime& world, const WorldEvent& fact) {
 struct MilestoneHit {
     std::size_t index;
     WorldEvent fact;
+    std::optional<LifeStage> death_stage;
 };
 
 void send_milestone(const MilestoneHit& hit, bool grouped) {
     auto bytes = encode_event(hit.fact);
+    if (hit.fact.kind == FactKind::AntDied) {
+        const auto stage = hit.death_stage ? static_cast<std::uint8_t>(*hit.death_stage) : std::uint8_t{0xff};
+        bytes.insert(bytes.begin(), stage);
+    }
     if (grouped) bytes.insert(bytes.begin(), static_cast<std::uint8_t>(hit.index));
     payload(bytes);
 }
@@ -211,9 +226,12 @@ struct MilestoneSearch {
     std::optional<SimTime> matched_at;
     std::optional<double> surface_y;
     std::set<EntityId> underground;
+    bool track_deaths;
+    std::map<EntityId, LifeStage> living_stages;
 
     explicit MilestoneSearch(std::vector<Milestone> milestones, const WorldRuntime& world)
-        : targets(std::move(milestones)), cursor{world.first_history_cursor()} {
+        : targets(std::move(milestones)), cursor{world.first_history_cursor()},
+          track_deaths(std::any_of(targets.begin(), targets.end(), [](Milestone target) { return target >= Milestone::Death; })) {
         if (std::find(targets.begin(), targets.end(), Milestone::Exit) != targets.end()) {
             const auto surface = world.surface_snapshot();
             if (surface.configured) surface_y = surface.surface.origin_m.y;
@@ -222,14 +240,27 @@ struct MilestoneSearch {
 
     void start_at_tip(const WorldRuntime& world) {
         cursor = {world.summary().committed_events};
-        if (!surface_y) return;
+        if (!surface_y && !track_deaths) return;
         for (const auto& ant : world.ant_states()) {
-            if (ant.stage == LifeStage::Adult && ant.caste == Caste::Worker && ant.position.y < *surface_y)
+            if (track_deaths && ant.stage != LifeStage::Dead) living_stages.emplace(ant.id, ant.stage);
+            if (surface_y && ant.stage == LifeStage::Adult && ant.caste == Caste::Worker && ant.position.y < *surface_y)
                 underground.insert(ant.id);
         }
     }
 
-    bool matches(Milestone target, const WorldRuntime& world, const WorldEvent& fact) {
+    std::optional<LifeStage> remember_life(const WorldEvent& fact) {
+        if (!track_deaths) return {};
+        if (fact.kind == FactKind::AntDied) {
+            // A death fact carries Dead. Recover the last living stage from the prior cut or committed transitions.
+            const auto stage = living_stages.extract(fact.actor);
+            return stage ? std::optional{stage.mapped()} : std::nullopt;
+        }
+        if (fact.kind == FactKind::AntSeeded || fact.kind == FactKind::AntBorn || fact.kind == FactKind::StageChanged)
+            living_stages.insert_or_assign(fact.actor, fact.stage);
+        return {};
+    }
+
+    bool matches(Milestone target, const WorldRuntime& world, const WorldEvent& fact, std::optional<LifeStage> death_stage) {
         switch (target) {
         case Milestone::Egg:
             return fact.kind == FactKind::AntBorn && fact.stage == LifeStage::Egg;
@@ -237,6 +268,24 @@ struct MilestoneSearch {
             return fact.kind == FactKind::StageChanged && fact.stage == LifeStage::Larva;
         case Milestone::Worker:
             return fact.kind == FactKind::StageChanged && adult_worker(world, fact);
+        case Milestone::Death:
+            return fact.kind == FactKind::AntDied;
+        case Milestone::EggDeath:
+            return death_stage == LifeStage::Egg;
+        case Milestone::LarvaDeath:
+            return death_stage == LifeStage::Larva;
+        case Milestone::PupaDeath:
+            return death_stage == LifeStage::Pupa;
+        case Milestone::WorkerDeath: case Milestone::QueenDeath: {
+            if (fact.kind != FactKind::AntDied || (target == Milestone::WorkerDeath && death_stage != LifeStage::Adult))
+                return false;
+            const auto ant = world.query_ant({fact.world, fact.actor});
+            return ant && ant->caste == (target == Milestone::WorkerDeath ? Caste::Worker : Caste::Queen);
+        }
+        case Milestone::EnergyDeath:
+            return fact.kind == FactKind::AntDied && fact.payload == static_cast<std::uint64_t>(DeathCause::EnergyDepleted);
+        case Milestone::DehydrationDeath:
+            return fact.kind == FactKind::AntDied && fact.payload == static_cast<std::uint64_t>(DeathCause::Dehydrated);
         case Milestone::WallDelivery:
             if (fact.kind==FactKind::FoodDelivered && fact.payload==wall_delivery_payload && fact.transferred.total_ug()) {
                 const auto ecology=world.ecological_closure();
@@ -302,14 +351,15 @@ struct MilestoneSearch {
             const auto events = world.events_after(cursor, page);
             for (const auto& fact : events) {
                 cursor = fact.id;
+                const auto death_stage = remember_life(fact);
                 std::optional<std::size_t> match;
                 // The exit detector must also see a worker's emergence when it is a hit for another target.
                 for (std::size_t index = 0; index < targets.size(); ++index) {
-                    if (matches(targets[index], world, fact) && !match) match = index;
+                    if (matches(targets[index], world, fact, death_stage) && !match) match = index;
                 }
                 if (match) {
                     matched_at = fact.time;
-                    return MilestoneHit{*match, fact};
+                    return MilestoneHit{*match, fact, death_stage};
                 }
             }
             if (events.size() < page) return {};
@@ -402,7 +452,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v20");
+                message("OK", "antworld.m0.live.v21");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
