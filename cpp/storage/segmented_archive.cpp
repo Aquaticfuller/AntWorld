@@ -20,12 +20,12 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
     if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
     if (bytes[14]=='M') {
-        constexpr std::array<std::uint8_t,8> sustained_version{40,0,0,0,47,0,0,0};
-        constexpr std::array<std::uint8_t,8> protected_version{41,0,0,0,48,0,0,0};
-        constexpr std::array<std::uint8_t,8> local_dig_version{42,0,0,0,49,0,0,0};
-        if (bytes.size()>=24 && (std::equal(sustained_version.begin(),sustained_version.end(),bytes.begin()+16) ||
-                                std::equal(protected_version.begin(),protected_version.end(),bytes.begin()+16) ||
-                                std::equal(local_dig_version.begin(),local_dig_version.end(),bytes.begin()+16)))
+        constexpr std::array<std::array<std::uint8_t,8>,4> sustained_versions{{
+            {40,0,0,0,47,0,0,0}, {41,0,0,0,48,0,0,0}, {42,0,0,0,49,0,0,0}, {43,0,0,0,50,0,0,0}
+        }};
+        if (bytes.size()>=24 && std::any_of(sustained_versions.begin(),sustained_versions.end(),[&](const auto& version) {
+                return std::equal(version.begin(),version.end(),bytes.begin()+16);
+            }))
             return FactSchema::SustainedSupply;
         return FactSchema::EcologicalClosure;
     }
