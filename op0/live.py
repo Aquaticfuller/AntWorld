@@ -760,7 +760,10 @@ class LiveSession:
                 model = data.get("model", "protected" if core.protected_nest else "anatomical" if core.anatomical else "reference")
                 seed = data.get("seed", 3 if model in ("protected", "local-dig") else 2)
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
-                supply = data.get("supply", "extended" if model in ("protected", "local-dig") else "finite")
+                default_supply = "extended" if model in ("protected", "local-dig") else "finite"
+                if model == "protected" and core.nearby_feeder:
+                    default_supply = "nearby"
+                supply = data.get("supply", default_supply)
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
                 variable = model in ("variable", "feeding", "budget", "sustained", "protected", "local-dig")
                 require(supply in ("finite", "absent") or (variable and supply == "extended") or

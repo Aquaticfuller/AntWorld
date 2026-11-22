@@ -527,7 +527,7 @@ async function sealedNestWorld() {
     })`), [0,1,100,100,0]);
     if (await evaluate("liveView.state?.protected_nest_available")) {
         assert.deepEqual(await evaluate("[$('sealed-model').value,$('sealed-supply').value,$('sealed-wick').value]"),
-            ["protected","extended","wet-wick"]);
+            ["protected",await evaluate("liveView.state.nearby_feeder_available ? 'nearby' : 'extended'"),"wet-wick"]);
         await click("#new-single-nest");
         await wait(() => evaluate("liveView.state?.physics===48 && !liveView.busy"), "Protected default");
         assert.equal(await evaluate("liveView.state.sources.find(s=>s.position_m[1]<0).stock_ug[2]"),1500000);

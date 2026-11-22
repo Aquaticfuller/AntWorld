@@ -85,7 +85,7 @@ function liveControls() {
         $("sealed-model").value = s.protected_nest_available ? "protected" : "anatomical";
         sealedOptions();
         if (s.protected_nest_available) {
-            $("sealed-supply").value = "extended";
+            $("sealed-supply").value = s.nearby_feeder_available ? "nearby" : "extended";
             $("sealed-wick").value = "wet-wick";
         }
     }

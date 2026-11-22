@@ -30,7 +30,7 @@ def census(frame):
                 pupae=living[PUPA, WORKER], workers=living[ADULT, WORKER], queen_alive=bool(living[ADULT, QUEEN]))
 
 
-def history(stream, through, queen):
+def history(stream, through, queen, individual_records=False):
     stages, eclosions, first, worker_deaths = {}, {}, {}, {}
     transitions, deaths, larval_unused_crop = Counter(), Counter(), Counter()
     delivery = [0, 0, 0]
@@ -40,6 +40,7 @@ def history(stream, through, queen):
     first_death_ms = None
     first_fed = set()
     first_brood_deaths = Counter()
+    lives = {}
     soil_drops = Counter()
     last_carb_delivery = None
     alive = peak = 0
@@ -47,6 +48,13 @@ def history(stream, through, queen):
     queen_death = None
     for fact, frame in stream:
         kind = KINDS[fact.kind]
+        if fact.actor in lives and stages.get(fact.actor) == ADULT and kind in (
+                "Moved", "Rested", "WorkerWaterIngested", "FoodCollected", "FoodDelivered",
+                "SoilExcavated", "SoilDropped", "NestIngested", "CargoIngested", "NutritionTransferred"):
+            work = lives[fact.actor].setdefault("adult_actions", {})
+            item = work.setdefault(kind, dict(count=0, first_fact=fact.id, last_fact=fact.id))
+            item["count"] += 1
+            item["last_fact"] = fact.id
         if kind in ("AntSeeded", "AntBorn", "StageChanged"):
             stages[fact.actor] = fact.stage
         if kind == "AntBorn":
@@ -58,9 +66,13 @@ def history(stream, through, queen):
             first.setdefault("egg_ms", fact.time)
             if fact.time < first["egg_ms"] + DAY:
                 first_brood.add(fact.actor)
+                if individual_records:
+                    lives[fact.actor] = dict(born_ms=fact.time, birth_fact=fact.id, feeds=[], stages=[])
         elif kind == "ReproductionAttempt" and fact.aux == 1:
             transitions["brood_budget_deferrals"] += 1
         elif kind == "StageChanged":
+            if fact.actor in lives:
+                lives[fact.actor]["stages"].append([fact.id, fact.time, STAGES[fact.stage]])
             if fact.stage == LARVA:
                 transitions["hatched"] += 1
             elif fact.stage == PUPA:
@@ -78,6 +90,8 @@ def history(stream, through, queen):
         elif kind == "AntDied":
             stage = stages.pop(fact.actor)
             cause = DEATHS[fact.payload]
+            if fact.actor in lives:
+                lives[fact.actor]["death"] = [fact.id, fact.time, STAGES[stage], cause]
             if fact.actor == queen:
                 queen_death = dict(time_ms=fact.time, event_id=str(fact.id), cause=cause)
             else:
@@ -136,6 +150,9 @@ def history(stream, through, queen):
         positive = any(fact.mass) or (kind == "FoundingRation" and fact.aux > 0)
         if route in ("queen_larva", "worker_larva") and fact.payload in first_brood and positive:
             first_fed.add(fact.payload)
+            if fact.payload in lives:
+                lives[fact.payload]["feeds"].append([fact.id, fact.time, fact.actor, *fact.mass[:3],
+                                                     fact.aux if kind == "FoundingRation" else 0])
         if route:
             for index, mass in enumerate(fact.mass[:3]):
                 nutrition[route][index] += mass
@@ -157,10 +174,10 @@ def history(stream, through, queen):
                 first_brood_fed=len(first_fed), first_brood_juvenile_deaths=first_brood_deaths, soil_drops=soil_drops,
                 delivered_cpw_ug=delivery, nutrition_cpw_ug=nutrition, queen_death=queen_death,
                 last_carbohydrate_delivery_ms=last_carb_delivery,
-                larval_unused_crop=larval_unused_crop)
+                larval_unused_crop=larval_unused_crop, **({"first_brood_lives": lives} if individual_records else {}))
 
 
-def measure(core, seed, supply, treatment, days, wick="small-wick"):
+def measure(core, seed, supply, treatment, days, wick="small-wick", individual_records=False):
     case_id = WORLD_BASES[supply] + seed + TREATMENTS.index(treatment) * (2**34)
     if wick == "wet-wick":
         case_id += 2**39
@@ -202,7 +219,7 @@ def measure(core, seed, supply, treatment, days, wick="small-wick"):
                 require(core.call("FRAME") == raw, "History compaction changed the checkpoint frame")
                 compactions += 1
 
-    result = history(read(), days * DAY, queen)
+    result = history(read(), days * DAY, queen, individual_records)
     require(result["workers_still_alive"] == census(frame)["workers"],
             "Worker eclosions and deaths disagree with the final frame")
     require(core.call("CHECK_LEDGERS") == b"", "Native ledger verification failed")
@@ -238,6 +255,7 @@ def main():
     parser.add_argument("--treatment", choices=TREATMENTS, default="reference")
     parser.add_argument("--days", type=int, default=730)
     parser.add_argument("--wick", choices=("small-wick", "wet-wick"), default="small-wick")
+    parser.add_argument("--individuals", action="store_true", help="Include first-brood stage, feed and death witnesses.")
     args = parser.parse_args()
     seeds = args.seed or (1, 2, 3)
     if any(not 1 <= seed <= 2147483647 for seed in seeds):
@@ -256,7 +274,7 @@ def main():
         require(args.treatment != "sustained" and args.wick == "small-wick" or core.sustained_nest,
                 "Build the sustained-supply live executable first")
         for seed in seeds:
-            print(json.dumps(measure(core, seed, args.supply, args.treatment, args.days, args.wick)), flush=True)
+            print(json.dumps(measure(core, seed, args.supply, args.treatment, args.days, args.wick, args.individuals)), flush=True)
 
 
 if __name__ == "__main__":

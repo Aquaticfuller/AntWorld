@@ -565,6 +565,8 @@ class LiveTests(unittest.TestCase):
         self.live.write("clock", {"running": False})
         start = self.live.frame
         self.assertEqual((start["physics"], start["seed"]), (48, 3))
+        feeder, = (s for s in start["sources"].values() if s["initial_ug"][0] and s["position_m"][1] >= 0)
+        self.assertAlmostEqual(abs(feeder["position_m"][0]), 0.005 if core.nearby_feeder else 0.030)
         self.assertEqual(len(start["ants"]), 1)
         self.assertTrue(all(b[4] < 0 for b in start["geometry"]["voids"]))
         bands = start["geometry"]["voids"]

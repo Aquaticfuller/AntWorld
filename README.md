@@ -6,7 +6,7 @@ In Windows PowerShell, run `.\tools\start_m0.cmd` from the repository root and c
 
 See the [single-nest preview guide](research/single_nest/README.md) for the build steps, model limits and verification commands.
 
-On the current preview branch, a new nest selects **Protected founding · Physics 48**, a wetted cotton source and two years of budgeted exterior supply. Open **Research** to locate dry food, nest inventory and recorded spoil sites, and to inspect water in living crops. **Local excavation · Physics 49** is a separate grain-scale roof experiment. Existing saves carry their original physics.
+On the current preview branch, a new nest selects **Protected founding · Physics 48**, a wetted cotton source and a nearby surface feeder with two years of budgeted exterior supply. Open **Research** to locate dry food, nest inventory and recorded spoil sites, and to inspect water in living crops. Fast-forward to the next death to see the food in the individual's crop, the depot and the outside sources at that instant. Select **Extended supply** to compare the more distant feeder at the same food budget. **Local excavation · Physics 49** is a separate grain-scale roof experiment. Existing saves carry their original physics. The [day-73 reconstruction and paired two-year results](research/single_nest/PROTECTED_HABITAT_RESULTS.md) document which colonies survived and when supply broke down.
 
 ## M1 Live Colony Observatory
 

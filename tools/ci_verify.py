@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 checks = [
-    ['tools/verify_handoff.py'], ['tools/check_repository.py'],
+    ['tools/verify_handoff.py'], ['tools/check_repository.py'], ['tools/verify_protected_habitat.py'],
     ['tools/analyze_s2.py', 'experiments/s2', '--check'],
     ['tools/analyze_s2.py', 'experiments/s2_1/ablations', '--check'],
     ['tools/analyze_s2_1.py', '--check'],
