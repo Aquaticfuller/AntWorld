@@ -163,7 +163,7 @@ inline double local_trail_half_life(const auto& s, Cell cell) {
     const auto moisture_rate = exposure->porous ? 1. + .5 * (environment.relative_humidity - .8) : 1.;
     Rng site(s.seed ^ UINT64_C(0x545241494c5f5349));
     Rng local(site.next() ^ connector_cell(cell));
-    const auto micro_rate = (900 + local.next() % 201) / 1000.;
+    const auto micro_rate = static_cast<double>(900 + local.next() % 201) / 1000.;
     return baseline * retention_time / (temperature_rate * exchange_rate * moisture_rate * micro_rate);
 }
 

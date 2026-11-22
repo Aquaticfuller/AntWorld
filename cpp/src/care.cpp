@@ -299,7 +299,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
                 if (seen.contains({to.x,to.z,heading}) || !legal(to,heading)) continue;
                 const auto spent=current.travelled_um+path_length(current.site,to);
                 auto remaining=std::llround(radius*1'000'000);
-                for (const auto& [dir,site]:stances) remaining=std::min(remaining,path_length(to,site));
+                for (const auto& stance:stances) remaining=std::min(remaining,path_length(to,stance.second));
                 open.push({to,current.initial?to:current.first,spent,spent+remaining,heading,false});
             }
         };
