@@ -316,14 +316,14 @@ template <typename S> void validate_surface_evidence(const S& s) {
                     // round slightly above deposit_units even for a valid addition.
                     ensure(p.trails_enabled && cargo[e.actor].total_ug(), "deposit without carried food");
                     const TrailKey key{e.colony, *to}; const auto it = audit_trails.find(key);
-                    const auto old_amount = it == audit_trails.end() ? 0 : trail_at(it->second,e.time,p,portable);
+                    const auto old_amount = it == audit_trails.end() ? 0 : trail_at(s,key.cell,it->second,e.time,portable);
                     const auto next = next_trail(p,old_amount,portable);
                     ensure(e.deposited_units == next-old_amount, "invalid saturated deposit evidence");
                     audit_trails[key] = {next, e.time}; counts.deposited_units += e.deposited_units;
                 } else if (p.trails_enabled && cargo[e.actor].total_ug()) {
                     const TrailKey key{e.colony, *to}; const auto it = audit_trails.find(key);
                     ensure(it != audit_trails.end(), "missing deposit evidence");
-                    const auto old_amount=trail_at(it->second,e.time,p,portable);
+                    const auto old_amount=trail_at(s,key.cell,it->second,e.time,portable);
                     const auto next=next_trail(p,old_amount,portable);
                     ensure((portable ? old_amount==next : old_amount==p.trail_cap_units), "missing deposit evidence");
                     audit_trails[key] = {next, e.time};
@@ -362,7 +362,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
             ensure(p.trails_enabled && !e.actor.value && !e.colony.value && !e.resource.value, "invalid field maintenance fact");
             std::uint64_t removed = 0;
             for (auto i = audit_trails.begin(); i != audit_trails.end();) {
-                const auto value = trail_at(i->second,e.time,p,portable);
+                const auto value = trail_at(s,i->first.cell,i->second,e.time,portable);
                 if (value == 0) { i = audit_trails.erase(i); ++removed; }
                 else { i->second = {value, e.time}; ++i; }
             }

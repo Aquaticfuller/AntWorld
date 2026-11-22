@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==familiar_return_schema && version==familiar_return_physics) ||
+        ensure((outer_schema==variable_nest_schema && version==variable_nest_physics) ||
+               (outer_schema==familiar_return_schema && version==familiar_return_physics) ||
                (outer_schema==anatomical_handoff_schema && version==anatomical_handoff_physics) ||
                (outer_schema==wall_handoff_schema && version==wall_handoff_physics) ||
                (outer_schema==adult_offer_schema && version==adult_offer_physics) ||

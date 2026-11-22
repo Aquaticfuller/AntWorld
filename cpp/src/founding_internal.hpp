@@ -2,6 +2,8 @@
 
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
+#include "behavior_rng.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld::detail {
 inline constexpr std::uint64_t founding_day_ms = 86'400'000;
@@ -363,6 +365,43 @@ inline SimTime founding_lay_after(const FoundingProfile& f, SimTime at) {
     if (at >= end) return after(at, f.later_spacing.milliseconds);
     const auto next = after(at, f.opening_spacing.milliseconds);
     return next < end ? next : after(end, f.later_spacing.milliseconds);
+}
+
+// ENGINEERING_FIXTURE. A bounded triangular distribution around the nominal
+// interval; the mean is unchanged before rounding. Separate streams keep
+// scheduling variation independent from food, movement and care decisions.
+inline std::int64_t rhythm_delay(Rng& rng, SimTime nominal, std::uint32_t spread_permille) {
+    const auto width = std::uint64_t{spread_permille} + 1;
+    const auto scale = 1000 - spread_permille + bounded_draw(rng, width) + bounded_draw(rng, width);
+    return std::max<std::int64_t>(1, nominal.milliseconds * static_cast<std::int64_t>(scale) / 1000);
+}
+
+inline std::int64_t autonomy_delay(const auto& s, EntityId id, Caste caste, std::uint64_t decisions) {
+    const auto timing = worker_timing(s, caste);
+    if (!timing) return s.social->decision_interval.milliseconds;
+    if (!variable_conditions(s)) return timing->check_interval.milliseconds;
+    auto rng = individual_rng(s.seed ^ UINT64_C(0x574f524b5f57414b), id, decisions);
+    return rhythm_delay(rng, timing->check_interval, 250);
+}
+
+inline SimTime next_founding_lay(const auto& s, EntityId queen, const FoundingProfile& f,
+                                 SimTime at, std::uint64_t attempts) {
+    if (!variable_conditions(s)) return founding_lay_after(f, at);
+
+    auto individual = individual_rng(s.seed ^ UINT64_C(0x4c41595f51554545), queen, 0);
+    const SimTime first{rhythm_delay(individual, f.first_lay, 60)};
+    if (!attempts) return first;
+
+    // Keep the bounded founding bout; only actual paid, placeable eggs count.
+    const auto end = after(first, f.opening_width.milliseconds);
+    const auto cadence = 900 + bounded_draw(individual, 201);
+    auto spacing = individual_rng(s.seed ^ UINT64_C(0x4c41595f53504143), queen, attempts);
+    const auto jitter = [&](SimTime interval) {
+        return rhythm_delay(spacing, {interval.milliseconds * static_cast<std::int64_t>(cadence) / 1000}, 400);
+    };
+    if (at >= end) return after(at, jitter(f.later_spacing));
+    const auto next = after(at, jitter(f.opening_spacing));
+    return next < end ? next : after(end, jitter(f.later_spacing));
 }
 
 inline ReproductionConfig founding_reproduction(const FoundingProfile& f) {

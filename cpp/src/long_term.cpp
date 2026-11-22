@@ -159,7 +159,8 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   bump(r.attempts);
   auto next = e;
   next.issued_at = s.m.now;
-  next.key.time = founding ? founding_lay_after(*founding, s.m.now) : after(s.m.now, c.interval.milliseconds);
+  next.key.time = founding ? next_founding_lay(s, e.actor, *founding, s.m.now, r.attempts) :
+                            after(s.m.now, c.interval.milliseconds);
   r.wake = tx.insert(next);
   tx.reproduction.set(e.actor, r);
   WorldEvent f;

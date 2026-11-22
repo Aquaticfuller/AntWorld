@@ -71,11 +71,13 @@
             <option value="offers" data-i18n>Worker food offers · Physics 41</option>
             <option value="mouth-handoff" data-i18n>Wall-side food delivery · Physics 43</option>
             <option value="familiar" data-i18n>Return to a familiar berth · Physics 44</option>
+            <option value="variable" data-i18n>Variable conditions · Physics 45</option>
             <option value="reference" data-i18n>Reference model</option>
           </select>
           <label for="sealed-supply" data-i18n>Sealed nest supply</label>
           <select id="sealed-supply">
             <option value="finite" data-i18n>Finite food and water</option>
+            <option value="extended" data-i18n hidden disabled>Extended supply · 730 days</option>
             <option value="absent" data-i18n>No external supply</option>
           </select>
           <label for="sealed-seed" data-i18n>Sealed nest seed</label>
@@ -86,6 +88,14 @@
           <select id="habitat-humidity"><option value="60">60%</option><option value="80" selected>80%</option><option value="90">90%</option></select>
           <label for="habitat-trails">Surface trail half-life</label>
           <select id="habitat-trails"><option value="60">1 minute</option><option value="1955" selected>32.6 minutes (experimental)</option></select>
+          <label for="surface-air" data-variable-nest hidden data-i18n>Surface ventilation</label>
+          <select id="surface-air" data-variable-nest hidden>
+            <option value="sheltered">Sheltered</option><option value="ventilated">Ventilated</option>
+          </select>
+          <label for="surface-substrate" data-variable-nest hidden data-i18n>Trail substrate</label>
+          <select id="surface-substrate" data-variable-nest hidden>
+            <option value="mineral">Mineral reference</option><option value="porous">Porous surface hypothesis</option>
+          </select>
           <label for="habitat-seed">World seed</label>
           <input id="habitat-seed" type="number" value="2" min="1" max="2147483647" step="1" required>
           <label><input type="checkbox" id="habitat-plug"> <span data-i18n>Start with a soil-sealed entrance</span></label>

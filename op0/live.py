@@ -48,7 +48,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
+    paths = (installed.with_stem("antworld_m0_live_v23"), installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
              installed.with_stem("antworld_m0_live_v20"), installed.with_stem("antworld_m0_live_v19"),
              installed.with_stem("antworld_m0_live_v18"), installed.with_stem("antworld_m0_live_v17"),
              installed.with_stem("antworld_m0_live_v16"), installed.with_stem("antworld_m0_live_v15"),
@@ -73,7 +73,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 20))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 21))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -92,6 +92,7 @@ class NativeCore:
             self.anatomical_handoff = generation >= 17
             self.familiar_return = generation >= 18
             self.group_milestones = generation >= 19
+            self.variable_nest = generation >= 20
         except Exception:
             self.close()
             raise
@@ -488,6 +489,7 @@ class LiveSession:
                     history_floor=self.history_floor,
                     next_milestone_available=bool(self.worker and self.worker.next_milestone),
                     group_milestones_available=bool(self.worker and self.worker.group_milestones),
+                    variable_nest_available=self.binary.is_file() and (self.worker is None or self.worker.variable_nest),
                     world_id=frame["world"] if frame else None, epoch=self.epoch, running=self.running, rate=self.rate,
                     fast_forward=self.fast_forward, saved_name=self.saved["name"] if self.saved else None,
                     dirty=dirty, error=self.error)
@@ -694,7 +696,6 @@ class LiveSession:
         with self.lock:
             if resource == "single-nest":
                 supply = data.get("supply", "finite")
-                require(supply in ("finite", "absent"), "Unknown supply setting")
                 seed = data.get("seed", 2)
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
                 core = self.core()
@@ -712,11 +713,27 @@ class LiveSession:
                     models["mouth-handoff"] = "NEW_MOUTH_HANDOFF_NEST"
                 if core.familiar_return:
                     models["familiar"] = "NEW_FAMILIAR_RETURN_NEST"
+                if core.variable_nest:
+                    models["variable"] = "NEW_VARIABLE_NEST"
                 model = data.get("model", "anatomical" if core.anatomical else "reference")
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")
-                command = models[model]
-                self.install(core.call(f"{command} {randbits(63) or 1} {seed} 250 80 plugged 1955 reachable {supply}"),
-                             running=True)
+                require(supply in ("finite", "absent") or (model == "variable" and supply == "extended"),
+                        "Unknown supply setting")
+                temperature, humidity, half_life = 250, 80, 1955
+                exposure = ""
+                if model == "variable":
+                    temperature, humidity, half_life = (data.get("temperature", 250), data.get("humidity", 80),
+                                                        data.get("trail_half_life", 1955))
+                    require(type(temperature) is int and temperature in HABITAT_TEMPERATURES and
+                            type(humidity) is int and humidity in HABITAT_HUMIDITIES and
+                            type(half_life) is int and half_life in (60, 1955), "Unsupported trail climate")
+                    air, substrate = data.get("air", "sheltered"), data.get("substrate", "mineral")
+                    require(air in ("sheltered", "ventilated") and substrate in ("mineral", "porous"),
+                            "Unsupported trail exposure")
+                    exposure = f" {air} {substrate}"
+                command = (f"{models[model]} {randbits(63) or 1} {seed} {temperature} {humidity} "
+                           f"plugged {half_life} reachable {supply}{exposure}")
+                self.install(core.call(command), running=True)
             elif resource == "observatory":
                 preset = data.get("preset")
                 require(isinstance(preset, str) and preset in OBSERVATORY_PRESETS, "Unknown observatory preset")

@@ -186,6 +186,7 @@ private:
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&) const;
     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
+    [[nodiscard]] PositionM depot_mouth_target(const AntState&, PositionM) const;
     [[nodiscard]] bool seeks_nest_meal(const AntState&, const PhysiologyState&) const;
     void commit_brood_position(Transaction&, EntityId, EntityId, ScheduledId, PositionM);
     void release_brood_on_floor(Transaction&, const CareState&, EntityId, ScheduledId);

@@ -59,6 +59,17 @@ inline double portable_care_distance(PositionM a,PositionM b) {
     const auto z=square(care_binary64(a.z-b.z));
     return std::sqrt(care_binary64(care_binary64(x+y)+z));
 }
+
+// ENGINEERING_FIXTURE. A contiguous wetted feeding patch funded by one depot.
+// Callers check the center-to-edge connection against their terrain at the cut.
+inline PositionM feeding_patch_point(PositionM mouth, PositionM depot) {
+    constexpr double radius_m = .00125;
+    const PositionM level{mouth.x,depot.y,mouth.z};
+    const auto gap = portable_care_distance(level,depot);
+    if (gap <= radius_m) return level;
+    const auto scale = radius_m/gap;
+    return {depot.x+(mouth.x-depot.x)*scale,depot.y,depot.z+(mouth.z-depot.z)*scale};
+}
 inline PositionM portable_care_toward(PositionM a,PositionM b,double step) {
     const auto length=portable_care_distance(a,b);
     if (length<=step) return b;

@@ -165,7 +165,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake) {
                 const auto j=s.colonies.index.at(ant.colony);
                 auto& colony=s.colonies.rows[j];
-                const bool reachable=mouth_access(s)?mouth_at_supply(ant,colony.nest_position):
+                const bool reachable=mouth_access(s)?mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)):
                     within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position);
                 if (reachable) {
                     const auto meal=foundress_nest_meal(s.founding->profile,p,*reserve,colony.nest_food);
@@ -306,7 +306,8 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];
         const bool oral=mouth_access(s) && e.kind==ScheduledEvent::Kind::WithdrawNest;
-        if ((oral ? !mouth_at_supply(ant,colony.nest_position) : !within_contact(ant.position,colony.nest_position,s.config)) ||
+        if ((oral ? !mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)) :
+                    !within_contact(ant.position,colony.nest_position,s.config)) ||
             (s.surface && !s.config.continuous_spatial_motion && !(s.social && s.geometry) &&
              s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)) ||
             (!oral && !spatially_clear(ant.position,colony.nest_position))) { f.outcome=Outcome::NotAtNest; return; }
@@ -420,7 +421,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;
             else if (p.crop.total_ug() < p.config.crop_capacity_ug/2 &&
-                (mouth_access(s) ? mouth_at_supply(ant,colony.nest_position) :
+                (mouth_access(s) ? mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)) :
                 (within_contact(ant.position,colony.nest_position,s.config) &&
                  (!s.surface || s.config.continuous_spatial_motion || (s.social && s.geometry) ||
                   s.surface->locate(ant.position)==s.surface->locate(colony.nest_position)) &&

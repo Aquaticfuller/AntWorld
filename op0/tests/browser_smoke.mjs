@@ -626,6 +626,25 @@ async function sealedNestWorld() {
         "Reloaded compact snapshot with next-event navigation");
     assert.equal(await evaluate("$('live-seek').disabled"), true);
     result.snapshot = await evaluate("liveView.saves[0].size_bytes");
+    await select("sealed-model","variable");
+    assert.equal(await evaluate("$('surface-air').hidden || $('surface-substrate').hidden"), false);
+    await select("surface-air","ventilated");
+    await select("surface-substrate","porous");
+    await select("habitat-temperature","270");
+    const confirmReplacement = await evaluate("liveView.state.dirty");
+    await Promise.all([click("#new-single-nest"), (async () => {
+        if (confirmReplacement) {
+            await wait(() => dialogs.shift(), "Replace the test world", 5_000);
+            await send("Page.handleJavaScriptDialog",{accept:true});
+        }
+    })()]);
+    await wait(() => evaluate("liveView.state?.physics === 45 && !liveView.busy"),"New variable-condition nest");
+    assert.equal(await evaluate("liveView.state.climate.temperature_c"),27);
+    assert.deepEqual(await evaluate("liveView.state.habitat.variable_conditions"),{ventilated:true,porous:true});
+    assert.equal(await evaluate("liveView.state.sources.filter(source=>source.position_m[1]===0).length"),4);
+    await evaluate("setSection('surface')");
+    await wait(() => evaluate("app.section === 'surface' && app.state.sources.length === 5"),"Surface with real food and water");
+    await screenshot("variable-surface");
     assert.equal(exceptions.length,0,JSON.stringify(exceptions));
     await writeFile(join(output,"sealed-nest-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
 }

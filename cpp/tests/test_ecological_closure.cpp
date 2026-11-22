@@ -32,6 +32,40 @@ void trail_evidence() {
     require(weighted.mode==BehaviorMode::FollowTrail && weighted.trail_evidence==7,"weighted edge missing evidence");
 }
 
+void exposure_decay() {
+    detail::SurfaceDefinition surface;
+    surface.behavior.trail_half_life_s=1955;
+    struct Field {
+        const detail::SurfaceDefinition* surface;
+        std::optional<EcologicalClosureConfig> ecological;
+        EnvironmentCareProfile care_environment{25.,.8};
+        std::uint64_t seed{3};
+    } field{&surface,{}};
+    const Cell cell{7,5};
+    const detail::Trail mark{1.,{}};
+    const SimTime age{1'955'000};
+    require(detail::trail_at(field,cell,mark,age,true)==.5,"legacy half-life changed");
+
+    auto& exposure=field.ecological.emplace().founding_habitat.emplace().variable_conditions.emplace();
+    const auto reference=detail::local_trail_half_life(field,cell);
+    require(reference==detail::local_trail_half_life(field,cell) &&
+            reference!=detail::local_trail_half_life(field,{7,6}),"cell variation is missing or unstable");
+    field.care_environment.temperature_c=27.;
+    require(detail::local_trail_half_life(field,cell)<reference,"warming did not shorten the experimental half-life");
+    field.care_environment.temperature_c=25.;
+    exposure.ventilated=true;
+    require(detail::local_trail_half_life(field,cell)<reference,"ventilation did not shorten the experimental half-life");
+    exposure.ventilated=false;
+    exposure.porous=true;
+    const auto porous=detail::local_trail_half_life(field,cell);
+    require(porous>reference,"experimental retention did not change the half-life");
+    field.care_environment.relative_humidity=.9;
+    require(detail::local_trail_half_life(field,cell)<porous,"porous moisture hypothesis did not change decay");
+    field.care_environment.relative_humidity=.8;
+    const SimTime half{std::llround(porous*1000.)};
+    require(std::abs(detail::trail_at(field,cell,mark,half,true)-.5)<.000001,"variable trail unit did not halve");
+}
+
 void local_causality() {
     auto a=ecological_assay::recruitment(1,"scout");
     auto b=ecological_assay::recruitment(1,"disabled");
@@ -283,6 +317,7 @@ int main(int argc,char** argv) {
         if (argc!=2) return 1;
         const std::string_view name=argv[1];
         if (name=="trail") trail_evidence();
+        else if (name=="exposure") exposure_decay();
         else if (name=="scout") local_causality();
         else if (name=="restore") authority();
         else if (name=="activity") paid_motion();

@@ -74,9 +74,8 @@ void WorldRuntime::schedule_autonomy(Transaction &tx, EntityId id, SimTime delay
   e.actor = id;
   e.kind = ScheduledEvent::Kind::AutonomyWake;
   e.issued_at = s.m.now;
-  const auto timing = worker_timing(s, ant.caste);
-  const auto interval = timing ? timing->check_interval : s.social->decision_interval;
-  e.key = {after(s.m.now, delay.milliseconds ? delay.milliseconds : interval.milliseconds),
+  const auto wait = delay.milliseconds ? delay.milliseconds : autonomy_delay(s, id, ant.caste, a.decisions);
+  e.key = {after(s.m.now, wait),
            Phase::Reschedule, 0, 0, 0};
   a.wake = tx.insert(e);
   tx.autonomy.set(id, a);
@@ -157,7 +156,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     bool at_meal=false;
     std::optional<PositionM> meal_step;
     if (can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
-      const auto depot=colony.nest_position;
+      const auto depot=depot_mouth_target(ant,colony.nest_position);
       at_meal=mouth_at_supply(ant,depot);
       if (!at_meal) {
         const auto next=mouth_approach(ant,depot,{});

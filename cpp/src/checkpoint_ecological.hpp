@@ -26,6 +26,7 @@ inline constexpr unsigned adult_offer_schema = 34, adult_offer_physics = 41;
 inline constexpr unsigned wall_handoff_schema = 35, wall_handoff_physics = 42;
 inline constexpr unsigned anatomical_handoff_schema = 36, anatomical_handoff_physics = 43;
 inline constexpr unsigned familiar_return_schema = 37, familiar_return_physics = 44;
+inline constexpr unsigned variable_nest_schema = 38, variable_nest_physics = 45;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -33,6 +34,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_physics;
     if (c.founding_habitat && c.founding_habitat->familiar_return) return familiar_return_physics;
     if (c.founding_habitat && c.founding_habitat->anatomical_handoff) return anatomical_handoff_physics;
     if (c.founding_habitat && c.founding_habitat->wall_handoff) return wall_handoff_physics;
@@ -54,6 +56,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_schema;
     if (c.founding_habitat && c.founding_habitat->familiar_return) return familiar_return_schema;
     if (c.founding_habitat && c.founding_habitat->anatomical_handoff) return anatomical_handoff_schema;
     if (c.founding_habitat && c.founding_habitat->wall_handoff) return wall_handoff_schema;
@@ -94,6 +97,10 @@ inline void write_ecological(Writer& w, const EcologicalClosureConfig& c) {
     if (c.founding_habitat) {
         w.position(c.founding_habitat->brood_site);
         w.put(c.founding_habitat->pantry_buffer_ug);
+        if (const auto& exposure = c.founding_habitat->variable_conditions; exposure) {
+            w.put(exposure->ventilated, 1);
+            w.put(exposure->porous, 1);
+        }
     }
 }
 inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& world, unsigned version) {
@@ -128,6 +135,8 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
                                                   version >= mouth_access_physics,version >= adult_offer_physics,
                                                   version >= wall_handoff_physics,version >= anatomical_handoff_physics,
                                                   version == familiar_return_physics};
+    if (version == variable_nest_physics)
+        c.founding_habitat->variable_conditions = TrailExposure{r.flag(), r.flag()};
     validate_ecological_closure(c, world);
     return c;
 }

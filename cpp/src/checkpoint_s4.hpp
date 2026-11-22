@@ -1,5 +1,6 @@
 #pragma once
 #include "anatomy.hpp"
+#include "care_internal.hpp"
 #include "checkpoint_codec.hpp"
 #include "brood_space.hpp"
 #include "ecological_internal.hpp"
@@ -431,7 +432,13 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         if (mouth_access(s) && (e.kind==FactKind::FoundressNestMeal || e.kind==FactKind::NestIngested || wall_delivery)) {
             const auto body=past_body(e.actor);
             const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
-            ensure(supply_in_reach(body,depot) && clear(body.mouth_m,depot,0),"depot exchange lacks historical mouth contact");
+            auto contact_site=depot;
+            if (variable_conditions(s) && !wall_delivery) {
+                const auto edge=feeding_patch_point(body.mouth_m,depot);
+                if (clear(depot,edge,0)) contact_site=edge;
+            }
+            ensure(supply_in_reach(body,contact_site) && clear(body.mouth_m,contact_site,0),
+                   "depot exchange lacks historical mouth contact");
             if (wall_delivery) ensure(body.center_m.y!=depot.y && positions.at(e.actor)==e.position,
                                       "wall delivery has no historical off-floor berth");
         }

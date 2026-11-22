@@ -32,6 +32,15 @@ function duration(ms) {
     return day(Math.floor(ms / DAY) * DAY) + " · " + clockTime(ms).slice(0, 8);
 }
 
+function sealedOptions() {
+    const active = $("sealed-model").value === "variable";
+    for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
+    const supply = $("sealed-supply");
+    const extended = supply.querySelector('[value="extended"]');
+    extended.hidden = extended.disabled = !active;
+    if (!active && supply.value === "extended") supply.value = "finite";
+}
+
 function liveControls() {
     updatePresets();
     const s = liveView.state;
@@ -56,6 +65,8 @@ function liveControls() {
     $("open-nursery").disabled = $("nursery-treatment").disabled = liveView.busy || !s?.nursery_available;
     $("new-single-nest").hidden = !s?.single_nest_available;
     $("new-single-nest").disabled = liveView.busy;
+    $("sealed-model").querySelector('[value="variable"]').disabled = !s?.variable_nest_available;
+    sealedOptions();
     $("new-single-nest").classList.toggle("primary-button", !active);
     put("find-brood", tr(s?.habitat?.sealed_chamber ? "Locate brood area" : "Locate brood chamber"));
     const preset = $("nursery-treatment");
@@ -175,7 +186,8 @@ function liveEnvironment(data) {
     }
     const climate = data.climate;
     $("live-climate").hidden = !climate;
-    const climateKey = JSON.stringify([language, climate, data.worker_activity_timing?.check_ms, data.surface.trail_half_life_s]);
+    const exposure = data.habitat?.variable_conditions;
+    const climateKey = JSON.stringify([language, climate, data.worker_activity_timing?.check_ms, data.surface.trail_half_life_s, exposure]);
     if (climate && climateKey !== liveView.climateKey) {
         liveView.climateKey = climateKey;
         $("live-climate").replaceChildren(...[
@@ -183,8 +195,12 @@ function liveEnvironment(data) {
             ["Relative humidity", withUnit(climate.humidity_percent, "%")],
             ["Larval development target", withUnit(climate.larva_ms / DAY, "days")],
             ["Larval water loss", withUnit(climate.larva_loss_ug_day, "µg/day")],
-            ["Worker decision interval", withUnit(data.worker_activity_timing.check_ms / MINUTE, "min")],
-            ["Surface trail half-life", withUnit(Math.round(data.surface.trail_half_life_s / 6) / 10, "min")]
+            [exposure ? "Nominal worker decision interval" : "Worker decision interval",
+                withUnit(data.worker_activity_timing.check_ms / MINUTE, "min")],
+            [exposure ? "Trail reference half-life" : "Surface trail half-life",
+                withUnit(Math.round(data.surface.trail_half_life_s / 6) / 10, "min")],
+            ...(exposure ? [["Surface ventilation", tr(exposure.ventilated ? "Ventilated" : "Sheltered")],
+                ["Trail substrate", tr(exposure.porous ? "Porous surface hypothesis" : "Mineral reference")]] : [])
         ].map(([name, value]) => {
             const card = node("div");
             card.append(node("span", tr(name), "metric-label"), node("strong", value));
@@ -578,11 +594,15 @@ function bindLive() {
     } catch { /* The event group is still configurable in the current tab. */ }
     const click = (id, action) => $(id).addEventListener("click", () => Promise.resolve().then(action).catch(report));
     click("live-tab", openLiveView);
+    $("sealed-model").addEventListener("change", sealedOptions);
     click("new-single-nest", () => {
         if (!$("sealed-seed").reportValidity()) return;
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("single-nest", {seed: $("sealed-seed").valueAsNumber,
-            model: $("sealed-model").value, supply: $("sealed-supply").value});
+            model: $("sealed-model").value, supply: $("sealed-supply").value,
+            temperature: Number($("habitat-temperature").value), humidity: Number($("habitat-humidity").value),
+            trail_half_life: Number($("habitat-trails").value), air: $("surface-air").value,
+            substrate: $("surface-substrate").value});
     });
     click("new-colony", () => {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;

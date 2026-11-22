@@ -892,7 +892,10 @@ function drawAdult(ctx, ant, x, y, radius, heading, selected, progress, time, fo
         ctx.lineWidth=.025;
         ctx.stroke();
     }
-    if (ant.loaded) circle(ctx,.82,0,.16,"#c89b5b","#e4c89a");
+    if (ant.loaded) {
+        const water = ant.carried_ug?.[2] && !(ant.carried_ug[0] || ant.carried_ug[1] || ant.soil_load);
+        circle(ctx,.82,0,.16,water?"#69bacd":"#c89b5b",water?"#d3f0ef":"#e4c89a");
+    }
     ctx.restore();
     if (selected) {
         ctx.lineWidth=1.25;
@@ -1124,17 +1127,58 @@ function showLiveMotor() {
     return app.live && Boolean(liveView.state?.seeded_nursery || liveView.state?.habitat);
 }
 
-function drawSite(ctx, at, label, color, dy = -11, outline = false) {
+function drawSite(ctx, at, label, color, dy = -11, outline = false, labelLeft = false) {
     const [x, y] = at;
     ctx.save();
     circle(ctx, x, y, 6, outline ? "transparent" : color, outline ? color : "#17231a");
     ctx.font = '12px "Inter", "Microsoft YaHei", sans-serif';
     ctx.textBaseline = "middle";
     const width = ctx.measureText(label).width;
+    const left = labelLeft ? x - width - 21 : x + 9;
     ctx.fillStyle = "#152019ee";
-    ctx.fillRect(x + 9, y + dy - 9, width + 12, 20);
+    ctx.fillRect(left, y + dy - 9, width + 12, 20);
     ctx.fillStyle = "#fff5de";
-    ctx.fillText(label, x + 15, y + dy + 1);
+    ctx.fillText(label, left + 6, y + dy + 1);
+    ctx.restore();
+}
+
+function foodSourceLabel(source) {
+    const [carbs, protein] = source.initial_ug ?? source.stock_ug ?? [];
+    if (!carbs && !protein) return "Water source";
+    return protein && carbs <= protein ? "Protein-rich food source" : "Carbohydrate-rich food source";
+}
+
+// Stock glyphs use actual component masses at the source or depot. Their
+// spread is symbolic since the Core stores the depot contents as one pool.
+function drawResourceStock(ctx, [x,y], [carbs, protein, water] = []) {
+    if (!carbs && !protein && !water) return;
+    const radius = mass => Math.min(13, 2 + Math.log10(1 + mass) * 2);
+    ctx.save();
+    ctx.translate(x,y);
+    if (water) {
+        const r = radius(water);
+        const sheen = ctx.createLinearGradient(0,-r,0,r);
+        sheen.addColorStop(0,"#d4f1df");
+        sheen.addColorStop(.43,"#6eb7b5");
+        sheen.addColorStop(1,"#285f65");
+        ctx.fillStyle = sheen;
+        ctx.strokeStyle = "#96cbba";
+        ctx.beginPath(); ctx.ellipse(0,2,r,r*.62,-.17,0,2*Math.PI); ctx.fill(); ctx.stroke();
+    }
+    if (carbs) {
+        const r = radius(carbs)*.56;
+        circle(ctx, protein ? r : 0, water ? -3 : 0, r, "#d3a458", "#f1c878");
+        circle(ctx, (protein ? r : 0)-r*.28, water ? -4 : -1, r*.23, "#fff1b5");
+    }
+    if (protein) {
+        const r = radius(protein)*.67, cx = carbs ? -r : 0;
+        ctx.fillStyle = "#935b37";
+        ctx.strokeStyle = "#e8bd8a";
+        ctx.beginPath();
+        ctx.moveTo(cx-r,-r*.2); ctx.lineTo(cx-r*.3,-r); ctx.lineTo(cx+r*.7,-r*.62);
+        ctx.lineTo(cx+r,r*.35); ctx.lineTo(cx+r*.08,r*.82); ctx.lineTo(cx-r*.76,r*.53);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
     ctx.restore();
 }
 
@@ -1205,29 +1249,42 @@ function drawMap(motionOnly = false) {
         point = a => p.point(a[0], a[2]);
         fits = a => a[1] >= surfaceY - 1e-10;
         orientation = "X east / Z north";
-        rect(ctx, p, bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1], "#243629", "#58705b");
-        if (surface) {
-            const step = surface.cell_m;
-            const stride = Math.max(1, Math.ceil(Math.max(surface.width, surface.height) / 120));
-            ctx.lineWidth = .5;
-            ctx.strokeStyle = "#3b5140";
-            ctx.beginPath();
-            for (let x = 0; x <= surface.width; x += stride) {
-                ctx.moveTo(...p.point(bounds[0] + x*step, bounds[1]));
-                ctx.lineTo(...p.point(bounds[0] + x*step, bounds[3]));
-            }
-            for (let z = 0; z <= surface.height; z += stride) {
-                ctx.moveTo(...p.point(bounds[0], bounds[1] + z*step));
-                ctx.lineTo(...p.point(bounds[2], bounds[1] + z*step));
-            }
-            ctx.stroke();
-            ctx.lineWidth = 1;
-            for (const i of surface.blocked) rect(ctx, p, bounds[0] + i%surface.width*step,
-                bounds[1] + Math.floor(i/surface.width)*step, step, step, "#152019");
-        }
+        const light = ctx.createLinearGradient(0,0,width,height);
+        light.addColorStop(0,"#56654c");
+        light.addColorStop(.47,"#414a36");
+        light.addColorStop(1,"#2c3327");
+        rect(ctx, p, bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1], light, "#809275");
         if (terrain) {
             const [x, , z] = terrain.origin_m, q = terrain.quantum_m, s = terrain.solid;
-            rect(ctx, p, x + s[0]*q, z + s[2]*q, (s[3]-s[0])*q, (s[5]-s[2])*q, "#354135", "#80936f");
+            const soil = [x+s[0]*q, z+s[2]*q, (s[3]-s[0])*q, (s[5]-s[2])*q];
+            rect(ctx,p,...soil,"#6c5942","#9a8060");
+            const grain = soilTexture(ctx);
+            if (grain) {
+                ctx.save(); ctx.globalAlpha = .66;
+                rect(ctx,p,...soil,grain);
+                ctx.restore();
+            }
+        }
+        if (surface) {
+            const step = surface.cell_m;
+            if (document.body.classList.contains("research-view")) {
+                const stride = Math.max(1, Math.ceil(Math.max(surface.width, surface.height) / 120));
+                ctx.lineWidth = .5;
+                ctx.strokeStyle = "#e9e2c449";
+                ctx.beginPath();
+                for (let x = 0; x <= surface.width; x += stride) {
+                    ctx.moveTo(...p.point(bounds[0] + x*step, bounds[1]));
+                    ctx.lineTo(...p.point(bounds[0] + x*step, bounds[3]));
+                }
+                for (let z = 0; z <= surface.height; z += stride) {
+                    ctx.moveTo(...p.point(bounds[0], bounds[1] + z*step));
+                    ctx.lineTo(...p.point(bounds[2], bounds[1] + z*step));
+                }
+                ctx.stroke();
+                ctx.lineWidth = 1;
+            }
+            for (const i of surface.blocked) rect(ctx, p, bounds[0] + i%surface.width*step,
+                bounds[1] + Math.floor(i/surface.width)*step, step, step, "#152019");
         }
         if (habitat && surface && $("show-trails").checked) {
             const [x, , z] = surface.origin_m, step = surface.cell_m;
@@ -1249,10 +1306,12 @@ function drawMap(motionOnly = false) {
         for (const s of state.sources.filter(s => fits(s.position_m))) {
             const [x, y] = point(s.position_m);
             const inStock = s.stock_ug.some(v => v > 0);
+            drawResourceStock(ctx,[x,y],s.stock_ug);
             if (habitat) {
-                const water = s.initial_ug[2] > 0 && s.initial_ug[2] === s.initial_ug.reduce((n, part) => n + part, 0);
-                const label = tr(water ? "Water source" : "Food source");
-                drawSite(ctx, [x, y], label + (inStock ? "" : " · " + tr("depleted")), water ? "#91c9db" : colors.food);
+                const sourceType = foodSourceLabel(s);
+                drawSite(ctx, [x, y], tr(sourceType) + (inStock ? "" : " · " + tr("depleted")),
+                    sourceType === "Water source" ? "#91c9db" : "#e4b889", -16, inStock,
+                    sourceType === "Protein-rich food source");
                 continue;
             }
             ctx.fillStyle = inStock ? colors.food : "#52635a";
@@ -1284,6 +1343,7 @@ function drawMap(motionOnly = false) {
         for (const depot of display?.colonies ?? app.meta.colonies) {
             if (!fits(depot.position_m)) continue;
             const stock = depot.stock_ug.reduce((total, part) => total + part, 0);
+            drawResourceStock(ctx,point(depot.position_m),depot.stock_ug);
             drawSite(ctx, point(depot.position_m), tr("Nest food · {mass}", {mass: withUnit(stock, "µg")}),
                 stock ? "#f1ce86" : "#a08d67", 17);
         }

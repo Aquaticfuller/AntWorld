@@ -21,6 +21,13 @@ With the standalone Python installer and no `py` launcher, use
 The batch entry point works with the normal PowerShell script policy.
 The observer opens locally at `http://127.0.0.1:8765/`.
 
+Choose **Colony setup → Sealed nest model → Variable conditions · Physics 45**
+before selecting **New sealed nest** to try the seeded activity rhythm, the
+feeding patch and the four external sources. The same setup supplies the
+temperature, humidity, trail reference time, ventilation and substrate.
+**Extended supply · 730 days** extends the finite release reserve. See
+[the experiment and survival results](VARIABLE_CONDITIONS.md).
+
 1. Select **New sealed nest** for Physics 39. The starting view contains one
    queen and one sealed pocket. Software seed 3 is the default for the
    finite-supply demonstration. **Colony setup** contains the seed,

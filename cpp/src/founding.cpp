@@ -42,7 +42,7 @@ void WorldRuntime::enable_founding(AntRef ref, const FoundingProfile& profile) {
     ScheduledEvent lay;
     lay.kind = ScheduledEvent::Kind::Reproduction;
     lay.actor = ref.id;
-    lay.key = {profile.first_lay, Phase::Environment, 2, 0, 0};
+    lay.key = {next_founding_lay(s, ref.id, profile, {}, 0), Phase::Environment, 2, 0, 0};
     tx.reproduction.set(ref.id, {founding_reproduction(profile), tx.insert(lay), 0, 0});
 
     WorldEvent f;

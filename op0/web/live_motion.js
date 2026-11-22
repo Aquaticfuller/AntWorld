@@ -29,6 +29,7 @@ class LiveMotion {
         this.cuts.push(cut);
         while (this.cuts.length > 2 && (this.cuts.length > 32 || cut.time - this.cuts[1].time > 1000)) this.cuts.shift();
         this.knownFrom = BigInt(data.recent_from_id);
+        this.surfaceY = data.surface?.origin_m[1];
         this.moves.clear();
         const floor = this.cuts[0].cursor;
         const carrierMoves = new Map(data.motion.filter(event => event.kind === "Moved" && event.motion)
@@ -64,7 +65,12 @@ class LiveMotion {
                 break;
             }
             const open = this.open.get(ant.id);
-            if (!ant.body && !committedOnly && !segment && open && open.begins_ms <= time && time < open.ends_ms &&
+            // A native lease on level ground already has a checked swept path.
+            // In the chamber continue to require a completed body movement.
+            const levelSurface = open && Number.isFinite(this.surfaceY) &&
+                open.from_m[1] >= this.surfaceY && open.from_m[1] === open.to_m[1];
+            if (complete && (levelSurface || (!ant.body && !committedOnly)) &&
+                !segment && open && open.begins_ms <= time && time < open.ends_ms &&
                 position.every((v, i) => v === open.from_m[i])) segment = open;
             if (!segment) return {...ant, display_position_m: position, display_motion: null};
             const progress = Math.max(0, Math.min(1, (time - segment.translates_ms) / (segment.ends_ms - segment.translates_ms)));

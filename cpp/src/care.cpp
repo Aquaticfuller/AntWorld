@@ -51,6 +51,14 @@ bool WorldRuntime::mouth_at_supply(const AntState& adult,PositionM target) const
     return body && supply_in_reach(*body,target) && spatially_clear(body->mouth_m,target);
 }
 
+PositionM WorldRuntime::depot_mouth_target(const AntState& adult, PositionM depot) const {
+    if (!variable_conditions(*state_)) return depot;
+    const auto pose = query_body({state_->world,adult.id});
+    if (!pose) return depot;
+    const auto target = feeding_patch_point(pose->mouth_m,depot);
+    return spatially_clear(depot,target) ? target : depot;
+}
+
 bool WorldRuntime::seeks_nest_meal(const AntState& adult,const PhysiologyState& p) const {
     const auto& s=*state_;
     if (!mouth_access(s) || !s.founding || !s.founding->profile.dietary ||
@@ -58,8 +66,9 @@ bool WorldRuntime::seeks_nest_meal(const AntState& adult,const PhysiologyState& 
         p.crop.total_ug()>=p.config.crop_capacity_ug) return false;
     const auto& colony=s.colonies.rows[s.colonies.index.at(adult.colony)];
     const auto mouth=query_body({s.world,adult.id})->mouth_m;
-    const bool visible=within_distance(mouth,colony.nest_position,s.care_profile->perception_radius_m,true) &&
-                       spatially_clear(mouth,colony.nest_position);
+    const auto accessible=depot_mouth_target(adult,colony.nest_position);
+    const bool visible=within_distance(mouth,accessible,s.care_profile->perception_radius_m,true) &&
+                       spatially_clear(mouth,accessible);
     const auto& reserve=s.founding_reserves.at(adult.id);
     const bool founder=founding_foundress(adult.id);
     if (visible && founder) return foundress_nest_meal(s.founding->profile,p,reserve,colony.nest_food).total_ug()!=0;
@@ -92,11 +101,12 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
             query_worker_motion(ref)) continue;
         const auto mouth=query_body(ref)->mouth_m;
         if (!within_distance(donor.mouth_m,mouth,radius,true) || !spatially_clear(donor.mouth_m,mouth)) continue;
-        if (oral_contact(ant,peer)) {
-            const auto p=*query_physiology(ref);
-            if (p.crop.total_ug()<p.config.crop_capacity_ug && ingredient_min(supply,signaled_need(p,peer.stage,true)).total_ug())
-                return std::pair{ant.position,peer.id};
-            continue;
+        const bool touching=oral_contact(ant,peer);
+        if (touching || variable_conditions(s)) {
+            const auto p=query_physiology(ref);
+            if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug ||
+                !ingredient_min(supply,signaled_need(*p,peer.stage,true)).total_ug()) continue;
+            if (touching) return std::pair{ant.position,peer.id};
         }
         const auto rank=std::pair{std::int64_t(std::llround(portable_care_distance(donor.mouth_m,mouth)*1'000'000)),peer.id};
         if (!nearest || rank<*nearest) nearest=rank;
@@ -973,7 +983,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         interrupt_care(tx,a.id,outcome,true);
         if (!failed && c.search_remaining && mouth_access(s)) {
             const auto arrived=*query_ant({s.world,a.id});
-            const auto depot=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
+            const auto depot=depot_mouth_target(arrived,s.colonies.rows[s.colonies.index.at(a.colony)].nest_position);
             if (seeks_nest_meal(arrived,*query_physiology({s.world,a.id}))) {
                 if (mouth_at_supply(arrived,depot)) {
                     if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);

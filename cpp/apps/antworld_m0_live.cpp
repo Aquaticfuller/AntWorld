@@ -402,29 +402,39 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v19");
+                message("OK", "antworld.m0.live.v20");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
-                       command=="NEW_FAMILIAR_RETURN_NEST") {
+                       command=="NEW_FAMILIAR_RETURN_NEST" || command=="NEW_VARIABLE_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
+                const bool variable=command=="NEW_VARIABLE_NEST";
                 const bool familiar=command=="NEW_FAMILIAR_RETURN_NEST";
-                const bool mouth_handoff=command=="NEW_MOUTH_HANDOFF_NEST" || familiar;
+                const bool mouth_handoff=command=="NEW_MOUTH_HANDOFF_NEST" || familiar || variable;
                 const bool wall=command=="NEW_WALL_HANDOFF_NEST" || mouth_handoff;
                 const bool offers=command=="NEW_OFFER_NEST" || wall;
                 const bool oral=command=="NEW_ORAL_NEST" || offers;
                 const bool anatomical=command=="NEW_ANATOMICAL_NEST" || oral;
                 const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
+                std::optional<TrailExposure> exposure;
+                bool extended_supply=false;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
-                    require(supply=="finite" || supply=="absent","invalid supply setting");
+                    require(supply=="finite" || supply=="absent" || (variable && supply=="extended"),"invalid supply setting");
                     alternate_berth=policy=="reachable";
-                    external_supply=supply=="finite";
+                    external_supply=supply!="absent";
+                    extended_supply=supply=="extended";
+                }
+                if (variable) {
+                    const auto ventilation=word(request), substrate=word(request);
+                    require((ventilation=="sheltered" || ventilation=="ventilated") &&
+                            (substrate=="mineral" || substrate=="porous"),"invalid surface trail exposure");
+                    exposure=TrailExposure{ventilation=="ventilated",substrate=="porous"};
                 }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
@@ -432,9 +442,10 @@ int main() {
                 require(half_life==60 || half_life==1955,"unsupported founding trail half-life");
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
+                if (extended_supply) c.release_days=730;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
                 auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,
-                    anatomical,oral,offers,wall,mouth_handoff,familiar);
+                    anatomical,oral,offers,wall,mouth_handoff,familiar,exposure);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();

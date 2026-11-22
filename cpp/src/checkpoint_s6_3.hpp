@@ -96,7 +96,7 @@ template <class S> void validate_long_term_evidence(const S &s) {
   typename S::ResourceCycles cycles;
   std::map<EntityId, LifeStage> stages;
   std::map<ScheduledId, std::pair<EntityId, EntityId>> births;
-  SimTime next_founding_lay = s.founding ? s.founding->profile.first_lay : SimTime{};
+  SimTime founding_wake = s.founding ? next_founding_lay(s, s.founding->founder, s.founding->profile, {}, 0) : SimTime{};
   for (const auto &e : s.journal) {
     if (e.kind == FactKind::AntSeeded || e.kind == FactKind::AntBorn ||
         e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
@@ -124,8 +124,8 @@ template <class S> void validate_long_term_evidence(const S &s) {
       auto &q = queens.at(e.actor);
       bump(q.attempts);
       if (s.founding && e.actor == s.founding->founder) {
-        ensure(e.time == next_founding_lay, "unexpected F1 reproduction timing");
-        next_founding_lay = founding_lay_after(s.founding->profile, e.time);
+        ensure(e.time == founding_wake, "unexpected F1 reproduction timing");
+        founding_wake = next_founding_lay(s, e.actor, s.founding->profile, e.time, q.attempts);
       } else ensure(e.time.milliseconds ==
                  static_cast<std::int64_t>(
                      multiply(q.attempts, static_cast<std::uint64_t>(
@@ -195,7 +195,7 @@ template <class S> void validate_long_term_evidence(const S &s) {
       ensure(s.queue_index.contains(q.wake), "missing queen wake");
       const auto &e = s.queue.at(s.queue_index.at(q.wake));
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Reproduction &&
-                 e.key.time == (s.founding && id == s.founding->founder ? next_founding_lay :
+                 e.key.time == (s.founding && id == s.founding->founder ? founding_wake :
                      after(e.issued_at, q.config.interval.milliseconds)),
              "invalid next reproduction time");
     }

@@ -209,17 +209,34 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
         scene.workers.push_back(worker);
     }
     if (c.integrated_assay && c.food.total_ug()) {
-        const auto source=w.seed_food(scene.target,c.food);
         const auto daily = c.arm == "limited" ? FoodMass{188,94,563,0} :
             FoodMass{c.food.carbs_ug/4,c.food.protein_ug/4,c.food.water_ug/4,0};
-        ResourceCycleConfig cycle{{daily.carbs_ug*c.release_days,daily.protein_ug*c.release_days,
-                                    daily.water_ug*c.release_days,0},daily};
-        if (c.seasonal_supply) {
-            cycle.cyclic=true;
-            cycle.productive_span={182*day_ms};
-            cycle.low_productivity_permille=250;
+        const auto feeder=[&](PositionM position,FoodMass initial,FoodMass pulse) {
+            const auto source=w.seed_food(position,initial);
+            ResourceCycleConfig cycle{{pulse.carbs_ug*c.release_days,pulse.protein_ug*c.release_days,
+                                        pulse.water_ug*c.release_days,0},pulse};
+            if (c.seasonal_supply) {
+                cycle.cyclic=true;
+                cycle.productive_span={182*day_ms};
+                cycle.low_productivity_permille=250;
+            }
+            w.configure_resource_cycle(source,cycle);
+        };
+        if (habitat && c.ecological->founding_habitat->variable_conditions) {
+            const auto split=[](FoodMass amount) {
+                const FoodMass extra{amount.carbs_ug/4,amount.protein_ug/2,amount.water_ug/4,0};
+                amount.carbs_ug-=extra.carbs_ug;
+                amount.protein_ug-=extra.protein_ug;
+                amount.water_ug-=extra.water_ug;
+                return std::pair{amount,extra};
+            };
+            const auto [main_food,extra_food]=split(c.food);
+            const auto [main_pulse,extra_pulse]=split(daily);
+            feeder(scene.target,main_food,main_pulse);
+            feeder({-scene.target.x,0,.02},extra_food,extra_pulse);
+        } else {
+            feeder(scene.target,c.food,daily);
         }
-        w.configure_resource_cycle(source,cycle);
     } else if (!c.integrated_assay && c.food.total_ug()) {
         const bool blocked=c.arm=="blocked" || c.arm=="water-blocked";
         const PositionM depot = blocked ? PositionM{0, 0, .020} : PositionM{};

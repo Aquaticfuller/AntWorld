@@ -454,6 +454,54 @@ class LiveTests(unittest.TestCase):
                 self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
                 self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_variable_nest_preserves_seeded_laying_and_finite_supply_on_restore(self):
+        core = self.live.core()
+        if not core.variable_nest:
+            self.skipTest("Build the Physics 45 Core")
+        request = "NEW_VARIABLE_NEST 9803 3 250 80 plugged 1955 reachable finite sheltered mineral"
+        initial = core.call(request)
+        self.live.install(initial, running=False)
+        self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (38, 45))
+        sources = [source for source in self.live.frame["sources"].values() if source["position_m"][1] == 0]
+        self.assertEqual(len(sources), 4)
+        self.assertEqual(tuple(map(sum, zip(*(source["stock_ug"] for source in sources)))), (6000, 3000, 18000, 0))
+
+        cut = core.call(f"ADVANCE {4 * DAY + 12 * HOUR}")
+        self.live.publish(cut)
+        for mode in ("archive", "snapshot"):
+            self.live.save("Variable founding", False, mode)
+        end = 7 * DAY
+        finished = core.call(f"ADVANCE {end}")
+        cursor = checkpoint(finished)["cursor"]
+        attempts = [event.time for event in facts(core, cursor) if KINDS[event.kind] == "ReproductionAttempt"]
+        bout = [time for time in attempts if time < attempts[0] + DAY]
+        spacings = [b - a for a, b in zip(bout, bout[1:])]
+        self.assertGreater(len(set(spacings)), 5)
+        self.assertTrue(all(2 * HOUR * .54 - 1 <= dt <= 2 * HOUR * 1.54 for dt in spacings))
+        for mode in ("archive", "snapshot"):
+            with self.subTest(mode=mode):
+                self.live.load("Variable founding", mode)
+                self.assertEqual(core.call("FRAME"), cut)
+                self.assertEqual(core.call(f"ADVANCE {end}"), finished)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        self.assertEqual(core.call(request), initial)
+        self.assertEqual(core.call(f"ADVANCE {end}"), finished)
+        variant = checkpoint(core.call(request.replace("9803 3", "9803 1")))
+        self.assertEqual(len(variant["ants"]), 1)
+        end_other = checkpoint(core.call(f"ADVANCE {end}"))
+        first_other = next(event.time for event in facts(core, end_other["cursor"]) if KINDS[event.kind] == "ReproductionAttempt")
+        self.assertNotEqual(attempts[0], first_other)
+
+        self.live.install(core.call(request), running=False)
+        late = core.call(f"ADVANCE {51 * DAY}")
+        self.live.publish(late)
+        self.assertTrue(any(KINDS[event.kind] == "FoundressNestMeal" and event.mass[0] > 0
+                            for event in facts(core, self.live.frame["cursor"])))
+        self.live.save("After a feeding patch meal", False, "archive")
+        self.live.load("After a feeding patch meal", "archive")
+        self.assertEqual(core.call("FRAME"), late)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()
         if not worker.observatory:

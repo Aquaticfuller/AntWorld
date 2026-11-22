@@ -1,5 +1,6 @@
 #pragma once
 #include "antworld/core/behavior.hpp"
+#include "antworld/core/rng.hpp"
 #include "motion_numeric.hpp"
 #include <cmath>
 #include <optional>
@@ -144,10 +145,34 @@ inline double portable_trail_exponential(double halves) {
         series=std::fma(series,-log_two*fraction/static_cast<double>(n),1.);
     return std::ldexp(series,-whole);
 }
-inline double trail_at(const Trail& t, SimTime now, const BehaviorConfig& p, bool portable=false) {
+inline double local_trail_half_life(const auto& s, Cell cell) {
+    const auto baseline = s.surface->behavior.trail_half_life_s;
+    if (!s.ecological || !s.ecological->founding_habitat) return baseline;
+    const auto& exposure = s.ecological->founding_habitat->variable_conditions;
+    if (!exposure) return baseline;
+
+    // ENGINEERING_FIXTURE. This is a rate for a deposited surface mark, not
+    // an airborne plume. Climate and exposure are fixed for the life of this
+    // scenario. Each cell has stable micro-variation across reads and reloads.
+    const auto& environment = s.care_environment;
+    const auto delta = std::clamp((environment.temperature_c - 25.) / 10., -4., 4.);
+    const auto thermal = portable_trail_exponential(std::abs(delta));
+    const auto temperature_rate = delta < 0 ? thermal : 1. / thermal;
+    const auto exchange_rate = exposure->ventilated ? 1.35 : 1.;
+    const auto retention_time = exposure->porous ? 1.25 : 1.;
+    const auto moisture_rate = exposure->porous ? 1. + .5 * (environment.relative_humidity - .8) : 1.;
+    Rng site(s.seed ^ UINT64_C(0x545241494c5f5349));
+    Rng local(site.next() ^ connector_cell(cell));
+    const auto micro_rate = (900 + local.next() % 201) / 1000.;
+    return baseline * retention_time / (temperature_rate * exchange_rate * moisture_rate * micro_rate);
+}
+
+inline double trail_at(const auto& s, Cell cell, const Trail& t, SimTime now, bool portable) {
+    const auto& p = s.surface->behavior;
+    const auto half_life = local_trail_half_life(s, cell);
     const auto seconds = static_cast<double>(now.milliseconds-t.updated.milliseconds)/1000.0;
-    const auto amount = t.units*(portable ? portable_trail_exponential(seconds/p.trail_half_life_s) :
-        std::exp(-std::log(2.0)*seconds/p.trail_half_life_s));
+    const auto amount = t.units*(portable ? portable_trail_exponential(seconds/half_life) :
+        std::exp(-std::log(2.0)*seconds/half_life));
     return amount < p.trail_cutoff_units ? 0 : amount;
 }
 inline double next_trail(const BehaviorConfig& p,double current,bool portable) {

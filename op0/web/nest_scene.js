@@ -168,8 +168,9 @@ const nestScene = (() => {
             [trunk[1]*.30,trunk[2]*.42,trunk[3]*.37],color,.6);
         if (ant.loaded && !body.held_id) {
             const cargo=offset(offset(at,forward,head[0]+head[1]*1.23),up,-head[2]*.24);
+            const water=ant.carried_ug?.[2] && !(ant.carried_ug[0] || ant.carried_ug[1]);
             putShape(buffer,cargo,forward,up,[head[1]*.49,head[2]*.58, head[3]*.53],
-                ant.soil_load?[.66,.44,.25]:[.75,.64,.29],.28);
+                ant.soil_load?[.66,.44,.25]:water?[.34,.69,.72]:[.75,.64,.29],.28);
         }
     }
 

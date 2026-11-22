@@ -42,4 +42,20 @@ assert.equal(x(400), 2.5, "A slow connection holds the last validated time");
 motion.record(cut(120, 2, [0, 0, 0]), 120);
 assert.equal(x(355), 0, "An interrupted motion with no committed displacement is discarded");
 
+motion.clear();
+const body = {segments: []}, surface = {origin_m: [0, 0, 0]};
+const lease = {begins_ms: 20, translates_ms: 40, ends_ms: 2040, from_m: [0, 0, 0], to_m: [.01, 0, 0]};
+motion.record({...start, surface, ants: [{...start.ants[0], body}]}, 0);
+motion.record(cut(140, 2, [0, 0, 0], {surface, ants: [{...start.ants[0], body, motion_plan: lease}]}), 140);
+assert.equal(motion.frame(370, true).ants[0].display_position_m[0], .00045,
+    "A checked ground lease advances smoothly before its two-second arrival, including in the 3D view");
+motion.record(cut(145, 3, [0, 0, 0], {surface, ants: [{...start.ants[0], body}]}), 145);
+assert.equal(motion.frame(380, true).ants[0].display_position_m[0], 0, "A cancelled lease cannot keep moving");
+motion.clear();
+const underground = {...lease, from_m: [0, -.004, 0], to_m: [.01, -.004, 0]};
+motion.record(cut(140, 2, underground.from_m, {surface,
+    ants: [{...start.ants[0], position_m: underground.from_m, body, motion_plan: underground}]}), 140);
+assert.equal(motion.frame(385, true).ants[0].display_motion, null,
+    "Underground anatomical movement still waits for its committed segment");
+
 console.log("PASS: live segment rendering, turns, delay, missing evidence, interruption and pause");

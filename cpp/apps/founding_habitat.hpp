@@ -23,7 +23,7 @@ inline constexpr std::uint64_t reference_deficit=3168*20;
 inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t tenths_c,std::uint64_t humidity,
                         bool external_supply=true,bool alternate_berth=false,bool sealed=false,bool anatomical=false,
                         bool mouth_access=false,bool adult_offers=false,bool wall_handoff=false,bool anatomical_handoff=false,
-                        bool familiar_return=false) {
+                        bool familiar_return=false,std::optional<TrailExposure> exposure={}) {
     const auto climate=std::find_if(temperatures.begin(),temperatures.end(),
         [tenths_c](const Temperature& t){return t.tenths_c==tenths_c;});
     wp6b::require(climate!=temperatures.end() && (humidity==60 || humidity==80 || humidity==90),
@@ -48,7 +48,7 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     ecology.nest_dynamics=NestDynamics{true,NestScoring::SpatialDemand};
     ecology.founding_habitat=FoundingHabitat{{anatomical?-.005:sealed?-.00175:-.004,-.004,0},2000,
                                            alternate_berth || sealed,sealed,anatomical,mouth_access,adult_offers,wall_handoff,anatomical_handoff,
-                                           familiar_return};
+                                           familiar_return,exposure};
     const auto interval=[&](std::int64_t ms) {
         return SimTime{ms*1000/static_cast<std::int64_t>(climate->activity_permille)};
     };
@@ -68,8 +68,14 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     auto scene=wp6b::setup(c,limits,closure::day_social(),care,
         {static_cast<double>(tenths_c)/10,static_cast<double>(humidity)/100});
     if (external_supply) {
-        const auto water=scene.world.seed_food({0,0,.03},{0,0,9000,0});
-        scene.world.configure_resource_cycle(water,{{0,0,2250ULL*c.release_days,0},{0,0,2250,0}});
+        const auto add_water=[&](PositionM position,std::uint64_t initial,std::uint64_t daily) {
+            const auto water=scene.world.seed_food(position,{0,0,initial,0});
+            scene.world.configure_resource_cycle(water,{{0,0,daily*c.release_days,0},{0,0,daily,0}});
+        };
+        if (exposure) {
+            add_water({0,0,.03},6750,1688);
+            add_water({0,0,-.04},2250,562);
+        } else add_water({0,0,.03},9000,2250);
     }
     return scene;
 }

@@ -210,14 +210,36 @@ function drawNest(canvas, state, motionOnly) {
         nestView.built++;
     }
     const surfaceY = planeSurface(), surface = app.meta.surface;
-    const bounds = surface ? [surface.origin_m[0], surface.origin_m[2],
-        surface.origin_m[0] + surface.cell_m * surface.width, surface.origin_m[2] + surface.cell_m * surface.height] : null;
+    const bounds = surface ? [surface.origin_m[0]-surface.cell_m/2, surface.origin_m[2]-surface.cell_m/2,
+        surface.origin_m[0] + surface.cell_m * (surface.width-.5),
+        surface.origin_m[2] + surface.cell_m * (surface.height-.5)] : null;
     if (bounds) {
         const [a, b, c, d] = bounds;
-        ctx.setLineDash([5, 5]);
-        nestPolygon(ctx, [[a, surfaceY, b], [c, surfaceY, b], [c, surfaceY, d], [a, surfaceY, d]].map(project),
-            null, "#61816e");
-        ctx.setLineDash([]);
+        const border = (left, near, right, far) =>
+            [[left,surfaceY,near],[right,surfaceY,near],[right,surfaceY,far],[left,surfaceY,far]].map(project);
+        const outline = border(a,b,c,d);
+        const left = Math.max(a,origin[0]+x*q), near = Math.max(b,origin[2]+z*q);
+        const last = Math.min(c,origin[0]+right*q), distant = Math.min(d,origin[2]+far*q);
+        const faces = [outline];
+        if (left < last && near < distant) faces.push(border(left,near,last,distant));
+        // Leave the Core's local geometry, including its real openings, exposed.
+        ctx.save();
+        ctx.beginPath();
+        for (const polygon of faces) {
+            ctx.moveTo(...polygon[0].slice(0,2));
+            for (const [px,py] of polygon.slice(1)) ctx.lineTo(px,py);
+            ctx.closePath();
+        }
+        ctx.fillStyle = "#565c43";
+        ctx.fill("evenodd");
+        const grain = soilTexture(ctx);
+        if (grain) {
+            ctx.globalAlpha = .38;
+            ctx.fillStyle = grain;
+            ctx.fill("evenodd");
+        }
+        ctx.restore();
+        nestPolygon(ctx,outline,null,"#a0a38b55");
     }
     const layers = [];
     for (const f of nestView.faces) {
@@ -243,8 +265,9 @@ function drawNest(canvas, state, motionOnly) {
         if (site && visible(site)) points.push({p: project(site), message, color, offset});
     };
     for (const source of state.sources || []) if (source.stock_ug.some(n => n > 0)) {
-        const water = !(source.stock_ug[0] || source.stock_ug[1]);
-        add(source.position_m, water ? "Water" : "Food source", water ? "#92d6ec" : "#92ddb5", [-31,-40]);
+        const label = foodSourceLabel(source);
+        add(source.position_m, label, label === "Water source" ? "#92d6ec" : "#e3bd8a",
+            label === "Water source" ? [24,-30] : [-24,-36]);
     }
     const habitat = app.live ? liveView.state.habitat : app.meta.settings.ecological?.founding_habitat;
     if (!habitat?.anatomical || document.body.classList.contains("research-view") ||
@@ -305,6 +328,8 @@ function drawNest(canvas, state, motionOnly) {
         layers.concat(actors).sort((a, b) => a.order - b.order).forEach(item => item.ant ? drawActor(item) : paintFace(item));
     }
     if (!shaded) drawSoilParcels(ctx,state.soil_piles,project,visible,unit);
+    for (const supply of [...(state.sources || []), ...(state.colonies || app.meta.colonies)])
+        if (visible(supply.position_m)) drawResourceStock(ctx,project(supply.position_m),supply.stock_ug);
     const scaleMm = unit>40000 ? 1 : unit>9000 ? 2 : unit>2000 ? 10 : 50;
     const bar = scaleMm*unit/1000, rulerY = height-22;
     ctx.strokeStyle = "#d9d4bc";
@@ -326,7 +351,11 @@ function drawNest(canvas, state, motionOnly) {
     for (const event of events) {
         const sites = app.live && liveTransferSites(event,liveView.state);
         if (sites) drawTransferSites(ctx,sites,project,visible,width,height);
-        else nestCallout(ctx,project(event.position_m),`${tr(event.kind)} · #${event.id}`,"#f3da94",[44,-44],width,height);
+        else {
+            const label = event.action?.act || event.kind;
+            const color = event.action || event.kind === "NutritionTransferred" ? liveActionColors[liveActionGroup(event)] : "#f3da94";
+            nestCallout(ctx,project(event.position_m),`${tr(label)} · #${event.actor}`,color,[44,-44],width,height);
+        }
     }
     app.hits = actors.map(({ant, p, size}) => ({x: p[0], y: p[1], radius: size + 6, id: ant.id, ants: [ant]}));
     nestView.lastDrawMs = performance.now() - started;
@@ -335,7 +364,7 @@ function drawNest(canvas, state, motionOnly) {
         $("show-largest").hidden = true;
         put("map-summary", tr("{count} individuals in this view", {count: actors.length}));
         put("map-detail", tr("Drag to rotate · Shift-drag to pan · Scroll to zoom") + (app.live ?
-            " · " + tr("Visual interpolation of committed moves at 1×") : ""));
+            " · " + tr("Core movements and checked surface plans at 1×") : ""));
         renderLocation();
         put("nest-depth-value", `${decimal.format(clipped * q * 1000)} mm`);
         put("space-caption", tr("Local material surfaces · {count} committed edits", {count: volume.revision}) +

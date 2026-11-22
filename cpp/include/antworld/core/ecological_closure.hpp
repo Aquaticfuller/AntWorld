@@ -19,6 +19,12 @@ struct NestDynamics {
     bool operator==(const NestDynamics&) const = default;
 };
 
+struct TrailExposure {
+    bool ventilated{};
+    bool porous{};
+    bool operator==(const TrailExposure&) const = default;
+};
+
 // ENGINEERING_FIXTURE for a single founding chamber and a separate handoff site.
 // The brood site is familiar to the founding queen and her own offspring.
 struct FoundingHabitat {
@@ -32,6 +38,8 @@ struct FoundingHabitat {
     bool wall_handoff{}; // Physics 42. A blocked returning carrier can unload from a real mouth contact.
     bool anatomical_handoff{}; // Physics 43. Use mouth reach at that handoff and keep the actual connector.
     bool familiar_return{}; // Physics 44. An empty returner can recognize its own mouth-contact berth.
+    // Physics 45. Bounded behavioral intervals and experimental surface exposure.
+    std::optional<TrailExposure> variable_conditions{};
     bool operator==(const FoundingHabitat&) const = default;
 };
 
