@@ -1,4 +1,6 @@
 {
+  "Carbohydrate at death (µg): crop {crop}, nest {nest}, outside {outside}": "死亡时的糖量（µg）｜嗉囊 {crop}，巢内库存 {nest}，地表 {outside}",
+  "Water at death (µg): body {body}, crop {crop}": "死亡时的水量（µg）｜体内 {body}，嗉囊 {crop}",
   "AntWorld · Observation Preview": "AntWorld · 蚁群观察预览",
   "AntWorld Observation Preview": "AntWorld 蚁群观察预览",
   "Viewer": "观察器导航",

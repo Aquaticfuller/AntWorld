@@ -680,6 +680,9 @@ async function sealedNestWorld() {
     assert.equal(await evaluate("liveView.state.running || liveView.state.rate !== 1"), false);
     assert.equal(await evaluate("liveView.state.time_ms"), result.death.time_ms);
     assert.equal(await evaluate("$('ant-id').value"), result.death.actor);
+    await wait(() => evaluate("$('live-stop').textContent.includes(tr('Water at death (µg): body {body}, crop {crop}'," +
+        " (() => { const a=liveView.state.ants.find(x => x.id===liveView.state.fast_forward.event.actor);" +
+        "return {body:a.hydration_ug,crop:a.crop_ug[2]}; })()))"), "Show actual water balances at the death cut");
     assert.match(await evaluate("$('event-detail').textContent"), /\u8131\u6c34/);
     if (await evaluate("liveView.state.sustained_nest_available")) {
         await select("sealed-model", "sustained");

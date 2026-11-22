@@ -148,6 +148,18 @@ function liveControls() {
     if (stop?.event?.kind === "AntDied") {
         const e = stop.event;
         details += " · " + tr("Ant #{id}", {id: e.actor}) + " · " + tr(e.before_death_stage) + " · " + tr(e.death_cause);
+        if (s.time_ms === e.time_ms && s.ants && s.colonies && s.sources && s.surface) {
+            const ant = s.ants.find(a => a.id === e.actor);
+            const depot = s.colonies.find(c => c.id === ant?.colony);
+            if (depot && ant?.crop_ug) {
+                const exterior = s.sources.filter(source => source.position_m[1] >= s.surface.origin_m[1]);
+                const sugar = exterior.reduce((mass, source) => mass + source.stock_ug[0], 0);
+                details += " · " + tr("Carbohydrate at death (µg): crop {crop}, nest {nest}, outside {outside}",
+                    {crop: ant.crop_ug[0], nest: depot.stock_ug[0], outside: sugar});
+                details += " · " + tr("Water at death (µg): body {body}, crop {crop}",
+                    {body: ant.hydration_ug, crop: ant.crop_ug[2]});
+            }
+        }
     }
     if ($("live-stop").textContent !== details) put("live-stop", details);
     $("live-stop").hidden = !details;
