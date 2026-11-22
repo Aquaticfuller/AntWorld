@@ -28,6 +28,9 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     const auto view=geometry_view(s,limits_);
     const auto capacity=s.surface->behavior.route_capacity;
     const auto attach=static_cast<std::uint32_t>(depot!=start_pos);
+    // Route selection uses the current occupancy. The motion transaction
+    // checks reserved sweeps again before each segment actually executes.
+    if (sustained_supply(s) && attach && !clear_worker_traffic(ant,start_pos,body_half(ant.id),false)) return {};
     if (!limits_.navigation_nodes) return {};
     const auto remaining=[&](PointQ p) { return static_cast<std::uint32_t>(std::abs(*level-p.y)); };
     using Node=std::tuple<std::uint32_t,std::uint32_t,PointQ>;
@@ -83,6 +86,7 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
             const auto to=physical(q,g);
             if (depth+1+remaining(q)>=capacity || !surface_allows(*s.surface,true,pos,to) ||
                 (anatomy && s.care_profile && !within_distance(depot,to,s.care_profile->perception_radius_m,true))) continue;
+            if (sustained_supply(s) && !depth && !clear_worker_traffic(ant,to,body_half(ant.id),false)) continue;
             const auto old=visited.find(q);
             if (old!=visited.end() && old->second.depth<=depth+1) continue;
             if (old==visited.end() && visited.size()>=budget) continue;
@@ -99,12 +103,26 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     return {};
 }
 
+bool WorldRuntime::departure_replan(const AntState& ant,const SurfaceConnector& path) const {
+    return path.points[path.cursor]!=ant.position || path.cursor ||
+        (path.size>1 && !clear_worker_traffic(ant,path.points[1],body_half(ant.id),false));
+}
+
 bool WorldRuntime::at_foraging_home(const AntState& ant) const {
     const auto& s=*state_;
     const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
     if (sealed_chamber(s) && s.geometry_edits.empty()) return ant.position==depot;
     const auto route=s.connectors.find(ant.id);
+    if (sustained_supply(s) && route!=s.connectors.end() && !ant.carried_food.total_ug()) {
+        if (!s.foragers.at(ant.id).enabled)
+            return within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot);
+        if (route->second.cursor && route->second.cursor+1<route->second.size &&
+            ant.position==route->second.points[route->second.cursor] &&
+            s.autonomy.contains(ant.id) && s.autonomy.at(ant.id).knows_depot &&
+            mouth_at_supply(ant,depot_mouth_target(ant,depot)))
+            return true;
+    }
     if (familiar_return(s) && route!=s.connectors.end() && route->second.cursor &&
         route->second.cursor+1<route->second.size && ant.position==route->second.points[route->second.cursor] &&
         (route->second.returning || !s.foragers.at(ant.id).enabled) && !ant.carried_food.total_ug() &&
@@ -121,6 +139,10 @@ bool WorldRuntime::can_forage(const AntState& ant) const {
     const auto known=s.connectors.find(ant.id);
     if (known==s.connectors.end()) return discover_connector(ant).size!=0;
     const auto& path=known->second;
+    if (sustained_supply(s) && !s.foragers.at(ant.id).enabled &&
+        (!at_foraging_home(ant) || s.foragers.at(ant.id).path_size!=1)) return false;
+    if (sustained_supply(s) && !s.foragers.at(ant.id).enabled && departure_replan(ant,path))
+        return discover_connector(ant).size!=0;
     if (path.points[path.cursor]!=ant.position || (path.cursor && !(familiar_return(s) && at_foraging_home(ant)))) return false;
     for (std::uint32_t i=path.cursor+1;i<path.size;++i)
         if (!spatially_clear(path.points[i-1],path.points[i],s.geometry->config.loaded_half_q)) return false;
@@ -132,6 +154,25 @@ void WorldRuntime::prepare_forager(Transaction& tx,const AntState& ant,ForagerSt
     if (!s.surface) throw std::invalid_argument("foraging requires a configured surface");
     if (f.path_size) {
         const auto it=s.connectors.find(ant.id);
+        if (sustained_supply(s) && it!=s.connectors.end() && !f.enabled && departure_replan(ant,it->second)) {
+            if (!at_foraging_home(ant) || f.path_size!=1)
+                throw std::invalid_argument("an interrupted trip still owns its return trace");
+            const auto replacement=discover_connector(ant);
+            if (!replacement.size) throw std::invalid_argument("no locally reachable connector from the new berth");
+            const auto home=*navigation_cell(s,replacement.entrance());
+            if (home!=f.path[0]) {
+                f.path[0]=home;
+                f.memory={};
+                f.memory_size=0;
+            }
+            f.trip_moves=0;
+            tx.connectors.set(ant.id,replacement);
+            if (!s.visits.contains(home)) tx.visits.set(home,0);
+            auto fact=forager_started(ant,home,true);
+            fact.random_value=1;
+            tx.fact(fact);
+            return;
+        }
         const auto in_connector=it!=s.connectors.end() && it->second.cursor+1<it->second.size;
         if (in_connector?ant.position!=it->second.points[it->second.cursor]:
             navigation_cell(s,ant.position)!=f.path[f.path_size-1])

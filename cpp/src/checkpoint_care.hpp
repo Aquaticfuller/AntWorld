@@ -81,7 +81,9 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
               c.profile.context==CareContext::Worker && !c.target.value) ||
              (motion && ((local_traffic(s) && c.act==CareAct::ApproachNestmate) ||
                          (yield_to_loaded(s) && c.act==CareAct::YieldToCarrier)) &&
-              c.profile.context==CareContext::Worker && (!c.enabled || c.target.value))) &&
+              (c.profile.context==CareContext::Worker ||
+               (sustained_supply(s) && c.act==CareAct::YieldToCarrier && s.founding && s.founding->founder==id)) &&
+              (!c.enabled || c.target.value))) &&
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");
         const auto a=s.ants.get(s.ants.index.at(id));
@@ -216,7 +218,9 @@ template<class S> void validate_care_evidence(const S& s) {
         if (o.act==CareAct::ApproachNestmate || o.act==CareAct::YieldToCarrier)
             ensure((o.act==CareAct::YieldToCarrier?yield_to_loaded(s):local_traffic(s)) &&
                    o.target.value && o.target!=e.actor && e.stage==LifeStage::Adult &&
-                   s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker && o.phase!=ObservationPhase::Opportunity,
+                   (s.ants.get(s.ants.index.at(e.actor)).caste==Caste::Worker ||
+                    (sustained_supply(s) && o.act==CareAct::YieldToCarrier && s.founding && s.founding->founder==e.actor)) &&
+                   o.phase!=ObservationPhase::Opportunity,
                    "nestmate approach without a local traffic actor and target");
         if (o.phase==ObservationPhase::Selected && audit.contains(e.actor) && audit.at(e.actor).enabled) {
             auto& a=audit.at(e.actor);

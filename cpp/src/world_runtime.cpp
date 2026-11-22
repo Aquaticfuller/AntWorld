@@ -263,8 +263,9 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         } else if (e.kind == ScheduledEvent::Kind::DeliverFood) {
             const auto j = s.colonies.index.at(ant.colony); auto& colony = s.colonies.rows[j];
             const bool oral=wall_handoff(s) && e.payload==wall_delivery_payload;
+            const auto contact=oral && sustained_supply(s)?depot_mouth_target(ant,colony.nest_position):colony.nest_position;
             const bool center_ok=(oral && anatomical_handoff(s)) || within_contact(ant.position,colony.nest_position,s.config);
-            if (!center_ok || (oral && !mouth_at_supply(ant,colony.nest_position)) || !spatially_clear(ant.position,colony.nest_position) ||
+            if (!center_ok || (oral && !mouth_at_supply(ant,contact)) || !spatially_clear(ant.position,colony.nest_position) ||
                 (s.surface && !s.config.continuous_spatial_motion && s.surface->locate(ant.position)!=s.surface->locate(colony.nest_position)))
                 f.outcome=Outcome::NotAtNest;
             else if (ant.carried_food.total_ug() == 0) f.outcome = Outcome::EmptyInventory;
@@ -291,14 +292,19 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
         after_action(tx, e, f, before);
         continue_nutrition_behavior(tx, e, f);
         after_excavation_action(tx,e,f,before);
+        const auto connector=s.connectors.find(ant.id);
+        const bool blocked_departure=sustained_supply(s) && f.kind==FactKind::Rested &&
+            connector!=s.connectors.end() && connector->second.size>1 && !connector->second.cursor &&
+            s.foragers.at(ant.id).enabled && s.foragers.at(ant.id).mode==BehaviorMode::Rest;
         if (s.long_term &&
             (ant.position==s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position ||
              (s.ecological && s.ecological->founding_habitat && s.foragers.contains(ant.id) && at_foraging_home(ant))) &&
             !ant.carried_food.total_ug() && !s.carriers.contains(ant.id) &&
-            (f.kind==FactKind::FoodDelivered || f.kind==FactKind::SoilDropped ||
+            (f.kind==FactKind::FoodDelivered || f.kind==FactKind::SoilDropped || blocked_departure ||
              (f.kind==FactKind::Moved && s.foragers.contains(ant.id) && s.foragers.at(ant.id).enabled &&
-                (s.long_term->complete_depot_visits || s.foragers.at(ant.id).mode==BehaviorMode::Return))))
-            notify_return(tx,ant.id);
+                (s.foragers.at(ant.id).mode==BehaviorMode::Return ||
+                 (!sustained_supply(s) && s.long_term->complete_depot_visits)))))
+            notify_return(tx,ant.id,f.kind==FactKind::FoodDelivered && f.transferred.carbs_ug!=0);
         tx.fact(f);
         observe_entrance_contact(tx,f);
         record_recruitment_cue(tx,f);

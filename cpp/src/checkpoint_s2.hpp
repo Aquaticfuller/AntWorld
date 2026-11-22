@@ -156,7 +156,7 @@ inline bool locally_reachable(const SurfaceDefinition& surface, Cell from, Cell 
 struct ConnectorReplay {
     std::vector<PositionM> points;
     std::size_t cursor{}, anchor{};
-    bool found_suffix{};
+    bool found_suffix{}, retain_suffix{true};
 
     void join_suffix(const SurfaceConnector& saved) {
         if (points.back()!=saved.points[0]) return;
@@ -200,6 +200,9 @@ template <typename S> void validate_surface_evidence(const S& s) {
     std::map<EntityId, PositionM> positions; std::map<EntityId, FoodMass> cargo;
     std::map<ResourceId, FoodMass> remaining;
     std::map<EntityId,ConnectorReplay> routes;
+    std::map<EntityId,EventId> last_connector_origin;
+    if (sustained_supply(s)) for (const auto& e:s.journal)
+        if (e.kind==FactKind::ForagingStarted) last_connector_origin[e.actor]=e.id;
     ForagingCounters counts; bool configured = false;
     const auto portable=s.ecological && s.ecological->portable_field;
     for (const auto& e : s.journal) {
@@ -213,22 +216,41 @@ template <typename S> void validate_surface_evidence(const S& s) {
         if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
         if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
-        if (e.kind==FactKind::FoundressWaterIngested) remaining[e.resource]=subtract(remaining[e.resource],e.transferred);
+        if (e.kind==FactKind::FoundressWaterIngested || e.kind==FactKind::WorkerWaterIngested)
+            remaining[e.resource]=subtract(remaining[e.resource],e.transferred);
         if (e.kind == FactKind::ForagingStarted) {
-            ensure(configured && s.foragers.contains(e.actor) && !audit_agents.contains(e.actor) && e.position == positions[e.actor], "invalid autonomy activation evidence");
+            const bool reanchored=sustained_supply(s) && e.random_value==1;
+            ensure(configured && s.foragers.contains(e.actor) &&
+                   audit_agents.contains(e.actor)==reanchored &&
+                   e.position == positions[e.actor], "invalid autonomy activation evidence");
+            if (reanchored)
+                ensure(!audit_agents.at(e.actor).enabled && audit_agents.at(e.actor).path_size==1 &&
+                       !cargo[e.actor].total_ug(), "connector reanchor interrupts an active trip");
             const auto home=connector?std::optional{connector_cell(e.payload)}:navigation_cell(s,e.position);
             ensure(home && surface.open(*home) && (connector || !e.payload),"invalid forager home cell");
             if (connector) {
                 const auto& link=s.connectors.at(e.actor);
                 const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
-                ensure((link.points[0]==e.position || (sealed_chamber(s) && within_contact(e.position,depot,s.config))) &&
-                    navigation_cell(s,link.entrance())==home,"connector lacks depot evidence");
+                const bool retained=!sustained_supply(s) || last_connector_origin.at(e.actor)==e.id;
+                ensure((retained && link.points[0]==e.position) ||
+                       (sealed_chamber(s) && within_contact(e.position,depot,s.config)),"connector lacks depot evidence");
+                if (retained) ensure(navigation_cell(s,link.entrance())==home,"connector reaches the wrong surface cell");
                 auto& route=routes[e.actor];
+                route={};
+                route.retain_suffix=retained;
                 route.points.push_back(e.position);
-                route.join_suffix(link);
+                if (retained) route.join_suffix(link);
             }
-            auto& f = audit_agents[e.actor]; f.enabled = true; f.path[0] = *home; f.path_size = 1;
-            f.heading = initial_heading(s.seed, e.actor); audit_visits.try_emplace(f.path[0], 0);
+            auto& f = audit_agents[e.actor];
+            if (reanchored) {
+                if (f.path[0]!=*home) { f.memory={}; f.memory_size=0; }
+                f.trip_moves=0;
+            } else {
+                f.enabled=true;
+                f.heading=initial_heading(s.seed,e.actor);
+            }
+            f.path[0]=*home; f.path_size=1;
+            audit_visits.try_emplace(*home,0);
         }
         if (e.kind == FactKind::ForagingDecision) {
             if (s.ecological) {
@@ -285,7 +307,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
                         std::find(route.points.begin(),route.points.end(),e.position)==route.points.end(),
                         "invalid historical connector waypoint");
                     route.points.push_back(e.position);
-                    route.join_suffix(s.connectors.at(e.actor));
+                    if (route.retain_suffix) route.join_suffix(s.connectors.at(e.actor));
                     ensure(route.points.size()<=p.route_capacity,"historical connector exceeds its route limit");
                 }
                 ensure((e.mode==BehaviorMode::Return && cursor>route.anchor) ||

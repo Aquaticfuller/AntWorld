@@ -6,7 +6,7 @@ from collections import OrderedDict, deque
 LANDMARKS = ("egg", "hatch", "worker", "exit", "delivery", "excavation", "nursing", "trophallaxis", "queen-death")
 LIFE = {"AntSeeded", "AntBorn", "StageChanged", "AntDied"}
 ACTIVITY = {"FoodCollected", "FoodDelivered", "NutritionTransferred", "FoundingRation", "BroodMoved",
-            "SoilExcavated", "SoilDropped", "RecruitmentActivated", "FoundressWaterIngested", "FoundressNestMeal"}
+            "SoilExcavated", "SoilDropped", "RecruitmentActivated", "FoundressWaterIngested", "WorkerWaterIngested", "FoundressNestMeal"}
 
 
 class Chronicle:

@@ -37,6 +37,23 @@ bool sweeps_body(PositionM from,PositionM to,PositionM peer_from,PositionM peer_
     return true;
 }
 
+bool anatomical_sweep_hits(const BodyPose& mover,PositionM to,const BodyPose& peer) {
+    auto destination=mover;
+    destination.center_m=to;
+    if (physical_overlap(destination,peer)) return true;
+    const auto delta=displacement(to,mover.center_m);
+    for (const auto& part:mover.segments) for (const auto& obstacle:peer.segments) {
+        const auto a=lobe_center(mover,part), b=lobe_center(peer,obstacle);
+        const auto bound=translated(lobe_extents(mover,part),lobe_extents(peer,obstacle));
+        // Permit separation from an existing overlap, such as at eclosion.
+        if (std::abs(a.x-b.x)<bound.x && std::abs(a.y-b.y)<bound.y && std::abs(a.z-b.z)<bound.z &&
+            dot(delta,displacement(a,b))>=0) continue;
+        const auto normalized=[&](PositionM p){return PositionM{p.x/bound.x,p.y/bound.y,p.z/bound.z};};
+        if (sweeps_body(normalized(a),normalized(translated(a,delta)),normalized(b),normalized(b),1)) return true;
+    }
+    return false;
+}
+
 bool leaving_overlap(PositionM from,PositionM to,PositionM stationary,double width) {
     return physically_overlaps(from,stationary,width) && !physically_overlaps(to,stationary,width) &&
            (to.x-from.x)*(from.x-stationary.x)>=0 && (to.y-from.y)*(from.y-stationary.y)>=0 &&
@@ -98,19 +115,18 @@ bool WorldRuntime::clear_body_motion(const AntState& ant,PositionM to) const {
                       to==ant.position?facing:segment_heading(s,ant.id,ant.position,to)));
 }
 
-bool WorldRuntime::clear_emergence(const AntState& pupa) const {
+std::optional<std::uint8_t> WorldRuntime::emergence_heading(const AntState& pupa) const {
     const auto& s=*state_;
-    if (s.care_locks.contains(pupa.id) && s.care.at(s.care_locks.at(pupa.id)).carrying_brood) return false;
+    if (s.care_locks.contains(pupa.id) && s.care.at(s.care_locks.at(pupa.id)).carrying_brood) return {};
     auto adult=pupa;
     adult.stage=LifeStage::Adult;
     const auto view=geometry_view(s,limits_);
-    const auto pose=body_pose(adult,0,attachment(view,adult,0));
-    if (!substrate_clear(view,pose,adult.position)) return false;
-    for (const auto ref:query_neighborhood({s.world,pupa.id},.008).ants) {
-        const auto other=*query_ant(ref);
-        if (other.stage==LifeStage::Adult && physical_overlap(pose,*query_body(ref))) return false;
-    }
-    return true;
+    return emergence_pose(view,adult,sustained_supply(s) && s.autonomy.contains(adult.id),[&](const BodyPose& pose) {
+        for (const auto ref:query_neighborhood({s.world,pupa.id},.008).ants) {
+            if (query_ant(ref)->stage==LifeStage::Adult && physical_overlap(pose,*query_body(ref))) return true;
+        }
+        return false;
+    });
 }
 
 std::optional<WorkerMotion> WorldRuntime::query_worker_motion(AntRef ref) const {
@@ -157,7 +173,7 @@ void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM
     tx.autonomy.set(fact.actor,a);
 }
 
-bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half) const {
+bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half,bool include_plans) const {
     const auto& s=*state_;
     if (!local_traffic(s) || !s.geometry || ant.stage!=LifeStage::Adult) return true;
     if (!clear_body_motion(ant,to)) return false;
@@ -173,26 +189,10 @@ bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::in
         if (row.id==ant.id) continue;
         const auto other=s.ants.get(s.ants.index.at(row.id));
         if (other.stage!=LifeStage::Adult) continue;
-        if (mover && distance(ant.position,other.position)<=reach) {
-            const auto peer=*query_body({s.world,other.id});
-            auto destination=*mover;
-            destination.center_m=to;
-            if (physical_overlap(destination,peer)) return false;
-            const auto delta=displacement(to,ant.position);
-            for (const auto& part:mover->segments) for (const auto& obstacle:peer.segments) {
-                const auto a=lobe_center(*mover,part), b=lobe_center(peer,obstacle);
-                const auto bound=translated(lobe_extents(*mover,part),lobe_extents(peer,obstacle));
-                // Admit only separation from a pre-existing overlap (e.g. at
-                // eclosion). A new overlap is forbidden along the whole sweep.
-                if (std::abs(a.x-b.x)<bound.x && std::abs(a.y-b.y)<bound.y && std::abs(a.z-b.z)<bound.z &&
-                    dot(delta,displacement(a,b))>=0) continue;
-                const auto normalized=[&](PositionM p){return PositionM{p.x/bound.x,p.y/bound.y,p.z/bound.z};};
-                if (sweeps_body(normalized(a),normalized(translated(a,delta)),normalized(b),normalized(b),1))
-                    return false;
-            }
-        }
+        if (mover && distance(ant.position,other.position)<=reach &&
+            anatomical_sweep_hits(*mover,to,*query_body({s.world,other.id}))) return false;
         const auto width=(half+body_half(other.id))*quantum;
-        const auto plan=query_worker_motion({s.world,other.id});
+        const auto plan=include_plans?query_worker_motion({s.world,other.id}):std::nullopt;
         if (!plan && leaving_overlap(ant.position,to,other.position,width)) continue;
         if (sweeps_body(ant.position,to,other.position,plan?plan->to:other.position,width)) return false;
     }
@@ -262,11 +262,27 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(co
             !spatially_clear(ant.position,other.position)) continue;
         const auto next=link->second.points[link->second.cursor-1];
         const auto width=(half+body_half(other.id))*g.quantum_m;
-        if (!sweeps_body(other.position,next,ant.position,ant.position,width)) continue;
+        const auto view=geometry_view(s,limits_);
+        std::optional<BodyPose> carrier;
+        if (sustained_supply(s)) {
+            const auto facing=segment_heading(s,other.id,other.position,next);
+            carrier=body_pose(other,facing,attachment(view,other,facing));
+        }
+        if (!sweeps_body(other.position,next,ant.position,ant.position,width) &&
+            !(carrier && anatomical_sweep_hits(*carrier,next,*query_body({s.world,ant.id})))) continue;
         // The worker can vacate a nearby blocked path. Active work keeps its lease.
-        for (int length=1;length<=4;++length) for (const auto direction:horizontal_steps) {
+        const auto steps=carrier?g.reach_q:4;
+        for (int length=1;length<=steps;++length) for (const auto direction:horizontal_steps) {
             const auto to=physical({origin->x+direction.x*length,origin->y,origin->z+direction.z*length},g);
-            if (!sweeps_body(other.position,next,to,to,width) && clear_worker_site(ant,to)) return std::pair{to,other.id};
+            if (sweeps_body(other.position,next,to,to,width) || !clear_worker_site(ant,to)) continue;
+            if (carrier) {
+                auto repositioned=ant;
+                repositioned.position=to;
+                const auto facing=segment_heading(s,ant.id,ant.position,to);
+                if (anatomical_sweep_hits(*carrier,next,body_pose(repositioned,facing,attachment(view,repositioned,facing))))
+                    continue;
+            }
+            return std::pair{to,other.id};
         }
     }
     return {};
@@ -368,19 +384,34 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
     const bool habitat=s.ecological && s.ecological->founding_habitat;
     const auto link=s.connectors.find(ant.id);
     const bool rejoin=familiar_return(s) && link!=s.connectors.end() && !s.foragers.at(ant.id).enabled;
-    const auto depot=habitat && link!=s.connectors.end() ? link->second.points[rejoin?link->second.cursor:0]
+    const auto depot=habitat && link!=s.connectors.end() && !sustained_supply(s)
+        ? link->second.points[rejoin?link->second.cursor:0]
         : s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
     const auto radius=s.care_profile->perception_radius_m;
     if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;
-    const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth && link==s.connectors.end() &&
+    const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth &&
+        (link==s.connectors.end() || sustained_supply(s)) &&
         (!sealed_chamber(s) || !s.geometry_edits.empty());
-    if (alternate && within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot)) return {};
+    const auto berth=[&](PositionM site) {
+        return within_contact(site,depot,s.config) && spatially_clear(site,depot) &&
+            (!sustained_supply(s) || spatially_clear(site,site,g.loaded_half_q));
+    };
+    if (alternate && berth(ant.position)) return {};
+    if (sustained_supply(s) && ant.position.y!=depot.y) {
+        auto site=ant.position;
+        site.y=depot.y;
+        if ((berth(site) || !alternate) && clear_worker_site(ant,site,true)) return site;
+    }
     const auto origin=habitat ? nearest_grid_point(ant.position,g,mouth_access(s)) : quantized(ant.position,g);
     // A remembered connector can start at a lawful subvoxel berth. Use
     // terrain cells to search, and the real endpoint for the final sweep.
-    const auto goal=mouth_access(s)?nearest_grid_point(depot,g,true):quantized(depot,g);
-    if (!origin || !goal || origin->y!=goal->y) return {};
+    auto goal=mouth_access(s)?nearest_grid_point(depot,g,true):quantized(depot,g);
+    if (!origin || !goal) return {};
+    if (origin->y!=goal->y) {
+        if (!sustained_supply(s)) return {};
+        goal->y=origin->y;
+    }
     struct Node { PointQ point, first; };
     const std::size_t budget=habitat ? 256 : 96;
     std::vector<Node> nodes(0);
@@ -404,7 +435,7 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) co
             }
             if (!examined.insert(q).second) continue;
             const auto first=i==0?q:node.first;
-            if (q==*goal || (alternate && within_contact(target,depot,s.config) && spatially_clear(target,depot)))
+            if (q==*goal || (alternate && berth(target)))
                 return physical(first,g);
             if (nodes.size()==budget) break;
             nodes.push_back({q,first});

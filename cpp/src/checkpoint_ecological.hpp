@@ -28,6 +28,7 @@ inline constexpr unsigned anatomical_handoff_schema = 36, anatomical_handoff_phy
 inline constexpr unsigned familiar_return_schema = 37, familiar_return_physics = 44;
 inline constexpr unsigned variable_nest_schema = 38, variable_nest_physics = 45;
 inline constexpr unsigned provisioned_nest_schema = 39, provisioned_nest_physics = 46;
+inline constexpr unsigned sustained_nest_schema = 40, sustained_nest_physics = 47;
 
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
@@ -35,6 +36,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SustainedSupply) return sustained_nest_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition != FoundingNutrition::Original) return provisioned_nest_physics;
     if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_physics;
     if (c.founding_habitat && c.founding_habitat->familiar_return) return familiar_return_physics;
@@ -58,6 +60,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SustainedSupply) return sustained_nest_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition != FoundingNutrition::Original) return provisioned_nest_schema;
     if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_schema;
     if (c.founding_habitat && c.founding_habitat->familiar_return) return familiar_return_schema;
@@ -142,9 +145,10 @@ inline EcologicalClosureConfig read_ecological(Reader& r, const WorldConfig& wor
                                                   version == familiar_return_physics};
     if (version >= variable_nest_physics)
         c.founding_habitat->variable_conditions = TrailExposure{r.flag(), r.flag()};
-    if (version == provisioned_nest_physics) {
+    if (version >= provisioned_nest_physics) {
         c.founding_habitat->nutrition = static_cast<FoundingNutrition>(r.get(1));
-        ensure(c.founding_habitat->nutrition != FoundingNutrition::Original, "missing founding nutrition treatment");
+        ensure(c.founding_habitat->nutrition != FoundingNutrition::Original &&
+               ecological_version(c)==version, "invalid founding nutrition treatment");
     }
     validate_ecological_closure(c, world);
     return c;

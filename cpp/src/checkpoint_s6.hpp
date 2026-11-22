@@ -160,6 +160,8 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       positions[e.actor] = e.position;
     if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
       stages[e.actor] = e.stage;
+    if (e.kind == FactKind::StageChanged && e.stage == LifeStage::Adult && e.random_value && sustained_supply(s))
+      audit.at(e.actor).facing=static_cast<std::uint8_t>(e.random_value);
     if (e.kind == FactKind::StageChanged && e.stage == LifeStage::Adult && local_founding_provisioning(s,e.actor))
       emergence.emplace(e.actor,e.time);
     if (e.kind == FactKind::AutonomyChanged) {
@@ -226,7 +228,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       ensure(s.queue_index.contains(a.wake), "missing automatic wake");
       const auto &e = s.queue.at(s.queue_index.at(a.wake));
       const bool first_adult_wake=!a.decisions && emergence.contains(id) && emergence.at(id)==e.issued_at;
-      const auto wait = first_adult_wake || (e.payload==1 && s.long_term) ?
+      const auto wait = first_adult_wake || (e.payload && s.long_term) ?
                         1 : autonomy_delay(s, id, ant.caste, a.decisions);
       ensure(e.actor == id && e.kind == ScheduledEvent::Kind::AutonomyWake &&
                  e.key.phase == Phase::Reschedule &&

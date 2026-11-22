@@ -74,6 +74,7 @@
             <option value="variable" data-i18n>Variable conditions · Physics 45</option>
             <option value="feeding" data-provisioned disabled data-i18n>Local brood feeding · Physics 46</option>
             <option value="budget" data-provisioned disabled data-i18n>Resource-aware founding · Physics 46</option>
+            <option value="sustained" data-sustained disabled data-i18n>Local water and repeat foraging · Physics 47</option>
             <option value="reference" data-i18n>Reference model</option>
           </select>
           <label for="sealed-supply" data-i18n>Sealed nest supply</label>
@@ -81,6 +82,11 @@
             <option value="finite" data-i18n>Finite food and water</option>
             <option value="extended" data-i18n hidden disabled>Extended supply · 730 days</option>
             <option value="absent" data-i18n>No external supply</option>
+          </select>
+          <label for="sealed-wick" data-live-wick hidden data-i18n>Founding chamber water</label>
+          <select id="sealed-wick" data-live-wick hidden>
+            <option value="small-wick" data-i18n>Small wick · 1.2 µL of water</option>
+            <option value="wet-wick" data-i18n>Protected wick · 1.5 mL of water</option>
           </select>
           <label for="sealed-seed" data-i18n>Sealed nest seed</label>
           <input id="sealed-seed" type="number" value="3" min="1" max="2147483647" step="1" required>

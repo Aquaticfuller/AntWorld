@@ -67,19 +67,40 @@ void WorldRuntime::set_activity_work(Transaction& tx, EntityId actor, ScheduledI
     tx.fact(f);
 }
 
+std::optional<PositionM> WorldRuntime::local_wick_contact(const AntState& ant,const PhysiologyState& p) const {
+    const auto& s=*state_;
+    const bool queen=founding_foundress(ant.id);
+    if (!sustained_supply(s) || !(queen || local_founding_provisioning(s,ant.id)) || !s.ecological->water_sip_ug ||
+        !wick_shortfall(s.founding->profile,p,queen) || p.crop.total_ug()==p.config.crop_capacity_ug) return {};
+    const auto mouth=query_body({s.world,ant.id})->mouth_m;
+    for (const auto ref:query_neighborhood({s.world,ant.id},s.care_profile->perception_radius_m).food) {
+        const auto& wick=s.foods.rows[s.foods.index.at(ref.id)];
+        if (!sip_source(s,wick.position,wick.initial) || !wick.remaining.water_ug) continue;
+        if (spatially_clear(mouth,depot_mouth_target(ant,wick.position)) ||
+            (queen && mouth_approach(ant,wick.position,{},nullptr,true)!=ant.position)) return wick.position;
+    }
+    return {};
+}
+
 void WorldRuntime::draw_founding_water(Transaction& tx, const ScheduledEvent& event, const AntState& ant) {
     auto& s = *state_;
     if (!s.ecological || !s.ecological->water_sip_ug || !s.geometry || !s.surface) return;
+    const bool worker=ant.caste==Caste::Worker;
+    if (worker && (!sustained_supply(s) || !local_founding_provisioning(s,ant.id))) return;
+    const auto local=sustained_supply(s);
+    if (local) synchronize_physiology(tx,ant.id);
     auto p = s.physiology.at(ant.id);
-    const auto need = p.config.hydration_capacity_ug - p.hydration_ug;
-    if (p.crop.water_ug >= need) return;
-    const auto maximum = std::min({s.ecological->water_sip_ug, need - p.crop.water_ug,
+    const auto space = p.config.hydration_capacity_ug - p.hydration_ug;
+    const auto need = local ? wick_shortfall(s.founding->profile,p,!worker) : deficit(space,p.crop.water_ug);
+    const auto maximum = std::min({s.ecological->water_sip_ug, need,
                                    p.config.crop_capacity_ug - p.crop.total_ug()});
     if (!maximum) return;
-    for (const auto ref : query_neighborhood({s.world, ant.id}, s.config.contact_distance_m).food) {
+    const auto radius=local ? s.care_profile->perception_radius_m : s.config.contact_distance_m;
+    for (const auto ref : query_neighborhood({s.world, ant.id}, radius).food) {
         const auto j = s.foods.index.at(ref.id);
         auto& food = s.foods.rows[j];
-        if (!sip_source(s, food.position, food.initial) || !food.remaining.water_ug) continue;
+        if (!sip_source(s, food.position, food.initial) || !food.remaining.water_ug ||
+            (local && !mouth_at_supply(ant,depot_mouth_target(ant,food.position)))) continue;
         const FoodMass dose{0, 0, std::min(maximum, food.remaining.water_ug), 0};
         tx.touch_food(j);
         food.remaining = subtract(food.remaining, dose);
@@ -87,7 +108,7 @@ void WorldRuntime::draw_founding_water(Transaction& tx, const ScheduledEvent& ev
         p.crop = sum(p.crop, dose);
         tx.physiology.set(ant.id, p);
         WorldEvent f;
-        f.kind = FactKind::FoundressWaterIngested;
+        f.kind = worker ? FactKind::WorkerWaterIngested : FactKind::FoundressWaterIngested;
         f.actor = ant.id; f.colony = ant.colony; f.stage = ant.stage; f.position = ant.position;
         f.resource = food.id; f.source = event.id; f.transferred = dose;
         tx.fact(f);

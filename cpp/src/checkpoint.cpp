@@ -56,7 +56,7 @@ std::vector<std::uint8_t> encode_event(const WorldEvent& event) {
 }
 WorldEvent decode_event(std::span<const std::uint8_t> bytes) {
     Reader reader{bytes}; auto event = read_fact(reader);
-    ensure(event.kind <= FactKind::FoundressWaterIngested && (!founding_fact(event.kind) || valid_founding_payload(event)) &&
+    ensure(event.kind <= FactKind::WorkerWaterIngested && (!founding_fact(event.kind) || valid_founding_payload(event)) &&
            (!ecological_fact(event.kind) || valid_ecological_payload(event)),
            "unsupported or invalid canonical fact");
     ensure(reader.cursor == bytes.size(), "trailing fact payload bytes"); return event;
@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==provisioned_nest_schema && version==provisioned_nest_physics) ||
+        ensure((outer_schema==sustained_nest_schema && version==sustained_nest_physics) ||
+               (outer_schema==provisioned_nest_schema && version==provisioned_nest_physics) ||
             (outer_schema==variable_nest_schema && version==variable_nest_physics) ||
                (outer_schema==familiar_return_schema && version==familiar_return_physics) ||
                (outer_schema==anatomical_handoff_schema && version==anatomical_handoff_physics) ||
@@ -279,12 +280,18 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (founding) m.founding_trace = fnv_offset;
     for (auto i=static_cast<std::size_t>(first); i<facts; ++i) {
         const auto e=frame?s->journal.at(i):read_fact(r);
+        const bool alternate_emergence=ecological_version>=sustained_nest_physics &&
+            e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult && e.random_value>=2 && e.random_value<=8;
         ensure(ecological_version>=provisioned_nest_physics || e.kind!=FactKind::FoundingRation || !e.transferred.carbs_ug,
                "maternal carbohydrate ration requires the provisioned physics version");
+        ensure(ecological_version>=sustained_nest_physics ||
+               (e.kind!=FactKind::WorkerWaterIngested && (e.kind!=FactKind::ForagingStarted || !e.random_value)),
+               "fact requires sustained-supply physics");
+        ensure(e.kind!=FactKind::StageChanged || !e.random_value || alternate_emergence, "invalid recorded emergence pose");
         if (first) {
             ensure(e.id.value==i+1 && e.world==world && e.time>=previous_time && e.time<=m.now &&
                    e.revision>previous_revision && e.revision<=m.revision && finite(e.position) &&
-                   e.kind<=FactKind::FoundressWaterIngested && valid(e.stage) && valid(e.action) &&
+                   e.kind<=FactKind::WorkerWaterIngested && valid(e.stage) && valid(e.action) &&
                    e.outcome<=Outcome::InsufficientEnergy && e.mode<=BehaviorMode::Rest &&
                    e.reason<=DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units>=0 &&
                    e.source.value<m.next_scheduled &&
@@ -314,7 +321,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
             e.kind==FactKind::BiologicalObservation || (care_contract && e.kind!=FactKind::CareTick && care_ticks.contains(e.source)) ||
             founding_fact(e.kind) || ecological_fact(e.kind) || (founding && e.kind==FactKind::StageChanged && founding_pulses.contains(e.source));
         ensure(e.id.value == i+1 && e.world == world && e.time >= previous_time && e.time <= m.now &&
-            valid(e.action) && e.kind <= (ecological ? FactKind::FoundressWaterIngested : uptake ? FactKind::FoundingBoundaryUptake : dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
+            valid(e.action) && e.kind <= (ecological ? FactKind::WorkerWaterIngested : uptake ? FactKind::FoundingBoundaryUptake : dietary ? FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : founding ? FactKind::FoundingRation : care_contract ? FactKind::BroodMoved : extended ? FactKind::ProteinRecycled : FactKind::AutonomyDecision) && valid(e.stage) && e.outcome <= Outcome::InsufficientEnergy &&
             (!ecological_fact(e.kind) || (ecological && valid_ecological_payload(e))) &&
             (!founding_fact(e.kind) || (founding && e.kind <= (uptake ? FactKind::FoundingBoundaryUptake : dietary ?
                 FactKind::FoundingDietaryEggFunded : early_access ? FactKind::FoundingHatchCue : FactKind::FoundingRation))) &&
@@ -329,6 +336,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 (ecological_version>=nest_dynamics_physics && e.kind==FactKind::Moved) ||
                 (ecological_version>=provisioned_nest_physics && e.kind==FactKind::ReproductionAttempt &&
                     e.random_value==1 && !e.payload && e.outcome==Outcome::Depleted) ||
+                (ecological_version>=sustained_nest_physics && e.kind==FactKind::ForagingStarted && e.random_value==1) ||
+                alternate_emergence ||
                 e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");
@@ -428,7 +437,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record && e.observed_position_revision<=s->ants.get(s->ants.index.at(e.actor)).position_revision,"invalid protein-return action");
         } else if (e.kind==ScheduledEvent::Kind::AutonomyWake) {
             ensure(s->social && s->autonomy.contains(e.actor) && s->autonomy.at(e.actor).wake==e.id &&
-                key.phase==Phase::Reschedule && !key.priority && !key.tie && (extended ? e.payload<=1 : !e.payload) && !e.resource.value && !e.requested_ug &&
+                key.phase==Phase::Reschedule && !key.priority && !key.tie &&
+                (extended ? e.payload<=(sustained_supply(*s)?carbohydrate_delivery_wake:completed_return_wake) : !e.payload) &&
+                !e.resource.value && !e.requested_ug &&
                 !e.observed_position_revision && e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,
                 "invalid automatic program wake");
         } else if (e.kind >= ScheduledEvent::Kind::SoilAction) {
@@ -594,8 +605,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                    stages[e.actor]==LifeStage::Adult && positions[e.actor]==e.position, "invalid activity boundary");
             break;
         case FactKind::FoundressWaterIngested:
-            ensure(seeded_food.contains(e.resource) && s->founding && s->founding->founder==e.actor,
-                   "water draw has no world source or founder");
+        case FactKind::WorkerWaterIngested:
+            ensure(seeded_food.contains(e.resource) && s->founding && stages[e.actor]==LifeStage::Adult &&
+                   (e.kind==FactKind::WorkerWaterIngested ? sustained_supply(*s) && local_founding_provisioning(*s,e.actor) :
+                    s->founding->founder==e.actor),"water draw has no world source or eligible drinker");
             transferred[e.resource]=sum(transferred[e.resource],e.transferred);
             break;
         case FactKind::FoodCollected:
@@ -671,7 +684,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         if (nutrition_fact(e.kind)) ensure(e.transferred.total_ug() && e.outcome <= Outcome::Partial, "invalid nutrition transfer fact");
         if (e.kind != FactKind::FoodCollected && e.kind != FactKind::FoodSeeded && e.kind != FactKind::FoodPlaced && e.kind != FactKind::FoodDelivered &&
             !nutrition_fact(e.kind) && e.kind != FactKind::PhysiologyEnabled && e.kind != FactKind::PhysiologyUpdated &&
-            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) && e.kind!=FactKind::FoundressWaterIngested)
+            e.kind!=FactKind::AntBorn && e.kind!=FactKind::ResourceCycleConfigured && e.kind!=FactKind::ResourceReleased && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation && !founding_fact(e.kind) && e.kind!=FactKind::FoundressWaterIngested && e.kind!=FactKind::WorkerWaterIngested)
             ensure(e.transferred == FoodMass{}, "unexpected transfer in fact");
         if (e.kind != FactKind::ActionRejected && e.kind != FactKind::FoodCollected && !nutrition_fact(e.kind) && e.kind!=FactKind::ProteinRecycled && e.kind!=FactKind::BiologicalObservation)
             ensure(e.outcome == Outcome::Success || (bounded_brood_space(*s) && e.kind==FactKind::ReproductionAttempt &&

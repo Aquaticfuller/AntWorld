@@ -57,7 +57,7 @@ enum class FactKind : std::uint8_t {
     BiologyConfigured, CareProgramChanged, CareTick, BiologicalObservation, BroodMoved,
     FoundingConfigured, FoundingReserveSeeded, FoundingEggFunded, FoundingLipidConverted, FoundingRation,
     FoundingLipidMobilized, FoundingHatchCue, FoundressNestMeal, FoundingDietaryEggFunded, FoundingBoundaryUptake,
-    RecruitmentCue, RecruitmentObserved, RecruitmentActivated, ActivityChanged, FoundressWaterIngested
+    RecruitmentCue, RecruitmentObserved, RecruitmentActivated, ActivityChanged, FoundressWaterIngested, WorkerWaterIngested
 };
 // F1-R1 CareWake annotation. Selection and material transfer are separate facts.
 enum class FoundingCareWake : std::uint8_t { Ordinary, Expired, Unavailable, Repeat };
@@ -90,7 +90,7 @@ struct WorldEvent {
     return kind == FactKind::FoundingLipidMobilized || kind == FactKind::FoundingHatchCue;
 }
 [[nodiscard]] constexpr bool ecological_fact(FactKind kind) {
-    return kind >= FactKind::RecruitmentCue && kind <= FactKind::FoundressWaterIngested;
+    return kind >= FactKind::RecruitmentCue && kind <= FactKind::WorkerWaterIngested;
 }
 // A participant ID, as opposed to a numeric dose, material quantity or fingerprint.
 [[nodiscard]] inline EntityId related_individual(const WorldEvent& e) {
@@ -116,6 +116,7 @@ struct WorldEvent {
     case FactKind::ActivityChanged:
         return e.payload <= 1 && !e.random_value && !e.resource.value && e.transferred == FoodMass{};
     case FactKind::FoundressWaterIngested:
+    case FactKind::WorkerWaterIngested:
         return !e.payload && !e.random_value && e.resource.value && e.transferred.water_ug &&
                e.transferred.total_ug() == e.transferred.water_ug;
     default: return false;

@@ -292,19 +292,19 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         const auto heading=headings_at_cut[id];
         return body_pose(ant,heading,attachment(view(),ant,heading));
     };
-    const auto emergence_clear=[&](EntityId id) {
+    const auto emergence_clear=[&](EntityId id) -> std::optional<std::uint8_t> {
         for (const auto& [carrier,target]:held_brood) {
             (void)carrier;
-            if (target==id) return false;
+            if (target==id) return {};
         }
         auto actor=past_ant(id);
         actor.stage=LifeStage::Adult;
-        const auto p=body_pose(actor,0,attachment(view(),actor,0));
-        return substrate_clear(view(),p,actor.position) &&
-            std::none_of(positions.begin(),positions.end(),[&](const auto& other) {
+        return emergence_pose(view(),actor,sustained_supply(s) && s.autonomy.contains(id),[&](const BodyPose& pose) {
+            return std::any_of(positions.begin(),positions.end(),[&](const auto& other) {
                 return other.first!=id && stages.at(other.first)==LifeStage::Adult &&
-                    within_distance(actor.position,other.second,.008,true) && physical_overlap(p,past_body(other.first));
+                    within_distance(actor.position,other.second,.008,true) && physical_overlap(pose,past_body(other.first));
             });
+        });
     };
     std::optional<std::pair<EntityId,PositionM>> expected_egg;
     for (const auto &e : s.journal) {
@@ -429,11 +429,18 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                    "founder lacks local experience of the handoff site");
         }
         const bool wall_delivery=e.kind==FactKind::FoodDelivered && wall_handoff(s) && e.payload==wall_delivery_payload;
+        if (sustained_supply(s) && (e.kind==FactKind::WorkerWaterIngested || e.kind==FactKind::FoundressWaterIngested)) {
+            const auto target=s.foods.rows[s.foods.index.at(e.resource)].position;
+            const auto body=past_body(e.actor);
+            const auto edge=feeding_patch_point(body.mouth_m,target);
+            const auto contact=clear(target,edge,0)?edge:target;
+            ensure(supply_in_reach(body,contact) && clear(body.mouth_m,contact,0),"wick draw lacks historical mouth contact");
+        }
         if (mouth_access(s) && (e.kind==FactKind::FoundressNestMeal || e.kind==FactKind::NestIngested || wall_delivery)) {
             const auto body=past_body(e.actor);
             const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
             auto contact_site=depot;
-            if (variable_conditions(s) && !wall_delivery) {
+            if (variable_conditions(s) && (!wall_delivery || sustained_supply(s))) {
                 const auto edge=feeding_patch_point(body.mouth_m,depot);
                 if (clear(depot,edge,0)) contact_site=edge;
             }
@@ -586,8 +593,11 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
         }
         if (anatomical && e.kind==FactKind::PhysiologyUpdated && e.stage==LifeStage::Pupa && !emergence_clear(e.actor))
             spatial_waits.insert(e.id);
-        if (anatomical && e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult)
-            ensure(emergence_clear(e.actor),"adult emergence lacks physical space");
+        if (anatomical && e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult) {
+            const auto facing=emergence_clear(e.actor);
+            ensure(facing && e.random_value==*facing,"adult emergence lacks physical space for its recorded pose");
+            if (e.random_value) headings_at_cut[e.actor]=*facing;
+        }
         if (e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied)
             stages[e.actor] = e.stage;
         if (e.actor.value && positions.contains(e.actor)) {

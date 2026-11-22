@@ -20,8 +20,8 @@ INGESTED = {"NestIngested", "CargoIngested", "FoundressNestMeal", "FoundressWate
 CARE = {"Inspect brood", "Arrange brood", "Clean brood", "Pick up brood", "Place brood"}
 
 
-def facts(core, end):
-    latest = 0
+def facts(core, end, after=0):
+    latest = after
     while latest < end:
         raw = core.call(f"FACTS_AFTER {latest}")
         if not raw:

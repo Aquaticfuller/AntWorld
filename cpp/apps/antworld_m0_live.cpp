@@ -125,7 +125,8 @@ bool in_place_action(const WorldEvent& e) {
     if (e.outcome > Outcome::Partial) return false;
     switch (e.kind) {
     case FactKind::NestIngested: case FactKind::CargoIngested: case FactKind::FoundressNestMeal:
-    case FactKind::FoundressWaterIngested: case FactKind::NutritionTransferred: case FactKind::FoundingRation:
+    case FactKind::FoundressWaterIngested: case FactKind::WorkerWaterIngested:
+    case FactKind::NutritionTransferred: case FactKind::FoundingRation:
         return e.transferred.total_ug() > 0;
     case FactKind::BiologicalObservation:
         if (e.observation.phase != ObservationPhase::Completed) return false;
@@ -452,7 +453,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v22");
+                message("OK", "antworld.m0.live.v23");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -474,6 +475,7 @@ int main() {
                 std::optional<TrailExposure> exposure;
                 auto nutrition=FoundingNutrition::Original;
                 bool extended_supply=false;
+                bool wet_wick=false;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
@@ -490,8 +492,15 @@ int main() {
                 }
                 if (provisioned) {
                     const auto treatment=word(request);
-                    require(treatment=="feeding" || treatment=="budget", "invalid founding nutrition treatment");
-                    nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding : FoundingNutrition::BroodBudget;
+                    require(treatment=="feeding" || treatment=="budget" || treatment=="sustained", "invalid founding nutrition treatment");
+                    nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
+                        treatment=="budget" ? FoundingNutrition::BroodBudget : FoundingNutrition::SustainedSupply;
+                    request >> std::ws;
+                    if (!request.eof()) {
+                        const auto wick=word(request);
+                        require(wick=="small-wick" || wick=="wet-wick", "invalid founding water fixture");
+                        wet_wick=wick=="wet-wick";
+                    }
                 }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
@@ -500,6 +509,10 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 if (extended_supply) c.release_days=730;
+                // 1.5 mL of water behind cotton in the protected founding
+                // protocol (Turi et al., doi:10.1111/imb.12809). The spatial
+                // wick is an ENGINEERING_FIXTURE. No automatic hydration.
+                if (wet_wick) c.habitat_wick_ug=1'500'000;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
                 auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,
                     anatomical,oral,offers,wall,mouth_handoff,familiar,exposure,nutrition);
@@ -684,6 +697,14 @@ int main() {
                                  << ' ' << move->to.x << ' ' << move->to.y << ' ' << move->to.z << '\n';
                     }
                     message("OK",data.str());
+                } else if (command=="COMPACT_HISTORY") {
+                    end(request);
+                    // The caller has already consumed the older facts. Keep
+                    // simulation authority and a contiguous continuation tail.
+                    world->restore_snapshot(world->resume_snapshot());
+                    history.attach(*world);
+                    search.reset();
+                    message("OK");
                 } else if (command=="MEMORY") {
                     end(request);
                     const auto [current,peak]=performance::memory();

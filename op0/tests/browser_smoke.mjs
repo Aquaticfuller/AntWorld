@@ -668,6 +668,19 @@ async function sealedNestWorld() {
     assert.equal(await evaluate("liveView.state.time_ms"), result.death.time_ms);
     assert.equal(await evaluate("$('ant-id').value"), result.death.actor);
     assert.match(await evaluate("$('event-detail').textContent"), /\u8131\u6c34/);
+    if (await evaluate("liveView.state.sustained_nest_available")) {
+        await select("sealed-model", "sustained");
+        assert.equal(await evaluate("$('sealed-wick').hidden || $('sealed-wick').disabled"), false);
+        await select("sealed-wick", "wet-wick");
+        await select("sealed-supply", "extended");
+        await Promise.all([click("#new-single-nest"), (async () => {
+            await wait(() => dialogs.shift(), "Replace the dry control", 5_000);
+            await send("Page.handleJavaScriptDialog", {accept: true});
+        })()]);
+        await wait(() => evaluate("liveView.state?.physics === 47 && !liveView.busy"), "Open the Physics 47 nest");
+        assert.equal(await evaluate("liveView.state.habitat.nutrition"), "sustained");
+        assert.equal(await evaluate("liveView.state.sources.find(source=>source.position_m[1]<0).stock_ug[2]"), 1500000);
+    }
     assert.equal(exceptions.length,0,JSON.stringify(exceptions));
     await writeFile(join(output,"sealed-nest-browser-receipt.json"),JSON.stringify(result,null,2)+"\n");
 }

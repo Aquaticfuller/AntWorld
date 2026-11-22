@@ -50,6 +50,7 @@ struct Case {
     bool micro_world{};
     bool seasonal_supply{};
     double habitat_trail_half_life_s{60};
+    std::uint64_t habitat_wick_ug{1200};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -63,7 +64,13 @@ inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM ne
     BehaviorConfig behavior;
     const bool habitat=c.ecological && c.ecological->founding_habitat.has_value();
     behavior.field_interval={6*hour_ms};
-    if (habitat) behavior.trail_half_life_s=c.habitat_trail_half_life_s;
+    if (habitat) {
+        behavior.trail_half_life_s=c.habitat_trail_half_life_s;
+        // ENGINEERING_FIXTURE: a trained L. niger forager can recall a
+        // food-associated location the following day (10.1007/s00265-014-1710-2).
+        if (c.ecological->founding_habitat->nutrition==FoundingNutrition::SustainedSupply)
+            behavior.memory_lifetime={day_ms};
+    }
     behavior.step_duration={30'000}; // Retained collection/handling clock, not the travel clock.
     w.configure_surface({{-.15,0,-.15},31,31,.01},{},behavior);
     auto& g=scene.geometry;
@@ -200,7 +207,7 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
             : c.blocked_water ? PositionM{c.cohort_assay?-.003:.002,nest.y,0} : nest;
         require(w.spatially_clear(brood,water)!=c.blocked_water && w.query_material(water)==Material::Void,
                 "wrong water contact treatment");
-        w.seed_food(water, {0,0,1200,0});
+        w.seed_food(water, {0,0,c.habitat_wick_ug,0});
     }
     for (unsigned i = 0; i < c.workers; ++i) {
         const auto worker = w.seed_ant(colony, {{}, LifeStage::Adult, Caste::Worker, 4000});

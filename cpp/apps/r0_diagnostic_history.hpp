@@ -30,9 +30,13 @@ public:
             next->size_=std::max(next->first_cursor_,next->stored_facts());
         }
         auto previous=next->blocks_.empty() ? Digest{} : next->blocks_.back()->header.digest;
+        const auto ecology=world.ecological_closure();
+        const auto schema=ecology && ecology->founding_habitat &&
+            ecology->founding_habitat->nutrition==FoundingNutrition::SustainedSupply ?
+            FactSchema::SustainedSupply : FactSchema::EcologicalClosure;
         while (next->size_<capture.size()) {
             const auto facts=capture.read({next->size_},block_records);
-            auto block=std::make_shared<const EventBlock>(seal_block(facts,previous,FactSchema::EcologicalClosure));
+            auto block=std::make_shared<const EventBlock>(seal_block(facts,previous,schema));
             previous=block->header.digest;
             next->size_+=facts.size();
             next->bytes_+=block->bytes.capacity();

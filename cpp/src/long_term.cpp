@@ -91,7 +91,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   const auto fuel=founding ? founding_egg_fuel(*founding,p,s.founding_reserves.at(e.actor)) : FoundingEggFuel::None;
   bool resources=founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p);
   bool deferred_for_brood=false;
-  if (founding && resources && founding_nutrition(s)==FoundingNutrition::BroodBudget) {
+  if (founding && resources && local_brood_budget(s)) {
     BroodRequirement demand;
     const auto radius=s.care_profile->perception_radius_m;
     for (const auto ref:query_neighborhood({s.world,mother.id},radius).ants) {
@@ -298,7 +298,7 @@ FoodMass WorldRuntime::resource_reserves() const {
   }
   return result;
 }
-void WorldRuntime::notify_return(Transaction &tx, EntityId id) {
+void WorldRuntime::notify_return(Transaction &tx, EntityId id, bool carbohydrate_delivered) {
   auto &s = *state_;
   if (!s.long_term || !s.autonomy.contains(id))
     return;
@@ -310,7 +310,7 @@ void WorldRuntime::notify_return(Transaction &tx, EntityId id) {
   ScheduledEvent e;
   e.kind = ScheduledEvent::Kind::AutonomyWake;
   e.actor = id;
-  e.payload = 1;
+  e.payload = sustained_supply(s) && carbohydrate_delivered ? carbohydrate_delivery_wake : completed_return_wake;
   e.issued_at = s.m.now;
   e.key = {after(s.m.now, 1), Phase::Reschedule, 0, 0, 0};
   a.wake = tx.insert(e);

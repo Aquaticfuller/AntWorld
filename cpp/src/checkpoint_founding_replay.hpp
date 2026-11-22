@@ -148,6 +148,9 @@ public:
             wanted.id = e.id;
             wanted.world = e.world;
             wanted.revision = e.revision;
+            // Terrain replay independently verifies the chosen adult pose.
+            if (sustained_supply(world) && wanted.kind==FactKind::StageChanged && wanted.stage==LifeStage::Adult)
+                wanted.random_value=e.random_value;
             if (wanted != e) throw std::runtime_error("missing or misordered F1 physical evidence at event " +
                 std::to_string(e.id.value) + ": expected kind " + std::to_string(static_cast<unsigned>(wanted.kind)) +
                 ", found kind " + std::to_string(static_cast<unsigned>(e.kind)));
@@ -252,7 +255,10 @@ public:
     void pulse(PhysiologyState& p, const WorldEvent& e, LifeStage stage, bool spatial_wait) {
         ensure(p.body_energy_nj && p.hydration_ug, "F1 uptake after exhaustion");
         if (e.time == p.next_absorption) {
-            const auto amount=founding_boundary_enabled(profile(),stage)?founding_pulse(p,clocks[e.actor],stage):absorb(p,stage);
+            const auto sharing_ug=sustained_supply(world) && stage==LifeStage::Adult ?
+                crop_for_sharing(profile(),p,founder(e.actor)) : 0;
+            const auto amount=founding_boundary_enabled(profile(),stage)?
+                founding_pulse(p,clocks[e.actor],stage,sharing_ug):absorb(p,stage);
             ensure(e.transferred == amount, "invalid F1 crop uptake");
             convert(p, e.actor, stage, e, false);
             if (founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake) last_pulse=e;

@@ -105,6 +105,18 @@ inline PositionM attachment(const GeometryView& view,const AntState& ant,std::ui
     if (ant.stage!=LifeStage::Adult) return floor_normal;
     return support_normal(view,ant.position,body_heading(facing),.00125).value_or(floor_normal);
 }
+template<class Occupied>
+std::optional<std::uint8_t> emergence_pose(const GeometryView& view,const AntState& adult,bool allow_turn,Occupied occupied) {
+    // Heading zero is the original posture. Alternatives require clearance
+    // at the same site and consume no free movement or resource.
+    for (std::uint8_t facing : {std::uint8_t{0},std::uint8_t{2},std::uint8_t{3},std::uint8_t{4},std::uint8_t{5},
+                              std::uint8_t{6},std::uint8_t{7},std::uint8_t{8}}) {
+        if (facing && !allow_turn) break;
+        const auto pose=body_pose(adult,facing,attachment(view,adult,facing));
+        if (substrate_clear(view,pose,adult.position) && !occupied(pose)) return facing;
+    }
+    return {};
+}
 inline bool anatomy_sweep(const GeometryView& view,AntState ant,PositionM to,std::uint8_t previous,
                           std::uint8_t heading) {
     const auto original=body_pose(ant,previous,attachment(view,ant,previous));

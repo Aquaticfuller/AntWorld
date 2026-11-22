@@ -159,7 +159,7 @@ def fact_blocks(db, world, boundaries, schema):
         require(BLOCK.size <= len(envelope) <= BLOCK.size + 4096 * 214 + 1024, "Unsupported block size")
         magic, encoding, codec, fact_schema, reserved, hi, lo, first, last, begin, finish, raw_size, packed, parent, own = BLOCK.unpack_from(envelope)
         compressed = memoryview(envelope)[BLOCK.size:]
-        require(1 <= fact_schema <= 9 and magic == f"AWFACT{fact_schema:02d}".encode() and encoding == fact_schema and codec == 1 and
+        require(1 <= fact_schema <= 10 and magic == f"AWFACT{fact_schema:02d}".encode() and encoding == fact_schema and codec == 1 and
                 reserved == 0 and (fact_schema == schema or max(fact_schema, schema) <= 2), "Unsupported SQLite block format")
         require(world_id(hi, lo) == world and first == key(first_key) == after + 1 and last == key(last_key) and
                 1 <= last - first + 1 <= 4096 and previous_time <= begin == start <= finish == end and
@@ -251,7 +251,7 @@ def sqlite_inputs(path, *, immutable=False):
             else:
                 require(key(manifest[6]) == 0, "Unexpected legacy prefix in segmented SQLite")
             boundaries = {0: (ZERO, 0)}
-            facts_schema = min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
+            facts_schema = 10 if tip["physics"] == 47 else min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
             records = (fact_blocks(db, world, boundaries, facts_schema) if version == 2 else legacy_records(db, world))
             capture = dict(kind=f"SQLite v{version}", hashes={}, receipt_verified=False, cuts=[], people=[], comparable=False, case={},
                            facts_expected=digest(checkpoint_history(legacy, tip)) if legacy is not None else None)

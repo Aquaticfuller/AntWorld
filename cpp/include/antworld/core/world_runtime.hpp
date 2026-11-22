@@ -144,6 +144,7 @@ private:
     void execute(Transaction&, const ScheduledEvent&);
     void resolve_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] detail::SurfaceConnector discover_connector(const AntState&) const;
+    [[nodiscard]] bool departure_replan(const AntState&, const detail::SurfaceConnector&) const;
     [[nodiscard]] bool can_forage(const AntState&) const;
     [[nodiscard]] bool at_foraging_home(const AntState&) const;
     void prepare_forager(Transaction&,const AntState&,ForagerState&);
@@ -170,16 +171,16 @@ private:
     [[nodiscard]] bool clear_brood_space(EntityId, PositionM from, PositionM to) const;
     void execute_resource_release(Transaction&, const ScheduledEvent&);
     void stop_reproduction(Transaction&, EntityId);
-    void notify_return(Transaction&, EntityId);
+    void notify_return(Transaction&, EntityId, bool carbohydrate_delivered);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
     void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
                             EntityId target = {}, std::uint8_t remaining = 0);
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
-    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half) const;
+    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true) const;
     [[nodiscard]] bool clear_body_motion(const AntState&, PositionM) const;
-    [[nodiscard]] bool clear_emergence(const AntState&) const;
+    [[nodiscard]] std::optional<std::uint8_t> emergence_heading(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
     [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
     [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
@@ -219,6 +220,7 @@ private:
     void record_recruitment_cue(Transaction&, const WorldEvent&);
     void set_activity_work(Transaction&, EntityId, ScheduledId);
     void draw_founding_water(Transaction&, const ScheduledEvent&, const AntState&);
+    [[nodiscard]] std::optional<PositionM> local_wick_contact(const AntState&, const PhysiologyState&) const;
     void draw_foundress_meal(Transaction&, const AntState&, ScheduledId);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;

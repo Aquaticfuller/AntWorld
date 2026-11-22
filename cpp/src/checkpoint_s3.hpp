@@ -134,19 +134,23 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 (e.kind == FactKind::AntDied && e.payload)))
                 ensure(e.time == founding.next(e.actor, p, prior_stage), "F1 fact is outside its physiological boundary");
             if (e.kind == FactKind::PhysiologyUpdated || e.kind == FactKind::StageChanged || e.kind == FactKind::AntDied ||
-                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || e.kind==FactKind::FoundingBoundaryUptake || e.kind==FactKind::ActivityChanged || e.kind==FactKind::FoundressWaterIngested || (e.kind == FactKind::ActionRejected && e.payload))
+                e.kind == FactKind::BehaviorChanged || e.kind == FactKind::ReproductionAttempt || e.kind==FactKind::ProteinRecycled || e.kind == FactKind::SoilExcavated || nutrition_fact(e.kind) || e.kind == FactKind::FoundingRation || e.kind==FactKind::FoundingLipidMobilized || e.kind==FactKind::FoundingBoundaryUptake || e.kind==FactKind::ActivityChanged || e.kind==FactKind::FoundressWaterIngested || e.kind==FactKind::WorkerWaterIngested || (e.kind == FactKind::ActionRejected && e.payload))
                 founding.settle(e.actor, p, prior_stage, e.time);
             if (e.kind == FactKind::ActivityChanged) {
                 ensure(timed_activity(s) && prior_stage==LifeStage::Adult &&
                        (e.payload ? !p.active_work->value : *p.active_work==e.source), "invalid activity interval");
                 p.active_work=e.payload ? e.source : ScheduledId{};
-            } else if (e.kind == FactKind::FoundressWaterIngested) {
+            } else if (e.kind == FactKind::FoundressWaterIngested || e.kind==FactKind::WorkerWaterIngested) {
                 const auto& resource=s.foods.rows[s.foods.index.at(e.resource)];
-                const auto room=p.config.hydration_capacity_ug-p.hydration_ug;
-                ensure(founding.founder(e.actor) && sip_source(s,resource.position,resource.initial) &&
-                       positions.at(e.actor)==e.position && within_contact(e.position,resource.position,s.config) &&
-                       founding.clear(e.position,resource.position,0,e.id) && e.transferred.water_ug<=s.ecological->water_sip_ug &&
-                       p.crop.water_ug<=room && e.transferred.water_ug<=room-p.crop.water_ug,
+                const auto need=sustained_supply(s) ? wick_shortfall(founding.profile(),p,e.kind==FactKind::FoundressWaterIngested) :
+                    deficit(p.config.hydration_capacity_ug-p.hydration_ug,p.crop.water_ug);
+                ensure(sip_source(s,resource.position,resource.initial) &&
+                       positions.at(e.actor)==e.position &&
+                       (sustained_supply(s) ? within_distance(e.position,resource.position,s.care_profile->perception_radius_m,true) :
+                           within_contact(e.position,resource.position,s.config)) &&
+                       (sustained_supply(s) || founding.clear(e.position,resource.position,0,e.id)) &&
+                       e.transferred.water_ug<=s.ecological->water_sip_ug &&
+                       e.transferred.water_ug<=need,
                        "founding water lacks a local funded source");
                 p.crop=sum(p.crop,e.transferred);
             } else if (e.kind == FactKind::FoundingLipidMobilized) {
@@ -169,7 +173,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 const auto& c=s.reproduction.at(e.actor).config;
                 bool funded=founding.founder(e.actor) ? founding.funded(p, e) : reproductive_resources(c,p);
                 bool deferred_for_brood=false;
-                if (funded && founding.founder(e.actor) && founding_nutrition(s)==FoundingNutrition::BroodBudget) {
+                if (funded && founding.founder(e.actor) && local_brood_budget(s)) {
                     BroodRequirement demand;
                     for (const auto& [id,stage]:stages) {
                         if (stage>LifeStage::Larva || !founding.enrolled(id) || audit.at(id).mother!=e.actor) continue;
@@ -254,6 +258,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");
             } else if (e.kind == FactKind::FoundressNestMeal) {
                 ensure(dietary && e.position==positions.at(e.actor), "invalid foundress meal actor or profile");
+                founding.settle(e.actor,p,prior_stage,e.time);
                 founding.nest_meal(p,e,nest[e.colony]);
                 nest[e.colony]=subtract(nest[e.colony],e.transferred);
             } else if (e.kind == FactKind::FoundingRation) {

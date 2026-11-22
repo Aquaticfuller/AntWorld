@@ -288,12 +288,38 @@ inline FoodMass founding_resupply_shortfall(const FoundingProfile& f, const Phys
     return {carb>p.crop.carbs_ug?carb-p.crop.carbs_ug:0,0,needed_water>water?needed_water-water:0,0};
 }
 
-inline FoodMass founding_pulse(PhysiologyState& p, FoundingUptakeClock& clock, LifeStage stage) {
+inline std::uint64_t wick_shortfall(const FoundingProfile& f, const PhysiologyState& p, bool queen) {
+    // ENGINEERING_FIXTURE. Give the slower foundress a longer approach
+    // window. The gap between seeking and refilling prevents tiny sips
+    // from interrupting each bout.
+    const auto day=founding_rates(f,p,LifeStage::Adult,queen).water;
+    const auto held=add(p.hydration_ug,p.crop.water_ug);
+    if (held>=std::min(p.config.hydration_capacity_ug,multiply(queen?2:1,day))) return 0;
+    return deficit(std::min(p.config.hydration_capacity_ug,multiply(queen?3:2,day)),held);
+}
+
+inline std::uint64_t crop_for_sharing(const FoundingProfile& f, const PhysiologyState& p, bool queen) {
+    // ENGINEERING_FIXTURE. The crop can hold food for the next local
+    // exchange. Hold at most one permissible ration and only while the
+    // body can already pay its own maintenance through the next pulse.
+    const auto span=static_cast<std::uint64_t>(p.config.absorption_period.milliseconds);
+    auto remainder=founding_day_ms-1;
+    const auto upkeep=integrate_founding(founding_rates(f,p,LifeStage::Adult,queen,true).energy,span,remainder);
+    if (p.body_energy_nj<=upkeep) return 0;
+    const auto ration=multiply(f.ration_lipid_ug,f.lipid_yield_nj_per_ug);
+    return std::min(p.crop.carbs_ug,ceil_div(ration,p.config.carbohydrate_yield_nj_per_ug));
+}
+
+inline FoodMass founding_pulse(PhysiologyState& p, FoundingUptakeClock& clock, LifeStage stage,
+                              std::uint64_t crop_for_sharing_ug=0) {
     const auto now=p.updated_at;
     const SimTime carb{now.milliseconds-clock.carb.milliseconds};
     const SimTime water{now.milliseconds-clock.water.milliseconds};
     clock={now,now};
-    return absorb(p,stage,carb,water);
+    p.crop.carbs_ug-=crop_for_sharing_ug;
+    const auto dose=absorb(p,stage,carb,water);
+    p.crop.carbs_ug=add(p.crop.carbs_ug,crop_for_sharing_ug);
+    return dose;
 }
 
 inline FoodMass founding_boundary_uptake(PhysiologyState& p, FoundingUptakeClock& clock) {
@@ -461,10 +487,12 @@ inline std::int64_t rhythm_delay(Rng& rng, SimTime nominal, std::uint32_t spread
 
 inline std::int64_t autonomy_delay(const auto& s, EntityId id, Caste caste, std::uint64_t decisions) {
     const auto timing = worker_timing(s, caste);
-    if (!timing) return s.social->decision_interval.milliseconds;
-    if (!variable_conditions(s)) return timing->check_interval.milliseconds;
+    const bool founder_review=sustained_supply(s) && caste==Caste::Queen && s.founding;
+    if (!timing && !founder_review) return s.social->decision_interval.milliseconds;
+    const auto interval=timing ? timing->check_interval : s.founding->profile.worker.behavior_interval;
+    if (!variable_conditions(s)) return interval.milliseconds;
     auto rng = individual_rng(s.seed ^ UINT64_C(0x574f524b5f57414b), id, decisions);
-    return rhythm_delay(rng, timing->check_interval, 250);
+    return rhythm_delay(rng,interval,250);
 }
 
 inline SimTime next_founding_lay(const auto& s, EntityId queen, const FoundingProfile& f,

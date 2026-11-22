@@ -111,7 +111,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EntityId contact_target;
     CareAct transit{CareAct::NestReposition};
     std::uint8_t meal_steps{};
-    bool queen_meal{};
+    bool queen_meal{}, drink{};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -154,25 +154,75 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (const auto reserve=query_founding({s.world,ant.id}))
         urgent=founding_resupply_shortfall(s.founding->profile,p,*reserve,false,timing->check_interval).total_ug()!=0;
     }
-    const auto giving_way = yield_to_loaded(s) && ant.caste==Caste::Worker && stationary && can_switch &&
+    const auto giving_way = yield_to_loaded(s) &&
+        (ant.caste==Caste::Worker || (sustained_supply(s) && founding_foundress(ant.id))) && stationary && can_switch &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? carrier_yield_step(ant) : std::nullopt;
-    const bool can_provision=local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
+    bool at_wick=false;
+    std::optional<PositionM> wick_step;
+    if (sustained_supply(s) && stationary && can_switch && !care_owned(s,ant.id) && !giving_way) {
+      if (const auto wick=local_wick_contact(ant,p)) {
+        at_wick=mouth_at_supply(ant,depot_mouth_target(ant,*wick));
+        if (!at_wick) {
+          const auto step=mouth_approach(ant,*wick,{},nullptr,true);
+          if (step!=ant.position) wick_step=step;
+        }
+      }
+    }
+    const bool can_provision=!at_wick && !wick_step && local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
         ant.caste==Caste::Worker && p.crop.total_ug() &&
         stationary && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
     const auto queen_offer=can_provision ? local_food_offer(ant,true) : std::nullopt;
     const bool can_feed_brood=can_provision && !queen_offer &&
         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
+    // An experienced forager at the actual handoff can refill the extra
+    // load of carbohydrate that a locally recruited worker could collect.
+    const bool repeat_delivery=sustained_supply(s) && wake.payload==carbohydrate_delivery_wake &&
+        p.behavior==IndividualBehavior::Forage && foraging_home && can_switch && !urgent &&
+        colony.nest_food.carbs_ug<std::uint64_t(buffer)+ant.carrying_capacity_ug;
     bool at_meal=false;
     std::optional<PositionM> meal_step;
-    if (!queen_offer && !can_feed_brood && can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
+    if (!at_wick && !wick_step && !queen_offer && !can_feed_brood &&
+        !repeat_delivery && !(sustained_supply(s) && giving_way) &&
+        can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
       at_meal=mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position));
       if (!at_meal) {
         const auto next=nest_meal_step(ant,colony.nest_position);
         if (next!=ant.position) meal_step=next;
       }
     }
+    bool resupply=repeat_delivery;
+    std::optional<PositionM> resupply_step;
+    if (sustained_supply(s) && ant.caste==Caste::Worker && local_founding_provisioning(s,ant.id) &&
+        can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
+        stationary && !wake.payload && config.forage_weight) {
+      // A worker can approach the handoff it can perceive. A departure
+      // still requires actual clearance and a usable return berth.
+      const auto depot=colony.nest_position;
+      const auto mouth=query_body({s.world,ant.id})->mouth_m;
+      const auto patch=depot_mouth_target(ant,depot);
+      const bool visible=within_distance(mouth,patch,s.care_profile->perception_radius_m,true) &&
+          spatially_clear(mouth,patch);
+      const auto opened=!s.geometry_edits.empty();
+      if (visible && colony.nest_food.carbs_ug<buffer && !urgent) {
+        resupply=foraging_home && can_forage(ant);
+        if (!resupply && !at_depot) resupply_step=worker_depot_step(ant);
+      }
+      if (!resupply && !resupply_step && (urgent || ready) && (opened || a.knows_depot) &&
+          (visible || a.knows_depot) && !foraging_home) {
+        // Previously visited stores can cue a search even out of sight.
+        // The worker only tastes their inventory after returning to it.
+        resupply_step=worker_depot_step(ant);
+      }
+    }
     if (integrated_care(s) && care_owned(s,ant.id)) {
       // The ordinary wake stays alive while the finite care lease owns motion.
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (at_wick || wick_step) {
+      if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+      choice.drink=at_wick;
+      choice.resting_site=wick_step;
+      choice.transit=CareAct::DepotApproach;
+      choice.meal_steps=s.care_profile->motion->search_steps;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (queen_offer) {
       choice.contact_target=queen_offer->second;
@@ -197,6 +247,12 @@ void WorldRuntime::resolve_autonomy_wakes(
         choice.meal_steps=s.care_profile->motion->search_steps;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (giving_way) {
+      if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+      choice.resting_site=giving_way->first;
+      choice.contact_target=giving_way->second;
+      choice.transit=CareAct::YieldToCarrier;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (ant.caste==Caste::Queen) {
       if (!mouth_access(s) && anatomical_nest(s) && can_switch && founding_foundress(ant.id) &&
           !within_contact(ant.position,colony.nest_position,s.config) &&
@@ -211,11 +267,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.care=!choice.resting_site && can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (giving_way) {
-      choice.behavior=IndividualBehavior::Rest;
-      choice.resting_site=giving_way->first;
-      choice.contact_target=giving_way->second;
-      choice.transit=CareAct::YieldToCarrier;
+    } else if (resupply || resupply_step) {
+      if (resupply) choice.behavior=IndividualBehavior::Forage;
+      choice.resting_site=resupply_step;
+      choice.transit=CareAct::DepotApproach;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (worker_motor(s) && (!a.decisions ||
                (buffer && !s.foragers.contains(ant.id) && s.care.contains(ant.id) &&
@@ -233,7 +288,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       // existing paid return action before assigning a depot-owned program.
       choice.care=true;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (can_switch && wake.payload==1 && s.long_term) {
+    } else if (can_switch && wake.payload && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
       ContactSample local;
       if (foraging_home && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
@@ -517,6 +572,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     f.random_value = sample.candidates_examined;
     tx.fact(f);
     if (choice.queen_meal) draw_foundress_meal(tx,ant,choice.event.id);
+    if (choice.drink) draw_founding_water(tx,choice.event,ant);
     schedule_autonomy(tx, id);
   }
 }

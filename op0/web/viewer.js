@@ -430,7 +430,7 @@ function updateState(state) {
 function eventLabel(e) {
     const labels = {AntSeeded: "Placed at initialization", AntBorn: "Egg laid", AntDied: "Death",
         FoodCollected: "Food collected", FoodDelivered: "Food delivered", NutritionTransferred: "Trophallaxis",
-        CargoIngested: "Ingest food", NestIngested: "Ingest food", FoundressWaterIngested: "Drink water",
+        CargoIngested: "Ingest food", NestIngested: "Ingest food", FoundressWaterIngested: "Drink water", WorkerWaterIngested: "Drink water",
         FoundingRation: "Maternal ration", SoilExcavated: "Soil excavated", SoilDropped: "Soil placed",
         RecruitmentObserved: "Scout cue sensed", RecruitmentActivated: "Recruitment activated"};
     if (e.kind === "StageChanged") return tr({Larva: "Hatched", Pupa: "Pupated", Adult: "Eclosed"}[e.stage] || e.stage);

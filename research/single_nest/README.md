@@ -94,6 +94,17 @@ Local unloaded worker steps can use a wall or the underside of a roof when the b
 
 Direct black garden ant studies support claustral founding, active maternal care, and retrieval by queens and workers under the studied conditions. The preview adopts that qualitative scope and uses explicit engineering values for the rest. [Colony co-founding in ants is an active process by queens](https://pmc.ncbi.nlm.nih.gov/articles/PMC7419493/), [Ontogeny of superorganisms](https://doi.org/10.1111/1365-2435.14536), [Queen and worker brood retrieval](https://doi.org/10.1002/ece3.4475).
 
+## Test sustained supply
+
+The **Local water and repeat foraging · Physics 47** option under **Colony
+setup** opens a separate model for testing sustained supply. Select **Extended
+supply · 730 days** and **Protected wick · 1.5 mL of water** to reproduce the
+paired experiment. The smaller wick remains available as a water-limited
+condition. The water is an explicit finite inventory and needs mouth contact
+before it can enter a crop. Existing worlds retain their original physics.
+The [paired lifecycle results](SUSTAINED_FOUNDING_RESULTS.md) give the
+matched seeds, resource balances and 730-day observations.
+
 ## Compact continuation
 
 `AWRESUM1` stores the current authoritative state, including the queue, RNG, identities, reserves, custody, geometry and local recruitment memory. Up to 2,048 existing canonical facts are retained in the default file. Event IDs stay absolute and the omitted prefix is declared. The native reader checks the checksum and validates state and the retained fact window before installing it. A compact continuation can advance with the same future canonical facts. Earlier history and its full replay audit require the original archive.

@@ -36,8 +36,12 @@ function duration(ms) {
 }
 
 function sealedOptions() {
-    const active = ["variable", "feeding", "budget"].includes($("sealed-model").value);
+    const model = $("sealed-model").value;
+    const active = ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
+    const wick = liveView.state?.sustained_nest_available && ["feeding", "budget", "sustained"].includes(model);
+    for (const element of document.querySelectorAll("[data-live-wick]")) element.hidden = !wick;
+    $("sealed-wick").disabled = !wick;
     const supply = $("sealed-supply");
     const extended = supply.querySelector('[value="extended"]');
     extended.hidden = extended.disabled = !active;
@@ -70,6 +74,7 @@ function liveControls() {
     $("new-single-nest").disabled = liveView.busy;
     $("sealed-model").querySelector('[value="variable"]').disabled = !s?.variable_nest_available;
     for (const option of $("sealed-model").querySelectorAll("[data-provisioned]")) option.disabled = !s?.provisioned_nest_available;
+    $("sealed-model").querySelector("[data-sustained]").disabled = !s?.sustained_nest_available;
     sealedOptions();
     $("new-single-nest").classList.toggle("primary-button", !active);
     put("find-brood", tr(s?.habitat?.sealed_chamber ? "Locate brood area" : "Locate brood chamber"));
@@ -410,7 +415,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "budget" ? tr("Brood budget") :
+    const nutrition = data.habitat?.nutrition === "sustained" ? tr("Local water and repeat foraging") :
+        data.habitat?.nutrition === "budget" ? tr("Brood budget") :
         data.habitat?.nutrition === "feeding" ? tr("Local feeding") : "";
     put("subtitle", [tr("Live Core · Physics {physics} · Seed {seed}", data), nutrition, description, "ENGINEERING_ONLY"]
         .filter(Boolean).join(" · "));
@@ -620,6 +626,7 @@ function bindLive() {
         if (liveView.state?.dirty && !confirm(tr("Create a colony and replace the current unsaved progress?"))) return;
         return liveCommand("single-nest", {seed: $("sealed-seed").valueAsNumber,
             model: $("sealed-model").value, supply: $("sealed-supply").value,
+            wick: $("sealed-wick").disabled ? "small-wick" : $("sealed-wick").value,
             temperature: Number($("habitat-temperature").value), humidity: Number($("habitat-humidity").value),
             trail_half_life: Number($("habitat-trails").value), air: $("surface-air").value,
             substrate: $("surface-substrate").value});

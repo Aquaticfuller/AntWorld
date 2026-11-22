@@ -15,7 +15,7 @@ from unittest.mock import patch
 from zipfile import ZipFile
 
 from op0 import DAY
-from op0.archive import prefixed
+from op0.archive import prefixed, sqlite_inputs
 from op0.codec import CASTES, KINDS, STAGES, checkpoint, decode_fact
 from op0.index import Catalog
 from op0.live import ROOT, LiveSession, NativeCore, core_path, founding_balance, live_bodies, read_live_events
@@ -556,6 +556,56 @@ class LiveTests(unittest.TestCase):
                 self.assertFalse(any(KINDS[event.kind] in ("FoodDelivered", "FoundressNestMeal")
                                      for event in facts(core, cut["cursor"])))
                 self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_sustained_nest_pays_for_wick_drinks_and_restores_history(self):
+        core = self.live.core()
+        if not core.sustained_nest:
+            self.skipTest("Build the Physics 47 Core")
+        self.live.write("single-nest", {"model": "sustained", "supply": "extended", "seed": 1, "wick": "wet-wick"})
+        self.live.write("clock", {"running": False})
+        initial = self.live.frame
+        self.assertEqual((initial["schema"], initial["physics"]), (40, 47))
+        self.assertEqual(initial["flags"]["founding_habitat"]["nutrition"], "sustained")
+        wick, = (identifier for identifier, source in initial["sources"].items() if source["position_m"][1] < 0)
+        self.assertEqual(initial["sources"][wick]["initial_ug"], (0, 0, 1_500_000, 0))
+        raw = core.call(f"ADVANCE {82 * DAY}")
+        self.live.publish(raw)
+        frame = self.live.frame
+        debited = 0
+        worker_drinks = 0
+        deliveries = 0
+        for fact in facts(core, frame["cursor"]):
+            kind = KINDS[fact.kind]
+            if kind in {"WorkerWaterIngested", "FoundressWaterIngested"}:
+                self.assertEqual(fact.resource, wick)
+                self.assertTrue(0 < fact.mass[2] <= 25)
+                debited += fact.mass[2]
+                worker_drinks += kind == "WorkerWaterIngested"
+            if kind == "FoodDelivered" and fact.mass[0]:
+                deliveries += 1
+        self.assertGreater(worker_drinks, 0)
+        self.assertGreater(deliveries, 1)
+        self.assertEqual(frame["sources"][wick]["stock_ug"][2] + debited, 1_500_000)
+        for mode in ("snapshot", "archive"):
+            self.live.save("Sustained colony", False, mode)
+        with closing(sqlite_inputs(self.live.name_path("Sustained colony", "archive"), immutable=True)) as inputs:
+            _, tip, _, records, _ = next(inputs)
+            self.assertEqual(tip["physics"], 47)
+            _, first = decode_fact(next(records)[1])
+            self.assertEqual((first.id, KINDS[first.kind]), (1, "LongTermConfigured"))
+        end = 83 * DAY
+        next_frame = core.call(f"ADVANCE {end}")
+        next_events = core.call(f"FACTS_AFTER {frame['cursor']} 512")
+        self.assertTrue(next_events)
+        for mode in ("snapshot", "archive"):
+            with self.subTest(mode=mode):
+                self.live.load("Sustained colony", mode)
+                self.assertEqual(core.call("FRAME"), raw)
+                self.assertEqual(core.call(f"ADVANCE {end}"), next_frame)
+                self.assertEqual(core.call(f"FACTS_AFTER {frame['cursor']} 512"), next_events)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        core.call("COMPACT_HISTORY")
+        self.assertEqual(core.call("FRAME"), next_frame)
 
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()

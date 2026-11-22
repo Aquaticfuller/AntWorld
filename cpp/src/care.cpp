@@ -98,8 +98,20 @@ bool WorldRuntime::seeks_nest_meal(const AntState& adult,const PhysiologyState& 
                        spatially_clear(mouth,accessible);
     const auto& reserve=s.founding_reserves.at(adult.id);
     const bool founder=founding_foundress(adult.id);
-    if (visible && founder)
+    if (visible && founder) {
+        if (sustained_supply(s) && has_founding_diet(p) && !care_owned(s,adult.id) &&
+            !founding_resupply_shortfall(s.founding->profile,p,reserve,true,p.config.absorption_period).total_ug()) {
+            // Finish a locally payable ration before topping up a healthy
+            // foundress. Topping up each small deficit keeps her at the depot.
+            for (const auto ref:query_neighborhood({s.world,adult.id},s.care_profile->perception_radius_m).ants) {
+                const auto larva=*query_ant(ref);
+                if (larva.stage==LifeStage::Larva && larva.colony==adult.colony &&
+                    !s.care_locks.contains(larva.id) && surface_care_clear(s,adult.position,larva.position) &&
+                    can_feed_founding(adult.id,larva.id)) return false;
+            }
+        }
         return foundress_nest_meal(s.founding->profile,p,reserve,colony.nest_food,local_founding_feeding(s)).total_ug()!=0;
+    }
     if (founder && local_founding_feeding(s)) {
         // She knows the depot from setup. Check it before the maintenance
         // reserve is exhausted, without reading the stock beyond perception.
@@ -1063,6 +1075,22 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         interrupt_care(tx,a.id,outcome,true);
         if (!failed && c.search_remaining && mouth_access(s)) {
             const auto arrived=*query_ant({s.world,a.id});
+            if (sustained_supply(s)) {
+                const auto p=*query_physiology({s.world,arrived.id});
+                if (const auto wick=local_wick_contact(arrived,p)) {
+                    if (mouth_at_supply(arrived,depot_mouth_target(arrived,*wick))) {
+                        draw_founding_water(tx,event,arrived);
+                        return;
+                    }
+                    if (c.search_remaining>1) {
+                        const auto next=mouth_approach(arrived,*wick,{},nullptr,true);
+                        if (next!=arrived.position) {
+                            start_resting_move(tx,arrived,next,event.id,c.act,{},c.search_remaining-1);
+                            return;
+                        }
+                    }
+                }
+            }
             const auto depot=s.colonies.rows[s.colonies.index.at(a.colony)].nest_position;
             if (seeks_nest_meal(arrived,*query_physiology({s.world,a.id}))) {
                 if (mouth_at_supply(arrived,depot_mouth_target(arrived,depot))) {
@@ -1112,7 +1140,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     }
     if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || c.act==CareAct::EntrancePatrol || local_work) {
         interrupt_care(tx,a.id,outcome,true);
-        change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
+        if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
         return;
     }
     if (integrated && c.act==CareAct::ReturnToCareShelter && failed) {

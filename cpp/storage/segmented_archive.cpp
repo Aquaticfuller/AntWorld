@@ -19,7 +19,12 @@ Digest anchor_digest(const SaveToken& token,SimTime time,std::span<const std::ui
 FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
     if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
-    if (bytes[14]=='M') return FactSchema::EcologicalClosure;
+    if (bytes[14]=='M') {
+        constexpr std::array<std::uint8_t,8> sustained_version{40,0,0,0,47,0,0,0};
+        if (bytes.size()>=24 && std::equal(sustained_version.begin(),sustained_version.end(),bytes.begin()+16))
+            return FactSchema::SustainedSupply;
+        return FactSchema::EcologicalClosure;
+    }
     if (bytes[14]=='L') return FactSchema::FoundingResupply;
     if (bytes[14]=='K') return FactSchema::FoundingUptake;
     if (bytes[14]=='J') return FactSchema::FoundingDietary;
@@ -32,9 +37,9 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
 bool compatible_frame_contract(std::span<const std::uint8_t> a,std::span<const std::uint8_t> b) {
     const auto schema=frame_fact_schema(a);
     if (!compatible_fact_schema(schema,frame_fact_schema(b))) return false;
-    if (schema!=FactSchema::EcologicalClosure) return true;
-    // Both policies use AWFACT09. Each world's AWCKPTM schema and physics
-    // fields still bind its checkpoint chain to one numerical policy.
+    if (schema<FactSchema::EcologicalClosure) return true;
+    // Bind the checkpoint chain to one numerical policy even when policies
+    // share an ecological fact schema.
     return a.size()>=24 && b.size()>=24 && std::equal(a.begin()+16,a.begin()+24,b.begin()+16);
 }
 

@@ -164,6 +164,24 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             const auto at_entrance=link->cursor+1==link->size;
             r.destination=returning && at_entrance && ant.position!=link->entrance()?link->entrance():
                 link->points[returning?link->cursor-1:link->cursor+1];
+            if (sustained_supply(s) && !returning && !loaded &&
+                (!spatially_clear(ant.position,r.destination,body_half(ant.id)) ||
+                 !clear_worker_traffic(ant,r.destination,body_half(ant.id)))) {
+                if (link->cursor) {
+                    const auto previous=link->points[link->cursor-1];
+                    if (spatially_clear(ant.position,previous,body_half(ant.id)) &&
+                        clear_worker_traffic(ant,previous,body_half(ant.id))) {
+                        r.destination=previous;
+                        r.connector_return=true;
+                        r.decision.action=ActionKind::Move;
+                        r.decision.mode=BehaviorMode::Return;
+                        r.decision.reason=DecisionReason::HomeTrace;
+                        return;
+                    }
+                }
+                r.decision.reason=DecisionReason::NoLegalStep;
+                return;
+            }
             if (familiar_return(s) && returning && !loaded && !at_entrance && at_foraging_home(ant) &&
                 !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
                 const auto outward=link->points[link->cursor+1];
@@ -181,8 +199,9 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
                 const bool off_floor=ant.position.y!=depot.y;
                 const bool center_contact=within_contact(ant.position,depot,s.config);
+                const auto contact=sustained_supply(s)?depot_mouth_target(ant,depot):depot;
                 const bool can_unload=off_floor ? wall_handoff(s) && (anatomical_handoff(s) || center_contact) &&
-                    mouth_at_supply(ant,depot) : center_contact;
+                    mouth_at_supply(ant,contact) : center_contact;
                 if (can_unload && spatially_clear(ant.position,depot) &&
                     !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
                     // The carrier has already reached the local handoff
@@ -201,17 +220,21 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 r.decision.reason=returning?DecisionReason::HomeTrace:DecisionReason::Search;
             }
         };
-        if (mouth_access(s) && loaded && f.mode==BehaviorMode::Return && f.last_collected.value &&
-            s.founding_reserves.contains(ant.id)) {
+        if (mouth_access(s) && loaded && f.last_collected.value && s.founding_reserves.contains(ant.id) &&
+            (f.mode==BehaviorMode::Return || sustained_supply(s))) {
             const auto& source=s.foods.rows[s.foods.index.at(f.last_collected)];
-            if (within_contact(ant.position,source.position,s.config) && spatially_clear(ant.position,source.position)) {
+            const bool at_source=f.mode==BehaviorMode::Return && within_contact(ant.position,source.position,s.config) &&
+                spatially_clear(ant.position,source.position);
+            if (at_source || sustained_supply(s)) {
                 const auto p=*query_physiology({s.world,ant.id});
-                const auto need=ingredient_min(ant.carried_food,nutrient_demand(p,ant.stage));
+                const auto demand=at_source?nutrient_demand(p,ant.stage):
+                    founding_resupply_shortfall(s.founding->profile,p,*query_founding({s.world,ant.id}),false,p.config.absorption_period);
+                const auto need=ingredient_min(ant.carried_food,demand);
                 r.cargo_meal_ug=std::min({need.total_ug(),p.config.transfer_limit_ug,p.config.crop_capacity_ug-p.crop.total_ug()});
             }
         }
         if (r.cargo_meal_ug) {
-            // Handle one mouthful of owned cargo at the source before the return trip.
+            // Debit owned cargo during an individual feeding stop.
             r.decision.mode=BehaviorMode::Rest;
             r.decision.reason=DecisionReason::LocalFood;
         } else if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
@@ -226,9 +249,9 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 const auto p=*query_physiology({s.world,ant.id});
                 const auto needs=founding_resupply_shortfall(s.founding->profile,p,*query_founding({s.world,ant.id}),
                                                             false,p.config.absorption_period);
-                if (!needs.carbs_ug || needs.water_ug) return decide(f,r.local);
-                // A hydrated, energy-limited worker can pass a pure water
-                // cue and continue exploring. No remote sugar positions.
+                if ((!needs.carbs_ug && !sustained_supply(s)) || needs.water_ug) return decide(f,r.local);
+                // Water need takes priority for a dehydrating worker.
+                // Hydrated workers can continue searching beyond pure water.
                 const auto pure_water=[&](ResourceId id) {
                     const auto stock=s.foods.rows[s.foods.index.at(id)].initial;
                     return stock.water_ug && stock.total_ug()==stock.water_ug;

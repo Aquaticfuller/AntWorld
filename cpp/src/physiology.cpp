@@ -153,7 +153,9 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     } else {
         const bool emitted_pulse = reserve && s.m.now == p.next_absorption;
         if (emitted_pulse) {
-            f.transferred = clock ? founding_pulse(p,*clock,ant.stage) : absorb(p,ant.stage);
+            const auto sharing_ug=sustained_supply(s) && ant.stage==LifeStage::Adult ?
+                crop_for_sharing(s.founding->profile,p,queen) : 0;
+            f.transferred = clock ? founding_pulse(p,*clock,ant.stage,sharing_ug) : absorb(p,ant.stage);
             if (clock) tx.set_founding_uptake(e.actor,*clock);
             tx.fact(f);
             const auto amount = convert_founding_lipid(s.founding->profile, p, *reserve, ant.stage, queen);
@@ -162,11 +164,14 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         }
         bool advance_stage = reserve ? (!mobilized || emitted_pulse) && founding_develops(s.founding->profile, p, *reserve, ant.stage) :
             developing(p, ant.stage) && p.stage_progress == stage_duration(p.config, ant.stage);
+        std::uint8_t emergence_direction{};
         if (advance_stage && ant.stage==LifeStage::Pupa && anatomical_nest(s)) {
             // The same individual must fit as an adult at its actual site.
             // The completed clock and ordinary upkeep remain in force while
             // it waits for space. There is no relocation or free reserve.
-            advance_stage=clear_emergence(ant);
+            const auto heading=emergence_heading(ant);
+            advance_stage=heading.has_value();
+            emergence_direction=heading.value_or(0);
         }
         if (advance_stage) {
             interrupt_care(tx,e.actor,Outcome::InvalidStage);
@@ -174,6 +179,12 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
             f.transferred = {};
             if (ant.stage==LifeStage::Adult) {
+                if (emergence_direction) {
+                    auto a=s.autonomy.at(ant.id);
+                    a.facing=emergence_direction;
+                    tx.autonomy.set(ant.id,a);
+                    f.random_value=emergence_direction;
+                }
                 if (reserve && founding_boundary_enabled(s.founding->profile,ant.stage))
                     tx.set_founding_uptake(e.actor,{s.m.now,s.m.now});
                 schedule_autonomy(tx,e.actor,local_founding_provisioning(s,e.actor)?SimTime{1}:SimTime{});
@@ -181,7 +192,8 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
         if (emitted_pulse && !advance_stage) {
-            if (queen && s.ecological && s.ecological->water_sip_ug)
+            if ((queen || (sustained_supply(s) && ant.stage==LifeStage::Adult)) &&
+                s.ecological && s.ecological->water_sip_ug)
                 draw_founding_water(tx, e, ant);
             if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake)
                 draw_foundress_meal(tx,ant,e.id);
