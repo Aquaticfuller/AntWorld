@@ -182,11 +182,14 @@ private:
     [[nodiscard]] bool clear_emergence(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
     [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
-    [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>, const BodyPose* partner=nullptr) const;
+    [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
+                                           const BodyPose* partner=nullptr, bool patch=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
-    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&) const;
+    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false) const;
     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
     [[nodiscard]] PositionM depot_mouth_target(const AntState&, PositionM) const;
+    [[nodiscard]] PositionM nest_meal_step(const AntState&, PositionM) const;
+    [[nodiscard]] FoodMass local_provisioning_shortfall(const AntState&, FoodMass available = {}, bool include_queen=false) const;
     [[nodiscard]] bool seeks_nest_meal(const AntState&, const PhysiologyState&) const;
     void commit_brood_position(Transaction&, EntityId, EntityId, ScheduledId, PositionM);
     void release_brood_on_floor(Transaction&, const CareState&, EntityId, ScheduledId);
@@ -216,6 +219,7 @@ private:
     void record_recruitment_cue(Transaction&, const WorldEvent&);
     void set_activity_work(Transaction&, EntityId, ScheduledId);
     void draw_founding_water(Transaction&, const ScheduledEvent&, const AntState&);
+    void draw_foundress_meal(Transaction&, const AntState&, ScheduledId);
     [[nodiscard]] std::uint64_t carried_soil_ug(EntityId) const;
     [[nodiscard]] std::int32_t body_half(EntityId) const;
     static std::vector<std::uint8_t> encode(const State&, std::size_t byte_limit,bool frame = false,

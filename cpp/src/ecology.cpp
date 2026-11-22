@@ -111,6 +111,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EntityId contact_target;
     CareAct transit{CareAct::NestReposition};
     std::uint8_t meal_steps{};
+    bool queen_meal{};
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -144,6 +145,8 @@ void WorldRuntime::resolve_autonomy_wakes(
             program_time.milliseconds;
     bool urgent = p.body_energy_nj < p.config.energy_capacity_nj / 4 ||
                         p.hydration_ug < p.config.hydration_capacity_ug / 4;
+    if (local_founding_feeding(s) && founding_foundress(ant.id) && has_founding_diet(p))
+      urgent=founding_resupply_shortfall(s.founding->profile,p,*query_founding({s.world,ant.id}),true,p.config.absorption_period).total_ug()!=0;
     if (buffer && timing && ant.caste==Caste::Worker) {
       // Newly eclosed workers can have healthy short-term reserves well below
       // the maximum crop and body capacities. Use the actual metabolic budget
@@ -153,22 +156,40 @@ void WorldRuntime::resolve_autonomy_wakes(
     }
     const auto giving_way = yield_to_loaded(s) && ant.caste==Caste::Worker && stationary && can_switch &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? carrier_yield_step(ant) : std::nullopt;
+    const bool can_provision=local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
+        ant.caste==Caste::Worker && p.crop.total_ug() &&
+        stationary && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
+    const auto queen_offer=can_provision ? local_food_offer(ant,true) : std::nullopt;
+    const bool can_feed_brood=can_provision && !queen_offer &&
+        ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
     bool at_meal=false;
     std::optional<PositionM> meal_step;
-    if (can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
-      const auto depot=depot_mouth_target(ant,colony.nest_position);
-      at_meal=mouth_at_supply(ant,depot);
+    if (!queen_offer && !can_feed_brood && can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
+      at_meal=mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position));
       if (!at_meal) {
-        const auto next=mouth_approach(ant,depot,{});
+        const auto next=nest_meal_step(ant,colony.nest_position);
         if (next!=ant.position) meal_step=next;
       }
     }
     if (integrated_care(s) && care_owned(s,ant.id)) {
       // The ordinary wake stays alive while the finite care lease owns motion.
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (queen_offer) {
+      choice.contact_target=queen_offer->second;
+      if (queen_offer->first==ant.position) choice.behavior=IndividualBehavior::Nurse;
+      else {
+        choice.resting_site=queen_offer->first;
+        choice.transit=CareAct::ApproachNestmate;
+      }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (can_feed_brood) {
+      choice.care=true;
+      choice.behavior=IndividualBehavior::Nurse;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (at_meal || meal_step) {
       if (at_meal) {
         if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+        else choice.queen_meal=local_founding_feeding(s) && founding_foundress(ant.id);
         urgent=true;
       } else {
         choice.resting_site=meal_step;
@@ -418,20 +439,27 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else {
       inspect_decision(wake, {}, 1, static_cast<std::uint64_t>(choice.behavior));
     }
-    if (local_traffic(s) && ant.caste==Caste::Worker && can_switch && !urgent && !choice.care && !choice.resting_site &&
+    const bool free_to_offer=!choice.resting_site || (local_founding_feeding(s) &&
+        (choice.transit==CareAct::NestReposition || choice.transit==CareAct::EntrancePatrol));
+    if (local_traffic(s) && ant.caste==Caste::Worker && can_switch && !urgent && !choice.care && free_to_offer &&
         !care_owned(s,ant.id) && !active_expenditure(p) && (p.behavior==IndividualBehavior::Rest || p.behavior==IndividualBehavior::Paused) &&
         (choice.behavior==IndividualBehavior::Rest || choice.behavior==IndividualBehavior::Paused)) {
       if (const auto offer=local_food_offer(ant)) {
         choice.contact_target=offer->second;
-        if (offer->first==ant.position) choice.behavior=IndividualBehavior::Nurse;
+        if (offer->first==ant.position) {
+          choice.resting_site.reset();
+          choice.behavior=IndividualBehavior::Nurse;
+        }
         else {
           choice.resting_site=offer->first;
           choice.transit=CareAct::ApproachNestmate;
         }
-      } else if (const auto contact=local_contact_step(ant)) {
-        choice.resting_site=contact->first;
-        choice.contact_target=contact->second;
-        choice.transit=CareAct::ApproachNestmate;
+      } else if (!choice.resting_site) {
+        if (const auto contact=local_contact_step(ant)) {
+          choice.resting_site=contact->first;
+          choice.contact_target=contact->second;
+          choice.transit=CareAct::ApproachNestmate;
+        }
       }
     }
     choices.push_back(std::move(choice));
@@ -465,7 +493,8 @@ void WorldRuntime::resolve_autonomy_wakes(
     else if (choice.resting_site)
       start_resting_move(tx,s.ants.get(s.ants.index.at(id)),*choice.resting_site,choice.event.id,choice.transit,
                          choice.contact_target,choice.meal_steps);
-    else if (choice.behavior != s.physiology.at(id).behavior)
+    else if (choice.behavior != s.physiology.at(id).behavior ||
+             (local_founding_feeding(s) && choice.contact_target.value && choice.behavior==IndividualBehavior::Nurse))
       change_behavior(tx, {s.world, id}, choice.behavior, choice.event.id,false,choice.contact_target);
     const auto &sample = choice.sample;
     auto &work = s.m.contact_work;
@@ -487,6 +516,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     f.payload = a.decisions;
     f.random_value = sample.candidates_examined;
     tx.fact(f);
+    if (choice.queen_meal) draw_foundress_meal(tx,ant,choice.event.id);
     schedule_autonomy(tx, id);
   }
 }

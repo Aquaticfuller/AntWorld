@@ -142,7 +142,8 @@ struct WorldEvent {
                e.payload && e.random_value && e.transferred == FoodMass{};
     case FactKind::FoundingRation:
         return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Adult && e.payload &&
-               e.payload != e.actor.value && dry_packet && (e.random_value || e.transferred.protein_ug || e.transferred.water_ug);
+               e.payload != e.actor.value && !e.transferred.other_ug &&
+               (e.random_value || e.transferred.carbs_ug || e.transferred.protein_ug || e.transferred.water_ug);
     case FactKind::FoundingLipidMobilized:
         return e.actor.value && e.colony.value && e.source.value && e.stage == LifeStage::Larva && e.payload &&
                e.random_value && e.transferred == FoodMass{};

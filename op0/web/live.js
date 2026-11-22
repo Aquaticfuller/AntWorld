@@ -36,7 +36,7 @@ function duration(ms) {
 }
 
 function sealedOptions() {
-    const active = $("sealed-model").value === "variable";
+    const active = ["variable", "feeding", "budget"].includes($("sealed-model").value);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
     const supply = $("sealed-supply");
     const extended = supply.querySelector('[value="extended"]');
@@ -69,6 +69,7 @@ function liveControls() {
     $("new-single-nest").hidden = !s?.single_nest_available;
     $("new-single-nest").disabled = liveView.busy;
     $("sealed-model").querySelector('[value="variable"]').disabled = !s?.variable_nest_available;
+    for (const option of $("sealed-model").querySelectorAll("[data-provisioned]")) option.disabled = !s?.provisioned_nest_available;
     sealedOptions();
     $("new-single-nest").classList.toggle("primary-button", !active);
     put("find-brood", tr(s?.habitat?.sealed_chamber ? "Locate brood area" : "Locate brood chamber"));
@@ -409,7 +410,10 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    put("subtitle", tr("Live Core · Physics {physics} · Seed {seed}", data) + " · " + description + " · ENGINEERING_ONLY");
+    const nutrition = data.habitat?.nutrition === "budget" ? tr("Brood budget") :
+        data.habitat?.nutrition === "feeding" ? tr("Local feeding") : "";
+    put("subtitle", [tr("Live Core · Physics {physics} · Seed {seed}", data), nutrition, description, "ENGINEERING_ONLY"]
+        .filter(Boolean).join(" · "));
     updateGeometryControls(app.geometry);
     $("viewer").hidden = false;
     liveEnvironment(data);

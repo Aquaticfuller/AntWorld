@@ -214,6 +214,67 @@ inline std::uint64_t founding_energy(const FoundingProfile& f, const PhysiologyS
     return add(p.body_energy_nj, multiply(r.lipid_ug, f.lipid_yield_nj_per_ug));
 }
 
+inline std::uint64_t deficit(std::uint64_t required, std::uint64_t owned) {
+    return required > owned ? required-owned : 0;
+}
+
+inline std::uint64_t dietary_energy(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
+    return add(founding_energy(f,p,r),multiply(p.crop.carbs_ug,p.config.carbohydrate_yield_nj_per_ug));
+}
+
+inline bool has_founding_diet(const PhysiologyState& p) {
+    return p.crop.carbs_ug || p.crop.protein_ug || p.oxidized_carbs_ug;
+}
+
+inline FoundingRates remaining_brood_maintenance(const FoundingProfile& f, const PhysiologyState& p, LifeStage stage) {
+    FoundingRates remaining{};
+    auto energy_carry=founding_day_ms-1, water_carry=energy_carry;
+    for (auto index=static_cast<std::size_t>(stage); index<f.brood.size(); ++index) {
+        const auto& phase=f.brood[index];
+        const auto progress=index==static_cast<std::size_t>(stage) ? p.stage_progress.milliseconds : 0;
+        const auto time=static_cast<std::uint64_t>(phase.duration.milliseconds-progress);
+        remaining.energy=add(remaining.energy,integrate_founding(phase.basal_nj_per_day,time,energy_carry));
+        remaining.water=add(remaining.water,integrate_founding(phase.water_ug_per_day,time,water_carry));
+    }
+    return remaining;
+}
+
+// Carry through the first scheduled adult uptake, even if eclosion follows a
+// recent pulse. These are accrued model costs, not additional resources.
+inline FoundingRates needs_through_first_adult_pulse(const FoundingProfile& f, const PhysiologyState& p, LifeStage stage) {
+    auto cost=remaining_brood_maintenance(f,p,stage);
+    auto energy_carry=founding_day_ms-1, water_carry=energy_carry;
+    const auto absorption=static_cast<std::uint64_t>(f.worker.absorption_period.milliseconds);
+    const auto adult=founding_rates(f,p,LifeStage::Adult,false,true);
+    cost.energy=add(cost.energy,integrate_founding(adult.energy,absorption,energy_carry));
+    cost.water=add(cost.water,integrate_founding(adult.water,absorption,water_carry));
+    return cost;
+}
+
+struct BroodRequirement { std::uint64_t energy_nj{}, protein_ug{}, water_ug{}; };
+
+inline BroodRequirement unfunded_brood(const FoundingProfile& f, const PhysiologyState& p,
+                                       const FoundingReserve& reserve, LifeStage stage) {
+    const auto need=needs_through_first_adult_pulse(f,p,stage);
+    return {deficit(add(need.energy,1),dietary_energy(f,p,reserve)),
+            deficit(f.larval_tissue_ug,add(p.tissue_protein_ug,p.crop.protein_ug)),
+            deficit(add(need.water,1),add(p.hydration_ug,p.crop.water_ug))};
+}
+
+inline FoodMass founding_larval_demand(const FoundingProfile& f, const PhysiologyState& p,
+                                      const FoundingReserve& r) {
+    const auto need=unfunded_brood(f,p,r,LifeStage::Larva);
+    return {ceil_div(need.energy_nj,p.config.carbohydrate_yield_nj_per_ug),need.protein_ug,need.water_ug,0};
+}
+
+inline void reserve_for_brood(BroodRequirement& total, const FoundingProfile& f, const PhysiologyState& p,
+                              const FoundingReserve& reserve, LifeStage stage) {
+    const auto need=unfunded_brood(f,p,reserve,stage);
+    total.energy_nj=add(total.energy_nj,need.energy_nj);
+    total.protein_ug=add(total.protein_ug,need.protein_ug);
+    total.water_ug=add(total.water_ug,need.water_ug);
+}
+
 inline FoodMass founding_resupply_shortfall(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r,
                                            bool queen, SimTime decision_interval) {
     const auto rates=founding_rates(f,p,LifeStage::Adult,queen,true);
@@ -302,21 +363,43 @@ inline FoundingRates dietary_maintenance(const FoundingProfile& f, const Physiol
     return {integrate_founding(rates.energy,horizon,e),integrate_founding(rates.water,horizon,w)};
 }
 
-inline FoodMass foundress_nest_meal(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r, FoodMass stock) {
+inline bool funds_brood_budget(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r,
+                               const BroodRequirement& existing) {
+    const auto floor=p.oxidized_carbs_ug ? dietary_maintenance(f,p,r) : maintenance_cost(f,r);
+    const auto newborn=needs_through_first_adult_pulse(f,initial_founding_physiology(f,false,{}),LifeStage::Egg);
+    const auto egg_energy=multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug);
+    const auto next_energy=add(std::max(egg_energy,newborn.energy),f.lay_overhead_nj);
+    const auto next_water=std::max(f.egg_water_ug,newborn.water);
+    return dietary_energy(f,p,r)>add(add(floor.energy,existing.energy_nj),next_energy) &&
+        add(p.crop.protein_ug,r.mobile_protein_ug)>=add(existing.protein_ug,f.larval_tissue_ug) &&
+        add(p.hydration_ug,p.crop.water_ug)>add(add(floor.water,existing.water_ug),next_water);
+}
+
+inline FoodMass foundress_nest_meal(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r,
+                                  FoodMass stock, bool local_feeding=false) {
     if (!p.body_energy_nj || !p.hydration_ug) return {};
     const auto floor=dietary_maintenance(f,p,r);
     const auto y=p.config.carbohydrate_yield_nj_per_ug;
     const auto refill=f.dietary->dietary_eggs ? add(multiply(f.egg_lipid_ug,f.lipid_yield_nj_per_ug),f.lay_overhead_nj) : 0;
-    const auto energy_target=std::min(p.config.energy_capacity_nj,add(floor.energy,refill));
+    const auto juvenile=local_feeding ?
+        needs_through_first_adult_pulse(f,initial_founding_physiology(f,false,{}),LifeStage::Egg) : FoundingRates{};
+    const auto own_energy=local_feeding ? multiply(floor.energy,2) : floor.energy;
+    const auto energy_target=local_feeding ? add(own_energy,add(std::max(refill,juvenile.energy),f.lay_overhead_nj)) :
+        std::min(p.config.energy_capacity_nj,add(floor.energy,refill));
     const auto body_carbs=energy_target>p.body_energy_nj ? ceil_div(energy_target-p.body_energy_nj,y) : 0;
-    const auto water_target=std::min(p.config.hydration_capacity_ug,add(floor.water,f.egg_water_ug));
+    const auto own_water=local_feeding ? multiply(floor.water,2) : floor.water;
+    const auto water_target=std::min(p.config.hydration_capacity_ug,add(own_water,std::max(f.egg_water_ug,juvenile.water)));
     const auto body_water=water_target>p.hydration_ug ? water_target-p.hydration_ug : 0;
+    const auto protein_target=local_feeding ? f.larval_tissue_ug : f.egg_protein_ug;
     const FoodMass deficit{body_carbs>p.crop.carbs_ug ? body_carbs-p.crop.carbs_ug : 0,
-        f.dietary->dietary_eggs && f.egg_protein_ug>p.crop.protein_ug ? f.egg_protein_ug-p.crop.protein_ug : 0,
+        f.dietary->dietary_eggs && protein_target>p.crop.protein_ug ? protein_target-p.crop.protein_ug : 0,
         body_water>p.crop.water_ug ? body_water-p.crop.water_ug : 0,0};
     const auto supply=ingredient_min(stock,deficit);
     if (!supply.total_ug() || p.crop.total_ug()==p.config.crop_capacity_ug) return {};
-    return portion(supply,std::min({supply.total_ug(),p.config.transfer_limit_ug,p.config.crop_capacity_ug-p.crop.total_ug()}));
+    const auto room=p.config.crop_capacity_ug-p.crop.total_ug();
+    // A self-fed meal is bounded by actual demand and crop room. The worker
+    // handoff size remains the cap on one oral transfer between individuals.
+    return portion(supply,std::min(supply.total_ug(),local_feeding ? room : std::min(room,p.config.transfer_limit_ug)));
 }
 
 inline FoundingEggFuel founding_egg_fuel(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
@@ -409,9 +492,28 @@ inline ReproductionConfig founding_reproduction(const FoundingProfile& f) {
             f.lay_overhead_nj, ReproductionConfig{}.offspring_carrying_capacity_ug, f.maintenance_floor};
 }
 
+inline FoundingRation dietary_ration(const FoundingProfile& f, const PhysiologyState& donor, const FoundingReserve& maternal,
+                                    const PhysiologyState& receiver, const FoundingReserve& larva) {
+    const auto floor=donor.oxidized_carbs_ug ? dietary_maintenance(f,donor,maternal) : maintenance_cost(f,maternal);
+    const auto spare_energy=deficit(dietary_energy(f,donor,maternal),add(floor.energy,1));
+    const auto spare_water=deficit(add(donor.hydration_ug,donor.crop.water_ug),add(floor.water,1));
+    const auto need=unfunded_brood(f,receiver,larva,LifeStage::Larva);
+    const auto energy_limit=std::min(spare_energy,multiply(f.ration_lipid_ug,f.lipid_yield_nj_per_ug));
+    const auto yield=donor.config.carbohydrate_yield_nj_per_ug;
+    const auto room=std::min(donor.config.transfer_limit_ug,receiver.config.crop_capacity_ug-receiver.crop.total_ug());
+    const auto protein=std::min({room,f.ration_protein_ug,add(donor.crop.protein_ug,maternal.mobile_protein_ug),need.protein_ug});
+    const auto water=std::min({room-protein,f.ration_water_ug,spare_water,need.water_ug});
+    const auto carb_mass=std::min({room-protein-water,donor.crop.carbs_ug,ceil_div(need.energy_nj,yield),energy_limit/yield});
+    const auto from_crop=multiply(carb_mass,yield);
+    const auto lipid=std::min({maternal.lipid_ug,f.larval_lipid_capacity_ug-larva.lipid_ug,room-protein-water-carb_mass,
+        ceil_div(deficit(need.energy_nj,from_crop),f.lipid_yield_nj_per_ug),(energy_limit-from_crop)/f.lipid_yield_nj_per_ug});
+    return {lipid,{carb_mass,protein,water,0}};
+}
+
 inline FoundingRation founding_ration(const FoundingProfile& f, const PhysiologyState& donor, const FoundingReserve& maternal,
-                                      const PhysiologyState& receiver, const FoundingReserve& larva) {
+                                      const PhysiologyState& receiver, const FoundingReserve& larva, bool local_feeding=false) {
     if (!donor.body_energy_nj || !donor.hydration_ug || !receiver.body_energy_nj || !receiver.hydration_ug) return {};
+    if (local_feeding && has_founding_diet(donor)) return dietary_ration(f,donor,maternal,receiver,larva);
     const auto floor = maintenance_cost(f, maternal);
     const auto energy = founding_energy(f, donor, maternal);
     if (energy <= floor.energy || donor.hydration_ug <= floor.water) return {};
@@ -428,10 +530,12 @@ inline FoundingRation founding_ration(const FoundingProfile& f, const Physiology
 }
 
 inline void apply_founding_ration(const FoundingRation& amount, PhysiologyState& donor, FoundingReserve& maternal,
-                                   PhysiologyState& receiver, FoundingReserve& larva) {
+                                   PhysiologyState& receiver, FoundingReserve& larva, bool local_feeding=false) {
+    const FoodMass oral=local_feeding && has_founding_diet(donor) ? ingredient_min(donor.crop,amount.crop) : FoodMass{};
     maternal.lipid_ug -= amount.lipid_ug;
-    maternal.mobile_protein_ug -= amount.crop.protein_ug;
-    donor.hydration_ug -= amount.crop.water_ug;
+    maternal.mobile_protein_ug -= amount.crop.protein_ug-oral.protein_ug;
+    donor.hydration_ug -= amount.crop.water_ug-oral.water_ug;
+    donor.crop = subtract(donor.crop,oral);
     larva.lipid_ug = add(larva.lipid_ug, amount.lipid_ug);
     receiver.crop = sum(receiver.crop, amount.crop);
 }

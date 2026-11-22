@@ -167,7 +167,24 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
             } else if (e.kind==FactKind::ReproductionAttempt) {
                 ensure(s.reproduction.contains(e.actor),"attempt lacks reproduction configuration");
                 const auto& c=s.reproduction.at(e.actor).config;
-                const bool funded=founding.founder(e.actor) ? founding.funded(p, e) : reproductive_resources(c,p);
+                bool funded=founding.founder(e.actor) ? founding.funded(p, e) : reproductive_resources(c,p);
+                bool deferred_for_brood=false;
+                if (funded && founding.founder(e.actor) && founding_nutrition(s)==FoundingNutrition::BroodBudget) {
+                    BroodRequirement demand;
+                    for (const auto& [id,stage]:stages) {
+                        if (stage>LifeStage::Larva || !founding.enrolled(id) || audit.at(id).mother!=e.actor) continue;
+                        const auto position=positions.at(id);
+                        if (!within_distance(e.position,position,s.care_profile->perception_radius_m,s.config.continuous_spatial_motion) ||
+                            !surface_care_clear(s,e.position,position) || !founding.clear(e.position,position,0,e.id)) continue;
+                        auto child=audit.at(id);
+                        auto reserve=founding.reserves.at(id);
+                        settle_founding(founding.profile(),child,reserve,stage,false,e.time);
+                        reserve_for_brood(demand,founding.profile(),child,reserve,stage);
+                    }
+                    funded=funds_brood_budget(founding.profile(),p,founding.reserves.at(e.actor),demand);
+                    deferred_for_brood=!funded;
+                }
+                ensure(e.random_value==static_cast<std::uint64_t>(deferred_for_brood),"invalid brood allocation evidence");
                 if (bounded_brood_space(s)) {
                     ensure(e.payload ? funded && e.outcome==Outcome::Success :
                         e.outcome==(funded?Outcome::Capacity:Outcome::Depleted),"invalid MicroWorld reproduction funding");
@@ -225,9 +242,13 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                            "founding gift exceeds the locally payable crop");
                 if (s.social) {
                     ensure(s.social->exchange_enabled,"transfer in a no-response control");
-                    if (s.social->demand_sensitive)
-                        ensure(ingredient_min(e.transferred,nutrient_demand(recipient,target_stage))==e.transferred,
+                    if (s.social->demand_sensitive) {
+                        const auto demand=local_founding_feeding(s) && target_stage==LifeStage::Larva && founding.enrolled(target) ?
+                            founding_larval_demand(founding.profile(),recipient,founding.reserves.at(target)) :
+                            nutrient_demand(recipient,target_stage);
+                        ensure(ingredient_min(e.transferred,demand)==e.transferred,
                             "transfer exceeds contacted recipient demand");
+                    }
                 }
                 p.crop = subtract(p.crop, e.transferred); recipient.crop = sum(recipient.crop, e.transferred);
                 ensure(recipient.crop.total_ug() <= recipient.config.crop_capacity_ug, "recipient overflow in history");

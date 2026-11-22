@@ -1,4 +1,4 @@
-"""Measure Physics 45 colony growth from native frames and committed facts."""
+"""Measure founding colony growth from native frames and committed facts."""
 
 from argparse import ArgumentParser
 from collections import Counter
@@ -15,8 +15,9 @@ from op0.live import ROOT, NativeCore, core_path, founding_balance
 from tools.compare_m0_worker_rhythm import facts
 
 
-DAYS = (7, 14, 30, 49, 60, 150, 180, 365, 730)
+DAYS = (7, 14, 30, 49, 55, 60, 112, 150, 163, 180, 226, 286, 365, 730)
 WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800}
+TREATMENTS = ("reference", "feeding", "budget")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 
@@ -28,10 +29,12 @@ def census(frame):
 
 
 def history(core, frame, queen):
-    stages, eclosions, first = {}, {}, {}
-    transitions, deaths = Counter(), Counter()
+    stages, eclosions, first, worker_deaths = {}, {}, {}, {}
+    transitions, deaths, larval_unused_crop = Counter(), Counter(), Counter()
     delivery = [0, 0, 0]
-    worker_lives = []
+    nutrition = dict(queen_nest=[0, 0, 0], queen_worker=[0, 0, 0],
+                     queen_larva=[0, 0, 0], worker_larva=[0, 0, 0], larval_uptake=[0, 0, 0])
+    first_brood = set()
     alive = peak = 0
     peak_ms = last_worker_death_ms = None
     queen_death = None
@@ -42,6 +45,10 @@ def history(core, frame, queen):
         if kind == "AntBorn":
             transitions["eggs_laid"] += 1
             first.setdefault("egg_ms", fact.time)
+            if fact.time < first["egg_ms"] + DAY:
+                first_brood.add(fact.actor)
+        elif kind == "ReproductionAttempt" and fact.aux == 1:
+            transitions["brood_budget_deferrals"] += 1
         elif kind == "StageChanged":
             if fact.stage == LARVA:
                 transitions["hatched"] += 1
@@ -60,8 +67,14 @@ def history(core, frame, queen):
                 queen_death = dict(time_ms=fact.time, event_id=str(fact.id), cause=cause)
             else:
                 deaths[f"{STAGES[stage]}: {cause}"] += 1
+                if stage == LARVA:
+                    crop = frame["ants"][fact.actor]["crop_ug"]
+                    if crop[0] and cause == "Energy depleted":
+                        larval_unused_crop["energy_death_with_carbohydrate"] += 1
+                    if crop[2] and cause == "Dehydration":
+                        larval_unused_crop["dehydration_with_water"] += 1
                 if fact.actor in eclosions:
-                    worker_lives.append(fact.time - eclosions[fact.actor])
+                    worker_deaths[fact.actor] = fact.time
                     alive -= 1
                     last_worker_death_ms = fact.time
         elif kind == "FoodDelivered":
@@ -71,26 +84,57 @@ def history(core, frame, queen):
                 first.setdefault("carbohydrate_delivery_ms", fact.time)
             if fact.mass[2]:
                 first.setdefault("water_delivery_ms", fact.time)
+        route = None
+        if kind == "FoundressNestMeal":
+            route = "queen_nest"
+        elif kind == "FoundingRation":
+            route = "queen_larva"
+        elif kind == "NutritionTransferred":
+            if fact.payload == queen:
+                route = "queen_worker"
+            elif stages.get(fact.payload) == LARVA:
+                route = "worker_larva"
+        elif kind == "PhysiologyUpdated" and fact.stage == LARVA:
+            route = "larval_uptake"
+        if route:
+            for index, mass in enumerate(fact.mass[:3]):
+                nutrition[route][index] += mass
     require(alive == census(frame)["workers"], "Worker eclosions and deaths disagree with the final frame")
     transitions["eclosed_workers"] = len(eclosions)
+    first_workers = first_brood & eclosions.keys()
+    survival = {}
+    for age in (7, 30, 90):
+        counts = Counter()
+        for worker in first_workers:
+            target = eclosions[worker] + age * DAY
+            death = worker_deaths.get(worker)
+            status = "dead" if death is not None and death <= target else "alive" if target <= frame["time_ms"] else "censored"
+            counts[status] += 1
+        survival[age] = {status: counts[status] for status in ("alive", "dead", "censored")}
     return dict(transitions=transitions, offspring_deaths=deaths, first=first, peak_workers=peak, first_peak_ms=peak_ms,
                 last_worker_death_ms=last_worker_death_ms, workers_still_alive=alive,
-                median_worker_life_ms_among_deaths=median(worker_lives) if worker_lives else None,
-                delivered_cpw_ug=delivery, queen_death=queen_death)
+                median_worker_life_ms_among_deaths=median(when-eclosions[worker] for worker,when in worker_deaths.items()) if worker_deaths else None,
+                first_brood_eggs=len(first_brood), first_brood_eclosed=len(first_workers), first_brood_worker_survival=survival,
+                delivered_cpw_ug=delivery, nutrition_cpw_ug=nutrition, queen_death=queen_death,
+                larval_unused_crop=larval_unused_crop)
 
 
-def measure(core, seed, supply):
-    case_id = WORLD_BASES[supply] + seed
-    command = f"NEW_VARIABLE_NEST {case_id} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral"
+def measure(core, seed, supply, treatment, days):
+    case_id = WORLD_BASES[supply] + seed + TREATMENTS.index(treatment) * (2**34)
+    settings = f"{case_id} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral"
+    command = (f"NEW_VARIABLE_NEST {settings}" if treatment == "reference"
+               else f"NEW_PROVISIONED_NEST {settings} {treatment}")
     initial = core.call(command)
     states = []
-    for day in DAYS:
+    for day in sorted({d for d in DAYS if d <= days} | {days}):
         raw = core.call(f"ADVANCE {day * DAY}")
         frame = checkpoint(raw)
         states.append(census(frame))
     require(core.call("CHECK_LEDGERS") == b"", "Native ledger verification failed")
     queen, = (identifier for identifier, ant in frame["ants"].items() if ant["caste"] == QUEEN)
     result = history(core, frame, queen)
+    _, peak_rss, _ = map(int, core.call("MEMORY").split())
+    _, _, encoded_history, _ = map(int, core.call("HISTORY_STORAGE").split())
     if death := result["queen_death"]:
         core.call(command)
         death_frame = checkpoint(core.call(f"ADVANCE {death['time_ms']}"))
@@ -101,9 +145,10 @@ def measure(core, seed, supply):
                      nest_carbs_ug=sum(row["stock_ug"][0] for row in death_frame["colonies"].values()),
                      surface_carbs_ug=sum(row["stock_ug"][0] for row in death_frame["sources"].values()
                                           if row["position_m"][1] >= surface_y))
-    return dict(command=command, world_id=frame["world"], physics=frame["physics"], seed=seed, supply=supply,
+    return dict(command=command, world_id=frame["world"], physics=frame["physics"], seed=seed, supply=supply, treatment=treatment,
                 initial_sha256=sha256(initial).hexdigest(), final_sha256=sha256(raw).hexdigest(), census=states,
-                committed_facts=frame["cursor"], **result)
+                committed_facts=frame["cursor"], encoded_history_bytes=encoded_history,
+                native_process_peak_rss_bytes=peak_rss, **result)
 
 
 def main():
@@ -111,17 +156,22 @@ def main():
     parser.add_argument("--core", type=Path, default=core_path())
     parser.add_argument("--seed", type=int, action="append", help="Repeat to select multiple seeds. Default is 1, 2, 3.")
     parser.add_argument("--supply", choices=WORLD_BASES, default="extended")
+    parser.add_argument("--treatment", choices=TREATMENTS, default="reference")
+    parser.add_argument("--days", type=int, default=730)
     args = parser.parse_args()
     seeds = args.seed or (1, 2, 3)
     if any(not 1 <= seed <= 2147483647 for seed in seeds):
         parser.error("Seeds must be positive, at most 2147483647")
+    if not 1 <= args.days <= 730:
+        parser.error("The run length must be between 1 and 730 days")
     scratch = ROOT / "out"
     scratch.mkdir(exist_ok=True)
     with TemporaryDirectory(dir=scratch, prefix="single-nest-lifecycle-") as work:
         with closing(NativeCore(args.core.resolve(), work)) as core:
             require(core.variable_nest, "Build the variable-nest live executable first")
+            require(args.treatment == "reference" or core.provisioned_nest, "Build the provisioned-nest live executable first")
             for seed in seeds:
-                print(json.dumps(measure(core, seed, args.supply)), flush=True)
+                print(json.dumps(measure(core, seed, args.supply, args.treatment, args.days)), flush=True)
 
 
 if __name__ == "__main__":

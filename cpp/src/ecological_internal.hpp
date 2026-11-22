@@ -38,6 +38,8 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
+            habitat->nutrition > FoundingNutrition::BroodBudget ||
+            (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
             p.x<world.min_m.x || p.y<world.min_m.y || p.z<world.min_m.z ||
@@ -107,6 +109,10 @@ inline bool variable_conditions(const auto& s) {
     return s.ecological && s.ecological->founding_habitat &&
            s.ecological->founding_habitat->variable_conditions.has_value();
 }
+inline FoundingNutrition founding_nutrition(const auto& s) {
+    return s.ecological && s.ecological->founding_habitat ? s.ecological->founding_habitat->nutrition : FoundingNutrition::Original;
+}
+inline bool local_founding_feeding(const auto& s) { return founding_nutrition(s) != FoundingNutrition::Original; }
 inline bool sealed_seed_shape(const auto& geometry) {
     if (geometry.voids.size()!=1) return false;
     const auto& room=geometry.voids.front();

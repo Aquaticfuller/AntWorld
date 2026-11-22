@@ -502,6 +502,61 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(core.call("FRAME"), late)
         self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_provisioned_nest_preserves_paid_feeding_and_reproduction_on_restore(self):
+        core = self.live.core()
+        if not core.provisioned_nest:
+            self.skipTest("Build the Physics 46 Core")
+        request = "NEW_PROVISIONED_NEST 34359748170 2 250 80 plugged 1955 reachable extended sheltered mineral budget"
+        initial = core.call(request)
+        self.live.install(initial, running=False)
+        self.assertEqual((self.live.frame["schema"], self.live.frame["physics"]), (39, 46))
+        self.assertEqual(self.live.frame["flags"]["founding_habitat"]["nutrition"], "budget")
+        cut = core.call(f"ADVANCE {66 * DAY}")
+        self.live.publish(cut)
+        queen = next(identifier for identifier, ant in self.live.frame["ants"].items() if ant["caste"] == CASTES.index("Queen"))
+        delivered = fed = deferred = False
+        recipients = set()
+        for event in facts(core, self.live.frame["cursor"]):
+            kind = KINDS[event.kind]
+            if kind == "FoodDelivered" and event.mass[0]:
+                delivered = True
+            if kind == "FoundressNestMeal" and event.mass[0]:
+                self.assertTrue(delivered)
+                self.assertEqual(event.actor, queen)
+                fed = True
+            if kind == "NutritionTransferred" and event.actor != queen and event.mass[1] and event.payload != queen:
+                recipients.add(event.payload)
+            if kind == "ReproductionAttempt" and event.aux == 1:
+                self.assertEqual((event.payload, event.mass), (0, (0, 0, 0, 0)))
+                deferred = True
+        self.assertTrue(fed and deferred)
+        self.assertTrue(any(self.live.frame["ants"][ant]["tissue_protein_ug"] > 20 for ant in recipients))
+        for mode in ("snapshot", "archive"):
+            self.live.save("Provisioned nest", False, mode)
+        end = 67 * DAY
+        expected = core.call(f"ADVANCE {end}")
+        page = core.call(f"FACTS_AFTER {self.live.frame['cursor']} 512")
+        for mode in ("snapshot", "archive"):
+            with self.subTest(mode=mode):
+                self.live.load("Provisioned nest", mode)
+                self.assertEqual(core.call("FRAME"), cut)
+                self.assertEqual(core.call(f"ADVANCE {end}"), expected)
+                self.assertEqual(core.call(f"FACTS_AFTER {self.live.frame['cursor']} 512"), page)
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_provisioning_does_not_create_external_food(self):
+        core = self.live.core()
+        if not core.provisioned_nest:
+            self.skipTest("Build the Physics 46 Core")
+        for model in ("feeding", "budget"):
+            with self.subTest(model=model):
+                self.live.write("single-nest", {"model": model, "seed": 2, "supply": "absent"})
+                self.assertEqual(self.live.frame["flags"]["founding_habitat"]["nutrition"], model)
+                cut = checkpoint(core.call(f"ADVANCE {90 * DAY}"))
+                self.assertFalse(any(KINDS[event.kind] in ("FoodDelivered", "FoundressNestMeal")
+                                     for event in facts(core, cut["cursor"])))
+                self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_reachable_berth_version_and_readonly_history_survive_restore(self):
         worker = self.live.core()
         if not worker.observatory:

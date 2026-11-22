@@ -452,17 +452,18 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v21");
+                message("OK", "antworld.m0.live.v22");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
-                       command=="NEW_FAMILIAR_RETURN_NEST" || command=="NEW_VARIABLE_NEST") {
+                       command=="NEW_FAMILIAR_RETURN_NEST" || command=="NEW_VARIABLE_NEST" || command=="NEW_PROVISIONED_NEST") {
                 const auto id=number(request), seed=number(request), temperature=number(request), humidity=number(request);
                 const auto access=word(request);
                 request >> std::ws;
                 const auto half_life=request.eof() ? 60 : number(request);
                 bool alternate_berth=false, external_supply=true;
-                const bool variable=command=="NEW_VARIABLE_NEST";
+                const bool provisioned=command=="NEW_PROVISIONED_NEST";
+                const bool variable=command=="NEW_VARIABLE_NEST" || provisioned;
                 const bool familiar=command=="NEW_FAMILIAR_RETURN_NEST";
                 const bool mouth_handoff=command=="NEW_MOUTH_HANDOFF_NEST" || familiar || variable;
                 const bool wall=command=="NEW_WALL_HANDOFF_NEST" || mouth_handoff;
@@ -471,6 +472,7 @@ int main() {
                 const bool anatomical=command=="NEW_ANATOMICAL_NEST" || oral;
                 const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
                 std::optional<TrailExposure> exposure;
+                auto nutrition=FoundingNutrition::Original;
                 bool extended_supply=false;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
@@ -486,6 +488,11 @@ int main() {
                             (substrate=="mineral" || substrate=="porous"),"invalid surface trail exposure");
                     exposure=TrailExposure{ventilation=="ventilated",substrate=="porous"};
                 }
+                if (provisioned) {
+                    const auto treatment=word(request);
+                    require(treatment=="feeding" || treatment=="budget", "invalid founding nutrition treatment");
+                    nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding : FoundingNutrition::BroodBudget;
+                }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
                 require(!sealed || access=="plugged","Single-nest founding begins inside a sealed chamber");
@@ -495,7 +502,7 @@ int main() {
                 if (extended_supply) c.release_days=730;
                 c.habitat_trail_half_life_s=static_cast<double>(half_life);
                 auto scene=founding_habitat::setup(c,limits,temperature,humidity,external_supply,alternate_berth,sealed,
-                    anatomical,oral,offers,wall,mouth_handoff,familiar,exposure);
+                    anatomical,oral,offers,wall,mouth_handoff,familiar,exposure,nutrition);
                 auto frame=scene.world.checkpoint_frame();
                 world.emplace(std::move(scene.world));
                 search.reset();

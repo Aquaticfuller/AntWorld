@@ -25,6 +25,8 @@ struct TrailExposure {
     bool operator==(const TrailExposure&) const = default;
 };
 
+enum class FoundingNutrition : std::uint8_t { Original, LocalFeeding, BroodBudget };
+
 // ENGINEERING_FIXTURE for a single founding chamber and a separate handoff site.
 // The brood site is familiar to the founding queen and her own offspring.
 struct FoundingHabitat {
@@ -40,6 +42,7 @@ struct FoundingHabitat {
     bool familiar_return{}; // Physics 44. An empty returner can recognize its own mouth-contact berth.
     // Physics 45. Bounded behavioral intervals and experimental surface exposure.
     std::optional<TrailExposure> variable_conditions{};
+    FoundingNutrition nutrition{FoundingNutrition::Original}; // Physics 46. Local feeding and optional brood allocation.
     bool operator==(const FoundingHabitat&) const = default;
 };
 

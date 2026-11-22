@@ -2,6 +2,7 @@
 #include "behavior_rng.hpp"
 #include "spatial_navigation.hpp"
 #include "ecological_internal.hpp"
+#include "founding_internal.hpp"
 #include "social_internal.hpp"
 #include "worker_motion.hpp"
 #include <algorithm>
@@ -216,7 +217,30 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         } else if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
         else {
             r.local=sense({s.world,e.actor});
-            r.decision=choose_behavior(s.seed,e.actor,loaded,f,r.local,config,s.ecological.has_value());
+            const auto decide=[&](const ForagerState& routes,const LocalObservation& cues) {
+                return choose_behavior(s.seed,e.actor,loaded,routes,cues,config,s.ecological.has_value());
+            };
+            r.decision=[&] {
+                if (!local_founding_feeding(s) || loaded || !local_founding_provisioning(s,ant.id))
+                    return decide(f,r.local);
+                const auto p=*query_physiology({s.world,ant.id});
+                const auto needs=founding_resupply_shortfall(s.founding->profile,p,*query_founding({s.world,ant.id}),
+                                                            false,p.config.absorption_period);
+                if (!needs.carbs_ug || needs.water_ug) return decide(f,r.local);
+                // A hydrated, energy-limited worker can pass a pure water
+                // cue and continue exploring. No remote sugar positions.
+                const auto pure_water=[&](ResourceId id) {
+                    const auto stock=s.foods.rows[s.foods.index.at(id)].initial;
+                    return stock.water_ug && stock.total_ug()==stock.water_ug;
+                };
+                auto cues=r.local;
+                const auto end=cues.food.begin()+cues.food_count;
+                cues.food_count=static_cast<std::uint32_t>(std::remove_if(cues.food.begin(),end,
+                    [&](const FoodCue& cue){return pure_water(cue.resource);})-cues.food.begin());
+                auto routes=f;
+                if (routes.last_collected.value && pure_water(routes.last_collected)) routes.memory_size=0;
+                return decide(routes,cues);
+            }();
             if (link && r.decision.action==ActionKind::DeliverFood) connector(true);
             else if (r.decision.action==ActionKind::Move) r.destination=navigation_waypoint(s,ant.id,r.decision.destination);
             else if (s.config.continuous_spatial_motion && r.decision.action==ActionKind::CollectFood) {

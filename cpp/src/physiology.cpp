@@ -82,6 +82,29 @@ void WorldRuntime::stop_physiology(Transaction& tx, EntityId id, DeathCause caus
     if (p.active_work) p.active_work = ScheduledId{};
     p.death_cause = cause; tx.physiology.set(id, p);
 }
+void WorldRuntime::draw_foundress_meal(Transaction& tx, const AntState& ant, ScheduledId source) {
+    auto& s=*state_;
+    const auto index=s.colonies.index.at(ant.colony);
+    auto& colony=s.colonies.rows[index];
+    const bool reachable=mouth_access(s) ? mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)) :
+        within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position);
+    if (!reachable || !colony.nest_food.total_ug()) return;
+    synchronize_physiology(tx,ant.id);
+    auto p=s.physiology.at(ant.id);
+    const auto meal=foundress_nest_meal(s.founding->profile,p,s.founding_reserves.at(ant.id),colony.nest_food,
+                                       local_founding_feeding(s));
+    if (!meal.total_ug()) return;
+    tx.touch_colony(index);
+    colony.nest_food=subtract(colony.nest_food,meal);
+    s.m.ledger.stored=subtract(s.m.ledger.stored,meal);
+    p.crop=sum(p.crop,meal);
+    tx.physiology.set(ant.id,p);
+    WorldEvent fact;
+    fact.kind=FactKind::FoundressNestMeal; fact.source=source; fact.actor=ant.id;
+    fact.colony=ant.colony; fact.position=ant.position; fact.stage=ant.stage; fact.transferred=meal;
+    tx.fact(fact);
+}
+
 void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) {
     profiling::Scope profile(profiling::Category::Physiology);
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i); auto p = s.physiology.at(e.actor);
@@ -158,30 +181,10 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
         if (emitted_pulse && !advance_stage) {
-            if (queen && s.ecological && s.ecological->water_sip_ug) {
+            if (queen && s.ecological && s.ecological->water_sip_ug)
                 draw_founding_water(tx, e, ant);
-                p = s.physiology.at(e.actor);
-            }
-            if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake) {
-                const auto j=s.colonies.index.at(ant.colony);
-                auto& colony=s.colonies.rows[j];
-                const bool reachable=mouth_access(s)?mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)):
-                    within_contact(ant.position,colony.nest_position,s.config) && spatially_clear(ant.position,colony.nest_position);
-                if (reachable) {
-                    const auto meal=foundress_nest_meal(s.founding->profile,p,*reserve,colony.nest_food);
-                    if (meal.total_ug()) {
-                        tx.touch_colony(j);
-                        colony.nest_food=subtract(colony.nest_food,meal);
-                        s.m.ledger.stored=subtract(s.m.ledger.stored,meal);
-                        p=s.physiology.at(e.actor);
-                        p.crop=sum(p.crop,meal);
-                        tx.physiology.set(e.actor,p);
-                        f.kind=FactKind::FoundressNestMeal;
-                        f.transferred=meal;
-                        tx.fact(f);
-                    }
-                }
-            }
+            if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake)
+                draw_foundress_meal(tx,ant,e.id);
             return;
         }
     }
@@ -296,8 +299,13 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
-        if (s.social && s.social->demand_sensitive)
-            supply = ingredient_min(supply,nutrient_demand(*receiver,recipient.stage));
+        if (s.social && s.social->demand_sensitive) {
+            const auto demand=local_founding_feeding(s) && recipient.stage==LifeStage::Larva &&
+                s.founding_reserves.contains(recipient.id) ?
+                founding_larval_demand(s.founding->profile,*receiver,s.founding_reserves.at(recipient.id)) :
+                nutrient_demand(*receiver,recipient.stage);
+            supply=ingredient_min(supply,demand);
+        }
     } else if (e.kind == ScheduledEvent::Kind::IngestCargo) {
         supply=ant.carried_food;
         if (mouth_access(s) && s.foragers.contains(e.actor) && s.foragers.at(e.actor).action==e.id)
@@ -325,6 +333,12 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         }
         if (s.long_term) {
             auto demand = nutrient_demand(p, ant.stage);
+            if (local_founding_feeding(s) && local_founding_provisioning(s,ant.id)) {
+                const auto local=local_provisioning_shortfall(ant,founding_gift_supply(s.founding->profile,p),true);
+                demand.carbs_ug=std::max(demand.carbs_ug,local.carbs_ug);
+                demand.protein_ug=std::max(demand.protein_ug,local.protein_ug);
+                demand.water_ug=std::max(demand.water_ug,local.water_ug);
+            }
             if (p.behavior == IndividualBehavior::Nurse) {
                 const auto sample = sample_contacts({s.world, ant.id}, p.decisions);
                 inspect_decision(e, sample, 2, static_cast<std::uint64_t>(e.kind));
@@ -416,7 +430,8 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (s.long_term && s.long_term->protein_recycling && p.behavior == IndividualBehavior::Rest &&
                 p.crop.protein_ug && within_contact(ant.position,colony.nest_position,s.config) &&
-                spatially_clear(ant.position,colony.nest_position)) action.kind = ScheduledEvent::Kind::ReturnProtein;
+                spatially_clear(ant.position,colony.nest_position) && !local_provisioning_shortfall(ant).protein_ug)
+                action.kind = ScheduledEvent::Kind::ReturnProtein;
         }
         if (action.kind == ScheduledEvent::Kind::Rest) {
             if (p.crop.total_ug() < p.config.crop_capacity_ug/2 && ant.carried_food.total_ug()) action.kind = ScheduledEvent::Kind::IngestCargo;

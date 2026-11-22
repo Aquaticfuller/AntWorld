@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==variable_nest_schema && version==variable_nest_physics) ||
+        ensure((outer_schema==provisioned_nest_schema && version==provisioned_nest_physics) ||
+            (outer_schema==variable_nest_schema && version==variable_nest_physics) ||
                (outer_schema==familiar_return_schema && version==familiar_return_physics) ||
                (outer_schema==anatomical_handoff_schema && version==anatomical_handoff_physics) ||
                (outer_schema==wall_handoff_schema && version==wall_handoff_physics) ||
@@ -278,6 +279,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (founding) m.founding_trace = fnv_offset;
     for (auto i=static_cast<std::size_t>(first); i<facts; ++i) {
         const auto e=frame?s->journal.at(i):read_fact(r);
+        ensure(ecological_version>=provisioned_nest_physics || e.kind!=FactKind::FoundingRation || !e.transferred.carbs_ug,
+               "maternal carbohydrate ration requires the provisioned physics version");
         if (first) {
             ensure(e.id.value==i+1 && e.world==world && e.time>=previous_time && e.time<=m.now &&
                    e.revision>previous_revision && e.revision<=m.revision && finite(e.position) &&
@@ -286,7 +289,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                    e.reason<=DecisionReason::NoLegalStep && std::isfinite(e.deposited_units) && e.deposited_units>=0 &&
                    e.source.value<m.next_scheduled &&
                    (!founding_fact(e.kind) || (founding && valid_founding_payload(e))) &&
-                   (!ecological_fact(e.kind) || (ecological && valid_ecological_payload(e))),
+                   (!ecological_fact(e.kind) || (ecological && valid_ecological_payload(e))) &&
+                   (e.kind!=FactKind::ReproductionAttempt || !e.random_value ||
+                    (ecological_version>=provisioned_nest_physics && e.random_value==1 &&
+                     !e.payload && e.outcome==Outcome::Depleted)),
                    "invalid retained fact");
             previous_revision=e.revision; previous_time=e.time;
             s->journal.push_back(e);
@@ -321,6 +327,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 (ecological_version>=nest_activity_physics &&
                     e.kind==FactKind::ExcavationDecision && e.random_value<=1) ||
                 (ecological_version>=nest_dynamics_physics && e.kind==FactKind::Moved) ||
+                (ecological_version>=provisioned_nest_physics && e.kind==FactKind::ReproductionAttempt &&
+                    e.random_value==1 && !e.payload && e.outcome==Outcome::Depleted) ||
                 e.random_value == 0) &&
             (seeded ? e.source.value == 0 && (e.time == SimTime{} || e.kind == FactKind::ForagingStarted || e.kind == FactKind::BehaviorChanged || e.kind==FactKind::AutonomyChanged || e.kind==FactKind::CareProgramChanged) : e.source.value && e.source.value < m.next_scheduled &&
                 (auxiliary || scheduled_ids.insert(e.source.value).second)), "invalid committed event");

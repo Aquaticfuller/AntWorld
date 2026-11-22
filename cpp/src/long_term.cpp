@@ -89,7 +89,24 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   // Only this individual's current body reserves and maintenance rates enter.
   // A deferred attempt spends nothing; unmet needs can still cause death.
   const auto fuel=founding ? founding_egg_fuel(*founding,p,s.founding_reserves.at(e.actor)) : FoundingEggFuel::None;
-  const bool resources=founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p);
+  bool resources=founding ? fuel!=FoundingEggFuel::None : reproductive_resources(c, p);
+  bool deferred_for_brood=false;
+  if (founding && resources && founding_nutrition(s)==FoundingNutrition::BroodBudget) {
+    BroodRequirement demand;
+    const auto radius=s.care_profile->perception_radius_m;
+    for (const auto ref:query_neighborhood({s.world,mother.id},radius).ants) {
+      const auto child=*query_ant(ref);
+      if (child.colony!=mother.colony || child.stage>LifeStage::Larva ||
+          !spatially_clear(mother.position,child.position) ||
+          !surface_care_clear(s,mother.position,child.position)) continue;
+      const auto state=query_physiology(ref);
+      if (state && state->mother==mother.id) {
+        if (const auto reserve=query_founding(ref)) reserve_for_brood(demand,*founding,*state,*reserve,child.stage);
+      }
+    }
+    resources=funds_brood_budget(*founding,p,s.founding_reserves.at(mother.id),demand);
+    deferred_for_brood=!resources;
+  }
   const auto site=!resources ? std::nullopt : bounded_brood_space(s) ? local_egg_site(mother) :
       (spatially_clear(mother.position,mother.position,s.geometry?s.geometry->config.body_half_q:0) ?
        std::optional{mother.position} : std::nullopt);
@@ -171,6 +188,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   f.stage = mother.stage;
   f.position = mother.position;
   f.payload = child.value;
+  if (deferred_for_brood) f.random_value=1;
   if (bounded_brood_space(s) && !child.value) f.outcome=resources?Outcome::Capacity:Outcome::Depleted;
   tx.fact(f);
   if (child.value) {

@@ -24,6 +24,14 @@ python -B tools/build_m0_live.py
 .\tools\start_m0.cmd
 ```
 
+To try the Physics 46 founding experiment, choose **Resource-aware founding ·
+Physics 46** under **Single-nest founding**. **Local brood feeding · Physics
+46** isolates the feeding changes. **Variable conditions · Physics 45** is the
+matched reference. Use the same software seed, climate and supply setting
+when comparing models. The experiment starts a new world; existing saves
+retain their recorded physics version. See the [two-year paired
+comparison](../single_nest/FOUNDING_NUTRITION_RESULTS.md).
+
 1. Select **New colony**. The C++ Core creates a new world on day zero with a queen in the protected shaft. The default `1×` speed advances one simulated second per elapsed second. The clock shows the day, hours, minutes and seconds. The Web page displays published Core positions and recent events. Choose **15-minute worker checks (experimental)** before starting a colony to try the shorter rhythm.
 2. Use **Pause** and **Resume** to inspect the current world. Select `60×` for a simulated minute per elapsed second or `86,400×` for up to one simulated day per elapsed second. The Core can run behind the requested speed when it has more work to process.
 3. Choose a target event and select **Fast-forward to event**. The Core runs at up to `86,400×` and pauses at the exact timestamp of the committed milestone. For the first nest exit, food delivery or excavation, the viewer follows the worker that performed the action. Select **Resume** to continue following at `1×`. **Cancel fast-forward** is available while waiting. Earlier milestones display their recorded time in the current world.

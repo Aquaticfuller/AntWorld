@@ -24,6 +24,7 @@ template<class S> class FoundingReplay {
     bool repeated_contact{};
     std::optional<WorldEvent> last_hatch, hatch_cue;
     std::optional<WorldEvent> last_pulse;
+    std::optional<WorldEvent> last_meal_contact;
     SimTime last_cue;
     EntityId cue_target;
     ScheduledId cue_wake;
@@ -72,6 +73,9 @@ template<class S> class FoundingReplay {
         if (repeat && repeat->repeat_ppm) update_founding_meal_memory(memory, founder_id, e);
     }
     void review_hatch(const WorldEvent& e) {
+        if (local_founding_feeding(world) && founder(e.actor) && (e.kind==FactKind::AutonomyDecision ||
+            (e.kind==FactKind::BiologicalObservation && e.observation.phase==ObservationPhase::Completed &&
+             e.observation.act==CareAct::DepotApproach))) last_meal_contact=e;
         if (e.kind==FactKind::StageChanged && e.stage==LifeStage::Larva) last_hatch=e;
         if (cue_wake.value) {
             const bool released=e.kind==FactKind::CareProgramChanged && !e.payload && !e.source.value;
@@ -267,16 +271,19 @@ public:
     }
 
     void nest_meal(PhysiologyState& p, const WorldEvent& e, FoodMass stock) {
+        const auto matches=[&](const std::optional<WorldEvent>& cut) {
+            return cut && cut->actor==e.actor && cut->source==e.source && cut->time==e.time;
+        };
         ensure(founder(e.actor) && profile().dietary && profile().dietary->local_nest_intake &&
-               last_pulse && last_pulse->source==e.source && last_pulse->time==e.time,
-               "foundress meal lacks its physiological pulse");
+               (matches(last_pulse) || matches(last_meal_contact)), "foundress meal lacks a feeding opportunity");
         const auto nest=world.colonies.rows[world.colonies.index.at(e.colony)].nest_position;
         // The terrain replay verifies the historical mouth pose in Physics 40.
         ensure((mouth_access(world) || (within_contact(e.position,nest,world.config) && clear(e.position,nest,0,e.id))) &&
-               foundress_nest_meal(profile(),p,reserves.at(e.actor),stock)==e.transferred,
+               foundress_nest_meal(profile(),p,reserves.at(e.actor),stock,local_founding_feeding(world))==e.transferred,
                "foundress meal lacks reachable local stock or crop room");
         p.crop=sum(p.crop,e.transferred);
         last_pulse.reset();
+        last_meal_contact.reset();
     }
 
     void ration(PhysiologyState& p, PhysiologyState& receiver, const WorldEvent& e, PositionM b, LifeStage stage) {
@@ -285,9 +292,9 @@ public:
                surface_care_clear(world, e.position, b) && clear(e.position, b, 0, e.id), "F1 ration lacks a living local recipient");
         auto& donor = reserves.at(e.actor);
         auto& larva = reserves.at({e.payload});
-        const auto amount = founding_ration(profile(), p, donor, receiver, larva);
+        const auto amount = founding_ration(profile(), p, donor, receiver, larva,local_founding_feeding(world));
         ensure(amount == FoundingRation{e.random_value, e.transferred}, "F1 ration exceeds real local stock or demand");
-        apply_founding_ration(amount, p, donor, receiver, larva);
+        apply_founding_ration(amount, p, donor, receiver, larva,local_founding_feeding(world));
     }
 
     void finish() const {
