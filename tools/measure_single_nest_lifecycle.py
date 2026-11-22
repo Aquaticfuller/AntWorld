@@ -7,7 +7,6 @@ from hashlib import sha256
 import json
 from pathlib import Path
 from statistics import median
-from tempfile import TemporaryDirectory
 
 from op0 import DAY
 from op0.codec import CASTES, DEATHS, FORAGING_REASONS, KINDS, STAGES, checkpoint, require
@@ -16,8 +15,8 @@ from tools.compare_m0_worker_rhythm import facts
 
 
 DAYS = (7, 14, 30, 49, 55, 60, 90, 112, 150, 163, 180, 226, 286, 365, 730)
-WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800}
-TREATMENTS = ("reference", "feeding", "budget", "sustained")
+WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800, "nearby": 3 * 2**32 + 9800}
+TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 NO_LEGAL_STEP = FORAGING_REASONS.index("No legal step")
@@ -38,6 +37,10 @@ def history(stream, through, queen):
     nutrition = dict(queen_nest=[0, 0, 0], queen_worker=[0, 0, 0],
                      queen_larva=[0, 0, 0], worker_larva=[0, 0, 0], larval_uptake=[0, 0, 0])
     first_brood = set()
+    first_death_ms = None
+    first_fed = set()
+    first_brood_deaths = Counter()
+    soil_drops = Counter()
     last_carb_delivery = None
     alive = peak = 0
     peak_ms = last_worker_death_ms = None
@@ -48,6 +51,8 @@ def history(stream, through, queen):
             stages[fact.actor] = fact.stage
         if kind == "AntBorn":
             transitions["eggs_laid"] += 1
+            if first_death_ms is not None and fact.time > first_death_ms:
+                transitions["eggs_laid_after_first_juvenile_loss"] += 1
             if fact.time > 365 * DAY:
                 transitions["eggs_after_year_one"] += 1
             first.setdefault("egg_ms", fact.time)
@@ -77,6 +82,11 @@ def history(stream, through, queen):
                 queen_death = dict(time_ms=fact.time, event_id=str(fact.id), cause=cause)
             else:
                 deaths[f"{STAGES[stage]}: {cause}"] += 1
+                if stage < ADULT:
+                    if first_death_ms is None:
+                        first_death_ms = fact.time
+                    if fact.actor in first_brood:
+                        first_brood_deaths[f"{STAGES[stage]}: {cause}"] += 1
                 if stage == LARVA:
                     crop = frame["ants"][fact.actor]["crop_ug"]
                     if crop[0] and cause == "Energy depleted":
@@ -87,6 +97,9 @@ def history(stream, through, queen):
                     worker_deaths[fact.actor] = fact.time
                     alive -= 1
                     last_worker_death_ms = fact.time
+        elif kind == "SoilDropped":
+            surface_y = frame["surface"]["origin_m"][1]
+            soil_drops["surface" if fact.position[1] >= surface_y else "underground"] += 1
         elif kind == "FoodDelivered":
             for index, mass in enumerate(fact.mass[:3]):
                 delivery[index] += mass
@@ -120,6 +133,9 @@ def history(stream, through, queen):
                 route = "worker_larva"
         elif kind == "PhysiologyUpdated" and fact.stage == LARVA:
             route = "larval_uptake"
+        positive = any(fact.mass) or (kind == "FoundingRation" and fact.aux > 0)
+        if route in ("queen_larva", "worker_larva") and fact.payload in first_brood and positive:
+            first_fed.add(fact.payload)
         if route:
             for index, mass in enumerate(fact.mass[:3]):
                 nutrition[route][index] += mass
@@ -138,6 +154,7 @@ def history(stream, through, queen):
                 last_worker_death_ms=last_worker_death_ms, workers_still_alive=alive,
                 median_worker_life_ms_among_deaths=median(when-eclosions[worker] for worker,when in worker_deaths.items()) if worker_deaths else None,
                 first_brood_eggs=len(first_brood), first_brood_eclosed=len(first_workers), first_brood_worker_survival=survival,
+                first_brood_fed=len(first_fed), first_brood_juvenile_deaths=first_brood_deaths, soil_drops=soil_drops,
                 delivered_cpw_ug=delivery, nutrition_cpw_ug=nutrition, queen_death=queen_death,
                 last_carbohydrate_delivery_ms=last_carb_delivery,
                 larval_unused_crop=larval_unused_crop)
@@ -150,6 +167,9 @@ def measure(core, seed, supply, treatment, days, wick="small-wick"):
     settings = f"{case_id} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral"
     command = (f"NEW_VARIABLE_NEST {settings}" if treatment == "reference"
                else f"NEW_PROVISIONED_NEST {settings} {treatment}")
+    if treatment == "anatomical":
+        require(supply != "extended" and wick == "small-wick", "Unsupported anatomical reference conditions")
+        command = f"NEW_ANATOMICAL_NEST {case_id} {seed} 250 80 plugged 1955 reachable {supply}"
     if wick == "wet-wick":
         command += " wet-wick"
     initial = raw = core.call(command)
@@ -160,6 +180,8 @@ def measure(core, seed, supply, treatment, days, wick="small-wick"):
     # Old executables lack the compact command. Use their original census
     # cuts and retain their original limits for reproduction.
     checkpoints = {d for d in DAYS if d <= days} | {days}
+    if days >= 73:
+        checkpoints.add(73)
     review = checkpoints | set(range(CHUNK_DAYS, days, CHUNK_DAYS)) if core.sustained_nest else checkpoints
 
     def read():
@@ -226,14 +248,15 @@ def main():
         parser.error("The wet wick requires a provisioned nest treatment.")
     scratch = ROOT / "out"
     scratch.mkdir(exist_ok=True)
-    with TemporaryDirectory(dir=scratch, prefix="single-nest-lifecycle-") as work:
-        with closing(NativeCore(args.core.resolve(), work)) as core:
-            require(core.variable_nest, "Build the variable-nest live executable first")
-            require(args.treatment == "reference" or core.provisioned_nest, "Build the provisioned-nest live executable first")
-            require(args.treatment != "sustained" and args.wick == "small-wick" or core.sustained_nest,
-                    "Build the sustained-supply live executable first")
-            for seed in seeds:
-                print(json.dumps(measure(core, seed, args.supply, args.treatment, args.days, args.wick)), flush=True)
+    with closing(NativeCore(args.core.resolve(), scratch)) as core:
+        require(core.variable_nest, "Build the variable-nest live executable first")
+        require(args.treatment == "reference" or core.provisioned_nest, "Build the provisioned-nest live executable first")
+        require(args.treatment != "local-dig" or core.local_dig, "Build the local excavation executable first")
+        require(args.treatment != "protected" or core.protected_nest, "Build the protected founding executable first")
+        require(args.treatment != "sustained" and args.wick == "small-wick" or core.sustained_nest,
+                "Build the sustained-supply live executable first")
+        for seed in seeds:
+            print(json.dumps(measure(core, seed, args.supply, args.treatment, args.days, args.wick)), flush=True)
 
 
 if __name__ == "__main__":

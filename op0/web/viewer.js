@@ -1151,35 +1151,35 @@ function foodSourceLabel(source) {
 
 // Stock glyphs use actual component masses at the source or depot. Their
 // spread is symbolic since the Core stores the depot contents as one pool.
-function drawResourceStock(ctx, [x,y], [carbs, protein, water] = []) {
+function drawResourceStock(ctx, [x,y], [carbs, protein, water] = [], depot=false, pixelsPerMetre=10000) {
     if (!carbs && !protein && !water) return;
-    const radius = mass => Math.min(13, 2 + Math.log10(1 + mass) * 2);
     ctx.save();
     ctx.translate(x,y);
-    if (water) {
-        const r = radius(water);
-        const sheen = ctx.createLinearGradient(0,-r,0,r);
-        sheen.addColorStop(0,"#d4f1df");
-        sheen.addColorStop(.43,"#6eb7b5");
-        sheen.addColorStop(1,"#285f65");
-        ctx.fillStyle = sheen;
-        ctx.strokeStyle = "#96cbba";
-        ctx.beginPath(); ctx.ellipse(0,2,r,r*.62,-.17,0,2*Math.PI); ctx.fill(); ctx.stroke();
+    // One display portion represents 25 micrograms in the small-stock view.
+    // Large stocks group whole portions. Glyph offsets are not Core coordinates.
+    const drawPortions = (mass, color, offset, elongated) => {
+        if (!mass) return;
+        const portion = 25 * Math.max(1, Math.ceil(mass / (25*100)));
+        const count = Math.ceil(mass/portion), columns = Math.ceil(Math.sqrt(count));
+        const r = Math.max(.8,Math.min(3,pixelsPerMetre*.00018));
+        ctx.fillStyle=color;
+        for (let i=0;i<count;i++) {
+            const row=Math.floor(i/columns), col=i%columns;
+            const part=Math.sqrt(Math.min(1,(mass-i*portion)/portion));
+            const px=offset+((col-columns/2)+(row%2)*.5)*r*1.8;
+            const py=(row-columns/2)*r*1.28;
+            ctx.beginPath();
+            ctx.ellipse(px,py,r*part,r*part*(elongated ? .5 : .76),(i%3-1)*.55,0,2*Math.PI);
+            ctx.fill();
+        }
+    };
+    if (!depot && water) {
+        const r=Math.min(12,2+Math.log10(1+water)*1.6);
+        ctx.fillStyle="#68abbb";
+        ctx.beginPath(); ctx.ellipse(0,3,r,r*.52,-.18,0,2*Math.PI); ctx.fill();
     }
-    if (carbs) {
-        const r = radius(carbs)*.56;
-        circle(ctx, protein ? r : 0, water ? -3 : 0, r, "#d3a458", "#f1c878");
-        circle(ctx, (protein ? r : 0)-r*.28, water ? -4 : -1, r*.23, "#fff1b5");
-    }
-    if (protein) {
-        const r = radius(protein)*.67, cx = carbs ? -r : 0;
-        ctx.fillStyle = "#935b37";
-        ctx.strokeStyle = "#e8bd8a";
-        ctx.beginPath();
-        ctx.moveTo(cx-r,-r*.2); ctx.lineTo(cx-r*.3,-r); ctx.lineTo(cx+r*.7,-r*.62);
-        ctx.lineTo(cx+r,r*.35); ctx.lineTo(cx+r*.08,r*.82); ctx.lineTo(cx-r*.76,r*.53);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-    }
+    drawPortions(carbs,"#d6ac68",protein ? -7 : 0,false);
+    drawPortions(protein,"#a97151",carbs ? 7 : 0,true);
     ctx.restore();
 }
 
@@ -1307,7 +1307,7 @@ function drawMap(motionOnly = false) {
         for (const s of state.sources.filter(s => fits(s.position_m))) {
             const [x, y] = point(s.position_m);
             const inStock = s.stock_ug.some(v => v > 0);
-            drawResourceStock(ctx,[x,y],s.stock_ug);
+            drawResourceStock(ctx,[x,y],s.stock_ug,false,p.unit);
             if (habitat) {
                 const sourceType = foodSourceLabel(s);
                 drawSite(ctx, [x, y], tr(sourceType) + (inStock ? "" : " · " + tr("depleted")),
@@ -1344,7 +1344,7 @@ function drawMap(motionOnly = false) {
         for (const depot of display?.colonies ?? app.meta.colonies) {
             if (!fits(depot.position_m)) continue;
             const stock = depot.stock_ug.reduce((total, part) => total + part, 0);
-            drawResourceStock(ctx,point(depot.position_m),depot.stock_ug);
+            drawResourceStock(ctx,point(depot.position_m),depot.stock_ug,true,p.unit);
             drawSite(ctx, point(depot.position_m), tr("Nest food · {mass}", {mass: withUnit(stock, "µg")}),
                 stock ? "#f1ce86" : "#a08d67", 17);
         }

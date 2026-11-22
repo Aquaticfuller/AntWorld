@@ -16,7 +16,7 @@ void WorldRuntime::configure_geometry(const GeometryConfig &config, std::span<co
     definition->voids.assign(voids.begin(), voids.end());
     definition->rocks.assign(rocks.begin(), rocks.end());
     validate_geometry(*definition, s.config, limits_.geometry_partition_cells);
-    if (sealed_chamber(s) && !sealed_seed_shape(*definition))
+    if (sealed_chamber(s) && !sealed_seed_shape(*definition,protected_founding(s)))
         throw std::invalid_argument("Sealed founding needs one enclosed initial chamber");
     Transaction tx(s, limits_);
     s.geometry = definition;

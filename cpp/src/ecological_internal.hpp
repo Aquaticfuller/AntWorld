@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::SustainedSupply ||
+            habitat->nutrition > FoundingNutrition::LocalExcavation ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -113,18 +113,29 @@ inline FoundingNutrition founding_nutrition(const auto& s) {
     return s.ecological && s.ecological->founding_habitat ? s.ecological->founding_habitat->nutrition : FoundingNutrition::Original;
 }
 inline bool local_founding_feeding(const auto& s) { return founding_nutrition(s) != FoundingNutrition::Original; }
-inline bool sustained_supply(const auto& s) { return founding_nutrition(s)==FoundingNutrition::SustainedSupply; }
+inline bool protected_founding(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ProtectedFounding; }
+inline bool local_excavation(const auto& s) { return founding_nutrition(s)==FoundingNutrition::LocalExcavation; }
+inline bool sustained_supply(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::SustainedSupply; }
 inline constexpr std::uint64_t completed_return_wake=1, carbohydrate_delivery_wake=2;
 inline bool local_brood_budget(const auto& s) {
     return founding_nutrition(s)==FoundingNutrition::BroodBudget || sustained_supply(s);
 }
-inline bool sealed_seed_shape(const auto& geometry) {
-    if (geometry.voids.size()!=1) return false;
-    const auto& room=geometry.voids.front();
+inline bool sealed_seed_shape(const auto& geometry, bool bands) {
+    const auto& rooms=geometry.voids;
+    if (rooms.empty() || rooms.size()>(bands?64u:1u)) return false;
     const auto& bed=geometry.config.initial_solid;
-    return room.min.x>bed.min.x && room.max.x<bed.max.x &&
-           room.min.y>bed.min.y && room.max.y<bed.max.y &&
-           room.min.z>bed.min.z && room.max.z<bed.max.z;
+    for (std::size_t i=0;i<rooms.size();++i) {
+        const auto& room=rooms[i];
+        if (room.min.x<=bed.min.x || room.max.x>=bed.max.x ||
+            room.min.y<=bed.min.y || room.max.y>=bed.max.y ||
+            room.min.z<=bed.min.z || room.max.z>=bed.max.z) return false;
+        if (i) {
+            const auto& prior=rooms[i-1];
+            if (room.min.z!=prior.max.z || room.min.y!=prior.min.y || room.max.y!=prior.max.y ||
+                std::max(room.min.x,prior.min.x)>=std::min(room.max.x,prior.max.x)) return false;
+        }
+    }
+    return true;
 }
 inline double brood_handling_reach(const auto& s) {
     // ENGINEERING_FIXTURE. The legacy contact radius remains available for

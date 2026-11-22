@@ -22,7 +22,12 @@ Material classify(const GeometryView &v, PointQ p, const std::vector<GeometryEdi
         if (contains(e.box, p))
             return e.kind == SoilAction::Excavate ? Material::Void : Material::Soil;
     }
-    for (auto b : v.definition.voids)
+    const auto& voids=v.definition.voids;
+    if (v.definition.separated_z_bands) {
+        const auto band=std::partition_point(voids.begin(),voids.end(),[&](BoxQ b){return b.max.z<=p.z;});
+        return band!=voids.end() && contains(*band,p) ? Material::Void : Material::Soil;
+    }
+    for (auto b : voids)
         if (contains(b, p))
             return Material::Void;
     return Material::Soil;
@@ -72,8 +77,11 @@ template <class F> void partition(const GeometryView &v, BoxQ query, F visit) {
         cuts[2].split(b.max.z);
     };
     split(v.definition.config.initial_solid);
-    for (auto b : v.definition.voids)
-        split(b);
+    const auto& voids=v.definition.voids;
+    if (v.definition.separated_z_bands) {
+        auto band=std::partition_point(voids.begin(),voids.end(),[&](BoxQ b){return b.max.z<=query.min.z;});
+        for (;band!=voids.end() && band->min.z<query.max.z;++band) split(*band);
+    } else for (auto b : voids) split(b);
     for (auto b : v.definition.rocks)
         split(b);
     for (auto id : ids)
@@ -268,7 +276,7 @@ bool historical_clear(const GeometryDefinition &d, const GeometryEdits &edits, c
     const auto qa = quantized(a, d.config), qb = quantized(b, d.config);
     return qa && qb && clear_sweep({d, edits, index, budget}, *qa, *qb, half);
 }
-void validate_geometry(const GeometryDefinition &d, const WorldConfig &world, std::size_t budget) {
+void validate_geometry(GeometryDefinition &d, const WorldConfig &world, std::size_t budget) {
     const auto &c = d.config;
     auto bounded = [](BoxQ b) {
         return box_valid(b) && b.min.x >= -100000 && b.min.y >= -100000 && b.min.z >= -100000 && b.max.x <= 100000 &&
@@ -300,6 +308,8 @@ void validate_geometry(const GeometryDefinition &d, const WorldConfig &world, st
             if (box_valid(intersection(a, b)))
                 throw std::invalid_argument("seed void intersects immutable rock");
     }
+    d.separated_z_bands=d.voids.size()>=8 && std::adjacent_find(d.voids.begin(),d.voids.end(),
+        [](BoxQ a,BoxQ b){return a.max.z>b.min.z;})==d.voids.end();
     const GeometryEdits edits;
     const EditIndex index;
     (void)material_volume({d, edits, index, budget}, c.initial_solid, Material::Soil);

@@ -3,6 +3,7 @@
 #include "ecological_internal.hpp"
 #include "social_internal.hpp"
 #include "founding_internal.hpp"
+#include "worker_motion.hpp"
 
 namespace antworld {
 using namespace detail;
@@ -134,7 +135,10 @@ void WorldRuntime::resolve_autonomy_wakes(
     const bool foraging_home = !buffer ? at_depot : at_foraging_home(ant);
     const bool stationary = p.behavior != IndividualBehavior::Forage &&
                             p.behavior != IndividualBehavior::Excavate;
-    const bool can_switch = (at_depot || (p.behavior==IndividualBehavior::Forage && foraging_home) || stationary) &&
+    const auto excavation=s.excavators.find(ant.id);
+    const bool at_dig_origin=local_excavation(s) && excavation!=s.excavators.end() && excavation->second.path_size==1 &&
+        ant.position==physical(excavation->second.path[0],s.geometry->config);
+    const bool can_switch = (at_depot || at_dig_origin || (p.behavior==IndividualBehavior::Forage && foraging_home) || stationary) &&
                             !ant.carried_food.total_ug() &&
                             !s.carriers.contains(ant.id);
     const auto timing = worker_timing(s, ant.caste);
@@ -192,6 +196,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     }
     bool resupply=repeat_delivery;
     std::optional<PositionM> resupply_step;
+    std::optional<PositionM> roof_stance;
     if (sustained_supply(s) && ant.caste==Caste::Worker && local_founding_provisioning(s,ant.id) &&
         can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
         stationary && !wake.payload && config.forage_weight) {
@@ -205,9 +210,28 @@ void WorldRuntime::resolve_autonomy_wakes(
       const auto opened=!s.geometry_edits.empty();
       if (visible && colony.nest_food.carbs_ug<buffer && !urgent) {
         resupply=foraging_home && can_forage(ant);
-        if (!resupply && !at_depot) resupply_step=worker_depot_step(ant);
+        if (local_excavation(s) && !resupply && !at_depot && !at_meal && !at_wick &&
+            !meal_step && !wick_step && !queen_offer && !can_feed_brood && excavation==s.excavators.end()) {
+          const auto& terrain=s.geometry->config;
+          const auto nearby=nearest_grid_point(ant.position,terrain,true);
+          if (nearby) {
+            // Touch a nearby work surface before enrolling. Positions are
+            // candidate local stances, never a known path to exterior food.
+            for (const auto dx : {0,-2,2,-4,4}) {
+              for (const auto dz : {0,-2,2,-4,4}) {
+                const auto site=physical({nearby->x+dx,nearby->y,nearby->z+dz},terrain);
+                if ((site==ant.position || clear_worker_site(ant,site,true)) && shallow_soil_cap(site)) {
+                  roof_stance=site;
+                  break;
+                }
+              }
+              if (roof_stance) break;
+            }
+          }
+        }
+        if (!resupply && !at_depot && !roof_stance) resupply_step=worker_depot_step(ant);
       }
-      if (!resupply && !resupply_step && (urgent || ready) && (opened || a.knows_depot) &&
+      if (!resupply && !resupply_step && !roof_stance && (urgent || ready) && (opened || a.knows_depot) &&
           (visible || a.knows_depot) && !foraging_home) {
         // Previously visited stores can cue a search even out of sight.
         // The worker only tastes their inventory after returning to it.
@@ -267,6 +291,9 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.care=!choice.resting_site && can_switch && !urgent && s.m.now>a.last_program_change &&
                   local_care_available({s.world,ant.id});
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (roof_stance && *roof_stance!=ant.position) {
+      choice.resting_site=roof_stance;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (resupply || resupply_step) {
       if (resupply) choice.behavior=IndividualBehavior::Forage;
       choice.resting_site=resupply_step;
@@ -275,7 +302,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (worker_motor(s) && (!a.decisions ||
                (buffer && !s.foragers.contains(ant.id) && s.care.contains(ant.id) &&
                 s.care.at(ant.id).act==CareAct::DepotApproach)) && p.mother.value &&
-               p.behavior==IndividualBehavior::Paused && !foraging_home &&
+               p.behavior==IndividualBehavior::Paused && !foraging_home && !roof_stance &&
                (choice.resting_site=worker_depot_step(ant))) {
       // Emergence schedules a direct review, before any return notification.
       choice.transit=CareAct::DepotApproach;
@@ -388,7 +415,9 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (s.long_term && s.long_term->demand_feedback) {
         const auto self=signaled_need(p,ant.stage);
         forage=forage && (low_pantry || unmet || (self.total_ug() && ingredient_min(stock,self)!=self));
-        const bool exit_work=buffer && at_depot && !forage_possible && low_pantry && shallow_soil_cap(ant.position);
+        const bool exit_work=buffer && !forage_possible &&
+            ((at_depot && low_pantry && shallow_soil_cap(ant.position)) ||
+             (roof_stance && *roof_stance==ant.position) || (at_dig_origin && low_pantry && shallow_soil_cap(ant.position)));
         soil=!urgent && (exit_work || (soil && local_space_demand({s.world,ant.id},sample.ants.size())));
       }
       if (urgent &&
@@ -468,7 +497,7 @@ void WorldRuntime::resolve_autonomy_wakes(
           }
         }
       }
-      if (worker_motor(s) && !foraging_home && !choice.care && stationary &&
+      if (worker_motor(s) && !foraging_home && !choice.care && stationary && !roof_stance &&
           ((urgent && !nest_contact) || (!urgent && (unmet || low_pantry) && config.forage_weight &&
             s.surface && (p.crop.total_ug()<p.config.crop_capacity_ug/2 ||
                           choice.behavior==IndividualBehavior::Rest)))) {

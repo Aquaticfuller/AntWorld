@@ -37,14 +37,17 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const active = ["variable", "feeding", "budget", "sustained"].includes(model);
+    const active = ["variable", "feeding", "budget", "sustained", "protected", "local-dig"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
-    const wick = liveView.state?.sustained_nest_available && ["feeding", "budget", "sustained"].includes(model);
+    const wick = liveView.state?.sustained_nest_available && ["feeding", "budget", "sustained", "protected", "local-dig"].includes(model);
     for (const element of document.querySelectorAll("[data-live-wick]")) element.hidden = !wick;
     $("sealed-wick").disabled = !wick;
     const supply = $("sealed-supply");
     const extended = supply.querySelector('[value="extended"]');
     extended.hidden = extended.disabled = !active;
+    const nearby = supply.querySelector('[value="nearby"]');
+    nearby.hidden = nearby.disabled = !(liveView.state?.nearby_feeder_available && ["protected","local-dig"].includes(model));
+    if (nearby.disabled && supply.value === "nearby") supply.value = active ? "extended" : "finite";
     if (!active && supply.value === "extended") supply.value = "finite";
 }
 
@@ -75,6 +78,17 @@ function liveControls() {
     $("sealed-model").querySelector('[value="variable"]').disabled = !s?.variable_nest_available;
     for (const option of $("sealed-model").querySelectorAll("[data-provisioned]")) option.disabled = !s?.provisioned_nest_available;
     $("sealed-model").querySelector("[data-sustained]").disabled = !s?.sustained_nest_available;
+    $("sealed-model").querySelector("[data-protected]").disabled = !s?.protected_nest_available;
+    $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
+    if (!liveView.setupInitialized && s?.single_nest_available) {
+        liveView.setupInitialized = true;
+        $("sealed-model").value = s.protected_nest_available ? "protected" : "anatomical";
+        sealedOptions();
+        if (s.protected_nest_available) {
+            $("sealed-supply").value = "extended";
+            $("sealed-wick").value = "wet-wick";
+        }
+    }
     sealedOptions();
     $("new-single-nest").classList.toggle("primary-button", !active);
     put("find-brood", tr(s?.habitat?.sealed_chamber ? "Locate brood area" : "Locate brood chamber"));
@@ -185,10 +199,19 @@ function liveEnvironment(data) {
     const stocks = [
         ["External stock", total(data.sources.filter(s => s.position_m[1] >= level), "stock_ug")],
         ["Nest stock", total(data.colonies, "stock_ug"), data.colonies[0].position_m],
+        ["Food and water in living crops", total(data.ants.filter(a => a.stage !== "Dead" && a.crop_ug), "crop_ug")],
         ...chamber.map(s => ["Water in the brood chamber", s.stock_ug, s.position_m]),
         ["Unreleased feeder reserve", data.feeder_reserve_ug?.slice(0, 3)]
     ];
-    const key = JSON.stringify([language, stocks]);
+    const dry = data.physics >= 48 ? data.sources.filter(s => s.initial_ug?.[1] &&
+        !s.initial_ug[0] && !s.initial_ug[2]) : [];
+    const deposits = new Map();
+    for (const pile of data.soil_piles || []) {
+        const id = pile.position_m.join(",");
+        const old = deposits.get(id);
+        deposits.set(id, {position:pile.position_m, volume:pile.volume_mm3+(old?.volume || 0)});
+    }
+    const key = JSON.stringify([language, stocks, dry.map(s => s.stock_ug[1]), [...deposits.values()]]);
     if (liveView.environmentKey !== key) {
         liveView.environmentKey = key;
         $("live-resources").replaceChildren(...stocks.map(([label, values, position]) => {
@@ -200,6 +223,26 @@ function liveEnvironment(data) {
             if (position) card.append(button("Locate on map", () => locateLiveSite(position).catch(report)));
             return card;
         }));
+        for (const source of dry) {
+            const card = node("div");
+            card.append(node("strong", tr("Dry food at the feeder")), keyValues([
+                ["Protein", withUnit(source.stock_ug[1],"µg")],
+                ["Whole 25 µg portions", String(Math.floor(source.stock_ug[1]/25))],
+                ["Partial portion", withUnit(source.stock_ug[1]%25,"µg")]
+            ]), button("Locate on map", () => locateLiveSite(source.position_m).catch(report)));
+            $("live-resources").append(card);
+        }
+        for (const onSurface of [true,false]) {
+            const sites = [...deposits.values()].filter(s => (s.position[1]>=level)===onSurface);
+            if (!sites.length) continue;
+            const largest = sites.reduce((best,s) => s.volume>best.volume ? s : best);
+            const card = node("div");
+            card.append(node("strong",tr(onSurface ? "Surface spoil" : "Underground spoil")), keyValues([
+                ["Deposited volume", withUnit(sites.reduce((v,s) => v+s.volume,0),"mm³")],
+                ["Deposit sites", String(sites.length)]
+            ]),button("Locate largest deposit", () => locateLiveSite(largest.position).catch(report)));
+            $("live-resources").append(card);
+        }
     }
     const climate = data.climate;
     $("live-climate").hidden = !climate;
@@ -367,7 +410,8 @@ async function refreshLive(alignSection = true) {
     put("title", data.habitat?.sealed_chamber ? tr(chamberTitle) : data.habitat ? tr("Single-queen ecology") : data.ecology ? tr("Local ecology") :
         data.seeded_nursery ? tr("Nursery experiment") : "MicroWorld");
     app.geometry = data.terrain;
-    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, trails: data.trails, soil_piles: data.soil_piles};
+    app.state = {ants: data.ants.filter(a => a.stage !== "Dead"), sources: data.sources, colonies: data.colonies,
+        trails: data.trails, soil_piles: data.soil_piles};
     app.recentMotion = {points: data.motion.filter(event => event.time_ms >= data.time_ms - 5 * MINUTE)};
     const stop = data.fast_forward;
     const key = stop?.event ? `${stop.state}:${stop.event.id}` : null;
@@ -415,7 +459,9 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "sustained" ? tr("Local water and repeat foraging") :
+    const nutrition = data.habitat?.nutrition === "local-dig" ? tr("Local excavation · Physics 49") :
+        data.habitat?.nutrition === "protected" ? tr("Protected founding · Physics 48") :
+        data.habitat?.nutrition === "sustained" ? tr("Local water and repeat foraging") :
         data.habitat?.nutrition === "budget" ? tr("Brood budget") :
         data.habitat?.nutrition === "feeding" ? tr("Local feeding") : "";
     put("subtitle", [tr("Live Core · Physics {physics} · Seed {seed}", data), nutrition, description, "ENGINEERING_ONLY"]

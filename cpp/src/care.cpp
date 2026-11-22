@@ -791,6 +791,15 @@ void WorldRuntime::resolve_care_wakes(Transaction& tx, const std::vector<Schedul
             if (c.has_worker_contact) memory=std::max(0.0,1.0-static_cast<double>(s.m.now.milliseconds-c.last_worker_contact.milliseconds)/static_cast<double>(cfg.social_memory_horizon.milliseconds));
             const auto probability=cfg.care_probability*(a.caste==Caste::Queen ? 1-cfg.maximum_inhibition*memory : 1);
             if (continuing || draw(probability)) {
+                if (protected_founding(s) && !continuing) {
+                    auto urgent=brood_candidates;
+                    std::erase_if(urgent,[&](AntRef ref) {
+                        const auto other=*query_ant(ref);
+                        if (!can_feed_here(other)) return true;
+                        return !urgent_larval_upkeep(s.founding->profile,*query_physiology(ref),*query_founding(ref));
+                    });
+                    if (!urgent.empty()) brood_candidates=std::move(urgent);
+                }
                 bool repeat=false;
                 if (remembered.value && !continuing && std::any_of(brood_candidates.begin(),brood_candidates.end(),
                         [&](AntRef ref) { return ref.id==remembered; })) {

@@ -519,6 +519,19 @@ async function foundingHabitat() {
 }
 
 async function sealedNestWorld() {
+    assert.deepEqual(await evaluate(`[[0,0,0],[0,1,0],[0,2500,0],[0,9000000,0],[0,0,50]].map(stock=>{
+        let marks=0;
+        drawResourceStock({save(){},translate(){},beginPath(){},ellipse(){marks++;},fill(){},restore(){}},
+            [0,0],stock,true);
+        return marks;
+    })`), [0,1,100,100,0]);
+    if (await evaluate("liveView.state?.protected_nest_available")) {
+        assert.deepEqual(await evaluate("[$('sealed-model').value,$('sealed-supply').value,$('sealed-wick').value]"),
+            ["protected","extended","wet-wick"]);
+        await click("#new-single-nest");
+        await wait(() => evaluate("liveView.state?.physics===48 && !liveView.busy"), "Protected default");
+        assert.equal(await evaluate("liveView.state.sources.find(s=>s.position_m[1]<0).stock_ug[2]"),1500000);
+    }
     await evaluate("liveCommand('single-nest',{model:'reference',seed:2})");
     await wait(() => evaluate("liveView.state?.physics===38 && app.section==='nest' && Boolean(nestView.volume) && !liveView.busy"),
         "Sealed nest in the live viewport");
@@ -686,6 +699,7 @@ async function sealedNestWorld() {
 }
 
 async function anatomicalNestWorld() {
+    await select("sealed-model","anatomical");
     await click("#new-single-nest");
     await wait(() => evaluate("liveView.state?.physics===39 && Boolean(nestView.volume) && !liveView.busy"),
         "Anatomical nest in the viewport");

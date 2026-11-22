@@ -30,12 +30,17 @@ inline constexpr unsigned variable_nest_schema = 38, variable_nest_physics = 45;
 inline constexpr unsigned provisioned_nest_schema = 39, provisioned_nest_physics = 46;
 inline constexpr unsigned sustained_nest_schema = 40, sustained_nest_physics = 47;
 
+inline constexpr unsigned protected_nest_schema = 41, protected_nest_physics = 48;
+inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics = 49;
+
 inline bool micro_world_version(unsigned version) {
     return version==micro_world_physics || version==micro_world_no_hatch_physics ||
            version==portable_micro_world_physics || version==portable_micro_world_no_hatch_physics;
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalExcavation) return local_excavation_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ProtectedFounding) return protected_nest_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SustainedSupply) return sustained_nest_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition != FoundingNutrition::Original) return provisioned_nest_physics;
     if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_physics;
@@ -60,6 +65,8 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalExcavation) return local_excavation_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ProtectedFounding) return protected_nest_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SustainedSupply) return sustained_nest_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition != FoundingNutrition::Original) return provisioned_nest_schema;
     if (c.founding_habitat && c.founding_habitat->variable_conditions) return variable_nest_schema;

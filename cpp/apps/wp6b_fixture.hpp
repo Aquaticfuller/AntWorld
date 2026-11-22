@@ -51,6 +51,7 @@ struct Case {
     bool seasonal_supply{};
     double habitat_trail_half_life_s{60};
     std::uint64_t habitat_wick_ug{1200};
+    bool nearby_surface_feeder{};
 };
 
 inline RuntimeLimits assay_limits(const Case& c) {
@@ -68,7 +69,7 @@ inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM ne
         behavior.trail_half_life_s=c.habitat_trail_half_life_s;
         // ENGINEERING_FIXTURE: a trained L. niger forager can recall a
         // food-associated location the following day (10.1007/s00265-014-1710-2).
-        if (c.ecological->founding_habitat->nutrition==FoundingNutrition::SustainedSupply)
+        if (c.ecological->founding_habitat->nutrition>=FoundingNutrition::SustainedSupply)
             behavior.memory_lifetime={day_ms};
     }
     behavior.step_duration={30'000}; // Retained collection/handling clock, not the travel clock.
@@ -87,8 +88,19 @@ inline void configure_micro_world(wp5::Scene& scene, const Case& c, PositionM ne
         scene.voids={{{-24,-20,-24},{24,-2,4}}};
         if (c.ecological->founding_habitat->anatomical)
             scene.voids={{{-36,-20,-36},{36,-4,12}}}; // 18 x 12 x 4 mm; one closed pocket.
+        if (c.ecological->founding_habitat->nutrition>=FoundingNutrition::ProtectedFounding) {
+            // One rounded chamber, cut in abutting 0.5 mm bands. The floor,
+            // closed roof and 0.25 mm collision quantum remain authoritative.
+            constexpr std::array<int,12> half_width{11,18,22,26,28,30,32,33,34,35,36,36};
+            scene.voids.clear();
+            for (int band=0;band<24;++band) {
+                const auto width=half_width[static_cast<std::size_t>(band<12?band:23-band)];
+                scene.voids.push_back({{-width,-20,-36+band*2},{width,-4,-34+band*2}});
+            }
+        }
         w.configure_geometry(g,scene.voids);
-        scene.target={c.seed%2?.03:-.03,0,0};
+        const double feeder_distance=c.nearby_surface_feeder?.005:.03;
+        scene.target={c.seed%2?feeder_distance:-feeder_distance,0,0};
         require(w.spatially_clear(nest,nest,g.loaded_half_q) &&
                 !w.spatially_clear(nest,{0,.001,0},g.loaded_half_q),"Founding chamber lacks its closed roof");
         return;
@@ -230,8 +242,9 @@ inline wp5::Scene setup(const Case& c, const RuntimeLimits& limits = s6_3_1_fixt
             w.configure_resource_cycle(source,cycle);
         };
         if (habitat && c.ecological->founding_habitat->variable_conditions) {
-            const auto split=[](FoodMass amount) {
-                const FoodMass extra{amount.carbs_ug/4,amount.protein_ug/2,amount.water_ug/4,0};
+            const bool dry_food=c.ecological->founding_habitat->nutrition>=FoundingNutrition::ProtectedFounding;
+            const auto split=[dry_food](FoodMass amount) {
+                const FoodMass extra{dry_food?0:amount.carbs_ug/4,amount.protein_ug/2,dry_food?0:amount.water_ug/4,0};
                 amount.carbs_ug-=extra.carbs_ug;
                 amount.protein_ug-=extra.protein_ug;
                 amount.water_ug-=extra.water_ug;

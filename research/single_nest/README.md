@@ -1,6 +1,6 @@
 # Sealed Single-Nest Preview
 
-## Open the anatomical nest
+## Open the protected founding nest
 
 For a fresh Windows checkout, the build requires Python 3.13 or later,
 CMake 3.24 or later and a C++20 compiler. The build script also recognizes
@@ -9,8 +9,8 @@ the workspace's portable Clang, CMake and Ninja tools when present.
 From Windows PowerShell at the repository root:
 
 ~~~powershell
-git fetch origin codex/single-nest-experience-overhaul
-git switch codex/single-nest-experience-overhaul
+git fetch origin codex/single-nest-variable-conditions
+git switch codex/single-nest-variable-conditions
 git pull --ff-only
 py -3 -B -m tools.build_m0_live --jobs 4
 .\tools\start_m0.cmd
@@ -30,10 +30,7 @@ temperature, humidity, trail reference time, ventilation and substrate.
 The [colony life-cycle reference](COLONY_LIFECYCLE_REFERENCE.md) compares
 the preview with measured founding, overwintering and mature colony counts.
 
-1. Select **New sealed nest** for Physics 39. The starting view contains one
-   queen and one sealed pocket. Software seed 3 is the default for the
-   finite-supply demonstration. **Colony setup** contains the seed,
-   supply and model choices.
+1. Select **New sealed nest** for Physics 48. The starting view contains one queen in one rounded, sealed pocket. The default is seed 3, a finite 1.5 mL water wick and exterior supply budgeted through day 730. **Colony setup** can reproduce the anatomical Physics 39 world with seed 3, the small wick and finite supply. The separate Physics 49 treatment tests local excavation in smaller bites. The nearby surface feeder moves the food without changing the resource budget. [Founding and delivery measurements](PROTECTED_HABITAT_RESULTS.md)
 2. Keep **1× real time** for close observation. Use **Next occurrence** on
    the target menu to reach an egg, brood movement, the first worker,
    excavation or food delivery. The simulation pauses at the committed event.

@@ -557,6 +557,66 @@ class LiveTests(unittest.TestCase):
                                      for event in facts(core, cut["cursor"])))
                 self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_protected_default_and_paid_brood_continue_after_reload(self):
+        core = self.live.core()
+        if not core.protected_nest:
+            self.skipTest("Build the protected founding Core")
+        self.live.write("single-nest", {})
+        self.live.write("clock", {"running": False})
+        start = self.live.frame
+        self.assertEqual((start["physics"], start["seed"]), (48, 3))
+        self.assertEqual(len(start["ants"]), 1)
+        self.assertTrue(all(b[4] < 0 for b in start["geometry"]["voids"]))
+        bands = start["geometry"]["voids"]
+        self.assertGreater(len({(b[0], b[3]) for b in bands}), 1)
+        self.assertTrue(all(a[5] == b[2] for a, b in zip(bands, bands[1:])))
+        below = [s for s in start["sources"].values() if s["position_m"][1] < 0]
+        self.assertEqual([s["stock_ug"] for s in below], [(0, 0, 1_500_000, 0)])
+        dry = [s for s in start["sources"].values() if s["initial_ug"][1] and not s["initial_ug"][0]]
+        self.assertEqual(len(dry), 1)
+        raw = core.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(raw)
+        cutoff = self.live.frame["cursor"]
+        witnessed = {KINDS[f.kind] for f in facts(core, cutoff)}
+        self.assertTrue({"FoundingRation", "FoodDelivered", "SoilDropped"} <= witnessed)
+        for mode in ("archive", "snapshot"):
+            self.live.save("Protected colony", False, mode)
+        future = core.call(f"ADVANCE {50 * DAY}")
+        page = core.call(f"FACTS_AFTER {cutoff} 512")
+        self.assertTrue(page)
+        for mode in ("archive", "snapshot"):
+            self.live.load("Protected colony", mode)
+            self.assertEqual(core.call("FRAME"), raw)
+            self.assertEqual(core.call(f"ADVANCE {50 * DAY}"), future)
+            self.assertEqual(core.call(f"FACTS_AFTER {cutoff} 512"), page)
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
+    def test_local_roof_bites_preserve_material_and_resume(self):
+        core = self.live.core()
+        if not core.local_dig:
+            self.skipTest("Build the local excavation Core")
+        self.live.write("single-nest", {"model": "local-dig", "supply": "extended", "seed": 3, "wick": "wet-wick"})
+        self.live.write("clock", {"running": False})
+        raw = core.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(raw)
+        frame = self.live.frame
+        self.assertEqual((frame["schema"], frame["physics"]), (42, 49))
+        initial, remaining, carried, deposited = frame["soil"][:4]
+        self.assertEqual(initial, remaining + carried + deposited)
+        self.assertGreater(deposited, 0)
+        self.assertTrue(frame["soil_piles"])
+        self.assertTrue(all(0 < p["volume_mm3"] <= .125 for p in frame["soil_piles"]))
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+        for mode in ("snapshot", "archive"):
+            self.live.save("Excavated roof", False, mode)
+        expected = core.call(f"ADVANCE {49 * DAY + HOUR}")
+        page = core.call(f"FACTS_AFTER {frame['cursor']} 512")
+        for mode in ("snapshot", "archive"):
+            self.live.load("Excavated roof", mode)
+            self.assertEqual(core.call("FRAME"), raw)
+            self.assertEqual(core.call(f"ADVANCE {49 * DAY + HOUR}"), expected)
+            self.assertEqual(core.call(f"FACTS_AFTER {frame['cursor']} 512"), page)
+
     def test_sustained_nest_pays_for_wick_drinks_and_restores_history(self):
         core = self.live.core()
         if not core.sustained_nest:

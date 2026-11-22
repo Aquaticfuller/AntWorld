@@ -6,6 +6,8 @@ In Windows PowerShell, run `.\tools\start_m0.cmd` from the repository root and c
 
 See the [single-nest preview guide](research/single_nest/README.md) for the build steps, model limits and verification commands.
 
+On the current preview branch, a new nest selects **Protected founding · Physics 48**, a wetted cotton source and two years of budgeted exterior supply. Open **Research** to locate dry food, nest inventory and recorded spoil sites, and to inspect water in living crops. **Local excavation · Physics 49** is a separate grain-scale roof experiment. Existing saves carry their original physics.
+
 ## M1 Live Colony Observatory
 
 Start an open founding nest, a shallow-soil-plug experiment or a no-supply control. In the browser, rotate the 3D nest, follow a worker across the entrance and use the founding milestones to reach committed events. Live saves can be opened for read-only replay. See the [Windows launch steps and reproducible M1 checks](research/m1/README.md).

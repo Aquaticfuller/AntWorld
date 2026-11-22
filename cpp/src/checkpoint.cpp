@@ -197,7 +197,9 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==sustained_nest_schema && version==sustained_nest_physics) ||
+        ensure((outer_schema==local_excavation_schema && version==local_excavation_physics) ||
+               (outer_schema==protected_nest_schema && version==protected_nest_physics) ||
+               (outer_schema==sustained_nest_schema && version==sustained_nest_physics) ||
                (outer_schema==provisioned_nest_schema && version==provisioned_nest_physics) ||
             (outer_schema==variable_nest_schema && version==variable_nest_physics) ||
                (outer_schema==familiar_return_schema && version==familiar_return_physics) ||
@@ -390,7 +392,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_physiology(r, *s, limits);
     read_geometry(r,*s,limits,entity_ids);
     if (sealed_chamber(*s) && s->geometry)
-        ensure(sealed_seed_shape(*s->geometry),"Invalid sealed founding chamber");
+        ensure(sealed_seed_shape(*s->geometry,protected_founding(*s)),"Invalid sealed founding chamber");
     if (bounded_brood_space(*s)) {
         ensure(!s->ants.size() || s->geometry,"MicroWorld entities require physical geometry");
         if (s->geometry) ensure(s->geometry->config.quantum_m>=0.00025 && s->geometry->config.quantum_m<=0.001,

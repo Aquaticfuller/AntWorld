@@ -453,7 +453,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v23");
+                message("OK", "antworld.m0.live.v26");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -474,15 +474,17 @@ int main() {
                 const bool sealed=command=="NEW_SINGLE_NEST" || anatomical;
                 std::optional<TrailExposure> exposure;
                 auto nutrition=FoundingNutrition::Original;
-                bool extended_supply=false;
+                bool extended_supply=false, nearby_feeder=false;
                 bool wet_wick=false;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
-                    require(supply=="finite" || supply=="absent" || (variable && supply=="extended"),"invalid supply setting");
+                    require(supply=="finite" || supply=="absent" || (variable && supply=="extended") ||
+                            (provisioned && supply=="nearby"),"invalid supply setting");
                     alternate_berth=policy=="reachable";
                     external_supply=supply!="absent";
-                    extended_supply=supply=="extended";
+                    nearby_feeder=supply=="nearby";
+                    extended_supply=supply=="extended" || nearby_feeder;
                 }
                 if (variable) {
                     const auto ventilation=word(request), substrate=word(request);
@@ -492,9 +494,12 @@ int main() {
                 }
                 if (provisioned) {
                     const auto treatment=word(request);
-                    require(treatment=="feeding" || treatment=="budget" || treatment=="sustained", "invalid founding nutrition treatment");
+                    require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
+                            treatment=="protected" || treatment=="local-dig", "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
-                        treatment=="budget" ? FoundingNutrition::BroodBudget : FoundingNutrition::SustainedSupply;
+                        treatment=="budget" ? FoundingNutrition::BroodBudget :
+                        treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="local-dig" ? FoundingNutrition::LocalExcavation : FoundingNutrition::SustainedSupply;
                     request >> std::ws;
                     if (!request.eof()) {
                         const auto wick=word(request);
@@ -509,6 +514,8 @@ int main() {
                 auto c=live_case(id,seed);
                 if (access!="open") c.arm=access;
                 if (extended_supply) c.release_days=730;
+                require(!nearby_feeder || nutrition>=FoundingNutrition::ProtectedFounding,"nearby feeder requires protected founding");
+                c.nearby_surface_feeder=nearby_feeder;
                 // 1.5 mL of water behind cotton in the protected founding
                 // protocol (Turi et al., doi:10.1111/imb.12809). The spatial
                 // wick is an ENGINEERING_FIXTURE. No automatic hydration.

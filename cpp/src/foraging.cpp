@@ -203,7 +203,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 const bool can_unload=off_floor ? wall_handoff(s) && (anatomical_handoff(s) || center_contact) &&
                     mouth_at_supply(ant,contact) : center_contact;
                 if (can_unload && spatially_clear(ant.position,depot) &&
-                    !clear_worker_traffic(ant,r.destination,body_half(ant.id))) {
+                    (protected_founding(s) || !clear_worker_traffic(ant,r.destination,body_half(ant.id)))) {
                     // The carrier has already reached the local handoff
                     // area. Reuse its real ingress route from this berth.
                     r.decision.action=ActionKind::DeliverFood;
@@ -310,9 +310,29 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         action.key={later(s.m.now,duration),Phase::Resolution,0,0,0};
         switch (r.decision.action) {
         case ActionKind::Move: action.kind=ScheduledEvent::Kind::Move; action.destination=r.destination; break;
-        case ActionKind::CollectFood:
+        case ActionKind::CollectFood: {
             action.kind = ScheduledEvent::Kind::CollectFood; action.resource = r.decision.resource;
-            action.requested_ug = ant.carrying_capacity_ug; bump(s.m.foraging.collection_attempts); break;
+            action.requested_ug = ant.carrying_capacity_ug;
+            if (protected_founding(s)) {
+                const auto stock=s.foods.rows[s.foods.index.at(action.resource)].initial;
+                // The dry feeder dispenses discrete 25 ug fragments. Pure
+                // water is sampled for crop intake within the current need.
+                if (stock.protein_ug && stock.total_ug()==stock.protein_ug)
+                    action.requested_ug=std::min<std::uint64_t>(action.requested_ug,25);
+                if (stock.water_ug && stock.total_ug()==stock.water_ug && s.physiology.contains(ant.id)) {
+                    const auto p=*query_physiology({s.world,ant.id});
+                    action.requested_ug=std::min({action.requested_ug,nutrient_demand(p,ant.stage).water_ug,
+                                                 p.config.crop_capacity_ug-p.crop.total_ug(),p.config.transfer_limit_ug});
+                    if (!action.requested_ug) {
+                        f.mode=BehaviorMode::Rest;
+                        action.kind=ScheduledEvent::Kind::Rest;
+                        action.resource={};
+                        break;
+                    }
+                }
+            }
+            bump(s.m.foraging.collection_attempts); break;
+        }
         case ActionKind::DeliverFood:
             action.kind=ScheduledEvent::Kind::DeliverFood;
             if (r.wall_delivery) action.payload=wall_delivery_payload;

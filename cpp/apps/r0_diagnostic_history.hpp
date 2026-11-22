@@ -32,7 +32,7 @@ public:
         auto previous=next->blocks_.empty() ? Digest{} : next->blocks_.back()->header.digest;
         const auto ecology=world.ecological_closure();
         const auto schema=ecology && ecology->founding_habitat &&
-            ecology->founding_habitat->nutrition==FoundingNutrition::SustainedSupply ?
+            ecology->founding_habitat->nutrition>=FoundingNutrition::SustainedSupply ?
             FactSchema::SustainedSupply : FactSchema::EcologicalClosure;
         while (next->size_<capture.size()) {
             const auto facts=capture.read({next->size_},block_records);

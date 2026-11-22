@@ -267,6 +267,16 @@ inline FoodMass founding_larval_demand(const FoundingProfile& f, const Physiolog
     return {ceil_div(need.energy_nj,p.config.carbohydrate_yield_nj_per_ug),need.protein_ug,need.water_ug,0};
 }
 
+// A locally observed larva may miss the next uptake even when its mother
+// holds enough reserves to lay. Count only energy and water already owned.
+inline bool urgent_larval_upkeep(const FoundingProfile& f,const PhysiologyState& p,const FoundingReserve& r) {
+    const auto span=static_cast<std::uint64_t>(p.config.absorption_period.milliseconds);
+    const auto rate=founding_rates(f,p,LifeStage::Larva,false);
+    auto e=r.energy_remainder,w=r.water_remainder;
+    return dietary_energy(f,p,r)<=integrate_founding(rate.energy,span,e) ||
+        add(p.hydration_ug,p.crop.water_ug)<=integrate_founding(rate.water,span,w);
+}
+
 inline void reserve_for_brood(BroodRequirement& total, const FoundingProfile& f, const PhysiologyState& p,
                               const FoundingReserve& reserve, LifeStage stage) {
     const auto need=unfunded_brood(f,p,reserve,stage);

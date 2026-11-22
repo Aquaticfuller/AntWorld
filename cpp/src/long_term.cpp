@@ -93,6 +93,7 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
   bool deferred_for_brood=false;
   if (founding && resources && local_brood_budget(s)) {
     BroodRequirement demand;
+    bool urgent_larva=false;
     const auto radius=s.care_profile->perception_radius_m;
     for (const auto ref:query_neighborhood({s.world,mother.id},radius).ants) {
       const auto child=*query_ant(ref);
@@ -101,10 +102,14 @@ void WorldRuntime::execute_reproduction(Transaction &tx,
           !surface_care_clear(s,mother.position,child.position)) continue;
       const auto state=query_physiology(ref);
       if (state && state->mother==mother.id) {
-        if (const auto reserve=query_founding(ref)) reserve_for_brood(demand,*founding,*state,*reserve,child.stage);
+        if (const auto reserve=query_founding(ref)) {
+          reserve_for_brood(demand,*founding,*state,*reserve,child.stage);
+          if (protected_founding(s) && child.stage==LifeStage::Larva)
+            urgent_larva|=urgent_larval_upkeep(*founding,*state,*reserve);
+        }
       }
     }
-    resources=funds_brood_budget(*founding,p,s.founding_reserves.at(mother.id),demand);
+    resources=!urgent_larva && funds_brood_budget(*founding,p,s.founding_reserves.at(mother.id),demand);
     deferred_for_brood=!resources;
   }
   const auto site=!resources ? std::nullopt : bounded_brood_space(s) ? local_egg_site(mother) :

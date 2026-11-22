@@ -175,6 +175,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                 bool deferred_for_brood=false;
                 if (funded && founding.founder(e.actor) && local_brood_budget(s)) {
                     BroodRequirement demand;
+                    bool urgent_larva=false;
                     for (const auto& [id,stage]:stages) {
                         if (stage>LifeStage::Larva || !founding.enrolled(id) || audit.at(id).mother!=e.actor) continue;
                         const auto position=positions.at(id);
@@ -184,8 +185,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                         auto reserve=founding.reserves.at(id);
                         settle_founding(founding.profile(),child,reserve,stage,false,e.time);
                         reserve_for_brood(demand,founding.profile(),child,reserve,stage);
+                        if (protected_founding(s) && stage==LifeStage::Larva)
+                            urgent_larva|=urgent_larval_upkeep(founding.profile(),child,reserve);
                     }
-                    funded=funds_brood_budget(founding.profile(),p,founding.reserves.at(e.actor),demand);
+                    funded=!urgent_larva && funds_brood_budget(founding.profile(),p,founding.reserves.at(e.actor),demand);
                     deferred_for_brood=!funded;
                 }
                 ensure(e.random_value==static_cast<std::uint64_t>(deferred_for_brood),"invalid brood allocation evidence");

@@ -5,6 +5,7 @@
 #include "worker_motion.hpp"
 
 namespace antworld::detail {
+bool anatomical_sweep_hits(const BodyPose& mover,PositionM to,const BodyPose& peer);
 // ENGINEERING_FIXTURE. Adult length is anchored to Collingwood (1979),
 // L. niger pp. 99–100. Segment proportions, contact and clearance are proxies.
 inline constexpr std::array<BodySegment,3> queen_segments{{

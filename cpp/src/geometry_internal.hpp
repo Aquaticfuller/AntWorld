@@ -3,6 +3,7 @@
 #include "motion_numeric.hpp"
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
@@ -13,6 +14,7 @@ namespace antworld::detail {
 struct GeometryDefinition {
     GeometryConfig config;
     std::vector<BoxQ> voids = std::vector<BoxQ>(0), rocks = std::vector<BoxQ>(0);
+    bool separated_z_bands{}; // Derived on construction and restore.
 };
 using GeometryEdits = std::map<GeometryEditId, GeometryEdit>;
 using EditIndex = std::map<std::pair<PointQ, GeometryEditId>, std::uint8_t>;
@@ -98,7 +100,9 @@ inline GeometryView geometry_view(const auto &s, const RuntimeLimits &limits) {
 // Version-limited views are used when auditing facts before a later wall fill.
 bool historical_clear(const GeometryDefinition &, const GeometryEdits &, const EditIndex &, PositionM, PositionM,
                       std::int32_t half, std::size_t budget);
-void validate_geometry(const GeometryDefinition &, const WorldConfig &, std::size_t budget);
+void validate_geometry(GeometryDefinition &, const WorldConfig &, std::size_t budget);
 bool local_patch(const GeometryView &, PointQ actor, BoxQ);
+std::optional<BoxQ> local_roof(const GeometryView&, PositionM, std::int32_t surface, double perception, int layers,
+                              const std::function<bool(PositionM,PositionM,std::int32_t)>& clear);
 std::vector<PointQ> portal_neighbors(const GeometryView &, PointQ, std::int32_t half, const WorldConfig &);
 } // namespace antworld::detail

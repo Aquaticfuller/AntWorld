@@ -58,6 +58,8 @@ jobs:
             op0.tests.test_live.LiveTests.test_default_viewer_snapshot_keeps_only_a_tail_and_resumes_with_identical_facts `
             op0.tests.test_live.LiveTests.test_anatomical_nest_commits_birth_carry_and_exact_continuation `
             op0.tests.test_live.LiveTests.test_anatomical_nest_excavates_delivers_and_restores_late `
+            op0.tests.test_live.LiveTests.test_protected_default_and_paid_brood_continue_after_reload `
+            op0.tests.test_live.LiveTests.test_local_roof_bites_preserve_material_and_resume `
             op0.tests.test_live.LiveTests.test_founder_death_shown_in_the_view_matches_its_terminal_budget `
             op0.tests.test_live.LiveTests.test_portable_mouth_approach_keeps_the_first_step_and_canonical_history `
             op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes `

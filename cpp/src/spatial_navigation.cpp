@@ -36,6 +36,14 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     using Node=std::tuple<std::uint32_t,std::uint32_t,PointQ>;
     std::priority_queue<Node,std::vector<Node>,std::greater<Node>> open(std::greater<Node>{},std::vector<Node>(0));
     const bool anatomy=anatomical_nest(s);
+    std::vector<BodyPose> local_adults;
+    if (protected_founding(s)) {
+        for (const auto ref:query_neighborhood({s.world,ant.id},s.care_profile->perception_radius_m).ants) {
+            const auto peer=query_ant(ref);
+            if (ref.id!=ant.id && peer && peer->stage==LifeStage::Adult && spatially_clear(depot,peer->position))
+                local_adults.push_back(*query_body(ref));
+        }
+    }
     const auto budget=anatomy?std::min(limits_.navigation_nodes,std::size_t{1024}):limits_.navigation_nodes;
     auto facing=std::max<std::uint8_t>(1,actor_facing(s,ant.id));
     if (anatomy && attach) {
@@ -95,6 +103,16 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
                 auto actor=ant; actor.position=pos;
                 heading=body_travel_heading(view,actor,to,current.facing);
                 if (!anatomy_sweep(view,actor,to,current.facing,heading)) continue;
+                if (protected_founding(s)) {
+                    // Route through the space currently visible from the
+                    // departure site. Recheck occupancy at execution time.
+                    const auto body=body_pose(actor,heading,attachment(view,actor,heading));
+                    bool blocked=false;
+                    for (const auto& peer:local_adults) {
+                        if (anatomical_sweep_hits(body,to,peer)) { blocked=true; break; }
+                    }
+                    if (blocked) continue;
+                }
             }
             visited.insert_or_assign(q,Parent{p,depth+1,heading});
             open.emplace(depth+1+remaining(q),remaining(q),q);

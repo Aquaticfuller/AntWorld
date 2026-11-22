@@ -37,7 +37,9 @@ bool sweeps_body(PositionM from,PositionM to,PositionM peer_from,PositionM peer_
     return true;
 }
 
-bool anatomical_sweep_hits(const BodyPose& mover,PositionM to,const BodyPose& peer) {
+} // namespace
+
+bool detail::anatomical_sweep_hits(const BodyPose& mover,PositionM to,const BodyPose& peer) {
     auto destination=mover;
     destination.center_m=to;
     if (physical_overlap(destination,peer)) return true;
@@ -54,6 +56,7 @@ bool anatomical_sweep_hits(const BodyPose& mover,PositionM to,const BodyPose& pe
     return false;
 }
 
+namespace {
 bool leaving_overlap(PositionM from,PositionM to,PositionM stationary,double width) {
     return physically_overlaps(from,stationary,width) && !physically_overlaps(to,stationary,width) &&
            (to.x-from.x)*(from.x-stationary.x)>=0 && (to.y-from.y)*(from.y-stationary.y)>=0 &&

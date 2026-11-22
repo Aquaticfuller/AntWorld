@@ -5,6 +5,7 @@
 #include "brood_space.hpp"
 #include "ecological_internal.hpp"
 #include "surface_internal.hpp"
+#include "spatial_navigation.hpp"
 #include "state.hpp"
 #include "nest_scoring.hpp"
 #include <bit>
@@ -471,7 +472,11 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
             if (e.payload == static_cast<std::uint64_t>(IndividualBehavior::Excavate)) {
                 auto &worker = excavators[e.actor];
                 if (!worker.path_size) {
-                    ensure(positions.at(e.actor) == s.colonies.rows[s.colonies.index.at(e.colony)].nest_position,
+                    const auto position=positions.at(e.actor);
+                    const auto plane=local_excavation(s)?surface_level(s):std::nullopt;
+                    ensure(quantized(position,c) && e.position==position &&
+                           (position == s.colonies.rows[s.colonies.index.at(e.colony)].nest_position ||
+                            (plane && local_roof(view(),position,*plane,s.care_profile->perception_radius_m,4,clear))),
                            "excavator has no known depot");
                     worker.path[0] = *quantized(e.position, c);
                     worker.path_size = 1;

@@ -328,8 +328,10 @@ function drawNest(canvas, state, motionOnly) {
         layers.concat(actors).sort((a, b) => a.order - b.order).forEach(item => item.ant ? drawActor(item) : paintFace(item));
     }
     if (!shaded) drawSoilParcels(ctx,state.soil_piles,project,visible,unit);
-    for (const supply of [...(state.sources || []), ...(state.colonies || app.meta.colonies)])
-        if (visible(supply.position_m)) drawResourceStock(ctx,project(supply.position_m),supply.stock_ug);
+    for (const supply of state.sources || [])
+        if (visible(supply.position_m)) drawResourceStock(ctx,project(supply.position_m),supply.stock_ug,false,unit);
+    for (const depot of state.colonies || app.meta.colonies)
+        if (visible(depot.position_m)) drawResourceStock(ctx,project(depot.position_m),depot.stock_ug,true,unit);
     const scaleMm = unit>40000 ? 1 : unit>9000 ? 2 : unit>2000 ? 10 : 50;
     const bar = scaleMm*unit/1000, rulerY = height-22;
     ctx.strokeStyle = "#d9d4bc";

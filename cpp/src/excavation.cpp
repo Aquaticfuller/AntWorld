@@ -252,20 +252,26 @@ void WorldRuntime::resolve_soil_action(Transaction &tx, const ScheduledEvent &e,
 std::optional<BoxQ> WorldRuntime::shallow_soil_cap(PositionM from) const {
     const auto& s=*state_;
     if (!s.ecological || !s.ecological->founding_habitat || !s.care_profile || !s.geometry || !s.surface) return {};
-    const auto& c=s.geometry->config;
-    const auto point=quantized(from,c);
     const auto surface=surface_level(s);
-    if (!point || !surface) return {};
+    if (!surface) return {};
+    return local_roof(geometry_view(s,limits_),from,*surface,s.care_profile->perception_radius_m,
+                      anatomical_nest(s)?4:sealed_chamber(s)?2:1,
+                      [&](PositionM a,PositionM b,int h){return spatially_clear(a,b,h);});
+}
+
+std::optional<BoxQ> detail::local_roof(const GeometryView& view,PositionM from,std::int32_t surface,double perception,int layers,
+                                      const std::function<bool(PositionM,PositionM,std::int32_t)>& clear) {
+    const auto& c=view.definition.config;
+    const auto point=quantized(from,c);
+    if (!point) return {};
     const auto half=c.loaded_half_q;
-    const auto ground=*surface-half;
+    const auto ground=surface-half;
     const auto p=*point;
     if (ground!=c.initial_solid.max.y ||
-        !within_distance(from,physical({p.x,ground,p.z},c),s.care_profile->perception_radius_m,true)) return {};
-    const auto view=geometry_view(s,limits_);
-    const auto layers=anatomical_nest(s)?4:sealed_chamber(s)?2:1;
+        !within_distance(from,physical({p.x,ground,p.z},c),perception,true)) return {};
     for (int thickness=1;thickness<=layers;++thickness) {
         const PointQ stance{p.x,ground-half-thickness,p.z};
-        if (p.y>stance.y || !spatially_clear(from,physical(stance,c),half)) continue;
+        if (p.y>stance.y || !clear(from,physical(stance,c),half)) continue;
         const BoxQ cap{{p.x-half,ground-thickness,p.z-half},{p.x+half,ground,p.z+half}};
         if (shaft_attachment(view,stance,half) && local_patch(view,stance,cap) &&
             !material_volume(view,cap,Material::Rock) && material_volume(view,cap,Material::Soil)) return cap;
@@ -315,7 +321,8 @@ void WorldRuntime::activate_excavator(Transaction &tx, EntityId id) {
     if (!origin) throw std::invalid_argument("excavation requires a geometry waypoint");
     const auto p=*origin;
     if (!worker.path_size) {
-        if (ant.position != s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position)
+        if (ant.position != s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position &&
+            !(local_excavation(s) && shallow_soil_cap(ant.position)))
             throw std::invalid_argument("first excavation activation requires the known depot");
         worker.path[0] = p;
         worker.path_size = 1;
@@ -413,18 +420,66 @@ void WorldRuntime::resolve_excavation_wakes(Transaction &tx, const std::vector<S
             throw std::logic_error("missing weighted excavation candidate");
         };
         if (carrier != s.carriers.end()) {
-            if (worker.path_size == 1) {
+            // A shallow open shaft offers a local route to the spoil rim.
+            // Use the carried parcel and the ordinary move/drop transactions.
+            std::optional<PointQ> rim_step;
+            bool at_rim=false;
+            if (protected_founding(s) && worker.path_size+1<worker.path.size()) {
+                const auto top=c.initial_solid.max.y+c.loaded_half_q;
+                if (p.y==top) {
+                    at_rim=work_floor(view,p,c.loaded_half_q);
+                    if (!at_rim) {
+                        for (const auto dir:std::array<Cell,4>{{{1,0},{0,1},{-1,0},{0,-1}}}) {
+                            const PointQ next{p.x+dir.x*c.reach_q,p.y,p.z+dir.z*c.reach_q};
+                            if (work_floor(view,next,c.loaded_half_q) &&
+                                spatially_clear(ant.position,physical(next,c),c.loaded_half_q) &&
+                                clear_worker_traffic(ant,physical(next,c),c.loaded_half_q)) {
+                                rim_step=next;
+                                break;
+                            }
+                        }
+                    }
+                } else if (p.y<top && top-p.y<=2*c.reach_q &&
+                           shaft_attachment(view,p,c.loaded_half_q)) {
+                    const PointQ lip{p.x,top,p.z};
+                    if (spatially_clear(ant.position,physical(lip,c),c.loaded_half_q) &&
+                        clear_worker_traffic(ant,physical(lip,c),c.loaded_half_q)) rim_step=lip;
+                }
+            }
+            if (rim_step) {
+                action.kind=ScheduledEvent::Kind::Move;
+                action.destination=physical(*rim_step,c);
+            } else if (at_rim || worker.path_size == 1) {
                 action.kind = ScheduledEvent::Kind::SoilAction;
                 choice.soil = {ant.id, SoilAction::Drop, {}, carrier->second, s.m.geometry_revision, 0, {}};
             } else follow_inbound();
+        } else if (protected_founding(s) && worker.path_size>1 && p.y>=c.initial_solid.max.y) {
+            choice.returning_empty=true;
+            follow_inbound();
         } else if (const auto cap=shallow_soil_cap(ant.position)) {
             // A thin reachable plug is a local frontier. Each ascent, dig and
             // loaded return still uses the same timed movement and soil actions.
             const auto amount=material_volume(view,*cap,Material::Soil);
             if (amount*(c.dry_ug_per_q3+c.water_ug_per_q3)<=ant.carrying_capacity_ug-ant.carried_food.total_ug()) {
                 if (p.y+c.loaded_half_q==cap->min.y) {
-                    action.kind=ScheduledEvent::Kind::SoilAction;
-                    choice.soil={ant.id, SoilAction::Excavate,*cap,{},s.m.geometry_revision,0,{}};
+                    auto bite=*cap;
+                    if (local_excavation(s)) {
+                        bool found=false;
+                        for (int y=cap->min.y;y<cap->max.y && !found;y+=2)
+                            for (int z=cap->min.z;z<cap->max.z && !found;z+=2)
+                                for (int x=cap->min.x;x<cap->max.x && !found;x+=2) {
+                                    BoxQ part{{x,y,z},{std::min(x+2,cap->max.x),std::min(y+2,cap->max.y),std::min(z+2,cap->max.z)}};
+                                    if (local_patch(view,p,part) && material_volume(view,part,Material::Soil)) {
+                                        bite=part;
+                                        found=true;
+                                    }
+                                }
+                        if (!found) bite={};
+                    }
+                    if (box_valid(bite)) {
+                        action.kind=ScheduledEvent::Kind::SoilAction;
+                        choice.soil={ant.id, SoilAction::Excavate,bite,{},s.m.geometry_revision,0,{}};
+                    }
                 } else {
                     action.kind=ScheduledEvent::Kind::Move;
                     action.destination=physical({p.x,p.y+1,p.z},c);
