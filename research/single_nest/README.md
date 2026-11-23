@@ -9,8 +9,8 @@ the workspace's portable Clang, CMake and Ninja tools when present.
 From Windows PowerShell at the repository root:
 
 ~~~powershell
-git fetch origin codex/single-nest-social-crop
-git switch codex/single-nest-social-crop
+git fetch origin codex/single-nest-first-meal-rendezvous
+git switch codex/single-nest-first-meal-rendezvous
 git pull --ff-only
 py -3 -B -m tools.build_m0_live --jobs 4
 .\tools\start_m0.cmd
@@ -30,6 +30,14 @@ uses paid larval provisioning for a larger water reserve at emergence.
 **Brood-site wick trial** moves the same finite water source in Physics 48.
 The [paired two-year results](PROTECTED_HABITAT_RESULTS.md) distinguish
 first-brood survival, sustained reproduction and late orphan workers.
+
+For the first external meal, open **Colony setup**, choose **First forage and nest
+feeding · Physics 62**, select the nearby feeder and wet wick, enter seed 1
+and start a sealed nest. Follow worker 10 opening the nest and worker 8
+collecting food. Founder 2 and worker 8 both approach before the worker's
+crop pays the founder. Seed 2 includes a founder death despite sugar in
+nearby workers. The [first-meal report](FIRST_MEAL_RESULTS.md) gives the
+input settings, exact event IDs and two-year comparison.
 
 For an identified feeder-to-mouth replay, select **Chamber food sharing · Physics 54**,
 nearby feeder, wet wick and seed 2. The oral receipts and the subsequent

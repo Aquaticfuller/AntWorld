@@ -14,6 +14,28 @@ from op0.live import NativeCore, ROOT, core_path, live_bodies
 from tools.compare_m0_worker_rhythm import facts
 
 
+def verify_inputs(binary, trials, scratch=None):
+    """Compare actual resources, terrain and founder reserves before any decisions."""
+    groups = {}
+    fields = ("seed", "time_ms", "world_min_m", "world_max_m", "max_speed_m_per_s",
+              "contact_m", "surface", "geometry", "edits", "soil", "colonies", "ants",
+              "sources", "living", "introduced", "available", "carried", "stored")
+    scratch = scratch or ROOT / "out"
+    scratch.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
+        for trial in trials:
+            raw = core.call(trial["command"])
+            frame = checkpoint(raw)
+            require(sha256(raw).hexdigest() == trial["initial_sha256"], "Initial frame changed")
+            require(frame["physics"] == trial["physics"], "Different physics")
+            queen, = [i for i, a in frame["ants"].items() if CASTES[a["caste"]] == "Queen"]
+            physical = {name: frame[name] for name in fields}
+            physical["reserves"] = core.call(f"FOUNDING_BALANCE {queen}")
+            key = (trial["seed"], trial["supply"])
+            require(groups.setdefault(key, physical) == physical, f"Initial stock, body or space differs for {key}")
+    return {"initial_frames": len(trials), "matched_seed_supply_pairs": len(groups)}
+
+
 def verify(binary, trial, scratch=None):
     scratch = scratch or ROOT / "out"
     scratch.mkdir(parents=True,exist_ok=True)
@@ -99,10 +121,17 @@ if __name__ == "__main__":
     parser.add_argument("--physics",type=int,help="Select a world in a JSONL panel")
     parser.add_argument("--seed",type=int)
     parser.add_argument("--supply",choices=("nearby","absent"),default="nearby")
+    parser.add_argument("--inputs", action="store_true", help="Check the complete registered panel's initial conditions")
     parser.add_argument("--core",type=Path,default=core_path())
     args = parser.parse_args()
     rows = [json.loads(line) for line in args.receipt.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
-    matches = [r for r in rows if (args.physics is None or r["physics"]==args.physics) and
-               (args.seed is None or r["seed"]==args.seed) and r["supply"]==args.supply]
-    require(len(matches)==1,"Select one world with --physics, --seed and --supply")
-    print(json.dumps(verify(args.core.resolve(), matches[0])))
+    if args.inputs:
+        from tools.summarize_first_meals import paired
+
+        paired(rows)
+        print(json.dumps(verify_inputs(args.core.resolve(), rows)))
+    else:
+        matches = [r for r in rows if (args.physics is None or r["physics"]==args.physics) and
+                   (args.seed is None or r["seed"]==args.seed) and r["supply"]==args.supply]
+        require(len(matches)==1,"Select one world with --physics, --seed and --supply")
+        print(json.dumps(verify(args.core.resolve(), matches[0])))

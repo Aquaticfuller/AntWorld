@@ -43,7 +43,8 @@ def founder_death(core, trial):
             "Founder death does not reproduce")
     return dict(physics=trial["physics"],seed=trial["seed"],supply=trial["supply"],
                 predeath_sha256=sha256(raw).hexdigest(),death=[event,time,reason],founder=founder,adults=adults,
-                pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],access=access,oral_pairs=pairs)
+                pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],
+                sources=frame["sources"],access=access,oral_pairs=pairs)
 
 
 def inspect(core, model, seed, start, end, wide):
