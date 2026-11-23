@@ -37,7 +37,7 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange"].includes(model);
+    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return"].includes(model);
     const active = protectedModel || ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
     const wick = liveView.state?.sustained_nest_available && (protectedModel || ["feeding", "budget", "sustained"].includes(model));
@@ -85,6 +85,7 @@ function liveControls() {
     $("sealed-model").querySelector("[data-protected]").disabled = !s?.protected_nest_available;
     $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
     $("sealed-model").querySelector('[value="callow"]').disabled = !s?.callow_available;
+    $("sealed-model").querySelector('[value="chamber-return"]').disabled = !s?.chamber_return_available;
     $("sealed-model").querySelector('[value="crop-exchange"]').disabled = !s?.crop_exchange_available;
     $("sealed-model").querySelector('[value="social-crop"]').disabled = !s?.social_crop_available;
     if (!liveView.setupInitialized && s?.single_nest_available) {
@@ -481,7 +482,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "crop-exchange" ? tr("Local crop exchange · Physics 53") :
+    const nutrition = data.habitat?.nutrition === "chamber-return" ? tr("Chamber food sharing · Physics 54") :
+        data.habitat?.nutrition === "crop-exchange" ? tr("Local crop exchange · Physics 53") :
         data.habitat?.nutrition === "social-crop" ? tr("Liquid food sharing · Physics 52") :
         data.habitat?.nutrition === "callow" ? tr("New worker hydration trial · Physics 50") :
         data.habitat?.nutrition === "local-dig" ? tr("Local excavation · Physics 49") :

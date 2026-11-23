@@ -37,6 +37,7 @@ template <class S> void write_social(Writer &w, const S &s) {
       w.put(p.wake.value);
       if (worker_motor(s)) w.put(p.facing,1);
       if (mouth_access(s)) w.put(p.knows_depot,1);
+      if (chamber_return(s)) w.position(p.enrollment_site);
     }
   }
 }
@@ -65,6 +66,10 @@ template <class S> void read_social(Reader &r, S &s,bool care_motion) {
       AutonomyState a{r.flag(), r.get(), r.time(), r.time(), {r.get()}};
       if (worker_motor(s)) a.facing=static_cast<std::uint8_t>(r.get(1));
       if (mouth_access(s)) a.knows_depot=r.flag();
+      if (chamber_return(s)) {
+        a.enrollment_site=r.position();
+        ensure(inside(a.enrollment_site,s.config),"invalid remembered enrollment site");
+      }
       ensure(s.ants.index.contains(id) && s.physiology.contains(id) &&
                  (s.ants.get(s.ants.index.at(id)).caste == Caste::Worker ||
                   (care_motion && s.ants.get(s.ants.index.at(id)).caste == Caste::Queen)) &&
@@ -162,6 +167,8 @@ template <class S> void validate_autonomy_evidence(const S &s) {
       stages[e.actor] = e.stage;
     if (e.kind == FactKind::StageChanged && e.stage == LifeStage::Adult && e.random_value && sustained_supply(s))
       audit.at(e.actor).facing=static_cast<std::uint8_t>(e.random_value);
+    if (chamber_return(s) && e.kind==FactKind::StageChanged && e.stage==LifeStage::Adult && audit.contains(e.actor))
+      audit.at(e.actor).enrollment_site=e.position;
     if (e.kind == FactKind::StageChanged && e.stage == LifeStage::Adult && local_founding_provisioning(s,e.actor))
       emergence.emplace(e.actor,e.time);
     if (e.kind == FactKind::AutonomyChanged) {
@@ -173,7 +180,7 @@ template <class S> void validate_autonomy_evidence(const S &s) {
              "invalid autonomy control evidence");
       auto [it, inserted] = audit.try_emplace(
           e.actor, AutonomyState{false, 0, e.time, e.time, {}});
-      (void)inserted;
+      if (inserted && chamber_return(s)) it->second.enrollment_site=e.position;
       it->second.enabled = e.payload != 0;
     }
     if (e.kind == FactKind::BehaviorChanged) {

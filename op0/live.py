@@ -50,7 +50,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
+    paths = (installed.with_stem("antworld_m0_live_v34"), installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
              installed.with_stem("antworld_m0_live_v28"), installed.with_stem("antworld_m0_live_v26"), installed.with_stem("antworld_m0_live_v25"),
              installed.with_stem("antworld_m0_live_v24"), installed.with_stem("antworld_m0_live_v23"),
              installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
@@ -78,7 +78,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 31))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 32))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -108,6 +108,7 @@ class NativeCore:
             self.meal_search = generation >= 28
             self.social_crop = generation >= 29
             self.crop_exchange = generation >= 30
+            self.chamber_return = generation >= 31
         except Exception:
             self.close()
             raise
@@ -275,7 +276,7 @@ class LiveSession:
         self.stopping = Event()
         self.thread = None
         self.worker = None
-        self.founding_capabilities = (False, False, False, False, False, False)
+        self.founding_capabilities = (False, False, False, False, False, False, False)
         self.workdir = None
         self.loaded_copy = None
         self.frame = None
@@ -301,7 +302,7 @@ class LiveSession:
             try:
                 with closing(NativeCore(self.binary, self.binary.parent)) as probe:
                     self.founding_capabilities = (probe.protected_nest, probe.local_dig, probe.nearby_feeder,
-                                                  probe.callow_hydration, probe.social_crop, probe.crop_exchange)
+                                                  probe.callow_hydration, probe.social_crop, probe.crop_exchange, probe.chamber_return)
             except (ValueError, OSError) as exc:
                 self.error = str(exc)
         self.thread = Thread(target=self.run_clock, name="m0-core-clock", daemon=True)
@@ -532,6 +533,7 @@ class LiveSession:
                     local_dig_available=self.worker.local_dig if self.worker else self.founding_capabilities[1],
                     nearby_feeder_available=self.worker.nearby_feeder if self.worker else self.founding_capabilities[2],
                     callow_available=self.worker.callow_hydration if self.worker else self.founding_capabilities[3],
+                    chamber_return_available=self.worker.chamber_return if self.worker else self.founding_capabilities[6],
                     crop_exchange_available=self.worker.crop_exchange if self.worker else self.founding_capabilities[5],
                     social_crop_available=self.worker.social_crop if self.worker else self.founding_capabilities[4],
                     sustained_nest_available=self.binary.is_file() and (self.worker is None or self.worker.sustained_nest),
@@ -767,16 +769,18 @@ class LiveSession:
                     models["local-dig"] = "NEW_PROVISIONED_NEST"
                 if core.callow_hydration:
                     models["callow"] = "NEW_PROVISIONED_NEST"
+                if core.chamber_return:
+                    models["chamber-return"] = "NEW_PROVISIONED_NEST"
                 if core.crop_exchange:
                     models["crop-exchange"] = "NEW_PROVISIONED_NEST"
                 if core.social_crop:
                     models["social-crop"] = "NEW_PROVISIONED_NEST"
                 model = data.get("model", "protected" if core.protected_nest else "anatomical" if core.anatomical else "reference")
-                protected = model in ("protected", "local-dig", "callow", "social-crop", "crop-exchange")
+                protected = model in ("protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return")
                 seed = data.get("seed", 3 if protected else 2)
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
                 default_supply = "extended" if protected else "finite"
-                if model in ("protected", "callow", "social-crop", "crop-exchange") and core.nearby_feeder:
+                if model in ("protected", "callow", "social-crop", "crop-exchange", "chamber-return") and core.nearby_feeder:
                     default_supply = "nearby"
                 supply = data.get("supply", default_supply)
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")

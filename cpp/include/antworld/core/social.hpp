@@ -33,6 +33,7 @@ struct AutonomyState {
   ScheduledId wake;
   std::uint8_t facing{}; // Physics 33. 0 unknown, 1–8 compass, 9 up, 10 down.
   bool knows_depot{}; // Physics 40. The worker has actually deposited or eaten food there.
+  PositionM enrollment_site{}; // Physics 54. A personally occupied site, refreshed at adult emergence.
   bool operator==(const AutonomyState &) const = default;
 };
 

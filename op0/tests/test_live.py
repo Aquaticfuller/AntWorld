@@ -636,6 +636,8 @@ class LiveTests(unittest.TestCase):
         models = [("social-crop", 52)]
         if core.crop_exchange:
             models.append(("crop-exchange", 53))
+        if core.chamber_return:
+            models.append(("chamber-return", 54))
         for model, physics in models:
             with self.subTest(model=model):
                 self.check_paid_crop_continuation(core, model, physics)

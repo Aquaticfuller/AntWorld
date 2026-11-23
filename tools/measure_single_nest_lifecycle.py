@@ -16,7 +16,7 @@ from tools.compare_m0_worker_rhythm import facts
 
 DAYS = (7, 14, 30, 49, 55, 60, 90, 112, 150, 163, 180, 226, 286, 365, 730)
 WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800, "nearby": 3 * 2**32 + 9800}
-TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow", "meal-search", "social-crop", "crop-exchange")
+TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow", "meal-search", "social-crop", "crop-exchange", "chamber-return")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 NO_LEGAL_STEP = FORAGING_REASONS.index("No legal step")

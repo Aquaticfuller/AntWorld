@@ -179,9 +179,10 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             p.stage_progress = {}; f.kind = FactKind::StageChanged; f.stage = ant.stage;
             f.transferred = {};
             if (ant.stage==LifeStage::Adult) {
-                if (emergence_direction) {
+                if (emergence_direction || (chamber_return(s) && s.autonomy.contains(ant.id))) {
                     auto a=s.autonomy.at(ant.id);
-                    a.facing=emergence_direction;
+                    if (emergence_direction) a.facing=emergence_direction;
+                    if (chamber_return(s)) a.enrollment_site=ant.position;
                     tx.autonomy.set(ant.id,a);
                     f.random_value=emergence_direction;
                 }

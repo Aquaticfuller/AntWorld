@@ -43,6 +43,7 @@ void WorldRuntime::change_autonomy(Transaction &tx, AntRef ref, bool enabled) {
   auto a = s.autonomy.contains(ref.id)
                ? s.autonomy.at(ref.id)
                : AutonomyState{false, 0, s.m.now, s.m.now, {}};
+  if (chamber_return(s) && !s.autonomy.contains(ref.id)) a.enrollment_site=ant->position;
   if (a.wake.value && s.queue_index.contains(a.wake))
     tx.remove(s.queue_index.at(a.wake));
   a.enabled = enabled;
@@ -182,6 +183,13 @@ void WorldRuntime::resolve_autonomy_wakes(
         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
+    std::optional<PositionM> chamber_step;
+    if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood && a.knows_depot &&
+        (returned || a.decisions%4!=0) && founding_gift_supply(s.founding->profile,p).carbs_ug &&
+        portable_care_distance(ant.position,a.enrollment_site)>.002) {
+      const auto next=mouth_approach(ant,a.enrollment_site,{});
+      if (next!=ant.position && clear_resting_site(ant,next)) chamber_step=next;
+    }
     // An experienced forager at the actual handoff can refill the extra
     // load of carbohydrate that a locally recruited worker could collect.
     const bool repeat_delivery=sustained_supply(s) && wake.payload==carbohydrate_delivery_wake &&
@@ -287,6 +295,10 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (can_feed_brood) {
       choice.care=true;
       choice.behavior=IndividualBehavior::Nurse;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (chamber_step) {
+      choice.resting_site=chamber_step;
+      choice.transit=CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (at_meal || meal_step) {
       if (at_meal) {

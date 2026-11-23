@@ -202,7 +202,10 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 const auto contact=sustained_supply(s)?depot_mouth_target(ant,depot):depot;
                 const bool can_unload=off_floor ? wall_handoff(s) && (anatomical_handoff(s) || center_contact) &&
                     mouth_at_supply(ant,contact) : center_contact;
-                if (can_unload && spatially_clear(ant.position,depot) &&
+                const bool chamber_bound=chamber_return(s) && off_floor && s.physiology.at(ant.id).crop.carbs_ug &&
+                    spatially_clear(ant.position,r.destination,body_half(ant.id)) &&
+                    clear_worker_traffic(ant,r.destination,body_half(ant.id));
+                if (!chamber_bound && can_unload && spatially_clear(ant.position,depot) &&
                     (protected_founding(s) || !clear_worker_traffic(ant,r.destination,body_half(ant.id)))) {
                     // The carrier has already reached the local handoff
                     // area. Reuse its real ingress route from this berth.

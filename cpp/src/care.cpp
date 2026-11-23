@@ -226,18 +226,22 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return (stage ? mouth_reaches(body,contact,*stage) : supply_in_reach(body,contact) &&
             (!partner || supply_in_reach(*partner,body.mouth_m))) && continuous_clear(view,body.mouth_m,contact,0);
     };
-    std::array<std::pair<std::uint8_t,PositionM>,8*9> candidates;
+    const bool change_level=chamber_return(s) && adult.caste==Caste::Worker &&
+        std::abs(adult.position.y-target.y)>.00065;
+    std::array<std::pair<std::uint8_t,PositionM>,2*8*9> candidates;
     std::size_t count=0;
     for (std::uint8_t dir=1;dir<=8;++dir) {
         const auto bearing=body_heading(dir);
         const auto examine_stance=[&](PositionM contact) {
             auto stance=snap_micro(translated(contact,scale(bearing,-reach-.00024)));
-            stance.y=adult.position.y;
-            auto candidate=adult;
-            candidate.position=stance;
-            const auto final=body_pose(candidate,dir,stage?floor_normal:attachment(view,candidate,dir));
-            if (reaches(final) && substrate_clear(view,final,stance) && !occupied(final))
-                candidates[count++]={dir,stance};
+            for (unsigned level=0;level<(change_level?2u:1u);++level) {
+                stance.y=level ? target.y+(stage?.0005:0) : adult.position.y;
+                auto candidate=adult;
+                candidate.position=stance;
+                const auto final=body_pose(candidate,dir,stage?floor_normal:attachment(view,candidate,dir));
+                if (reaches(final) && substrate_clear(view,final,stance) && !occupied(final))
+                    candidates[count++]={dir,stance};
+            }
         };
         examine_stance(target);
         if (patch) {
@@ -258,24 +262,24 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
     const bool portable=mouth_access(s);
     const auto closer=[portable](const Node& a,const Node& b) {
         const auto priority=[](const Node& n) {
-            return std::tuple{n.estimate_um,n.travelled_um,n.site.x,n.site.z,n.facing};
+            return std::tuple{n.estimate_um,n.travelled_um,n.site.x,n.site.z,n.facing,n.site.y};
         };
         const auto left=priority(a),right=priority(b);
         if (left!=right || !portable) return left>right;
         // Two equal-cost paths can reach the same pose via different first
         // movements. A library heap does not preserve their insertion order.
-        return std::tie(a.first.x,a.first.z)>std::tie(b.first.x,b.first.z);
+        return std::tie(a.first.x,a.first.z,a.first.y)>std::tie(b.first.x,b.first.z,b.first.y);
     };
     const auto path_length=[](PositionM from,PositionM to) {
         // Rank near-ties below the motion lattice precision in integer micrometres.
         return std::llround(portable_care_distance(from,to)*1'000'000);
     };
     std::priority_queue<Node,std::vector<Node>,decltype(closer)> open(closer,std::vector<Node>(0));
-    std::set<std::tuple<double,double,std::uint8_t>> seen;
+    std::set<std::tuple<double,double,double,std::uint8_t>> seen;
     open.push({adult.position,adult.position,0,0,std::max<std::uint8_t>(1,actor_facing(s,adult.id)),true});
     for (unsigned iteration=0;!open.empty() && iteration<160;++iteration) {
         const auto current=open.top(); open.pop();
-        if (!seen.emplace(current.site.x,current.site.z,current.facing).second) continue;
+        if (!seen.emplace(current.site.x,current.site.y,current.site.z,current.facing).second) continue;
         auto actor=adult;
         actor.position=current.site;
         const auto legal=[&](PositionM to,std::uint8_t heading) {
@@ -297,11 +301,11 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
                 return current.initial?site:current.first;
         }
         const auto examine_steps=[&](double length) {
-            for (std::uint8_t dir=1;dir<=8;++dir) {
+            for (std::uint8_t dir=1;dir<=(change_level?10:8);++dir) {
                 auto to=snap_micro(translated(current.site,scale(body_heading(dir),length)));
-                to.y=adult.position.y;
+                if (dir<=8) to.y=current.site.y;
                 const auto heading=body_travel_heading(view,actor,to,current.facing);
-                if (seen.contains({to.x,to.z,heading}) || !legal(to,heading)) continue;
+                if (seen.contains({to.x,to.y,to.z,heading}) || !legal(to,heading)) continue;
                 const auto spent=current.travelled_um+path_length(current.site,to);
                 auto remaining=std::llround(radius*1'000'000);
                 for (const auto& stance:stances) remaining=std::min(remaining,path_length(to,stance.second));
