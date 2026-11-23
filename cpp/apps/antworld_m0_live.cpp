@@ -726,6 +726,17 @@ int main() {
                              << ' ' << d->sensed_cap_stances << ' ' << d->direct_cap_stances << ' ' << d->payable_sugar_ug << '\n';
                     }
                     message("OK",rows.str());
+                } else if (command=="ORAL_ACCESS") {
+                    end(request);
+                    std::ostringstream rows;
+                    const auto id=world->summary().world;
+                    for (const auto& ant:world->ant_states()) {
+                        const auto d=world->query_oral_access({id,ant.id});
+                        if (d) rows << ant.id.value << ' ' << d->visible << ' ' << d->at_mouth << ' '
+                                    << d->queen_can_approach << ' ' << d->worker_can_approach << ' '
+                                    << d->offered_carbs_ug << ' ' << d->requested_carbs_ug << '\n';
+                    }
+                    message("OK",rows.str());
                 } else if (command=="BODY_STATES") {
                     end(request);
                     std::ostringstream data;

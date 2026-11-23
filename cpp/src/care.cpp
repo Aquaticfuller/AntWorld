@@ -136,6 +136,32 @@ bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
     return mouths_meet(donor,receiver) && spatially_clear(donor.mouth_m,receiver.mouth_m);
 }
 
+std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref) const {
+    const auto& s=*state_;
+    const auto worker=query_ant(ref);
+    if (!worker || worker->caste!=Caste::Worker || worker->stage!=LifeStage::Adult ||
+        !mouth_range(s) || !s.founding || !s.founding_reserves.contains(ref.id)) return {};
+    const AntRef founder{s.world,s.founding->founder};
+    const auto queen=query_ant(founder);
+    if (!queen || queen->stage!=LifeStage::Adult || queen->colony!=worker->colony) return {};
+    const auto wp=*query_physiology(ref), qp=*query_physiology(founder);
+    const auto wb=*query_body(ref), qb=*query_body(founder);
+    OralAccess result;
+    result.visible=within_distance(qb.mouth_m,wb.mouth_m,s.care_profile->perception_radius_m,true) &&
+                   spatially_clear(qb.mouth_m,wb.mouth_m);
+    result.at_mouth=oral_contact(*worker,*queen);
+    const auto payable=founding_gift_supply(s.founding->profile,wp);
+    result.offered_carbs_ug=contact_offer(s,payable,wp,qp,queen->stage).carbs_ug;
+    result.requested_carbs_ug=ingredient_min(signaled_need(qp,queen->stage,true),
+        foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true)).carbs_ug;
+    // Isolate geometry from scheduler ownership and dietary eligibility at this cut.
+    if (result.visible && !result.at_mouth) {
+        result.queen_can_approach=mouth_approach(*queen,wb.mouth_m,{},&wb)!=queen->position;
+        result.worker_can_approach=mouth_approach(*worker,qb.mouth_m,{},&qb)!=worker->position;
+    }
+    return result;
+}
+
 std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(const AntState& ant,bool urgent_foundress) const {
     const auto& s=*state_;
     if (!adult_offers(s) || !s.social->exchange_enabled || !s.founding ||

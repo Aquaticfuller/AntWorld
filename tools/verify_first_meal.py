@@ -61,6 +61,7 @@ def verify(binary, trial, scratch=None):
         before = checkpoint(before_raw)
         bodies = live_bodies(core.call("BODY_STATES"), before)
         access = core.call("MEAL_ACCESS")
+        oral = core.call("ORAL_ACCESS")
         require(core.call("FRAME")==before_raw, "Observation changed the authoritative state")
         slot = "1"*32
         core.call(f"SAVE_SNAPSHOT {slot}")
@@ -72,6 +73,8 @@ def verify(binary, trial, scratch=None):
         require(meal.mass[0]>0, "No positive sugar at the registered meal")
         donor, receiver = meal.actor, meal.payload
         require(receiver==queen,"Selected transaction has a different receiver")
+        pair, = [line.split() for line in oral.splitlines() if int(line.split()[0])==donor]
+        require(pair[1:3]==[b"1",b"1"],"Paid transfer lacks a visible pair of touching mouths")
         debit = [x-y for x,y in zip(before["ants"][donor]["crop_ug"],after["ants"][donor]["crop_ug"])]
         credit = [y-x for x,y in zip(before["ants"][receiver]["crop_ug"],after["ants"][receiver]["crop_ug"])]
         require(debit==credit==list(meal.mass), "The actual crop changes do not match the meal")
@@ -79,7 +82,8 @@ def verify(binary, trial, scratch=None):
         require(gap<=0.000650001, "Mouths outside contact")
         projected = core.call(f'MEAL_EVENTS {before["cursor"]} {after["cursor"]-before["cursor"]}')
         require(core.call(f'LOAD_SNAPSHOT {slot} {before["world"]}')==before_raw, "Snapshot changed before contact")
-        require(core.call("MEAL_ACCESS")==access and core.call(f"ADVANCE {time}")==after_raw and
+        require(core.call("MEAL_ACCESS")==access and core.call("ORAL_ACCESS")==oral and
+                core.call(f"ADVANCE {time}")==after_raw and
                 core.call(f'MEAL_EVENTS {before["cursor"]} {after["cursor"]-before["cursor"]}')==projected,
                 "Continuation diverged at the oral transaction")
         require(core.call("CHECK_LEDGERS")==b"", "Ledger disagreement")

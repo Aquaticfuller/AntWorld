@@ -33,6 +33,9 @@ def founder_death(core, trial):
                    physiology_cut=list(map(int,core.call(f"FOUNDING_BALANCE {i}").split())),
                    gap_to_founder_mm=1000*dist(row["mouth_m"],adults[founder]["mouth_m"]))
     access = core.call("MEAL_ACCESS").decode().splitlines()
+    pair_fields = ("worker","visible","touching","queen_has_step","worker_has_step","offered_carbs_ug","requested_carbs_ug")
+    pairs = [dict(zip(pair_fields,map(int,line.split()),strict=True))
+             for line in core.call("ORAL_ACCESS").decode().splitlines()]
     require(core.call("FRAME")==raw,"Read changed world")
     end = checkpoint(core.call(f"ADVANCE {time}"))
     death, = [f for f in facts(core,end["cursor"],frame["cursor"]) if f.id==event]
@@ -40,7 +43,7 @@ def founder_death(core, trial):
             "Founder death does not reproduce")
     return dict(physics=trial["physics"],seed=trial["seed"],supply=trial["supply"],
                 predeath_sha256=sha256(raw).hexdigest(),death=[event,time,reason],founder=founder,adults=adults,
-                pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],access=access)
+                pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],access=access,oral_pairs=pairs)
 
 
 def inspect(core, model, seed, start, end, wide):
@@ -82,6 +85,7 @@ def inspect(core, model, seed, start, end, wide):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--core",type=Path,default=core_path())
     modes=parser.add_subparsers(dest="mode",required=True)
     window=modes.add_parser("window")
     window.add_argument("model",choices=TREATMENTS)
@@ -93,7 +97,7 @@ if __name__=="__main__":
     args=parser.parse_args()
     if args.mode=="window" and not 0<=args.start<args.end<=args.start+4:
         parser.error("Choose an observation window of at most four days")
-    with closing(NativeCore(core_path(), ROOT/"out")) as core:
+    with closing(NativeCore(args.core.resolve(), ROOT/"out")) as core:
         if args.mode=="window":
             result=inspect(core,args.model,args.seed,args.start,args.end,args.wide)
         else:
