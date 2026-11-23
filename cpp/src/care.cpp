@@ -181,6 +181,41 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
     return {};
 }
 
+// A solicitation uses the same local visibility and discretionary donor budget as an offer.
+// The receiver cannot move a donor or credit her own crop.
+std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const AntState& queen) const {
+    const auto& s=*state_;
+    if (!meal_rendezvous(s) || !founding_foundress(queen.id) || !s.social->exchange_enabled) return {};
+    const auto own=*query_body({s.world,queen.id});
+    const auto qp=*query_physiology({s.world,queen.id});
+    const auto need=founding_resupply_shortfall(s.founding->profile,qp,s.founding_reserves.at(queen.id),
+                                                true,qp.config.absorption_period);
+    if (!need.carbs_ug || qp.crop.total_ug()>=qp.config.crop_capacity_ug) return {};
+    const auto radius=s.care_profile->perception_radius_m;
+    std::vector<std::pair<std::int64_t,EntityId>> donors;
+    const auto padding=portable_care_distance(queen.position,own.mouth_m)+
+                       worker_segments.front().forward_offset_m+worker_segments.front().half_axes_m.x;
+    for (const auto ref:query_neighborhood({s.world,queen.id},radius+padding).ants) {
+        const auto ant=*query_ant(ref);
+        if (ant.caste!=Caste::Worker || ant.stage!=LifeStage::Adult || ant.colony!=queen.colony ||
+            query_worker_motion(ref) || ant.carried_food.total_ug() || s.carriers.contains(ref.id)) continue;
+        const auto wp=*query_physiology(ref);
+        if (wp.behavior==IndividualBehavior::Forage || wp.behavior==IndividualBehavior::Excavate ||
+            !contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.stage).carbs_ug) continue;
+        const auto tip=query_body(ref)->mouth_m;
+        if (!within_distance(own.mouth_m,tip,radius,true) || !spatially_clear(own.mouth_m,tip)) continue;
+        if (oral_contact(queen,ant)) return std::pair{queen.position,ref.id};
+        donors.emplace_back(std::llround(portable_care_distance(own.mouth_m,tip)*1'000'000),ref.id);
+    }
+    std::sort(donors.begin(),donors.end());
+    for (const auto& donor:donors) {
+        const auto body=*query_body({s.world,donor.second});
+        const auto next=mouth_approach(queen,body.mouth_m,{},&body);
+        if (next!=queen.position) return std::pair{next,donor.second};
+    }
+    return {};
+}
+
 PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,std::optional<LifeStage> stage,
                                      const BodyPose* partner,bool patch) const {
     const auto& s=*state_;
@@ -256,7 +291,29 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
                 examine_stance(translated(target,scale(body_heading(edge),feeding_patch_radius_m)));
         }
     }
-    if (!count) return adult.position;
+    // If no final meeting pose fits against a stationary partner, either adult can
+    // take a short legal step toward the visible mouth. Re-sense after each action.
+    const auto mutual_step=[&] {
+        auto best=adult.position;
+        auto gap=std::llround(portable_care_distance(pose.mouth_m,target)*1'000'000);
+        if (!partner || !meal_rendezvous(s)) return best;
+        for (const double length:{.001,.0005,.00025}) for (std::uint8_t dir=1;dir<=8;++dir) {
+            auto candidate=adult;
+            candidate.position=snap_micro(translated(adult.position,scale(body_heading(dir),length)));
+            const auto heading=body_travel_heading(view,adult,candidate.position,actor_facing(s,adult.id));
+            const auto body=body_pose(candidate,heading,attachment(view,candidate,heading));
+            const auto distance=std::llround(portable_care_distance(body.mouth_m,target)*1'000'000);
+            if (distance>=gap || occupied(body) || !substrate_clear(view,body,candidate.position) ||
+                !clear_care_segment(adult.position,candidate.position,body_half(adult.id)) ||
+                !anatomy_sweep(view,adult,candidate.position,actor_facing(s,adult.id),heading) ||
+                !clear_worker_traffic(adult,candidate.position,body_half(adult.id)) ||
+                !continuous_clear(view,body.mouth_m,target,0)) continue;
+            best=candidate.position;
+            gap=distance;
+        }
+        return best;
+    };
+    if (!count) return mutual_step();
     const std::span stances(candidates.data(),count);
     struct Node {
         PositionM site, first;
@@ -320,7 +377,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         examine_steps(.001);
         if (patch && current.initial) examine_steps(.0005);
     }
-    return adult.position;
+    return mutual_step();
 }
 
 PositionM WorldRuntime::care_destination(const CareState& care,const AntState& actor,PositionM goal,
@@ -1156,6 +1213,16 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         const bool reached=!failed && target && target->alive() && target->colony==a.colony &&
             (oral ? oral_contact(worker,*target) && !query_worker_motion(other) :
             within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position));
+        if (meal_rendezvous(s) && founding_foundress(worker.id)) {
+            if (!failed && !reached && c.search_remaining>1) {
+                const auto donor=local_donor(worker);
+                if (donor && donor->second==c.target && donor->first!=worker.position)
+                    start_resting_move(tx,worker,donor->first,event.id,CareAct::ApproachNestmate,c.target,
+                                       static_cast<std::uint8_t>(c.search_remaining-1));
+            }
+            // Contact leaves the worker free to offer through its normal nutrition action.
+            return;
+        }
         if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
             !query_worker_motion(other)) {
             const auto next=local_food_offer(worker);

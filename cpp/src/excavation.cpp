@@ -322,7 +322,7 @@ void WorldRuntime::activate_excavator(Transaction &tx, EntityId id) {
     const auto p=*origin;
     if (!worker.path_size) {
         if (ant.position != s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position &&
-            !(local_excavation(s) && shallow_soil_cap(ant.position)))
+            !(local_entrance_work(s) && shallow_soil_cap(ant.position)))
             throw std::invalid_argument("first excavation activation requires the known depot");
         worker.path[0] = p;
         worker.path_size = 1;

@@ -438,7 +438,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             for (const auto id : candidates) {
                 const auto other = s.ants.get(s.ants.index.at(id));
                 if (id == ant.id || !other.alive()) continue;
-                const bool checked_larva = founding_nutrition(s)==FoundingNutrition::CheckedLarvalOffer &&
+                const bool checked_larva = founding_nutrition(s)>=FoundingNutrition::CheckedLarvalOffer &&
                     other.stage==LifeStage::Larva;
                 if (checked_larva) {
                     if (!meal_in_reach(ant,other)) continue;

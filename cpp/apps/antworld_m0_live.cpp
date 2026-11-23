@@ -121,6 +121,34 @@ void recent(const WorldRuntime& world) {
     send_events(world.events_after({count > cap ? count - cap : 0}, cap));
 }
 
+// Sparse read-only projection of a contiguous canonical window. Keep every meal
+// and life transition, and the first surface move per actor within the window.
+void meal_events(const WorldRuntime& world, EventId after, std::size_t length) {
+    auto page=world.events_after(after,length);
+    require(page.size()==length && page.back().id.value==after.value+length,"Incomplete meal evidence window");
+    const auto surface=world.surface_snapshot();
+    std::set<EntityId> surface_movers;
+    std::erase_if(page,[&](const WorldEvent& e) {
+        switch (e.kind) {
+        case FactKind::AntBorn: case FactKind::StageChanged: case FactKind::AntDied:
+        case FactKind::ForagingStarted: case FactKind::FoodCollected: case FactKind::FoodDelivered:
+        case FactKind::SoilExcavated: case FactKind::SoilDropped: case FactKind::NutritionTransferred:
+        case FactKind::CargoIngested: case FactKind::FoundressNestMeal:
+            return false;
+        case FactKind::FoundingBoundaryUptake: case FactKind::PhysiologyUpdated:
+            return !e.transferred.carbs_ug;
+        case FactKind::BiologicalObservation:
+            return e.observation.act!=CareAct::ApproachNestmate ||
+                   (e.observation.phase!=ObservationPhase::Selected && e.observation.phase!=ObservationPhase::Completed);
+        case FactKind::Moved:
+            return !surface.configured || e.stage!=LifeStage::Adult || e.position.y<surface.surface.origin_m.y ||
+                   !surface_movers.insert(e.actor).second;
+        default: return true;
+        }
+    });
+    send_events(page);
+}
+
 bool in_place_action(const WorldEvent& e) {
     if (e.outcome > Outcome::Partial) return false;
     switch (e.kind) {
@@ -453,7 +481,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v33");
+                message("OK", "antworld.m0.live.v34");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -497,11 +525,15 @@ int main() {
                     const auto treatment=word(request);
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
-                            treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer",
+                            treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="first-meal" ? FoundingNutrition::FirstMeal :
+                        treatment=="meal-rendezvous" ? FoundingNutrition::MealRendezvous :
+                        treatment=="local-departure" ? FoundingNutrition::LocalDeparture :
                         treatment=="checked-offer" ? FoundingNutrition::CheckedLarvalOffer :
                         treatment=="mouth-range" ? FoundingNutrition::MouthRange :
                         treatment=="chamber-return" ? FoundingNutrition::ChamberReturn :
@@ -770,6 +802,12 @@ int main() {
                     const auto cursor = number(request);
                     end(request);
                     recent_actions(*world, cursor);
+                } else if (command == "MEAL_EVENTS") {
+                    const EventId after{number(request)};
+                    const auto length=number(request);
+                    end(request);
+                    require(length>0 && length<=8192,"Invalid meal evidence window");
+                    meal_events(*world,after,static_cast<std::size_t>(length));
                 } else if (command == "FACTS_AFTER") {
                     const auto cursor = EventId{number(request)};
                     request >> std::ws;

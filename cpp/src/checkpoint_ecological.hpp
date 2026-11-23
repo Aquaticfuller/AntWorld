@@ -33,6 +33,9 @@ inline constexpr unsigned sustained_nest_schema = 40, sustained_nest_physics = 4
 inline constexpr unsigned protected_nest_schema = 41, protected_nest_physics = 48;
 inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics = 49;
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
+inline constexpr unsigned departure_schema = 50, departure_physics = 57;
+inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned first_meal_schema = 52, first_meal_physics = 59;
 inline constexpr unsigned checked_offer_schema = 49, checked_offer_physics = 56;
 inline constexpr unsigned mouth_range_schema = 48, mouth_range_physics = 55;
 inline constexpr unsigned chamber_return_schema = 47, chamber_return_physics = 54;
@@ -46,6 +49,9 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FirstMeal) return first_meal_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::CheckedLarvalOffer) return checked_offer_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthRange) return mouth_range_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberReturn) return chamber_return_physics;
@@ -79,6 +85,9 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FirstMeal) return first_meal_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::CheckedLarvalOffer) return checked_offer_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthRange) return mouth_range_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberReturn) return chamber_return_schema;

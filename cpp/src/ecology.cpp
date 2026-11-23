@@ -138,7 +138,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     const bool stationary = p.behavior != IndividualBehavior::Forage &&
                             p.behavior != IndividualBehavior::Excavate;
     const auto excavation=s.excavators.find(ant.id);
-    const bool at_dig_origin=local_excavation(s) && excavation!=s.excavators.end() && excavation->second.path_size==1 &&
+    const bool at_dig_origin=local_entrance_work(s) && excavation!=s.excavators.end() && excavation->second.path_size==1 &&
         ant.position==physical(excavation->second.path[0],s.geometry->config);
     const bool can_switch = (at_depot || at_dig_origin || (p.behavior==IndividualBehavior::Forage && foraging_home) || stationary) &&
                             !ant.carried_food.total_ug() &&
@@ -229,6 +229,12 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
+    const auto solicitation=meal_rendezvous(s) && stationary && can_switch && urgent &&
+        !care_owned(s,ant.id) && !active_expenditure(p) ? local_donor(ant) : std::nullopt;
+    // ENGINEERING_FIXTURE: a bounded share of idle local work reviews samples
+    // an understocked handoff even when other brood work is simultaneously available.
+    const bool review_exit=departure_review(s) && !wake.payload && ready &&
+        (a.decisions+ant.id.value)%4==0;
     bool resupply=repeat_delivery;
     std::optional<PositionM> resupply_step;
     std::optional<PositionM> roof_stance;
@@ -245,8 +251,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       const auto opened=!s.geometry_edits.empty();
       if (visible && colony.nest_food.carbs_ug<buffer && !urgent) {
         resupply=foraging_home && can_forage(ant);
-        if (local_excavation(s) && !resupply && !at_depot && !at_meal && !at_wick &&
-            !meal_step && !wick_step && !food_offer && !can_feed_brood && excavation==s.excavators.end()) {
+        if (local_entrance_work(s) && !resupply && !at_depot && !at_meal && !at_wick &&
+            !meal_step && !wick_step && (review_exit || (!food_offer && !can_feed_brood)) && excavation==s.excavators.end()) {
           const auto& terrain=s.geometry->config;
           const auto nearby=nearest_grid_point(ant.position,terrain,true);
           if (nearby) {
@@ -282,6 +288,22 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.resting_site=wick_step;
       choice.transit=CareAct::DepotApproach;
       choice.meal_steps=s.care_profile->motion->search_steps;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (solicitation) {
+      if (solicitation->first!=ant.position) {
+        choice.resting_site=solicitation->first;
+        choice.contact_target=solicitation->second;
+        choice.transit=CareAct::ApproachNestmate;
+        choice.meal_steps=s.care_profile->motion->search_steps;
+      }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (review_exit && (resupply || roof_stance || resupply_step) && !food_offer && !urgent) {
+      if (resupply) choice.behavior=IndividualBehavior::Forage;
+      else if (roof_stance && *roof_stance==ant.position) choice.behavior=IndividualBehavior::Excavate;
+      else {
+        choice.resting_site=roof_stance ? roof_stance : resupply_step;
+        choice.transit=CareAct::DepotApproach;
+      }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (food_offer) {
       choice.contact_target=food_offer->second;

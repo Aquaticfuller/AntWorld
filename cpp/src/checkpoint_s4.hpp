@@ -473,7 +473,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 auto &worker = excavators[e.actor];
                 if (!worker.path_size) {
                     const auto position=positions.at(e.actor);
-                    const auto plane=local_excavation(s)?surface_level(s):std::nullopt;
+                    const auto plane=local_entrance_work(s)?surface_level(s):std::nullopt;
                     ensure(quantized(position,c) && e.position==position &&
                            (position == s.colonies.rows[s.colonies.index.at(e.colony)].nest_position ||
                             (plane && local_roof(view(),position,*plane,s.care_profile->perception_radius_m,4,clear))),
