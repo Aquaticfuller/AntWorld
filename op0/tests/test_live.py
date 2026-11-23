@@ -683,6 +683,18 @@ class LiveTests(unittest.TestCase):
             self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), events)
             self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_collected_meal_reaches_a_newly_eclosed_worker(self):
+        from tools.trace_social_crop_meal import trace
+        from tools.verify_protected_habitat import rows
+
+        core = self.live.core()
+        if not core.chamber_return:
+            self.skipTest("Build the chamber return Core")
+        trial, = [r for r in rows("SOCIAL_CROP_TRIALS.jsonl")
+                  if (r["physics"], r["seed"], r["supply"]) == (54, 3, "nearby")]
+        expected = json.loads((ROOT / "research/single_nest/SOCIAL_CROP_CALLOW_MEAL.json").read_bytes())
+        self.assertEqual(json.loads(json.dumps(trace(core, trial))), expected)
+
     def test_local_worker_meal_search_restores_its_next_decisions(self):
         core = self.live.core()
         if not core.meal_search:
