@@ -23,7 +23,7 @@ class MouthLedger:
         self.uptakes = {}
         self.deaths = []
         self.last_collection = {}
-        self.collections = Counter()
+        self.absorbed = Counter()
 
     def flow(self, key, f):
         row = self.flows.setdefault(key, dict(events=0, mass_ug=[0]*4, first=[f.id,f.time]))
@@ -45,7 +45,6 @@ class MouthLedger:
             require(min(self.depot) >= 0, "Negative reconstructed nest stock")
         if kind == "FoodCollected":
             self.last_collection[f.actor] = f.resource
-            self.collections[f.actor] += 1
             self.flow(f"collection/{f.actor}/{f.resource}", f)
         elif kind == "CargoIngested":
             self.flow(f"cargo-to-crop/{f.actor}/{self.last_collection.get(f.actor,0)}", f)
@@ -67,6 +66,7 @@ class MouthLedger:
             gift = self.pending.pop(f.actor)
             row = self.uptakes.setdefault(f.actor, dict(episodes=0,first_pair=[*gift,f.id,f.time,f.mass[0]]))
             row["episodes"] += 1
+            self.absorbed[f.actor] += f.mass[0]
         elif kind == "AntDied":
             self.deaths.append([f.actor,self.stages[f.actor],DEATHS[f.payload],f.id,f.time,*self.depot[:3]])
 
@@ -87,7 +87,8 @@ def main():
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as core:
         run = measure(core, args.seed, args.supply, args.model, args.days, "wet-wick", True, ledger)
     run.update(binary_sha256=sha256(args.core.read_bytes()).hexdigest(), flows=ledger.flows,
-               recipient_subsequent_uptake=ledger.uptakes, deaths_with_depot=ledger.deaths)
+               recipient_subsequent_uptake=ledger.uptakes, deaths_with_depot=ledger.deaths,
+               worker_eclosion_ms=ledger.eclosed, sugar_absorbed_at_following_pulses_ug=ledger.absorbed)
     print(json.dumps(run, separators=(",",":")))
 
 

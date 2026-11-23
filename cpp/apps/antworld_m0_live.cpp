@@ -453,7 +453,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v29");
+                message("OK", "antworld.m0.live.v30");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -496,11 +496,13 @@ int main() {
                 if (provisioned) {
                     const auto treatment=word(request);
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
-                            treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" || treatment=="social-crop",
+                            treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
+                            treatment=="social-crop" || treatment=="crop-exchange",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="crop-exchange" ? FoundingNutrition::CropExchange :
                         treatment=="social-crop" ? FoundingNutrition::SocialCrop :
                         treatment=="meal-search" ? FoundingNutrition::MealSearch :
                         treatment=="callow" ? FoundingNutrition::CallowHydration :

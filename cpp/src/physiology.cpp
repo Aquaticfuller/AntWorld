@@ -310,6 +310,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
+        supply = contact_offer(s,supply,p,*receiver,recipient.stage);
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
         if (s.social && s.social->demand_sensitive) {
             const auto demand=local_founding_feeding(s) && recipient.stage==LifeStage::Larva &&
@@ -433,6 +434,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                 if (id == ant.id || !other.alive() || (adult_offers(s) && other.stage==LifeStage::Adult ?
                     !oral_contact(ant,other) : !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get()))) continue;
                 const auto q = *query_physiology({s.world, id});
+                if (!contact_offer(s,supply,p,q,other.stage).total_ug()) continue;
                 const bool hungry_larva = other.stage == LifeStage::Larva && supply.protein_ug &&
                     add(q.tissue_protein_ug, q.crop.protein_ug) < q.config.larval_protein_requirement_ug;
                 const bool hungry_adult = other.stage == LifeStage::Adult &&

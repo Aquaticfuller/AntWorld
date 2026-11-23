@@ -281,6 +281,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       else {
         choice.resting_site=food_offer->first;
         choice.transit=CareAct::ApproachNestmate;
+        if (crop_exchange(s)) choice.meal_steps=s.care_profile->motion->search_steps;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (can_feed_brood) {
@@ -568,6 +569,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         else {
           choice.resting_site=offer->first;
           choice.transit=CareAct::ApproachNestmate;
+          if (crop_exchange(s)) choice.meal_steps=s.care_profile->motion->search_steps;
         }
       } else if (!choice.resting_site) {
         if (const auto contact=local_contact_step(ant)) {

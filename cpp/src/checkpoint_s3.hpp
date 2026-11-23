@@ -243,6 +243,8 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     ((adult_offers(s) && target_stage==LifeStage::Adult) || (anatomical_nest(s) && target_stage==LifeStage::Larva) ||
                      contact(a,b,s.config,s.social && s.geometry ? nullptr : s.surface.get())),
                     "transfer has no living local contact evidence");
+                ensure(contact_offer(s,e.transferred,p,recipient,target_stage)==e.transferred,
+                       "adult gift reversed the crop gradient");
                 if (local_founding_provisioning(s,e.actor))
                     ensure(((adult_offers(s) && target_stage==LifeStage::Adult) || founding.clear(a.position,b.position,0,e.id)) &&
                            ingredient_min(founding_gift_supply(founding.profile(),p),e.transferred)==e.transferred,

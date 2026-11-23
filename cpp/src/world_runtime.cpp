@@ -242,23 +242,32 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             }
         } else if (e.kind == ScheduledEvent::Kind::CollectFood) {
             const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];
-            const auto available = food.remaining.total_ug();
             const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug() - carried_soil_ug(ant.id);
+            auto sample = portion(food.remaining, std::min({e.requested_ug, food.remaining.total_ug(), room}));
+            if (crop_exchange(s) && food.initial.carbs_ug && food.initial.water_ug && s.physiology.contains(ant.id)) {
+                const auto& p=s.physiology.at(ant.id);
+                const auto space=p.config.crop_capacity_ug-p.crop.total_ug();
+                const auto owed=ant.carried_food.carbs_ug+ant.carried_food.water_ug;
+                const FoodMass wet{sample.carbs_ug,0,sample.water_ug,0};
+                const auto drink=portion(wet,std::min(wet.total_ug(),space>owed ? space-owed : 0));
+                sample.carbs_ug=drink.carbs_ug;
+                sample.water_ug=drink.water_ug;
+            }
             if (!within_contact(ant.position,food.position,s.config) || (s.surface && !s.config.continuous_spatial_motion &&
                 s.surface->locate(ant.position)!=s.surface->locate(food.position)) || !spatially_clear(ant.position,food.position))
                 f.outcome=Outcome::OutOfReach;
-            else if (available == 0) f.outcome = Outcome::Depleted;
-            else if (room == 0) f.outcome = Outcome::Capacity;
+            else if (!food.remaining.total_ug()) f.outcome = Outcome::Depleted;
+            else if (!sample.total_ug()) f.outcome = Outcome::Capacity;
             else if (s.geometry && (!spatially_clear(ant.position,ant.position,s.geometry->config.loaded_half_q) ||
                                     !clear_worker_traffic(ant,ant.position,s.geometry->config.loaded_half_q))) f.outcome = Outcome::Blocked;
             else {
-                const auto amount = std::min({e.requested_ug, available, room}); f.transferred = portion(food.remaining, amount);
+                f.transferred = sample;
                 tx.touch_ant(i); tx.touch_food(j);
                 ant.carried_food = sum(ant.carried_food, f.transferred); s.ants.set(i, ant);
                 food.remaining = subtract(food.remaining, f.transferred);
                 s.m.ledger.available = subtract(s.m.ledger.available, f.transferred);
                 s.m.ledger.carried = sum(s.m.ledger.carried, f.transferred);
-                f.kind = FactKind::FoodCollected; f.outcome = amount == e.requested_ug ? Outcome::Success : Outcome::Partial;
+                f.kind = FactKind::FoodCollected; f.outcome = sample.total_ug() == e.requested_ug ? Outcome::Success : Outcome::Partial;
             }
         } else if (e.kind == ScheduledEvent::Kind::DeliverFood) {
             const auto j = s.colonies.index.at(ant.colony); auto& colony = s.colonies.rows[j];

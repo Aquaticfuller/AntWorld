@@ -633,9 +633,17 @@ class LiveTests(unittest.TestCase):
         core = self.live.core()
         if not core.social_crop:
             self.skipTest("Build the social crop Core")
-        self.live.write("single-nest", {"model": "social-crop", "seed": 3, "supply": "nearby", "wick": "wet-wick"})
+        models = [("social-crop", 52)]
+        if core.crop_exchange:
+            models.append(("crop-exchange", 53))
+        for model, physics in models:
+            with self.subTest(model=model):
+                self.check_paid_crop_continuation(core, model, physics)
+
+    def check_paid_crop_continuation(self, core, model, physics):
+        self.live.write("single-nest", {"model": model, "seed": 3, "supply": "nearby", "wick": "wet-wick"})
         self.live.write("clock", {"running": False})
-        self.assertEqual(self.live.frame["physics"], 52)
+        self.assertEqual(self.live.frame["physics"], physics)
         raw = core.call(f"ADVANCE {49 * DAY}")
         self.live.publish(raw)
         ledger = {}
@@ -660,12 +668,12 @@ class LiveTests(unittest.TestCase):
                 self.assertGreaterEqual(min(mass), 0)
         self.assertGreater(loads, 0)
         for mode in ("snapshot", "archive"):
-            self.live.save("Paid liquid load", False, mode)
+            self.live.save(f"Paid liquid load {physics}", False, mode)
         expected = core.call(f"ADVANCE {50 * DAY}")
         events = core.call(f"FACTS_AFTER {cursor} 512")
         self.assertTrue(events)
         for mode in ("snapshot", "archive"):
-            self.live.load("Paid liquid load", mode)
+            self.live.load(f"Paid liquid load {physics}", mode)
             self.assertEqual(core.call("FRAME"), raw)
             self.assertEqual(core.call(f"ADVANCE {50 * DAY}"), expected)
             self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), events)

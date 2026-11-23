@@ -39,11 +39,25 @@ inline FoodMass social_crop_intake(const auto& s,const AntState& ant,const Physi
     // connector before the external load disappears.
     if (!inbound && !cargo.protein_ug) return {};
     const auto filled=p.crop.carbs_ug+p.crop.water_ug;
-    if (filled>=p.config.transfer_limit_ug) return {};
     const auto room=p.config.crop_capacity_ug-p.crop.total_ug();
     const FoodMass liquid{cargo.carbs_ug,0,cargo.water_ug,0};
-    const auto amount=std::min({liquid.total_ug(),room,p.config.transfer_limit_ug-filled});
+    const auto limit = p.config.transfer_limit_ug;
+    if (!crop_exchange(s) && filled>=limit) return {};
+    const auto amount=std::min({liquid.total_ug(),room,crop_exchange(s) ? limit : limit-filled});
     return amount ? portion(liquid,amount) : FoodMass{};
+}
+
+// ENGINEERING_FIXTURE. An adult keeps a share of each ingredient. An
+// immediate reversal cannot move the same component back to its donor.
+inline FoodMass contact_offer(const auto& s, FoodMass payable, const PhysiologyState& donor,
+                              const PhysiologyState& recipient, LifeStage stage) {
+    if (!crop_exchange(s) || stage!=LifeStage::Adult) return payable;
+    const auto share=[](std::uint64_t held, std::uint64_t other) {
+        return held>other ? (held-other)/2 : 0;
+    };
+    return ingredient_min(payable,{share(donor.crop.carbs_ug,recipient.crop.carbs_ug),
+                                   share(donor.crop.protein_ug,recipient.crop.protein_ug),
+                                   share(donor.crop.water_ug,recipient.crop.water_ug),0});
 }
 
 inline std::uint64_t ceil_div(std::uint64_t n, std::uint64_t d) { return n/d + (n%d != 0); }
