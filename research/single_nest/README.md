@@ -21,6 +21,16 @@ With the standalone Python installer and no `py` launcher, use
 The batch entry point works with the normal PowerShell script policy.
 The observer opens locally at `http://127.0.0.1:8765/`.
 
+Select **New sealed nest** to start a Physics 48 colony with a nearby feeder.
+For a death investigation choose **Next occurrence** with a larval or worker
+death target, then inspect the stopped individual's body, crop, available wick
+and mixed nest stock. The resource panel locates deposited soil above and
+below ground. In **Colony setup**, **New worker hydration trial · Physics 50**
+uses paid larval provisioning for a larger water reserve at emergence.
+**Brood-site wick trial** moves the same finite water source in Physics 48.
+The [paired two-year results](PROTECTED_HABITAT_RESULTS.md) distinguish
+first-brood survival, sustained reproduction and late orphan workers.
+
 Choose **Colony setup → Sealed nest model → Variable conditions · Physics 45**
 before selecting **New sealed nest** to try the seeded activity rhythm, the
 feeding patch and the four external sources. The same setup supplies the

@@ -8,6 +8,8 @@ All 27 paid eggs hatched. Nineteen individuals died as larvae (ten of energy dep
 
 Seven eggs were laid after the first juvenile death. This is a specific problem with how local care, resource access and reproductive decisions interact. A queen can afford an egg while another individual is already low on water, lacks food at its mouth, or has insufficient energy to survive until absorption. Only the identity and resource ledgers can distinguish those cases.
 
+Egg counts in a real nest can also include trophic eggs. In a choice experiment with abundant food, final-instar black garden ant larvae ate conspecific eggs and preferentially selected trophic eggs. This experiment cannot give the egg-to-worker survival rate of a single founding queen. The 27 simulated eggs were all tracked as developmental eggs and hatched. No simulated death in this cohort represents a trophic egg. [Baroni Urbani, 1991](https://doi.org/10.1007/BF01314909)
+
 ## How the live world changed
 
 | Mechanism | Implementation and limits |
@@ -51,15 +53,51 @@ Physics 49 produced no carbohydrate deliveries in any of the five supplied world
 
 **Sustained growth remains failed.** First-brood survival, worker drinking and worker-to-larva provisioning require separate checks. The model does not support a projection to hundreds or thousands of workers. The historical B06 result is `INSUFFICIENT`, the historical application performance gate is `FAIL`, and all nine independent biological gates remain `BIOLOGICAL_BLOCKED`.
 
+Toffin et al. also estimated pellet volume from outward loaded-worker counts, total excavated dry mass and substrate bulk density. Their Table S1 gives mean volumes of 0.138 mm³ in granular soil and 0.173 mm³ in cohesive soil. The reported masses and trip counts imply mean dry loads of about 208 µg (0.1932 g / 931) and 262 µg (0.0577 g / 220). The Physics 49 roof bite has a maximum volume of 0.125 mm³ and dry mass of 96 µg. Even at this visually plausible scale its density and full work time remain engineering assumptions. Egg volume, dry-food mass, and liquid crop loads require their own evidence. [Author's supplementary material, Table S1](https://www.researchgate.net/publication/305659378_Excavated_substrate_modulates_growth_instability_during_nest_building_in_ants_-_Supplementary_Information)
+
 ## Why new workers died despite remaining water
 
 The [individual adult balances](PROTECTED_ADULT_BUDGETS.jsonl) join each worker's actual emergence and death event to the exact native frame at that timestamp, including crop, body, colony stock and finite wick. The two-year end frame must equal the original assay hash. Stock measured at a death cut is shared colony stock, not a meal for the dying worker.
 
 In nearby seed 3, all 18 dehydration deaths were workers that eclosed with 7–8 µg of body water and zero crop water. All died 6.1–7.9 hours after emergence. At their deaths the wick still held at least 1,499,525 µg of water; the mixed nest inventory contained 21,671–219,561 µg of water. Their centre-to-wick distances at death were 6.54–8.40 mm; a straight-line distance does not establish a traversable mouth approach. The five first-brood workers began adult life with 327–507 µg of body water. The seed-1 far control produced three adults with 172–419 µg at emergence; all three exhausted energy, with an empty depot and zero exterior deliveries.
 
-The implementation budgets larval support through just the first adult absorption period. A feeding decision can therefore count a larva as funded even though it will start adult life with only hours of water. A stationary worker with a local wick cue can approach and drink, but an ongoing foraging or excavation action has different ownership and a worker may fail to reach the contact point. Even a reachable reserve requires a completed sip and uptake. This is a specific survival problem in the simulation. The data do not measure natural callow water content or show that every death could be prevented by changing the location of the wick.
+Low starting water alone did not determine every fate. Two further workers also started with 8 µg; one lived 72 days and another remained alive at the end of follow-up. The implementation budgets larval support through just the first adult absorption period. A feeding decision can therefore count a larva as funded even though it will start adult life with only hours of water. A stationary worker with a local wick cue can approach and drink, but an ongoing foraging or excavation action has different ownership and a worker may fail to reach the contact point. Even a reachable reserve requires a completed sip and uptake. The data do not measure natural callow water content or show that every death could be prevented by changing the location of the wick.
+
+## Can a newly emerged worker use food that has already been delivered?
+
+Fjerdingstad et al. followed 660 singly housed, newly mated black garden ant queens in darkness at room temperature. They supplied water during founding, then honey water, water and protein after the first workers emerged. At three months the Uppsala colonies averaged 16 ± 6 workers. At four months the two Lausanne cohorts averaged 22 ± 5 and 24 ± 11 (mean ± SD). Ten of the 660 queens failed to produce workers. Separately, mark–recapture estimates for 17 mature field colonies ranged from 3,908 to 55,266 workers. The early counts are standing populations. They do not report egg-by-egg viability or a requirement that a two-year colony reach the mature field range. [Methods, colony size and productivity, and Table 4](https://doi.org/10.1046/j.1420-9101.2003.00589.x)
+
+Physics 50 changes a larva's local water request to cover the existing adult drinking threshold. A feeding adult must pay that water before metamorphosis. Adult losses, energy expenditure and the rules for pickup, drinking and absorption are unchanged. Compare this opt-in experiment to Physics 48 with the same near feeder, wick, temperature, seed and resource budget.
+
+At seed 3 the founder survived to day 730. The colony laid 17 eggs and eight workers eclosed in the second year. One worker remained on day 730, having emerged on day 45.6. All five first-brood eggs eclosed and lived seven adult days, but only one of those workers survived to adult age 30. Nineteen workers eclosed over two years and the population never exceeded five living workers. There were zero adult dehydration deaths and 18 adult deaths from energy depletion. Twelve larvae and eleven pupae also exhausted energy. One larva dehydrated.
+
+Every one of the 18 workers that exhausted energy had an empty crop and at least 1,669 µg of carbohydrate in the colony depot at its death. Fourteen were later offspring. They emerged with 25–26 µg of water and died 11.9–12.8 hours later. The other four were first-brood workers and survived 10.8–18.5 days. Over the run, 204.370 mg of carbohydrate was delivered. The queen took 195.997 mg of carbohydrate in depot meals. Actual worker-to-larva transfers totaled 75 µg of water and zero carbohydrate or protein. A delivery, a depot meal, a gift, and subsequent absorption are distinct events. The receipts establish a failure of access or distribution in a supplied colony. Stock at death alone cannot identify an individual's earlier perception or a collision-free route.
+
+Four of the five Physics 50 founders died. Their death days were 73.52 (seed 1), 137.5 (seed 2), 71.34 (seed 17) and 68.17 (seed 29). The seed 3 founder was alive with one worker at the end of the 730-day observation. The no-exterior control lost its founder and all workers. Water provisioning addresses a measured cause of early loss. Repeatable colony growth remains an open requirement. Physics 50 remains an explicit experimental choice.
+
+Moving only the wet-cotton point to the brood site produced a different result. In seed 2 the queen survived 416.8 days, versus 122.1 days with the laying-site wick. In seed 3 her survival fell from 656.4 to 154.1 days. In that seed three of eight eclosed workers died of dehydration and zero worker drinks were recorded, compared with 18 dehydration deaths among 25 eclosed workers and two drinks at the original location. The reduced death fraction did not meet the protocol's requirement for actual drinking. None of the five nursery-wick founders survived two years. The same amount of water at a different coordinate cannot substitute for successful ingestion. [Eleven water-treatment and control receipts](PROTECTED_WATER_TRIALS.jsonl)
+
+| Seed | P48 original wick: queen death day / workers on day 730 | P48 nursery wick | P50 paid juvenile water |
+| ---: | ---: | ---: | ---: |
+| 1 | 73.5 / 0 | 73.5 / 1 | 73.5 / 0 |
+| 2 | 122.1 / 0 | 416.8 / 1 | 137.5 / 0 |
+| 3 | 656.4 / 1 | 154.1 / 2 | alive / 1 |
+| 17 | 71.3 / 1 | 71.3 / 2 | 71.3 / 1 |
+| 29 | 68.2 / 1 | 68.2 / 2 | 68.2 / 1 |
+
+The first later-born worker in the seed-3 group of 14 was individual 23. It eclosed about 10 mm from the depot with 46,000,000 nJ, 26 µg body water and an empty crop. In 12.77 hours it moved 85 times, had 53 autonomy reviews and 29 nutrition decisions. The recorded action observations included approach to brood, inspection, cleaning and approach to a nestmate. There was no positive intake from food or from a nestmate. At death the worker still had 14 µg body water and the depot still contained 2,005 µg of carbohydrate. Observation counts include multiple phases of an action; they cannot be interpreted as completed feeding bouts. This individual motivates a test of whether optional brood work displaces a hungry worker's search.
+
+Black garden ant foragers can carry liquid food internally in the crop and take up additional droplets on a return trip. This supports representing liquid-food intake as a transfer of mass into a crop. The feeding experiment measured sugar solution and does not establish a buried reservoir of free water or a mandatory separate granary. Locations of deposited solids and actual exchanges require separate observations. [Mailleux et al., food transport experiment](https://doi.org/10.1016/j.crvi.2008.10.005)
+
+## Local meal search failed its selection test
+
+Physics 51 gives a free worker with a near-term carbohydrate shortfall a local, body-length food search on alternate decisions. It keeps the original sensory range, actual locomotion and nutrient accounting. The comparison and futility criterion were committed in `6ce3f321` before the run. In both worlds all five first-brood eggs became workers. At day 150, Physics 50 retained the queen, one worker, one egg and one pupa. Physics 51 retained two orphan workers, with no immature brood. Its queen dehydrated on day 80.25 with 926 µg of lipid and 6,193 µg depot carbohydrate. Actual worker moves rose from 1,211 to 2,503, while delivered carbohydrate fell from 31.636 to 12.937 mg. Neither world recorded a later-born worker's first positive depot carbohydrate intake by day 150. The extra motions failed the feeding and founder endpoints. Retain this arm for headless reproduction only. The preregistered stop ruled out expansion to the two-year panel for this arm. [Paired raw receipts](PROTECTED_MEAL_SEARCH_SCREEN.jsonl) and [individual 23](PROTECTED_WORKER_23.json)
+
+The outstanding distribution test is a returner's liquid load. The current model can deposit a moist carbohydrate load into one shared stock and immediately allocate another foraging trip. A candidate with biological support is to keep a measured share in the actual forager's crop and unload it to hungry nestmates through completed encounters. Before selecting a share, distinguish soluble carbohydrates from solid food at collection and preserve the forager's own consumption. Compare equal collected masses, positive returning-worker-to-nestmate transfers, actual absorption by newly emerged workers, surviving founders and later brood. The observed failure of local search gives no empirical transfer fraction.
 
 ## Engineering checks
+
+The hydration follow-up passed all 40 Windows live-session tests against the archive-compatible native executable. An independent run reproduced the emergence and death balances of every worker in both seed-3 water treatments and the exact day-730 frame hashes. Worker 23's full action counts and intake outcomes also reproduced after segmented advancement. The meal-search executable passed compact restore with identical subsequent native frames and facts. The Windows and Linux browser jobs exercised the depot and death views. The five protected evidence files total 235,393 bytes. The 35 lifecycle and screen receipts cover 16,549,750 committed facts streamed through the analysis process; the published receipts do not retain a second copy of the full histories. [Cross-platform observatory tests](https://github.com/Aquaticfuller/AntWorld/actions/runs/45087651798)
 
 Windows Release passed 292/292 native tests. The Windows live Python suite ran 58 tests with one skipped and no failures; the additional granular-roof continuation check and the final nearby-default archive and snapshot continuation check each passed separately. Chrome exercised the protected startup, finite stock symbols, resource controls and the death card. The seed-3 protected 30 mm witness reproduced all 120,267 facts by count, the day-150 frame SHA-256, each first-brood feed and stage transition, and the exact founder death balance across the original and rebuilt executables. This check does not assert a byte comparison of the full event stream. The independent receipt checker runs in Core CI and checks the compact individual histories and terminal census. No complete two-year SQLite history was written by the lifecycle assay.
 
@@ -82,4 +120,12 @@ py -3 -B -m tools.measure_single_nest_lifecycle --treatment protected --supply e
 py -3 -B -m tools.verify_protected_habitat
 py -3 -B -m tools.trace_worker_hydration --run nearby --seed 3
 py -3 -B -m tools.trace_worker_hydration --run protected --seed 1
+py -3 -B -m tools.measure_single_nest_lifecycle --treatment protected --supply nearby --wick nursery-wick --seed 1 --seed 2 --seed 3 --seed 17 --seed 29 --days 730 --individuals
+py -3 -B -m tools.measure_single_nest_lifecycle --treatment callow --supply nearby --wick wet-wick --seed 1 --seed 2 --seed 3 --seed 17 --seed 29 --days 730 --individuals
+py -3 -B -m tools.measure_single_nest_lifecycle --treatment callow --supply absent --wick wet-wick --seed 2 --days 730 --individuals
+py -3 -B -m tools.trace_worker_hydration --run nursery_wick --seed 3
+py -3 -B -m tools.trace_worker_hydration --run callow --seed 3
+py -3 -B -m tools.trace_worker_meals --worker 23
+py -3 -B -m tools.measure_single_nest_lifecycle --treatment callow --supply nearby --wick wet-wick --seed 3 --days 150 --individuals
+py -3 -B -m tools.measure_single_nest_lifecycle --treatment meal-search --supply nearby --wick wet-wick --seed 3 --days 150 --individuals
 ~~~

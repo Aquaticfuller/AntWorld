@@ -72,6 +72,8 @@ def check(row):
 def check_adult_budgets(trace, receipt):
     if any(trace[k] != receipt[k] for k in ("command", "initial_sha256", "final_sha256")):
         raise ValueError("Adult trace does not identify the census world")
+    if trace["end_ms"] != receipt["census"][-1]["day"] * DAY:
+        raise ValueError("Mismatched follow-up times")
     expected = Counter({k.removeprefix("Adult: "): v for k, v in receipt["offspring_deaths"].items() if k.startswith("Adult: ")})
     causes = Counter()
     cuts = []
@@ -98,20 +100,52 @@ def check_adult_budgets(trace, receipt):
 
 def main():
     experiments = rows("PROTECTED_HABITAT_RECEIPTS.jsonl")
+    water = rows("PROTECTED_WATER_TRIALS.jsonl")
+    expected = {(group, seed) for group in ("nursery_wick", "callow") for seed in SEEDS} | {("callow_absent", 2)}
+    if len(water) != len(expected) or {(r["run"], r["seed"]) for r in water} != expected:
+        raise ValueError("Incomplete worker water experiment")
+    for r in water:
+        nursery = r["run"] == "nursery_wick"
+        if (r["physics"], r["wick"], r["supply"]) != (
+                48 if nursery else 50, "nursery-wick" if nursery else "wet-wick",
+                "absent" if r["run"] == "callow_absent" else "nearby"):
+            raise ValueError("Unexpected water experiment settings")
+    experiments += water
     previous = [r for r in rows("SUSTAINED_FOUNDING_RECEIPTS.jsonl") if r["run"] == "sustained_candidate"]
     for row in experiments + previous:
         check(row)
     traces = rows("PROTECTED_ADULT_BUDGETS.jsonl")
-    if len(traces) != len({(t["run"], t["seed"]) for t in traces}):
-        raise ValueError("Duplicate adult trace")
+    expected_traces = {("nearby", 3), ("protected", 1), ("callow", 3), ("nursery_wick", 3)}
+    if len(traces) != len(expected_traces) or {(t["run"], t["seed"]) for t in traces} != expected_traces:
+        raise ValueError("Incomplete adult trace panel")
     for trace in traces:
         receipt, = [r for r in experiments if (r["run"], r["seed"]) == (trace["run"], trace["seed"])]
         check_adult_budgets(trace, receipt)
+    worker = json.loads((ROOT / "PROTECTED_WORKER_23.json").read_text(encoding="utf-8"))
+    parent, = (t for t in traces if (t["run"], t["seed"]) == (worker["run"], worker["seed"]))
+    life = parent["lives"][str(worker["worker"])]
+    if (worker["initial_sha256"] != parent["initial_sha256"] or worker["command"] != parent["command"]
+            or any(worker[cut] != life[cut] for cut in ("emergence", "death"))
+            or worker["event_counts"].get("AntDied") != 1
+            or sum(worker["action_observations"].values()) != worker["event_counts"]["BiologicalObservation"]):
+        raise ValueError("Worker feeding review does not match its identified life")
+    screen = rows("PROTECTED_MEAL_SEARCH_SCREEN.jsonl")
+    if sorted((r["physics"],r["seed"],r["supply"],r["wick"],r["census"][-1]["day"]) for r in screen) != [
+            (v,3,"nearby","wet-wick",150) for v in (50,51)]:
+        raise ValueError("Incomplete local-search day-150 comparison")
+    for r in screen:
+        check(r)
+        c = r["census"][-1]
+        qualifies = c["queen_alive"] and c["workers"] > 1 and bool(r["later_worker_first_depot_carbs"])
+        print("Local meal search screen", r["physics"], "meets criteria" if qualifies else "failed",
+              "queen alive", c["queen_alive"], "workers", c["workers"])
     for group, group_rows in (
             ("P47", previous),
             ("P48", [r for r in experiments if r["run"] == "protected"]),
             ("P49", [r for r in experiments if r["run"] == "local_dig"]),
-            ("P48 nearby", [r for r in experiments if r["run"] == "nearby"])):
+            ("P48 nearby", [r for r in experiments if r["run"] == "nearby"]),
+            ("P48 nursery wick", [r for r in experiments if r["run"] == "nursery_wick"]),
+            ("P50 paid water", [r for r in experiments if r["run"] == "callow"])):
         if sorted(r["seed"] for r in group_rows) != list(SEEDS):
             raise ValueError(f"Incomplete or duplicated paired seeds in {group}")
         if any(r["census"][-1]["day"] != 730 for r in group_rows):

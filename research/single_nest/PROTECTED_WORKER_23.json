@@ -1,0 +1,85 @@
+{
+  "run": "callow",
+  "seed": 3,
+  "worker": 23,
+  "command": "NEW_PROVISIONED_NEST 682899809867 3 250 80 plugged 1955 reachable nearby sheltered mineral callow wet-wick",
+  "initial_sha256": "90965f1f6672ec0bd6524ac49675286bdf6b317c9ed936f25b8c9c361cd6e247",
+  "emergence": {
+    "fact": 120622,
+    "time_ms": 12106122624,
+    "position_m": [
+      -0.000875,
+      -0.0045000000000000005,
+      -0.008
+    ],
+    "body_water_ug": 26,
+    "body_energy_nj": 46000000,
+    "lipid_ug": 0,
+    "crop_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "water_lost_ug": 138,
+    "wick_water_ug": 1499825,
+    "depot_cpw_ug": [
+      2167,
+      6468,
+      31876
+    ]
+  },
+  "death": {
+    "fact": 122256,
+    "time_ms": 12152084258,
+    "position_m": [
+      0.0004375,
+      -0.0045000000000000005,
+      -0.008
+    ],
+    "body_water_ug": 14,
+    "body_energy_nj": 0,
+    "lipid_ug": 0,
+    "crop_ug": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "water_lost_ug": 150,
+    "wick_water_ug": 1499825,
+    "depot_cpw_ug": [
+      2005,
+      6468,
+      31843
+    ],
+    "cause": "Energy depleted"
+  },
+  "depot_position_m": [
+    0.0,
+    -0.004,
+    0.002
+  ],
+  "event_counts": {
+    "BehaviorChanged": 112,
+    "CareProgramChanged": 86,
+    "AutonomyDecision": 53,
+    "CareTick": 286,
+    "BiologicalObservation": 405,
+    "ActivityChanged": 200,
+    "Moved": 85,
+    "NutritionDecision": 29,
+    "Rested": 29,
+    "PhysiologyUpdated": 2,
+    "AntDied": 1
+  },
+  "action_observations": {
+    "Approach brood": 192,
+    "Inspect brood": 18,
+    "Clean brood": 45,
+    "Inactive": 87,
+    "Approach a nestmate": 63
+  },
+  "intake_and_rejections": [],
+  "received_transfers": []
+}
