@@ -20,6 +20,7 @@ Open colony setup and create a sealed nest. Select **Chamber food sharing · Phy
 | 53 | Collection respects crop capacity. The solid part of a mixed meal stays in cargo. Adults retain maintenance reserves and exchange at most half the positive difference in each crop component. A donor can try a second reachable recipient or continue its approach. | Two workers in the first trial returned the same sugar to each other. Gross transferred mass overstated useful dissemination. |
 | 54 | A liquid carrier can finish the return connector past an early wall handoff and revisit its own eclosion site. A worker seeking a local mouth can change support level, subject to body clearance, occupancy and paid movement. | Seed 2 had loaded workers on the ceiling and a hungry queen on the floor. |
 | 55 | Use the actual mouth for sensory range after a padded lookup of adult body centers. Confirm visibility independently of physical feeding contact. | Twenty-six observed candidates with a possible next step disappeared because the queen's body center was outside sensory range. |
+| 56 | Apply the larval feeding transaction's anatomical reach and payable demand when choosing a recipient. Recheck at execution. | A nearby nurse repeatedly selected larvae which were physically out of reach. |
 
 Each new model is selected explicitly. Workers offer food to an actual local recipient. Transactions check stage, reach, ownership, demand and crop capacity at completion. An outside feeder or a funded drink at the wick does not credit an ant until it actually takes the material. The registered load, sharing and search policies are engineering hypotheses.
 
@@ -90,6 +91,14 @@ The exact Physics 55 window from day 65 until her death contains 80 oral transac
 
 Worker 10 recorded 1,039 selected feeding actions, 1,039 interruptions and no movement in that interval. All 1,039 rejected transactions were out of reach (874 to individual 23 and 165 to individual 29). Its position revision held at 2852. It had an empty external cargo and carried no soil at any daily cut. The worker alternated tasks and used its own sugar while repeatedly trying to feed a larva it could not touch. Its food never reached the queen in this interval. This is a reproducible selection/transaction mismatch independent of the proposed bilateral rendezvous. [Prespecified larval eligibility test](SOCIAL_CROP_OFFER_SCREEN.md)
 
+### Does filtering unreachable larval gifts keep the founder alive?
+
+Physics 56 reused the transaction's anatomical contact test in the choice of a larval recipient. Both prespecified seed-2 worlds completed 90 days. In the supplied chamber the founder's last meal, total doses to all four recipient classes and exact energy-depletion time matched Physics 55. The queen died on day 82.11. Seven workers emerged and six were alive on day 90. Individual 16 received carbohydrate as a larva at event 13,519 and subsequently absorbed 46 µg at event 14,284. Without the exterior supply there were zero positive worker meals, three workers emerged, and no adults remained on day 90. This correction did not pass the survival screen. [Paired check and paid intakes](SOCIAL_CROP_OFFER_SCREEN.jsonl)
+
+The independent replay recovered the same 1,039 coarse feeding opportunities for worker 10. The corrected chooser selected none of the unreachable larvae and recorded zero rejected transactions. The worker completed 1,489 inactive actions in this window, compared with 450 previously. Its 112 separate brood approach selections still ended in interruptions and it did not move. The queen received no offers and the other nine recipients received exactly the same 80 meals. The change removed a real defect in recipient selection and isolated the remaining failure in initiating a physical encounter. [Focal worker actions, stocks, positions and competing meals after the correction](SOCIAL_CROP_OFFER_DEATH.json)
+
+The larval selection check alone cannot arrange a new donor–queen meeting. A future controlled experiment could test whether a hungry queen and a loaded worker respond to each other's locally sensed mouths by each taking a legal step. Hold food, collision, contact range and lethal rules fixed. Measure other recipients' uptake and the physical approach along with founder survival. The three worlds with absent or late first collections need a separate test at the foraging stage.
+
 ## Reproduce a two-year pair
 
 ```powershell
@@ -100,7 +109,7 @@ py -3 -B -m tools.trace_social_crop_meal
 py -3 -B -m tools.verify_social_crop
 ```
 
-For the final Physics 55 death window run the supplied seed-2 screen with `--model mouth-range --days 90`, save its JSON output, then pass its path to `tools.inspect_social_crop_cut --receipt <file> --physics 55 --seed 2 --day 65 --until-queen-death --counts-only`.
+For the Physics 55 death window run the supplied seed-2 screen with `--model mouth-range --days 90`, save its JSON output, then pass its path to `tools.inspect_social_crop_cut --receipt <file> --physics 55 --seed 2 --day 65 --until-queen-death --counts-only --follow-worker 10`. Repeat with `--model checked-offer` and `--physics 56` for the larval eligibility test. The Physics 56 native implementation is at `b55a4f2c`.
 
 Use seeds 1, 2, 3, 17 and 29. Use seed 2 with `--supply absent` for the no-external-feeder control. The finite founding stores and sheltered wick remain available in that control. Day 73, day 365 and day 730 samples come from the same trajectory. The first brood comprises eggs laid within 24 hours of the first paid birth. A callow is an adult less than seven simulated days past its own recorded eclosion. Living individuals at day 730 are censored there.
 

@@ -147,6 +147,28 @@ def main():
             sum(window["focal_rejections_by_payload"].values()) == 1039 and
             all(k.endswith("/Out of reach") for k in window["focal_rejections_by_payload"]),
             "Worker 10's completed and rejected actions differ from the recorded failure")
+    offer_screen = rows("SOCIAL_CROP_OFFER_SCREEN.jsonl")
+    require([(r["physics"], r["seed"], r["supply"], r["census"][-1]["day"]) for r in offer_screen] ==
+            [(56, 2, "nearby", 90), (56, 2, "absent", 90)], "Missing a larval offer eligibility control")
+    for r in offer_screen:
+        check(r)
+        oral_receipts(r)
+    checked = offer_screen[0]
+    require(checked["queen_death"]["time_ms"] == tested["queen_death"]["time_ms"] and
+            oral_receipts(checked) == oral_receipts(tested) and checked["census"][-1] == tested["census"][-1],
+            "Corrected larval eligibility screen differs in its reported survival or recipient intake")
+    first_meal = checked["flows"]["oral/8/16/Larva"]["first"]
+    require(checked["recipient_subsequent_uptake"]["16"]["first_pair"][:2] == first_meal,
+            "Identified larval uptake lacks its preceding paid meal")
+    corrected = json.loads((ROOT / "SOCIAL_CROP_OFFER_DEATH.json").read_text(encoding="utf-8"))
+    require(corrected["command"] == checked["command"] and corrected["death_time_ms"] == checked["queen_death"]["time_ms"]
+            and corrected["focal_worker"] == window["focal_worker"] and not corrected["focal_rejections_by_payload"]
+            and corrected["focal_actions"].get("Selected/Feed brood", 0) == 0
+            and corrected["focal_actions"]["Opportunity/Feed brood"] == window["focal_actions"]["Opportunity/Feed brood"]
+            and corrected["other_transfers"] == window["other_transfers"]
+            and corrected["daily_worker_gap_mm_and_crop_sugar_ug"] == window["daily_worker_gap_mm_and_crop_sugar_ug"]
+            and not corrected["actions_targeting_queen"] and not corrected["last_doses"],
+            "The independently replayed focal worker does not reproduce the mechanism comparison")
     for r in panel:
         check(r)
         require(r["wick"] == "wet-wick" and r["census"][-1]["day"] == 730, r["command"])
