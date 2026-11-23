@@ -9,8 +9,8 @@ the workspace's portable Clang, CMake and Ninja tools when present.
 From Windows PowerShell at the repository root:
 
 ~~~powershell
-git fetch origin codex/single-nest-variable-conditions
-git switch codex/single-nest-variable-conditions
+git fetch origin codex/single-nest-social-crop
+git switch codex/single-nest-social-crop
 git pull --ff-only
 py -3 -B -m tools.build_m0_live --jobs 4
 .\tools\start_m0.cmd
@@ -30,6 +30,11 @@ uses paid larval provisioning for a larger water reserve at emergence.
 **Brood-site wick trial** moves the same finite water source in Physics 48.
 The [paired two-year results](PROTECTED_HABITAT_RESULTS.md) distinguish
 first-brood survival, sustained reproduction and late orphan workers.
+
+For an identified feeder-to-mouth replay, select **Chamber food sharing · Physics 54**,
+nearby feeder, wet wick and seed 2. The oral receipts and the subsequent
+starvation episode can be inspected in the same live world.
+[Paired two-year food sharing results](SOCIAL_CROP_RESULTS.md)
 
 Choose **Colony setup → Sealed nest model → Variable conditions · Physics 45**
 before selecting **New sealed nest** to try the seeded activity rhythm, the

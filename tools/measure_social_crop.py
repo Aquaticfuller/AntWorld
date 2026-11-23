@@ -9,8 +9,7 @@ from pathlib import Path
 
 from op0 import DAY
 from op0.codec import DEATHS, KINDS, STAGES, require
-from op0.live import NativeCore, ROOT, core_path
-from op0.live import live_bodies
+from op0.live import NativeCore, ROOT, core_path, live_bodies
 from tools.measure_single_nest_lifecycle import measure
 
 
@@ -125,11 +124,7 @@ class MouthLedger:
         colony, = frame["colonies"].values()
         require(tuple(self.depot) == tuple(colony["stock_ug"]), "Depot events disagree with native frame")
         if self.core and frame["time_ms"] in (49*DAY, 60*DAY, 73*DAY, 90*DAY, 150*DAY, 365*DAY, 730*DAY):
-            bodies = live_bodies(self.core.call("BODY_STATES"), frame)
-            adults = {ant: dict(center_m=a["position_m"], mouth_m=bodies[str(ant)]["mouth_m"],
-                                crop_ug=a["crop_ug"]) for ant, a in frame["ants"].items()
-                      if STAGES[a["stage"]] == "Adult"}
-            self.cuts.append(dict(time_ms=frame["time_ms"], cursor=frame["cursor"], adults=adults,
+            self.cuts.append(dict(time_ms=frame["time_ms"], cursor=frame["cursor"], adults=observed_adults(self.core, frame),
                                   depot_ug=list(self.depot)))
         for ant in self.eclosed:
             sugar = frame["ants"][ant]["crop_ug"][0]
@@ -144,6 +139,12 @@ class MouthLedger:
             self.direct_load[ant] = min(sugar, self.direct_load[ant])
 
 
+def observed_adults(core, frame):
+    bodies = live_bodies(core.call("BODY_STATES"), frame)
+    return {ant: dict(center_m=a["position_m"], mouth_m=bodies[str(ant)]["mouth_m"], crop_ug=a["crop_ug"])
+            for ant, a in frame["ants"].items() if STAGES[a["stage"]] == "Adult"}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
@@ -152,6 +153,8 @@ def main():
     parser.add_argument("--supply", choices=("nearby", "absent"), default="nearby")
     parser.add_argument("--days", type=int, default=730)
     args = parser.parse_args()
+    if not 1 <= args.days <= 730 or not 1 <= args.seed <= 2147483647:
+        parser.error("The run requires 1 to 730 days and a positive 31-bit seed")
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as core:
         ledger = MouthLedger(core)
         run = measure(core, args.seed, args.supply, args.model, args.days, "wet-wick", True, ledger)

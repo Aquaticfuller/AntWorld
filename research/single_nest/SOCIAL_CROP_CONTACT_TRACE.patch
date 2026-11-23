@@ -1,0 +1,42 @@
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index 65dfcc56..bdcd556a 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -6,6 +6,7 @@
+ #include "ecological_internal.hpp"
+ #include "worker_motion.hpp"
+ #include "anatomy.hpp"
++#include <cstdio>
+ #include <queue>
+ #include <set>
+ #include <tuple>
+@@ -1144,6 +1145,29 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
+         const bool reached=!failed && target && target->alive() && target->colony==a.colony &&
+             (oral ? oral_contact(worker,*target) && !query_worker_motion(other) :
+             within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position));
++        if (chamber_return(s) && oral && target->caste==Caste::Queen && s.seed==2 &&
++            s.m.now.milliseconds>=69LL*86400000 && s.m.now.milliseconds<=6905601020LL) {
++            const auto moving=query_worker_motion(other).has_value();
++            const auto choice=local_food_offer(worker);
++            const auto partner=*query_body(other);
++            const auto mouth=query_body(self)->mouth_m;
++            const auto radius=s.care_profile->perception_radius_m;
++            const auto physiology=*query_physiology(self), recipient=*query_physiology(other);
++            const auto payable=founding_gift_supply(s.founding->profile,physiology);
++            const auto dose=ingredient_min(contact_offer(s,payable,physiology,recipient,target->stage),
++                                           signaled_need(recipient,target->stage,true));
++            const auto step=mouth_approach(worker,partner.mouth_m,{},&partner);
++            std::fprintf(stderr,"ORAL %lld %llu %u %d %d %d %llu %d %d %d %d %llu %llu\n",
++                static_cast<long long>(s.m.now.milliseconds),static_cast<unsigned long long>(a.id.value),
++                static_cast<unsigned>(c.search_remaining),static_cast<int>(failed),static_cast<int>(reached),
++                static_cast<int>(moving),static_cast<unsigned long long>(choice?choice->second.value:0),
++                static_cast<int>(step!=worker.position),
++                static_cast<int>(within_distance(worker.position,target->position,radius,true)),
++                static_cast<int>(within_distance(mouth,partner.mouth_m,radius,true)),
++                static_cast<int>(spatially_clear(mouth,partner.mouth_m)),
++                static_cast<unsigned long long>(dose.total_ug()),
++                static_cast<unsigned long long>(recipient.config.crop_capacity_ug-recipient.crop.total_ug()));
++        }
+         if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
+             !query_worker_motion(other)) {
+             const auto next=local_food_offer(worker);
