@@ -50,7 +50,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v40"), installed.with_stem("antworld_m0_live_v39"), installed.with_stem("antworld_m0_live_v38"), installed.with_stem("antworld_m0_live_v37"), installed.with_stem("antworld_m0_live_v36"), installed.with_stem("antworld_m0_live_v35"), installed.with_stem("antworld_m0_live_v34"), installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
+    paths = (installed.with_stem("antworld_m0_live_v41"), installed.with_stem("antworld_m0_live_v40"), installed.with_stem("antworld_m0_live_v39"), installed.with_stem("antworld_m0_live_v38"), installed.with_stem("antworld_m0_live_v37"), installed.with_stem("antworld_m0_live_v36"), installed.with_stem("antworld_m0_live_v35"), installed.with_stem("antworld_m0_live_v34"), installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
              installed.with_stem("antworld_m0_live_v28"), installed.with_stem("antworld_m0_live_v26"), installed.with_stem("antworld_m0_live_v25"),
              installed.with_stem("antworld_m0_live_v24"), installed.with_stem("antworld_m0_live_v23"),
              installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),

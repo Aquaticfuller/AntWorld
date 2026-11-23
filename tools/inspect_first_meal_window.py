@@ -5,13 +5,42 @@ from collections import Counter
 from contextlib import closing
 from hashlib import sha256
 import json
+from math import dist
+from pathlib import Path
 
 from op0 import DAY
-from op0.codec import ACTS, KINDS, OUTCOMES, PHASES, PROGRAMS, STAGES, checkpoint
+from op0.codec import ACTS, CASTES, DEATHS, KINDS, OUTCOMES, PHASES, PROGRAMS, STAGES, checkpoint, require
 from op0.live import NativeCore, ROOT, core_path
 from tools.compare_m0_worker_rhythm import facts
 from tools.measure_first_meal import TREATMENTS, WORLD_BASES
 from tools.measure_social_crop import observed_adults
+
+
+def founder_death(core, trial):
+    birth = core.call(trial["command"])
+    require(sha256(birth).hexdigest()==trial["initial_sha256"], "Trial identity mismatch")
+    event, time, reason = trial["queen_death"]
+    for t in range(4*DAY,time-1,4*DAY):
+        core.call(f"ADVANCE {t}")
+        core.call("COMPACT_HISTORY")
+    raw = core.call(f"ADVANCE {time-1}")
+    frame = checkpoint(raw)
+    founder, = [i for i,a in frame["ants"].items() if CASTES[a["caste"]]=="Queen"]
+    adults = observed_adults(core,frame)
+    for i,row in adults.items():
+        ant = frame["ants"][i]
+        row.update(program=PROGRAMS[ant["program"]], external_load_ug=ant["carried_ug"],
+                   physiology_cut=list(map(int,core.call(f"FOUNDING_BALANCE {i}").split())),
+                   gap_to_founder_mm=1000*dist(row["mouth_m"],adults[founder]["mouth_m"]))
+    access = core.call("MEAL_ACCESS").decode().splitlines()
+    require(core.call("FRAME")==raw,"Read changed world")
+    end = checkpoint(core.call(f"ADVANCE {time}"))
+    death, = [f for f in facts(core,end["cursor"],frame["cursor"]) if f.id==event]
+    require(death.actor==founder and KINDS[death.kind]=="AntDied" and DEATHS[death.payload]==reason,
+            "Founder death does not reproduce")
+    return dict(physics=trial["physics"],seed=trial["seed"],supply=trial["supply"],
+                predeath_sha256=sha256(raw).hexdigest(),death=[event,time,reason],founder=founder,adults=adults,
+                pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],access=access)
 
 
 def inspect(core, model, seed, start, end, wide):
@@ -53,14 +82,20 @@ def inspect(core, model, seed, start, end, wide):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("model",choices=TREATMENTS)
-    parser.add_argument("seed",type=int)
-    parser.add_argument("start",type=int)
-    parser.add_argument("end",type=int)
-    parser.add_argument("--wide",action="store_true")
+    modes=parser.add_subparsers(dest="mode",required=True)
+    window=modes.add_parser("window")
+    window.add_argument("model",choices=TREATMENTS)
+    window.add_argument("seed",type=int)
+    window.add_argument("start",type=int)
+    window.add_argument("end",type=int)
+    window.add_argument("--wide",action="store_true")
+    modes.add_parser("death").add_argument("receipt",type=Path)
     args=parser.parse_args()
-    if not 0<=args.start<args.end<=args.start+4:
+    if args.mode=="window" and not 0<=args.start<args.end<=args.start+4:
         parser.error("Choose an observation window of at most four days")
     with closing(NativeCore(core_path(), ROOT/"out")) as core:
-        result=inspect(core,args.model,args.seed,args.start,args.end,args.wide)
+        if args.mode=="window":
+            result=inspect(core,args.model,args.seed,args.start,args.end,args.wide)
+        else:
+            result=founder_death(core,json.loads(args.receipt.read_text(encoding="utf-8-sig")))
     print(json.dumps(result,separators=(",",":")))

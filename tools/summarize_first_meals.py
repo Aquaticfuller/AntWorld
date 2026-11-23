@@ -7,6 +7,9 @@ from pathlib import Path
 from op0 import DAY
 from op0.codec import require
 
+MODELS = {56:"checked-offer", 57:"local-departure", 58:"meal-rendezvous", 59:"first-meal",
+          60:"responsive-meal", 61:"work-face", 62:"local-crop-return"}
+
 
 def outcome(row):
     lives = row["lives"].values()
@@ -46,18 +49,20 @@ def outcome(row):
 def paired(rows):
     output = [outcome(r) for r in rows]
     seeds = (1,2,3,17,29)
-    for physics in {r["physics"] for r in rows}:
+    require({r["physics"] for r in rows}==set(MODELS), "Missing treatment")
+    for physics, model in MODELS.items():
         cases = [r for r in rows if r["physics"]==physics]
         require(len({(r["seed"],r["supply"]) for r in cases})==len(cases), "Duplicate world")
-        long = any(r["census"][-1]["day"]==730 for r in cases)
+        long = physics not in (57,58)
         expected = {(s,"nearby") for s in (seeds if long else (1,2))}
         if long:
             expected.add((2,"absent"))
         require({(r["seed"],r["supply"]) for r in cases}==expected, "Incomplete treatment panel")
         for r in cases:
-            _,_,seed,temp,rh,door,trail,access,supply,air,ground,_,wick = r["command"].split()
-            require((int(seed),temp,rh,door,trail,access,supply,air,ground,wick)==
-                    (r["seed"],"250","80","plugged","1955","reachable",r["supply"],"sheltered","mineral","wet-wick"),
+            kind,_,seed,temp,rh,door,trail,access,supply,air,ground,arm,wick = r["command"].split()
+            require((kind,int(seed),temp,rh,door,trail,access,supply,air,ground,arm,wick)==
+                    ("NEW_PROVISIONED_NEST",r["seed"],"250","80","plugged","1955","reachable",r["supply"],
+                     "sheltered","mineral",model,"wet-wick"),
                     "Mismatched environment")
             require(r["census"][-1]["day"]==(730 if long else 90), "Truncated simulation")
     return output

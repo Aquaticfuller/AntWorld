@@ -418,6 +418,13 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     read_connectors(r,*s,limits);
     if (founding) read_founding(r, *s, limits, frame || resume, resupply ? FoundingProfile::resupply_version : uptake ? FoundingProfile::uptake_version : dietary ? FoundingProfile::dietary_version : provisioning ? FoundingProfile::provisioning_version : early_access ? FoundingProfile::early_access_version :
                                persistence ? FoundingProfile::persistence_version : FoundingProfile::version);
+    // Care precedes founding in the wire format. Validate the cross-reference
+    // once the authoritative founder ID is available.
+    if (sustained_supply(*s)) for (const auto& [id,care]:s->care) {
+        if (care.profile.context==CareContext::FoundingQueen &&
+            (care.act==CareAct::ApproachNestmate || care.act==CareAct::YieldToCarrier))
+            ensure(s->founding && s->founding->founder==id,"founder approach has a different owner");
+    }
     ensure(care_contract || has_maternal_reserve(*s)==guarded,"noncanonical maternal allocation schema");
     for (const auto& [id,cycle]:s->resource_cycles) { (void)id; introduced=sum(introduced,cycle.config.reserve); }
     ensure(m.living == living && m.ledger == FoodLedger{introduced, available, carried, stored}, "food ledger or living count mismatch");

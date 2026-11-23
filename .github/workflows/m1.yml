@@ -67,7 +67,9 @@ jobs:
             op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes `
             op0.tests.test_live.LiveTests.test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake `
             op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction `
-            op0.tests.test_live.LiveTests.test_familiar_return_replays_the_first_reassessment_without_warping_the_worker -v
+            op0.tests.test_live.LiveTests.test_familiar_return_replays_the_first_reassessment_without_warping_the_worker `
+            op0.tests.test_live.LiveTests.test_first_meal_versions_and_read_only_access `
+            op0.tests.test_live.LiveTests.test_founder_and_worker_both_approach_the_verified_meal_and_resume -v
       - name: Replay physics 36 and verify canonical archives
         shell: pwsh
         run: |

@@ -712,6 +712,15 @@ class LiveTests(unittest.TestCase):
                 self.assertEqual(core.call(f"ADVANCE {6*DAY}"),future)
                 self.assertEqual(core.call("CHECK_LEDGERS"),b"")
 
+    def test_founder_and_worker_both_approach_the_verified_meal_and_resume(self):
+        from tools.verify_first_meal import verify
+
+        if not self.live.core().local_crop_return:
+            self.skipTest("Build the local crop return Core")
+        witness = json.loads((ROOT / "research/single_nest/FIRST_MEAL_ORAL_WITNESS.json").read_bytes())
+        actual = verify(BINARY, witness["trial"], self.folder)
+        self.assertEqual(json.loads(json.dumps(actual)), witness["verified"])
+
     def test_collected_meal_reaches_a_newly_eclosed_worker(self):
         from tools.trace_social_crop_meal import trace
         from tools.verify_protected_habitat import rows

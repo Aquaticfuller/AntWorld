@@ -82,8 +82,9 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
              (motion && ((local_traffic(s) && c.act==CareAct::ApproachNestmate) ||
                          (yield_to_loaded(s) && c.act==CareAct::YieldToCarrier)) &&
               (c.profile.context==CareContext::Worker ||
-               ((sustained_supply(s) && c.act==CareAct::YieldToCarrier && s.founding && s.founding->founder==id) ||
-                (meal_rendezvous(s) && c.act==CareAct::ApproachNestmate && s.founding && s.founding->founder==id))) &&
+               (c.profile.context==CareContext::FoundingQueen &&
+                ((sustained_supply(s) && c.act==CareAct::YieldToCarrier) ||
+                 (meal_rendezvous(s) && c.act==CareAct::ApproachNestmate)))) &&
               (!c.enabled || c.target.value))) &&
             c.enrolled_at<=s.m.now && c.began_at<=s.m.now && c.last_worker_contact<=s.m.now &&
             inside(c.familiar_shelter,s.config) && finite(c.destination) && s.care.emplace(id,c).second,"invalid care state");

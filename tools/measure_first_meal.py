@@ -109,6 +109,7 @@ def run(core, seed, model, supply, days, progress=False):
                     for index, value in enumerate(f.mass):
                         entry["mass_ug"][index] += value
                     if f.mass[0] and role=="Queen":
+                        entry.setdefault("first_sugar",stamp[:2])
                         for pair, direction in (((queen,f.actor),"queen_to_worker"), ((f.actor,queen),"worker_to_queen")):
                             step = last_contact_step.get(pair)
                             if step and f.time-step[1][1]<=DAY//2:
