@@ -94,7 +94,7 @@ void WorldRuntime::stop_autonomy(Transaction &tx, EntityId id) {
   a.wake = {};
   tx.autonomy.set(id, a);
 }
-std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref) const {
+std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extended) const {
   const auto& s=*state_;
   const auto ant=query_ant(ref);
   if (!ant || ant->stage!=LifeStage::Adult || !mouth_range(s) || !s.founding_reserves.contains(ref.id)) return {};
@@ -123,8 +123,10 @@ std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref) const {
   d.depot_step=worker_depot_step(a).has_value();
   const auto& g=s.geometry->config;
   if (const auto origin=nearest_grid_point(a.position,g,true)) {
-      for (int dx=-4;dx<=4;++dx) for (int dz=-4;dz<=4;++dz) {
-          const auto site=physical({origin->x+dx,origin->y,origin->z+dz},g);
+      const auto extent=extended ? std::min(32,static_cast<int>(radius/g.quantum_m)) : 4;
+      for (int dx=-extent;dx<=extent;++dx) for (int dz=-extent;dz<=extent;++dz)
+        for (int dy=0;dy<=(extended?2:0);++dy) {
+          const auto site=physical({origin->x+dx,origin->y+dy,origin->z+dz},g);
           if (!within_distance(a.position,site,radius,true)) continue;
           const bool clear=site==a.position || clear_worker_site(a,site,true);
           if (clear && site!=a.position) ++d.clear_steps;
@@ -716,6 +718,21 @@ void WorldRuntime::resolve_autonomy_wakes(
           choice.resting_site=contact->first;
           choice.contact_target=contact->second;
           choice.transit=CareAct::ApproachNestmate;
+        }
+      }
+    }
+    if (departure_review(s) && choice.behavior==IndividualBehavior::Excavate &&
+        p.behavior!=IndividualBehavior::Excavate && excavation!=s.excavators.end() && excavation->second.path_size) {
+      const auto& work=excavation->second;
+      const auto end=physical(work.path[work.path_size-1],s.geometry->config);
+      if (ant.position!=end) {
+        // An off-depot worker cannot restart its old dig from a different berth.
+        // Keep the itinerary. Only an actual local return can make it usable again.
+        choice.behavior=IndividualBehavior::Rest;
+        if (within_distance(ant.position,end,s.care_profile->perception_radius_m,true) &&
+            clear_worker_site(ant,end,true)) {
+          choice.resting_site=end;
+          choice.transit=CareAct::DepotApproach;
         }
       }
     }

@@ -39,7 +39,7 @@ struct MealAccess {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef) const;
+    [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
     static constexpr std::size_t max_records = 65536;

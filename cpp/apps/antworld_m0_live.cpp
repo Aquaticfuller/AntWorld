@@ -711,11 +711,12 @@ int main() {
                          << ' ' << reserve->lipid_ug << ' ' << reserve->mobile_protein_ug;
                     for (const auto amount:p->crop.components()) data << ' ' << amount;
                     message("OK",data.str());
-                } else if (command=="MEAL_ACCESS") {
+                } else if (command=="MEAL_ACCESS" || command=="MEAL_ACCESS_WIDE") {
                     end(request);
                     std::ostringstream rows;
+                    const auto id=world->summary().world;
                     for (const auto& ant:world->ant_states()) {
-                        const auto d=world->query_meal_access({world->summary().world,ant.id});
+                        const auto d=world->query_meal_access({id,ant.id},command=="MEAL_ACCESS_WIDE");
                         if (!d) continue;
                         rows << ant.id.value << ' ' << d->depot_visible << ' ' << d->at_berth << ' ' << d->route
                              << ' ' << d->care_busy << ' ' << d->active << ' ' << d->needs_carbs << ' ' << d->needs_water
