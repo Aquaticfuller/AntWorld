@@ -145,9 +145,13 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
     if (!supply.total_ug()) return {};
     const auto donor=*query_body({s.world,ant.id});
     const auto radius=s.care_profile->perception_radius_m;
+    // The spatial index stores body centers. An adult mouth can be inside
+    // sensing range even when the center of a long queen is outside it.
+    const double index_radius=mouth_range(s) ? radius+portable_care_distance(ant.position,donor.mouth_m)+
+        queen_segments.front().forward_offset_m+queen_segments.front().half_axes_m.x : radius;
     std::optional<std::pair<std::int64_t,EntityId>> nearest;
     std::vector<std::pair<std::int64_t,EntityId>> alternatives;
-    for (const auto ref:query_neighborhood({s.world,ant.id},radius).ants) {
+    for (const auto ref:query_neighborhood({s.world,ant.id},index_radius).ants) {
         if (urgent_foundress && !founding_foundress(ref.id)) continue;
         const auto peer=*query_ant(ref);
         if (peer.id==ant.id || peer.colony!=ant.colony || peer.stage!=LifeStage::Adult ||
@@ -184,7 +188,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
     const auto reach=portable_care_distance(adult.position,pose.mouth_m);
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
-    if (!stage && portable_care_distance(adult.position,target)>radius) {
+    if (!stage && !(partner && mouth_range(s)) && portable_care_distance(adult.position,target)>radius) {
         // Approach a familiar place using only this body's next visible step.
         // Its current stock and any obstacles at the remote site are unknown.
         auto best=adult.position;
@@ -214,6 +218,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         }
     }
     const auto occupied=[&](const BodyPose& candidate) {
+        if (partner && mouth_range(s) && physical_overlap(candidate,*partner)) return true;
         return std::any_of(nearby.begin(),nearby.end(),[&](const auto& peer){return physical_overlap(candidate,peer);});
     };
     const auto contact_point=[&](const BodyPose& body) {
@@ -946,6 +951,12 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     const auto from=c.act==CareAct::ArrangeBrood?query_ant({s.world,c.target})->position:a.position;
     if (c.target.value) {
         const auto b=*query_ant({s.world,c.target});
+        const bool food_approach=mouth_range(s) && c.act==CareAct::ApproachNestmate && c.search_remaining &&
+            a.stage==LifeStage::Adult && b.stage==LifeStage::Adult;
+        const auto adult_mouth_visible=[&] {
+            const auto donor=query_body({s.world,a.id})->mouth_m, receiver=query_body({s.world,b.id})->mouth_m;
+            return within_distance(donor,receiver,cfg.perception_radius_m,true) && spatially_clear(donor,receiver);
+        };
         if (!b.alive()) outcome=Outcome::DeadActor;
         else if ((handles_brood(c.act) || c.act==CareAct::ApproachBrood) && !brood(b.stage)) outcome=Outcome::InvalidStage;
         else if (c.act==CareAct::CloseWorkerContact && (b.stage!=LifeStage::Adult || b.caste!=Caste::Worker)) outcome=Outcome::InvalidStage;
@@ -953,6 +964,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
                  !spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position) ||
                  !(handles_brood(c.act)?(c.carrying_brood && anatomical_nest(s) ?
                     valid_grip(a.position,b.position,c.grip_offset,s.config,true):brood_contact(a,b)):
+                    food_approach ? adult_mouth_visible() :
                     within_distance(a.position,b.position,(c.act==CareAct::ApproachBrood || c.act==CareAct::ApproachNestmate ||
                                   c.act==CareAct::YieldToCarrier)?cfg.perception_radius_m:
                                   s.config.contact_distance_m,s.config.continuous_spatial_motion))) outcome=Outcome::OutOfReach;

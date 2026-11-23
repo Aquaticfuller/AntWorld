@@ -482,7 +482,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "chamber-return" ? tr("Chamber food sharing · Physics 54") :
+    const nutrition = data.habitat?.nutrition === "mouth-range" ? tr("Oral perception trial · Physics 55") :
+        data.habitat?.nutrition === "chamber-return" ? tr("Chamber food sharing · Physics 54") :
         data.habitat?.nutrition === "crop-exchange" ? tr("Local crop exchange · Physics 53") :
         data.habitat?.nutrition === "social-crop" ? tr("Liquid food sharing · Physics 52") :
         data.habitat?.nutrition === "callow" ? tr("New worker hydration trial · Physics 50") :
