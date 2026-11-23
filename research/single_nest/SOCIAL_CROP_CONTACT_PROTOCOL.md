@@ -1,0 +1,9 @@
+# Contact and crop fullness follow-up
+
+Physics 52, seed 3, days 46 to 49 produced 3,497 µg of gross sugar transfers in **each** direction between workers 9 and 12, with zero net transfer between the pair during that interval. The receipt records gross flow. Reciprocal re-offering of a meal can inflate it substantially. Source commit 7e4df349 preserves this experiment.
+
+Test a separate Physics 53 candidate on the same five two-year pairs and seed-2 absent control. Keep the original control, growth criterion, supply, developmental costs and lethal thresholds. Compare gross and net mouth-to-mouth flows, subsequent absorption and adult starvation in the presence of sugar. Preserve all outcomes.
+
+Use the existing crop capacity and per-action handling limit to ingest collected liquid in bounded portions. For adult exchanges, cap each payable ingredient at half the positive difference between the donor and recipient crops for that ingredient. This uncalibrated equal-portion rule prevents immediate reversal of the same meal between otherwise unchanged adults. Retain larval demand and the donor's own maintenance reserve. When a locally perceived adult is reachable by several legal steps, let a donor continue its approach within the existing care search budget, rechecking the target and its willingness after each step. A blocked nearer adult may not mask a reachable second candidate. Check for failures before the first collection separately.
+
+The worker experiments in black garden ants support oral dissemination. Individual crop fullness influenced exchange volumes in *Camponotus sanctus*. Neither result specifies a half-difference coefficient for *Lasius niger*. The coefficient is an engineering bound with a calculable no-reversal property. [Greenwald et al.](https://doi.org/10.7554/eLife.31730) [Lasius experiment](https://doi.org/10.1038/s41598-019-52019-6)
