@@ -710,6 +710,18 @@ int main() {
                          << ' ' << reserve->lipid_ug << ' ' << reserve->mobile_protein_ug;
                     for (const auto amount:p->crop.components()) data << ' ' << amount;
                     message("OK",data.str());
+                } else if (command=="MEAL_ACCESS") {
+                    end(request);
+                    std::ostringstream rows;
+                    for (const auto& ant:world->ant_states()) {
+                        const auto d=world->query_meal_access({world->summary().world,ant.id});
+                        if (!d) continue;
+                        rows << ant.id.value << ' ' << d->depot_visible << ' ' << d->at_berth << ' ' << d->route
+                             << ' ' << d->care_busy << ' ' << d->active << ' ' << d->needs_carbs << ' ' << d->needs_water
+                             << ' ' << d->depot_step << ' ' << d->wick << ' ' << d->at_wick << ' ' << d->clear_steps
+                             << ' ' << d->sensed_cap_stances << ' ' << d->direct_cap_stances << ' ' << d->payable_sugar_ug << '\n';
+                    }
+                    message("OK",rows.str());
                 } else if (command=="BODY_STATES") {
                     end(request);
                     std::ostringstream data;

@@ -29,9 +29,17 @@ struct WorldSnapshot {
     bool operator==(const WorldSnapshot&) const = default;
 };
 
+struct MealAccess {
+    bool depot_visible{}, at_berth{}, route{}, care_busy{}, active{}, needs_carbs{}, needs_water{};
+    bool depot_step{}, wick{}, at_wick{};
+    unsigned clear_steps{}, sensed_cap_stances{}, direct_cap_stances{};
+    std::uint64_t payable_sugar_ug{};
+};
+
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
+    [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
     static constexpr std::size_t max_records = 65536;

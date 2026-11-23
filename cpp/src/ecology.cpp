@@ -94,6 +94,48 @@ void WorldRuntime::stop_autonomy(Transaction &tx, EntityId id) {
   a.wake = {};
   tx.autonomy.set(id, a);
 }
+std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref) const {
+  const auto& s=*state_;
+  const auto ant=query_ant(ref);
+  if (!ant || ant->stage!=LifeStage::Adult || !mouth_range(s) || !s.founding_reserves.contains(ref.id)) return {};
+  const auto& a=*ant;
+  const auto p=*query_physiology(ref);
+  const auto& colony=s.colonies.rows[s.colonies.index.at(a.colony)];
+  const auto mouth=query_body(ref)->mouth_m;
+  const auto depot=depot_mouth_target(a,colony.nest_position);
+  const auto radius=s.care_profile->perception_radius_m;
+  MealAccess d;
+  d.depot_visible=within_distance(mouth,depot,radius,true) && spatially_clear(mouth,depot);
+  d.at_berth=at_foraging_home(a);
+  d.route=a.caste==Caste::Worker && can_forage(a);
+  d.care_busy=care_owned(s,a.id);
+  d.active=active_expenditure(p);
+  const auto horizon=a.caste==Caste::Queen?p.config.absorption_period:worker_timing(s,a.caste)->check_interval;
+  const auto need=founding_resupply_shortfall(s.founding->profile,p,s.founding_reserves.at(a.id),
+                                             a.caste==Caste::Queen,horizon);
+  d.needs_carbs=need.carbs_ug!=0;
+  d.needs_water=need.water_ug!=0;
+  if (const auto wick=local_wick_contact(a,p)) {
+      d.wick=true;
+      d.at_wick=mouth_at_supply(a,depot_mouth_target(a,*wick));
+  }
+  d.payable_sugar_ug=founding_gift_supply(s.founding->profile,p).carbs_ug;
+  d.depot_step=worker_depot_step(a).has_value();
+  const auto& g=s.geometry->config;
+  if (const auto origin=nearest_grid_point(a.position,g,true)) {
+      for (int dx=-4;dx<=4;++dx) for (int dz=-4;dz<=4;++dz) {
+          const auto site=physical({origin->x+dx,origin->y,origin->z+dz},g);
+          if (!within_distance(a.position,site,radius,true)) continue;
+          const bool clear=site==a.position || clear_worker_site(a,site,true);
+          if (clear && site!=a.position) ++d.clear_steps;
+          if (shallow_soil_cap(site)) {
+              ++d.sensed_cap_stances;
+              if (clear) ++d.direct_cap_stances;
+          }
+      }
+  }
+  return d;
+}
 void WorldRuntime::resolve_autonomy_wakes(
     Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
   profiling::Scope profile(profiling::Category::Policy);

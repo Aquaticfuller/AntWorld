@@ -1,0 +1,5 @@
+# Responsive contact and first-exit follow-up
+
+The initial local departure treatment did not produce a dig or collection in supplied seed 1. The separate rendezvous treatment produced paid meals in seed 2, but no recorded founder approach by day 90. Preserve these trials. Test the existing foundress dietary maintenance/refill signal when considering an available donor, and a prompt individual review after actual mouth contact. The donor must independently be free, have a payable crop and successfully complete the existing delayed oral transaction. A currently unavailable donor may refuse.
+
+Inspect local terrain, reachable work stances, physical clearance, supplies and ongoing commitments in the stranded workers. Only use locally traversable stances and actual terrain edits for any exit search. Keep the original five prospective paired seeds, missing-feeder control, growth decision, initial supplies, physical sizes and metabolic costs. An empty handoff and an empty personal crop can invite local exploration before acute deficiency. No guaranteed route, guaranteed opening or survival. Preserve all earlier screens and compare the revised joint model separately.
