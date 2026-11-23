@@ -1231,8 +1231,11 @@ class LiveTests(unittest.TestCase):
                 self.live.write("seek", payload)
         self.assertEqual(self.live.status(), before)
 
-        self.live.write("seek", {"targets": ["hatch", "egg"]})
-        cancelled = self.live.write("clock", {"running": False})
+        # Exercise cancellation before the first search slice; the clock thread
+        # can otherwise legitimately commit a slice between these two calls.
+        with self.live.lock:
+            self.live.write("seek", {"targets": ["hatch", "egg"]})
+            cancelled = self.live.write("clock", {"running": False})
         self.assertEqual((cancelled["fast_forward"]["state"], cancelled["time_ms"], cancelled["rate"]),
                          ("cancelled", before["time_ms"], 1))
 

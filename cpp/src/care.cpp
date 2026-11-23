@@ -140,7 +140,8 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref) const {
     const auto& s=*state_;
     const auto worker=query_ant(ref);
     if (!worker || worker->caste!=Caste::Worker || worker->stage!=LifeStage::Adult ||
-        !mouth_range(s) || !s.founding || !s.founding_reserves.contains(ref.id)) return {};
+        !mouth_range(s) || !s.care_profile || !s.geometry || !s.founding ||
+        !s.founding_reserves.contains(ref.id)) return {};
     const AntRef founder{s.world,s.founding->founder};
     const auto queen=query_ant(founder);
     if (!queen || queen->stage!=LifeStage::Adult || queen->colony!=worker->colony) return {};

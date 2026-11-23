@@ -54,6 +54,7 @@ def inspect(core, model, seed, start, end, wide):
         core.call(f"ADVANCE {day*DAY}")
         core.call("COMPACT_HISTORY")
     actions, decisions, first = Counter(), Counter(), {}
+    partner_actions={}
     cuts = []
     previous = None
     for day in (start,end):
@@ -76,11 +77,16 @@ def inspect(core, model, seed, start, end, wide):
                     key=f"{f.actor}/{ACTS[act]}/{PHASES[phase]}/{OUTCOMES[f.outcome]}"
                     actions[key]+=1
                     first.setdefault(key,[f.id,f.time,list(f.position)])
+                    if ACTS[act]=="Approach a nestmate":
+                        pair=f"{f.actor}/{f.observation[2]}/{PHASES[phase]}/{OUTCOMES[f.outcome]}"
+                        record=partner_actions.setdefault(pair,{"count":0,"first":[f.id,f.time]})
+                        record["count"]+=1
+                        record["last"]=[f.id,f.time]
                 if KINDS[f.kind]=="ForagingDecision":
                     decisions[f"{f.actor}/{f.mode}/{f.reason}"]+=1
         previous=frame["cursor"]
     return dict(command=command,physics=frame["physics"],seed=seed,wide=wide,cuts=cuts,
-                actions=actions,first=first,foraging_modes_reasons=decisions)
+                actions=actions,first=first,partner_actions=partner_actions,foraging_modes_reasons=decisions)
 
 
 if __name__=="__main__":
