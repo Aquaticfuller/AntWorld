@@ -576,6 +576,12 @@ class LiveTests(unittest.TestCase):
         self.assertEqual([s["stock_ug"] for s in below], [(0, 0, 1_500_000, 0)])
         dry = [s for s in start["sources"].values() if s["initial_ug"][1] and not s["initial_ug"][0]]
         self.assertEqual(len(dry), 1)
+        self.assertEqual(feeder["initial_ug"][0], 6_000)
+        day_one = checkpoint(core.call(f"ADVANCE {DAY}"))
+        releases = [f.mass for f in facts(core, day_one["cursor"], start["cursor"])
+                    if KINDS[f.kind] == "ResourceReleased"]
+        self.assertEqual(sum(mass[0] for mass in releases), 1_500)
+        self.assertEqual(sum(mass[1] for mass in releases), 750)
         raw = core.call(f"ADVANCE {49 * DAY}")
         self.live.publish(raw)
         cutoff = self.live.frame["cursor"]
