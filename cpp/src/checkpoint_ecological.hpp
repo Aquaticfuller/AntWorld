@@ -33,6 +33,7 @@ inline constexpr unsigned sustained_nest_schema = 40, sustained_nest_physics = 4
 inline constexpr unsigned protected_nest_schema = 41, protected_nest_physics = 48;
 inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics = 49;
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
+inline constexpr unsigned social_crop_schema = 45, social_crop_physics = 52;
 inline constexpr unsigned meal_search_schema = 44, meal_search_physics = 51;
 
 inline bool micro_world_version(unsigned version) {
@@ -41,6 +42,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SocialCrop) return social_crop_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealSearch) return meal_search_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::CallowHydration) return callow_hydration_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalExcavation) return local_excavation_physics;
@@ -69,6 +71,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SocialCrop) return social_crop_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealSearch) return meal_search_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::CallowHydration) return callow_hydration_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalExcavation) return local_excavation_schema;

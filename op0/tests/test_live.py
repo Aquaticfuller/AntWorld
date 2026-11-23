@@ -629,6 +629,48 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
         self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_social_load_has_a_source_and_survives_both_save_formats(self):
+        core = self.live.core()
+        if not core.social_crop:
+            self.skipTest("Build the social crop Core")
+        self.live.write("single-nest", {"model": "social-crop", "seed": 3, "supply": "nearby", "wick": "wet-wick"})
+        self.live.write("clock", {"running": False})
+        self.assertEqual(self.live.frame["physics"], 52)
+        raw = core.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(raw)
+        ledger = {}
+        last_source = {}
+        loads = 0
+        cursor = self.live.frame["cursor"]
+        for f in facts(core, cursor):
+            kind = KINDS[f.kind]
+            mass = ledger.setdefault(f.actor, [0] * 4)
+            if kind == "FoodCollected":
+                last_source[f.actor] = f.resource
+                for i, amount in enumerate(f.mass):
+                    mass[i] += amount
+            elif kind in ("CargoIngested", "FoodDelivered"):
+                if kind == "CargoIngested" and f.resource:
+                    self.assertEqual(f.resource, last_source[f.actor])
+                    self.assertEqual((f.mass[1], f.mass[3]), (0, 0))
+                    self.assertGreater(f.mass[0] + f.mass[2], 0)
+                    loads += 1
+                for i, amount in enumerate(f.mass):
+                    mass[i] -= amount
+                self.assertGreaterEqual(min(mass), 0)
+        self.assertGreater(loads, 0)
+        for mode in ("snapshot", "archive"):
+            self.live.save("Paid liquid load", False, mode)
+        expected = core.call(f"ADVANCE {50 * DAY}")
+        events = core.call(f"FACTS_AFTER {cursor} 512")
+        self.assertTrue(events)
+        for mode in ("snapshot", "archive"):
+            self.live.load("Paid liquid load", mode)
+            self.assertEqual(core.call("FRAME"), raw)
+            self.assertEqual(core.call(f"ADVANCE {50 * DAY}"), expected)
+            self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), events)
+            self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_local_worker_meal_search_restores_its_next_decisions(self):
         core = self.live.core()
         if not core.meal_search:

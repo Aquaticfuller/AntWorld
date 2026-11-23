@@ -229,7 +229,8 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 const auto p=*query_physiology({s.world,ant.id});
                 const auto demand=at_source?nutrient_demand(p,ant.stage):
                     founding_resupply_shortfall(s.founding->profile,p,*query_founding({s.world,ant.id}),false,p.config.absorption_period);
-                const auto need=ingredient_min(ant.carried_food,demand);
+                auto need=social_crop_intake(s,ant,p);
+                if (!need.total_ug()) need=ingredient_min(ant.carried_food,demand);
                 r.cargo_meal_ug=std::min({need.total_ug(),p.config.transfer_limit_ug,p.config.crop_capacity_ug-p.crop.total_ug()});
             }
         }

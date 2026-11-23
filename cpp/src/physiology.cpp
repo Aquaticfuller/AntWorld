@@ -320,8 +320,13 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         }
     } else if (e.kind == ScheduledEvent::Kind::IngestCargo) {
         supply=ant.carried_food;
-        if (mouth_access(s) && s.foragers.contains(e.actor) && s.foragers.at(e.actor).action==e.id)
-            supply=ingredient_min(supply,nutrient_demand(p,ant.stage));
+        if (mouth_access(s) && s.foragers.contains(e.actor) && s.foragers.at(e.actor).action==e.id) {
+            const auto liquid=social_crop_intake(s,ant,p);
+            if (liquid.total_ug()) {
+                supply=liquid;
+                f.resource=s.foragers.at(e.actor).last_collected;
+            } else supply=ingredient_min(supply,nutrient_demand(p,ant.stage));
+        }
     }
     else {
         const auto& colony = s.colonies.rows[s.colonies.index.at(ant.colony)];

@@ -16,7 +16,7 @@ from tools.compare_m0_worker_rhythm import facts
 
 DAYS = (7, 14, 30, 49, 55, 60, 90, 112, 150, 163, 180, 226, 286, 365, 730)
 WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800, "nearby": 3 * 2**32 + 9800}
-TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow", "meal-search")
+TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow", "meal-search", "social-crop")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 NO_LEGAL_STEP = FORAGING_REASONS.index("No legal step")
@@ -182,7 +182,7 @@ def history(stream, through, queen, individual_records=False):
                 **({"first_brood_lives": lives} if individual_records else {}))
 
 
-def measure(core, seed, supply, treatment, days, wick="small-wick", individual_records=False):
+def measure(core, seed, supply, treatment, days, wick="small-wick", individual_records=False, observer=None):
     case_id = WORLD_BASES[supply] + seed + TREATMENTS.index(treatment) * (2**34)
     if wick == "wet-wick":
         case_id += 2**39
@@ -218,7 +218,11 @@ def measure(core, seed, supply, treatment, days, wick="small-wick", individual_r
             if day in checkpoints:
                 states.append(census(frame))
             for fact in facts(core, frame["cursor"], after):
+                if observer is not None:
+                    observer.event(fact, queen)
                 yield fact, frame
+            if observer is not None:
+                observer.check(frame)
             after = frame["cursor"]
             _, _, encoded, _ = map(int, core.call("HISTORY_STORAGE").split())
             history_peak = max(history_peak, encoded)

@@ -25,6 +25,27 @@ struct FoundingRation {
 };
 enum class FoundingEggFuel { None, Lipid, Body };
 
+// One ordinary transfer-sized mouthful can travel in the crop for nestmates.
+// Dissolved sugar and water share a load; the protein fraction stays in cargo.
+inline FoodMass social_crop_intake(const auto& s,const AntState& ant,const PhysiologyState& p) {
+    if (!social_crop(s) || !s.foragers.contains(ant.id)) return {};
+    const auto& trip=s.foragers.at(ant.id);
+    if (!trip.enabled || !trip.last_collected.value) return {};
+    const auto stock=s.foods.rows[s.foods.index.at(trip.last_collected)].initial;
+    if (!stock.carbs_ug || !stock.water_ug) return {};
+    const auto& cargo=ant.carried_food;
+    const bool inbound=s.connectors.contains(ant.id) && s.connectors.at(ant.id).returning;
+    // A purely liquid last portion retains its return itinerary in the
+    // connector before the external load disappears.
+    if (!inbound && !cargo.protein_ug) return {};
+    const auto filled=p.crop.carbs_ug+p.crop.water_ug;
+    if (filled>=p.config.transfer_limit_ug) return {};
+    const auto room=p.config.crop_capacity_ug-p.crop.total_ug();
+    const FoodMass liquid{cargo.carbs_ug,0,cargo.water_ug,0};
+    const auto amount=std::min({liquid.total_ug(),room,p.config.transfer_limit_ug-filled});
+    return amount ? portion(liquid,amount) : FoodMass{};
+}
+
 inline std::uint64_t ceil_div(std::uint64_t n, std::uint64_t d) { return n/d + (n%d != 0); }
 
 inline bool local_founding_provisioning(const auto& world, EntityId id) {

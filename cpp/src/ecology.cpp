@@ -173,20 +173,24 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
+    const bool returned=social_crop(s) && wake.payload && p.behavior==IndividualBehavior::Forage && foraging_home;
     const bool can_provision=!at_wick && !wick_step && local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
         ant.caste==Caste::Worker && p.crop.total_ug() &&
-        stationary && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
-    const auto queen_offer=can_provision ? local_food_offer(ant,true) : std::nullopt;
-    const bool can_feed_brood=can_provision && !queen_offer &&
+        (stationary || returned) && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
+    auto food_offer=can_provision ? local_food_offer(ant,true) : std::nullopt;
+    const bool can_feed_brood=can_provision && !food_offer &&
         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
+    if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
+      food_offer=local_food_offer(ant);
     // An experienced forager at the actual handoff can refill the extra
     // load of carbohydrate that a locally recruited worker could collect.
     const bool repeat_delivery=sustained_supply(s) && wake.payload==carbohydrate_delivery_wake &&
         p.behavior==IndividualBehavior::Forage && foraging_home && can_switch && !urgent &&
+        (!social_crop(s) || (!food_offer && !can_feed_brood)) &&
         colony.nest_food.carbs_ug<std::uint64_t(buffer)+ant.carrying_capacity_ug;
     bool at_meal=false;
     std::optional<PositionM> meal_step;
-    if (!at_wick && !wick_step && !queen_offer && !can_feed_brood &&
+    if (!at_wick && !wick_step && !food_offer && !can_feed_brood &&
         !repeat_delivery && !(sustained_supply(s) && giving_way) &&
         can_switch && !care_owned(s,ant.id) && seeks_nest_meal(ant,p)) {
       at_meal=mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position));
@@ -198,7 +202,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     std::optional<PositionM> food_search_step;
     if (founding_nutrition(s)==FoundingNutrition::MealSearch && ant.caste==Caste::Worker &&
         stationary && can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
-        !at_wick && !wick_step && !at_meal && !meal_step && !queen_offer && !can_feed_brood &&
+        !at_wick && !wick_step && !at_meal && !meal_step && !food_offer && !can_feed_brood &&
         a.decisions%2==0 && s.founding_reserves.contains(ant.id) &&
         founding_resupply_shortfall(s.founding->profile,p,s.founding_reserves.at(ant.id),false,
                                    p.config.absorption_period).carbs_ug) {
@@ -234,7 +238,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (visible && colony.nest_food.carbs_ug<buffer && !urgent) {
         resupply=foraging_home && can_forage(ant);
         if (local_excavation(s) && !resupply && !at_depot && !at_meal && !at_wick &&
-            !meal_step && !wick_step && !queen_offer && !can_feed_brood && excavation==s.excavators.end()) {
+            !meal_step && !wick_step && !food_offer && !can_feed_brood && excavation==s.excavators.end()) {
           const auto& terrain=s.geometry->config;
           const auto nearby=nearest_grid_point(ant.position,terrain,true);
           if (nearby) {
@@ -271,11 +275,11 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.transit=CareAct::DepotApproach;
       choice.meal_steps=s.care_profile->motion->search_steps;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (queen_offer) {
-      choice.contact_target=queen_offer->second;
-      if (queen_offer->first==ant.position) choice.behavior=IndividualBehavior::Nurse;
+    } else if (food_offer) {
+      choice.contact_target=food_offer->second;
+      if (food_offer->first==ant.position) choice.behavior=IndividualBehavior::Nurse;
       else {
-        choice.resting_site=queen_offer->first;
+        choice.resting_site=food_offer->first;
         choice.transit=CareAct::ApproachNestmate;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));

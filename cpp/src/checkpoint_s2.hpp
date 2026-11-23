@@ -213,7 +213,18 @@ template <typename S> void validate_surface_evidence(const S& s) {
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) positions[e.actor] = e.position;
         if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor))
             audit_agents.at(e.actor).enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
-        if (e.kind == FactKind::CargoIngested) cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
+        if (e.kind == FactKind::CargoIngested) {
+            if (e.resource.value) {
+                ensure(social_crop(s) && audit_agents.contains(e.actor) &&
+                       audit_agents.at(e.actor).last_collected == e.resource && remaining.contains(e.resource),
+                       "social crop intake lacks a preceding collection from the same source");
+                const auto& source = s.foods.rows[s.foods.index.at(e.resource)].initial;
+                ensure(source.water_ug && source.carbs_ug && !e.transferred.protein_ug &&
+                       e.transferred.total_ug() == e.transferred.water_ug + e.transferred.carbs_ug,
+                       "social crop intake requires a liquid food component");
+            }
+            cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
+        }
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
         if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
         if (e.kind==FactKind::FoundressWaterIngested || e.kind==FactKind::WorkerWaterIngested)

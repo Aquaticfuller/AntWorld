@@ -251,7 +251,7 @@ def sqlite_inputs(path, *, immutable=False):
             else:
                 require(key(manifest[6]) == 0, "Unexpected legacy prefix in segmented SQLite")
             boundaries = {0: (ZERO, 0)}
-            facts_schema = 10 if tip["physics"] in (47, 48, 49, 50, 51) else min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
+            facts_schema = 10 if tip["physics"] in (47, 48, 49, 50, 51, 52) else min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
             records = (fact_blocks(db, world, boundaries, facts_schema) if version == 2 else legacy_records(db, world))
             capture = dict(kind=f"SQLite v{version}", hashes={}, receipt_verified=False, cuts=[], people=[], comparable=False, case={},
                            facts_expected=digest(checkpoint_history(legacy, tip)) if legacy is not None else None)
