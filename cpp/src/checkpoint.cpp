@@ -197,7 +197,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==first_meal_schema && version==first_meal_physics) ||
+        ensure((outer_schema==responsive_meal_schema && version==responsive_meal_physics) ||
+               (outer_schema==first_meal_schema && version==first_meal_physics) ||
                (outer_schema==rendezvous_schema && version==rendezvous_physics) ||
                (outer_schema==departure_schema && version==departure_physics) ||
                (outer_schema==checked_offer_schema && version==checked_offer_physics) ||
@@ -450,7 +451,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
         } else if (e.kind==ScheduledEvent::Kind::AutonomyWake) {
             ensure(s->social && s->autonomy.contains(e.actor) && s->autonomy.at(e.actor).wake==e.id &&
                 key.phase==Phase::Reschedule && !key.priority && !key.tie &&
-                (extended ? e.payload<=(sustained_supply(*s)?carbohydrate_delivery_wake:completed_return_wake) : !e.payload) &&
+                (extended ? e.payload<=(responsive_meal(*s)?solicited_meal_wake:sustained_supply(*s)?carbohydrate_delivery_wake:completed_return_wake) : !e.payload) &&
                 !e.resource.value && !e.requested_ug &&
                 !e.observed_position_revision && e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,
                 "invalid automatic program wake");

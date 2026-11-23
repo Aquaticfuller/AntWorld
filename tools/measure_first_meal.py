@@ -24,11 +24,22 @@ def run(core, seed, model, supply, days):
     lives, first, mouths, paired_uptake, pending, approaches = {}, {}, {}, {}, {}, {}
     encounters = Counter()
     witnesses = {}
+    last_contact_step = {}
+    meal_sequences = {}
+    previous_cut = None
     previous = 0
     checkpoints = {d for d in (30,45,60,73,90,150,365,730,days) if d <= days}
     for day in sorted(checkpoints | set(range(4, days, 4))):
         raw = core.call(f"ADVANCE {day * DAY}")
         frame = checkpoint(raw)
+        if previous_cut and "last_living_founder_cut" not in result and not census(frame)["queen_alive"]:
+            result["last_living_founder_cut"] = previous_cut
+        if census(frame)["queen_alive"]:
+            previous_cut = {
+                "day": day, "depot_ug": next(iter(frame["colonies"].values()))["stock_ug"],
+                "adults": {i: [a["energy_nj"], a["hydration_ug"], a["crop_ug"], a["position_m"]]
+                           for i, a in frame["ants"].items() if STAGES[a["stage"]]=="Adult"}
+            }
         if day in checkpoints:
             result["census"].append(census(frame))
         while previous < frame["cursor"]:
@@ -72,7 +83,9 @@ def run(core, seed, model, supply, days):
                             start = approaches.pop(f.actor, None)
                             if start and start[0]==bout and f.outcome==0 and list(f.position)!=start[2]:
                                 encounters[direction+"/moved"] += 1
-                                witnesses.setdefault(direction, [start, stamp, target, list(f.position)])
+                                step = [start, stamp, target, list(f.position)]
+                                witnesses.setdefault(direction, step)
+                                last_contact_step[(f.actor, target)] = step
                 if kind == "NutritionTransferred" and sum(f.mass):
                     dst = f.payload
                     if dst == queen:
@@ -86,6 +99,11 @@ def run(core, seed, model, supply, days):
                     entry["last"], entry["count"] = stamp[:2], entry["count"]+1
                     for index, value in enumerate(f.mass):
                         entry["mass_ug"][index] += value
+                    if f.mass[0] and role=="Queen":
+                        for pair, direction in (((queen,f.actor),"queen_to_worker"), ((f.actor,queen),"worker_to_queen")):
+                            step = last_contact_step.get(pair)
+                            if step and f.time-step[1][1]<=DAY//2:
+                                meal_sequences.setdefault(direction, dict(step=step, meal=[*stamp,dst,list(f.mass)]))
                     if f.mass[0]:
                         pending.setdefault(dst, [*stamp, f.mass[0]])
                 if kind in ("PhysiologyUpdated","FoundingBoundaryUptake") and f.mass[0] and f.actor in pending:
@@ -104,7 +122,7 @@ def run(core, seed, model, supply, days):
         cohorts[group] = [len(adults),sum("death" not in l for l in adults)]
     require(sum(x[1] for x in cohorts.values())==result["census"][-1]["workers"], "Individual census mismatch")
     result.update(first=first, lives=lives, mouths=mouths, subsequent_uptake=paired_uptake, encounters=encounters,
-                  movements=witnesses, cohorts_emerged_alive=cohorts, final_sha256=sha256(raw).hexdigest(), facts=previous)
+                  movements=witnesses, step_then_meal=meal_sequences, cohorts_emerged_alive=cohorts, final_sha256=sha256(raw).hexdigest(), facts=previous)
     return result
 
 

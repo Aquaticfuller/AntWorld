@@ -42,7 +42,7 @@ def main():
         stage = Path(temp) / name
         copyfile(source, stage)
         stage.chmod(source.stat().st_mode)
-        installed = (output / name).with_stem("antworld_m0_live_v37")
+        installed = (output / name).with_stem("antworld_m0_live_v38")
         stage.replace(installed)
     print(installed)
 

@@ -685,6 +685,29 @@ class LiveTests(unittest.TestCase):
             self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), events)
             self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_first_meal_versions_and_read_only_access(self):
+        core = self.live.core()
+        if not core.responsive_meal:
+            self.skipTest("Build the responsive meal Core")
+        for model, physics in (("local-departure",57), ("meal-rendezvous",58),
+                               ("first-meal",59), ("responsive-meal",60)):
+            with self.subTest(model=model):
+                self.live.write("single-nest", {"model":model, "seed":2, "supply":"nearby", "wick":"wet-wick"})
+                self.live.write("clock", {"running":False})
+                raw = core.call(f"ADVANCE {5*DAY}")
+                f = checkpoint(raw)
+                self.assertEqual(f["physics"],physics)
+                start = core.call("MEAL_ACCESS")
+                self.assertEqual(len(start.splitlines()),1)
+                self.assertEqual(raw,core.call("FRAME"))
+                self.live.publish(raw)
+                self.live.save(model, False, "snapshot")
+                future = core.call(f"ADVANCE {6*DAY}")
+                self.live.load(model, "snapshot")
+                self.assertEqual(core.call("MEAL_ACCESS"),start)
+                self.assertEqual(core.call(f"ADVANCE {6*DAY}"),future)
+                self.assertEqual(core.call("CHECK_LEDGERS"),b"")
+
     def test_collected_meal_reaches_a_newly_eclosed_worker(self):
         from tools.trace_social_crop_meal import trace
         from tools.verify_protected_habitat import rows

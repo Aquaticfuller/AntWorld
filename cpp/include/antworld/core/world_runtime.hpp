@@ -179,6 +179,7 @@ private:
     [[nodiscard]] bool clear_brood_space(EntityId, PositionM from, PositionM to) const;
     void execute_resource_release(Transaction&, const ScheduledEvent&);
     void stop_reproduction(Transaction&, EntityId);
+    void request_food_review(Transaction&, const AntState& founder, EntityId worker);
     void notify_return(Transaction&, EntityId, bool carbohydrate_delivered);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;

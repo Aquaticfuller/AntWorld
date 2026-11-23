@@ -136,6 +136,29 @@ std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref) const {
   }
   return d;
 }
+void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,EntityId worker) {
+  auto& s=*state_;
+  const auto donor=query_ant({s.world,worker});
+  if (!responsive_meal(s) || !donor || donor->caste!=Caste::Worker || !oral_contact(founder,*donor) ||
+      !s.autonomy.contains(worker) || care_owned(s,worker)) return;
+  const auto p=*query_physiology({s.world,worker});
+  if (active_expenditure(p) || p.behavior==IndividualBehavior::Forage || p.behavior==IndividualBehavior::Excavate ||
+      !founding_gift_supply(s.founding->profile,p).carbs_ug) return;
+  auto a=s.autonomy.at(worker);
+  if (!a.enabled || !s.queue_index.contains(a.wake)) return;
+  const auto key=s.queue_index.at(a.wake);
+  const auto at=after(s.m.now,1);
+  if (key.time<=at) return;
+  tx.remove(key);
+  ScheduledEvent review;
+  review.kind=ScheduledEvent::Kind::AutonomyWake;
+  review.actor=worker;
+  review.issued_at=s.m.now;
+  review.payload=solicited_meal_wake;
+  review.key={at,Phase::Reschedule,0,0,0};
+  a.wake=tx.insert(review);
+  tx.autonomy.set(worker,a);
+}
 void WorldRuntime::resolve_autonomy_wakes(
     Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
   profiling::Scope profile(profiling::Category::Policy);
@@ -157,6 +180,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     CareAct transit{CareAct::NestReposition};
     std::uint8_t meal_steps{};
     bool queen_meal{}, drink{};
+    EntityId solicitation;
   };
   std::vector<Choice> choices(0);
   choices.reserve(wakes.size());
@@ -216,7 +240,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
-    const bool returned=social_crop(s) && wake.payload && p.behavior==IndividualBehavior::Forage && foraging_home;
+    const bool returned=social_crop(s) && wake.payload && wake.payload!=solicited_meal_wake && p.behavior==IndividualBehavior::Forage && foraging_home;
     const bool can_provision=!at_wick && !wick_step && local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
         ant.caste==Caste::Worker && p.crop.total_ug() &&
         (stationary || returned) && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
@@ -271,7 +295,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
-    const auto solicitation=meal_rendezvous(s) && stationary && can_switch && urgent &&
+    const auto solicitation=meal_rendezvous(s) && stationary && can_switch && (urgent || responsive_meal(s)) &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? local_donor(ant) : std::nullopt;
     // ENGINEERING_FIXTURE: a bounded share of idle local work reviews samples
     // an understocked handoff even when other brood work is simultaneously available.
@@ -312,6 +336,45 @@ void WorldRuntime::resolve_autonomy_wakes(
             }
           }
         }
+        if (responsive_meal(s) && review_exit && !opened && !roof_stance && !resupply &&
+            !at_wick && !food_offer && excavation==s.excavators.end()) {
+          const auto& g=s.geometry->config;
+          const auto origin=nearest_grid_point(ant.position,g,true);
+          const auto radius=s.care_profile->perception_radius_m;
+          // Sample reachable bands of the local wall. A berth needs both a
+          // visible roof and clearance for the existing loaded excavation path.
+          // This search reveals neither a surface food location nor a safe exit.
+          if (origin) {
+            std::optional<PositionM> nearest;
+            auto gap=std::numeric_limits<std::int64_t>::max();
+            constexpr std::array<std::pair<int,int>,8> rays{{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}};
+            const auto extent=std::min(32,static_cast<int>(radius/g.quantum_m));
+            for (int ring=0;ring<=extent && !roof_stance;ring+=2) {
+              for (const auto& [x,z]:rays) {
+                for (int dy=0;dy<=2;dy+=2) {
+                  const auto site=physical({origin->x+x*ring,origin->y+dy,origin->z+z*ring},g);
+                  if (!within_distance(ant.position,site,radius,true) || !spatially_clear(mouth,site) ||
+                      !shallow_soil_cap(site)) continue;
+                  if (site==ant.position || clear_worker_site(ant,site,true)) { roof_stance=site; break; }
+                  const auto distance=std::llround(portable_care_distance(ant.position,site)*1'000'000);
+                  if (distance<gap) { nearest=site; gap=distance; }
+                }
+                if (roof_stance || !ring) break;
+              }
+            }
+            if (!roof_stance && nearest) {
+              const auto goal=*nearest;
+              for (std::uint8_t dir=1;dir<=8;++dir) {
+                const auto next=snap_micro(translated(ant.position,scale(body_heading(dir),.001)));
+                const auto remaining=std::llround(portable_care_distance(next,goal)*1'000'000);
+                if (remaining<gap && clear_worker_site(ant,next,true)) {
+                  gap=remaining;
+                  roof_stance=next;
+                }
+              }
+            }
+          }
+        }
         if (!resupply && !at_depot && !roof_stance) resupply_step=worker_depot_step(ant);
       }
       if (!resupply && !resupply_step && !roof_stance && (urgent || ready) && (opened || a.knows_depot) &&
@@ -332,7 +395,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.meal_steps=s.care_profile->motion->search_steps;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (solicitation) {
-      if (solicitation->first!=ant.position) {
+      if (solicitation->first==ant.position) choice.solicitation=solicitation->second;
+      else {
         choice.resting_site=solicitation->first;
         choice.contact_target=solicitation->second;
         choice.transit=CareAct::ApproachNestmate;
@@ -423,7 +487,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       // existing paid return action before assigning a depot-owned program.
       choice.care=true;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (can_switch && wake.payload && s.long_term) {
+    } else if (can_switch && wake.payload && wake.payload!=solicited_meal_wake && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
       ContactSample local;
       if (foraging_home && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
@@ -712,6 +776,10 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (choice.queen_meal) draw_foundress_meal(tx,ant,choice.event.id);
     if (choice.drink) draw_founding_water(tx,choice.event,ant);
     schedule_autonomy(tx, id);
+  }
+  for (const auto& choice:choices) if (choice.solicitation.value) {
+    const auto queen=*query_ant({s.world,choice.event.actor});
+    request_food_review(tx,queen,choice.solicitation);
   }
 }
 } // namespace antworld

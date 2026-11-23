@@ -163,7 +163,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
             const auto p=query_physiology(ref);
             if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug ||
                 !ingredient_min(contact_offer(s,supply,physiology,*p,peer.stage),signaled_need(*p,peer.stage,true)).total_ug()) continue;
-            if (urgent_foundress && !ingredient_min(supply,founding_resupply_shortfall(s.founding->profile,*p,
+            if (urgent_foundress && responsive_meal(s) && !foundress_nest_meal(s.founding->profile,*p,
+                *query_founding(ref),supply,true).carbs_ug) continue;
+            if (urgent_foundress && !responsive_meal(s) && !ingredient_min(supply,founding_resupply_shortfall(s.founding->profile,*p,
                 *query_founding(ref),true,p->config.absorption_period)).total_ug()) continue;
             if (touching) return std::pair{ant.position,peer.id};
         }
@@ -190,7 +192,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
     const auto qp=*query_physiology({s.world,queen.id});
     const auto need=founding_resupply_shortfall(s.founding->profile,qp,s.founding_reserves.at(queen.id),
                                                 true,qp.config.absorption_period);
-    if (!need.carbs_ug || qp.crop.total_ug()>=qp.config.crop_capacity_ug) return {};
+    if ((!responsive_meal(s) && !need.carbs_ug) || qp.crop.total_ug()>=qp.config.crop_capacity_ug) return {};
     const auto radius=s.care_profile->perception_radius_m;
     std::vector<std::pair<std::int64_t,EntityId>> donors;
     const auto padding=portable_care_distance(queen.position,own.mouth_m)+
@@ -202,6 +204,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
         const auto wp=*query_physiology(ref);
         if (wp.behavior==IndividualBehavior::Forage || wp.behavior==IndividualBehavior::Excavate ||
             !contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.stage).carbs_ug) continue;
+        if (responsive_meal(s) && (!signaled_need(qp,queen.stage,true).carbs_ug ||
+            !foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen.id),
+                                founding_gift_supply(s.founding->profile,wp),true).carbs_ug)) continue;
         const auto tip=query_body(ref)->mouth_m;
         if (!within_distance(own.mouth_m,tip,radius,true) || !spatially_clear(own.mouth_m,tip)) continue;
         if (oral_contact(queen,ant)) return std::pair{queen.position,ref.id};
@@ -1214,6 +1219,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             (oral ? oral_contact(worker,*target) && !query_worker_motion(other) :
             within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position));
         if (meal_rendezvous(s) && founding_foundress(worker.id)) {
+            if (reached) request_food_review(tx,worker,c.target);
             if (!failed && !reached && c.search_remaining>1) {
                 const auto donor=local_donor(worker);
                 if (donor && donor->second==c.target && donor->first!=worker.position)
