@@ -245,6 +245,14 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         else {
             r.local=sense({s.world,e.actor});
             const auto decide=[&](const ForagerState& routes,const LocalObservation& cues) {
+                if (local_crop_return(s) && !loaded && routes.trip_moves && routes.last_collected.value &&
+                    cues.current!=routes.path[0] && s.foods.rows[s.foods.index.at(routes.last_collected)].initial.carbs_ug &&
+                    founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug) {
+                    // A liquid social load is internal. Retrace the worker's own outbound path.
+                    auto returning=routes;
+                    returning.mode=BehaviorMode::Return;
+                    return choose_behavior(s.seed,e.actor,false,returning,cues,config,s.ecological.has_value());
+                }
                 return choose_behavior(s.seed,e.actor,loaded,routes,cues,config,s.ecological.has_value());
             };
             r.decision=[&] {

@@ -319,8 +319,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       const bool visible=within_distance(mouth,patch,s.care_profile->perception_radius_m,true) &&
           spatially_clear(mouth,patch);
       const auto opened=!s.geometry_edits.empty();
-      if (visible && colony.nest_food.carbs_ug<buffer && !urgent) {
-        resupply=foraging_home && can_forage(ant);
+      const bool depleted_handoff=visible && colony.nest_food.carbs_ug<buffer;
+      const bool inspect_local_soil=local_crop_return(s) && !visible && review_exit && !p.crop.carbs_ug;
+      if ((depleted_handoff || inspect_local_soil) && !urgent) {
+        resupply=depleted_handoff && foraging_home && can_forage(ant);
         if (local_entrance_work(s) && !resupply && !at_depot && !at_meal && !at_wick &&
             !meal_step && !wick_step && (review_exit || (!food_offer && !can_feed_brood)) && excavation==s.excavators.end()) {
           const auto& terrain=s.geometry->config;
@@ -396,7 +398,7 @@ void WorldRuntime::resolve_autonomy_wakes(
             }
           }
         }
-        if (!resupply && !at_depot && !roof_stance) resupply_step=worker_depot_step(ant);
+        if (depleted_handoff && !resupply && !at_depot && !roof_stance) resupply_step=worker_depot_step(ant);
       }
       if (!resupply && !resupply_step && !roof_stance && (urgent || ready) && (opened || a.knows_depot) &&
           (visible || a.knows_depot) && !foraging_home) {

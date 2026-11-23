@@ -690,6 +690,8 @@ class LiveTests(unittest.TestCase):
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
         models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.local_crop_return:
+            models.append(("local-crop-return",62))
         if core.work_face_search:
             models.append(("work-face",61))
         for model, physics in models:

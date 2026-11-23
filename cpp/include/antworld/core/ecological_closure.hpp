@@ -25,7 +25,7 @@ struct TrailExposure {
     bool operator==(const TrailExposure&) const = default;
 };
 
-enum class FoundingNutrition : std::uint8_t { Original, LocalFeeding, BroodBudget, SustainedSupply, ProtectedFounding, LocalExcavation, CallowHydration, MealSearch, SocialCrop, CropExchange, ChamberReturn, MouthRange, CheckedLarvalOffer, LocalDeparture, MealRendezvous, FirstMeal, ResponsiveMeal, WorkFaceSearch };
+enum class FoundingNutrition : std::uint8_t { Original, LocalFeeding, BroodBudget, SustainedSupply, ProtectedFounding, LocalExcavation, CallowHydration, MealSearch, SocialCrop, CropExchange, ChamberReturn, MouthRange, CheckedLarvalOffer, LocalDeparture, MealRendezvous, FirstMeal, ResponsiveMeal, WorkFaceSearch, LocalCropReturn };
 
 // ENGINEERING_FIXTURE for a single founding chamber and a separate handoff site.
 // The brood site is familiar to the founding queen and her own offspring.
