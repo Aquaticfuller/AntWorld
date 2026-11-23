@@ -302,7 +302,9 @@ void WorldRuntime::resolve_autonomy_wakes(
     // ENGINEERING_FIXTURE: a bounded share of idle local work reviews samples
     // an understocked handoff even when other brood work is simultaneously available.
     const bool review_exit=departure_review(s) && !wake.payload && ready &&
-        (a.decisions+ant.id.value)%4==0;
+        ((a.decisions+ant.id.value)%4==0 ||
+         (work_face_search(s) && ant.caste==Caste::Worker && s.geometry_edits.empty() &&
+          shallow_soil_cap(ant.position)));
     bool resupply=repeat_delivery;
     std::optional<PositionM> resupply_step;
     std::optional<PositionM> roof_stance;
@@ -351,6 +353,23 @@ void WorldRuntime::resolve_autonomy_wakes(
             auto gap=std::numeric_limits<std::int64_t>::max();
             constexpr std::array<std::pair<int,int>,8> rays{{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}};
             const auto extent=std::min(32,static_cast<int>(radius/g.quantum_m));
+            if (work_face_search(s)) {
+              // Interleave every lattice column across eight local reviews.
+              // Thin corner berths can lie between compass rays. Include all
+              // three body heights from the present floor to loaded clearance.
+              const auto strip=static_cast<int>((a.decisions/4+ant.id.value)%8);
+              for (int dx=-extent+strip;dx<=extent;dx+=8) for (int dz=-extent;dz<=extent;++dz) {
+                for (int dy=0;dy<=2;++dy) {
+                  const auto site=physical({origin->x+dx,origin->y+dy,origin->z+dz},g);
+                  const auto distance=std::llround(portable_care_distance(ant.position,site)*1'000'000);
+                  if (distance>=gap || !within_distance(ant.position,site,radius,true) ||
+                      !spatially_clear(mouth,site) || !shallow_soil_cap(site) ||
+                      (site!=ant.position && !clear_worker_site(ant,site,true))) continue;
+                  gap=distance;
+                  roof_stance=site;
+                }
+              }
+            }
             for (int ring=0;ring<=extent && !roof_stance;ring+=2) {
               for (const auto& [x,z]:rays) {
                 for (int dy=0;dy<=2;dy+=2) {
@@ -410,7 +429,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       else if (roof_stance && *roof_stance==ant.position) choice.behavior=IndividualBehavior::Excavate;
       else {
         choice.resting_site=roof_stance ? roof_stance : resupply_step;
-        choice.transit=CareAct::DepotApproach;
+        choice.transit=work_face_search(s) && roof_stance && *roof_stance!=colony.nest_position ?
+                       CareAct::NestReposition : CareAct::DepotApproach;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (food_offer) {

@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::ResponsiveMeal ||
+            habitat->nutrition > FoundingNutrition::WorkFaceSearch ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -125,7 +125,8 @@ inline bool departure_review(const auto& s) {
     return mode==FoundingNutrition::LocalDeparture || mode>=FoundingNutrition::FirstMeal;
 }
 inline bool local_entrance_work(const auto& s) { return local_excavation(s) || departure_review(s); }
-inline bool responsive_meal(const auto& s) { return founding_nutrition(s)==FoundingNutrition::ResponsiveMeal; }
+inline bool work_face_search(const auto& s) { return founding_nutrition(s)==FoundingNutrition::WorkFaceSearch; }
+inline bool responsive_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ResponsiveMeal; }
 inline bool meal_rendezvous(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MealRendezvous; }
 inline bool mouth_range(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MouthRange; }
 

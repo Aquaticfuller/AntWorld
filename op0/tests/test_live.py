@@ -689,8 +689,10 @@ class LiveTests(unittest.TestCase):
         core = self.live.core()
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
-        for model, physics in (("local-departure",57), ("meal-rendezvous",58),
-                               ("first-meal",59), ("responsive-meal",60)):
+        models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.work_face_search:
+            models.append(("work-face",61))
+        for model, physics in models:
             with self.subTest(model=model):
                 self.live.write("single-nest", {"model":model, "seed":2, "supply":"nearby", "wick":"wet-wick"})
                 self.live.write("clock", {"running":False})

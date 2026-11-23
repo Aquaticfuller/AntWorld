@@ -6,6 +6,7 @@ from contextlib import closing
 from hashlib import sha256
 import json
 from pathlib import Path
+import sys
 
 from op0 import DAY
 from op0.codec import CASTES, DEATHS, KINDS, PHASES, STAGES, U32, checkpoint, decode_fact, require
@@ -13,7 +14,7 @@ from op0.live import NativeCore, ROOT, core_path
 from tools.measure_single_nest_lifecycle import COMPACT_BYTES, TREATMENTS, WORLD_BASES, census
 
 
-def run(core, seed, model, supply, days):
+def run(core, seed, model, supply, days, progress=False):
     identity = WORLD_BASES[supply] + seed + TREATMENTS.index(model) * 2**34 + 2**39
     command = f"NEW_PROVISIONED_NEST {identity} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral {model} wet-wick"
     raw = core.call(command)
@@ -30,7 +31,12 @@ def run(core, seed, model, supply, days):
     previous = 0
     checkpoints = {d for d in (30,45,60,73,90,150,365,730,days) if d <= days}
     for day in sorted(checkpoints | set(range(4, days, 4))):
-        raw = core.call(f"ADVANCE {day * DAY}")
+        try:
+            raw = core.call(f"ADVANCE {day * DAY}")
+        except ValueError as error:
+            cut = checkpoint(core.call("FRAME"))
+            raise RuntimeError(f"{model}/{seed}/{supply}: last committed time {cut['time_ms']} ms, "
+                               f"event {cut['cursor']}, advancing to day {day}: {error}") from error
         frame = checkpoint(raw)
         if previous_cut and "last_living_founder_cut" not in result and not census(frame)["queen_alive"]:
             result["last_living_founder_cut"] = previous_cut
@@ -42,6 +48,9 @@ def run(core, seed, model, supply, days):
             }
         if day in checkpoints:
             result["census"].append(census(frame))
+            if progress:
+                print(day, frame["cursor"], result["census"][-1]["workers"],
+                      result["census"][-1]["queen_alive"], file=sys.stderr, flush=True)
         while previous < frame["cursor"]:
             size = min(frame["cursor"] - previous, 8192)
             events = core.call(f"MEAL_EVENTS {previous} {size}")
@@ -133,8 +142,9 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--supply", choices=("nearby","absent"), default="nearby")
     parser.add_argument("--days", type=int, choices=range(1,731), metavar="1..730", default=730)
+    parser.add_argument("--progress", action="store_true", help="Report milestone day, cursor, workers and founder survival on stderr")
     args = parser.parse_args()
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as native:
-        receipt = run(native,args.seed,args.model,args.supply,args.days)
+        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress)
     receipt["executable_sha256"] = sha256(args.core.read_bytes()).hexdigest()
     print(json.dumps(receipt,separators=(",",":")))
