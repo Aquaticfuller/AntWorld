@@ -16,7 +16,7 @@ from tools.compare_m0_worker_rhythm import facts
 
 DAYS = (7, 14, 30, 49, 55, 60, 90, 112, 150, 163, 180, 226, 286, 365, 730)
 WORLD_BASES = {"extended": 9800, "finite": 2**32 + 9800, "absent": 2 * 2**32 + 9800, "nearby": 3 * 2**32 + 9800}
-TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow")
+TREATMENTS = ("reference", "feeding", "budget", "sustained", "protected", "anatomical", "local-dig", "callow", "meal-search")
 EGG, LARVA, PUPA, ADULT, DEAD = range(len(STAGES))
 WORKER, QUEEN = CASTES.index("Worker"), CASTES.index("Queen")
 NO_LEGAL_STEP = FORAGING_REASONS.index("No legal step")
@@ -37,6 +37,7 @@ def history(stream, through, queen, individual_records=False):
     nutrition = dict(queen_nest=[0, 0, 0], queen_worker=[0, 0, 0],
                      queen_larva=[0, 0, 0], worker_larva=[0, 0, 0], larval_uptake=[0, 0, 0])
     first_brood = set()
+    later_depot_feeders = {}
     first_death_ms = None
     first_fed = set()
     first_brood_deaths = Counter()
@@ -48,6 +49,9 @@ def history(stream, through, queen, individual_records=False):
     queen_death = None
     for fact, frame in stream:
         kind = KINDS[fact.kind]
+        if (kind == "NestIngested" and fact.mass[0] and fact.actor in eclosions and
+                fact.actor not in first_brood and fact.actor not in later_depot_feeders):
+            later_depot_feeders[fact.actor] = [fact.id, fact.time, fact.mass[0]]
         if fact.actor in lives and stages.get(fact.actor) == ADULT and kind in (
                 "Moved", "Rested", "WorkerWaterIngested", "FoodCollected", "FoodDelivered",
                 "SoilExcavated", "SoilDropped", "NestIngested", "CargoIngested", "NutritionTransferred"):
@@ -174,7 +178,8 @@ def history(stream, through, queen, individual_records=False):
                 first_brood_fed=len(first_fed), first_brood_juvenile_deaths=first_brood_deaths, soil_drops=soil_drops,
                 delivered_cpw_ug=delivery, nutrition_cpw_ug=nutrition, queen_death=queen_death,
                 last_carbohydrate_delivery_ms=last_carb_delivery,
-                larval_unused_crop=larval_unused_crop, **({"first_brood_lives": lives} if individual_records else {}))
+                larval_unused_crop=larval_unused_crop, later_worker_first_depot_carbs=later_depot_feeders,
+                **({"first_brood_lives": lives} if individual_records else {}))
 
 
 def measure(core, seed, supply, treatment, days, wick="small-wick", individual_records=False):
@@ -273,6 +278,7 @@ def main():
         require(core.variable_nest, "Build the variable-nest live executable first")
         require(args.treatment == "reference" or core.provisioned_nest, "Build the provisioned-nest live executable first")
         require(args.treatment != "local-dig" or core.local_dig, "Build the local excavation executable first")
+        require(args.treatment != "meal-search" or core.meal_search, "Build the worker search executable first")
         require((args.treatment != "callow" and args.wick != "nursery-wick") or core.callow_hydration,
                 "Rebuild the live Core for the worker hydration trial")
         require(args.treatment != "protected" or core.protected_nest, "Build the protected founding executable first")

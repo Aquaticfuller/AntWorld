@@ -1,3 +1,4 @@
+#include "anatomy.hpp"
 #include "behavior_rng.hpp"
 #include "care_internal.hpp"
 #include "ecological_internal.hpp"
@@ -194,6 +195,28 @@ void WorldRuntime::resolve_autonomy_wakes(
         if (next!=ant.position) meal_step=next;
       }
     }
+    std::optional<PositionM> food_search_step;
+    if (founding_nutrition(s)==FoundingNutrition::MealSearch && ant.caste==Caste::Worker &&
+        stationary && can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
+        !at_wick && !wick_step && !at_meal && !meal_step && !queen_offer && !can_feed_brood &&
+        a.decisions%2==0 && s.founding_reserves.contains(ant.id) &&
+        founding_resupply_shortfall(s.founding->profile,p,s.founding_reserves.at(ant.id),false,
+                                   p.config.absorption_period).carbs_ug) {
+      // ENGINEERING_FIXTURE. A short, paid local search for a meal before
+      // discretionary brood work. The bearing has no access to food positions.
+      auto rng=individual_rng(s.seed ^ UINT64_C(0x5345454b4d45414c),ant.id,a.decisions);
+      const auto pose=*query_body({s.world,ant.id});
+      const auto length=std::min(s.care_profile->perception_radius_m,portable_care_distance(pose.mouth_m,pose.abdomen_tip_m));
+      const auto first=bounded_draw(rng,8);
+      for (unsigned offset=0;offset<8;++offset) {
+        const auto bearing=static_cast<std::uint8_t>(1+(first+offset)%8);
+        const auto next=snap_micro(translated(ant.position,scale(body_heading(bearing),length)));
+        if (clear_worker_site(ant,next,true)) {
+          food_search_step=next;
+          break;
+        }
+      }
+    }
     bool resupply=repeat_delivery;
     std::optional<PositionM> resupply_step;
     std::optional<PositionM> roof_stance;
@@ -276,6 +299,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.resting_site=giving_way->first;
       choice.contact_target=giving_way->second;
       choice.transit=CareAct::YieldToCarrier;
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (food_search_step) {
+      choice.resting_site=food_search_step;
+      choice.transit=CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (ant.caste==Caste::Queen) {
       if (!mouth_access(s) && anatomical_nest(s) && can_switch && founding_foundress(ant.id) &&

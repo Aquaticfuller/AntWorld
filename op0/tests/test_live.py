@@ -623,6 +623,26 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
         self.assertEqual(core.call("CHECK_LEDGERS"), b"")
 
+    def test_local_worker_meal_search_restores_its_next_decisions(self):
+        core = self.live.core()
+        if not core.meal_search:
+            self.skipTest("Build the local meal search Core")
+        raw = core.call("NEW_PROVISIONED_NEST 51330 3 250 80 plugged 1955 reachable nearby sheltered mineral meal-search wet-wick")
+        self.live.install(raw, running=False)
+        self.assertEqual(self.live.frame["physics"], 51)
+        raw = core.call(f"ADVANCE {49 * DAY}")
+        self.live.publish(raw)
+        cursor = self.live.frame["cursor"]
+        self.live.save("Local search", False, "snapshot")
+        expected = core.call(f"ADVANCE {50 * DAY}")
+        page = core.call(f"FACTS_AFTER {cursor} 512")
+        self.assertTrue(page)
+        self.live.load("Local search", "snapshot")
+        self.assertEqual(core.call("FRAME"), raw)
+        self.assertEqual(core.call(f"ADVANCE {50 * DAY}"), expected)
+        self.assertEqual(core.call(f"FACTS_AFTER {cursor} 512"), page)
+        self.assertEqual(core.call("CHECK_LEDGERS"), b"")
+
     def test_local_roof_bites_preserve_material_and_resume(self):
         core = self.live.core()
         if not core.local_dig:

@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::CallowHydration ||
+            habitat->nutrition > FoundingNutrition::MealSearch ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -115,7 +115,7 @@ inline FoundingNutrition founding_nutrition(const auto& s) {
 inline bool local_founding_feeding(const auto& s) { return founding_nutrition(s) != FoundingNutrition::Original; }
 inline bool protected_founding(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ProtectedFounding; }
 inline bool local_excavation(const auto& s) { return founding_nutrition(s)==FoundingNutrition::LocalExcavation; }
-inline bool provision_callow_water(const auto& s) { return founding_nutrition(s)==FoundingNutrition::CallowHydration; }
+inline bool provision_callow_water(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::CallowHydration; }
 inline bool sustained_supply(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::SustainedSupply; }
 inline constexpr std::uint64_t completed_return_wake=1, carbohydrate_delivery_wake=2;
 inline bool local_brood_budget(const auto& s) {

@@ -78,7 +78,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 28))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 29))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -105,6 +105,7 @@ class NativeCore:
             self.local_dig = generation >= 25
             self.nearby_feeder = generation >= 26
             self.callow_hydration = generation >= 27
+            self.meal_search = generation >= 28
         except Exception:
             self.close()
             raise

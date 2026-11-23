@@ -52,14 +52,16 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
           python -B -m unittest op0.tests.test_nest_volume `
+            op0.tests.test_live.LiveTests.test_protected_default_and_paid_brood_continue_after_reload `
+            op0.tests.test_live.LiveTests.test_local_roof_bites_preserve_material_and_resume `
+            op0.tests.test_live.LiveTests.test_callow_water_and_nursery_wick_keep_distinct_world_inputs `
+            op0.tests.test_live.LiveTests.test_local_worker_meal_search_restores_its_next_decisions `
             op0.tests.test_live.LiveTests.test_observatory_presets_preserve_native_geometry_and_resources `
             op0.tests.test_live.LiveTests.test_reachable_berth_version_and_readonly_history_survive_restore `
             op0.tests.test_live.LiveTests.test_single_nest_lays_and_transports_brood_before_workers_open_it `
             op0.tests.test_live.LiveTests.test_default_viewer_snapshot_keeps_only_a_tail_and_resumes_with_identical_facts `
             op0.tests.test_live.LiveTests.test_anatomical_nest_commits_birth_carry_and_exact_continuation `
             op0.tests.test_live.LiveTests.test_anatomical_nest_excavates_delivers_and_restores_late `
-            op0.tests.test_live.LiveTests.test_protected_default_and_paid_brood_continue_after_reload `
-            op0.tests.test_live.LiveTests.test_local_roof_bites_preserve_material_and_resume `
             op0.tests.test_live.LiveTests.test_founder_death_shown_in_the_view_matches_its_terminal_budget `
             op0.tests.test_live.LiveTests.test_portable_mouth_approach_keeps_the_first_step_and_canonical_history `
             op0.tests.test_live.LiveTests.test_oral_depot_meal_uptake_and_both_save_modes `
