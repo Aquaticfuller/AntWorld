@@ -640,6 +640,8 @@ class LiveTests(unittest.TestCase):
             models.append(("chamber-return", 54))
         if core.mouth_range:
             models.append(("mouth-range", 55))
+        if core.checked_offer:
+            models.append(("checked-offer", 56))
         for model, physics in models:
             with self.subTest(model=model):
                 self.check_paid_crop_continuation(core, model, physics)

@@ -37,7 +37,7 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range"].includes(model);
+    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer"].includes(model);
     const active = protectedModel || ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
     const wick = liveView.state?.sustained_nest_available && (protectedModel || ["feeding", "budget", "sustained"].includes(model));
@@ -86,6 +86,7 @@ function liveControls() {
     $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
     $("sealed-model").querySelector('[value="callow"]').disabled = !s?.callow_available;
     $("sealed-model").querySelector('[value="chamber-return"]').disabled = !s?.chamber_return_available;
+    $("sealed-model").querySelector('[value="checked-offer"]').disabled = !s?.checked_offer_available;
     $("sealed-model").querySelector('[value="mouth-range"]').disabled = !s?.mouth_range_available;
     $("sealed-model").querySelector('[value="crop-exchange"]').disabled = !s?.crop_exchange_available;
     $("sealed-model").querySelector('[value="social-crop"]').disabled = !s?.social_crop_available;
@@ -483,7 +484,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "mouth-range" ? tr("Oral perception trial · Physics 55") :
+    const nutrition = data.habitat?.nutrition === "checked-offer" ? tr("Larval contact trial · Physics 56") :
+        data.habitat?.nutrition === "mouth-range" ? tr("Oral perception trial · Physics 55") :
         data.habitat?.nutrition === "chamber-return" ? tr("Chamber food sharing · Physics 54") :
         data.habitat?.nutrition === "crop-exchange" ? tr("Local crop exchange · Physics 53") :
         data.habitat?.nutrition === "social-crop" ? tr("Liquid food sharing · Physics 52") :

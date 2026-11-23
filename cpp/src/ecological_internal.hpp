@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::MouthRange ||
+            habitat->nutrition > FoundingNutrition::CheckedLarvalOffer ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -120,7 +120,7 @@ inline bool sustained_supply(const auto& s) { return founding_nutrition(s)>=Foun
 inline bool social_crop(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::SocialCrop; }
 inline bool crop_exchange(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::CropExchange; }
 inline bool chamber_return(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ChamberReturn; }
-inline bool mouth_range(const auto& s) { return founding_nutrition(s)==FoundingNutrition::MouthRange; }
+inline bool mouth_range(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MouthRange; }
 
 inline constexpr std::uint64_t completed_return_wake=1, carbohydrate_delivery_wake=2;
 inline bool local_brood_budget(const auto& s) {

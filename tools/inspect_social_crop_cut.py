@@ -9,7 +9,7 @@ from math import dist
 from pathlib import Path
 
 from op0 import DAY
-from op0.codec import ACTS, CASTES, KINDS, OUTCOMES, PHASES, checkpoint, require
+from op0.codec import ACTS, CASTES, KINDS, OUTCOMES, PHASES, PROGRAMS, checkpoint, require
 from op0.live import NativeCore, ROOT, core_path, live_bodies
 from tools.compare_m0_worker_rhythm import facts
 from tools.measure_social_crop import observed_adults
@@ -27,6 +27,7 @@ def main():
     parser.add_argument("--receipt", type=Path, help="Use a single streamed receipt instead of the published panel")
     parser.add_argument("--until-queen-death", action="store_true", help="Follow actual attempts after the selected cut")
     parser.add_argument("--counts-only", action="store_true", help="Skip the additional replay of individual approach poses")
+    parser.add_argument("--follow-worker", type=int, help="Add a focal worker's real actions and daily commitments")
     args = parser.parse_args()
     if not 0 <= args.day <= 730:
         parser.error("Day must be between 0 and 730")
@@ -59,9 +60,17 @@ def main():
             attempts, starts = [], {}
             acts, queen_acts, failures, last_doses = Counter(), Counter(), Counter(), {}
             samples, other_meals = [], {}
+            focal_cuts, focal_facts, focal_actions, focal_rejections = [], Counter(), Counter(), Counter()
             for time in [*range(frame["time_ms"] + DAY, end, DAY), end]:
                 raw = core.call(f"ADVANCE {time}")
                 frame = checkpoint(raw)
+                focal = frame["ants"].get(args.follow_worker)
+                if focal is not None:
+                    focal_cuts.append({"time_ms": time, "program": PROGRAMS[focal["program"]],
+                                       "position_revision": focal["position_revision"], "energy_nj": focal["energy_nj"],
+                                       "body_water_ug": focal["hydration_ug"], "crop_ug": focal["crop_ug"],
+                                       "cargo_ug": focal["carried_ug"], "active_work": focal["active_work"],
+                                       "carrying_soil": str(args.follow_worker) in frame["soil_carriers"]})
                 if args.counts_only and queen in frame["ants"] and time < end:
                     bodies = observed_adults(core, frame)
                     founder = bodies[queen]
@@ -70,11 +79,17 @@ def main():
                                                           body["crop_ug"][0]] for i, body in bodies.items()
                                                       if int(i) != queen}})
                 for f in facts(core, frame["cursor"], cursor):
+                    if f.actor == args.follow_worker:
+                        focal_facts[KINDS[f.kind]] += 1
+                        if KINDS[f.kind] == "ActionRejected":
+                            focal_rejections[f"{f.payload}/{OUTCOMES[f.outcome]}"] += 1
                     if f.observation:
                         phase, action, target, bout, *_ = f.observation
                         key = "/".join((PHASES[phase], ACTS[action]))
                         if f.actor == queen:
                             queen_acts[key] += 1
+                        if f.actor == args.follow_worker:
+                            focal_actions[key] += 1
                         if target == queen:
                             acts[f"{f.actor}/{key}"] += 1
                             if ACTS[action] == "Approach a nestmate":
@@ -104,6 +119,11 @@ def main():
                        adults_at_death=observed_adults(core, frame))
             if args.counts_only:
                 cut.update(daily_worker_gap_mm_and_crop_sugar_ug=samples, other_transfers=other_meals)
+            if args.follow_worker is not None:
+                require(focal_cuts, "No focal worker observed in the death window")
+                cut.update(focal_worker=args.follow_worker, focal_daily=focal_cuts,
+                           focal_fact_counts=focal_facts, focal_actions=focal_actions,
+                           focal_rejections_by_payload=focal_rejections)
             require(core.call("CHECK_LEDGERS") == b"", "Invalid death-cut resource ledger")
             if attempts and not args.counts_only:
                 core.call(receipt["command"])

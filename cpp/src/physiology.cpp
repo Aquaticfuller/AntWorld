@@ -292,6 +292,17 @@ ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
     e.observed_position_revision = ant->position_revision; e.key = {proposal.execute_at, Phase::Resolution, 0, 0, 0};
     Transaction tx(s, limits_); const auto id = tx.insert(e); tx.commit(); return id;
 }
+bool WorldRuntime::meal_in_reach(const AntState& donor,const AntState& recipient) const {
+    const auto& s=*state_;
+    const bool adult=adult_offers(s) && recipient.stage==LifeStage::Adult;
+    const bool touching=adult ? oral_contact(donor,recipient) :
+        anatomical_nest(s) && recipient.stage==LifeStage::Larva ? brood_contact(donor,recipient) :
+        contact(donor,recipient,s.config,s.social && s.geometry ? nullptr : s.surface.get());
+    return touching && !query_worker_motion({s.world,recipient.id}) &&
+           !(adult_offers(s) && query_worker_motion({s.world,donor.id})) &&
+           (adult || spatially_clear(donor.position,recipient.position));
+}
+
 void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEvent& e, WorldEvent& f) {
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i);
     synchronize_physiology(tx, e.actor); auto p = s.physiology.at(e.actor); f.payload = e.payload;
@@ -301,13 +312,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         const auto recipient = s.ants.get(s.ants.index.at(EntityId{e.payload}));
         if (!recipient.alive()) { f.outcome = Outcome::DeadActor; return; }
         if (recipient.stage != LifeStage::Adult && recipient.stage != LifeStage::Larva) { f.outcome = Outcome::InvalidStage; return; }
-        const bool adult_offer=adult_offers(s) && recipient.stage==LifeStage::Adult;
-        const bool in_contact=adult_offer ? oral_contact(ant,recipient) :
-              anatomical_nest(s) && recipient.stage==LifeStage::Larva?brood_contact(ant,recipient):
-              contact(ant,recipient,s.config,s.social && s.geometry ? nullptr : s.surface.get());
-        if (!in_contact ||
-            query_worker_motion({s.world,recipient.id}) || (adult_offers(s) && query_worker_motion({s.world,ant.id})) ||
-            (!adult_offer && !spatially_clear(ant.position,recipient.position))) { f.outcome=Outcome::OutOfReach; return; }
+        if (!meal_in_reach(ant,recipient)) { f.outcome=Outcome::OutOfReach; return; }
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
@@ -432,10 +437,19 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
             }
             for (const auto id : candidates) {
                 const auto other = s.ants.get(s.ants.index.at(id));
-                if (id == ant.id || !other.alive() || (adult_offers(s) && other.stage==LifeStage::Adult ?
-                    !oral_contact(ant,other) : !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get()))) continue;
+                if (id == ant.id || !other.alive()) continue;
+                const bool checked_larva = founding_nutrition(s)==FoundingNutrition::CheckedLarvalOffer &&
+                    other.stage==LifeStage::Larva;
+                if (checked_larva) {
+                    if (!meal_in_reach(ant,other)) continue;
+                } else if (adult_offers(s) && other.stage==LifeStage::Adult ? !oral_contact(ant,other) :
+                           !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get())) continue;
                 const auto q = *query_physiology({s.world, id});
-                if (!contact_offer(s,supply,p,q,other.stage).total_ug()) continue;
+                const auto offer=contact_offer(s,supply,p,q,other.stage);
+                if (!offer.total_ug()) continue;
+                if (checked_larva && s.social && s.social->demand_sensitive && s.founding_reserves.contains(id) &&
+                    !ingredient_min(offer,founding_larval_demand(s.founding->profile,q,s.founding_reserves.at(id),
+                                                                 provision_callow_water(s))).total_ug()) continue;
                 const bool hungry_larva = other.stage == LifeStage::Larva && supply.protein_ug &&
                     add(q.tissue_protein_ug, q.crop.protein_ug) < q.config.larval_protein_requirement_ug;
                 const bool hungry_adult = other.stage == LifeStage::Adult &&

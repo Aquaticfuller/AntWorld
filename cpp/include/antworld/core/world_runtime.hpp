@@ -186,6 +186,7 @@ private:
     [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
                                            const BodyPose* partner=nullptr, bool patch=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
+    [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false) const;
     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
     [[nodiscard]] PositionM depot_mouth_target(const AntState&, PositionM) const;

@@ -142,6 +142,11 @@ def main():
     require([s["time_ms"] for s in samples] == [d * DAY for d in range(66, 83)] and
             all(s["worker_mouths"]["10"][0] > 0.65 and s["worker_mouths"]["10"][1] > 0 for s in samples),
             "A daily mouth cut is missing or disagrees with the contact interpretation")
+    require(window["focal_worker"] == 10 and window["focal_fact_counts"].get("Moved", 0) == 0 and
+            window["focal_actions"]["Selected/Feed brood"] == window["focal_actions"]["Interrupted/Feed brood"] ==
+            sum(window["focal_rejections_by_payload"].values()) == 1039 and
+            all(k.endswith("/Out of reach") for k in window["focal_rejections_by_payload"]),
+            "Worker 10's completed and rejected actions differ from the recorded failure")
     for r in panel:
         check(r)
         require(r["wick"] == "wet-wick" and r["census"][-1]["day"] == 730, r["command"])
