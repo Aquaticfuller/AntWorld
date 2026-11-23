@@ -277,7 +277,7 @@ class LiveSession:
         self.stopping = Event()
         self.thread = None
         self.worker = None
-        self.founding_capabilities = (False, False, False, False, False, False, False)
+        self.founding_capabilities = (False,) * 8
         self.workdir = None
         self.loaded_copy = None
         self.frame = None
@@ -303,7 +303,8 @@ class LiveSession:
             try:
                 with closing(NativeCore(self.binary, self.binary.parent)) as probe:
                     self.founding_capabilities = (probe.protected_nest, probe.local_dig, probe.nearby_feeder,
-                                                  probe.callow_hydration, probe.social_crop, probe.crop_exchange, probe.chamber_return)
+                                                  probe.callow_hydration, probe.social_crop, probe.crop_exchange,
+                                                  probe.chamber_return, probe.mouth_range)
             except (ValueError, OSError) as exc:
                 self.error = str(exc)
         self.thread = Thread(target=self.run_clock, name="m0-core-clock", daemon=True)
@@ -535,6 +536,7 @@ class LiveSession:
                     nearby_feeder_available=self.worker.nearby_feeder if self.worker else self.founding_capabilities[2],
                     callow_available=self.worker.callow_hydration if self.worker else self.founding_capabilities[3],
                     chamber_return_available=self.worker.chamber_return if self.worker else self.founding_capabilities[6],
+                    mouth_range_available=self.worker.mouth_range if self.worker else self.founding_capabilities[7],
                     crop_exchange_available=self.worker.crop_exchange if self.worker else self.founding_capabilities[5],
                     social_crop_available=self.worker.social_crop if self.worker else self.founding_capabilities[4],
                     sustained_nest_available=self.binary.is_file() and (self.worker is None or self.worker.sustained_nest),

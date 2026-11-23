@@ -37,7 +37,7 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return"].includes(model);
+    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range"].includes(model);
     const active = protectedModel || ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
     const wick = liveView.state?.sustained_nest_available && (protectedModel || ["feeding", "budget", "sustained"].includes(model));
@@ -86,6 +86,7 @@ function liveControls() {
     $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
     $("sealed-model").querySelector('[value="callow"]').disabled = !s?.callow_available;
     $("sealed-model").querySelector('[value="chamber-return"]').disabled = !s?.chamber_return_available;
+    $("sealed-model").querySelector('[value="mouth-range"]').disabled = !s?.mouth_range_available;
     $("sealed-model").querySelector('[value="crop-exchange"]').disabled = !s?.crop_exchange_available;
     $("sealed-model").querySelector('[value="social-crop"]').disabled = !s?.social_crop_available;
     if (!liveView.setupInitialized && s?.single_nest_available) {
