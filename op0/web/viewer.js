@@ -580,7 +580,8 @@ function drawTransferSites(ctx, sites, project, visible, width, height) {
 }
 
 function transferReceipt(e) {
-    if (!e.mass_ug || !["NutritionTransferred", "FoodDelivered", "FoundressNestMeal"].includes(e.kind)) return null;
+    const toCrop = e.kind === "CargoIngested" || e.kind === "NestIngested" || e.kind === "FoundressNestMeal";
+    if (!e.mass_ug || !(toCrop || e.kind === "NutritionTransferred" || e.kind === "FoodDelivered")) return null;
     const individual = id => {
         if (!id) return node("span", tr("Not recorded"));
         const ants = app.live ? liveView.state.ants : app.state?.ants;
@@ -591,8 +592,9 @@ function transferReceipt(e) {
         return control;
     };
     const store = node("span", tr("Nest stock"), "flow-store");
-    const from = e.kind === "FoundressNestMeal" ? store : individual(e.actor);
-    const to = e.kind === "FoodDelivered" ? store : individual(e.kind === "FoundressNestMeal" ? e.actor : e.recipient || e.related);
+    const cargo = e.resource ? tr("Carried food from source #{id}", {id:e.resource}) : tr("Carried food");
+    const from = e.kind === "CargoIngested" ? node("span", cargo, "flow-store") : toCrop ? store : individual(e.actor);
+    const to = e.kind === "FoodDelivered" ? store : individual(toCrop ? e.actor : e.recipient || e.related);
     const card = node("div", null, "food-flow");
     const route = node("div", null, "food-flow-route");
     const arrow = node("span", "→");
@@ -607,6 +609,7 @@ function transferReceipt(e) {
         masses.append(ingredient);
     }
     card.append(route, masses);
+    if (toCrop) card.append(node("p",tr("Entered the recipient's crop"),"flow-contact"));
     const sites = app.live && liveTransferSites(e,liveView.state);
     if (sites) card.append(node("p",tr("At this cut · {measurement}",{measurement:sites.label}),"flow-contact"));
     return card;
