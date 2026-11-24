@@ -136,7 +136,7 @@ bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
     return mouths_meet(donor,receiver) && spatially_clear(donor.mouth_m,receiver.mouth_m);
 }
 
-std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref) const {
+std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignment_probe) const {
     const auto& s=*state_;
     const auto worker=query_ant(ref);
     if (!worker || worker->caste!=Caste::Worker || worker->stage!=LifeStage::Adult ||
@@ -157,8 +157,8 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref) const {
         foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true)).carbs_ug;
     // Isolate geometry from scheduler ownership and dietary eligibility at this cut.
     if (result.visible && !result.at_mouth) {
-        result.queen_can_approach=mouth_approach(*queen,wb.mouth_m,{},&wb)!=queen->position;
-        result.worker_can_approach=mouth_approach(*worker,qb.mouth_m,{},&qb)!=worker->position;
+        result.queen_can_approach=mouth_approach(*queen,wb.mouth_m,{},&wb,false,alignment_probe)!=queen->position;
+        result.worker_can_approach=mouth_approach(*worker,qb.mouth_m,{},&qb,false,alignment_probe)!=worker->position;
     }
     return result;
 }
@@ -249,8 +249,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
 }
 
 PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,std::optional<LifeStage> stage,
-                                     const BodyPose* partner,bool patch) const {
+                                     const BodyPose* partner,bool patch,bool alignment_probe) const {
     const auto& s=*state_;
+    const bool align=partner && (worked_exit(s) || alignment_probe);
     const auto pose=*query_body({s.world,adult.id});
     const auto reach=portable_care_distance(adult.position,pose.mouth_m);
     const auto view=geometry_view(s,limits_);
@@ -329,16 +330,17 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         auto best=adult.position;
         auto gap=std::llround(portable_care_distance(pose.mouth_m,target)*1'000'000);
         if (!partner || !meal_rendezvous(s)) return best;
-        for (const double length:{.001,.0005,.00025}) for (std::uint8_t dir=1;dir<=8;++dir) {
+        for (const double length:{.001,.0005,.00025,.000125,.0000625}) for (std::uint8_t dir=1;dir<=8;++dir) {
+            if (length<.00025 && !align) continue;
             auto candidate=adult;
             candidate.position=snap_micro(translated(adult.position,scale(body_heading(dir),length)));
-            const auto heading=body_travel_heading(view,adult,candidate.position,actor_facing(s,adult.id));
+            const auto heading=body_travel_heading(view,adult,candidate.position,actor_facing(s,adult.id),align);
             const auto body=body_pose(candidate,heading,attachment(view,candidate,heading));
             const auto distance=std::llround(portable_care_distance(body.mouth_m,target)*1'000'000);
             if (distance>=gap || occupied(body) || !substrate_clear(view,body,candidate.position) ||
                 !clear_care_segment(adult.position,candidate.position,body_half(adult.id)) ||
                 !anatomy_sweep(view,adult,candidate.position,actor_facing(s,adult.id),heading) ||
-                !clear_worker_traffic(adult,candidate.position,body_half(adult.id)) ||
+                !clear_worker_traffic(adult,candidate.position,body_half(adult.id),true,align) ||
                 !continuous_clear(view,body.mouth_m,target,0)) continue;
             best=candidate.position;
             gap=distance;
@@ -346,6 +348,10 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return best;
     };
     if (!count) return mutual_step();
+    if (align && portable_care_distance(pose.mouth_m,target)<=.002) {
+        const auto step=mutual_step();
+        if (step!=adult.position) return step;
+    }
     const std::span stances(candidates.data(),count);
     struct Node {
         PositionM site, first;
@@ -385,20 +391,21 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
             return to!=current.site && portable_care_distance(adult.position,to)<=radius &&
                 clear_care_segment(current.site,to,body_half(adult.id)) &&
                 anatomy_sweep(view,actor,to,current.facing,heading) &&
-                (!current.initial || clear_worker_traffic(adult,to,body_half(adult.id)));
+                (!current.initial || clear_worker_traffic(adult,to,body_half(adult.id),true,align));
         };
         const auto head=body_pose(actor,current.facing,stage?floor_normal:attachment(view,actor,current.facing));
         if (!current.initial && reaches(head)) return current.first;
         for (const auto& [dir,site]:stances) {
             if (portable_care_distance(current.site,site)<=.002 &&
-                movement_facing(current.site,site)==dir && legal(site,dir))
+                movement_facing(current.site,site)==dir && (!align ||
+                 body_travel_heading(view,actor,site,current.facing,true)==dir) && legal(site,dir))
                 return current.initial?site:current.first;
         }
         const auto examine_steps=[&](double length) {
             for (std::uint8_t dir=1;dir<=(change_level?10:8);++dir) {
                 auto to=snap_micro(translated(current.site,scale(body_heading(dir),length)));
                 if (dir<=8) to.y=current.site.y;
-                const auto heading=body_travel_heading(view,actor,to,current.facing);
+                const auto heading=body_travel_heading(view,actor,to,current.facing,align);
                 if (seen.contains({to.x,to.y,to.z,heading}) || !legal(to,heading)) continue;
                 const auto spent=current.travelled_um+path_length(current.site,to);
                 auto remaining=std::llround(radius*1'000'000);

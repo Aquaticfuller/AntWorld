@@ -132,6 +132,10 @@ bool WorldRuntime::at_foraging_home(const AntState& ant) const {
     if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
     if (sealed_chamber(s) && s.geometry_edits.empty()) return ant.position==depot;
     const auto route=s.connectors.find(ant.id);
+    if (worked_exit(s) && !ant.carried_food.total_ug() && at_worked_site(s,ant.id,ant.position) &&
+        spatially_clear(ant.position,physical(s.excavators.at(ant.id).path[0],s.geometry->config)) &&
+        (route==s.connectors.end() || !s.foragers.at(ant.id).enabled ||
+         (!route->second.cursor && ant.position==route->second.points[0]))) return true;
     if (sustained_supply(s) && route!=s.connectors.end() && !ant.carried_food.total_ug()) {
         if (!s.foragers.at(ant.id).enabled)
             return within_contact(ant.position,depot,s.config) && spatially_clear(ant.position,depot);

@@ -252,7 +252,8 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
     std::optional<PositionM> chamber_step;
-    if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood && a.knows_depot &&
+    if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood &&
+        (a.knows_depot || private_sampling_trip(s,ant)) &&
         (returned || a.decisions%4!=0) && founding_gift_supply(s.founding->profile,p).carbs_ug &&
         portable_care_distance(ant.position,a.enrollment_site)>.002) {
       const auto next=mouth_approach(ant,a.enrollment_site,{});
@@ -321,7 +322,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       const auto opened=!s.geometry_edits.empty();
       const bool depleted_handoff=visible && colony.nest_food.carbs_ug<buffer;
       const bool inspect_local_soil=local_crop_return(s) && !visible && review_exit && !p.crop.carbs_ug;
-      if ((depleted_handoff || inspect_local_soil) && !urgent) {
+      const bool sample_exit=worked_exit(s) && review_exit && !p.crop.carbs_ug && foraging_home &&
+          at_worked_site(s,ant.id,ant.position);
+      if (sample_exit) resupply=can_forage(ant);
+      if (!resupply && (depleted_handoff || inspect_local_soil) && !urgent) {
         resupply=depleted_handoff && foraging_home && can_forage(ant);
         if (local_entrance_work(s) && !resupply && !at_depot && !at_meal && !at_wick &&
             !meal_step && !wick_step && (review_exit || (!food_offer && !can_feed_brood)) && excavation==s.excavators.end()) {

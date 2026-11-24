@@ -45,7 +45,7 @@ struct OralAccess {
 class WorldRuntime {
 public:
     [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false) const;
-    [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker) const;
+    [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker,bool alignment_probe=false) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
     static constexpr std::size_t max_records = 65536;
@@ -193,13 +193,13 @@ private:
     void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
                             EntityId target = {}, std::uint8_t remaining = 0);
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
-    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true) const;
-    [[nodiscard]] bool clear_body_motion(const AntState&, PositionM) const;
+    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true,bool alignment_probe=false) const;
+    [[nodiscard]] bool clear_body_motion(const AntState&, PositionM,bool alignment_probe=false) const;
     [[nodiscard]] std::optional<std::uint8_t> emergence_heading(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
     [[nodiscard]] PositionM brood_approach(const CareState&, const AntState&, const AntState&) const;
     [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
-                                           const BodyPose* partner=nullptr, bool patch=false) const;
+                                           const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;

@@ -256,6 +256,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     std::map<EntityId, FoodMass> cargo;
     std::map<EntityId, LifeStage> stages;
     std::map<EntityId,std::uint8_t> headings_at_cut;
+    std::map<EntityId,PositionM> oral_destinations;
     std::set<ScheduledId> completed;
     std::set<ResourceId> present_food;
     SoilLedger ledger;
@@ -311,6 +312,10 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     for (const auto &e : s.journal) {
         if (spatial && e.kind==FactKind::BiologicalObservation) {
             const auto& o=e.observation;
+            if (worked_exit(s) && o.phase==ObservationPhase::Started && o.act==CareAct::ApproachNestmate)
+                oral_destinations[e.actor]=o.destination;
+            if (o.phase==ObservationPhase::Interrupted || o.phase==ObservationPhase::Completed)
+                oral_destinations.erase(e.actor);
             if (anatomical && o.duration_known &&
                 (o.phase==ObservationPhase::Started || o.phase==ObservationPhase::Completed) &&
                 handles_brood(o.act) && o.act!=CareAct::TransportBrood && o.act!=CareAct::PlaceBrood) {
@@ -387,7 +392,8 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 const auto heading=historical_heading(e.random_value,from,e.position);
                 ensure(heading && heading<=facing_down &&
                     (heading==(held_brood.contains(e.actor)?std::max<std::uint8_t>(1,headings_at_cut[e.actor]):
-                    body_travel_heading(view(),past_ant(e.actor),e.position,std::max<std::uint8_t>(1,headings_at_cut[e.actor])))) &&
+                    body_travel_heading(view(),past_ant(e.actor),e.position,std::max<std::uint8_t>(1,headings_at_cut[e.actor]),
+                        oral_destinations.contains(e.actor) && oral_destinations.at(e.actor)==e.position))) &&
                     anatomy_sweep(view(),past_ant(e.actor),e.position,headings_at_cut[e.actor],heading),
                     "historical body crosses solid material");
                 headings_at_cut[e.actor]=heading;

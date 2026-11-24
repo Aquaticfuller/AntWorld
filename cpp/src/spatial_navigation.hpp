@@ -1,6 +1,7 @@
 #pragma once
 #include "geometry_internal.hpp"
 #include "surface_internal.hpp"
+#include "ecological_internal.hpp"
 
 namespace antworld::detail {
 inline bool mixed_navigation(const auto& s) {
@@ -34,6 +35,23 @@ inline PositionM navigation_waypoint(const auto& s,EntityId actor,Cell cell) {
         return link->second.entrance();
     return point;
 }
+// A worker remembers its own paid excavation. The fixed path origin survives
+// task changes. A handoff berth and this private sampling berth are distinct.
+inline bool at_worked_site(const auto& s,EntityId id,PositionM site) {
+    if (!worked_exit(s) || !s.geometry || !s.surface || site.y>=navigation_height(s)) return false;
+    const auto dig=s.excavators.find(id);
+    return dig!=s.excavators.end() && dig->second.digs && dig->second.deliveries &&
+        dig->second.path_size && within_contact(site,physical(dig->second.path[0],s.geometry->config),s.config);
+}
+
+inline bool private_sampling_trip(const auto& s,const AntState& ant) {
+    if (!worked_exit(s)) return false;
+    const auto link=s.connectors.find(ant.id);
+    const auto home=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+    return link!=s.connectors.end() && !within_contact(link->second.points[0],home,s.config) &&
+        at_worked_site(s,ant.id,link->second.points[0]);
+}
+
 inline WorldEvent forager_started(const AntState& ant,Cell home,bool mixed) {
     WorldEvent fact;
     fact.kind=FactKind::ForagingStarted; fact.actor=ant.id; fact.colony=ant.colony;

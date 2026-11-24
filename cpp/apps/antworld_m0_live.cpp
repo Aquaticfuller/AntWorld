@@ -481,7 +481,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v37");
+                message("OK", "antworld.m0.live.v38");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -526,11 +526,12 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="worked-exit" ? FoundingNutrition::WorkedExit :
                         treatment=="local-crop-return" ? FoundingNutrition::LocalCropReturn :
                         treatment=="work-face" ? FoundingNutrition::WorkFaceSearch :
                         treatment=="responsive-meal" ? FoundingNutrition::ResponsiveMeal :
@@ -726,12 +727,12 @@ int main() {
                              << ' ' << d->sensed_cap_stances << ' ' << d->direct_cap_stances << ' ' << d->payable_sugar_ug << '\n';
                     }
                     message("OK",rows.str());
-                } else if (command=="ORAL_ACCESS") {
+                } else if (command=="ORAL_ACCESS" || command=="ORAL_ALIGNMENT_PROBE") {
                     end(request);
                     std::ostringstream rows;
                     const auto id=world->summary().world;
                     for (const auto& ant:world->ant_states()) {
-                        const auto d=world->query_oral_access({id,ant.id});
+                        const auto d=world->query_oral_access({id,ant.id},command=="ORAL_ALIGNMENT_PROBE");
                         if (d) rows << ant.id.value << ' ' << d->visible << ' ' << d->at_mouth << ' '
                                     << d->queen_can_approach << ' ' << d->worker_can_approach << ' '
                                     << d->offered_carbs_ug << ' ' << d->requested_carbs_ug << '\n';

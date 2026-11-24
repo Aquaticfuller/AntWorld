@@ -244,6 +244,14 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         } else if (link && (link->returning || link->cursor+1<link->size)) connector(link->returning);
         else {
             r.local=sense({s.world,e.actor});
+            if (private_sampling_trip(s,ant)) {
+                auto& cues=r.local;
+                const auto end=cues.food.begin()+cues.food_count;
+                cues.food_count=static_cast<std::uint32_t>(std::remove_if(cues.food.begin(),end,[&](const FoodCue& cue) {
+                    const auto& source=s.foods.rows[s.foods.index.at(cue.resource)];
+                    return !source.remaining.carbs_ug || !source.remaining.water_ug;
+                })-cues.food.begin());
+            }
             const auto decide=[&](const ForagerState& routes,const LocalObservation& cues) {
                 if (local_crop_return(s) && !loaded && local_founding_provisioning(s,ant.id) &&
                     routes.trip_moves && routes.last_collected.value &&

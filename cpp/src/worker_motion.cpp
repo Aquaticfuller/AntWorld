@@ -87,7 +87,12 @@ bool supported_wall_segment(const GeometryView& view,PointQ from,PointQ to,int r
 }
 
 std::uint8_t detail::body_travel_heading(const GeometryView& view,const AntState& ant,
-                                        PositionM to,std::uint8_t previous) {
+                                        PositionM to,std::uint8_t previous,bool alignment) {
+    // ENGINEERING_FIXTURE. Tiny stance corrections can translate sideways
+    // without a full body turn. The same swept pose is used at commit/replay.
+    if (alignment && previous>=1 && previous<=8 && to.y==ant.position.y &&
+        within_distance(ant.position,to,.00019,true) && anatomy_sweep(view,ant,to,previous,previous))
+        return previous;
     const auto next=movement_facing(ant.position,to);
     // An ant beside a wall may take a short backward or lateral step before
     // there is enough space to turn its longitudinal body.
@@ -110,12 +115,12 @@ std::optional<BodyPose> WorldRuntime::query_body(AntRef ref) const {
     return body_pose(*ant,facing,attachment(geometry_view(s,limits_),*ant,facing));
 }
 
-bool WorldRuntime::clear_body_motion(const AntState& ant,PositionM to) const {
+bool WorldRuntime::clear_body_motion(const AntState& ant,PositionM to,bool alignment_probe) const {
     const auto& s=*state_;
     const auto facing=actor_facing(s,ant.id);
     return !anatomical_nest(s) || (inside(to,s.config) &&
         anatomy_sweep(geometry_view(s,limits_),ant,to,facing,
-                      to==ant.position?facing:segment_heading(s,ant.id,ant.position,to)));
+                      to==ant.position?facing:segment_heading(s,ant.id,ant.position,to,alignment_probe)));
 }
 
 std::optional<std::uint8_t> WorldRuntime::emergence_heading(const AntState& pupa) const {
@@ -176,16 +181,16 @@ void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM
     tx.autonomy.set(fact.actor,a);
 }
 
-bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half,bool include_plans) const {
+bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half,bool include_plans,bool alignment_probe) const {
     const auto& s=*state_;
     if (!local_traffic(s) || !s.geometry || ant.stage!=LifeStage::Adult) return true;
-    if (!clear_body_motion(ant,to)) return false;
+    if (!clear_body_motion(ant,to,alignment_probe)) return false;
     const auto quantum=s.geometry->config.quantum_m;
     const bool anatomical=anatomical_nest(s);
     const auto reach=distance(ant.position,to)+(ant.caste==Caste::Queen?.007:.0055);
     std::optional<BodyPose> mover;
     if (anatomical) {
-        const auto heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to);
+        const auto heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to,alignment_probe);
         mover=body_pose(ant,heading,attachment(geometry_view(s,limits_),ant,heading));
     }
     for (const auto& row:s.ants.identities) {

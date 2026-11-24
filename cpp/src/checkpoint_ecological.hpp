@@ -35,6 +35,7 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned worked_exit_schema = 56, worked_exit_physics = 63;
 inline constexpr unsigned local_crop_schema = 55, local_crop_physics = 62;
 inline constexpr unsigned work_face_schema = 54, work_face_physics = 61;
 inline constexpr unsigned responsive_meal_schema = 53, responsive_meal_physics = 60;
@@ -54,6 +55,7 @@ inline bool micro_world_version(unsigned version) {
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkedExit) return worked_exit_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalCropReturn) return local_crop_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkFaceSearch) return work_face_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ResponsiveMeal) return responsive_meal_physics;
@@ -93,6 +95,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkedExit) return worked_exit_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalCropReturn) return local_crop_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkFaceSearch) return work_face_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ResponsiveMeal) return responsive_meal_schema;

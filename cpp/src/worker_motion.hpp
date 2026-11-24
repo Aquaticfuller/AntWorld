@@ -40,14 +40,17 @@ inline std::uint8_t actor_facing(const auto& s,EntityId id) {
 inline bool motile_caste(const auto& s,Caste caste) {
     return caste==Caste::Worker || (sealed_chamber(s) && caste==Caste::Queen);
 }
-std::uint8_t body_travel_heading(const GeometryView&,const AntState&,PositionM,std::uint8_t previous);
-inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,PositionM to) {
+std::uint8_t body_travel_heading(const GeometryView&,const AntState&,PositionM,std::uint8_t previous,bool alignment=false);
+inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,PositionM to,bool alignment_probe=false) {
     if (anatomical_nest(s)) {
         const auto previous=std::max<std::uint8_t>(1,actor_facing(s,id));
         if (s.care.contains(id) && s.care.at(id).carrying_brood) return previous;
         auto ant=s.ants.get(s.ants.index.at(id));
         ant.position=from;
-        return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous);
+        const auto care=s.care.find(id);
+        const bool approaching=worked_exit(s) && care!=s.care.end() &&
+            care->second.act==CareAct::ApproachNestmate && care->second.destination==to;
+        return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous,alignment_probe || approaching);
     }
     return movement_facing(from,to);
 }

@@ -203,6 +203,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
     std::map<EntityId,EventId> last_connector_origin;
     if (sustained_supply(s)) for (const auto& e:s.journal)
         if (e.kind==FactKind::ForagingStarted) last_connector_origin[e.actor]=e.id;
+    std::set<EntityId> soil_delivered;
     ForagingCounters counts; bool configured = false;
     const auto portable=s.ecological && s.ecological->portable_field;
     for (const auto& e : s.journal) {
@@ -226,6 +227,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
             cargo[e.actor] = subtract(cargo[e.actor], e.transferred);
         }
         if (e.kind == FactKind::FoodSeeded || e.kind == FactKind::FoodPlaced) remaining[e.resource] = e.transferred;
+        if (worked_exit(s) && e.kind==FactKind::SoilDropped) soil_delivered.insert(e.actor);
         if (e.kind==FactKind::ResourceReleased) remaining[e.resource]=sum(remaining[e.resource],e.transferred);
         if (e.kind==FactKind::FoundressWaterIngested || e.kind==FactKind::WorkerWaterIngested)
             remaining[e.resource]=subtract(remaining[e.resource],e.transferred);
@@ -244,7 +246,8 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 const auto depot=s.colonies.rows[s.colonies.index.at(e.colony)].nest_position;
                 const bool retained=!sustained_supply(s) || last_connector_origin.at(e.actor)==e.id;
                 ensure((retained && link.points[0]==e.position) ||
-                       (sealed_chamber(s) && within_contact(e.position,depot,s.config)),"connector lacks depot evidence");
+                       (sealed_chamber(s) && within_contact(e.position,depot,s.config)) ||
+                       (soil_delivered.contains(e.actor) && at_worked_site(s,e.actor,e.position)),"connector lacks local origin evidence");
                 if (retained) ensure(navigation_cell(s,link.entrance())==home,"connector reaches the wrong surface cell");
                 auto& route=routes[e.actor];
                 route={};

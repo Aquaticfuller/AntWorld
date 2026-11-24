@@ -1,5 +1,6 @@
 #include "state.hpp"
 #include "ecological_internal.hpp"
+#include "spatial_navigation.hpp"
 #include <tuple>
 
 namespace antworld {
@@ -244,6 +245,12 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
             const auto j = s.foods.index.at(e.resource); auto& food = s.foods.rows[j];
             const auto room = ant.carrying_capacity_ug - ant.carried_food.total_ug() - carried_soil_ug(ant.id);
             auto sample = portion(food.remaining, std::min({e.requested_ug, food.remaining.total_ug(), room}));
+            // Away from the communal handoff, sample only liquid that can
+            // enter this worker's crop. Dry components remain at the source.
+            if (private_sampling_trip(s,ant)) {
+                if (!food.initial.carbs_ug || !food.initial.water_ug) sample={};
+                else { sample.protein_ug=0; sample.other_ug=0; }
+            }
             if (crop_exchange(s) && food.initial.carbs_ug && food.initial.water_ug && s.physiology.contains(ant.id)) {
                 const auto& p=s.physiology.at(ant.id);
                 const auto space=p.config.crop_capacity_ug-p.crop.total_ug();

@@ -4,6 +4,7 @@
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
 #include "ecological_internal.hpp"
+#include "spatial_navigation.hpp"
 
 namespace antworld::detail {
 inline constexpr std::uint64_t founding_day_ms = 86'400'000;
@@ -37,7 +38,7 @@ inline FoodMass social_crop_intake(const auto& s,const AntState& ant,const Physi
     const bool inbound=s.connectors.contains(ant.id) && s.connectors.at(ant.id).returning;
     // A purely liquid last portion retains its return itinerary in the
     // connector before the external load disappears.
-    if (!inbound && !cargo.protein_ug) return {};
+    if (!inbound && !cargo.protein_ug && !private_sampling_trip(s,ant)) return {};
     const auto filled=p.crop.carbs_ug+p.crop.water_ug;
     const auto room=p.config.crop_capacity_ug-p.crop.total_ug();
     const FoodMass liquid{cargo.carbs_ug,0,cargo.water_ug,0};
