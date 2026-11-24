@@ -9,8 +9,8 @@ the workspace's portable Clang, CMake and Ninja tools when present.
 From Windows PowerShell at the repository root:
 
 ~~~powershell
-git fetch origin codex/single-nest-first-meal-rendezvous
-git switch codex/single-nest-first-meal-rendezvous
+git fetch origin codex/single-nest-exit-and-oral-access
+git switch codex/single-nest-exit-and-oral-access
 git pull --ff-only
 py -3 -B -m tools.build_m0_live --jobs 4
 .\tools\start_m0.cmd
@@ -31,7 +31,12 @@ uses paid larval provisioning for a larger water reserve at emergence.
 The [paired two-year results](PROTECTED_HABITAT_RESULTS.md) distinguish
 first-brood survival, sustained reproduction and late orphan workers.
 
-For the first external meal, open **Colony setup**, choose **First forage and nest
+To follow a digger's first liquid meal, choose **Worked exit and mouth alignment · Physics 63**,
+a nearby feeder, a wet wick and seed 17 or 29. Advance to soil placement, then to food collection.
+For the founder and a donor approaching each other on separate occasions, use seed 2.
+The [worked-exit results](WORKED_EXIT_RESULTS.md) list the paid events and the 730-day outcomes.
+
+For the earlier first external meal, open **Colony setup**, choose **First forage and nest
 feeding · Physics 62**, select the nearby feeder and wet wick, enter seed 1
 and start a sealed nest. Follow worker 10 opening the nest and worker 8
 collecting food. Founder 2 and worker 8 both approach before the worker's

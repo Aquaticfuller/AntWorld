@@ -1,0 +1,41 @@
+diff --git a/cpp/src/ecology.cpp b/cpp/src/ecology.cpp
+index 7eac413d..859f7b4f 100644
+--- a/cpp/src/ecology.cpp
++++ b/cpp/src/ecology.cpp
+@@ -251,9 +251,11 @@ void WorldRuntime::resolve_autonomy_wakes(
+         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
+     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
+       food_offer=local_food_offer(ant);
++    const bool sampled_exit=private_sampling_trip(s,ant) && s.foragers.at(ant.id).last_collected.value;
++    const bool revisit_sampled_exit=sampled_exit && p.crop.carbs_ug<p.config.transfer_limit_ug;
+     std::optional<PositionM> chamber_step;
+     if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood &&
+-        (a.knows_depot || private_sampling_trip(s,ant)) &&
++        (a.knows_depot || private_sampling_trip(s,ant)) && !revisit_sampled_exit &&
+         (returned || a.decisions%4!=0) && founding_gift_supply(s.founding->profile,p).carbs_ug &&
+         portable_care_distance(ant.position,a.enrollment_site)>.002) {
+       if (private_sampling_trip(s,ant)) chamber_step=worker_depot_step(ant,a.enrollment_site);
+@@ -326,15 +328,17 @@ void WorldRuntime::resolve_autonomy_wakes(
+       const auto opened=!s.geometry_edits.empty();
+       const bool depleted_handoff=visible && colony.nest_food.carbs_ug<buffer;
+       const bool inspect_local_soil=local_crop_return(s) && !visible && review_exit && !p.crop.carbs_ug;
+-      const bool known_source=private_sampling_trip(s,ant) && s.foragers.at(ant.id).last_collected.value;
+-      const bool refill_crop=!p.crop.carbs_ug || (known_source && p.crop.carbs_ug<p.config.transfer_limit_ug);
++      const bool refill_crop=!p.crop.carbs_ug || revisit_sampled_exit;
+       const bool sample_exit=worked_exit(s) && review_exit && refill_crop && foraging_home &&
+           at_worked_site(s,ant.id,ant.position);
+-      if (review_exit && known_source && refill_crop && !foraging_home && !food_offer && !at_wick && !wick_step) {
+-        resupply_step=worker_depot_step(ant,s.connectors.at(ant.id).points[0]);
+-        revisiting_exit=resupply_step.has_value();
+-      }
+       if (sample_exit) resupply=can_forage(ant);
++      if (ready && revisit_sampled_exit && !food_offer && !can_feed_brood && !at_wick && !wick_step) {
++        resupply=foraging_home && can_forage(ant);
++        if (!resupply) {
++          resupply_step=worker_depot_step(ant,s.connectors.at(ant.id).points[0]);
++          revisiting_exit=resupply_step.has_value();
++        }
++      }
+       if (!resupply && !revisiting_exit && (depleted_handoff || inspect_local_soil) && !urgent) {
+         resupply=depleted_handoff && foraging_home && can_forage(ant);
+         if (local_entrance_work(s) && !resupply && !at_depot && !at_meal && !at_wick &&

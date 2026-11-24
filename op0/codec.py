@@ -234,7 +234,7 @@ def checkpoint_header(r):
     return framed, resume, first, tip, outer if ecological else None, version, magic, continuous, hi, lo, seed, time, revision
 
 
-def checkpoint(raw, *, verify_hash=True):
+def checkpoint(raw, *, verify_hash=True, forager_routes=False):
     """Read a committed snapshot, without restoring or advancing a runtime."""
     require(len(raw) >= 124, "Checkpoint is too short")
     content = memoryview(raw)[:-8]
@@ -334,6 +334,7 @@ def checkpoint(raw, *, verify_hash=True):
         identifier = r.uint()
         sources[identifier] = dict(id=str(identifier), position_m=r.position(), initial_ug=r.mass(), stock_ug=r.mass())
     surface = None
+    routes = {}
     if r.flag():
         origin = r.position()
         width, height, step = r.unpack(Struct("<2Id"))
@@ -346,7 +347,22 @@ def checkpoint(raw, *, verify_hash=True):
                        trails_enabled=bool(behavior[0]), memory_enabled=bool(behavior[1]),
                        trail_weight=behavior[-1], trail_half_life_s=behavior[9])
         r.take(14 * 8 + 16)  # Foraging counters and maintenance handle.
-        r.skip_rows(1099)
+        if forager_routes:
+            for _ in range(r.uint()):
+                actor = r.uint()
+                enabled = r.flag()
+                mode, heading = r.unpack(Struct("<2B"))
+                decisions, moves, collections, used, learned = r.unpack(Struct("<3Q2I"))
+                require(actor in ants and actor not in routes and max(used, learned) <= 64,
+                        "Invalid individual trace in checkpoint")
+                path = [r.unpack(Struct("<2i")) for _ in range(used)]
+                r.take((64 - used + 64) * 8)
+                _, source, wake, action = r.unpack(Struct("<4Q"))
+                routes[actor] = dict(enabled=enabled, mode=mode, heading=heading, decisions=decisions,
+                                     trip_moves=moves, collections=collections, path=path,
+                                     last_source=source, wake=wake, action=action)
+        else:
+            r.skip_rows(1099)
         for stride in (32, 16, 24, 24):
             r.skip_rows(stride)
     for _ in range(r.uint()):
@@ -404,4 +420,4 @@ def checkpoint(raw, *, verify_hash=True):
                 soil_carriers=tuple(sorted(soil_carriers, key=int)), first_history_cursor=first,
                 colonies=colonies, ants=ants,
                 sources=sources, living=living, introduced= introduced, available=available, carried=carried, stored=stored,
-                fact_offset=fact_offset, fact_end=fact_end)
+                fact_offset=fact_offset, fact_end=fact_end, **({"forager_routes": routes} if forager_routes else {}))

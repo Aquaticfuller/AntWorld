@@ -748,6 +748,20 @@ class LiveTests(unittest.TestCase):
                              first=dict(FoodCollected=witness["collection"], CargoIngested=witness["intake"]))
                 self.assertEqual(verify_private_trip(BINARY,trial,self.folder),witness)
 
+    def test_worked_exit_founder_and_donor_can_each_initiate_a_paid_meal(self):
+        from tools.verify_first_meal import verify
+
+        if not self.live.core().worked_exit:
+            self.skipTest("Build the worked-exit native core")
+        folder = ROOT / "research/single_nest"
+        rows = (json.loads(line) for line in (folder / "WORKED_EXIT_TRIALS.jsonl").read_text().splitlines())
+        trial = next(r for r in rows if r["seed"] == 2 and r["supply"] == "nearby")
+        witnesses = json.loads((folder / "WORKED_EXIT_WITNESSES.json").read_bytes())["oral_payments"]
+        for direction, expected in zip(("queen_to_worker", "worker_to_queen"), witnesses, strict=True):
+            with self.subTest(direction=direction):
+                actual = verify(BINARY, trial, self.folder, direction)
+                self.assertEqual(json.loads(json.dumps(actual)), expected)
+
     def test_collected_meal_reaches_a_newly_eclosed_worker(self):
         from tools.trace_social_crop_meal import trace
         from tools.verify_protected_habitat import rows

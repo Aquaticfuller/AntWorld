@@ -36,7 +36,10 @@ def verify_private_trip(binary, trial, scratch):
         core.call(f"SAVE {slot}")
         core.call(f"SAVE_SNAPSHOT {slot}")
         after = core.call(f"ADVANCE {ingest[1]}")
-        frame = checkpoint(after)
+        frame = checkpoint(after, forager_routes=True)
+        route = frame["forager_routes"][actor]
+        require(route["enabled"] and route["path"] and route["last_source"] == source and route["collections"] >= 1,
+                "Successful worker has no personal trip or source memory")
         receipts = [f for f in facts(core,frame["cursor"],cut["cursor"]) if f.actor==actor]
         pickup, = [f for f in receipts if f.id==collection[0] and KINDS[f.kind]=="FoodCollected"]
         sip, = [f for f in receipts if f.id==ingest[0] and KINDS[f.kind]=="CargoIngested"]
@@ -77,14 +80,40 @@ def terminal_probe(core, trial, expected):
         "offered_carbs_ug", "requested_carbs_ug"], original=original, candidate=candidate)
 
 
+def verify_reference(replay_dir, trials):
+    """Compare every previously published field, including every recorded debit and death."""
+    receipts = []
+    for old in (trial for trial in trials if trial["physics"] == 62):
+        path = replay_dir / f'local-crop-return-{old["seed"]}-{old["supply"]}.json'
+        new = json.loads(path.read_bytes())
+        require(set(new) == set(old), "A reference field appeared or disappeared")
+        for key in old:
+            if key == "mouths":
+                require(new[key].keys() == old[key].keys(), "Reference recipients changed")
+                for who, flow in old[key].items():
+                    current = dict(new[key][who])
+                    if "first_sugar" not in flow:
+                        current.pop("first_sugar", None)
+                    require(current == flow, "Published recipient payment changed")
+            elif key != "executable_sha256":
+                require(new[key] == old[key], f'Reference {key} changed for {path.name}')
+        receipts.append(dict(seed=new["seed"], supply=new["supply"], facts=new["facts"],
+                             final_sha256=new["final_sha256"], receipt_sha256=sha256(path.read_bytes()).hexdigest(),
+                             executable_sha256=new["executable_sha256"]))
+    return receipts
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
     parser.add_argument("--panel", type=Path, help="Check a complete candidate panel against the frozen reference")
+    parser.add_argument("--reference-reruns", type=Path, help="Directory of the six Physics 62 replay receipts")
     args = parser.parse_args()
     repo = ROOT / "research/single_nest"
     cuts = {r["purpose"]:r["record"] for r in map(json.loads, (repo/"FIRST_MEAL_LOCAL_CUTS.jsonl").read_text().splitlines())}
     trials = list(map(json.loads, (repo/"FIRST_MEAL_TRIALS.jsonl").read_text().splitlines()))
+    if args.reference_reruns:
+        print(json.dumps(verify_reference(args.reference_reruns, trials)), flush=True)
     if args.panel:
         from tools.summarize_first_meals import outcome
         from tools.verify_first_meal import verify_inputs
@@ -102,6 +131,14 @@ def main():
                 summary = outcome(r)
                 if r["supply"]=="absent":
                     require(summary["first_sugar_day"] is None,"Absent source produced sugar")
+                if physics == 63 and r["supply"] == "nearby":
+                    if r["seed"] in (17,29):
+                        require(summary["sugar_before_founder_death"] and "CargoIngested" in r["first"],
+                                "A digger missed its first paid liquid meal")
+                    if r["seed"] == 2:
+                        require({"queen_to_worker","worker_to_queen"} <= r["step_then_meal"].keys()
+                                and summary["sugar_gifts_ug"].get("Queen",0) > 0,
+                                "The paired world lacks actual approaches followed by a positive founder payment")
                 print(json.dumps(summary),flush=True)
         print(json.dumps(verify_inputs(args.core.resolve(), reference+candidate)),flush=True)
     trial = next(r for r in trials if r["physics"] == 62 and r["seed"] == 2 and r["supply"] == "nearby")

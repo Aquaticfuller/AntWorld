@@ -36,14 +36,16 @@ def verify_inputs(binary, trials, scratch=None):
     return {"initial_frames": len(trials), "matched_seed_supply_pairs": len(groups)}
 
 
-def verify(binary, trial, scratch=None):
+def verify(binary, trial, scratch=None, direction=None):
     scratch = scratch or ROOT / "out"
     scratch.mkdir(parents=True,exist_ok=True)
     with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
         initial = core.call(trial["command"])
         require(sha256(initial).hexdigest() == trial["initial_sha256"], "Different world")
         queen, = [i for i,a in checkpoint(initial)["ants"].items() if CASTES[a["caste"]]=="Queen"]
-        sequence = trial.get("step_then_meal", {}).get("queen_to_worker")
+        sequence = trial.get("step_then_meal", {}).get(direction or "queen_to_worker")
+        if direction:
+            require(sequence, "The selected direction has no approach followed by a paid meal")
         uptake = trial["subsequent_uptake"].get(str(queen))
         candidates = [flow["first_sugar"] for key,flow in trial["mouths"].items()
                       if key.endswith("/Queen") and "first_sugar" in flow]
@@ -121,6 +123,8 @@ if __name__ == "__main__":
     parser.add_argument("--physics",type=int,help="Select a world in a JSONL panel")
     parser.add_argument("--seed",type=int)
     parser.add_argument("--supply",choices=("nearby","absent"),default="nearby")
+    parser.add_argument("--direction", choices=("queen_to_worker","worker_to_queen"),
+                        help="Verify a meal after the named individual physically approached")
     parser.add_argument("--inputs", action="store_true", help="Check the complete registered panel's initial conditions")
     parser.add_argument("--core",type=Path,default=core_path())
     args = parser.parse_args()
@@ -134,4 +138,4 @@ if __name__ == "__main__":
         matches = [r for r in rows if (args.physics is None or r["physics"]==args.physics) and
                    (args.seed is None or r["seed"]==args.seed) and r["supply"]==args.supply]
         require(len(matches)==1,"Select one world with --physics, --seed and --supply")
-        print(json.dumps(verify(args.core.resolve(), matches[0])))
+        print(json.dumps(verify(args.core.resolve(), matches[0], direction=args.direction)))

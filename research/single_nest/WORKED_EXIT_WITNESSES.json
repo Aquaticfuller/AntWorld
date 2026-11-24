@@ -175,5 +175,2745 @@
       "after_sha256": "cebee25abfd21e0d6d034fc3f6fec4d01412bcd6d6a62204c3cebf4544a2f27b",
       "command": "NEW_PROVISIONED_NEST 906238109285 29 250 80 plugged 1955 reachable nearby sheltered mineral worked-exit wet-wick"
     }
-  ]
+  ],
+  "oral_payments": [
+    {
+      "seed": 2,
+      "physics": 63,
+      "event": 13106,
+      "time_ms": 3927598939,
+      "donor": 8,
+      "receiver": 2,
+      "mouth_gap_mm": 0.6200489738186915,
+      "debit_ug": [
+        34,
+        0,
+        66,
+        0
+      ],
+      "credit_ug": [
+        34,
+        0,
+        66,
+        0
+      ],
+      "approach_events": {
+        "13091": "queen_to_worker",
+        "13098": "queen_to_worker"
+      },
+      "before_sha256": "537faa55420b1b145862c88c5d7d0056391f45d09761e8f53bce6c107aea93aa",
+      "after_sha256": "7f9e1051d4254b01411b8d3655a061e947d8d23536f6f5bd905717a1b226a19b",
+      "snapshot_bytes": 360525
+    },
+    {
+      "seed": 2,
+      "physics": 63,
+      "event": 13422,
+      "time_ms": 3932014363,
+      "donor": 8,
+      "receiver": 2,
+      "mouth_gap_mm": 0.6200489738186917,
+      "debit_ug": [
+        26,
+        0,
+        0,
+        0
+      ],
+      "credit_ug": [
+        26,
+        0,
+        0,
+        0
+      ],
+      "approach_events": {
+        "13408": "worker_to_queen",
+        "13415": "worker_to_queen"
+      },
+      "before_sha256": "aef213d7abb1513b89d2ee34919f7de871ff6c5d6c40fdbe3c12d5f7f615d313",
+      "after_sha256": "e6bcb8ef394ebba6dc9f158c5c8f0ee112d0c2076d1289baf86f2d7d3e4ed263",
+      "snapshot_bytes": 362582
+    }
+  ],
+  "seed_17_terminal": {
+    "terminal": {
+      "physics": 63,
+      "seed": 17,
+      "supply": "nearby",
+      "predeath_sha256": "939b12aa57e2dfd46379dc5bc81ca388d962cda4b2092d7d95663bb84d8eae89",
+      "death": [
+        58083,
+        6163762376,
+        "Energy depleted"
+      ],
+      "founder": 2,
+      "adults": {
+        "2": {
+          "center_m": [
+            -0.001,
+            -0.004,
+            -0.0032500000000000003
+          ],
+          "mouth_m": [
+            -0.001,
+            -0.004,
+            0.001
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "program": "Paused",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6163762375,
+            24,
+            135,
+            0,
+            335,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.0
+        },
+        "9": {
+          "center_m": [
+            -0.004625,
+            -0.0045000000000000005,
+            0.00075
+          ],
+          "mouth_m": [
+            -0.002825,
+            -0.0045000000000000005,
+            0.00075
+          ],
+          "crop_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6163762375,
+            117181348,
+            66,
+            6,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 1.908697199662639
+        },
+        "11": {
+          "center_m": [
+            0.0025,
+            -0.00425,
+            -0.0066875
+          ],
+          "mouth_m": [
+            0.0012272077938642145,
+            -0.00425,
+            -0.007960292206135786
+          ],
+          "crop_ug": [
+            26,
+            0,
+            0,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6163762375,
+            894922440,
+            113,
+            26,
+            0,
+            26,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 9.236329951684665
+        }
+      },
+      "pantry_ug": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "sources": {
+        "3": {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1500000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1499025,
+            0
+          ]
+        },
+        "4": {
+          "id": "4",
+          "position_m": [
+            0.005,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            1500,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            112100,
+            28125,
+            168150,
+            0
+          ]
+        },
+        "5": {
+          "id": "5",
+          "position_m": [
+            -0.005,
+            0.0,
+            0.02
+          ],
+          "initial_ug": [
+            0,
+            1500,
+            0,
+            0
+          ],
+          "stock_ug": [
+            0,
+            28125,
+            0,
+            0
+          ]
+        },
+        "6": {
+          "id": "6",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            6750,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            126598,
+            0
+          ]
+        },
+        "7": {
+          "id": "7",
+          "position_m": [
+            0.0,
+            0.0,
+            -0.04
+          ],
+          "initial_ug": [
+            0,
+            0,
+            2250,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            42152,
+            0
+          ]
+        }
+      },
+      "access": [
+        "2 1 0 0 0 0 1 0 0 0 0 61 0 0 0",
+        "9 1 0 0 0 0 0 0 0 0 0 27 0 0 0",
+        "11 0 1 0 0 0 0 0 0 0 0 57 0 0 26"
+      ],
+      "oral_pairs": [
+        {
+          "worker": 9,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 0,
+          "requested_carbs_ug": 0
+        },
+        {
+          "worker": 11,
+          "visible": 0,
+          "touching": 0,
+          "queen_has_step": 0,
+          "worker_has_step": 0,
+          "offered_carbs_ug": 13,
+          "requested_carbs_ug": 26
+        }
+      ]
+    },
+    "traffic": {
+      "seed": 17,
+      "interval_ms": [
+        6142162375,
+        6163762375
+      ],
+      "before": {
+        "11": {
+          "program": "Rest",
+          "position_m": [
+            0.0025,
+            -0.00425,
+            -0.0066875
+          ],
+          "crop_ug": [
+            26,
+            0,
+            0,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 2,
+            "decisions": 55,
+            "trip_moves": 0,
+            "collections": 1,
+            "path": [
+              [
+                15,
+                14
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        }
+      },
+      "after": {
+        "11": {
+          "program": "Rest",
+          "position_m": [
+            0.0025,
+            -0.00425,
+            -0.0066875
+          ],
+          "crop_ug": [
+            26,
+            0,
+            0,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 2,
+            "decisions": 55,
+            "trip_moves": 0,
+            "collections": 1,
+            "path": [
+              [
+                15,
+                14
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        }
+      },
+      "event_counts": {
+        "11/Moved/0/0/0": 15
+      },
+      "last_event": {
+        "11/Moved/0/0/0": [
+          58056,
+          6161300830,
+          [
+            0.0025,
+            -0.00425,
+            -0.0066875
+          ]
+        ]
+      },
+      "predeath_sha256": "939b12aa57e2dfd46379dc5bc81ca388d962cda4b2092d7d95663bb84d8eae89"
+    }
+  },
+  "repeat_trip_challenge": {
+    "seed": 17,
+    "command": "NEW_PROVISIONED_NEST 906238109273 17 250 80 plugged 1955 reachable nearby sheltered mineral worked-exit wet-wick",
+    "initial_sha256": "42e0710d1fc2dc8b56d9a4e6d0737b58713147b058193784708deacc88ebe9ba",
+    "final_sha256": "d79442d65801c7e045977d53aa6bceb75997da3b2d42afd1a6451aeb4fc5087e",
+    "day": 75,
+    "event_count": 290701,
+    "queen_death": [
+      212450,
+      6163762376,
+      "Energy depleted"
+    ],
+    "mouths": {},
+    "personal_routes": {
+      "9": {
+        "enabled": false,
+        "mode": 4,
+        "heading": 3,
+        "decisions": 6897,
+        "trip_moves": 0,
+        "collections": 1,
+        "path": [
+          [
+            15,
+            15
+          ]
+        ],
+        "last_source": 4,
+        "wake": 0,
+        "action": 0
+      },
+      "11": {
+        "enabled": false,
+        "mode": 0,
+        "heading": 2,
+        "decisions": 7271,
+        "trip_moves": 0,
+        "collections": 1,
+        "path": [
+          [
+            15,
+            14
+          ]
+        ],
+        "last_source": 4,
+        "wake": 0,
+        "action": 0
+      }
+    },
+    "implementation_patch_sha256": "23db65cfce1e3c0ff43ac2ce86a4a7f7d3c058352ac44416844b07a320740366"
+  },
+  "reference_reruns": [
+    {
+      "seed": 1,
+      "supply": "nearby",
+      "facts": 4956509,
+      "final_sha256": "4fa29254c3cd945fbd9c2d3b87e0207febd4507bd20a497b44e982bf9847f229",
+      "receipt_sha256": "ad85ab6734995b728139104e94c5e62081e096de4e1bce2c66cd3fc58a713da2",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    },
+    {
+      "seed": 2,
+      "supply": "nearby",
+      "facts": 7827604,
+      "final_sha256": "d81d88ca29709c5335270f48dc5e0126bcc84dc422f570222e7343782428ed9f",
+      "receipt_sha256": "edb770199a1e87e4da1c6f22dce6871a876a93da113ebe70343a3ffafb25017d",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    },
+    {
+      "seed": 3,
+      "supply": "nearby",
+      "facts": 127187,
+      "final_sha256": "f2b7d2e4494c7c6c77f236d6257f6660c0a6ebb9824810cab027f9aee12862d6",
+      "receipt_sha256": "979594798d50bbd5490c718a74c96d6add97ec3e917bed6e3cb5c0e400e0f11a",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    },
+    {
+      "seed": 17,
+      "supply": "nearby",
+      "facts": 5762376,
+      "final_sha256": "ffd32d478c8680542044e7b95ce7360ec20c8ba8bf0bbf41f2f57098b9075ba1",
+      "receipt_sha256": "c72177a458808f2dea2b07f1a60cfc44e2706a969ecfa4575c32494c9b9c28e1",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    },
+    {
+      "seed": 29,
+      "supply": "nearby",
+      "facts": 5086039,
+      "final_sha256": "ac72c9d31c9f351e37ac7d0f76851ff191cba6bc459746d33764f32bf5bf765a",
+      "receipt_sha256": "45c7d3919dc478eeb388f26aa0a238594737af525a8ab874501bd5d43553c672",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    },
+    {
+      "seed": 2,
+      "supply": "absent",
+      "facts": 496098,
+      "final_sha256": "737d500019ecefb9418d6825a434f2b3d97a6bbac4a57450693f87d03fa27003",
+      "receipt_sha256": "cf48c18d1ba2006fcd3dc1248214e455efb12fdbb7625a04b3e2633e3b3fcede",
+      "executable_sha256": "ef3e424e337e581a8816fab069c3a860b0a95d861a4ffdd015374a20151e5505"
+    }
+  ],
+  "seed_2_terminal": {
+    "terminal": {
+      "physics": 63,
+      "seed": 2,
+      "supply": "nearby",
+      "predeath_sha256": "dfade043e7169f4f43b6ce5386c6a09fb0be6db201f33af961c8cf31b1b37b2d",
+      "death": [
+        469357,
+        7867222430,
+        "Energy depleted"
+      ],
+      "founder": 2,
+      "adults": {
+        "2": {
+          "center_m": [
+            -0.001,
+            -0.004,
+            -0.002
+          ],
+          "mouth_m": [
+            0.0032500000000000003,
+            -0.004,
+            -0.002
+          ],
+          "crop_ug": [
+            0,
+            85,
+            0,
+            0
+          ],
+          "program": "Paused",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            7867222429,
+            11,
+            2716,
+            0,
+            478,
+            0,
+            85,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.0
+        },
+        "8": {
+          "center_m": [
+            0.0026875000000000002,
+            -0.004,
+            0.0018125
+          ],
+          "mouth_m": [
+            0.0008875000000000003,
+            -0.004,
+            0.0018125
+          ],
+          "crop_ug": [
+            464,
+            0,
+            527,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            7867222429,
+            1987496784,
+            1998,
+            29,
+            0,
+            464,
+            0,
+            527,
+            0
+          ],
+          "gap_to_founder_mm": 4.485149105659699
+        },
+        "9": {
+          "center_m": [
+            0.0031875000000000002,
+            -0.0045000000000000005,
+            0.00075
+          ],
+          "mouth_m": [
+            0.004987500000000001,
+            -0.0045000000000000005,
+            0.00075
+          ],
+          "crop_ug": [
+            447,
+            0,
+            553,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            7867222429,
+            1977785628,
+            1994,
+            13,
+            0,
+            447,
+            0,
+            553,
+            0
+          ],
+          "gap_to_founder_mm": 3.2911101850287543
+        },
+        "10": {
+          "center_m": [
+            0.0022500000000000003,
+            -0.00175,
+            -0.007
+          ],
+          "mouth_m": [
+            0.0009772077938642147,
+            -0.00175,
+            -0.008272792206135787
+          ],
+          "crop_ug": [
+            466,
+            0,
+            0,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            7867222429,
+            1981997763,
+            1760,
+            4,
+            0,
+            466,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 7.041023112703823
+        },
+        "24": {
+          "center_m": [
+            0.002125,
+            -0.0045000000000000005,
+            -0.0004375
+          ],
+          "mouth_m": [
+            0.003925,
+            -0.0045000000000000005,
+            -0.0004375
+          ],
+          "crop_ug": [
+            0,
+            0,
+            25,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            7867222429,
+            31549139,
+            22,
+            0,
+            0,
+            0,
+            0,
+            25,
+            0
+          ],
+          "gap_to_founder_mm": 1.7739873872155913
+        }
+      },
+      "pantry_ug": [
+        0,
+        30663,
+        0,
+        0
+      ],
+      "sources": {
+        "3": {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1500000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1499975,
+            0
+          ]
+        },
+        "4": {
+          "id": "4",
+          "position_m": [
+            -0.005,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            1500,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            131832,
+            3659,
+            197752,
+            0
+          ]
+        },
+        "5": {
+          "id": "5",
+          "position_m": [
+            0.005,
+            0.0,
+            0.02
+          ],
+          "initial_ug": [
+            0,
+            1500,
+            0,
+            0
+          ],
+          "stock_ug": [
+            0,
+            35625,
+            0,
+            0
+          ]
+        },
+        "6": {
+          "id": "6",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            6750,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            160358,
+            0
+          ]
+        },
+        "7": {
+          "id": "7",
+          "position_m": [
+            0.0,
+            0.0,
+            -0.04
+          ],
+          "initial_ug": [
+            0,
+            0,
+            2250,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            53392,
+            0
+          ]
+        }
+      },
+      "access": [
+        "2 1 0 0 0 0 1 0 0 0 0 40 0 0 0",
+        "8 1 0 0 0 0 0 0 1 0 0 8 5 1 464",
+        "9 1 0 0 0 0 0 0 0 0 0 10 0 0 447",
+        "10 0 0 0 0 0 0 0 0 0 0 62 0 0 466",
+        "24 1 0 0 0 0 0 0 0 0 0 9 0 0 0"
+      ],
+      "oral_pairs": [
+        {
+          "worker": 8,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 232,
+          "requested_carbs_ug": 249
+        },
+        {
+          "worker": 9,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 223,
+          "requested_carbs_ug": 249
+        },
+        {
+          "worker": 10,
+          "visible": 0,
+          "touching": 0,
+          "queen_has_step": 0,
+          "worker_has_step": 0,
+          "offered_carbs_ug": 233,
+          "requested_carbs_ug": 249
+        },
+        {
+          "worker": 24,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 0,
+          "requested_carbs_ug": 0
+        }
+      ]
+    },
+    "traffic": {
+      "seed": 2,
+      "interval_ms": [
+        7845622429,
+        7867222429
+      ],
+      "before": {
+        "8": {
+          "program": "Forage",
+          "position_m": [
+            0.0,
+            0.001,
+            0.002
+          ],
+          "crop_ug": [
+            464,
+            0,
+            528,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": true,
+            "mode": 6,
+            "heading": 2,
+            "decisions": 10104,
+            "trip_moves": 0,
+            "collections": 162,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 186287
+          }
+        },
+        "9": {
+          "program": "Forage",
+          "position_m": [
+            -0.005,
+            0.001,
+            0.0
+          ],
+          "crop_ug": [
+            448,
+            0,
+            552,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": true,
+            "mode": 3,
+            "heading": 2,
+            "decisions": 5710,
+            "trip_moves": 0,
+            "collections": 80,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 186289
+          }
+        },
+        "10": {
+          "program": "Rest",
+          "position_m": [
+            0.0022500000000000003,
+            -0.00175,
+            -0.007
+          ],
+          "crop_ug": [
+            469,
+            0,
+            0,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 1,
+            "decisions": 1358,
+            "trip_moves": 0,
+            "collections": 23,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        }
+      },
+      "after": {
+        "8": {
+          "program": "Rest",
+          "position_m": [
+            0.0026875000000000002,
+            -0.004,
+            0.0018125
+          ],
+          "crop_ug": [
+            464,
+            0,
+            527,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 2,
+            "decisions": 10751,
+            "trip_moves": 0,
+            "collections": 163,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        },
+        "9": {
+          "program": "Rest",
+          "position_m": [
+            0.0031875000000000002,
+            -0.0045000000000000005,
+            0.00075
+          ],
+          "crop_ug": [
+            447,
+            0,
+            553,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 2,
+            "decisions": 5745,
+            "trip_moves": 0,
+            "collections": 81,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        },
+        "10": {
+          "program": "Rest",
+          "position_m": [
+            0.0022500000000000003,
+            -0.00175,
+            -0.007
+          ],
+          "crop_ug": [
+            466,
+            0,
+            0,
+            0
+          ],
+          "cargo_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "route": {
+            "enabled": false,
+            "mode": 0,
+            "heading": 1,
+            "decisions": 1358,
+            "trip_moves": 0,
+            "collections": 23,
+            "path": [
+              [
+                15,
+                15
+              ]
+            ],
+            "last_source": 4,
+            "wake": 0,
+            "action": 0
+          }
+        }
+      },
+      "event_counts": {
+        "8/ForagingDecision/6/7/0": 617,
+        "9/ActionRejected/3/0/10": 11,
+        "9/ForagingDecision/3/2/0": 11,
+        "9/FoodCollected/3/0/1": 1,
+        "9/ForagingDecision/6/2/0": 1,
+        "9/CargoIngested/6/0/0": 1,
+        "9/ForagingDecision/4/5/0": 22,
+        "9/Moved/4/0/0": 22,
+        "9/ForagingDecision/0/1/0": 1,
+        "8/ForagingDecision/0/2/0": 1,
+        "8/Moved/0/0/0": 9,
+        "8/ForagingDecision/3/2/0": 1,
+        "8/FoodCollected/3/0/1": 1,
+        "8/ForagingDecision/6/2/0": 1,
+        "8/CargoIngested/6/0/0": 1,
+        "8/ForagingDecision/4/5/0": 25,
+        "8/Moved/4/0/0": 25,
+        "9/Moved/0/0/0": 31,
+        "8/ForagingDecision/5/6/0": 1,
+        "8/FoodDelivered/5/0/0": 1,
+        "8/ForagingDecision/0/1/0": 1
+      },
+      "last_event": {
+        "8/ForagingDecision/6/7/0": [
+          468410,
+          7864184911,
+          [
+            -0.00075,
+            -0.0025,
+            0.00175
+          ]
+        ],
+        "9/ActionRejected/3/0/10": [
+          464241,
+          7845939376,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "9/ForagingDecision/3/2/0": [
+          464244,
+          7845939377,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "9/FoodCollected/3/0/1": [
+          464253,
+          7845969377,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "9/ForagingDecision/6/2/0": [
+          464257,
+          7845969378,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "9/CargoIngested/6/0/0": [
+          464265,
+          7845999378,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "9/ForagingDecision/4/5/0": [
+          464416,
+          7846001309,
+          [
+            -0.003,
+            -0.0032500000000000003,
+            0.00125
+          ]
+        ],
+        "9/Moved/4/0/0": [
+          464419,
+          7846001359,
+          [
+            -0.003,
+            -0.0035,
+            0.00125
+          ]
+        ],
+        "9/ForagingDecision/0/1/0": [
+          464423,
+          7846001360,
+          [
+            -0.003,
+            -0.0035,
+            0.00125
+          ]
+        ],
+        "8/ForagingDecision/0/2/0": [
+          464432,
+          7846028852,
+          [
+            0.0,
+            0.001,
+            0.002
+          ]
+        ],
+        "8/Moved/0/0/0": [
+          469352,
+          7867087788,
+          [
+            0.0026875000000000002,
+            -0.004,
+            0.0018125
+          ]
+        ],
+        "8/ForagingDecision/3/2/0": [
+          464439,
+          7846030011,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "8/FoodCollected/3/0/1": [
+          464443,
+          7846060011,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "8/ForagingDecision/6/2/0": [
+          464447,
+          7846060012,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "8/CargoIngested/6/0/0": [
+          464451,
+          7846090012,
+          [
+            -0.005,
+            0.001,
+            0.0
+          ]
+        ],
+        "8/ForagingDecision/4/5/0": [
+          468500,
+          7864215419,
+          [
+            -0.00075,
+            -0.00375,
+            0.00175
+          ]
+        ],
+        "8/Moved/4/0/0": [
+          468503,
+          7864215520,
+          [
+            -0.00075,
+            -0.004,
+            0.00175
+          ]
+        ],
+        "9/Moved/0/0/0": [
+          469337,
+          7867029961,
+          [
+            0.0031875000000000002,
+            -0.0045000000000000005,
+            0.00075
+          ]
+        ],
+        "8/ForagingDecision/5/6/0": [
+          468507,
+          7864215521,
+          [
+            -0.00075,
+            -0.004,
+            0.00175
+          ]
+        ],
+        "8/FoodDelivered/5/0/0": [
+          468510,
+          7864245521,
+          [
+            -0.00075,
+            -0.004,
+            0.00175
+          ]
+        ],
+        "8/ForagingDecision/0/1/0": [
+          468514,
+          7864245522,
+          [
+            -0.00075,
+            -0.004,
+            0.00175
+          ]
+        ]
+      },
+      "predeath_sha256": "dfade043e7169f4f43b6ce5386c6a09fb0be6db201f33af961c8cf31b1b37b2d"
+    }
+  },
+  "other_terminal_cuts": [
+    {
+      "physics": 63,
+      "seed": 1,
+      "supply": "nearby",
+      "predeath_sha256": "b6d0bfa1dcb052787f82893f4b2eeba37adcac873f42f737733364d65ee33dd5",
+      "death": [
+        749859,
+        6416681374,
+        "Energy depleted"
+      ],
+      "founder": 2,
+      "adults": {
+        "2": {
+          "center_m": [
+            -0.0029375,
+            -0.004,
+            -0.0031875000000000002
+          ],
+          "mouth_m": [
+            6.77038200428276e-05,
+            -0.004,
+            -0.00018229617995717262
+          ],
+          "crop_ug": [
+            0,
+            85,
+            0,
+            0
+          ],
+          "program": "Paused",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6416681373,
+            17,
+            130,
+            0,
+            550,
+            0,
+            85,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.0
+        },
+        "8": {
+          "center_m": [
+            -0.0049375,
+            -0.00175,
+            0.0005
+          ],
+          "mouth_m": [
+            -0.0067375,
+            -0.00175,
+            0.0005
+          ],
+          "crop_ug": [
+            16,
+            0,
+            0,
+            0
+          ],
+          "program": "Nurse",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6416681373,
+            340077574,
+            249,
+            18,
+            0,
+            16,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 7.199918548810789
+        },
+        "9": {
+          "center_m": [
+            -0.0049375,
+            -0.00175,
+            -0.0005
+          ],
+          "mouth_m": [
+            -0.0067375,
+            -0.00175,
+            -0.0005
+          ],
+          "crop_ug": [
+            17,
+            0,
+            0,
+            0
+          ],
+          "program": "Nurse",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6416681373,
+            568739008,
+            32,
+            19,
+            0,
+            17,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 7.174554672562982
+        },
+        "10": {
+          "center_m": [
+            0.0006875,
+            -0.004,
+            -0.0020625
+          ],
+          "mouth_m": [
+            0.0006875,
+            -0.004,
+            -0.00026250000000000015
+          ],
+          "crop_ug": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "program": "Nurse",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6416681373,
+            432494250,
+            401,
+            22,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.6249639649123506
+        }
+      },
+      "pantry_ug": [
+        0,
+        536,
+        0,
+        0
+      ],
+      "sources": {
+        "3": {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1500000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1499275,
+            0
+          ]
+        },
+        "4": {
+          "id": "4",
+          "position_m": [
+            0.005,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            1500,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            115813,
+            28524,
+            173720,
+            0
+          ]
+        },
+        "5": {
+          "id": "5",
+          "position_m": [
+            -0.005,
+            0.0,
+            0.02
+          ],
+          "initial_ug": [
+            0,
+            1500,
+            0,
+            0
+          ],
+          "stock_ug": [
+            0,
+            29250,
+            0,
+            0
+          ]
+        },
+        "6": {
+          "id": "6",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            6750,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            131662,
+            0
+          ]
+        },
+        "7": {
+          "id": "7",
+          "position_m": [
+            0.0,
+            0.0,
+            -0.04
+          ],
+          "initial_ug": [
+            0,
+            0,
+            2250,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            43838,
+            0
+          ]
+        }
+      },
+      "access": [
+        "2 1 0 0 0 0 1 0 0 0 0 42 0 0 0",
+        "8 0 0 0 0 0 0 0 0 0 0 2 0 0 16",
+        "9 0 0 0 0 0 0 0 0 0 0 15 0 0 17",
+        "10 1 0 0 0 0 0 0 0 0 0 10 0 0 1"
+      ],
+      "oral_pairs": [
+        {
+          "worker": 8,
+          "visible": 0,
+          "touching": 0,
+          "queen_has_step": 0,
+          "worker_has_step": 0,
+          "offered_carbs_ug": 8,
+          "requested_carbs_ug": 16
+        },
+        {
+          "worker": 9,
+          "visible": 0,
+          "touching": 0,
+          "queen_has_step": 0,
+          "worker_has_step": 0,
+          "offered_carbs_ug": 8,
+          "requested_carbs_ug": 17
+        },
+        {
+          "worker": 10,
+          "visible": 1,
+          "touching": 1,
+          "queen_has_step": 0,
+          "worker_has_step": 0,
+          "offered_carbs_ug": 0,
+          "requested_carbs_ug": 1
+        }
+      ]
+    },
+    {
+      "physics": 63,
+      "seed": 3,
+      "supply": "nearby",
+      "predeath_sha256": "c92c8a172c44d30919b62f50c65e97f66b54fb3e30b915a6fb5975ba070d1404",
+      "death": [
+        338317,
+        6530464820,
+        "Energy depleted"
+      ],
+      "founder": 2,
+      "adults": {
+        "2": {
+          "center_m": [
+            -0.00525,
+            -0.004,
+            -0.0016250000000000001
+          ],
+          "mouth_m": [
+            -0.0022447961799571727,
+            -0.004,
+            0.0013802038200428275
+          ],
+          "crop_ug": [
+            0,
+            85,
+            0,
+            0
+          ],
+          "program": "Paused",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6530464819,
+            14,
+            131,
+            0,
+            547,
+            0,
+            85,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.0
+        },
+        "8": {
+          "center_m": [
+            0.0,
+            -0.00175,
+            0.00175
+          ],
+          "mouth_m": [
+            -0.0018,
+            -0.00175,
+            0.00175
+          ],
+          "crop_ug": [
+            14,
+            0,
+            0,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6530464819,
+            107977723,
+            326,
+            16,
+            0,
+            14,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 2.323164405808468
+        },
+        "9": {
+          "center_m": [
+            -0.00025,
+            -0.003,
+            0.002
+          ],
+          "mouth_m": [
+            -0.0020499999999999997,
+            -0.003,
+            0.002
+          ],
+          "crop_ug": [
+            11,
+            0,
+            0,
+            0
+          ],
+          "program": "Excavate",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6530464819,
+            526303918,
+            384,
+            27,
+            0,
+            11,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 1.1925153485030753
+        },
+        "12": {
+          "center_m": [
+            -0.001,
+            -0.004,
+            0.002
+          ],
+          "mouth_m": [
+            -0.0028,
+            -0.004,
+            0.002
+          ],
+          "crop_ug": [
+            3,
+            0,
+            0,
+            0
+          ],
+          "program": "Rest",
+          "external_load_ug": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "physiology_cut": [
+            6530464819,
+            1519394042,
+            724,
+            27,
+            0,
+            3,
+            0,
+            0,
+            0
+          ],
+          "gap_to_founder_mm": 0.832104913144762
+        }
+      },
+      "pantry_ug": [
+        0,
+        1400,
+        0,
+        0
+      ],
+      "sources": {
+        "3": {
+          "id": "3",
+          "position_m": [
+            -0.001,
+            -0.004,
+            0.0
+          ],
+          "initial_ug": [
+            0,
+            0,
+            1500000,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            1499225,
+            0
+          ]
+        },
+        "4": {
+          "id": "4",
+          "position_m": [
+            0.005,
+            0.0,
+            0.0
+          ],
+          "initial_ug": [
+            6000,
+            1500,
+            9000,
+            0
+          ],
+          "stock_ug": [
+            116502,
+            27843,
+            174754,
+            0
+          ]
+        },
+        "5": {
+          "id": "5",
+          "position_m": [
+            -0.005,
+            0.0,
+            0.02
+          ],
+          "initial_ug": [
+            0,
+            1500,
+            0,
+            0
+          ],
+          "stock_ug": [
+            0,
+            29625,
+            0,
+            0
+          ]
+        },
+        "6": {
+          "id": "6",
+          "position_m": [
+            0.0,
+            0.0,
+            0.03
+          ],
+          "initial_ug": [
+            0,
+            0,
+            6750,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            133350,
+            0
+          ]
+        },
+        "7": {
+          "id": "7",
+          "position_m": [
+            0.0,
+            0.0,
+            -0.04
+          ],
+          "initial_ug": [
+            0,
+            0,
+            2250,
+            0
+          ],
+          "stock_ug": [
+            0,
+            0,
+            44400,
+            0
+          ]
+        }
+      },
+      "access": [
+        "2 1 0 0 0 0 1 0 0 0 0 7 0 0 0",
+        "8 1 0 0 0 0 0 0 0 0 0 31 0 0 14",
+        "9 1 1 0 0 0 0 0 0 0 0 29 8 8 11",
+        "12 1 1 0 0 0 0 0 1 0 0 16 7 7 3"
+      ],
+      "oral_pairs": [
+        {
+          "worker": 8,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 7,
+          "requested_carbs_ug": 14
+        },
+        {
+          "worker": 9,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 1,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 5,
+          "requested_carbs_ug": 11
+        },
+        {
+          "worker": 12,
+          "visible": 1,
+          "touching": 0,
+          "queen_has_step": 0,
+          "worker_has_step": 1,
+          "offered_carbs_ug": 1,
+          "requested_carbs_ug": 3
+        }
+      ]
+    }
+  ],
+  "seed_2_final_day": {
+    "command": "NEW_PROVISIONED_NEST 906238109258 2 250 80 plugged 1955 reachable nearby sheltered mineral worked-exit wet-wick",
+    "cuts": [
+      {
+        "day": 90,
+        "frame_sha256": "a9791094472d3b8a13078e676cda2400ea63973c5d9a2208430090ce4c2fa68d",
+        "adults": {
+          "2": {
+            "center_m": [
+              -0.000875,
+              -0.004,
+              -0.0024375
+            ],
+            "mouth_m": [
+              0.0033750000000000004,
+              -0.004,
+              -0.0024375
+            ],
+            "crop_ug": [
+              26,
+              37,
+              0,
+              0
+            ],
+            "program": "Paused",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7776000000",
+              "1242619967",
+              "2779",
+              "30",
+              "478",
+              "26",
+              "37",
+              "0",
+              "0"
+            ]
+          },
+          "8": {
+            "center_m": [
+              0.0,
+              -0.004,
+              0.002
+            ],
+            "mouth_m": [
+              0.0018,
+              -0.004,
+              0.002
+            ],
+            "crop_ug": [
+              271,
+              0,
+              245,
+              0
+            ],
+            "program": "Paused",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7776000000",
+              "1991072704",
+              "1999",
+              "29",
+              "0",
+              "271",
+              "0",
+              "245",
+              "0"
+            ]
+          },
+          "9": {
+            "center_m": [
+              0.0035,
+              -0.004,
+              0.00025
+            ],
+            "mouth_m": [
+              0.0022272077938642145,
+              -0.004,
+              0.0015227922061357856
+            ],
+            "crop_ug": [
+              446,
+              0,
+              554,
+              0
+            ],
+            "program": "Paused",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7776000000",
+              "1983145995",
+              "1995",
+              "13",
+              "0",
+              "446",
+              "0",
+              "554",
+              "0"
+            ]
+          },
+          "10": {
+            "center_m": [
+              0.0022500000000000003,
+              -0.00175,
+              -0.007
+            ],
+            "mouth_m": [
+              0.0009772077938642147,
+              -0.00175,
+              -0.008272792206135787
+            ],
+            "crop_ug": [
+              477,
+              0,
+              0,
+              0
+            ],
+            "program": "Rest",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7776000000",
+              "1985236212",
+              "1785",
+              "4",
+              "0",
+              "477",
+              "0",
+              "0",
+              "0"
+            ]
+          }
+        },
+        "access": [
+          "2 1 0 0 0 0 0 0 0 0 0 65 0 0 26",
+          "8 1 1 1 0 0 0 0 0 0 0 43 8 5 271",
+          "9 1 0 0 0 0 0 0 1 0 0 46 1 1 446",
+          "10 0 0 0 0 0 0 0 0 0 0 62 0 0 477"
+        ],
+        "pantry_ug": [
+          0,
+          30302,
+          0,
+          0
+        ]
+      },
+      {
+        "day": 91,
+        "frame_sha256": "34041c4f513ad5908899dc0b9032029d5b48429c956338ed3b85c64afd3698e7",
+        "adults": {
+          "2": {
+            "center_m": [
+              0.0004375,
+              -0.004,
+              -0.0020625
+            ],
+            "mouth_m": [
+              0.004687500000000001,
+              -0.004,
+              -0.0020625
+            ],
+            "crop_ug": [
+              0,
+              85,
+              0,
+              0
+            ],
+            "program": "Paused",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7862400000",
+              "130607709",
+              "2719",
+              "0",
+              "478",
+              "0",
+              "85",
+              "0",
+              "0"
+            ]
+          },
+          "8": {
+            "center_m": [
+              -0.00075,
+              -0.0025,
+              0.00175
+            ],
+            "mouth_m": [
+              -0.00255,
+              -0.0025,
+              0.00175
+            ],
+            "crop_ug": [
+              464,
+              0,
+              527,
+              0
+            ],
+            "program": "Forage",
+            "carried_ug": [
+              0,
+              40,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7862400000",
+              "1992350228",
+              "1999",
+              "29",
+              "0",
+              "464",
+              "0",
+              "527",
+              "0"
+            ]
+          },
+          "9": {
+            "center_m": [
+              -0.0036875000000000002,
+              -0.0035,
+              0.00125
+            ],
+            "mouth_m": [
+              -0.0018875000000000003,
+              -0.0035,
+              0.00125
+            ],
+            "crop_ug": [
+              447,
+              0,
+              553,
+              0
+            ],
+            "program": "Nurse",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7862400000",
+              "1982609009",
+              "1995",
+              "13",
+              "0",
+              "447",
+              "0",
+              "553",
+              "0"
+            ]
+          },
+          "10": {
+            "center_m": [
+              0.0022500000000000003,
+              -0.00175,
+              -0.007
+            ],
+            "mouth_m": [
+              0.0009772077938642147,
+              -0.00175,
+              -0.008272792206135787
+            ],
+            "crop_ug": [
+              466,
+              0,
+              0,
+              0
+            ],
+            "program": "Paused",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7862400000",
+              "1986820192",
+              "1761",
+              "4",
+              "0",
+              "466",
+              "0",
+              "0",
+              "0"
+            ]
+          },
+          "24": {
+            "center_m": [
+              -0.0051875,
+              -0.0045000000000000005,
+              0.0004375
+            ],
+            "mouth_m": [
+              -0.006460292206135786,
+              -0.0045000000000000005,
+              -0.0008352922061357856
+            ],
+            "crop_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "program": "Rest",
+            "carried_ug": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "physiology_cut": [
+              "7862400000",
+              "36374954",
+              "24",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          }
+        },
+        "access": [
+          "2 1 0 0 0 0 1 0 0 0 0 70 0 0 0",
+          "8 1 0 0 0 0 0 0 0 0 0 17 8 8 464",
+          "9 1 1 0 0 0 0 0 0 0 0 6 2 2 447",
+          "10 0 0 0 0 0 0 0 0 0 0 62 0 0 466",
+          "24 1 0 0 0 0 0 0 0 0 0 28 0 0 0"
+        ],
+        "pantry_ug": [
+          0,
+          30623,
+          0,
+          0
+        ]
+      }
+    ],
+    "actions": {
+      "8/Move to a resting site/Selected/Success": 16,
+      "8/Move to a resting site/Started/Success": 16,
+      "8/Move to a resting site/Completed/Success": 16,
+      "9/Approach the depot/Selected/Success": 6,
+      "9/Approach the depot/Started/Success": 6,
+      "9/Approach the depot/Completed/Success": 6,
+      "10/Approach a nestmate/Selected/Success": 60,
+      "10/Approach a nestmate/Started/Success": 60,
+      "10/Approach a nestmate/Completed/Success": 60,
+      "2/Inspect brood/Opportunity/Success": 13,
+      "8/Inactive/Selected/Success": 1629,
+      "8/Inactive/Started/Success": 1628,
+      "8/Inactive/Completed/Success": 1628,
+      "9/Move to a resting site/Selected/Success": 14,
+      "9/Move to a resting site/Started/Success": 14,
+      "9/Move to a resting site/Completed/Success": 14,
+      "8/Approach the depot/Selected/Success": 20,
+      "8/Approach the depot/Started/Success": 20,
+      "8/Approach the depot/Completed/Success": 20,
+      "9/Inactive/Selected/Success": 26,
+      "9/Inactive/Started/Success": 25,
+      "9/Inactive/Completed/Success": 25,
+      "9/Approach brood/Selected/Success": 2,
+      "9/Approach brood/Started/Success": 2,
+      "9/Approach brood/Completed/Success": 2,
+      "9/Inspect brood/Opportunity/Success": 1,
+      "9/Feed brood/Selected/Success": 1,
+      "9/Feed brood/Started/Success": 1,
+      "9/Feed brood/Completed/Partial": 1,
+      "10/Inactive/Selected/Success": 34,
+      "10/Inactive/Started/Success": 34,
+      "10/Inactive/Completed/Success": 34,
+      "2/Feed brood/Selected/Success": 2,
+      "2/Feed brood/Started/Success": 2,
+      "2/Feed brood/Completed/Success": 2,
+      "2/Approach brood/Selected/Success": 23,
+      "2/Approach brood/Started/Success": 21,
+      "2/Approach brood/Completed/Success": 21,
+      "2/Approach the depot/Selected/Success": 9,
+      "2/Approach the depot/Started/Success": 9,
+      "2/Approach the depot/Completed/Success": 9,
+      "9/Walk/Selected/Success": 567,
+      "9/Walk/Started/Success": 556,
+      "9/Walk/Completed/Success": 556,
+      "9/Collect food/Selected/Success": 1390,
+      "9/Collect food/Started/Success": 11,
+      "9/Collect food/Completed/Partial": 11,
+      "9/Ingest food/Selected/Success": 4,
+      "9/Ingest food/Started/Success": 4,
+      "9/Ingest food/Completed/Success": 4,
+      "9/Deliver food/Selected/Success": 8,
+      "9/Deliver food/Started/Success": 8,
+      "9/Deliver food/Completed/Success": 8,
+      "2/Approach brood/Interrupted/Blocked": 2,
+      "8/Approach brood/Selected/Success": 12,
+      "8/Approach brood/Started/Success": 12,
+      "8/Approach brood/Completed/Success": 12,
+      "8/Inspect brood/Opportunity/Success": 1,
+      "8/Transfer nutrition/Opportunity/Success": 4,
+      "8/Feed brood/Opportunity/Success": 2,
+      "9/Collect food/Interrupted/Capacity": 1379,
+      "8/Walk/Selected/Success": 98,
+      "8/Walk/Started/Success": 97,
+      "8/Walk/Completed/Success": 97,
+      "8/Collect food/Selected/Success": 2,
+      "8/Collect food/Started/Success": 2,
+      "8/Collect food/Completed/Partial": 2,
+      "8/Ingest food/Selected/Success": 7,
+      "8/Ingest food/Started/Success": 7,
+      "8/Ingest food/Completed/Success": 7,
+      "2/Yield to a food carrier/Selected/Success": 1,
+      "2/Yield to a food carrier/Started/Success": 1,
+      "2/Yield to a food carrier/Completed/Success": 1,
+      "8/Deliver food/Selected/Success": 1,
+      "8/Deliver food/Started/Success": 1,
+      "8/Deliver food/Completed/Success": 1,
+      "10/Approach brood/Selected/Success": 13,
+      "10/Approach brood/Interrupted/Blocked": 13,
+      "9/Approach a nestmate/Selected/Success": 11,
+      "9/Approach a nestmate/Started/Success": 11,
+      "9/Approach a nestmate/Completed/Success": 11,
+      "2/Approach a nestmate/Selected/Success": 4,
+      "2/Approach a nestmate/Started/Success": 4,
+      "2/Approach a nestmate/Completed/Success": 4,
+      "24/Inspect brood/Opportunity/Success": 5,
+      "24/Approach brood/Selected/Success": 16,
+      "24/Approach brood/Started/Success": 16,
+      "24/Approach brood/Completed/Success": 16,
+      "24/Approach a nestmate/Selected/Success": 3,
+      "24/Approach a nestmate/Started/Success": 3,
+      "24/Approach a nestmate/Completed/Success": 3,
+      "24/Close worker contact/Opportunity/Success": 5,
+      "24/Clean brood/Selected/Success": 2,
+      "24/Clean brood/Started/Success": 2,
+      "24/Clean brood/Completed/Success": 2,
+      "24/Inactive/Selected/Success": 1,
+      "24/Inactive/Started/Success": 1,
+      "24/Inactive/Completed/Success": 1,
+      "9/Transfer nutrition/Opportunity/Success": 2
+    },
+    "partner_actions": {
+      "10/36/Selected/Success": {
+        "count": 30,
+        "first": [
+          443330,
+          7776670019
+        ],
+        "last": [
+          457759,
+          7828915919
+        ]
+      },
+      "10/36/Started/Success": {
+        "count": 30,
+        "first": [
+          443333,
+          7776670020
+        ],
+        "last": [
+          457762,
+          7828915920
+        ]
+      },
+      "10/36/Completed/Success": {
+        "count": 30,
+        "first": [
+          443338,
+          7776670287
+        ],
+        "last": [
+          457767,
+          7828916187
+        ]
+      },
+      "10/35/Selected/Success": {
+        "count": 30,
+        "first": [
+          443384,
+          7777547519
+        ],
+        "last": [
+          458155,
+          7829928419
+        ]
+      },
+      "10/35/Started/Success": {
+        "count": 30,
+        "first": [
+          443387,
+          7777547520
+        ],
+        "last": [
+          458158,
+          7829928420
+        ]
+      },
+      "10/35/Completed/Success": {
+        "count": 30,
+        "first": [
+          443392,
+          7777547787
+        ],
+        "last": [
+          458163,
+          7829928687
+        ]
+      },
+      "9/25/Selected/Success": {
+        "count": 2,
+        "first": [
+          464722,
+          7846859960
+        ],
+        "last": [
+          465812,
+          7852209560
+        ]
+      },
+      "9/25/Started/Success": {
+        "count": 2,
+        "first": [
+          464725,
+          7846859961
+        ],
+        "last": [
+          465815,
+          7852209561
+        ]
+      },
+      "9/25/Completed/Success": {
+        "count": 2,
+        "first": [
+          464730,
+          7846860011
+        ],
+        "last": [
+          465820,
+          7852209630
+        ]
+      },
+      "9/2/Selected/Success": {
+        "count": 4,
+        "first": [
+          465255,
+          7849722860
+        ],
+        "last": [
+          465625,
+          7851471560
+        ]
+      },
+      "9/2/Started/Success": {
+        "count": 4,
+        "first": [
+          465258,
+          7849722861
+        ],
+        "last": [
+          465628,
+          7851471561
+        ]
+      },
+      "9/2/Completed/Success": {
+        "count": 4,
+        "first": [
+          465263,
+          7849722911
+        ],
+        "last": [
+          465633,
+          7851471611
+        ]
+      },
+      "2/9/Selected/Success": {
+        "count": 4,
+        "first": [
+          465679,
+          7851715200
+        ],
+        "last": [
+          465713,
+          7851715662
+        ]
+      },
+      "2/9/Started/Success": {
+        "count": 4,
+        "first": [
+          465682,
+          7851715201
+        ],
+        "last": [
+          465715,
+          7851715663
+        ]
+      },
+      "2/9/Completed/Success": {
+        "count": 4,
+        "first": [
+          465687,
+          7851715286
+        ],
+        "last": [
+          465720,
+          7851715830
+        ]
+      },
+      "9/24/Selected/Success": {
+        "count": 4,
+        "first": [
+          466119,
+          7853164460
+        ],
+        "last": [
+          466723,
+          7856001274
+        ]
+      },
+      "9/24/Started/Success": {
+        "count": 4,
+        "first": [
+          466122,
+          7853164461
+        ],
+        "last": [
+          466725,
+          7856001275
+        ]
+      },
+      "9/24/Completed/Success": {
+        "count": 4,
+        "first": [
+          466127,
+          7853164488
+        ],
+        "last": [
+          466730,
+          7856001282
+        ]
+      },
+      "9/29/Selected/Success": {
+        "count": 1,
+        "first": [
+          466290,
+          7853985260
+        ],
+        "last": [
+          466290,
+          7853985260
+        ]
+      },
+      "9/29/Started/Success": {
+        "count": 1,
+        "first": [
+          466293,
+          7853985261
+        ],
+        "last": [
+          466293,
+          7853985261
+        ]
+      },
+      "9/29/Completed/Success": {
+        "count": 1,
+        "first": [
+          466298,
+          7853985328
+        ],
+        "last": [
+          466298,
+          7853985328
+        ]
+      },
+      "24/25/Selected/Success": {
+        "count": 1,
+        "first": [
+          466629,
+          7855690362
+        ],
+        "last": [
+          466629,
+          7855690362
+        ]
+      },
+      "24/25/Started/Success": {
+        "count": 1,
+        "first": [
+          466632,
+          7855690363
+        ],
+        "last": [
+          466632,
+          7855690363
+        ]
+      },
+      "24/25/Completed/Success": {
+        "count": 1,
+        "first": [
+          466637,
+          7855690483
+        ],
+        "last": [
+          466637,
+          7855690483
+        ]
+      },
+      "24/37/Selected/Success": {
+        "count": 1,
+        "first": [
+          467002,
+          7857418362
+        ],
+        "last": [
+          467002,
+          7857418362
+        ]
+      },
+      "24/37/Started/Success": {
+        "count": 1,
+        "first": [
+          467005,
+          7857418363
+        ],
+        "last": [
+          467005,
+          7857418363
+        ]
+      },
+      "24/37/Completed/Success": {
+        "count": 1,
+        "first": [
+          467010,
+          7857418510
+        ],
+        "last": [
+          467010,
+          7857418510
+        ]
+      },
+      "24/31/Selected/Success": {
+        "count": 1,
+        "first": [
+          467589,
+          7860220962
+        ],
+        "last": [
+          467589,
+          7860220962
+        ]
+      },
+      "24/31/Started/Success": {
+        "count": 1,
+        "first": [
+          467592,
+          7860220963
+        ],
+        "last": [
+          467592,
+          7860220963
+        ]
+      },
+      "24/31/Completed/Success": {
+        "count": 1,
+        "first": [
+          467597,
+          7860221052
+        ],
+        "last": [
+          467597,
+          7860221052
+        ]
+      }
+    }
+  },
+  "seed_2_day150_census": {
+    "day": 150,
+    "eggs": 0,
+    "larvae": 0,
+    "pupae": 0,
+    "workers": 10,
+    "queen_alive": false
+  }
 }

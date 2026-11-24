@@ -1,0 +1,72 @@
+diff --git a/cpp/include/antworld/core/world_runtime.hpp b/cpp/include/antworld/core/world_runtime.hpp
+index fd4009a6..ddb54abe 100644
+--- a/cpp/include/antworld/core/world_runtime.hpp
++++ b/cpp/include/antworld/core/world_runtime.hpp
+@@ -202,8 +202,8 @@ private:
+                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
+     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
+     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
+-    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;
+-    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false) const;
++    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen, EntityId retained={}) const;
++    [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false, EntityId retained={}) const;
+     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;
+     [[nodiscard]] PositionM depot_mouth_target(const AntState&, PositionM) const;
+     [[nodiscard]] PositionM nest_meal_step(const AntState&, PositionM) const;
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index f987f901..d20d7698 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -163,7 +163,7 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
+     return result;
+ }
+ 
+-std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(const AntState& ant,bool urgent_foundress) const {
++std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(const AntState& ant,bool urgent_foundress,EntityId retained) const {
+     const auto& s=*state_;
+     if (!adult_offers(s) || !s.social->exchange_enabled || !s.founding ||
+         !s.founding_reserves.contains(ant.id)) return {};
+@@ -179,7 +179,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
+     std::optional<std::pair<std::int64_t,EntityId>> nearest;
+     std::vector<std::pair<std::int64_t,EntityId>> alternatives;
+     for (const auto ref:query_neighborhood({s.world,ant.id},index_radius).ants) {
+-        if (urgent_foundress && !founding_foundress(ref.id)) continue;
++        if ((retained.value && ref.id!=retained) || (urgent_foundress && !founding_foundress(ref.id))) continue;
+         const auto peer=*query_ant(ref);
+         if (peer.id==ant.id || peer.colony!=ant.colony || peer.stage!=LifeStage::Adult ||
+             query_worker_motion(ref)) continue;
+@@ -212,7 +212,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
+ 
+ // A solicitation uses the same local visibility and discretionary donor budget as an offer.
+ // The receiver cannot move a donor or credit her own crop.
+-std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const AntState& queen) const {
++std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const AntState& queen,EntityId retained) const {
+     const auto& s=*state_;
+     if (!meal_rendezvous(s) || !founding_foundress(queen.id) || !s.social->exchange_enabled) return {};
+     const auto own=*query_body({s.world,queen.id});
+@@ -225,6 +225,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
+     const auto padding=portable_care_distance(queen.position,own.mouth_m)+
+                        worker_segments.front().forward_offset_m+worker_segments.front().half_axes_m.x;
+     for (const auto ref:query_neighborhood({s.world,queen.id},radius+padding).ants) {
++        if (retained.value && ref.id!=retained) continue;
+         const auto ant=*query_ant(ref);
+         if (ant.caste!=Caste::Worker || ant.stage!=LifeStage::Adult || ant.colony!=queen.colony ||
+             query_worker_motion(ref) || ant.carried_food.total_ug() || s.carriers.contains(ref.id)) continue;
+@@ -1255,7 +1256,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
+         if (meal_rendezvous(s) && founding_foundress(worker.id)) {
+             if (reached) request_food_review(tx,worker,c.target);
+             if (!failed && !reached && c.search_remaining>1) {
+-                const auto donor=local_donor(worker);
++                const auto donor=local_donor(worker,worked_exit(s)?c.target:EntityId{});
+                 if (donor && donor->second==c.target && donor->first!=worker.position)
+                     start_resting_move(tx,worker,donor->first,event.id,CareAct::ApproachNestmate,c.target,
+                                        static_cast<std::uint8_t>(c.search_remaining-1));
+@@ -1265,7 +1266,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
+         }
+         if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
+             !query_worker_motion(other)) {
+-            const auto next=local_food_offer(worker);
++            const auto next=local_food_offer(worker,false,worked_exit(s)?c.target:EntityId{});
+             if (next && next->second==c.target && next->first!=worker.position) {
+                 start_resting_move(tx,worker,next->first,event.id,CareAct::ApproachNestmate,c.target,
+                                    static_cast<std::uint8_t>(c.search_remaining-1));
