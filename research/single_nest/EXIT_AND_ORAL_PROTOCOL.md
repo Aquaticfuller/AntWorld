@@ -1,0 +1,9 @@
+# First foraging from a worked opening and close-range oral alignment
+
+Reference 1588f0f23218b760441a7ca3b1f187c6059b41f3, Physics 62. Use the same five paired 730-day nearby-feeder cases (seeds 1, 2, 3, 17, 29) and absent-feeder seed 2 with the original inputs, reserves, metabolism, mortality and growth denominator. Stream event pages and retain compact receipts. Reuse the published reference receipts and independently replay the failing short windows.
+
+Test whether a worker that actually excavated, transported soil and returned to its own local work site can start a food search there without first visiting the colony handoff. A private route is a liquid sampling trip. Only liquid removed from an actual food source can enter the worker's crop. Do not credit the depot at a dig site. Retain body and cargo clearance, the surface search and home trace. In seeds 17 and 29 require paid sugar collection before founder death, plus role, event times and actual recipient mass. In the absent control require zero external sugar.
+
+Test close-range lateral or backward adjustments by locally sensing adults using the existing body, substrate, swept traffic and mouth geometry. Keep the 0.65 mm two-mouth limit and positive delayed crop transaction. Compare the seed 2 terminal stance from the reference with a collision-checked candidate route on the same cut, and actual bilateral meals, uptake, later-worker survival and founder fate in the new world. Reserve and intake limits remain unchanged. These motion choices are engineering assumptions.
+
+Retain failed candidates, withdrawals, zero meals, death, orphan workers and right censoring. Colony growth still requires the living founder, second-year worker eclosion and more workers on day 730 than on both days 73 and 365 in at least three supplied seeds. Access, receipt and growth are separate decisions.
