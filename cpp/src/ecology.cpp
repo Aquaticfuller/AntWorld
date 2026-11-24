@@ -256,8 +256,11 @@ void WorldRuntime::resolve_autonomy_wakes(
         (a.knows_depot || private_sampling_trip(s,ant)) &&
         (returned || a.decisions%4!=0) && founding_gift_supply(s.founding->profile,p).carbs_ug &&
         portable_care_distance(ant.position,a.enrollment_site)>.002) {
-      const auto next=mouth_approach(ant,a.enrollment_site,{});
-      if (next!=ant.position && clear_resting_site(ant,next)) chamber_step=next;
+      if (private_sampling_trip(s,ant)) chamber_step=worker_depot_step(ant,a.enrollment_site);
+      else {
+        const auto next=mouth_approach(ant,a.enrollment_site,{});
+        if (next!=ant.position && clear_resting_site(ant,next)) chamber_step=next;
+      }
     }
     // An experienced forager at the actual handoff can refill the extra
     // load of carbohydrate that a locally recruited worker could collect.
@@ -309,6 +312,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     bool resupply=repeat_delivery;
     std::optional<PositionM> resupply_step;
     std::optional<PositionM> roof_stance;
+    bool revisiting_exit=false;
     if (sustained_supply(s) && ant.caste==Caste::Worker && local_founding_provisioning(s,ant.id) &&
         can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
         stationary && !wake.payload && config.forage_weight) {
@@ -322,10 +326,16 @@ void WorldRuntime::resolve_autonomy_wakes(
       const auto opened=!s.geometry_edits.empty();
       const bool depleted_handoff=visible && colony.nest_food.carbs_ug<buffer;
       const bool inspect_local_soil=local_crop_return(s) && !visible && review_exit && !p.crop.carbs_ug;
-      const bool sample_exit=worked_exit(s) && review_exit && !p.crop.carbs_ug && foraging_home &&
+      const bool known_source=private_sampling_trip(s,ant) && s.foragers.at(ant.id).last_collected.value;
+      const bool refill_crop=!p.crop.carbs_ug || (known_source && p.crop.carbs_ug<p.config.transfer_limit_ug);
+      const bool sample_exit=worked_exit(s) && review_exit && refill_crop && foraging_home &&
           at_worked_site(s,ant.id,ant.position);
+      if (review_exit && known_source && refill_crop && !foraging_home && !food_offer && !at_wick && !wick_step) {
+        resupply_step=worker_depot_step(ant,s.connectors.at(ant.id).points[0]);
+        revisiting_exit=resupply_step.has_value();
+      }
       if (sample_exit) resupply=can_forage(ant);
-      if (!resupply && (depleted_handoff || inspect_local_soil) && !urgent) {
+      if (!resupply && !revisiting_exit && (depleted_handoff || inspect_local_soil) && !urgent) {
         resupply=depleted_handoff && foraging_home && can_forage(ant);
         if (local_entrance_work(s) && !resupply && !at_depot && !at_meal && !at_wick &&
             !meal_step && !wick_step && (review_exit || (!food_offer && !can_feed_brood)) && excavation==s.excavators.end()) {
@@ -435,7 +445,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       else if (roof_stance && *roof_stance==ant.position) choice.behavior=IndividualBehavior::Excavate;
       else {
         choice.resting_site=roof_stance ? roof_stance : resupply_step;
-        choice.transit=work_face_search(s) && roof_stance && *roof_stance!=colony.nest_position ?
+        choice.transit=revisiting_exit || (work_face_search(s) && roof_stance && *roof_stance!=colony.nest_position) ?
                        CareAct::NestReposition : CareAct::DepotApproach;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
@@ -497,7 +507,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (resupply || resupply_step) {
       if (resupply) choice.behavior=IndividualBehavior::Forage;
       choice.resting_site=resupply_step;
-      choice.transit=CareAct::DepotApproach;
+      choice.transit=revisiting_exit ? CareAct::NestReposition : CareAct::DepotApproach;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (worker_motor(s) && (!a.decisions ||
                (buffer && !s.foragers.contains(ant.id) && s.care.contains(ant.id) &&
@@ -519,7 +529,9 @@ void WorldRuntime::resolve_autonomy_wakes(
       choice.behavior=IndividualBehavior::Rest;
       ContactSample local;
       if (foraging_home && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
-        const auto available = sum(colony.nest_food,founding_gift_supply(s.founding->profile,p));
+        const auto stock=private_sampling_trip(s,ant) && !within_contact(ant.position,colony.nest_position,s.config)
+            ? FoodMass{} : colony.nest_food;
+        const auto available = sum(stock,founding_gift_supply(s.founding->profile,p));
         if (available.total_ug()) {
           local = sample_contacts({s.world,ant.id},a.decisions ^ UINT64_C(0x45434f4c4f4759));
           choice.sample = {0,local.candidates_examined,local.bucket_queries,local.tree_visits,0};

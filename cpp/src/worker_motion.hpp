@@ -48,7 +48,7 @@ inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,Pos
         auto ant=s.ants.get(s.ants.index.at(id));
         ant.position=from;
         const auto care=s.care.find(id);
-        const bool approaching=worked_exit(s) && care!=s.care.end() &&
+        const bool approaching=worked_exit(s) && care!=s.care.end() && care->second.enabled &&
             care->second.act==CareAct::ApproachNestmate && care->second.destination==to;
         return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous,alignment_probe || approaching);
     }

@@ -264,7 +264,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(co
         const auto other=*query_ant(ref);
         const auto link=s.connectors.find(other.id);
         const auto forage=s.foragers.find(other.id);
-        if (other.colony!=ant.colony || other.stage!=LifeStage::Adult || !other.carried_food.total_ug() ||
+        const bool crop_load=worked_exit(s) && forage!=s.foragers.end() && forage->second.last_collected.value &&
+            s.physiology.contains(other.id) && s.physiology.at(other.id).crop.carbs_ug;
+        if (other.colony!=ant.colony || other.stage!=LifeStage::Adult || (!other.carried_food.total_ug() && !crop_load) ||
             link==s.connectors.end() || !link->second.returning || !link->second.cursor ||
             forage==s.foragers.end() || !forage->second.enabled || forage->second.mode!=BehaviorMode::Rest ||
             !spatially_clear(ant.position,other.position)) continue;
@@ -385,18 +387,31 @@ bool WorldRuntime::clear_worker_site(const AntState& ant,PositionM site,bool app
     return true;
 }
 
-std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant) const {
+std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant,std::optional<PositionM> familiar_site) const {
     const auto& s=*state_;
     if (!s.geometry || !integrated_care(s)) return {};
     const auto& g=s.geometry->config;
     const bool habitat=s.ecological && s.ecological->founding_habitat;
     const auto link=s.connectors.find(ant.id);
     const bool rejoin=familiar_return(s) && link!=s.connectors.end() && !s.foragers.at(ant.id).enabled;
-    const auto depot=habitat && link!=s.connectors.end() && !sustained_supply(s)
+    const auto depot=familiar_site.value_or(habitat && link!=s.connectors.end() && !sustained_supply(s)
         ? link->second.points[rejoin?link->second.cursor:0]
-        : s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+        : s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position);
     const auto radius=s.care_profile->perception_radius_m;
-    if (ant.position==depot || portable_care_distance(ant.position,depot)>radius) return {};
+    if (ant.position==depot) return {};
+    if (familiar_site) {
+        // A remembered location supplies a bearing, never the current position of
+        // a recipient or food. Only locally checked paid steps can be executed.
+        auto best=ant.position;
+        auto gap=std::llround(portable_care_distance(ant.position,depot)*1e6);
+        for (const double step:{.002,.001,.0005}) for (std::uint8_t dir=1;dir<=10;++dir) {
+            const auto next=snap_micro(translated(ant.position,scale(body_heading(dir),step)));
+            const auto remaining=std::llround(portable_care_distance(next,depot)*1e6);
+            if (remaining<gap && clear_worker_site(ant,next,true)) { best=next; gap=remaining; }
+        }
+        if (best!=ant.position) return best;
+    }
+    if (portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;
     const bool alternate=habitat && s.ecological->founding_habitat->alternate_berth &&
         (link==s.connectors.end() || sustained_supply(s)) &&

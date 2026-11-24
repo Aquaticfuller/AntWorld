@@ -723,6 +723,19 @@ class LiveTests(unittest.TestCase):
         actual = verify(BINARY, witness["trial"], self.folder)
         self.assertEqual(json.loads(json.dumps(actual)), witness["verified"])
 
+    def test_close_stance_on_the_same_starving_founder_cut(self):
+        from tools.verify_worked_exit import terminal_probe
+
+        core = self.live.core()
+        if not core.worked_exit:
+            self.skipTest("Build the worked-exit native core")
+        folder = ROOT / "research/single_nest"
+        trials = map(json.loads,(folder/"FIRST_MEAL_TRIALS.jsonl").read_text().splitlines())
+        trial = next(r for r in trials if (r["physics"],r["seed"],r["supply"])==(62,2,"nearby"))
+        cuts = map(json.loads,(folder/"FIRST_MEAL_LOCAL_CUTS.jsonl").read_text().splitlines())
+        old = next(r["record"] for r in cuts if r["purpose"]=="candidate-founder-last-ms")
+        terminal_probe(core,trial,old)
+
     def test_collected_meal_reaches_a_newly_eclosed_worker(self):
         from tools.trace_social_crop_meal import trace
         from tools.verify_protected_habitat import rows

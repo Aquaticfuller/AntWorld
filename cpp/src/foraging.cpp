@@ -461,6 +461,15 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
             if (!std::isfinite(s.m.foraging.deposited_units)) throw std::overflow_error("trail accounting overflow");
             tx.trails.set(key, {next, s.m.now});
         }
+    } else if (worked_exit(s) && fact.kind==FactKind::CargoIngested && fact.resource.value &&
+               fact.transferred.carbs_ug && !ant.carried_food.total_ug() && connector!=s.connectors.end() &&
+               connector->second.size>1 && connector->second.cursor+1==connector->second.size &&
+               f.path_size==1 && navigation_cell(s,ant.position)==f.path[0]) {
+        // Drinking the last exposed load at the entry cell completes this
+        // surface excursion, even when no inter-cell return move is needed.
+        auto link=connector->second;
+        link.returning=true;
+        tx.connectors.set(ant.id,link);
     } else if (fact.kind == FactKind::FoodCollected) {
         bump(s.m.foraging.collections); bump(f.collections);
         s.m.foraging.collected_outbound_moves = add(s.m.foraging.collected_outbound_moves, f.trip_moves);
