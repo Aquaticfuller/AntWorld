@@ -43,6 +43,20 @@ In seed 2 the final return correction got solvent donors inside. Immediately bef
 
 The last-millisecond cuts differ across seeds. In seed 1 the worker in actual mouth contact could offer zero sugar and two solvent workers were outside perception. In seed 3 three donors were visible with 7, 5 and 1 µg payable, respectively. No pair was in mouth contact. These receipts distinguish geographic access, voluntary transfer and survival. The observations do not identify natural mortality rates.
 
+### Three independent tests of the last few millimetres
+
+In seed 2's last six hours no sugar passed to the founder. At 192 and 135 seconds before death, workers 9 and 8 each completed an approach step toward her. The last-millisecond mouth gaps were 3.29 and 4.49 mm, respectively. Worker 24, which had no sugar at the final cut, had also moved toward her. The receipt contains the last 24 approach observations and every positive founder sugar payment in this six-hour window.
+
+We tested three changes independently from the same installed starting model and supply. Each had to pay the founder sugar after day 91.055815 and keep her alive at day 100. A different event ID at the same death time did not meet the endpoint.
+
+| Diagnostic treatment, seed 2 | Actual founder sugar, µg | Founder energy death, day | Living workers at day 100 | Result |
+|---|---:|---:|---:|---|
+| Reassess the same recipient throughout a bounded approach | 5,106 | 87.35 | 4 | Both endpoints failed |
+| Approach for ingredients that match the founder's existing dietary demand | 6,425 | 91.06 | 5 | Both failed; same death millisecond |
+| Prefer a route to a complete meeting stance before greedy short steps | 5,178 | 88.92 | 3 | Both endpoints failed |
+
+None of the three diagnostic binaries is used for normal play. Their diffs, executable hashes, initial and final state hashes, payments and deaths are retained with this report. The tests rule out each change alone as sufficient in this world. A viable future encounter model would need to demonstrate local cooperation across the full approach and payment under passage traffic, and return/repeat collections before reserves expire. A single visible step, increased candidate counts or higher lifetime food intake cannot establish this. The evidence does not identify a validated rule for keeping all five founders provisioned.
+
 ## Verification and storage
 
 All 292 native Windows Release CTests passed. Integration checks reproduced the frozen spatial failure, verified two funded first sips with full SQLite and compact restore, and checked both directions of actual paid feeding. All six old-model reruns matched the historical outcome fields, including their initial and final frame digests. The paired inputs and native ledger results are checked in the panel verifier. The checked-in data use individual life histories, transaction summaries, exact witness IDs and state hashes. Full multi-million-event replay files are regenerated on demand.

@@ -1,0 +1,15 @@
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index f987f901..9f79952b 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -348,10 +348,6 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+         return best;
+     };
+     if (!count) return mutual_step();
+-    if (align && portable_care_distance(pose.mouth_m,target)<=.002) {
+-        const auto step=mutual_step();
+-        if (step!=adult.position) return step;
+-    }
+     const std::span stances(candidates.data(),count);
+     struct Node {
+         PositionM site, first;

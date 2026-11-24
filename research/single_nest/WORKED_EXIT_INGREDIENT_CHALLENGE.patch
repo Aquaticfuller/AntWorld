@@ -1,0 +1,15 @@
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index f987f901..ae2f1099 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -190,6 +190,10 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
+             const auto p=query_physiology(ref);
+             if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug ||
+                 !ingredient_min(contact_offer(s,supply,physiology,*p,peer.stage),signaled_need(*p,peer.stage,true)).total_ug()) continue;
++            if (worked_exit(s) && founding_foundress(ref.id) && !urgent_foundress) {
++                const auto payable=contact_offer(s,supply,physiology,*p,peer.stage);
++                if (!foundress_nest_meal(s.founding->profile,*p,*query_founding(ref),payable,true).total_ug()) continue;
++            }
+             if (urgent_foundress && responsive_meal(s) && !foundress_nest_meal(s.founding->profile,*p,
+                 *query_founding(ref),supply,true).carbs_ug) continue;
+             if (urgent_foundress && !responsive_meal(s) && !ingredient_min(supply,founding_resupply_shortfall(s.founding->profile,*p,
