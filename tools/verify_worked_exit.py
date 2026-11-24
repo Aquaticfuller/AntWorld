@@ -21,12 +21,15 @@ def verify_private_trip(binary, trial, scratch):
     ingest = trial["first"]["CargoIngested"]
     require(ingest[2:4] == [actor,source] and ingest[1] >= collection[1], "Wrong consumer or source")
     with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary,temp)) as core:
-        raw = core.call(trial["command"])
+        core.call(trial["command"])
         before = core.call(f"ADVANCE {collection[1]-1}")
         cut = checkpoint(before)
-        soil = [f for f in facts(core,cut["cursor"],0) if f.actor==actor and KINDS[f.kind]=="SoilDropped"]
-        start = [f for f in facts(core,cut["cursor"],soil[-1].id if soil else 0)
-                 if f.actor==actor and KINDS[f.kind]=="ForagingStarted"]
+        soil, start = [], []
+        for f in facts(core,cut["cursor"]):
+            if f.actor == actor and KINDS[f.kind] == "SoilDropped":
+                soil.append(f)
+            if f.actor == actor and KINDS[f.kind] == "ForagingStarted" and soil:
+                start.append(f)
         require(soil and start and soil[0].time <= start[-1].time, "Private work/departure not witnessed")
         require(not any(cut["ants"][actor]["carried_ug"]), "Worker was loaded before its first collection")
         slot="3"*32
@@ -43,7 +46,7 @@ def verify_private_trip(binary, trial, scratch):
         for cmd in ("LOAD","LOAD_SNAPSHOT"):
             require(core.call(f'{cmd} {slot} {cut["world"]}')==before and
                     core.call(f"ADVANCE {ingest[1]}")==after, "Trip continuation changed")
-        return dict(seed=trial["seed"],worker=actor,source=source,soil_fact=soil[0].id,
+        return dict(seed=trial["seed"],command=trial["command"],worker=actor,source=source,soil_fact=soil[0].id,
                     departure=start[-1].id,collection=collection,intake=ingest,
                     before_sha256=sha256(before).hexdigest(),after_sha256=sha256(after).hexdigest())
 

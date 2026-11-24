@@ -736,6 +736,18 @@ class LiveTests(unittest.TestCase):
         old = next(r["record"] for r in cuts if r["purpose"]=="candidate-founder-last-ms")
         terminal_probe(core,trial,old)
 
+    def test_first_sips_at_own_worked_exit_survive_sqlite_and_compact_resume(self):
+        from tools.verify_worked_exit import verify_private_trip
+
+        if not self.live.core().worked_exit:
+            self.skipTest("Build the worked-exit native core")
+        data = json.loads((ROOT/"research/single_nest/WORKED_EXIT_WITNESSES.json").read_text())
+        for witness in data["private_trips"]:
+            with self.subTest(seed=witness["seed"]):
+                trial = dict(seed=witness["seed"],command=witness["command"],
+                             first=dict(FoodCollected=witness["collection"], CargoIngested=witness["intake"]))
+                self.assertEqual(verify_private_trip(BINARY,trial,self.folder),witness)
+
     def test_collected_meal_reaches_a_newly_eclosed_worker(self):
         from tools.trace_social_crop_meal import trace
         from tools.verify_protected_habitat import rows

@@ -1,0 +1,179 @@
+{
+  "terminal": {
+    "sha256": "795145a562a29916d6e485182e534f6766f33eef45b21457c0a88402a04fdbab",
+    "time_ms": 7222089222,
+    "fields": [
+      "donor",
+      "visible",
+      "in_contact",
+      "founder_has_step",
+      "donor_has_step",
+      "offered_carbs_ug",
+      "requested_carbs_ug"
+    ],
+    "original": [
+      [
+        8,
+        1,
+        0,
+        0,
+        0,
+        25,
+        51
+      ],
+      [
+        9,
+        0,
+        0,
+        0,
+        0,
+        13,
+        26
+      ],
+      [
+        10,
+        0,
+        0,
+        0,
+        0,
+        13,
+        26
+      ],
+      [
+        20,
+        0,
+        0,
+        0,
+        0,
+        17,
+        35
+      ],
+      [
+        21,
+        1,
+        0,
+        0,
+        0,
+        46,
+        92
+      ]
+    ],
+    "candidate": [
+      [
+        8,
+        1,
+        0,
+        1,
+        1,
+        25,
+        51
+      ],
+      [
+        9,
+        0,
+        0,
+        0,
+        0,
+        13,
+        26
+      ],
+      [
+        10,
+        0,
+        0,
+        0,
+        0,
+        13,
+        26
+      ],
+      [
+        20,
+        0,
+        0,
+        0,
+        0,
+        17,
+        35
+      ],
+      [
+        21,
+        1,
+        0,
+        1,
+        1,
+        46,
+        92
+      ]
+    ]
+  },
+  "private_trips": [
+    {
+      "seed": 17,
+      "worker": 11,
+      "source": 4,
+      "soil_fact": 13779,
+      "departure": 13888,
+      "collection": [
+        14049,
+        3967254862,
+        11,
+        4,
+        [
+          400,
+          0,
+          600,
+          0
+        ]
+      ],
+      "intake": [
+        14056,
+        3967284863,
+        11,
+        4,
+        [
+          40,
+          0,
+          60,
+          0
+        ]
+      ],
+      "before_sha256": "c602c34fbaf57c60600bf8e58a693c1ea266bdfbb0357c18dc7049495787020e",
+      "after_sha256": "fd47f7f776712287feebe402c366eaa69cb3c00cb88b86cdd656e8968a411b1e",
+      "command": "NEW_PROVISIONED_NEST 906238109273 17 250 80 plugged 1955 reachable nearby sheltered mineral worked-exit wet-wick"
+    },
+    {
+      "seed": 29,
+      "worker": 10,
+      "source": 4,
+      "soil_fact": 17280,
+      "departure": 17416,
+      "collection": [
+        17577,
+        3974761716,
+        10,
+        4,
+        [
+          400,
+          0,
+          600,
+          0
+        ]
+      ],
+      "intake": [
+        17584,
+        3974791717,
+        10,
+        4,
+        [
+          40,
+          0,
+          60,
+          0
+        ]
+      ],
+      "before_sha256": "e1836b59a4bbef686c598aa88b6f16d5b67a60457f502e0b63fe67b05c56e549",
+      "after_sha256": "cebee25abfd21e0d6d034fc3f6fec4d01412bcd6d6a62204c3cebf4544a2f27b",
+      "command": "NEW_PROVISIONED_NEST 906238109285 29 250 80 plugged 1955 reachable nearby sheltered mineral worked-exit wet-wick"
+    }
+  ]
+}
