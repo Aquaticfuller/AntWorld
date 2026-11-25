@@ -308,6 +308,17 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 }
             }
         }
+        // An outbound collector at its own entrance can carry an already
+        // paid social crop home when the approach to a local feeder is busy.
+        // Reuse the private return trace and every ordinary collision check.
+        if (yielding_return(s) && link && !link->returning && link->cursor+1==link->size &&
+            ant.position==link->entrance() && !loaded && f.last_collected.value && local_founding_provisioning(s,ant.id) &&
+            r.decision.action==ActionKind::Move && r.decision.reason==DecisionReason::LocalFood &&
+            !clear_worker_traffic(ant,r.destination,body_half(ant.id)) &&
+            founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug &&
+            spatially_clear(ant.position,link->points[link->cursor-1],body_half(ant.id)) &&
+            clear_worker_traffic(ant,link->points[link->cursor-1],body_half(ant.id)))
+            connector(true);
         ready.push_back(r);
     }
     std::sort(ready.begin(), ready.end(), [](const auto& a, const auto& b) { return a.event.actor < b.event.actor; });
@@ -480,7 +491,8 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
         bump(s.m.foraging.deliveries); f.mode = BehaviorMode::Explore; f.trip_moves = 0;
         if (connector!=s.connectors.end() && connector->second.returning) {
             auto link=connector->second;
-            link.returning=false;
+            link.returning=chamber_handoff(s) && link.cursor && local_founding_provisioning(s,ant.id) &&
+                founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug;
             tx.connectors.set(ant.id,link);
         }
     } else if (fact.kind == FactKind::ActionRejected) bump(s.m.foraging.failed_actions);

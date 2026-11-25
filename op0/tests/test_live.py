@@ -690,6 +690,10 @@ class LiveTests(unittest.TestCase):
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
         models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.chamber_handoff:
+            models.append(("chamber-handoff",66))
+        if core.yielding_return:
+            models.append(("yielding-return",65))
         if core.sustained_contact:
             models.append(("sustained-contact",64))
         if core.worked_exit:
@@ -725,13 +729,21 @@ class LiveTests(unittest.TestCase):
         actual = verify(BINARY, witness["trial"], self.folder)
         self.assertEqual(json.loads(json.dumps(actual)), witness["verified"])
 
+    def test_carriers_clear_occupied_entrance(self):
+        from tools.verify_sustained_contact import verify_entrance
+        if not self.live.core().yielding_return:
+            self.skipTest("Build the yielding return Core")
+        verify_entrance(BINARY, self.folder)
+
     def test_paid_oral_contact_from_identical_six_hour_cut(self):
         from tools.verify_sustained_contact import verify
         if not self.live.core().sustained_contact:
             self.skipTest("Build the local feeding approach Core")
-        old, candidate = verify(BINARY, self.folder)
+        old, *candidates = verify(BINARY, self.folder)
         self.assertEqual(old["deaths"], [469357])
-        self.assertTrue(candidate["founder_uptake"])
+        for candidate in candidates:
+            with self.subTest(physics=candidate["physics"]):
+                self.assertTrue(candidate["founder_uptake"])
 
     def test_close_stance_on_the_same_starving_founder_cut(self):
         from tools.verify_worked_exit import terminal_probe

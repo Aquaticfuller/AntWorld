@@ -1,0 +1,11 @@
+# Occupied feeder and entrance return challenge
+
+The physics 64 seed-2 nearby world dies at 7,082,242,171 ms. In its last six hours, workers 8 and 9 are active foragers with sugar in their crops. Worker 8 requests the occupied entrance. Worker 9 requests the occupied feeder. Both translation requests pass the individual body/terrain checks and fail the existing traffic check.
+
+Before treatment, freeze this prediction: a worker at its own surface entrance, unable to approach a locally sensed food source because of traffic, can use an existing clear return segment if it already owns shareable crop carbohydrate and carries no external load. This changes one local choice. The other carrier must still dock normally. Keep the decision and action clocks, collision, withdrawal, uptake and mortality rules. Do not read the queen's condition at the surface.
+
+First replay the identical six-hour predeath cut. Require a committed inbound connector movement by worker 9, subsequent movement by the waiting carrier, and a real worker-to-founder sugar transfer before the old death. Distinguish clearing the physical jam from maintaining nutrition. Retain failures. If it clears the jam, run the same frozen seed/supply panel from birth, count the second-year eclosions and apply the original growth criterion. Protect physics 63 and 64 as separate versions if the behavior is made available in the application.
+
+The isolated return correction cleared both carriers but failed the payment endpoint. At the final cut their mouth heights differed from the founder by 0.75 mm and 2.25 mm, exceeding the unchanged 0.65 mm reach even at zero horizontal distance. Next compare the same return with candidate stances near the receiver's mouth height. Preserve real terrain support, swept-body clearance, movement cost, and the same six-hour endpoints. A projected meeting without a positive transfer remains a failure.
+
+If cross-level stances fail, inspect the existing return trace. Test whether fluid donors leave it at a dry-food handoff before reaching their chamber berth. In the same cut, let an inbound worker with discretionary crop carbohydrate continue its own route after a wall delivery. Keep every genuine delivery, existing clearance checks and original six-hour meal criterion. Withhold an unproductive variant from ordinary play.

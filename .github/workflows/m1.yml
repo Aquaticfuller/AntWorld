@@ -1,9 +1,9 @@
 name: M1 Observatory
 on:
   push:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2_SIX_HOUR_CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   pull_request:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2_SIX_HOUR_CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   workflow_dispatch:
 
 permissions:
@@ -70,6 +70,7 @@ jobs:
             op0.tests.test_live.LiveTests.test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake `
             op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction `
             op0.tests.test_live.LiveTests.test_familiar_return_replays_the_first_reassessment_without_warping_the_worker `
+            op0.tests.test_live.LiveTests.test_carriers_clear_occupied_entrance `
             op0.tests.test_live.LiveTests.test_paid_oral_contact_from_identical_six_hour_cut `
             op0.tests.test_live.LiveTests.test_first_meal_versions_and_read_only_access `
             op0.tests.test_live.LiveTests.test_founder_and_worker_both_approach_the_verified_meal_and_resume -v

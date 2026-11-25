@@ -1,3 +1,4 @@
+#include "founding_internal.hpp"
 #include "state.hpp"
 #include "ecological_internal.hpp"
 #include "behavior_rng.hpp"
@@ -132,6 +133,12 @@ bool WorldRuntime::at_foraging_home(const AntState& ant) const {
     if (!s.ecological || !s.ecological->founding_habitat) return ant.position==depot;
     if (sealed_chamber(s) && s.geometry_edits.empty()) return ant.position==depot;
     const auto route=s.connectors.find(ant.id);
+    // A pantry on the shaft wall accepts dry freight. A forager returning
+    // with a payable crop still owns the route to its chamber berth.
+    if (chamber_handoff(s) && route!=s.connectors.end() && route->second.returning &&
+        route->second.cursor && s.foragers.at(ant.id).enabled && local_founding_provisioning(s,ant.id) &&
+        founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug)
+        return false;
     if (worked_exit(s) && !ant.carried_food.total_ug() && at_worked_site(s,ant.id,ant.position) &&
         spatially_clear(ant.position,physical(s.excavators.at(ant.id).path[0],s.geometry->config)) &&
         (route==s.connectors.end() || !s.foragers.at(ant.id).enabled ||

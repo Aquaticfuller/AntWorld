@@ -481,7 +481,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v39");
+                message("OK", "antworld.m0.live.v41");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -526,11 +526,13 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="chamber-handoff" ? FoundingNutrition::ChamberHandoff :
+                        treatment=="yielding-return" ? FoundingNutrition::YieldingReturn :
                         treatment=="sustained-contact" ? FoundingNutrition::SustainedContact :
                         treatment=="worked-exit" ? FoundingNutrition::WorkedExit :
                         treatment=="local-crop-return" ? FoundingNutrition::LocalCropReturn :
