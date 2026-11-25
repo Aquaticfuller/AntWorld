@@ -479,6 +479,13 @@ inline FoodMass foundress_nest_meal(const FoundingProfile& f, const PhysiologySt
     return portion(supply,std::min(supply.total_ug(),local_feeding ? room : std::min(room,p.config.transfer_limit_ug)));
 }
 
+inline FoodMass founder_oral_request(const FoundingProfile& profile,const PhysiologyState& p,
+                                     const FoundingReserve& reserves,FoodMass offer) {
+    auto ration=foundress_nest_meal(profile,p,reserves,offer,true);
+    ration.protein_ug=ingredient_min(offer,signaled_need(p,LifeStage::Adult,true)).protein_ug;
+    return ration;
+}
+
 inline FoundingEggFuel founding_egg_fuel(const FoundingProfile& f, const PhysiologyState& p, const FoundingReserve& r) {
     if (f.dietary && f.dietary->dietary_eggs && p.oxidized_carbs_ug) {
         const auto floor=dietary_maintenance(f,p,r);

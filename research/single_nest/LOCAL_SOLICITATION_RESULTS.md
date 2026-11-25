@@ -1,5 +1,7 @@
 # Why the founder missed a funded meal
 
+The final model comparison appears under [Physics 73 from founding](#physics-73-from-founding). The short encounter and refilling results below establish which operations actually completed in each model.
+
 ## The last six hours
 
 Two archived seed-2 deaths answer different questions. In physics 63, workers 8 and 9 ended approach segments with mouth gaps of 4.4851 and 3.2911 mm. The continuation reselected individual 24. On a fresh replay, the founder died on day 91.06 (event 469357) with no sugar payments in the window. On that same input physics 68 and 69 each paid 231 µg in 16 oral transactions. Physics 70 paid 430 µg in six transactions. All three crossed the old death time alive. Each test replayed the donor debit and recipient credit.
@@ -45,7 +47,7 @@ Two separate perturbations failed. Preferring a funded water donor over a walk t
 
 Physics 72 searches local founder poses when approaching a visible feeding patch or wick. A route must end at a place the mouth can actually reach. One physical movement commits before the next observation. On the identical cut the founder completed five approach legs to the patch. She drew 25 µg from the finite wick, received 179 µg of water from workers and absorbed 202 µg altogether. She retained 203 µg of body water at the former death boundary. The stock debit included all draws from the wick. Restoring a compact snapshot one millisecond before the first drink gave the same subsequent state. These data establish physical access and receipt in this encounter.
 
-## Matched two-year decision
+## Matched two-year decision through physics 72
 
 The five supplied physics-72 founders died between days 57.87 and 86.71. Three exhausted their body energy and two dehydrated. Four worlds had one living worker at day 730 and one had none. No worker eclosed in year two. Zero of five worlds met the registered three-world sustained-growth threshold. The absent-food world had zero founder sugar receipts and no workers at day 730. Physics 72 is available as a selectable experiment.
 
@@ -90,6 +92,49 @@ The table includes all starting seeds, treatments and negative controls. Sugar a
 
 The input and outcome verifier checks all 30 receipts, including the unchanged archived baseline. It also recomputes the endpoint from individual lives. The five versions yield 0/5 qualifying supplied worlds each. Physics 70 was a separate two-seed screen. The Windows Release run executed all 292 CTest cases and the three local solicitation integration tests. The historical application performance gate, B06 and independent biological validation have separate evidence and decisions.
 
+## Why the experienced collectors could not leave
+
+The two physics-72 workers at the founder's final death in seed 2 had already collected from source 4 and were inside the valid departure region. Both failed the read-only route query in all thirteen half-hour samples. At both endpoints native tracing identified the exact rejection. The initial sweep from the worker's continuous body position to the nearest grid point was blocked by traffic. The old search returned immediately. A clear alternative at the shaft entrance never reached its decision logic. Worker 8 stood at (1.6875, -4, 1.3125) mm, only 0.476 mm from its remembered berth, and worker 9 stood 0.690 mm from its berth. Checking hunger more often would run the same failed route test at those poses.
+
+Physics 73 allows an experienced worker to inspect the eight immediate horizontal neighbors of that grid point if the original connector search fails. A candidate must remain within the body's local sensing range and within one terrain quantum of the true starting point. The first movement and every following leg must clear terrain and traffic and retain their time and resource costs. Only the local connection changes. The worker must still navigate outside, pay and collect at a real source, return, reach the founder's mouth and transfer from its own crop.
+
+The six-hour paired replay began at 7,470,209,616 ms. Under physics 72 there were no new collections, five positive sugar payments totaling 25 µg, and founder death at event 744221. Physics 73 completed six collections totaling 394 µg. Workers 8 and 9 ingested the full collection. The founder received 152 µg and absorbed 115 µg during the window. She remained alive at the original death boundary. Each of six mid-trip compact save/load continuations reproduced the uninterrupted end frame and the ledgers. The absence of a death at this single cut gives no estimate of lifespan.
+
+The first implementation allowed neighboring attachment candidates farther than the existing checkpoint decoder permits. Six successful terminal reloads did not cover that geometry. Code inspection caught the mismatch. The five preliminary supplied runs were interrupted and excluded, the absent-food run was repeated, and all six final worlds used a first-leg bound matching the persistence contract. The bounds fix reproduced the six-hour event quantities.
+
+To reproduce the route attribution, apply solicitation_probes/trace-shaft-attachment.patch to a disposable physics-72 checkout. Use its instrumented binary to load SEED2_FINAL_REFILL_CUT.awstate.gz after decompression as a research snapshot. Run MEAL_ACCESS at the start of the snapshot and one millisecond before 7,491,809,617 ms. The instrumentation only reports the existing rejection on standard error. Run the following command in the versioned checkout for the actual model comparison.
+
+~~~powershell
+py -3 -B -m tools.verify_local_solicitation --final-refill
+~~~
+
+## Physics 73 from founding
+
+The identical-input panel ran from day zero through day 730. The three-world requirement again failed, at zero of five. The new access rule rescued a founder when applied at the separate late starvation cut, but running it from founding changed earlier movements and feeding. Seed 2 died of dehydration on day 58.33, versus starvation on day 86.71 under physics 72. Four workers were alive on day 73 and only one on day 730. Each of seeds 1 and 29 instead prolonged founder survival relative to version 72. Seed 17's times and sugar totals stayed the same. Across all five supplied worlds there were no worker eclosions in year two. Keep this model experimental.
+
+| Seed | Supply | Founder death (d) | Cause | Sugar received (µg) | Intake days | Workers d73 | Workers d365 | Workers d730 | Year-two eclosions |
+|---:|---|---:|---|---:|---:|---:|---:|---:|---:|
+| 1 | nearby | 79.28 | Dehydration | 3,252 | 11 | 3 | 1 | 0 | 0 |
+| 2 | nearby | 58.33 | Dehydration | 2,338 | 8 | 4 | 2 | 1 | 0 |
+| 3 | nearby | 82.49 | Energy depleted | 2,555 | 22 | 1 | 1 | 1 | 0 |
+| 17 | nearby | 72.47 | Energy depleted | 331 | 3 | 2 | 1 | 1 | 0 |
+| 29 | nearby | 74.43 | Energy depleted | 1,883 | 10 | 4 | 1 | 1 | 0 |
+| 2 | absent | 73.36 | Energy depleted | 0 | 0 | 0 | 0 | 0 | 0 |
+
+A second independent six-hour replay of the physics-73 seed-2 world locates the earlier death at 5,040,000,000 ms, event 268457. One millisecond earlier the founder had 1,043,207,654 nJ of body energy, 1 µg of body water and no crop water. Two workers' crops held 419 and 740 µg of water at mouth gaps of 4.351 and 1.563 mm, respectively. The third worker had none. The wick still held its entire 1,500,000 µg and was visible but outside immediate reach. The founder completed zero positive food or water receipts and had zero positive uptake throughout this six-hour window. The old starvation fix does not explain away this earlier hydration and contact failure. Prioritizing the queen's caste cannot by itself create a feasible mouth-to-mouth stance. A subsequent change would need to demonstrate both physically successful water delivery before this deadline and repeated collection on the unchanged two-year panel.
+
+The full comparison checks 36 starting frames and six matched physical input groups. Model implementation 0d19d22f reproduces the corrected first-leg check. Locally the Windows Release suite passed 292/292 tests plus three targeted native-viewer integration tests. Playback and experimental protocols for versions 67 through 72 remain available.
+
+## Archive regression found during qualification
+
+A complete SQLite save at the first observed alternate shaft attachment initially failed. The storage writer assigned the older AWFACT09 envelope to physics 71 through 73. That envelope cannot represent a resumed foraging origin. After selecting AWFACT10 for those exact schema/version pairs, the historical reader still rejected a real founder transfer using the old adult demand formula. The reader now verifies the same founder request against the historical recipient, donor offer, crop capacity and balances. The corrected reader accepts genuine early AWFACT09 archives for the three affected historical version pairs. The world/version identity, digest chain, recorded transfer validation and replay remain mandatory.
+
+Physics 72's original day-one SQLite file is retained compressed. The native reader and independent OP0 importer reproduced its 61 records. The full physics-73 case captures worker 8 departing at event 15893 and taking the alternate first leg at event 15900. The SQLite archive was 2,297,856 bytes and contained 15,902 records. Independent ingestion, byte-identical restore, two further minutes of continuation and ledger verification passed. The full temporary database was discarded after measurement. Reproduce with the command below.
+
+~~~powershell
+py -3 -B -m tools.verify_local_solicitation --exit-storage
+~~~
+
 ## Evidence and limits
 
 Holman et al. identified a queen cuticular hydrocarbon in *L. niger*. Their experiments measured worker ovarian responses and aggression toward treated targets. A founder's current sugar deficit and the order of feeding queen versus larvae were outside those endpoints. The simulator's local meal request remains an explicit modeling assumption. [Primary chemical-cue experiment](https://doi.org/10.1098/rspb.2010.0984)
@@ -109,9 +154,9 @@ py -3 -B -m tools.verify_local_solicitation
 py -3 -B -m tools.verify_local_solicitation --water-cut
 py -3 -B -m tools.verify_local_solicitation --water-relay
 py -3 -B -m tools.verify_local_solicitation --trip-cycle
-py -3 -B -m tools.verify_local_solicitation --panel research/single_nest/LOCAL_SOLICITATION_TRIALS.jsonl.gz
+py -3 -B -m tools.verify_local_solicitation --panel research/single_nest/LOCAL_SOLICITATION_TRIALS.jsonl.gz --exit-trials research/single_nest/LOCAL_SOLICITATION_EXIT_TRIALS.jsonl.gz
 py -3 -B -m tools.trace_founder_trips --seed 2 --start 46 --stop 82
-py -3 -B -m tools.measure_first_meal --model founder-route --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux
+py -3 -B -m tools.measure_first_meal --model exit-attachment --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux
 ```
 
 Use the registered seed, supply and model for the other pairs. The native host streams committed facts, checks the food and soil ledgers and keeps history compaction in memory. Save the standard output of a single run to a small JSON file to use it with `tools.inspect_first_meal_window --core <executable> death <receipt.json> --lookback-hours 6`. Source package and receipt hashes identify the inputs and cuts. Player saves are separate.

@@ -254,6 +254,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     if (s.social->demand_sensitive) {
                         const auto demand=local_founding_feeding(s) && target_stage==LifeStage::Larva && founding.enrolled(target) ?
                             founding_larval_demand(founding.profile(),recipient,founding.reserves.at(target),provision_callow_water(s)) :
+                            founder_appetite(s) && founding.founder(target) ?
+                            founder_oral_request(founding.profile(),recipient,founding.reserves.at(target),
+                                contact_offer(s,local_founding_provisioning(s,e.actor) ? founding_gift_supply(founding.profile(),p) :
+                                              p.crop,p,recipient,target_stage)) :
                             nutrient_demand(recipient,target_stage);
                         ensure(ingredient_min(e.transferred,demand)==e.transferred,
                             "transfer exceeds contacted recipient demand");

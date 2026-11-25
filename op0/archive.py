@@ -151,7 +151,7 @@ def digest(records):
     return checksum.hexdigest()
 
 
-def fact_blocks(db, world, boundaries, schema):
+def fact_blocks(db, world, boundaries, schema, previous_writer=False):
     after = previous_time = 0
     predecessor = ZERO
     for first_key, last_key, start, end, size, checksum, envelope in db.execute(
@@ -160,7 +160,8 @@ def fact_blocks(db, world, boundaries, schema):
         magic, encoding, codec, fact_schema, reserved, hi, lo, first, last, begin, finish, raw_size, packed, parent, own = BLOCK.unpack_from(envelope)
         compressed = memoryview(envelope)[BLOCK.size:]
         require(1 <= fact_schema <= 10 and magic == f"AWFACT{fact_schema:02d}".encode() and encoding == fact_schema and codec == 1 and
-                reserved == 0 and (fact_schema == schema or max(fact_schema, schema) <= 2), "Unsupported SQLite block format")
+                reserved == 0 and (fact_schema == schema or max(fact_schema, schema) <= 2 or
+                                   (previous_writer and schema == 10 and fact_schema == 9)), "Unsupported SQLite block format")
         require(world_id(hi, lo) == world and first == key(first_key) == after + 1 and last == key(last_key) and
                 1 <= last - first + 1 <= 4096 and previous_time <= begin == start <= finish == end and
                 size == raw_size and (last - first + 1) * 163 <= size <= (last - first + 1) * 214 and
@@ -251,8 +252,8 @@ def sqlite_inputs(path, *, immutable=False):
             else:
                 require(key(manifest[6]) == 0, "Unexpected legacy prefix in segmented SQLite")
             boundaries = {0: (ZERO, 0)}
-            facts_schema = 10 if tip["physics"] in (47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70) else min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
-            records = (fact_blocks(db, world, boundaries, facts_schema) if version == 2 else legacy_records(db, world))
+            facts_schema = 10 if 47 <= tip["physics"] <= 73 else min(9, max(1, tip["schema"] - 13 if tip["schema"] >= 15 else 1))
+            records = (fact_blocks(db, world, boundaries, facts_schema, 71 <= tip["physics"] <= 73) if version == 2 else legacy_records(db, world))
             capture = dict(kind=f"SQLite v{version}", hashes={}, receipt_verified=False, cuts=[], people=[], comparable=False, case={},
                            facts_expected=digest(checkpoint_history(legacy, tip)) if legacy is not None else None)
             yield first, tip, cuts, records, capture

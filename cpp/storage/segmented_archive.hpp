@@ -72,7 +72,7 @@ private:
     // Keep the existing legacy/first-F1 compatibility and isolate both later candidates.
     return a==b || (a<FactSchema::FoundingPersistence && b<FactSchema::FoundingPersistence);
 }
-void verify_blocks(sqlite3*,WorldId,EventId from,EventId through,const Digest& tail,FactSchema);
+void verify_blocks(sqlite3*,WorldId,EventId from,EventId through,const Digest& tail,std::span<const std::uint8_t> frame);
 void require_history_prefix(sqlite3*,WorldId,const HistoryCapture&,EventId cursor,const Digest& tail);
 void put_anchor(sqlite3*,const SaveToken&,SimTime,std::span<const std::uint8_t>,const Digest& parent,const Digest& tail);
 [[nodiscard]] HistoryAnchor read_anchor(sqlite3*,WorldId,std::uint64_t,std::size_t byte_limit);

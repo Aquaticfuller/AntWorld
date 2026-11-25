@@ -215,7 +215,7 @@ LoadedWorld Store::load_segmented(WorldId world,std::optional<std::uint64_t> req
     require(!newest || anchor.token==*current,"latest frame and manifest differ");
     {
         timing::Scope phase(timing::Phase::VerifyBlocks);
-        verify_blocks(impl_->db,world,{},{anchor.token.cursor},anchor.tail,frame_fact_schema(anchor.frame));
+        verify_blocks(impl_->db,world,{},{anchor.token.cursor},anchor.tail,anchor.frame);
     }
     WorldRuntime runtime(world,0,{},impl_->limits);
     {
@@ -242,10 +242,9 @@ LoadedWorld Store::recover(WorldId world,std::uint64_t base_generation,std::uint
         const auto current=latest(world);
         require(current && target_generation<=current->generation,"target exceeds the manifest");
         const auto target=verified_anchor(impl_->db,world,target_generation,impl_->limits.checkpoint_bytes);
-        const auto schema=frame_fact_schema(target.frame);
         require(compatible_frame_contract(base.world.checkpoint_frame(),target.frame),
                 "experimental recovery cannot cross model versions");
-        verify_blocks(impl_->db,world,{base.token.cursor},{target.token.cursor},target.tail,schema);
+        verify_blocks(impl_->db,world,{base.token.cursor},{target.token.cursor},target.tail,target.frame);
         base.world.restore_frame(target.frame,std::make_shared<SqlEventPrefix>(impl_->path,world,
             static_cast<std::size_t>(target.token.cursor),target.tail));
         const bool newest=target_generation==current->generation;

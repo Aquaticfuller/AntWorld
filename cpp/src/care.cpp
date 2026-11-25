@@ -138,13 +138,11 @@ bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
 
 FoodMass WorldRuntime::meal_signal(const AntState& recipient,const PhysiologyState& p,FoodMass offer) const {
     const auto& s=*state_;
-    const auto ordinary=ingredient_min(offer,signaled_need(p,recipient.stage,s.long_term!=nullptr));
-    if (!founder_appetite(s) || !founding_foundress(recipient.id)) return ordinary;
+    if (!founder_appetite(s) || !founding_foundress(recipient.id))
+        return ingredient_min(offer,signaled_need(p,recipient.stage,s.long_term!=nullptr));
     // A local request can use crop storage before the short-term body buffer
     // is exhausted. Report only ingredients this donor could actually provide.
-    auto ration=foundress_nest_meal(s.founding->profile,p,*query_founding({s.world,recipient.id}),offer,true);
-    ration.protein_ug=ordinary.protein_ug;
-    return ration;
+    return founder_oral_request(s.founding->profile,p,*query_founding({s.world,recipient.id}),offer);
 }
 
 // ENGINEERING_FIXTURE. A short encounter has two mobile participants.

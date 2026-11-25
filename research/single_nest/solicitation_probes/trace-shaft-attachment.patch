@@ -1,0 +1,19 @@
+--- a/cpp/src/spatial_navigation.cpp
++++ b/cpp/src/spatial_navigation.cpp
+@@ -1,3 +1,4 @@
++#include <cstdio>
+ #include "founding_internal.hpp"
+ #include "state.hpp"
+ #include "ecological_internal.hpp"
+@@ -31,7 +32,10 @@
+     const auto attach=static_cast<std::uint32_t>(depot!=start_pos);
+     // Route selection uses the current occupancy. The motion transaction
+     // checks reserved sweeps again before each segment actually executes.
+-    if (sustained_supply(s) && attach && !clear_worker_traffic(ant,start_pos,body_half(ant.id),false)) return {};
++    if (sustained_supply(s) && attach && !clear_worker_traffic(ant,start_pos,body_half(ant.id),false)) {
++        std::fprintf(stderr,"worker=%llu occupancy-at-grid-attachment\n",static_cast<unsigned long long>(ant.id.value));
++        return {};
++    }
+     if (!limits_.navigation_nodes) return {};
+     const auto remaining=[&](PointQ p) { return static_cast<std::uint32_t>(std::abs(*level-p.y)); };
+     using Node=std::tuple<std::uint32_t,std::uint32_t,PointQ>;

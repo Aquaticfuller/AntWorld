@@ -20,12 +20,10 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     constexpr std::array<std::uint8_t,6> prefix{'A','W','C','K','P','T'};
     if (bytes.size()<16 || bytes[15] || !std::equal(prefix.begin(),prefix.end(),bytes.begin()+8)) return FactSchema::Legacy;
     if (bytes[14]=='M') {
-        constexpr std::array<std::array<std::uint8_t,8>,24> sustained_versions{{
-            {40,0,0,0,47,0,0,0}, {41,0,0,0,48,0,0,0}, {42,0,0,0,49,0,0,0}, {43,0,0,0,50,0,0,0}, {44,0,0,0,51,0,0,0}, {45,0,0,0,52,0,0,0}, {46,0,0,0,53,0,0,0}, {47,0,0,0,54,0,0,0}, {48,0,0,0,55,0,0,0}, {49,0,0,0,56,0,0,0}, {50,0,0,0,57,0,0,0}, {51,0,0,0,58,0,0,0}, {52,0,0,0,59,0,0,0}, {53,0,0,0,60,0,0,0}, {54,0,0,0,61,0,0,0}, {55,0,0,0,62,0,0,0}, {56,0,0,0,63,0,0,0}, {57,0,0,0,64,0,0,0}, {58,0,0,0,65,0,0,0}, {59,0,0,0,66,0,0,0}, {60,0,0,0,67,0,0,0}, {61,0,0,0,68,0,0,0}, {62,0,0,0,69,0,0,0}, {63,0,0,0,70,0,0,0}
-        }};
-        if (bytes.size()>=24 && std::any_of(sustained_versions.begin(),sustained_versions.end(),[&](const auto& version) {
-                return std::equal(version.begin(),version.end(),bytes.begin()+16);
-            }))
+        // These consecutive model pairs use the existing AWFACT10 payloads.
+        // Match both little-endian IDs, including all their high bytes.
+        if (bytes.size()>=24 && bytes[16]>=40 && bytes[16]<=66 && bytes[20]==bytes[16]+7 &&
+            bytes[17]==0 && bytes[18]==0 && bytes[19]==0 && bytes[21]==0 && bytes[22]==0 && bytes[23]==0)
             return FactSchema::SustainedSupply;
         return FactSchema::EcologicalClosure;
     }
@@ -165,11 +163,17 @@ Digest append_blocks(sqlite3* db,WorldId world,const HistoryCapture& capture,Eve
     return previous;
 }
 
-void verify_blocks(sqlite3* db,WorldId world,EventId from,EventId through,const Digest& tail,FactSchema schema) {
+void verify_blocks(sqlite3* db,WorldId world,EventId from,EventId through,const Digest& tail,
+                   std::span<const std::uint8_t> frame) {
+    const auto schema=frame_fact_schema(frame);
+    // Early archives of physics 71-73 wrote AWFACT09 until a resumed outing
+    // or other AWFACT10-only fact correctly failed publication.
+    const bool previous_writer=schema==FactSchema::SustainedSupply && frame[16]>=64 && frame[16]<=66;
     BlockCursor cursor(db,world,from,through);
     auto seen=block_tail(db,world,from);
     while (const auto block=cursor.next()) {
-        require(compatible_fact_schema(static_cast<FactSchema>(block->header.fact_schema),schema),
+        const auto stored=static_cast<FactSchema>(block->header.fact_schema);
+        require(compatible_fact_schema(stored,schema) || (previous_writer && stored==FactSchema::EcologicalClosure),
                 "founding frame and fact block versions disagree");
         require(block->header.first.value==from.value+1 && block->header.previous==seen,
                 "published cut does not start at an exact block boundary");

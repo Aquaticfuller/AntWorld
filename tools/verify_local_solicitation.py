@@ -5,10 +5,11 @@ from contextlib import closing
 import gzip
 from hashlib import sha256
 import json
-from math import dist
+from math import ceil, dist, floor
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from op0.archive import sqlite_inputs
 from op0.codec import ACTS, KINDS, OUTCOMES, PHASES, checkpoint, require
 from op0.live import NativeCore, ROOT, core_path, live_bodies
 from tools.compare_m0_worker_rhythm import facts
@@ -295,6 +296,62 @@ def final_refill(binary, version):
                     founder_paid_sugar_ug=sugar, sugar_collected_ug=acquired)
 
 
+def exit_storage(binary):
+    """Check original AWFACT09 reads and a complete AWFACT10 history after a real alternate first leg."""
+    from op0 import DAY
+    archive_cut = EVIDENCE/"PHYSICS72_EARLY_SQLITE.gz"
+    with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary,temp)) as core:
+        slot = "e"*32
+        path = Path(temp)/(slot+".sqlite")
+        path.write_bytes(gzip.decompress(archive_cut.read_bytes()))
+        def count_records(archive):
+            counts = []
+            for _,tip,_,records,_ in sqlite_inputs(archive):
+                count = sum(1 for _ in records)
+                require(count==tip["cursor"],"Incomplete independent SQLite read")
+                counts.append(count)
+            require(len(counts)==1,"Expected one world in witness")
+            return counts[0]
+        old_count = count_records(path)
+        old_world = "00000000-0000-028d-0000-00f70000264a"
+        old = core.call(f"LOAD {slot} {old_world}")
+        with gzip.open(EVIDENCE/"LOCAL_SOLICITATION_TRIALS.jsonl.gz","rt") as source:
+            base = next(r for line in source if (r:=json.loads(line))["physics"]==72 and r["seed"]==2 and r["supply"]=="nearby")
+        core.call(base["command"])
+        require(core.call(f"ADVANCE {DAY}")==old, "Earlier SQLite writer changed the founder's day-one state")
+        command=base["command"].replace("founder-route","exit-attachment")
+        initial=checkpoint(core.call(command))
+        g=initial["geometry"]
+        quantum=g["quantum_m"]
+        def nearest(position):
+            offsets=[(v-o)/quantum for v,o in zip(position,g["origin_m"])]
+            return tuple(o+(floor(v+.5) if v>=0 else ceil(v-.5))*quantum for v,o in zip(offsets,g["origin_m"]))
+        # First observed non-nearest grid attachment in the bounded discovery replay.
+        arrival_ms=3_938_702_676
+        frame=core.call(f"ADVANCE {arrival_ms}")
+        cursor=checkpoint(frame)["cursor"]
+        events=list(facts(core,cursor,15_892))
+        departure=next(f for f in events if f.id==15_893)
+        move=next(f for f in events if f.id==15_900)
+        primary=nearest(departure.position)
+        require(KINDS[departure.kind]=="ForagingStarted" and KINDS[move.kind]=="Moved" and
+                move.actor==departure.actor==8 and move.time==arrival_ms and
+                dist(primary,move.position)>quantum/4 and dist(departure.position,move.position)<=quantum*1.000001,
+                "Historical worker did not use a legal alternate grid attachment")
+        slot="f"*32
+        core.call(f"SAVE {slot}")
+        path=Path(temp)/(slot+".sqlite")
+        count=count_records(path)
+        end=core.call(f"ADVANCE {move.time+120_000}")
+        require(core.call(f"LOAD {slot} {initial['world']}")==frame and
+                core.call(f"ADVANCE {move.time+120_000}")==end and core.call("CHECK_LEDGERS")==b"",
+                "Full archive changed the alternate route continuation")
+        return dict(old_cursor=old_count, physics=73, command=command, actor=move.actor, cursor=count,
+                    departure=[departure.id,departure.time,departure.position], primary_grid_m=nearest(departure.position),
+                    movement=[move.id,move.time,move.position], archive_bytes=path.stat().st_size,
+                    frame_sha256=sha256(frame).hexdigest(), continued_sha256=sha256(end).hexdigest())
+
+
 def loaded_archive(binary):
     """Check full history validation at the first liquid intake, including its trip bit."""
     from tools.measure_single_nest_lifecycle import TREATMENTS, WORLD_BASES
@@ -322,6 +379,7 @@ if __name__=="__main__":
     parser.add_argument("--exit-trials", type=Path, help="Also validate the six physics-73 continuations from birth")
     mode.add_argument("--earlier-cut", action="store_true", help="Replay the two-worker day-91 encounter")
     mode.add_argument("--trip-cycle", action="store_true", help="Replay the old-load return loop and a mid-trip save")
+    mode.add_argument("--exit-storage", action="store_true", help="Replay old and corrected complete SQLite archives")
     mode.add_argument("--final-refill", action="store_true", help="Measure departure, fresh collection and founder intake")
     mode.add_argument("--water-relay", action="store_true", help="Measure the seed-1 terminal relay cut")
     mode.add_argument("--measure-water-cut", action="store_true", help="Measure a disposable probe on the physics 71 input")
@@ -335,6 +393,8 @@ if __name__=="__main__":
         result = earlier_cut(binary)
     elif args.trip_cycle:
         result = dict(terminal=trip_cycle(binary), archive=loaded_archive(binary))
+    elif args.exit_storage:
+        result = exit_storage(binary)
     elif args.final_refill:
         result = [final_refill(binary, v) for v in (72,73)]
     elif args.water_relay:
