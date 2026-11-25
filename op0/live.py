@@ -50,7 +50,7 @@ LIVE_GROUPS["highlights"] = {KINDS[kind] for kind in HIGHLIGHTS}
 def core_path():
     name = "antworld_m0_live.exe" if os.name == "nt" else "antworld_m0_live"
     installed = ROOT / "out/m0-live-bin" / name
-    paths = (installed.with_stem("antworld_m0_live_v42"), installed.with_stem("antworld_m0_live_v41"), installed.with_stem("antworld_m0_live_v40"), installed.with_stem("antworld_m0_live_v39"), installed.with_stem("antworld_m0_live_v38"), installed.with_stem("antworld_m0_live_v37"), installed.with_stem("antworld_m0_live_v36"), installed.with_stem("antworld_m0_live_v35"), installed.with_stem("antworld_m0_live_v34"), installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
+    paths = (installed.with_stem("antworld_m0_live_v43"), installed.with_stem("antworld_m0_live_v42"), installed.with_stem("antworld_m0_live_v41"), installed.with_stem("antworld_m0_live_v40"), installed.with_stem("antworld_m0_live_v39"), installed.with_stem("antworld_m0_live_v38"), installed.with_stem("antworld_m0_live_v37"), installed.with_stem("antworld_m0_live_v36"), installed.with_stem("antworld_m0_live_v35"), installed.with_stem("antworld_m0_live_v34"), installed.with_stem("antworld_m0_live_v33"), installed.with_stem("antworld_m0_live_v32"), installed.with_stem("antworld_m0_live_v31"), installed.with_stem("antworld_m0_live_v30"), installed.with_stem("antworld_m0_live_v29"),
              installed.with_stem("antworld_m0_live_v28"), installed.with_stem("antworld_m0_live_v26"), installed.with_stem("antworld_m0_live_v25"),
              installed.with_stem("antworld_m0_live_v24"), installed.with_stem("antworld_m0_live_v23"),
              installed.with_stem("antworld_m0_live_v22"), installed.with_stem("antworld_m0_live_v21"),
@@ -78,7 +78,7 @@ class NativeCore:
                                         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         try:
             version = self.call("HELLO")
-            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 39))
+            protocols = tuple(f"antworld.m0.live.v{i}".encode("ascii") for i in range(4, 40))
             require(version in protocols,
                     "Rebuild the live Core for this viewer version.")
             generation = 4 + protocols.index(version)
@@ -111,6 +111,7 @@ class NativeCore:
             self.chamber_return = generation >= 31
             self.mouth_range = generation >= 32
             self.local_crop_return = generation >= 37
+            self.sustained_contact = generation >= 39
             self.worked_exit = generation >= 38
             self.work_face_search = generation >= 36
             self.responsive_meal = generation >= 35
@@ -283,7 +284,7 @@ class LiveSession:
         self.stopping = Event()
         self.thread = None
         self.worker = None
-        self.founding_capabilities = (False,) * 14
+        self.founding_capabilities = (False,) * 15
         self.workdir = None
         self.loaded_copy = None
         self.frame = None
@@ -310,7 +311,7 @@ class LiveSession:
                 with closing(NativeCore(self.binary, self.binary.parent)) as probe:
                     self.founding_capabilities = (probe.protected_nest, probe.local_dig, probe.nearby_feeder,
                                                   probe.callow_hydration, probe.social_crop, probe.crop_exchange,
-                                                  probe.chamber_return, probe.mouth_range, probe.checked_offer, probe.first_meal, probe.responsive_meal, probe.work_face_search, probe.local_crop_return, probe.worked_exit)
+                                                  probe.chamber_return, probe.mouth_range, probe.checked_offer, probe.first_meal, probe.responsive_meal, probe.work_face_search, probe.local_crop_return, probe.worked_exit, probe.sustained_contact)
             except (ValueError, OSError) as exc:
                 self.error = str(exc)
         self.thread = Thread(target=self.run_clock, name="m0-core-clock", daemon=True)
@@ -542,6 +543,7 @@ class LiveSession:
                     nearby_feeder_available=self.worker.nearby_feeder if self.worker else self.founding_capabilities[2],
                     callow_available=self.worker.callow_hydration if self.worker else self.founding_capabilities[3],
                     chamber_return_available=self.worker.chamber_return if self.worker else self.founding_capabilities[6],
+                    sustained_contact_available=self.worker.sustained_contact if self.worker else self.founding_capabilities[14],
                     worked_exit_available=self.worker.worked_exit if self.worker else self.founding_capabilities[13],
                     local_crop_return_available=self.worker.local_crop_return if self.worker else self.founding_capabilities[12],
                     work_face_available=self.worker.work_face_search if self.worker else self.founding_capabilities[11],
@@ -784,6 +786,8 @@ class LiveSession:
                     models["local-dig"] = "NEW_PROVISIONED_NEST"
                 if core.callow_hydration:
                     models["callow"] = "NEW_PROVISIONED_NEST"
+                if core.sustained_contact:
+                    models["sustained-contact"] = "NEW_PROVISIONED_NEST"
                 if core.worked_exit:
                     models["worked-exit"] = "NEW_PROVISIONED_NEST"
                 if core.local_crop_return:
@@ -806,11 +810,11 @@ class LiveSession:
                 if core.social_crop:
                     models["social-crop"] = "NEW_PROVISIONED_NEST"
                 model = data.get("model", "protected" if core.protected_nest else "anatomical" if core.anatomical else "reference")
-                protected = model in ("protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit")
+                protected = model in ("protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact")
                 seed = data.get("seed", 3 if protected else 2)
                 require(type(seed) is int and 1 <= seed <= 2147483647, "Enter a valid software seed")
                 default_supply = "extended" if protected else "finite"
-                if model in ("protected", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit") and core.nearby_feeder:
+                if model in ("protected", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact") and core.nearby_feeder:
                     default_supply = "nearby"
                 supply = data.get("supply", default_supply)
                 require(isinstance(model, str) and model in models, "Build the updated Core to start this nest model.")

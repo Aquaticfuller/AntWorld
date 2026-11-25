@@ -14,7 +14,7 @@ from op0.live import NativeCore, ROOT, core_path
 from tools.measure_single_nest_lifecycle import COMPACT_BYTES, TREATMENTS, WORLD_BASES, census
 
 
-def run(core, seed, model, supply, days, progress=False):
+def run(core, seed, model, supply, days, progress=False, feeding_continuity=False):
     identity = WORLD_BASES[supply] + seed + TREATMENTS.index(model) * 2**34 + 2**39
     command = f"NEW_PROVISIONED_NEST {identity} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral {model} wet-wick"
     raw = core.call(command)
@@ -27,6 +27,7 @@ def run(core, seed, model, supply, days, progress=False):
     witnesses = {}
     last_contact_step = {}
     meal_sequences = {}
+    founder_days = {}
     previous_cut = None
     previous = 0
     checkpoints = {d for d in (30,45,60,73,90,150,365,730,days) if d <= days}
@@ -108,6 +109,13 @@ def run(core, seed, model, supply, days, progress=False):
                     entry["last"], entry["count"] = stamp[:2], entry["count"]+1
                     for index, value in enumerate(f.mass):
                         entry["mass_ug"][index] += value
+                    if feeding_continuity and f.mass[0] and dst == queen:
+                        day = f.time // DAY
+                        bucket = founder_days.setdefault(day, dict(first_ms=f.time, last_ms=f.time, count=0, sugar_ug=0, max_internal_gap_ms=0))
+                        bucket["max_internal_gap_ms"] = max(bucket["max_internal_gap_ms"], f.time-bucket["last_ms"])
+                        bucket["last_ms"] = f.time
+                        bucket["count"] += 1
+                        bucket["sugar_ug"] += f.mass[0]
                     if f.mass[0] and role=="Queen":
                         entry.setdefault("first_sugar",stamp[:2])
                         for pair, direction in (((queen,f.actor),"queen_to_worker"), ((f.actor,queen),"worker_to_queen")):
@@ -133,6 +141,8 @@ def run(core, seed, model, supply, days, progress=False):
     require(sum(x[1] for x in cohorts.values())==result["census"][-1]["workers"], "Individual census mismatch")
     result.update(first=first, lives=lives, mouths=mouths, subsequent_uptake=paired_uptake, encounters=encounters,
                   movements=witnesses, step_then_meal=meal_sequences, cohorts_emerged_alive=cohorts, final_sha256=sha256(raw).hexdigest(), facts=previous)
+    if feeding_continuity:
+        result["founder_feeding_by_day"] = founder_days
     return result
 
 
@@ -143,9 +153,10 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--supply", choices=("nearby","absent"), default="nearby")
     parser.add_argument("--days", type=int, choices=range(1,731), metavar="1..730", default=730)
+    parser.add_argument("--feeding-continuity", action="store_true", help="Record positive sugar payments to the founder by day")
     parser.add_argument("--progress", action="store_true", help="Report milestone day, cursor, workers and founder survival on stderr")
     args = parser.parse_args()
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as native:
-        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress)
+        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity)
     receipt["executable_sha256"] = sha256(args.core.read_bytes()).hexdigest()
     print(json.dumps(receipt,separators=(",",":")))

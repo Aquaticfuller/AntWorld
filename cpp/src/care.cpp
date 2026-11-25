@@ -299,6 +299,59 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return (stage ? mouth_reaches(body,contact,*stage) : supply_in_reach(body,contact) &&
             (!partner || supply_in_reach(*partner,body.mouth_m))) && continuous_clear(view,body.mouth_m,contact,0);
     };
+    // A mouth may meet the side of another's reachable oral region. A single
+    // axial stance per compass bearing misses these contacts beside a wall.
+    // Both legs are local, paid movements; only the first is submitted and
+    // both reach and traffic are tested again at execution.
+    if (partner && sustained_contact(s)) {
+        const auto initial=actor_facing(s,adult.id);
+        const auto local_leg=[&](const AntState& from,PositionM to,std::uint8_t facing,bool first)
+                -> std::optional<std::uint8_t> {
+            if (from.position==to || !within_distance(from.position,to,.002,true) ||
+                !within_distance(adult.position,to,radius,true)) return {};
+            const auto heading=body_travel_heading(view,from,to,facing,true);
+            auto at=from;
+            at.position=to;
+            const auto end=body_pose(at,heading,attachment(view,at,heading));
+            if (occupied(end) || !clear_care_segment(from.position,to,body_half(adult.id)) ||
+                !anatomy_sweep(view,from,to,facing,heading)) return {};
+            if (first && !clear_worker_traffic(adult,to,body_half(adult.id),true,true)) return {};
+            const auto start=body_pose(from,heading,attachment(view,from,heading));
+            for (const auto& peer:nearby)
+                if (anatomical_sweep_hits(start,to,peer)) return {};
+            return heading;
+        };
+        struct Goal { PositionM site; std::uint8_t heading; };
+        std::vector<Goal> goals;
+        const auto lateral=cross(partner->forward,partner->up);
+        for (std::uint8_t dir=1;dir<=8;++dir) {
+            for (const double ahead:{.00025,.0005}) for (const double side:{0.,-.0003,.0003}) {
+                const auto tip=translated(target,translated(scale(partner->forward,ahead),scale(lateral,side)));
+                auto at=adult;
+                at.position=snap_micro(translated(tip,scale(body_heading(dir),-reach)));
+                at.position.y=adult.position.y;
+                const auto body=body_pose(at,dir,attachment(view,at,dir));
+                if (reaches(body) && !occupied(body) && substrate_clear(view,body,at.position))
+                    goals.push_back({at.position,dir});
+            }
+        }
+        std::stable_sort(goals.begin(),goals.end(),[&](const Goal& a,const Goal& b){
+            return std::llround(portable_care_distance(adult.position,a.site)*1e6) <
+                   std::llround(portable_care_distance(adult.position,b.site)*1e6);
+        });
+        for (const auto& goal:goals) {
+            if (local_leg(adult,goal.site,initial,true)==goal.heading) return goal.site;
+        }
+        for (const auto& goal:goals) {
+            for (const double approach:{.0005,.001,.0015,.002}) {
+                auto via=adult;
+                via.position=snap_micro(translated(goal.site,scale(body_heading(goal.heading),-approach)));
+                via.position.y=adult.position.y;
+                const auto facing=local_leg(adult,via.position,initial,true);
+                if (facing && local_leg(via,goal.site,*facing,false)==goal.heading) return via.position;
+            }
+        }
+    }
     const bool change_level=chamber_return(s) && adult.caste==Caste::Worker &&
         std::abs(adult.position.y-target.y)>.00065;
     std::array<std::pair<std::uint8_t,PositionM>,2*8*9> candidates;
@@ -1265,7 +1318,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         }
         if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
             !query_worker_motion(other)) {
-            const auto next=local_food_offer(worker);
+            const auto next=local_food_offer(worker,sustained_contact(s) && founding_foundress(c.target));
             if (next && next->second==c.target && next->first!=worker.position) {
                 start_resting_move(tx,worker,next->first,event.id,CareAct::ApproachNestmate,c.target,
                                    static_cast<std::uint8_t>(c.search_remaining-1));
