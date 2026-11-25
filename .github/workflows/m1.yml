@@ -70,6 +70,7 @@ jobs:
             op0.tests.test_live.LiveTests.test_worker_feeds_queen_with_paid_cargo_and_restores_the_next_uptake `
             op0.tests.test_live.LiveTests.test_loaded_worker_unloads_at_its_wall_mouth_and_restores_the_handling_transaction `
             op0.tests.test_live.LiveTests.test_familiar_return_replays_the_first_reassessment_without_warping_the_worker `
+            op0.tests.test_live.LiveTests.test_local_orientation_supplies_founder_inside_chamber `
             op0.tests.test_live.LiveTests.test_carriers_clear_occupied_entrance `
             op0.tests.test_live.LiveTests.test_paid_oral_contact_from_identical_six_hour_cut `
             op0.tests.test_live.LiveTests.test_first_meal_versions_and_read_only_access `

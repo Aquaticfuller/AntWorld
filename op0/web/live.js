@@ -37,7 +37,7 @@ function duration(ms) {
 
 function sealedOptions() {
     const model = $("sealed-model").value;
-    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact", "yielding-return", "chamber-handoff"].includes(model);
+    const protectedModel = ["protected", "local-dig", "callow", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact", "yielding-return", "chamber-handoff", "body-orientation"].includes(model);
     const active = protectedModel || ["variable", "feeding", "budget", "sustained"].includes(model);
     for (const element of document.querySelectorAll("[data-variable-nest]")) element.hidden = !active;
     const wick = liveView.state?.sustained_nest_available && (protectedModel || ["feeding", "budget", "sustained"].includes(model));
@@ -86,6 +86,7 @@ function liveControls() {
     $("sealed-model").querySelector("[data-local-dig]").disabled = !s?.local_dig_available;
     $("sealed-model").querySelector('[value="callow"]').disabled = !s?.callow_available;
     $("sealed-model").querySelector('[value="chamber-return"]').disabled = !s?.chamber_return_available;
+    $("sealed-model").querySelector('[value="body-orientation"]').disabled = !s?.body_orientation_available;
     $("sealed-model").querySelector('[value="chamber-handoff"]').disabled = !s?.chamber_handoff_available;
     $("sealed-model").querySelector('[value="yielding-return"]').disabled = !s?.yielding_return_available;
     $("sealed-model").querySelector('[value="sustained-contact"]').disabled = !s?.sustained_contact_available;
@@ -489,7 +490,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "chamber-handoff" ? tr("Carry the social crop into the chamber · Physics 66") :
+    const nutrition = data.habitat?.nutrition === "body-orientation" ? tr("Approach a sensed nestmate before feeding · Physics 67") :
+      data.habitat?.nutrition === "chamber-handoff" ? tr("Carry the social crop into the chamber · Physics 66") :
       data.habitat?.nutrition === "yielding-return" ? tr("Loaded return at a busy entrance · Physics 65") :
       data.habitat?.nutrition === "sustained-contact" ? tr("Local feeding approach · Physics 64") :
       data.habitat?.nutrition === "worked-exit" ? tr("Worked exit and mouth alignment · Physics 63") :

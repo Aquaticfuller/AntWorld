@@ -202,6 +202,7 @@ private:
                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
+    [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false) const;
     [[nodiscard]] bool mouth_at_supply(const AntState&, PositionM) const;

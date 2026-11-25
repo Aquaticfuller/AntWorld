@@ -301,6 +301,9 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
+    const auto body_orientation=body_orientation_enabled(s) && stationary && can_provision && !food_offer &&
+        !can_feed_brood && founding_gift_supply(s.founding->profile,p).carbs_ug ?
+        approach_visible_body(ant) : std::nullopt;
     const auto solicitation=meal_rendezvous(s) && stationary && can_switch && (urgent || responsive_meal(s)) &&
         !care_owned(s,ant.id) && !active_expenditure(p) ? local_donor(ant) : std::nullopt;
     // ENGINEERING_FIXTURE: a bounded share of idle local work reviews samples
@@ -439,6 +442,10 @@ void WorldRuntime::resolve_autonomy_wakes(
         choice.transit=CareAct::ApproachNestmate;
         choice.meal_steps=s.care_profile->motion->search_steps;
       }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (body_orientation) {
+      choice.resting_site=body_orientation;
+      choice.transit=CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (review_exit && (resupply || roof_stance || resupply_step) && !food_offer && !urgent) {
       if (resupply) choice.behavior=IndividualBehavior::Forage;

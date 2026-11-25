@@ -110,8 +110,8 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
                     for index, value in enumerate(f.mass):
                         entry["mass_ug"][index] += value
                     if feeding_continuity and f.mass[0] and dst == queen:
-                        day = f.time // DAY
-                        bucket = founder_days.setdefault(day, dict(first_ms=f.time, last_ms=f.time, count=0, sugar_ug=0, max_internal_gap_ms=0))
+                        meal_day = f.time // DAY
+                        bucket = founder_days.setdefault(meal_day, dict(first_ms=f.time, last_ms=f.time, count=0, sugar_ug=0, max_internal_gap_ms=0))
                         bucket["max_internal_gap_ms"] = max(bucket["max_internal_gap_ms"], f.time-bucket["last_ms"])
                         bucket["last_ms"] = f.time
                         bucket["count"] += 1

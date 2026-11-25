@@ -210,6 +210,42 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
     return {};
 }
 
+// Orient toward a sensed body lobe before either mouth is visible. This
+// paid movement neither reads the recipient's reserves nor initiates a gift.
+std::optional<PositionM> WorldRuntime::approach_visible_body(const AntState& ant) const {
+    const auto& s=*state_;
+    std::optional<PositionM> body_orientation;
+    const auto view=geometry_view(s,limits_);
+    const auto own=*query_body({s.world,ant.id});
+    const auto radius=s.care_profile->perception_radius_m;
+    for (const auto ref:query_neighborhood({s.world,ant.id},radius+portable_care_distance(own.mouth_m,ant.position)+
+                                               std::abs(queen_segments.back().forward_offset_m)).ants) {
+      if (!founding_foundress(ref.id)) continue;
+      const auto other=*query_ant(ref);
+      if (other.stage!=LifeStage::Adult || other.colony!=ant.colony) continue;
+      const auto peer=*query_body(ref);
+      if (within_distance(own.mouth_m,peer.mouth_m,radius,true) && spatially_clear(own.mouth_m,peer.mouth_m)) continue;
+      for (const auto& lobe:peer.segments) {
+        const auto cue=lobe_center(peer,lobe);
+        if (!within_distance(own.mouth_m,cue,radius,true) || !spatially_clear(own.mouth_m,cue)) continue;
+        auto best=std::llround(portable_care_distance(own.mouth_m,cue)*1e6);
+        for (const double length:{.001,.0005,.00025}) for (std::uint8_t dir=1;dir<=8;++dir) {
+          auto moved=ant;
+          moved.position=snap_micro(translated(ant.position,scale(body_heading(dir),length)));
+          const auto heading=body_travel_heading(view,ant,moved.position,actor_facing(s,ant.id),true);
+          const auto pose=body_pose(moved,heading,attachment(view,moved,heading));
+          const auto gap=std::llround(portable_care_distance(pose.mouth_m,cue)*1e6);
+          if (gap<best && clear_resting_site(ant,moved.position) && spatially_clear(pose.mouth_m,cue)) {
+            best=gap;
+            body_orientation=moved.position;
+          }
+        }
+        if (body_orientation) break;
+      }
+    }
+    return body_orientation;
+}
+
 // A solicitation uses the same local visibility and discretionary donor budget as an offer.
 // The receiver cannot move a donor or credit her own crop.
 std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const AntState& queen) const {

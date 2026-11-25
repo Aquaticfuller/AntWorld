@@ -23,6 +23,7 @@ START = 7_845_622_429
 END = 7_867_222_430
 CUT_HASH = "23bae7f931aa605e0b81b215d3757c876b9c481f0fa1b2fa2b9699ce497418dc"
 LAST_ALIVE_HASH = "dfade043e7169f4f43b6ce5386c6a09fb0be6db201f33af961c8cf31b1b37b2d"
+CHAMBER_HASH = "a14db6174a95874736cf46b8daab1cc0f6a3d3305561f1febf84bad81ccbcc28"
 DOCK_HASH = "7580f25bd7bb0b02cb42ba613915f4fe3d8ee3c5f343244face09822aba1c930"
 
 
@@ -35,13 +36,13 @@ def fnv64(data):
 
 def experimental_fork(core, folder, original, version=63, target=None):
     """Change only three declared config bytes in a pinned research fixture."""
-    require(sha256(original).hexdigest() == {63:CUT_HASH, 64:DOCK_HASH}[version], "Unexpected research fixture")
+    require(sha256(original).hexdigest() == {63:CUT_HASH, 64:DOCK_HASH, 66:CHAMBER_HASH}[version], "Unexpected research fixture")
     command = next(row["command"] for line in (EVIDENCE / "WORKED_EXIT_TRIALS.jsonl").read_text().splitlines()
                    if (row := json.loads(line))["physics"] == 63 and row["seed"] == 2 and row["supply"] == "nearby")
     initial = []
     slot = "a" * 32
     target = version + 1 if target is None else target
-    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff"}
+    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation"}
     for model in (models[version], models[target]):
         core.call(command.replace("worked-exit", model))
         core.call(f"SAVE_SNAPSHOT {slot}")
@@ -113,10 +114,23 @@ def verify(binary, scratch):
     with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
         folder = Path(temp)
         results = [replay(core, folder, original, 63)]
-        for version in ((64,66) if core.chamber_handoff else (64,)):
+        for version in ((64,66,67) if core.body_orientation else (64,66) if core.chamber_handoff else (64,)):
             branch = experimental_fork(core, folder, original, 63, version)
             results.append(replay(core, folder, branch, version))
         return results
+
+
+def verify_debits(core, payments):
+    for meal in payments:
+        prior = checkpoint(core.call(f"ADVANCE {meal.time-1}"))
+        pair = next(line.split() for line in core.call("ORAL_ACCESS").splitlines()
+                    if int(line.split()[0]) == meal.actor)
+        paid = checkpoint(core.call(f"ADVANCE {meal.time}"))
+        for i, mass in enumerate(meal.mass):
+            require(pair[1:3]==[b"1",b"1"] and
+                    prior["ants"][meal.actor]["crop_ug"][i]-paid["ants"][meal.actor]["crop_ug"][i]==mass and
+                    paid["ants"][2]["crop_ug"][i]-prior["ants"][2]["crop_ug"][i]==mass,
+                    "Chamber payment was not an equal debit and credit at contact")
 
 
 def verify_entrance(binary, scratch):
@@ -126,7 +140,7 @@ def verify_entrance(binary, scratch):
     with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
         folder = Path(temp)
         results = []
-        versions = (64,65,66) if core.chamber_handoff else (64,65)
+        versions = (64,65,66,67) if core.body_orientation else (64,65,66) if core.chamber_handoff else (64,65)
         for version in versions:
             cut = original if version==64 else experimental_fork(core, folder, original, 64, version)
             slot = str(version)*16
@@ -156,16 +170,7 @@ def verify_entrance(binary, scratch):
                 else:
                     require({f.actor for f in payments} >= {8,9} and not deaths, "Missing chamber payments")
                     core.call(f"LOAD_SNAPSHOT {slot} {world}")
-                    for meal in payments:
-                        prior = checkpoint(core.call(f"ADVANCE {meal.time-1}"))
-                        pair = next(line.split() for line in core.call("ORAL_ACCESS").splitlines()
-                                    if int(line.split()[0]) == meal.actor)
-                        paid = checkpoint(core.call(f"ADVANCE {meal.time}"))
-                        for i, mass in enumerate(meal.mass):
-                            require(pair[1:3]==[b"1",b"1"] and
-                                    prior["ants"][meal.actor]["crop_ug"][i]-paid["ants"][meal.actor]["crop_ug"][i]==mass and
-                                    paid["ants"][2]["crop_ug"][i]-prior["ants"][2]["crop_ug"][i]==mass,
-                                    "Chamber payment was not an equal debit and credit at contact")
+                    verify_debits(core, payments)
                     require(core.call(f"ADVANCE {end_ms}")==after, "Payment replay changed final state")
             require(core.call("CHECK_LEDGERS")==b"", "Ledger failure at entrance")
             results.append(dict(physics=version, starting_loads={i:before["ants"][i]["carried_ug"] for i in (8,9)},
@@ -177,6 +182,38 @@ def verify_entrance(binary, scratch):
                                 paid_sugar_ug=sum(f.mass[0] for f in payments), founder_death=[[f.id,f.time] for f in deaths],
                                 final_sha256=sha256(after).hexdigest()))
         return results
+
+
+def verify_orientation(binary, scratch):
+    cut = gzip.decompress((EVIDENCE/"SEED2_CHAMBER_CUT.awstate.gz").read_bytes())
+    end_ms = 7_611_862_301
+    world = "00000000-0000-028d-0000-00df0000264a"
+    results = []
+    with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
+        folder = Path(temp)
+        for version in (66,67):
+            slot = str(version)*16
+            (folder/(slot+".awstate")).write_bytes(cut if version==66 else experimental_fork(core,folder,cut,66,67))
+            def reload():
+                return checkpoint(core.call(f"LOAD_SNAPSHOT {slot} {world}"))
+            before = reload()
+            require(before["time_ms"] == end_ms-6*3_600_000-1, "Wrong chamber cut")
+            final = core.call(f"ADVANCE {end_ms}")
+            fs = list(facts(core,checkpoint(final)["cursor"],before["cursor"]))
+            meals = [f for f in fs if KINDS[f.kind]=="NutritionTransferred" and f.payload==2 and f.mass[0]]
+            deaths = [f.id for f in fs if KINDS[f.kind]=="AntDied" and f.actor==2]
+            if version==66:
+                require(deaths==[660563] and not meals, "Reference chamber failure changed")
+            else:
+                require(not deaths and meals, "Orientation failed to supply the founder")
+                reload()
+                verify_debits(core,meals)
+                require(core.call(f"ADVANCE {end_ms}")==final, "Orientation replay changed the final state")
+            require(core.call("CHECK_LEDGERS")==b"", "Orientation ledger failure")
+            results.append(dict(physics=version, start_ms=before["time_ms"], end_ms=end_ms, deaths=deaths,
+                                payments=[[f.id,f.time,f.actor,list(f.mass)] for f in meals],
+                                final_sha256=sha256(final).hexdigest()))
+    return results
 
 
 def feeding_summary(row):
@@ -212,8 +249,8 @@ def verify_panel(binary, path):
         row = json.loads(line)
         if row["physics"] == 63:
             old[row["seed"], row["supply"]] = row
-    require(len(rows) == 4*len(expected), "Incomplete panel")
-    for version, model in ((63,"worked-exit"), (64,"sustained-contact"), (65,"yielding-return"), (66,"chamber-handoff")):
+    require(len(rows) == 5*len(expected), "Incomplete panel")
+    for version, model in ((63,"worked-exit"), (64,"sustained-contact"), (65,"yielding-return"), (66,"chamber-handoff"), (67,"body-orientation")):
         arm = [row for row in rows if row["physics"] == version]
         require({(r["seed"],r["supply"]) for r in arm} == expected, "Missing paired world")
         for row in arm:
@@ -234,9 +271,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--panel", type=Path, help="Check all six matched cases across all four versions")
+    group.add_argument("--panel", type=Path, help="Check all six matched cases across all five versions")
     group.add_argument("--entrance", action="store_true", help="Replay two competing surface carriers")
+    group.add_argument("--orientation", action="store_true", help="Replay a meeting with a locally sensed body")
     args = parser.parse_args()
     binary = args.core.resolve()
-    result = verify_panel(binary,args.panel) if args.panel else (verify_entrance if args.entrance else verify)(binary,ROOT/"out")
+    result = verify_panel(binary,args.panel) if args.panel else (verify_orientation if args.orientation else verify_entrance if args.entrance else verify)(binary,ROOT/"out")
     print(json.dumps(result, indent=2))

@@ -690,6 +690,8 @@ class LiveTests(unittest.TestCase):
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
         models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.body_orientation:
+            models.append(("body-orientation",67))
         if core.chamber_handoff:
             models.append(("chamber-handoff",66))
         if core.yielding_return:
@@ -728,6 +730,12 @@ class LiveTests(unittest.TestCase):
         witness = json.loads((ROOT / "research/single_nest/FIRST_MEAL_ORAL_WITNESS.json").read_bytes())
         actual = verify(BINARY, witness["trial"], self.folder)
         self.assertEqual(json.loads(json.dumps(actual)), witness["verified"])
+
+    def test_local_orientation_supplies_founder_inside_chamber(self):
+        from tools.verify_sustained_contact import verify_orientation
+        if not self.live.core().body_orientation:
+            self.skipTest("Build the local body orientation Core")
+        verify_orientation(BINARY, self.folder)
 
     def test_carriers_clear_occupied_entrance(self):
         from tools.verify_sustained_contact import verify_entrance
