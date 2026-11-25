@@ -2,6 +2,8 @@
 
 ## The last six hours
 
+Two archived seed-2 deaths answer different questions. In physics 63, workers 8 and 9 ended approach segments with mouth gaps of 4.4851 and 3.2911 mm. The continuation reselected individual 24. On a fresh replay, the founder died on day 91.06 (event 469357) with no sugar payments in the window. On that same input physics 68 and 69 each paid 231 µg in 16 oral transactions. Physics 70 paid 430 µg in six transactions. All three crossed the old death time alive. Each test replayed the donor debit and recipient credit.
+
 The physics 67 seed-2 founder died of energy depletion at 7,088,150,452 ms (day 82.04). Her body still held water. The daily samples and the terminal cut identify two separate supply interruptions.
 
 * From days 47 to 66 there was no committed collection by worker 8. For days 49 through 57 the worker ended each day with 13 µg of sugar in its crop and its foraging program disabled. A new departure required a recognized berth, available route and a task review. Having made a collection previously did not, by itself, qualify an experienced non-excavator for a refill.
@@ -18,6 +20,14 @@ Physics 70 is a headless screening treatment. The ordinary adult request can be 
 On the identical six-hour input, both treatments produced 17 transfers by worker 8. The founder received and absorbed 238 µg of sugar and received 218 µg of water. The measured mouth separation was 0.625 mm. At the original death time her body held 1,982,686,823 nJ and 1,990 µg of water. The replay independently checked the two crop deltas for every component, the food and soil ledgers, and the continuation with a pending meal saved and reloaded. The fork changes three declared configuration/version identifiers plus checksum in a disposable copy of the old research snapshot. Player saves retain their original semantics.
 
 The fresh two-year baseline identified a throughput problem as well. Before the founder died, worker 8 collected 4,303 µg of sugar. The founder received and absorbed 3,009 µg. No other worker collected sugar during her lifetime. A further 20,369 µg was collected by workers 23 and 24 only after her death. At the baseline rate of 2.34 J/day and yield of 0.008 J/µg, a queen living on sugar alone would require 292.5 µg/day even before work and reproduction. The actual 4,303 µg collected in the 36.6 days from first collection to death represents about 118 µg/day for the whole colony. Endogenous reserves make this a diagnostic balance, not a new feeding threshold.
+
+## Empty returns in the funded environment
+
+At the end of the physics 70 seed-17 screen, 13 half-hour observations showed worker 11 back at its berth with the same residual 13 µg of carbohydrate. The committed history between those cuts contains 24 departures, 480 outbound search decisions, 480 home-trace decisions, 24 local-food decisions and 960 completed movements. There were zero positive collections by that worker. It reached a local feeder cue and turned around before collecting. An independent diagnostic of its decisions produced the identical predeath frame hash. The worker's private memory of a previous collection plus a payable amount of old crop sugar satisfied the return rule on a new outing.
+
+Physics 71 records whether a forager actually ingested carbohydrate on the current excursion. Successful liquid intake sets the bit. Home arrival, cancellation and death clear it. Both the surface home-trace rule and the occupied-feeder retreat test it. Normal navigation, return of external cargo, self-maintenance and food payments remain active. Schema 64 uses the high bit of the serialized forager mode byte in physics 71 only. This adds no bytes per forager. The full-history validator reconstructs the bit from committed events. Compact restores preserve it directly.
+
+Starting at 6,209,509,931 ms, the corrected worker made one departure and collected and ingested 395 µg of sugar. The founder received 408 µg of sugar from nestmates during the window and survived its end. None of those 408 µg was paid directly by worker 11. The old founder received 13 µg and died with 17 nJ one millisecond before event 750405. Worker 8 was in mouth contact with only 1 µg of payable sugar and feeder 4 still held 113,200 µg. Source acquisition and final delivery have separate witnesses. A secondary replay verified the loaded worker's compact continuation, and a fresh seed-2 world passed a full SQLite save/load including the newly acquired crop at event cursor 12784.
 
 ## Evidence and limits
 

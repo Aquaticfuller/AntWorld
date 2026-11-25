@@ -32,6 +32,7 @@ struct BehaviorConfig {
 };
 struct ForagerState {
     bool enabled{};
+    bool current_trip_liquid{}; // Physics 71: paid liquid acquired on this outing.
     BehaviorMode mode{BehaviorMode::Explore};
     Direction heading{Direction::North};
     std::uint64_t decisions{}, trip_moves{}, collections{};

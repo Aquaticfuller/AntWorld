@@ -30,7 +30,7 @@ template <typename S> void write_surface(Writer& w, const S& s) {
     w.real(s.m.foraging.deposited_units); w.put(s.m.maintenance.value);
     w.put(s.foragers.size());
     for (const auto& [id, f] : s.foragers) {
-        w.put(id.value); w.put(f.enabled, 1); w.put(static_cast<std::uint8_t>(f.mode), 1); w.put(static_cast<std::uint8_t>(f.heading), 1);
+        w.put(id.value); w.put(f.enabled, 1); w.put(static_cast<unsigned>(f.mode) | (f.current_trip_liquid ? 0x80U : 0U), 1); w.put(static_cast<std::uint8_t>(f.heading), 1);
         w.put(f.decisions); w.put(f.trip_moves); w.put(f.collections); w.put(f.path_size, 4); w.put(f.memory_size, 4);
         for (const auto cell : f.path) w.cell(cell);
         for (const auto cell : f.memory) w.cell(cell);
@@ -64,13 +64,19 @@ template <typename S> void read_surface(Reader& r, S& s, const RuntimeLimits& li
     const auto agents = r.count(limits.entities, 1099);
     for (std::size_t i = 0; i < agents; ++i) {
         const EntityId id{r.get()}; ForagerState f;
-        f.enabled = r.flag(); f.mode = static_cast<BehaviorMode>(r.get(1)); f.heading = static_cast<Direction>(r.get(1));
+        f.enabled = r.flag();
+        auto mode = r.get(1);
+        if (tracks_trip_load(s)) {
+            f.current_trip_liquid = (mode & 0x80U) != 0;
+            mode &= 0x7fU;
+        }
+        f.mode = static_cast<BehaviorMode>(mode); f.heading = static_cast<Direction>(r.get(1));
         f.decisions = r.get(); f.trip_moves = r.get(); f.collections = r.get();
         f.path_size = static_cast<std::uint32_t>(r.get(4)); f.memory_size = static_cast<std::uint32_t>(r.get(4));
         for (auto& cell : f.path) cell = r.cell();
         for (auto& cell : f.memory) cell = r.cell();
         f.learned_at = r.time(); f.last_collected = {r.get()}; f.wake = {r.get()}; f.action = {r.get()};
-        ensure(s.ants.index.contains(id) && f.mode <= BehaviorMode::Rest && f.heading <= Direction::West && f.path_size &&
+        ensure(s.ants.index.contains(id) && f.mode <= BehaviorMode::Rest && f.heading <= Direction::West && (!f.current_trip_liquid || (f.enabled && f.collections && f.last_collected.value)) && f.path_size &&
             f.path_size <= p.route_capacity && f.memory_size <= p.route_capacity && f.learned_at <= s.m.now &&
             (p.memory_enabled || f.memory_size == 0) && (!f.last_collected.value || s.foods.index.contains(f.last_collected)) &&
             s.foragers.emplace(id, f).second, "invalid forager state");
@@ -212,13 +218,17 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 !e.resource.value, "invalid surface configuration evidence"); configured = true;
         }
         if (e.kind == FactKind::AntSeeded || e.kind==FactKind::AntBorn) positions[e.actor] = e.position;
-        if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor))
-            audit_agents.at(e.actor).enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
+        if (e.kind == FactKind::BehaviorChanged && audit_agents.contains(e.actor)) {
+            auto& f=audit_agents.at(e.actor);
+            f.enabled = e.payload == static_cast<std::uint64_t>(IndividualBehavior::Forage);
+            f.current_trip_liquid=false;
+        }
         if (e.kind == FactKind::CargoIngested) {
             if (e.resource.value) {
                 ensure(social_crop(s) && audit_agents.contains(e.actor) &&
                        audit_agents.at(e.actor).last_collected == e.resource && remaining.contains(e.resource),
                        "social crop intake lacks a preceding collection from the same source");
+                if (tracks_trip_load(s) && e.transferred.carbs_ug) audit_agents.at(e.actor).current_trip_liquid=true;
                 const auto& source = s.foods.rows[s.foods.index.at(e.resource)].initial;
                 ensure(source.water_ug && source.carbs_ug && !e.transferred.protein_ug &&
                        e.transferred.total_ug() == e.transferred.water_ug + e.transferred.carbs_ug,
@@ -330,6 +340,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 ensure(route.points[cursor]==positions[e.actor] && route.points[next]==e.position &&
                     audit_agents.at(e.actor).mode==e.mode && e.deposited_units==0,"connector history skips a physical segment");
                 cursor=next;
+                if (e.mode==BehaviorMode::Return && cursor==route.anchor) audit_agents.at(e.actor).current_trip_liquid=false;
             } else if (active && (!spatial || old!=to)) {
                 auto& f = audit_agents.at(e.actor); ensure(f.enabled && e.mode == f.mode, "movement behavior evidence mismatch");
                 f.heading = direction(*old, *to); ++f.trip_moves; ++counts.moves;
@@ -345,7 +356,7 @@ template <typename S> void validate_surface_evidence(const S& s) {
                 } else {
                     ensure(f.path_size < p.route_capacity, "historical return trace overflow"); f.path[f.path_size++] = *to;
                 }
-                if (*to == f.path[0] && !cargo[e.actor].total_ug()) { f.mode = BehaviorMode::Explore; f.trip_moves = 0; }
+                if (*to == f.path[0] && !cargo[e.actor].total_ug()) { f.mode = BehaviorMode::Explore; f.trip_moves = 0; f.current_trip_liquid=false; }
                 ++audit_visits[*to]; ++audit_edges[{std::min(*old, *to), std::max(*old, *to)}];
                 if (e.deposited_units > 0) {
                     // The exact saturated arithmetic below validates quantity; subtraction can
@@ -393,7 +404,9 @@ template <typename S> void validate_surface_evidence(const S& s) {
             // Lifecycle rejections are not autonomous action attempts.
             if (e.outcome != Outcome::InvalidTransition && e.outcome != Outcome::AlreadyDead && e.outcome != Outcome::DeadActor) ++counts.failed_actions;
         }
-        if (e.kind == FactKind::AntDied && audit_agents.contains(e.actor)) audit_agents.at(e.actor).enabled = false;
+        if (e.kind == FactKind::AntDied && audit_agents.contains(e.actor)) {
+            auto& f=audit_agents.at(e.actor); f.enabled=false; f.current_trip_liquid=false;
+        }
         if (e.kind == FactKind::TrailMaintenance) {
             ensure(p.trails_enabled && !e.actor.value && !e.colony.value && !e.resource.value, "invalid field maintenance fact");
             std::uint64_t removed = 0;

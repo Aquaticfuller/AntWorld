@@ -16,13 +16,21 @@ from tools.measure_first_meal import TREATMENTS, WORLD_BASES
 from tools.measure_social_crop import observed_adults
 
 
-def founder_death(core, trial):
+def founder_death(core, trial, lookback_hours=0):
     birth = core.call(trial["command"])
     require(sha256(birth).hexdigest()==trial["initial_sha256"], "Trial identity mismatch")
     event, time, reason = trial["queen_death"]
-    for t in range(4*DAY,time-1,4*DAY):
+    start = max(0, time - 1 - lookback_hours * (DAY // 24))
+    for t in range(4*DAY,start,4*DAY):
         core.call(f"ADVANCE {t}")
         core.call("COMPACT_HISTORY")
+    preceding = []
+    if lookback_hours:
+        for t in range(start, time, DAY // 48):
+            state = checkpoint(core.call(f"ADVANCE {t}"), forager_routes=True)
+            preceding.append(dict(time_ms=t, cursor=state["cursor"], routes=state["forager_routes"],
+                                  access=core.call("MEAL_ACCESS").decode().splitlines(),
+                                  oral=core.call("ORAL_ACCESS").decode().splitlines()))
     raw = core.call(f"ADVANCE {time-1}")
     frame = checkpoint(raw)
     founder, = [i for i,a in frame["ants"].items() if CASTES[a["caste"]]=="Queen"]
@@ -44,7 +52,8 @@ def founder_death(core, trial):
     return dict(physics=trial["physics"],seed=trial["seed"],supply=trial["supply"],
                 predeath_sha256=sha256(raw).hexdigest(),death=[event,time,reason],founder=founder,adults=adults,
                 pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],
-                sources=frame["sources"],access=access,oral_pairs=pairs)
+                sources=frame["sources"],access=access,oral_pairs=pairs,
+                **({"half_hour_cuts":preceding} if lookback_hours else {}))
 
 
 def inspect(core, model, seed, start, end, wide):
@@ -100,7 +109,9 @@ if __name__=="__main__":
     window.add_argument("start",type=int)
     window.add_argument("end",type=int)
     window.add_argument("--wide",action="store_true")
-    modes.add_parser("death").add_argument("receipt",type=Path)
+    death=modes.add_parser("death")
+    death.add_argument("receipt",type=Path)
+    death.add_argument("--lookback-hours",type=int,choices=range(1,25),default=0,metavar="1..24")
     args=parser.parse_args()
     if args.mode=="window" and not 0<=args.start<args.end<=args.start+4:
         parser.error("Choose an observation window of at most four days")
@@ -108,5 +119,5 @@ if __name__=="__main__":
         if args.mode=="window":
             result=inspect(core,args.model,args.seed,args.start,args.end,args.wide)
         else:
-            result=founder_death(core,json.loads(args.receipt.read_text(encoding="utf-8-sig")))
+            result=founder_death(core,json.loads(args.receipt.read_text(encoding="utf-8-sig")),args.lookback_hours)
     print(json.dumps(result,separators=(",",":")))

@@ -12,7 +12,7 @@ from tempfile import TemporaryDirectory
 from op0.codec import KINDS, checkpoint, require
 from op0.live import NativeCore, ROOT, core_path, live_bodies
 from tools.compare_m0_worker_rhythm import facts
-from tools.verify_sustained_contact import EVIDENCE, experimental_fork, feeding_summary
+from tools.verify_sustained_contact import EVIDENCE, experimental_fork, feeding_summary, replay
 from tools.verify_first_meal import verify_inputs
 
 
@@ -74,8 +74,8 @@ def panel(binary, path):
     with gzip.open(path, "rt") as source:
         new = [json.loads(line) for line in source]
     pairs = {(r["seed"],r["supply"]) for r in old}
-    versions = {68:"local-solicitation", 69:"source-refill"}
-    require(len(pairs)==6 and len(new)==12 and
+    versions = {68:"local-solicitation", 69:"source-refill", 71:"trip-load"}
+    require(len(pairs)==6 and len(new)==len(pairs)*len(versions) and
             {(r["physics"],r["seed"],r["supply"]) for r in new}==
             {(v,seed,supply) for v in versions for seed,supply in pairs}, "Missing paired worlds")
     for row in new:
@@ -94,15 +94,109 @@ def panel(binary, path):
         for entry in row["sugar_flux"].values():
             require(0<=entry["before_founder_death_ug"]<=entry["sugar_ug"] and entry["count"]>0 and
                     entry["first"]<=entry["last"], "Invalid sugar flux interval")
-    return dict(inputs=verify_inputs(binary, old+new), worlds=[feeding_summary(r) for r in old+new])
+    worlds = []
+    for row in old + new:
+        summary = feeding_summary(row)
+        summary["death_cause"] = row["queen_death"][2] if "queen_death" in row else None
+        worlds.append(summary)
+    growth = {}
+    for version in (67, *versions):
+        supplied = [w for w in worlds if w["physics"] == version and w["supply"] == "nearby"]
+        passed = [w["seed"] for w in supplied if w["sustained"]]
+        growth[version] = dict(supplied=len(supplied), passing_seeds=passed, required=3, passed=len(passed) >= 3)
+    return dict(inputs=verify_inputs(binary, old+new), worlds=worlds, growth=growth)
+
+
+def earlier_cut(binary):
+    raw = gzip.decompress((EVIDENCE / "SEED2_SIX_HOUR_CUT.awstate.gz").read_bytes())
+    with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary, temp)) as core:
+        folder = Path(temp)
+        return [replay(core, folder, raw if v == 63 else experimental_fork(core, folder, raw, 63, v), v)
+                for v in (63, 68, 69, 70)]
+
+
+def trip_cycle(binary):
+    """Replay the worker that repeatedly returned with sugar left over from a previous trip."""
+    original = gzip.decompress((EVIDENCE/"SEED17_EMPTY_RETURN_CUT.awstate.gz").read_bytes())
+    world = "00000000-0000-028d-0000-00ef00002659"
+    stop = 6_231_109_932
+    slot = "9"*32
+    results = []
+    with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary,temp)) as core:
+        for version in (70,71):
+            raw = original if version == 70 else experimental_fork(core,Path(temp),original,70,71)
+            (Path(temp)/(slot+".awstate")).write_bytes(raw)
+            def load():
+                return checkpoint(core.call(f"LOAD_SNAPSHOT {slot} {world}"),forager_routes=True)
+            start = load()
+            require(all(not r["enabled"] for r in start["forager_routes"].values()),
+                    "Cannot assume an empty trip on a fork with active collectors")
+            require(start["ants"][11]["crop_ug"][0] == 13, "Changed residual sugar")
+            final = core.call(f"ADVANCE {stop}")
+            end = checkpoint(final)
+            stream = list(facts(core,end["cursor"],start["cursor"]))
+            trips = [f for f in stream if f.actor == 11 and KINDS[f.kind] == "BehaviorChanged" and f.payload == 3]
+            collections = [f for f in stream if f.actor == 11 and KINDS[f.kind] == "FoodCollected" and f.mass[0]]
+            ingested = [f for f in stream if f.actor == 11 and KINDS[f.kind] == "CargoIngested" and f.mass[0]]
+            meals = [f for f in stream if KINDS[f.kind] == "NutritionTransferred" and f.payload == 2 and f.mass[0]]
+            deaths = [f.id for f in stream if KINDS[f.kind] == "AntDied" and f.actor == 2]
+            if version == 70:
+                require(len(trips) == 24 and not collections and deaths == [750405], "Empty trips did not reproduce")
+            else:
+                require(collections and ingested, "No new source debit or crop intake")
+                load()
+                mid = core.call(f"ADVANCE {ingested[0].time}")
+                require(checkpoint(mid,forager_routes=True)["forager_routes"][11]["current_trip_liquid"],
+                        "Committed liquid intake did not mark the outing")
+                saved = "8"*32
+                core.call(f"SAVE_SNAPSHOT {saved}")
+                require(core.call(f"LOAD_SNAPSHOT {saved} {world}") == mid and core.call(f"ADVANCE {stop}") == final,
+                        "Mid-trip continuation changed")
+            require(core.call("CHECK_LEDGERS") == b"", "Food or soil ledger mismatch")
+            results.append(dict(version=version, trips=len(trips), collections_ug=sum(f.mass[0] for f in collections),
+                                ingested_ug=sum(f.mass[0] for f in ingested), deaths=deaths,
+                                founder_sugar_ug=sum(f.mass[0] for f in meals),
+                                from_worker_11_ug=sum(f.mass[0] for f in meals if f.actor == 11),
+                                first_collection=[collections[0].id,collections[0].time] if collections else None,
+                                final_sha256=sha256(final).hexdigest()))
+    return results
+
+
+def loaded_archive(binary):
+    """Check full history validation at the first liquid intake, including its trip bit."""
+    from tools.measure_single_nest_lifecycle import TREATMENTS, WORLD_BASES
+    identifier = WORLD_BASES["nearby"] + 2 + TREATMENTS.index("trip-load") * 2**34 + 2**39
+    command = f"NEW_PROVISIONED_NEST {identifier} 2 250 80 plugged 1955 reachable nearby sheltered mineral trip-load wet-wick"
+    slot = "7"*32
+    with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary,temp)) as core:
+        core.call(command)
+        at = 3_925_849_836
+        raw = core.call(f"ADVANCE {at}")
+        cut = checkpoint(raw,forager_routes=True)
+        require(cut["forager_routes"][8]["current_trip_liquid"], "Missing liquid intake before archive")
+        core.call(f"SAVE {slot}")
+        later = core.call(f"ADVANCE {at+120_000}")
+        require(core.call(f"LOAD {slot} {cut['world']}") == raw and core.call(f"ADVANCE {at+120_000}") == later
+                and core.call("CHECK_LEDGERS") == b"", "Verified SQLite continuation changed a loaded outing")
+        return dict(time_ms=at, worker=8, history_cursor=cut["cursor"], sha256=sha256(raw).hexdigest())
 
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core",type=Path,default=core_path())
-    parser.add_argument("--panel",type=Path)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--panel",type=Path)
+    mode.add_argument("--earlier-cut", action="store_true", help="Replay the two-worker day-91 encounter")
+    mode.add_argument("--trip-cycle", action="store_true", help="Replay the old-load return loop and a mid-trip save")
     args=parser.parse_args()
     binary=args.core.resolve()
     (ROOT/"out").mkdir(exist_ok=True)
-    result=panel(binary,args.panel) if args.panel else [terminal(binary,v) for v in (67,68,69,70)]
+    if args.panel:
+        result = panel(binary, args.panel)
+    elif args.earlier_cut:
+        result = earlier_cut(binary)
+    elif args.trip_cycle:
+        result = dict(terminal=trip_cycle(binary), archive=loaded_archive(binary))
+    else:
+        result = [terminal(binary,v) for v in (67,68,69,70)]
     print(json.dumps(result,indent=2))

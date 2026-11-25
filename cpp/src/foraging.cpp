@@ -254,7 +254,7 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             }
             const auto decide=[&](const ForagerState& routes,const LocalObservation& cues) {
                 if (local_crop_return(s) && !loaded && local_founding_provisioning(s,ant.id) &&
-                    routes.trip_moves && routes.last_collected.value &&
+                    routes.trip_moves && routes.last_collected.value && (!tracks_trip_load(s) || routes.current_trip_liquid) &&
                     cues.current!=routes.path[0] && s.foods.rows[s.foods.index.at(routes.last_collected)].initial.carbs_ug &&
                     founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug) {
                     // A liquid social load is internal. Retrace the worker's own outbound path.
@@ -312,7 +312,8 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
         // paid social crop home when the approach to a local feeder is busy.
         // Reuse the private return trace and every ordinary collision check.
         if (yielding_return(s) && link && !link->returning && link->cursor+1==link->size &&
-            ant.position==link->entrance() && !loaded && f.last_collected.value && local_founding_provisioning(s,ant.id) &&
+            ant.position==link->entrance() && !loaded && f.last_collected.value &&
+            (!tracks_trip_load(s) || f.current_trip_liquid) && local_founding_provisioning(s,ant.id) &&
             r.decision.action==ActionKind::Move && r.decision.reason==DecisionReason::LocalFood &&
             !clear_worker_traffic(ant,r.destination,body_half(ant.id)) &&
             founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug &&
@@ -421,6 +422,8 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
     const auto ant = s.ants.get(s.ants.index.at(e.actor)); const auto& p = s.surface->behavior;
     fact.mode = f.mode; f.action = {};
     const auto connector=s.connectors.find(ant.id);
+    if (tracks_trip_load(s) && fact.kind==FactKind::CargoIngested && fact.resource.value && fact.transferred.carbs_ug)
+        f.current_trip_liquid=true;
     const auto transit=connector!=s.connectors.end() && connector->second.size>1 &&
         (connector->second.cursor+1<connector->second.size ||
          (connector->second.returning && before.position==connector->second.entrance()));
@@ -430,6 +433,7 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
         if (ant.position!=link.points[cursor]) throw std::logic_error("movement differs from the local connector");
         link.cursor=cursor;
         if (!cursor && !ant.carried_food.total_ug()) link.returning=false;
+        if (!cursor) f.current_trip_liquid=false;
         tx.connectors.set(ant.id,link);
         fact.payload=connector_move_fact;
     } else if (fact.kind==FactKind::Moved && navigation_cell(s,before.position)!=navigation_cell(s,ant.position)) {
@@ -457,7 +461,7 @@ void WorldRuntime::after_action(Transaction& tx, const ScheduledEvent& e, WorldE
                 link.returning=true;
                 tx.connectors.set(ant.id,link);
             }
-            f.mode=BehaviorMode::Explore; f.trip_moves=0;
+            f.mode=BehaviorMode::Explore; f.trip_moves=0; f.current_trip_liquid=false;
         }
         tx.visits.set(to, next_count(s.visits.contains(to) ? s.visits.at(to) : 0));
         const EdgeKey edge{std::min(from, to), std::max(from, to)};
@@ -506,7 +510,7 @@ void WorldRuntime::stop_dead_forager(Transaction& tx, EntityId actor) {
     for (const auto scheduled : {f.wake, f.action}) if (scheduled.value) {
         const auto found = s.queue_index.find(scheduled); if (found != s.queue_index.end()) tx.remove(found->second);
     }
-    f.enabled = false; f.wake = {}; f.action = {}; tx.foragers.set(actor, f);
+    f.enabled = false; f.current_trip_liquid=false; f.wake = {}; f.action = {}; tx.foragers.set(actor, f);
 }
 void WorldRuntime::maintain_trails(Transaction& tx, const ScheduledEvent& e) {
     auto& s = *state_; const auto& p = s.surface->behavior; std::uint64_t removed = 0;

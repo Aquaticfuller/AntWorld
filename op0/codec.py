@@ -196,7 +196,7 @@ VERSIONS = {f"AWCKPT{suffix}".encode() + b"\0": pair for suffix, pair in {
     "K": (20, 22), "L": (21, 23),
 }.items()}
 ECOLOGICAL = b"AWCKPTM\0"
-MICROWORLD_VERSIONS = {(63, 70), (62, 69), (61, 68), (60, 67), (59, 66), (58, 65), (57, 64), (56, 63), (55, 62), (54, 61), (53, 60), (52, 59), (51, 58), (50, 57), (49, 56), (48, 55), (47, 54), (46, 53), (45, 52), (44, 51), (43, 50), (42, 49), (41, 48), (40, 47), (39, 46), (38, 45), (37, 44), (36, 43), (35, 42), (34, 41), (33, 40), (32, 39), (31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
+MICROWORLD_VERSIONS = {(64, 71), (63, 70), (62, 69), (61, 68), (60, 67), (59, 66), (58, 65), (57, 64), (56, 63), (55, 62), (54, 61), (53, 60), (52, 59), (51, 58), (50, 57), (49, 56), (48, 55), (47, 54), (46, 53), (45, 52), (44, 51), (43, 50), (42, 49), (41, 48), (40, 47), (39, 46), (38, 45), (37, 44), (36, 43), (35, 42), (34, 41), (33, 40), (32, 39), (31, 38), (23, 27), (23, 28), (23, 29), (23, 30), (24, 31), (25, 32), (26, 33), (27, 34), (28, 35),
                        (29, 36), (30, 37)}
 INNER = {key for key, (schema, _) in VERSIONS.items() if schema <= 13}
 
@@ -309,7 +309,7 @@ def checkpoint(raw, *, verify_hash=True, forager_routes=False):
                 nutrition = r.take(1)[0]
                 valid = nutrition == outer[1] - 44 if outer[1] >= 47 else nutrition in (1, 2)
                 require(valid, "Invalid founding nutrition treatment")
-                flags["founding_habitat"]["nutrition"] = ("feeding", "budget", "sustained", "protected", "local-dig", "callow", "meal-search", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact", "yielding-return", "chamber-handoff", "body-orientation", "local-solicitation", "source-refill", "founder-appetite")[nutrition - 1]
+                flags["founding_habitat"]["nutrition"] = ("feeding", "budget", "sustained", "protected", "local-dig", "callow", "meal-search", "social-crop", "crop-exchange", "chamber-return", "mouth-range", "checked-offer", "local-departure", "meal-rendezvous", "first-meal", "responsive-meal", "work-face", "local-crop-return", "worked-exit", "sustained-contact", "yielding-return", "chamber-handoff", "body-orientation", "local-solicitation", "source-refill", "founder-appetite", "trip-load")[nutrition - 1]
             if outer[1] >= 37:
                 flags["founding_habitat"]["alternate_berth"] = True
     if r.flag():
@@ -352,6 +352,9 @@ def checkpoint(raw, *, verify_hash=True, forager_routes=False):
                 actor = r.uint()
                 enabled = r.flag()
                 mode, heading = r.unpack(Struct("<2B"))
+                current_trip_liquid = bool(mode & 128) if outer and outer[1] == 71 else False
+                if current_trip_liquid:
+                    mode &= 127
                 decisions, moves, collections, used, learned = r.unpack(Struct("<3Q2I"))
                 require(actor in ants and actor not in routes and max(used, learned) <= 64,
                         "Invalid individual trace in checkpoint")
@@ -360,7 +363,8 @@ def checkpoint(raw, *, verify_hash=True, forager_routes=False):
                 _, source, wake, action = r.unpack(Struct("<4Q"))
                 routes[actor] = dict(enabled=enabled, mode=mode, heading=heading, decisions=decisions,
                                      trip_moves=moves, collections=collections, path=path,
-                                     last_source=source, wake=wake, action=action)
+                                     last_source=source, wake=wake, action=action,
+                                     **({"current_trip_liquid":current_trip_liquid} if outer and outer[1] == 71 else {}))
         else:
             r.skip_rows(1099)
         for stride in (32, 16, 24, 24):
