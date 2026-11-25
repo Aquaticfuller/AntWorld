@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::FounderRoute ||
+            habitat->nutrition > FoundingNutrition::ExitAttachment ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||

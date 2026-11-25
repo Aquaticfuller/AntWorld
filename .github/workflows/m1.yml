@@ -50,6 +50,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_local_solicitation --core $exe --trip-cycle
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_local_solicitation --core $exe --final-refill
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_local_solicitation --core $exe --water-cut
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_local_solicitation --core $exe --panel research/single_nest/LOCAL_SOLICITATION_TRIALS.jsonl.gz

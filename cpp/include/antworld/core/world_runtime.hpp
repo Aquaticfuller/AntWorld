@@ -158,6 +158,7 @@ private:
     void execute(Transaction&, const ScheduledEvent&);
     void resolve_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     [[nodiscard]] detail::SurfaceConnector discover_connector(const AntState&) const;
+    [[nodiscard]] detail::SurfaceConnector connector_from_grid(const AntState&,PointQ,std::int32_t level) const;
     [[nodiscard]] bool departure_replan(const AntState&, const detail::SurfaceConnector&) const;
     [[nodiscard]] bool can_forage(const AntState&) const;
     [[nodiscard]] FoodMass meal_signal(const AntState&,const PhysiologyState&,FoodMass) const;

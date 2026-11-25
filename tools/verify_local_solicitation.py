@@ -237,6 +237,60 @@ def water_access(binary, version=71, seed=2):
                     end_body_water_ug=end["ants"][2]["hydration_ug"], events=end["cursor"]-start["cursor"])
 
 
+def final_refill(binary, version):
+    """Measure the last six hours of source access and founder receipts on identical input."""
+    cut = gzip.decompress((EVIDENCE / "SEED2_FINAL_REFILL_CUT.awstate.gz").read_bytes())
+    world = "00000000-0000-028d-0000-00f70000264a"
+    stop = 7_491_809_617
+    slot = "8"*32
+    with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary,temp)) as core:
+        if version == 73:
+            cut = experimental_fork(core,Path(temp),cut,72,73)
+        (Path(temp)/(slot+".awstate")).write_bytes(cut)
+        start = checkpoint(core.call(f"LOAD_SNAPSHOT {slot} {world}"))
+        initial = core.call("MEAL_ACCESS").decode().splitlines()
+        before = core.call(f"ADVANCE {stop-1}")
+        access = core.call("MEAL_ACCESS").decode().splitlines()
+        require(core.call("FRAME") == before, "Access query changed the world")
+        final = core.call(f"ADVANCE {stop}")
+        end = checkpoint(final)
+        stream = facts(core,end["cursor"],start["cursor"])
+        audit = {"departures": [], "collections": [], "ingestion": [], "oral_sugar": [], "uptake": [], "founder_death": []}
+        for event in stream:
+            kind = KINDS[event.kind]
+            field = {"ForagingStarted":"departures", "FoodCollected":"collections", "CargoIngested":"ingestion"}.get(kind)
+            if kind == "NutritionTransferred" and event.payload == 2:
+                field = "oral_sugar"
+            if event.actor == 2:
+                if kind in ("FoundingBoundaryUptake", "PhysiologyUpdated"):
+                    field = "uptake"
+                elif kind == "AntDied":
+                    field = "founder_death"
+            if field and (field in ("departures","founder_death") or event.mass[0]):
+                audit[field].append([event.id, event.time, event.actor, event.mass[0]])
+        require(core.call("CHECK_LEDGERS")==b"", "Ledger imbalance after terminal replay")
+        sugar = sum(entry[3] for entry in audit["oral_sugar"])
+        acquired = sum(entry[3] for entry in audit["collections"])
+        if version == 72:
+            require(not acquired and sugar == 25 and audit["founder_death"], "Baseline last meal changed")
+        else:
+            require(acquired and sugar > 25 and not audit["founder_death"], "Fresh refill failed at the old death")
+            require(sugar > sum(a["crop_ug"][0] for i,a in start["ants"].items() if i != 2) and
+                    any(meal[2] == load[2] and meal[1] > load[1] for meal in audit["oral_sugar"]
+                        for load in audit["ingestion"]) and audit["uptake"], "Missing fresh donor and founder uptake")
+            core.call(f"LOAD_SNAPSHOT {slot} {world}")
+            for n,departure in enumerate(audit["departures"]):
+                save = format(n+40,"032x")
+                frame = core.call(f"ADVANCE {departure[1]+1}")
+                core.call(f"SAVE_SNAPSHOT {save}")
+                require(core.call(f"LOAD_SNAPSHOT {save} {world}")==frame, "Mid-trip compact restore changed the state")
+            require(core.call(f"ADVANCE {stop}")==final and core.call("CHECK_LEDGERS")==b"",
+                    "Continuing six-hour run after saves changed the final state")
+        return dict(physics=version, start_sha256=sha256(cut).hexdigest(), final_sha256=sha256(final).hexdigest(),
+                    start_access=initial, terminal_access=access, facts=audit,
+                    founder_paid_sugar_ug=sugar, sugar_collected_ug=acquired)
+
+
 def loaded_archive(binary):
     """Check full history validation at the first liquid intake, including its trip bit."""
     from tools.measure_single_nest_lifecycle import TREATMENTS, WORLD_BASES
@@ -263,6 +317,7 @@ if __name__=="__main__":
     mode.add_argument("--panel",type=Path)
     mode.add_argument("--earlier-cut", action="store_true", help="Replay the two-worker day-91 encounter")
     mode.add_argument("--trip-cycle", action="store_true", help="Replay the old-load return loop and a mid-trip save")
+    mode.add_argument("--final-refill", action="store_true", help="Measure departure, fresh collection and founder intake")
     mode.add_argument("--water-relay", action="store_true", help="Measure the seed-1 terminal relay cut")
     mode.add_argument("--measure-water-cut", action="store_true", help="Measure a disposable probe on the physics 71 input")
     mode.add_argument("--water-cut", action="store_true", help="Measure funding, uptake and survival on the day-62 water cut")
@@ -275,6 +330,8 @@ if __name__=="__main__":
         result = earlier_cut(binary)
     elif args.trip_cycle:
         result = dict(terminal=trip_cycle(binary), archive=loaded_archive(binary))
+    elif args.final_refill:
+        result = [final_refill(binary, v) for v in (72,73)]
     elif args.water_relay:
         result = water_access(binary, version=72, seed=1)
     elif args.measure_water_cut:

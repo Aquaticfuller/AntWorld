@@ -435,7 +435,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return (stage ? mouth_reaches(body,contact,*stage) : supply_in_reach(body,contact) &&
             (!partner || supply_in_reach(*partner,body.mouth_m))) && continuous_clear(view,body.mouth_m,contact,0);
     };
-    if (patch && !partner && !stage && founding_nutrition(s)==FoundingNutrition::FounderRoute && founding_foundress(adult.id)) {
+    if (patch && !partner && !stage && founding_nutrition(s)>=FoundingNutrition::FounderRoute && founding_foundress(adult.id)) {
         // ENGINEERING_FIXTURE. Replan only the first paid leg of a short local
         // approach. A broad founder may have to move away before it can turn.
         // Check the goal with the same mouth and obstacle tests as drinking.

@@ -35,6 +35,7 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned exit_attachment_schema = 66, exit_attachment_physics = 73;
 inline constexpr unsigned founder_route_schema = 65, founder_route_physics = 72;
 inline constexpr unsigned trip_load_schema = 64, trip_load_physics = 71;
 inline constexpr unsigned appetite_schema = 63, appetite_physics = 70;
@@ -64,6 +65,7 @@ inline bool micro_world_version(unsigned version) {
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ExitAttachment) return exit_attachment_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderRoute) return founder_route_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::TripLoad) return trip_load_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderAppetite) return appetite_physics;
@@ -113,6 +115,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ExitAttachment) return exit_attachment_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderRoute) return founder_route_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::TripLoad) return trip_load_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderAppetite) return appetite_schema;

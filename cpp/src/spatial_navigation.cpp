@@ -23,6 +23,27 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     const auto x=nearest(depot.x,g.origin_m.x),y=nearest(depot.y,g.origin_m.y),z=nearest(depot.z,g.origin_m.z);
     if (std::max({std::abs(x),std::abs(y),std::abs(z)})>1000000) return {};
     const PointQ start{static_cast<std::int32_t>(x),static_cast<std::int32_t>(y),static_cast<std::int32_t>(z)};
+    auto route=connector_from_grid(ant,start,*level);
+    if (route.size || founding_nutrition(s)!=FoundingNutrition::ExitAttachment ||
+        !familiar_liquid_exit(s,ant)) return route;
+    // A worker at a remembered berth can reach the navigation grid from
+    // beside another body. Each candidate still pays its actual first leg.
+    constexpr std::array<std::pair<int,int>,8> neighbors{{
+        {-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}
+    }};
+    for (const auto& [dx,dz]:neighbors) {
+        const PointQ cell{start.x+dx,start.y,start.z+dz};
+        if (!within_distance(depot,physical(cell,g),s.care_profile->perception_radius_m,true)) continue;
+        route=connector_from_grid(ant,cell,*level);
+        if (route.size) return route;
+    }
+    return {};
+}
+
+SurfaceConnector WorldRuntime::connector_from_grid(const AntState& ant,PointQ start,std::int32_t level) const {
+    const auto& s=*state_;
+    const auto depot=ant.position;
+    const auto& g=s.geometry->config;
     const auto start_pos=physical(start,g);
     const auto half=g.loaded_half_q;
     if (!spatially_clear(depot,start_pos,half)) return {};
@@ -33,7 +54,7 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     // checks reserved sweeps again before each segment actually executes.
     if (sustained_supply(s) && attach && !clear_worker_traffic(ant,start_pos,body_half(ant.id),false)) return {};
     if (!limits_.navigation_nodes) return {};
-    const auto remaining=[&](PointQ p) { return static_cast<std::uint32_t>(std::abs(*level-p.y)); };
+    const auto remaining=[&](PointQ p) { return static_cast<std::uint32_t>(std::abs(level-p.y)); };
     using Node=std::tuple<std::uint32_t,std::uint32_t,PointQ>;
     std::priority_queue<Node,std::vector<Node>,std::greater<Node>> open(std::greater<Node>{},std::vector<Node>(0));
     const bool anatomy=anatomical_nest(s);
@@ -63,7 +84,7 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
         const auto depth=current.depth;
         if (cost!=depth+height || cost>=capacity) continue;
         const auto pos=physical(p,g);
-        if (p.y==*level) {
+        if (p.y==level) {
             if (const auto tile=s.surface->tile(pos)) {
                 bool usable=false;
                 for (unsigned d=0;d<4 && !usable;++d) {
