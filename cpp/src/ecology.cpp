@@ -138,15 +138,22 @@ std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extend
   }
   return d;
 }
-void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,EntityId worker) {
+void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,EntityId worker,bool wake_founder) {
   auto& s=*state_;
   const auto donor=query_ant({s.world,worker});
-  if (!responsive_meal(s) || !donor || donor->caste!=Caste::Worker || !oral_contact(founder,*donor) ||
-      !s.autonomy.contains(worker) || care_owned(s,worker)) return;
+  const auto actor=wake_founder ? founder.id : worker;
+  if (!responsive_meal(s) || !donor || donor->stage!=LifeStage::Adult || donor->caste!=Caste::Worker ||
+      founder.colony!=donor->colony ||
+      !s.autonomy.contains(actor) || care_owned(s,actor)) return;
+  if (!oral_contact(founder,*donor)) {
+    if (!local_solicitation(s)) return;
+    const auto a=query_body({s.world,founder.id})->mouth_m, b=query_body({s.world,worker})->mouth_m;
+    if (!within_distance(a,b,s.care_profile->perception_radius_m,true) || !spatially_clear(a,b)) return;
+  }
   const auto p=*query_physiology({s.world,worker});
   if (active_expenditure(p) || p.behavior==IndividualBehavior::Forage || p.behavior==IndividualBehavior::Excavate ||
       !founding_gift_supply(s.founding->profile,p).carbs_ug) return;
-  auto a=s.autonomy.at(worker);
+  auto a=s.autonomy.at(actor);
   if (!a.enabled || !s.queue_index.contains(a.wake)) return;
   const auto key=s.queue_index.at(a.wake);
   const auto at=after(s.m.now,1);
@@ -154,12 +161,12 @@ void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,E
   tx.remove(key);
   ScheduledEvent review;
   review.kind=ScheduledEvent::Kind::AutonomyWake;
-  review.actor=worker;
+  review.actor=actor;
   review.issued_at=s.m.now;
   review.payload=solicited_meal_wake;
   review.key={at,Phase::Reschedule,0,0,0};
   a.wake=tx.insert(review);
-  tx.autonomy.set(worker,a);
+  tx.autonomy.set(actor,a);
 }
 void WorldRuntime::resolve_autonomy_wakes(
     Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
@@ -316,6 +323,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     std::optional<PositionM> resupply_step;
     std::optional<PositionM> roof_stance;
     bool revisiting_exit=false;
+    bool refill_trip=false;
     if (sustained_supply(s) && ant.caste==Caste::Worker && local_founding_provisioning(s,ant.id) &&
         can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
         stationary && !wake.payload && config.forage_weight) {
@@ -327,6 +335,20 @@ void WorldRuntime::resolve_autonomy_wakes(
       const bool visible=within_distance(mouth,patch,s.care_profile->perception_radius_m,true) &&
           spatially_clear(mouth,patch);
       const auto opened=!s.geometry_edits.empty();
+      if (familiar_liquid_exit(s,ant) && p.crop.carbs_ug<p.config.transfer_limit_ug &&
+          !at_wick && !wick_step && !at_meal &&
+          (!food_offer || food_offer->first!=ant.position)) {
+        // At low load a former collector can resume work without waiting for
+        // the fourth idle review. An immediate funded gift takes precedence.
+        const auto origin=s.connectors.at(ant.id).points[0];
+        if (spatially_clear(ant.position,origin)) {
+          refill_trip=can_forage(ant);
+          if (!refill_trip && ant.position!=origin) {
+            resupply_step=worker_depot_step(ant,origin);
+            revisiting_exit=resupply_step.has_value();
+          }
+        }
+      }
       const bool depleted_handoff=visible && colony.nest_food.carbs_ug<buffer;
       const bool inspect_local_soil=local_crop_return(s) && !visible && review_exit && !p.crop.carbs_ug;
       const bool known_source=private_sampling_trip(s,ant) && s.foragers.at(ant.id).last_collected.value;
@@ -442,6 +464,9 @@ void WorldRuntime::resolve_autonomy_wakes(
         choice.transit=CareAct::ApproachNestmate;
         choice.meal_steps=s.care_profile->motion->search_steps;
       }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (refill_trip) {
+      choice.behavior=IndividualBehavior::Forage;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (body_orientation) {
       choice.resting_site=body_orientation;

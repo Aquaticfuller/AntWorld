@@ -35,6 +35,8 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned source_refill_schema = 62, source_refill_physics = 69;
+inline constexpr unsigned solicitation_schema = 61, solicitation_physics = 68;
 inline constexpr unsigned body_orientation_schema = 60, body_orientation_physics = 67;
 inline constexpr unsigned chamber_handoff_schema = 59, chamber_handoff_physics = 66;
 inline constexpr unsigned yielding_return_schema = 58, yielding_return_physics = 65;
@@ -59,6 +61,8 @@ inline bool micro_world_version(unsigned version) {
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SourceRefill) return source_refill_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalSolicitation) return solicitation_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BodyOrientation) return body_orientation_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberHandoff) return chamber_handoff_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::YieldingReturn) return yielding_return_physics;
@@ -103,6 +107,8 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SourceRefill) return source_refill_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalSolicitation) return solicitation_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BodyOrientation) return body_orientation_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberHandoff) return chamber_handoff_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::YieldingReturn) return yielding_return_schema;

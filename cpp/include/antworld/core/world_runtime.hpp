@@ -185,7 +185,7 @@ private:
     [[nodiscard]] bool clear_brood_space(EntityId, PositionM from, PositionM to) const;
     void execute_resource_release(Transaction&, const ScheduledEvent&);
     void stop_reproduction(Transaction&, EntityId);
-    void request_food_review(Transaction&, const AntState& founder, EntityId worker);
+    void request_food_review(Transaction&, const AntState& founder, EntityId worker, bool wake_founder=false);
     void notify_return(Transaction&, EntityId, bool carbohydrate_delivered);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
@@ -201,6 +201,7 @@ private:
     [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
+    [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& founder) const;
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;

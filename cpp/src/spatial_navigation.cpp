@@ -169,7 +169,7 @@ bool WorldRuntime::can_forage(const AntState& ant) const {
     if (known==s.connectors.end()) return discover_connector(ant).size!=0;
     const auto& path=known->second;
     if (sustained_supply(s) && !s.foragers.at(ant.id).enabled &&
-        (!at_foraging_home(ant) || s.foragers.at(ant.id).path_size!=1)) return false;
+        ((!at_foraging_home(ant) && !familiar_liquid_exit(s,ant)) || s.foragers.at(ant.id).path_size!=1)) return false;
     if (sustained_supply(s) && !s.foragers.at(ant.id).enabled && departure_replan(ant,path))
         return discover_connector(ant).size!=0;
     if (path.points[path.cursor]!=ant.position || (path.cursor && !(familiar_return(s) && at_foraging_home(ant)))) return false;
@@ -184,7 +184,7 @@ void WorldRuntime::prepare_forager(Transaction& tx,const AntState& ant,ForagerSt
     if (f.path_size) {
         const auto it=s.connectors.find(ant.id);
         if (sustained_supply(s) && it!=s.connectors.end() && !f.enabled && departure_replan(ant,it->second)) {
-            if (!at_foraging_home(ant) || f.path_size!=1)
+            if ((!at_foraging_home(ant) && !familiar_liquid_exit(s,ant)) || f.path_size!=1)
                 throw std::invalid_argument("an interrupted trip still owns its return trace");
             const auto replacement=discover_connector(ant);
             if (!replacement.size) throw std::invalid_argument("no locally reachable connector from the new berth");

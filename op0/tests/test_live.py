@@ -690,6 +690,10 @@ class LiveTests(unittest.TestCase):
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
         models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.source_refill:
+            models.append(("source-refill",69))
+        if core.local_solicitation:
+            models.append(("local-solicitation",68))
         if core.body_orientation:
             models.append(("body-orientation",67))
         if core.chamber_handoff:

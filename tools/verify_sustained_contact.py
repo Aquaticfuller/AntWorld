@@ -36,13 +36,14 @@ def fnv64(data):
 
 def experimental_fork(core, folder, original, version=63, target=None):
     """Change only three declared config bytes in a pinned research fixture."""
-    require(sha256(original).hexdigest() == {63:CUT_HASH, 64:DOCK_HASH, 66:CHAMBER_HASH}[version], "Unexpected research fixture")
+    require(sha256(original).hexdigest() == {63:CUT_HASH, 64:DOCK_HASH, 66:CHAMBER_HASH,
+            67:"6bf28c820543d12fefce55282929ce509b73e3bd1b07178985d48fa6939e3e6c"}[version], "Unexpected research fixture")
     command = next(row["command"] for line in (EVIDENCE / "WORKED_EXIT_TRIALS.jsonl").read_text().splitlines()
                    if (row := json.loads(line))["physics"] == 63 and row["seed"] == 2 and row["supply"] == "nearby")
     initial = []
     slot = "a" * 32
     target = version + 1 if target is None else target
-    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation"}
+    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation", 68:"local-solicitation", 69:"source-refill"}
     for model in (models[version], models[target]):
         core.call(command.replace("worked-exit", model))
         core.call(f"SAVE_SNAPSHOT {slot}")

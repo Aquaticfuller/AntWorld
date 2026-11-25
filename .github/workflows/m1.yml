@@ -44,6 +44,8 @@ jobs:
           if (-not $exe) { throw 'Native live executable was not built' }
           $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $exe).Path
           $env:M0_LIVE_TEST_ROOT = $env:RUNNER_TEMP
+          python -B -m tools.verify_local_solicitation --core $exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_first_meal research/single_nest/FIRST_MEAL_TRIALS.jsonl --core $exe --inputs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           foreach ($version in 43, 44) {

@@ -1,0 +1,13 @@
+# Local solicitation and feeding access
+
+Reference: 60e6cab5, physics 67. Compare the same 25 C, 80% RH, plugged entrance, nearby feeder, wet wick and seed set (2, 17, 3, 1, 29), plus seed 2 without food. Keep the previous two-year gate of at least three supplied founders alive with second-year eclosion and a larger workforce at day 730 than at days 73 and 365. Preserve all deaths and failed candidates. A short rescue alone cannot qualify a model.
+
+1. Reproduce the original six-hour terminal cut, event 131278, 22 completed approaches and zero paid sugar. Test whether a locally solvent donor can respond to a visible hungry founder before contact. Interleave the receiver's positioning and the donor's independently chosen movement. Keep actual bilateral mouth contact, paid movement, finite crop, action ownership, walls and donor maintenance.
+2. Trace both parties' available food, rejected or unsatisfied choices, sugar actually paid, distinct feeding days, final gap, founder death and second-year workers. If movement improves without continuing supply, inspect the source trip, the recipient's meal demand and the timing of subsequent supply separately. Record distinct trial inputs before evaluating changes.
+3. Verify bounded storage, ledger reconciliation and partitioned continuation from the same cut. Reuse the immutable paired baseline receipts and native replay. Keep compact summaries only.
+
+Worker-to-worker oral dissemination in sugar-deprived, queenless *Lasius niger* groups supports local exchanges. It supplies no caste-wide ordering or exact founder solicitation interval. Near-field solicitation and how adults make room remain engineering hypotheses. [Planckaert et al.](https://doi.org/10.1038/s41598-019-52019-6)
+
+## Independent refill intervention
+
+Physics 68 isolates the bilateral encounter. The original seed 17 has a second failure: at day 72 the five living workers carry only 6–11 micrograms of sugar each and the surface feeder retains 112,407 micrograms. Test personal food-source memory after unloading. A worker with a depleted social crop may try its own locally visible former departure site on an ordinary review, even after moving away to feed brood or the queen. Recheck current clearance and route ownership, retain higher priority for a payable mouth-to-mouth transfer and immediate drinking, and allow failed trips. Leave external inventories, release, geometry, timing and mortality unchanged. Compare day 90 and day 730 for the same five seeds and the absent-food control, with the same endpoints as above. If a departure still fails, distinguish the worker's memory from physical access and from an interrupted trip.

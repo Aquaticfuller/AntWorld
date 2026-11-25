@@ -136,6 +136,80 @@ bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
     return mouths_meet(donor,receiver) && spatially_clear(donor.mouth_m,receiver.mouth_m);
 }
 
+// ENGINEERING_FIXTURE. A short encounter has two mobile participants.
+// Search only the visible neighborhood. Return the first paid move, then
+// re-sense after the move. Neither a predicted pose nor a cue transfers food.
+std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
+        const AntState& donor,const AntState& founder) const {
+    const auto& s=*state_;
+    const auto view=geometry_view(s,limits_);
+    const auto radius=s.care_profile->perception_radius_m;
+    struct Pose {BodyPose body; std::uint8_t heading;};
+    const std::array ants{donor,founder};
+    const std::array start{Pose{*query_body({s.world,donor.id}),actor_facing(s,donor.id)},
+                           Pose{*query_body({s.world,founder.id}),actor_facing(s,founder.id)}};
+    const auto visible=[&](const BodyPose& a,const BodyPose& b) {
+        return within_distance(a.mouth_m,b.mouth_m,radius,true) && spatially_clear(a.mouth_m,b.mouth_m);
+    };
+    if (!visible(start[0].body,start[1].body)) return {};
+    using Move=std::pair<EntityId,PositionM>;
+    struct Node {std::array<Pose,2> pair; Move first; std::int64_t score;};
+    const auto key=[](const Pose& p) {
+        return std::tuple{p.body.center_m.x,p.body.center_m.y,p.body.center_m.z,p.heading};
+    };
+    using Key=decltype(key(start[0]));
+    std::set<std::pair<Key,Key>> visited{{key(start[0]),key(start[1])}};
+    struct Edge {Pose arrival; BodyPose swept;};
+    std::array<std::map<Key,std::vector<Edge>>,2> terrain;
+    const auto edges=[&](unsigned i,const Pose& pose) -> const std::vector<Edge>& {
+        auto [iter,inserted]=terrain[i].try_emplace(key(pose));
+        auto& result=iter->second;
+        if (!inserted) return result;
+        auto from=ants[i];
+        from.position=pose.body.center_m;
+        for (const double length:{.000125,.0005,.001,.002}) for (std::uint8_t dir=1;dir<=8;++dir) {
+            auto to=from;
+            to.position=snap_micro(translated(from.position,scale(body_heading(dir),length)));
+            if (!within_distance(ants[i].position,to.position,radius,true) ||
+                !clear_care_segment(from.position,to.position,body_half(from.id))) continue;
+            const auto heading=body_travel_heading(view,from,to.position,pose.heading,true);
+            if (!anatomy_sweep(view,from,to.position,pose.heading,heading)) continue;
+            result.push_back({{body_pose(to,heading,attachment(view,to,heading)),heading},
+                              body_pose(from,heading,attachment(view,from,heading))});
+        }
+        return result;
+    };
+    std::vector<Node> frontier{{start,{},0}};
+    for (unsigned depth=0;depth<5;++depth) {
+        std::vector<Node> next;
+        for (const auto& node:frontier) for (unsigned i=0;i<2;++i) {
+            const auto& peer=node.pair[1-i].body;
+            for (const auto& edge:edges(i,node.pair[i])) {
+                const auto& pose=edge.arrival;
+                const auto to=pose.body.center_m;
+                auto pair=node.pair;
+                pair[i]=pose;
+                const auto id=std::pair{key(pair[0]),key(pair[1])};
+                if (visited.contains(id) || !visible(pose.body,peer) ||
+                    anatomical_sweep_hits(edge.swept,to,peer)) continue;
+                if (!depth && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
+                visited.insert(id);
+                const auto first=depth ? node.first : Move{ants[i].id,to};
+                if (mouths_meet(pose.body,peer)) return first;
+                const auto delta=displacement(peer.mouth_m,pose.body.mouth_m);
+                const auto gap=portable_care_distance(pose.body.mouth_m,peer.mouth_m);
+                const auto behind=std::max(0.,-dot(delta,pose.body.forward))+std::max(0.,dot(delta,peer.forward));
+                next.push_back({pair,first,std::llround((gap+behind)*1e6)});
+            }
+        }
+        if (next.empty()) break;
+        std::stable_sort(next.begin(),next.end(),[](const Node& a,const Node& b){return a.score<b.score;});
+        if (next.size()>12) next.resize(12);
+        frontier=std::move(next);
+    }
+    return {};
+}
+
 std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignment_probe) const {
     const auto& s=*state_;
     const auto worker=query_ant(ref);
@@ -204,6 +278,11 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
     else std::sort(alternatives.begin(),alternatives.end());
     for (const auto& candidate : alternatives) {
         const auto other=*query_body({s.world,candidate.second});
+        if (local_solicitation(s) && founding_foundress(candidate.second)) {
+            const auto step=feeding_encounter(ant,*query_ant({s.world,candidate.second}));
+            if (step && step->first==ant.id) return std::pair{step->second,candidate.second};
+            if (step) continue;
+        }
         const auto next=mouth_approach(ant,other.mouth_m,{},&other);
         if (next!=ant.position) return std::pair{next,candidate.second};
     }
@@ -278,6 +357,11 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
     std::sort(donors.begin(),donors.end());
     for (const auto& donor:donors) {
         const auto body=*query_body({s.world,donor.second});
+        if (local_solicitation(s)) {
+            const auto worker=*query_ant({s.world,donor.second});
+            if (const auto step=feeding_encounter(worker,queen))
+                return std::pair{step->first==queen.id ? step->second : queen.position,worker.id};
+        }
         const auto next=mouth_approach(queen,body.mouth_m,{},&body);
         if (next!=queen.position) return std::pair{next,donor.second};
     }
@@ -1345,6 +1429,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             if (reached) request_food_review(tx,worker,c.target);
             if (!failed && !reached && c.search_remaining>1) {
                 const auto donor=local_donor(worker);
+                if (local_solicitation(s) && donor && donor->first==worker.position)
+                    request_food_review(tx,worker,donor->second);
                 if (donor && donor->second==c.target && donor->first!=worker.position)
                     start_resting_move(tx,worker,donor->first,event.id,CareAct::ApproachNestmate,c.target,
                                        static_cast<std::uint8_t>(c.search_remaining-1));
@@ -1354,6 +1440,13 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         }
         if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
             !query_worker_motion(other)) {
+            if (local_solicitation(s) && founding_foundress(c.target)) {
+                const auto leg=feeding_encounter(worker,*target);
+                if (leg && leg->first==c.target) {
+                    request_food_review(tx,*target,worker.id,true);
+                    return;
+                }
+            }
             const auto next=local_food_offer(worker,sustained_contact(s) && founding_foundress(c.target));
             if (next && next->second==c.target && next->first!=worker.position) {
                 start_resting_move(tx,worker,next->first,event.id,CareAct::ApproachNestmate,c.target,

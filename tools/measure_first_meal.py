@@ -14,7 +14,7 @@ from op0.live import NativeCore, ROOT, core_path
 from tools.measure_single_nest_lifecycle import COMPACT_BYTES, TREATMENTS, WORLD_BASES, census
 
 
-def run(core, seed, model, supply, days, progress=False, feeding_continuity=False):
+def run(core, seed, model, supply, days, progress=False, feeding_continuity=False, trace_flux=False):
     identity = WORLD_BASES[supply] + seed + TREATMENTS.index(model) * 2**34 + 2**39
     command = f"NEW_PROVISIONED_NEST {identity} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral {model} wet-wick"
     raw = core.call(command)
@@ -28,6 +28,7 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
     last_contact_step = {}
     meal_sequences = {}
     founder_days = {}
+    flux = {}
     previous_cut = None
     previous = 0
     checkpoints = {d for d in (30,45,60,73,90,150,365,730,days) if d <= days}
@@ -65,6 +66,19 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
                 last = f.id
                 kind = KINDS[f.kind]
                 stamp = [f.id, f.time, f.actor]
+                if trace_flux and f.mass[0] and kind in (
+                    "FoodCollected", "FoodDelivered", "CargoIngested", "FoundressNestMeal",
+                    "NutritionTransferred", "PhysiologyUpdated", "FoundingBoundaryUptake",
+                ):
+                    recipient = f.payload if kind == "NutritionTransferred" else f.actor
+                    key = f"{kind}/{f.actor}/{recipient}"
+                    entry = flux.setdefault(key, dict(count=0, sugar_ug=0, before_founder_death_ug=0,
+                                                      first=stamp[:2], last=stamp[:2]))
+                    entry["count"] += 1
+                    entry["sugar_ug"] += f.mass[0]
+                    entry["last"] = stamp[:2]
+                    if "queen_death" not in result:
+                        entry["before_founder_death_ug"] += f.mass[0]
                 if kind == "AntBorn":
                     lives[f.actor] = {"birth": stamp[:2]}
                 if kind == "StageChanged":
@@ -143,6 +157,8 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
                   movements=witnesses, step_then_meal=meal_sequences, cohorts_emerged_alive=cohorts, final_sha256=sha256(raw).hexdigest(), facts=previous)
     if feeding_continuity:
         result["founder_feeding_by_day"] = founder_days
+    if trace_flux:
+        result["sugar_flux"] = flux
     return result
 
 
@@ -155,8 +171,10 @@ if __name__ == "__main__":
     parser.add_argument("--days", type=int, choices=range(1,731), metavar="1..730", default=730)
     parser.add_argument("--feeding-continuity", action="store_true", help="Record positive sugar payments to the founder by day")
     parser.add_argument("--progress", action="store_true", help="Report milestone day, cursor, workers and founder survival on stderr")
+    parser.add_argument("--trace-flux", action="store_true", help="Account for collected, transferred and absorbed sugar by actor")
     args = parser.parse_args()
+    executable_hash = sha256(args.core.read_bytes()).hexdigest()
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as native:
-        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity)
-    receipt["executable_sha256"] = sha256(args.core.read_bytes()).hexdigest()
+        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity,args.trace_flux)
+    receipt["executable_sha256"] = executable_hash
     print(json.dumps(receipt,separators=(",",":")))
