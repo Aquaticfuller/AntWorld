@@ -68,13 +68,17 @@ def terminal(binary, version):
                     final_body_water_ug=end["ants"][2]["hydration_ug"])
 
 
-def panel(binary, path):
+def panel(binary, path, exit_trials=None):
     with gzip.open(EVIDENCE/"SUSTAINED_CONTACT_TRIALS.jsonl.gz", "rt") as source:
         old = [row for line in source if (row:=json.loads(line))["physics"]==67]
     with gzip.open(path, "rt") as source:
         new = [json.loads(line) for line in source]
     pairs = {(r["seed"],r["supply"]) for r in old}
     versions = {68:"local-solicitation", 69:"source-refill", 71:"trip-load", 72:"founder-route"}
+    if exit_trials:
+        with gzip.open(exit_trials, "rt") as source:
+            new.extend(json.loads(line) for line in source)
+        versions[73]="exit-attachment"
     require(len(pairs)==6 and len(new)==len(pairs)*len(versions) and
             {(r["physics"],r["seed"],r["supply"]) for r in new}==
             {(v,seed,supply) for v in versions for seed,supply in pairs}, "Missing paired worlds")
@@ -315,6 +319,7 @@ if __name__=="__main__":
     parser.add_argument("--core",type=Path,default=core_path())
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--panel",type=Path)
+    parser.add_argument("--exit-trials", type=Path, help="Also validate the six physics-73 continuations from birth")
     mode.add_argument("--earlier-cut", action="store_true", help="Replay the two-worker day-91 encounter")
     mode.add_argument("--trip-cycle", action="store_true", help="Replay the old-load return loop and a mid-trip save")
     mode.add_argument("--final-refill", action="store_true", help="Measure departure, fresh collection and founder intake")
@@ -325,7 +330,7 @@ if __name__=="__main__":
     binary=args.core.resolve()
     (ROOT/"out").mkdir(exist_ok=True)
     if args.panel:
-        result = panel(binary, args.panel)
+        result = panel(binary, args.panel, args.exit_trials)
     elif args.earlier_cut:
         result = earlier_cut(binary)
     elif args.trip_cycle:

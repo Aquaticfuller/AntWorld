@@ -33,7 +33,8 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     }};
     for (const auto& [dx,dz]:neighbors) {
         const PointQ cell{start.x+dx,start.y,start.z+dz};
-        if (!within_distance(depot,physical(cell,g),s.care_profile->perception_radius_m,true)) continue;
+        const auto reach=std::min(g.quantum_m,s.care_profile->perception_radius_m);
+        if (!within_distance(depot,physical(cell,g),reach,true)) continue;
         route=connector_from_grid(ant,cell,*level);
         if (route.size) return route;
     }
@@ -114,6 +115,7 @@ SurfaceConnector WorldRuntime::connector_from_grid(const AntState& ant,PointQ st
         }
         for (const auto q:portal_neighbors(view,p,half,s.config)) {
             const auto to=physical(q,g);
+            if (attach && to==depot) continue;
             if (depth+1+remaining(q)>=capacity || !surface_allows(*s.surface,true,pos,to) ||
                 (anatomy && s.care_profile && !within_distance(depot,to,s.care_profile->perception_radius_m,true))) continue;
             if (sustained_supply(s) && !depth && !clear_worker_traffic(ant,to,body_half(ant.id),false)) continue;
