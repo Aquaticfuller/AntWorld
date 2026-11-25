@@ -171,15 +171,18 @@ def trip_cycle(binary):
     return results
 
 
-def water_access(binary, version=71):
-    """Measure actual water payments on the six-hour seed-2 dehydration cut."""
-    raw = gzip.decompress((EVIDENCE / "SEED2_WATER_ACCESS_CUT.awstate.gz").read_bytes())
-    world = "00000000-0000-028d-0000-00f30000264a"
+def water_access(binary, version=71, seed=2):
+    """Measure water paid to a founder on an identified six-hour dehydration cut."""
+    cases = {
+        1: ("SEED1_WATER_RELAY_CUT.awstate.gz", "00000000-0000-028d-0000-00f700002649", 5_411_520_000, 72),
+        2: ("SEED2_WATER_ACCESS_CUT.awstate.gz", "00000000-0000-028d-0000-00f30000264a", 5_402_880_000, 71),
+    }
+    name, world, stop, original = cases[seed]
+    raw = gzip.decompress((EVIDENCE / name).read_bytes())
     slot = "3" * 32
-    stop = 5_402_880_000
     with TemporaryDirectory(dir=ROOT/"out") as temp, closing(NativeCore(binary,temp)) as core:
-        if version != 71:
-            raw = experimental_fork(core, Path(temp), raw, 71, version)
+        if version != original:
+            raw = experimental_fork(core, Path(temp), raw, original, version)
         (Path(temp)/(slot+".awstate")).write_bytes(raw)
         start = checkpoint(core.call(f"LOAD_SNAPSHOT {slot} {world}"))
         require(start["physics"] == version and start["time_ms"] == stop-21_600_001, "Unexpected water cut")
@@ -212,7 +215,9 @@ def water_access(binary, version=71):
         positions = {actor: dict(segments=len(seq), distinct_arrivals=len(set(seq)),
                                  backtracks=sum(a == c and a != b for a,b,c in zip(seq,seq[1:],seq[2:])),
                                  first=seq[:4]) for actor,seq in moves.items()}
-        if version == 72:
+        draws = [dict(event=f.id, time_ms=f.time, worker=f.actor, water_ug=f.mass[2]) for f in stream
+                 if KINDS[f.kind] == "WorkerWaterIngested" and f.mass[2]]
+        if version == 72 and seed == 2:
             require(drunk > 0 and absorbed > 0 and not deaths and end["ants"][2]["hydration_ug"] > 0,
                     "Founder did not obtain usable water before dehydration")
             debit = start["sources"][3]["stock_ug"][2] - end["sources"][3]["stock_ug"][2]
@@ -226,7 +231,7 @@ def water_access(binary, version=71):
             core.call(f"SAVE_SNAPSHOT {saved}")
             require(core.call(f"LOAD_SNAPSHOT {saved} {world}") == pending and core.call(f"ADVANCE {stop}") == final,
                     "Mid-approach restore changed delivery or hydration")
-        return dict(physics=version, movement=positions, cut_sha256=sha256(raw).hexdigest(), before_sha256=sha256(last).hexdigest(),
+        return dict(physics=version, seed=seed, worker_draws=draws, movement=positions, cut_sha256=sha256(raw).hexdigest(), before_sha256=sha256(last).hexdigest(),
                     final_sha256=sha256(final).hexdigest(), payments=payments, absorbed_water_ug=absorbed,
                     wick_intake_ug=drunk, decisions=decisions, approaches=approaches, deaths=deaths, before_body_water_ug=last_frame["ants"][2]["hydration_ug"],
                     end_body_water_ug=end["ants"][2]["hydration_ug"], events=end["cursor"]-start["cursor"])
@@ -258,6 +263,8 @@ if __name__=="__main__":
     mode.add_argument("--panel",type=Path)
     mode.add_argument("--earlier-cut", action="store_true", help="Replay the two-worker day-91 encounter")
     mode.add_argument("--trip-cycle", action="store_true", help="Replay the old-load return loop and a mid-trip save")
+    mode.add_argument("--water-relay", action="store_true", help="Measure the seed-1 terminal relay cut")
+    mode.add_argument("--measure-water-cut", action="store_true", help="Measure a disposable probe on the physics 71 input")
     mode.add_argument("--water-cut", action="store_true", help="Measure funding, uptake and survival on the day-62 water cut")
     args=parser.parse_args()
     binary=args.core.resolve()
@@ -268,6 +275,10 @@ if __name__=="__main__":
         result = earlier_cut(binary)
     elif args.trip_cycle:
         result = dict(terminal=trip_cycle(binary), archive=loaded_archive(binary))
+    elif args.water_relay:
+        result = water_access(binary, version=72, seed=1)
+    elif args.measure_water_cut:
+        result = water_access(binary)
     elif args.water_cut:
         result = [water_access(binary,v) for v in (71,72)]
         require(result[0]["deaths"] == [381412] and not result[0]["payments"] and result[0]["wick_intake_ug"] == 0,

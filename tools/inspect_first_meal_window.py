@@ -49,11 +49,19 @@ def founder_death(core, trial, lookback_hours=0):
     death, = [f for f in facts(core,end["cursor"],frame["cursor"]) if f.id==event]
     require(death.actor==founder and KINDS[death.kind]=="AntDied" and DEATHS[death.payload]==reason,
             "Founder death does not reproduce")
+    payments, uptake = [], []
+    if preceding:
+        for f in facts(core, end["cursor"], preceding[0]["cursor"]):
+            kind = KINDS[f.kind]
+            if kind == "NutritionTransferred" and f.payload == founder and any(f.mass):
+                payments.append(dict(event=f.id,time_ms=f.time,donor=f.actor,dose_ug=f.mass))
+            if f.actor == founder and kind in ("PhysiologyUpdated", "FoundingBoundaryUptake") and any(f.mass):
+                uptake.append(dict(event=f.id,time_ms=f.time,kind=kind,absorbed_ug=f.mass))
     return dict(physics=trial["physics"],seed=trial["seed"],supply=trial["supply"],
                 predeath_sha256=sha256(raw).hexdigest(),death=[event,time,reason],founder=founder,adults=adults,
                 pantry_ug=next(iter(frame["colonies"].values()))["stock_ug"],
                 sources=frame["sources"],access=access,oral_pairs=pairs,
-                **({"half_hour_cuts":preceding} if lookback_hours else {}))
+                **({"half_hour_cuts":preceding, "founder_payments":payments, "founder_uptake":uptake} if lookback_hours else {}))
 
 
 def inspect(core, model, seed, start, end, wide):

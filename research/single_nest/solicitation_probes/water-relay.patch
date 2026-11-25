@@ -1,0 +1,35 @@
+--- a/cpp/src/ecological_closure.cpp
++++ b/cpp/src/ecological_closure.cpp
+@@ -69,9 +69,15 @@
+
+ std::optional<PositionM> WorldRuntime::local_wick_contact(const AntState& ant,const PhysiologyState& p) const {
+     const auto& s=*state_;
++    const auto social_water=[&] {
++        if (founding_nutrition(s)!=FoundingNutrition::FounderRoute || ant.caste!=Caste::Worker) return std::uint64_t{};
++        const auto payable=founding_gift_supply(s.founding->profile,p);
++        const auto need=local_provisioning_shortfall(ant,payable,true).water_ug;
++        return std::min(need,deficit(s.ecological->water_sip_ug,p.crop.water_ug));
++    };
+     const bool queen=founding_foundress(ant.id);
+     if (!sustained_supply(s) || !(queen || local_founding_provisioning(s,ant.id)) || !s.ecological->water_sip_ug ||
+-        !wick_shortfall(s.founding->profile,p,queen) || p.crop.total_ug()==p.config.crop_capacity_ug) return {};
++        (!wick_shortfall(s.founding->profile,p,queen) && !social_water()) || p.crop.total_ug()==p.config.crop_capacity_ug) return {};
+     const auto mouth=query_body({s.world,ant.id})->mouth_m;
+     for (const auto ref:query_neighborhood({s.world,ant.id},s.care_profile->perception_radius_m).food) {
+         const auto& wick=s.foods.rows[s.foods.index.at(ref.id)];
+@@ -90,8 +96,14 @@
+     const auto local=sustained_supply(s);
+     if (local) synchronize_physiology(tx,ant.id);
+     auto p = s.physiology.at(ant.id);
++    const auto social_water=[&] {
++        if (founding_nutrition(s)!=FoundingNutrition::FounderRoute || ant.caste!=Caste::Worker) return std::uint64_t{};
++        const auto payable=founding_gift_supply(s.founding->profile,p);
++        const auto need=local_provisioning_shortfall(ant,payable,true).water_ug;
++        return std::min(need,deficit(s.ecological->water_sip_ug,p.crop.water_ug));
++    };
+     const auto space = p.config.hydration_capacity_ug - p.hydration_ug;
+-    const auto need = local ? wick_shortfall(s.founding->profile,p,!worker) : deficit(space,p.crop.water_ug);
++    const auto need = local ? std::max(wick_shortfall(s.founding->profile,p,!worker),social_water()) : deficit(space,p.crop.water_ug);
+     const auto maximum = std::min({s.ecological->water_sip_ug, need,
+                                    p.config.crop_capacity_ug - p.crop.total_ug()});
+     if (!maximum) return;

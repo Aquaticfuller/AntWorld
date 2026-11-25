@@ -1,9 +1,9 @@
 name: M1 Observatory
 on:
   push:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   pull_request:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "research/single_nest/SEED2*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   workflow_dispatch:
 
 permissions:
@@ -45,6 +45,14 @@ jobs:
           $env:M0_LIVE_CORE = (Resolve-Path -LiteralPath $exe).Path
           $env:M0_LIVE_TEST_ROOT = $env:RUNNER_TEMP
           python -B -m tools.verify_local_solicitation --core $exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_local_solicitation --core $exe --earlier-cut
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_local_solicitation --core $exe --trip-cycle
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_local_solicitation --core $exe --water-cut
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_local_solicitation --core $exe --panel research/single_nest/LOCAL_SOLICITATION_TRIALS.jsonl.gz
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_first_meal research/single_nest/FIRST_MEAL_TRIALS.jsonl --core $exe --inputs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

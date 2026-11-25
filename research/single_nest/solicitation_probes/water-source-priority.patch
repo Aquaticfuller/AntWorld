@@ -1,0 +1,31 @@
+--- a/cpp/src/ecology.cpp
++++ b/cpp/src/ecology.cpp
+@@ -1,3 +1,4 @@
++#include <cstdio>
+ #include "anatomy.hpp"
+ #include "behavior_rng.hpp"
+ #include "care_internal.hpp"
+@@ -447,10 +448,22 @@
+         resupply_step=worker_depot_step(ant);
+       }
+     }
++    bool partner_water=false;
++    if (tracks_trip_load(s) && founding_foundress(ant.id) && solicitation && wick_step) {
++      const auto other=*query_physiology({s.world,solicitation->second});
++      const auto offer=contact_offer(s,founding_gift_supply(s.founding->profile,other),other,p,ant.stage);
++      partner_water=meal_signal(ant,p,offer).water_ug!=0;
++    }
++    if (founding_foundress(ant.id)) {
++      std::fprintf(stderr,"founder wake %lld busy=%d wick=%d wickStep=%d donor=%llu fundedWaterAlternative=%d waitingForWorker=%d\n",
++        (long long)s.m.now.milliseconds,care_owned(s,ant.id),at_wick,!!wick_step,
++        (unsigned long long)(solicitation ? solicitation->second.value : 0),partner_water,
++        solicitation && solicitation->first==ant.position);
++    }
+     if (integrated_care(s) && care_owned(s,ant.id)) {
+       // The ordinary wake stays alive while the finite care lease owns motion.
+       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+-    } else if (at_wick || wick_step) {
++    } else if (at_wick || (wick_step && !partner_water)) {
+       if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+       choice.drink=at_wick;
+       choice.resting_site=wick_step;

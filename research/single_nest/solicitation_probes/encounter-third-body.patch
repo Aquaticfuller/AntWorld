@@ -1,0 +1,27 @@
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -171,6 +171,13 @@
+     using Key=decltype(key(start[0]));
+     std::set<std::pair<Key,Key>> visited{{key(start[0]),key(start[1])}};
+     struct Edge {Pose arrival; BodyPose swept;};
++    std::vector<BodyPose> bystanders;
++    for (const auto ref:query_neighborhood({s.world,donor.id},radius).ants) {
++        const auto ant=*query_ant(ref);
++        if (ant.id==donor.id || ant.id==founder.id || ant.stage!=LifeStage::Adult ||
++            !spatially_clear(donor.position,ant.position)) continue;
++        bystanders.push_back(*query_body(ref));
++    }
+     std::array<std::map<Key,std::vector<Edge>>,2> terrain;
+     const auto edges=[&](unsigned i,const Pose& pose) -> const std::vector<Edge>& {
+         auto [iter,inserted]=terrain[i].try_emplace(key(pose));
+@@ -185,6 +192,10 @@
+                 !clear_care_segment(from.position,to.position,body_half(from.id))) continue;
+             const auto heading=body_travel_heading(view,from,to.position,pose.heading,true);
+             if (!anatomy_sweep(view,from,to.position,pose.heading,heading)) continue;
++            const auto sweep=body_pose(from,heading,attachment(view,from,heading));
++            if (std::any_of(bystanders.begin(),bystanders.end(),[&](const auto& p) {
++                return anatomical_sweep_hits(sweep,to.position,p);
++            })) continue;
+             result.push_back({{body_pose(to,heading,attachment(view,to,heading)),heading},
+                               body_pose(from,heading,attachment(view,from,heading))});
+         }
