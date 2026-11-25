@@ -38,13 +38,14 @@ def experimental_fork(core, folder, original, version=63, target=None):
     """Change only three declared config bytes in a pinned research fixture."""
     require(sha256(original).hexdigest() == {63:CUT_HASH, 64:DOCK_HASH, 66:CHAMBER_HASH,
             67:"6bf28c820543d12fefce55282929ce509b73e3bd1b07178985d48fa6939e3e6c",
+            71:"4c5583ada319f7afd2d80aa93b75887124fa2742a8555a11639ef876d481745f",
             70:"9ed3ba5e9177b8d0f5e0980a1c9ec2e6ebb00e5dd35db58ea3746986152b2312"}[version], "Unexpected research fixture")
     command = next(row["command"] for line in (EVIDENCE / "WORKED_EXIT_TRIALS.jsonl").read_text().splitlines()
                    if (row := json.loads(line))["physics"] == 63 and row["seed"] == 2 and row["supply"] == "nearby")
     initial = []
     slot = "a" * 32
     target = version + 1 if target is None else target
-    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation", 68:"local-solicitation", 69:"source-refill", 70:"founder-appetite", 71:"trip-load"}
+    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation", 68:"local-solicitation", 69:"source-refill", 70:"founder-appetite", 71:"trip-load", 72:"founder-route"}
     for model in (models[version], models[target]):
         core.call(command.replace("worked-exit", model))
         core.call(f"SAVE_SNAPSHOT {slot}")

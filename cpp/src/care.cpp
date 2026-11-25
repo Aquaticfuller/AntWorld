@@ -435,6 +435,43 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
         return (stage ? mouth_reaches(body,contact,*stage) : supply_in_reach(body,contact) &&
             (!partner || supply_in_reach(*partner,body.mouth_m))) && continuous_clear(view,body.mouth_m,contact,0);
     };
+    if (patch && !partner && !stage && founding_nutrition(s)==FoundingNutrition::FounderRoute && founding_foundress(adult.id)) {
+        // ENGINEERING_FIXTURE. Replan only the first paid leg of a short local
+        // approach. A broad founder may have to move away before it can turn.
+        // Check the goal with the same mouth and obstacle tests as drinking.
+        if (reaches(pose)) return adult.position;
+        struct Stance { AntState ant; std::uint8_t facing; PositionM first; std::int64_t gap; };
+        const auto initial=actor_facing(s,adult.id);
+        std::vector<Stance> layer{{adult,initial,adult.position,0}};
+        std::set<std::tuple<double,double,double,std::uint8_t>> visited{{adult.position.x,adult.position.y,adult.position.z,initial}};
+        for (unsigned depth=0;depth<8;++depth) {
+            std::vector<Stance> next;
+            for (const auto& here:layer) for (const double length:{.000125,.0005,.001,.002})
+                for (std::uint8_t dir=1;dir<=8;++dir) {
+                    auto at=here.ant;
+                    at.position=snap_micro(translated(here.ant.position,scale(body_heading(dir),length)));
+                    const auto heading=body_travel_heading(view,here.ant,at.position,here.facing,true);
+                    const auto key=std::tuple{at.position.x,at.position.y,at.position.z,heading};
+                    if (visited.contains(key) || !within_distance(adult.position,at.position,radius,true) ||
+                        !clear_care_segment(here.ant.position,at.position,body_half(adult.id)) ||
+                        !anatomy_sweep(view,here.ant,at.position,here.facing,heading)) continue;
+                    if (!depth && !clear_worker_traffic(adult,at.position,body_half(adult.id),true,true)) continue;
+                    const auto sweep=body_pose(here.ant,heading,attachment(view,here.ant,heading));
+                    if (std::any_of(nearby.begin(),nearby.end(),[&](const auto& obstacle) {
+                        return anatomical_sweep_hits(sweep,at.position,obstacle);
+                    })) continue;
+                    const auto arrival=body_pose(at,heading,attachment(view,at,heading));
+                    const auto first=depth ? here.first : at.position;
+                    if (reaches(arrival)) return first;
+                    visited.insert(key);
+                    next.push_back({at,heading,first,std::llround(1e6*portable_care_distance(arrival.mouth_m,contact_point(arrival)))});
+                }
+            if (next.empty()) break;
+            std::stable_sort(next.begin(),next.end(),[](const Stance& a,const Stance& b){return a.gap<b.gap;});
+            if (next.size()>64) next.resize(64);
+            layer=std::move(next);
+        }
+    }
     // A mouth may meet the side of another's reachable oral region. A single
     // axial stance per compass bearing misses these contacts beside a wall.
     // Both legs are local, paid movements; only the first is submitted and
