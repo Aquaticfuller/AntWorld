@@ -35,6 +35,7 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned appetite_schema = 63, appetite_physics = 70;
 inline constexpr unsigned source_refill_schema = 62, source_refill_physics = 69;
 inline constexpr unsigned solicitation_schema = 61, solicitation_physics = 68;
 inline constexpr unsigned body_orientation_schema = 60, body_orientation_physics = 67;
@@ -61,6 +62,7 @@ inline bool micro_world_version(unsigned version) {
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderAppetite) return appetite_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SourceRefill) return source_refill_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalSolicitation) return solicitation_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BodyOrientation) return body_orientation_physics;
@@ -107,6 +109,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderAppetite) return appetite_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::SourceRefill) return source_refill_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalSolicitation) return solicitation_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BodyOrientation) return body_orientation_schema;

@@ -136,6 +136,17 @@ bool WorldRuntime::oral_contact(const AntState& a,const AntState& b) const {
     return mouths_meet(donor,receiver) && spatially_clear(donor.mouth_m,receiver.mouth_m);
 }
 
+FoodMass WorldRuntime::meal_signal(const AntState& recipient,const PhysiologyState& p,FoodMass offer) const {
+    const auto& s=*state_;
+    const auto ordinary=ingredient_min(offer,signaled_need(p,recipient.stage,s.long_term!=nullptr));
+    if (!founder_appetite(s) || !founding_foundress(recipient.id)) return ordinary;
+    // A local request can use crop storage before the short-term body buffer
+    // is exhausted. Report only ingredients this donor could actually provide.
+    auto ration=foundress_nest_meal(s.founding->profile,p,*query_founding({s.world,recipient.id}),offer,true);
+    ration.protein_ug=ordinary.protein_ug;
+    return ration;
+}
+
 // ENGINEERING_FIXTURE. A short encounter has two mobile participants.
 // Search only the visible neighborhood. Return the first paid move, then
 // re-sense after the move. Neither a predicted pose nor a cue transfers food.
@@ -227,7 +238,7 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
     result.at_mouth=oral_contact(*worker,*queen);
     const auto payable=founding_gift_supply(s.founding->profile,wp);
     result.offered_carbs_ug=contact_offer(s,payable,wp,qp,queen->stage).carbs_ug;
-    result.requested_carbs_ug=ingredient_min(signaled_need(qp,queen->stage,true),
+    result.requested_carbs_ug=founder_appetite(s) ? meal_signal(*queen,qp,payable).carbs_ug : ingredient_min(signaled_need(qp,queen->stage,true),
         foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true)).carbs_ug;
     // Isolate geometry from scheduler ownership and dietary eligibility at this cut.
     if (result.visible && !result.at_mouth) {
@@ -262,9 +273,10 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
         const bool touching=oral_contact(ant,peer);
         if (touching || variable_conditions(s)) {
             const auto p=query_physiology(ref);
-            if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug ||
-                !ingredient_min(contact_offer(s,supply,physiology,*p,peer.stage),signaled_need(*p,peer.stage,true)).total_ug()) continue;
-            if (urgent_foundress && responsive_meal(s) && !foundress_nest_meal(s.founding->profile,*p,
+            if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug) continue;
+            const auto signal=meal_signal(peer,*p,contact_offer(s,supply,physiology,*p,peer.stage));
+            if (!signal.total_ug() || (urgent_foundress && founder_appetite(s) && !signal.carbs_ug && !signal.water_ug)) continue;
+            if (urgent_foundress && responsive_meal(s) && !founder_appetite(s) && !foundress_nest_meal(s.founding->profile,*p,
                 *query_founding(ref),supply,true).carbs_ug) continue;
             if (urgent_foundress && !responsive_meal(s) && !ingredient_min(supply,founding_resupply_shortfall(s.founding->profile,*p,
                 *query_founding(ref),true,p->config.absorption_period)).total_ug()) continue;
@@ -344,9 +356,13 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
         if (ant.caste!=Caste::Worker || ant.stage!=LifeStage::Adult || ant.colony!=queen.colony ||
             query_worker_motion(ref) || ant.carried_food.total_ug() || s.carriers.contains(ref.id)) continue;
         const auto wp=*query_physiology(ref);
-        if (wp.behavior==IndividualBehavior::Forage || wp.behavior==IndividualBehavior::Excavate ||
-            !contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.stage).carbs_ug) continue;
-        if (responsive_meal(s) && (!signaled_need(qp,queen.stage,true).carbs_ug ||
+        if (wp.behavior==IndividualBehavior::Forage || wp.behavior==IndividualBehavior::Excavate) continue;
+        const auto offer=contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.stage);
+        if (founder_appetite(s)) {
+            const auto signal=meal_signal(queen,qp,offer);
+            if (!signal.carbs_ug && !signal.water_ug) continue;
+        } else if (!offer.carbs_ug) continue;
+        if (responsive_meal(s) && !founder_appetite(s) && (!signaled_need(qp,queen.stage,true).carbs_ug ||
             !foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen.id),
                                 founding_gift_supply(s.founding->profile,wp),true).carbs_ug)) continue;
         const auto tip=query_body(ref)->mouth_m;
@@ -1461,8 +1477,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             const auto available=oral?founding_gift_supply(s.founding->profile,p):p.crop;
             const bool offer=s.social->exchange_enabled && receiver &&
                 receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
-                ingredient_min(contact_offer(s,available,p,*receiver,target->stage),
-                               signaled_need(*receiver,target->stage,s.long_term!=nullptr)).total_ug();
+                meal_signal(*target,*receiver,contact_offer(s,available,p,*receiver,target->stage)).total_ug();
             change_behavior(tx,self,offer?IndividualBehavior::Nurse:IndividualBehavior::Rest,event.id,false,
                             offer && oral ? other.id : EntityId{});
         }

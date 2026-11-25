@@ -322,6 +322,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
             const auto demand=local_founding_feeding(s) && recipient.stage==LifeStage::Larva &&
                 s.founding_reserves.contains(recipient.id) ?
                 founding_larval_demand(s.founding->profile,*receiver,s.founding_reserves.at(recipient.id),provision_callow_water(s)) :
+                founder_appetite(s) && founding_foundress(recipient.id) ? meal_signal(recipient,*receiver,supply) :
                 nutrient_demand(*receiver,recipient.stage);
             supply=ingredient_min(supply,demand);
         }
@@ -455,7 +456,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                 const bool hungry_adult = other.stage == LifeStage::Adult &&
                     (q.body_energy_nj < q.config.energy_capacity_nj/4 || q.hydration_ug < q.config.hydration_capacity_ug/4);
                 const bool demand=s.social && s.social->demand_sensitive;
-                if (demand ? (!ingredient_min(supply,signaled_need(q,other.stage,s.long_term!=nullptr)).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
+                if (demand ? (!meal_signal(other,q,supply).total_ug() || q.crop.total_ug()>=q.config.crop_capacity_ug) :
                     ((!hungry_larva && !hungry_adult) || q.crop.total_ug() >= q.config.crop_capacity_ug/2)) continue;
                 ++seen; if (bounded_draw(rng, seen) == 0) { action.kind = ScheduledEvent::Kind::Trophallaxis; action.payload = id.value; }
             }

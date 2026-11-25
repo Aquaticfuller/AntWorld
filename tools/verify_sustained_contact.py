@@ -43,7 +43,7 @@ def experimental_fork(core, folder, original, version=63, target=None):
     initial = []
     slot = "a" * 32
     target = version + 1 if target is None else target
-    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation", 68:"local-solicitation", 69:"source-refill"}
+    models = {63:"worked-exit", 64:"sustained-contact", 65:"yielding-return", 66:"chamber-handoff", 67:"body-orientation", 68:"local-solicitation", 69:"source-refill", 70:"founder-appetite"}
     for model in (models[version], models[target]):
         core.call(command.replace("worked-exit", model))
         core.call(f"SAVE_SNAPSHOT {slot}")

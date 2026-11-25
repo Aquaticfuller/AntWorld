@@ -160,6 +160,7 @@ private:
     [[nodiscard]] detail::SurfaceConnector discover_connector(const AntState&) const;
     [[nodiscard]] bool departure_replan(const AntState&, const detail::SurfaceConnector&) const;
     [[nodiscard]] bool can_forage(const AntState&) const;
+    [[nodiscard]] FoodMass meal_signal(const AntState&,const PhysiologyState&,FoodMass) const;
     [[nodiscard]] bool at_foraging_home(const AntState&) const;
     void prepare_forager(Transaction&,const AntState&,ForagerState&);
     void after_action(Transaction&, const ScheduledEvent&, WorldEvent&, const AntState& before);

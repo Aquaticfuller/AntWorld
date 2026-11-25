@@ -492,7 +492,8 @@ async function refreshLive(alignSection = true) {
         data.seeded_nursery ? tr(data.provisioned_nursery ? "Nursery · finite food supply" :
         data.local_traffic ? "Nursery · previous traffic model" : "Nursery · R0-r1 reference") :
         timing ? tr("Worker checks every {minutes} min · experimental", {minutes: timing.check_ms / MINUTE}) : tr("Standard worker timing");
-    const nutrition = data.habitat?.nutrition === "source-refill" ? tr("Experienced forager refill · Physics 69") :
+    const nutrition = data.habitat?.nutrition === "founder-appetite" ? tr("Founder appetite experiment · Physics 70") :
+      data.habitat?.nutrition === "source-refill" ? tr("Experienced forager refill · Physics 69") :
       data.habitat?.nutrition === "local-solicitation" ? tr("Local food solicitation · Physics 68") :
       data.habitat?.nutrition === "body-orientation" ? tr("Approach a sensed nestmate before feeding · Physics 67") :
       data.habitat?.nutrition === "chamber-handoff" ? tr("Carry the social crop into the chamber · Physics 66") :

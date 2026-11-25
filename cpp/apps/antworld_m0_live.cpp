@@ -526,11 +526,12 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="founder-appetite" ? FoundingNutrition::FounderAppetite :
                         treatment=="source-refill" ? FoundingNutrition::SourceRefill :
                         treatment=="local-solicitation" ? FoundingNutrition::LocalSolicitation :
                         treatment=="body-orientation" ? FoundingNutrition::BodyOrientation :

@@ -87,6 +87,13 @@ def panel(binary, path):
                 "Changed environment, treatment or observation window")
         if row["supply"]=="absent":
             require(not row["founder_feeding_by_day"], "Unfunded sugar in absent-food control")
+        paid = sum(v["sugar_ug"] for k,v in row["sugar_flux"].items()
+                   if k.startswith("NutritionTransferred/") and k.endswith("/2"))
+        require(paid==sum(day["sugar_ug"] for day in row["founder_feeding_by_day"].values()),
+                "Actor flux disagrees with the founder meal ledger")
+        for entry in row["sugar_flux"].values():
+            require(0<=entry["before_founder_death_ug"]<=entry["sugar_ug"] and entry["count"]>0 and
+                    entry["first"]<=entry["last"], "Invalid sugar flux interval")
     return dict(inputs=verify_inputs(binary, old+new), worlds=[feeding_summary(r) for r in old+new])
 
 
@@ -97,5 +104,5 @@ if __name__=="__main__":
     args=parser.parse_args()
     binary=args.core.resolve()
     (ROOT/"out").mkdir(exist_ok=True)
-    result=panel(binary,args.panel) if args.panel else [terminal(binary,v) for v in (67,68,69)]
+    result=panel(binary,args.panel) if args.panel else [terminal(binary,v) for v in (67,68,69,70)]
     print(json.dumps(result,indent=2))
