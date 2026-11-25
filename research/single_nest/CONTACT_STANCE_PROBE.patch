@@ -1,0 +1,49 @@
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index bdaccb60..a6a56b6a 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -1,3 +1,4 @@
++#include <cstdio>
+ #include "brood_space.hpp"
+ #include "physiology_internal.hpp"
+ #include "social_internal.hpp"
+@@ -147,6 +148,39 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
+     if (!queen || queen->stage!=LifeStage::Adult || queen->colony!=worker->colony) return {};
+     const auto wp=*query_physiology(ref), qp=*query_physiology(founder);
+     const auto wb=*query_body(ref), qb=*query_body(founder);
++    if (body_orientation_enabled(s) && ref.id.value==8 && s.m.now.milliseconds==7087492799) {
++        const auto view=geometry_view(s,limits_);
++        const auto qh=actor_facing(s,queen->id), wh=actor_facing(s,worker->id);
++        const auto slots=[&](const BodyPose& q,bool fixed) {
++            unsigned viable=0, one_leg=0;
++            for (std::uint8_t face=1;face<=8;++face) {
++                const auto center=snap_micro(translated(q.mouth_m, scale(body_heading(face),-portable_care_distance(worker->position,wb.mouth_m))));
++                for (int x=-11;x<=11;++x) for (int z=-11;z<=11;++z) {
++                    auto at=*worker; at.position={center.x+x*micro_step_m,worker->position.y,center.z+z*micro_step_m};
++                    const auto normal=support_normal(view,at.position,body_heading(face),.00125);
++                    if (!normal) continue;
++                    const auto body=body_pose(at,face,*normal);
++                    if (!mouths_meet(q,body) || !substrate_clear(view,body,at.position) ||
++                        !continuous_clear(view,q.mouth_m,body.mouth_m,0)) continue;
++                    ++viable;
++                    if (fixed && body_travel_heading(view,*worker,at.position,wh,true)==face &&
++                        clear_care_segment(worker->position,at.position,body_half(worker->id)) &&
++                        clear_worker_traffic(*worker,at.position,body_half(worker->id),true,true)) ++one_leg;
++                }
++            }
++            return std::pair{viable,one_leg};
++        };
++        const auto [fixed,direct]=slots(qb,true);
++        std::fprintf(stderr,"fixed_stances=%u direct_stances=%u\n",fixed,direct);
++        for (std::uint8_t dir=1;dir<=8;++dir) for (const double length:{.0005,.001}) {
++            auto q=*queen; q.position=snap_micro(translated(q.position,scale(body_heading(dir),length)));
++            if (!clear_resting_site(*queen,q.position)) continue;
++            const auto facing=body_travel_heading(view,*queen,q.position,qh,true);
++            const auto after=body_pose(q,facing,attachment(view,q,facing));
++            const auto counts=slots(after,false);
++            std::fprintf(stderr,"queen_dir=%u length_um=%.0f clear_stances=%u\n",dir,length*1e6,counts.first);
++        }
++    }
+     OralAccess result;
+     result.visible=within_distance(qb.mouth_m,wb.mouth_m,s.care_profile->perception_radius_m,true) &&
+                    spatially_clear(qb.mouth_m,wb.mouth_m);

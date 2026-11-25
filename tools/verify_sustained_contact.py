@@ -216,6 +216,36 @@ def verify_orientation(binary, scratch):
     return results
 
 
+def inspect_terminal_pair(binary, scratch, strict=True):
+    cut = gzip.decompress((EVIDENCE / "SEED2_STALLED_PAIR_CUT.awstate.gz").read_bytes())
+    require(sha256(cut).hexdigest() == "6bf28c820543d12fefce55282929ce509b73e3bd1b07178985d48fa6939e3e6c",
+            "Unexpected terminal pair cut")
+    with TemporaryDirectory(dir=scratch) as temp, closing(NativeCore(binary, temp)) as core:
+        slot = "e" * 32
+        (Path(temp)/(slot+".awstate")).write_bytes(cut)
+        start = checkpoint(core.call(f"LOAD_SNAPSHOT {slot} 00000000-0000-028d-0000-00e30000264a"))
+        require(start["physics"] == 67 and start["time_ms"] == 7_066_550_451, "Wrong stalled-pair input")
+        review = core.call("ADVANCE 7087492799")
+        access = core.call("ORAL_ACCESS").decode().splitlines()
+        require(core.call("FRAME") == review, "Observation changed the review")
+        final = core.call("ADVANCE 7088150452")
+        fs = list(facts(core,checkpoint(final)["cursor"],start["cursor"]))
+        payments = [f for f in fs if KINDS[f.kind]=="NutritionTransferred" and f.payload==2 and f.mass[0]]
+        steps = [f for f in fs if f.observation and f.observation[2]==2 and f.actor==8
+                 and PHASES[f.observation[0]]=="Completed" and ACTS[f.observation[1]]=="Approach a nestmate"
+                 and f.outcome==0]
+        deaths = [[f.id,f.time] for f in fs if KINDS[f.kind]=="AntDied" and f.actor==2]
+        digest = sha256(final).hexdigest()
+        if strict:
+            require(len(steps)==22 and not payments and deaths==[[131278,7088150452]] and
+                    digest=="28f861978e4888febece01709e3de7ce42c234ed29d135ee00436df1fadb4caa",
+                    "Published negative case diverged")
+        require(core.call("CHECK_LEDGERS")==b"", "Terminal pair ledger mismatch")
+        return dict(final_sha256=digest, deaths=deaths, oral_access_before_review=access,
+                    approaches=[[f.id,f.time,list(f.position)] for f in steps],
+                    payments=[[f.id,f.time,f.actor,list(f.mass)] for f in payments])
+
+
 def feeding_summary(row):
     summary = outcome(row)
     days = sorted((int(day), b) for day, b in row["founder_feeding_by_day"].items())
@@ -237,7 +267,7 @@ def feeding_summary(row):
                 terminal_gap_hours=(stop-days[-1][1]["last_ms"])/3_600_000 if days else None,
                 death_day=summary["founder_death_day"], workers=summary["workers"],
                 later_emerged_alive=summary["later_emerged_alive"],
-                year_two=sum("Adult" in ant and ant["Adult"][1]>365*DAY for ant in row["lives"].values()))
+                year_two=summary["year_two_eclosions"], sustained=summary["sustained"])
 
 
 def verify_panel(binary, path):
@@ -264,7 +294,13 @@ def verify_panel(binary, path):
                         "Different historical outcome")
             if row["supply"] == "absent":
                 require(not row["founder_feeding_by_day"], "Unfunded founder sugar")
-    return dict(inputs=verify_inputs(binary, rows), worlds=[feeding_summary(r) for r in rows])
+    worlds = [feeding_summary(r) for r in rows]
+    gates = {}
+    for version in sorted({row["physics"] for row in worlds}):
+        supplied = [row for row in worlds if row["physics"]==version and row["supply"]=="nearby"]
+        passing = [row["seed"] for row in supplied if row["sustained"]]
+        gates[version] = dict(supplied=len(supplied), passing_seeds=passing, required=3, passed=len(passing)>=3)
+    return dict(inputs=verify_inputs(binary, rows), worlds=worlds, growth=gates)
 
 
 if __name__ == "__main__":
@@ -274,7 +310,16 @@ if __name__ == "__main__":
     group.add_argument("--panel", type=Path, help="Check all six matched cases across all five versions")
     group.add_argument("--entrance", action="store_true", help="Replay two competing surface carriers")
     group.add_argument("--orientation", action="store_true", help="Replay a meeting with a locally sensed body")
+    group.add_argument("--last-failure", action="store_true", help="Replay the published negative chamber outcome")
+    parser.add_argument("--investigative", action="store_true", help="Report a patched build on --last-failure")
     args = parser.parse_args()
     binary = args.core.resolve()
-    result = verify_panel(binary,args.panel) if args.panel else (verify_orientation if args.orientation else verify_entrance if args.entrance else verify)(binary,ROOT/"out")
+    if args.investigative and not args.last_failure:
+        parser.error("--investigative requires --last-failure")
+    if args.panel:
+        result = verify_panel(binary,args.panel)
+    elif args.last_failure:
+        result = inspect_terminal_pair(binary, ROOT/"out", not args.investigative)
+    else:
+        result = (verify_orientation if args.orientation else verify_entrance if args.entrance else verify)(binary,ROOT/"out")
     print(json.dumps(result, indent=2))

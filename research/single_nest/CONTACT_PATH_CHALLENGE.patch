@@ -1,0 +1,51 @@
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index bdaccb60..23498098 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -339,6 +339,8 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+     // axial stance per compass bearing misses these contacts beside a wall.
+     // Both legs are local, paid movements; only the first is submitted and
+     // both reach and traffic are tested again at execution.
++    const bool close_path=partner && body_orientation_enabled(s) && within_distance(pose.mouth_m,target,.002,true);
++    std::vector<std::pair<std::uint8_t,PositionM>> side_stances;
+     if (partner && sustained_contact(s)) {
+         const auto initial=actor_facing(s,adult.id);
+         const auto local_leg=[&](const AntState& from,PositionM to,std::uint8_t facing,bool first)
+@@ -375,6 +377,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+             return std::llround(portable_care_distance(adult.position,a.site)*1e6) <
+                    std::llround(portable_care_distance(adult.position,b.site)*1e6);
+         });
++        if (close_path) for (const auto& goal:goals) side_stances.emplace_back(goal.heading,goal.site);
+         for (const auto& goal:goals) {
+             if (local_leg(adult,goal.site,initial,true)==goal.heading) return goal.site;
+         }
+@@ -390,7 +393,7 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+     }
+     const bool change_level=chamber_return(s) && adult.caste==Caste::Worker &&
+         std::abs(adult.position.y-target.y)>.00065;
+-    std::array<std::pair<std::uint8_t,PositionM>,2*8*9> candidates;
++    std::array<std::pair<std::uint8_t,PositionM>,2*8*9+48> candidates;
+     std::size_t count=0;
+     for (std::uint8_t dir=1;dir<=8;++dir) {
+         const auto bearing=body_heading(dir);
+@@ -436,8 +439,9 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+         }
+         return best;
+     };
++    for (const auto& entry:side_stances) candidates[count++]=entry;
+     if (!count) return mutual_step();
+-    if (align && portable_care_distance(pose.mouth_m,target)<=.002) {
++    if (!close_path && align && portable_care_distance(pose.mouth_m,target)<=.002) {
+         const auto step=mutual_step();
+         if (step!=adult.position) return step;
+     }
+@@ -503,7 +507,8 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
+             }
+         };
+         examine_steps(.001);
+-        if (patch && current.initial) examine_steps(.0005);
++        if ((patch || close_path) && current.initial) examine_steps(.0005);
++        if (close_path) examine_steps(.00025);
+     }
+     return mutual_step();
+ }

@@ -1,0 +1,76 @@
+diff --git a/cpp/include/antworld/core/world_runtime.hpp b/cpp/include/antworld/core/world_runtime.hpp
+index c51a2db8..7e104147 100644
+--- a/cpp/include/antworld/core/world_runtime.hpp
++++ b/cpp/include/antworld/core/world_runtime.hpp
+@@ -202,6 +202,7 @@ private:
+                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
+     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
+     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
++    [[nodiscard]] std::optional<PositionM> present_mouth(const AntState& receiver,const AntState& donor) const;
+     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
+     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;
+     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_food_offer(const AntState&, bool urgent_foundress=false) const;
+diff --git a/cpp/src/care.cpp b/cpp/src/care.cpp
+index bdaccb60..3d09b403 100644
+--- a/cpp/src/care.cpp
++++ b/cpp/src/care.cpp
+@@ -246,6 +246,49 @@ std::optional<PositionM> WorldRuntime::approach_visible_body(const AntState& ant
+     return body_orientation;
+ }
+
++std::optional<PositionM> WorldRuntime::present_mouth(const AntState& receiver,const AntState& donor) const {
++    const auto& s=*state_;
++    const auto view=geometry_view(s,limits_);
++    const auto own_heading=actor_facing(s,receiver.id);
++    const auto donor_body=*query_body({s.world,donor.id});
++    const auto reach=portable_care_distance(donor.position,donor_body.mouth_m);
++    const auto room=[&](const BodyPose& pose) {
++        auto nearest=std::numeric_limits<std::int64_t>::max();
++        const auto side=cross(pose.forward,pose.up);
++        for (std::uint8_t face=1;face<=8;++face) {
++            for (double along:{.00025,.0005}) for (double offset:{0.,.0003,-.0003}) {
++                const auto tip=translated(pose.mouth_m,translated(scale(pose.forward,along),scale(side,offset)));
++                auto at=donor;
++                at.position=snap_micro(translated(tip,scale(body_heading(face),-reach)));
++                at.position.y=donor.position.y;
++                const auto normal=support_normal(view,at.position,body_heading(face),.00125);
++                if (!normal) continue;
++                const auto hypothetical=body_pose(at,face,*normal);
++                if (!mouths_meet(hypothetical,pose) || !substrate_clear(view,hypothetical,at.position) ||
++                    !continuous_clear(view,pose.mouth_m,hypothetical.mouth_m,0)) continue;
++                nearest=std::min(nearest,static_cast<std::int64_t>(std::llround(portable_care_distance(at.position,donor.position)*1e6)));
++            }
++        }
++        return nearest;
++    };
++    const auto unavailable=std::numeric_limits<std::int64_t>::max();
++    if (room(*query_body({s.world,receiver.id}))!=unavailable) return {};
++    auto best=unavailable;
++    std::optional<PositionM> step;
++    for (double length:{.0005,.001}) for (std::uint8_t dir=1;dir<=8;++dir) {
++        auto moved=receiver;
++        moved.position=snap_micro(translated(receiver.position,scale(body_heading(dir),length)));
++        if (!clear_resting_site(receiver,moved.position)) continue;
++        const auto face=body_travel_heading(view,receiver,moved.position,own_heading,true);
++        const auto pose=body_pose(moved,face,attachment(view,moved,face));
++        if (!within_distance(pose.mouth_m,donor_body.mouth_m,s.care_profile->perception_radius_m,true) ||
++            !spatially_clear(pose.mouth_m,donor_body.mouth_m)) continue;
++        const auto distance=room(pose);
++        if (distance<best) { best=distance; step=moved.position; }
++    }
++    return step;
++}
++
+ // A solicitation uses the same local visibility and discretionary donor budget as an offer.
+ // The receiver cannot move a donor or credit her own crop.
+ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const AntState& queen) const {
+@@ -280,6 +323,9 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
+         const auto body=*query_body({s.world,donor.second});
+         const auto next=mouth_approach(queen,body.mouth_m,{},&body);
+         if (next!=queen.position) return std::pair{next,donor.second};
++        if (body_orientation_enabled(s)) {
++            if (const auto step=present_mouth(queen,*query_ant({s.world,donor.second}))) return std::pair{*step,donor.second};
++        }
+     }
+     return {};
+ }
