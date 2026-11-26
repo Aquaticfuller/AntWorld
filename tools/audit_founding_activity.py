@@ -273,6 +273,46 @@ def verify_stimulus(core, folder, seed, version):
     raise ValueError("No saved local stimulus followed by an actual review in the selected cut")
 
 
+def verify_final_leg(core, folder):
+    original = gzip.decompress(WATER_CUT.read_bytes())
+    slot = "c"*32
+    saved = folder/(slot+".awstate")
+    saved.write_bytes(fork_cut(core, folder, original, 84))
+    start = checkpoint(core.call(f"LOAD_SNAPSHOT {slot} {WORLD}"))
+    when = 5_019_637_108
+    cut = checkpoint(core.call(f"ADVANCE {when}"))
+    chosen, = [event for event in facts(core, cut["cursor"], start["cursor"])
+               if event.id == 264476 and event.time == when and event.actor == 8 and event.related == 2
+               and event.observation and PHASES[event.observation[0]] == "Selected"
+               and ACTS[event.observation[1]] == "Approach a nestmate"]
+    saved.unlink()
+    core.call(f"SAVE_SNAPSHOT {slot}")
+    control = saved.read_bytes()
+    cases = []
+    for version in (84, 86):
+        saved.write_bytes(fork_cut(core, folder, control, version, reference=84))
+        core.call(f"LOAD_SNAPSHOT {slot} {WORLD}")
+        first = checkpoint(core.call(f"ADVANCE {when+1}"))
+        stop = when+2000
+        raw = core.call(f"ADVANCE {stop}")
+        final = checkpoint(raw)
+        events = list(facts(core, final["cursor"], cut["cursor"]))
+        approach = [(e.id, e.time, PHASES[e.observation[0]], OUTCOMES[e.outcome]) for e in events
+                    if e.actor == 8 and e.observation and e.observation[3] == chosen.observation[3]]
+        if version == 84:
+            require([e[2:] for e in approach] == [("Interrupted", "Out of reach")], "Reference rejection changed")
+        else:
+            require([e[2:] for e in approach] == [("Started", "Success"), ("Completed", "Success")] and
+                    final["ants"][8]["position_m"] != cut["ants"][8]["position_m"], "Final allowed approach leg did not complete")
+        continuation = (verify_continuation(core, slot, WORLD, first["time_ms"], stop, raw, final["cursor"])
+                        if version == 86 else None)
+        require(core.call("CHECK_LEDGERS") == b"", "Final leg changed the resource ledgers")
+        cases.append(dict(physics=version, approach=approach, position_m=final["ants"][8]["position_m"],
+                          restored_suffix_sha256=continuation, final_sha256=sha256(raw).hexdigest()))
+    return dict(seed=2, selected_event=chosen.id, bout=chosen.observation[3], at_ms=when,
+                input_sha256=sha256(control).hexdigest(), cases=cases)
+
+
 def verify_archive(core, folder, version):
     core.call(founding_command(1, MODELS[version], "nearby"))
     birth, _ = first_adult(core)
@@ -311,7 +351,8 @@ def main():
     mode.add_argument("--stimulus", action="store_true", help="Compare local event wakeups to physics 80")
     mode.add_argument("--verify-stimulus", type=int, choices=(2, 3), help="Verify one saved local stimulus and continuation")
     mode.add_argument("--verify-archive", action="store_true", help="Check full SQLite history and bytewise continuation")
-    parser.add_argument("--stimulus-version", type=int, choices=(82, 83, 84), default=84)
+    mode.add_argument("--verify-final-leg", action="store_true", help="Recheck the selected adult approach at its last allowed leg")
+    parser.add_argument("--stimulus-version", type=int, choices=(82, 83, 84, 85, 86), default=86)
     parser.add_argument("--model", choices=("protected", *MODELS.values()), default=MODELS[80])
     parser.add_argument("--minutes", type=int, choices=(5, 15))
     parser.add_argument("--dwell-minutes", type=int, choices=(15, 60), default=60)
@@ -328,6 +369,9 @@ def main():
             return
         if args.verify_archive:
             print(json.dumps(verify_archive(core, Path(temp), args.stimulus_version), separators=(",", ":")))
+            return
+        if args.verify_final_leg:
+            print(json.dumps(verify_final_leg(core, Path(temp)), separators=(",", ":")))
             return
         if args.seed is not None:
             print(json.dumps(found(core, args.seed, args.model, args.minutes, args.dwell_minutes, args.hours),

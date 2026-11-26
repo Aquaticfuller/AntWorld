@@ -1397,8 +1397,10 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     const auto from=c.act==CareAct::ArrangeBrood?query_ant({s.world,c.target})->position:a.position;
     if (c.target.value) {
         const auto b=*query_ant({s.world,c.target});
-        const bool food_approach=mouth_range(s) && c.act==CareAct::ApproachNestmate && c.search_remaining &&
-            a.stage==LifeStage::Adult && b.stage==LifeStage::Adult;
+        // The count limits subsequent legs. The last already selected leg is still an adult meal approach.
+        const bool food_approach=mouth_range(s) && c.act==CareAct::ApproachNestmate &&
+            (c.search_remaining || stimulus_final_leg(s)) && a.stage==LifeStage::Adult && b.stage==LifeStage::Adult;
+        const bool mouth_guided=food_approach && stimulus_mouth_visibility(s);
         const auto adult_mouth_visible=[&] {
             const auto donor=query_body({s.world,a.id})->mouth_m, receiver=query_body({s.world,b.id})->mouth_m;
             return within_distance(donor,receiver,cfg.perception_radius_m,true) && spatially_clear(donor,receiver);
@@ -1407,7 +1409,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         else if ((handles_brood(c.act) || c.act==CareAct::ApproachBrood) && !brood(b.stage)) outcome=Outcome::InvalidStage;
         else if (c.act==CareAct::CloseWorkerContact && (b.stage!=LifeStage::Adult || b.caste!=Caste::Worker)) outcome=Outcome::InvalidStage;
         else if ((b.colony!=a.colony && (!foreign_assay_stage(s,b.stage) || !foreign_assay_act(c.act))) ||
-                 !spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position) ||
+                 (!mouth_guided && (!spatially_clear(a.position,b.position) || !surface_care_clear(s,a.position,b.position))) ||
                  !(handles_brood(c.act)?(c.carrying_brood && anatomical_nest(s) ?
                     valid_grip(a.position,b.position,c.grip_offset,s.config,true):brood_contact(a,b)):
                     food_approach ? adult_mouth_visible() :

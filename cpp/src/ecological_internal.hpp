@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::StimulusRefillIntent ||
+            habitat->nutrition > FoundingNutrition::StimulusFinalLeg ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -143,7 +143,9 @@ inline bool floor_work_detour(const auto& s) { return founding_nutrition(s)>=Fou
 inline bool familiar_site_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FamiliarSiteDetour; }
 inline bool local_stimulus(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::LocalStimulus; }
 inline bool stimulus_meal_priority(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::StimulusMealPriority; }
-inline bool stimulus_refill_intent(const auto& s) { return founding_nutrition(s)==FoundingNutrition::StimulusRefillIntent; }
+inline bool stimulus_refill_intent(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::StimulusRefillIntent; }
+inline bool stimulus_mouth_visibility(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::StimulusMouthVisibility; }
+inline bool stimulus_final_leg(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::StimulusFinalLeg; }
 inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }
 inline bool responsive_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ResponsiveMeal; }
