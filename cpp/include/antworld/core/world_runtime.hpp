@@ -204,6 +204,9 @@ private:
                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& founder) const;
+    [[nodiscard]] PositionM local_floor_route(const AntState&, PositionM, const BodyPose* partner,
+                                              std::span<const PositionM> work_stances = {}) const;
+    [[nodiscard]] PositionM wick_approach(const AntState&, PositionM) const;
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;

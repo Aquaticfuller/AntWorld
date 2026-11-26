@@ -245,7 +245,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (const auto wick=local_wick_contact(ant,p)) {
         at_wick=mouth_at_supply(ant,depot_mouth_target(ant,*wick));
         if (!at_wick) {
-          const auto step=mouth_approach(ant,*wick,{},nullptr,true);
+          const auto step=wick_approach(ant,*wick);
           if (step!=ant.position) wick_step=step;
         }
       }
@@ -260,11 +260,13 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
     std::optional<PositionM> chamber_step;
+    const auto nursery_arrival_m=founding_nutrition(s)>=FoundingNutrition::NurseryArrival ?
+        2*s.geometry->config.quantum_m : .002;
     if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood &&
-        (a.knows_depot || private_sampling_trip(s,ant)) &&
+        (a.knows_depot || private_sampling_trip(s,ant) || (familiar_site_detour(s) && familiar_liquid_exit(s,ant))) &&
         (returned || a.decisions%4!=0) && founding_gift_supply(s.founding->profile,p).carbs_ug &&
-        portable_care_distance(ant.position,a.enrollment_site)>.002) {
-      if (private_sampling_trip(s,ant)) chamber_step=worker_depot_step(ant,a.enrollment_site);
+        portable_care_distance(ant.position,a.enrollment_site)>nursery_arrival_m) {
+      if (private_sampling_trip(s,ant) || familiar_site_detour(s)) chamber_step=worker_depot_step(ant,a.enrollment_site);
       else {
         const auto next=mouth_approach(ant,a.enrollment_site,{});
         if (next!=ant.position && clear_resting_site(ant,next)) chamber_step=next;
@@ -337,11 +339,13 @@ void WorldRuntime::resolve_autonomy_wakes(
       const bool visible=within_distance(mouth,patch,s.care_profile->perception_radius_m,true) &&
           spatially_clear(mouth,patch);
       const auto opened=!s.geometry_edits.empty();
-      if (familiar_liquid_exit(s,ant) && p.crop.carbs_ug<p.config.transfer_limit_ug &&
+      const bool refill_fits=refill_crop_room(s) ? p.config.crop_capacity_ug-p.crop.total_ug()>=p.config.transfer_limit_ug :
+                                             p.crop.carbs_ug<p.config.transfer_limit_ug;
+      if (familiar_liquid_exit(s,ant) && refill_fits &&
           !at_wick && !wick_step && !at_meal &&
           (!food_offer || food_offer->first!=ant.position)) {
-        // At low load a former collector can resume work without waiting for
-        // the fourth idle review. An immediate funded gift takes precedence.
+        // An experienced collector can refill at a familiar berth. The
+        // scheduled trip still pays the source and fills real crop space.
         const auto origin=s.connectors.at(ant.id).points[0];
         if (spatially_clear(ant.position,origin)) {
           refill_trip=foraging_home && can_forage(ant);
@@ -392,6 +396,7 @@ void WorldRuntime::resolve_autonomy_wakes(
           // This search reveals neither a surface food location nor a safe exit.
           if (origin) {
             std::optional<PositionM> nearest;
+            std::vector<PositionM> indirect;
             auto gap=std::numeric_limits<std::int64_t>::max();
             constexpr std::array<std::pair<int,int>,8> rays{{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}};
             const auto extent=std::min(32,static_cast<int>(radius/g.quantum_m));
@@ -405,8 +410,11 @@ void WorldRuntime::resolve_autonomy_wakes(
                   const auto site=physical({origin->x+dx,origin->y+dy,origin->z+dz},g);
                   const auto distance=std::llround(portable_care_distance(ant.position,site)*1'000'000);
                   if (distance>=gap || !within_distance(ant.position,site,radius,true) ||
-                      !spatially_clear(mouth,site) || !shallow_soil_cap(site) ||
-                      (site!=ant.position && !clear_worker_site(ant,site,true))) continue;
+                      !spatially_clear(mouth,site) || !shallow_soil_cap(site)) continue;
+                  if (site!=ant.position && !clear_worker_site(ant,site,true)) {
+                    if (floor_work_detour(s) && site.y==ant.position.y) indirect.push_back(site);
+                    continue;
+                  }
                   gap=distance;
                   roof_stance=site;
                 }
@@ -424,6 +432,10 @@ void WorldRuntime::resolve_autonomy_wakes(
                 }
                 if (roof_stance || !ring) break;
               }
+            }
+            if (!roof_stance && !indirect.empty()) {
+              const auto next=local_floor_route(ant,{},nullptr,indirect);
+              if (next!=ant.position) roof_stance=next;
             }
             if (!roof_stance && nearest) {
               const auto goal=*nearest;
@@ -470,7 +482,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (refill_trip) choice.behavior=IndividualBehavior::Forage;
       else {
         choice.resting_site=refill_approach;
-        choice.transit=CareAct::NestReposition;
+        // A visit to the depot is validated as a depot approach. The
+        // ordinary resting-site action explicitly excludes this position.
+        choice.transit=familiar_site_detour(s) && *refill_approach==colony.nest_position ?
+            CareAct::DepotApproach : CareAct::NestReposition;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (body_orientation) {
@@ -501,7 +516,8 @@ void WorldRuntime::resolve_autonomy_wakes(
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (chamber_step) {
       choice.resting_site=chamber_step;
-      choice.transit=CareAct::NestReposition;
+      choice.transit=familiar_site_detour(s) && *chamber_step==colony.nest_position ?
+          CareAct::DepotApproach : CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (at_meal || meal_step) {
       if (at_meal) {
@@ -544,7 +560,8 @@ void WorldRuntime::resolve_autonomy_wakes(
     } else if (resupply || resupply_step) {
       if (resupply) choice.behavior=IndividualBehavior::Forage;
       choice.resting_site=resupply_step;
-      choice.transit=revisiting_exit ? CareAct::NestReposition : CareAct::DepotApproach;
+      choice.transit=revisiting_exit && !(familiar_site_detour(s) && resupply_step==colony.nest_position) ?
+          CareAct::NestReposition : CareAct::DepotApproach;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (worker_motor(s) && (!a.decisions ||
                (buffer && !s.foragers.contains(ant.id) && s.care.contains(ant.id) &&

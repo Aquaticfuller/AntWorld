@@ -14,7 +14,7 @@ from op0.live import NativeCore, ROOT, core_path
 from tools.measure_single_nest_lifecycle import COMPACT_BYTES, TREATMENTS, WORLD_BASES, census
 
 
-def run(core, seed, model, supply, days, progress=False, feeding_continuity=False, trace_flux=False):
+def run(core, seed, model, supply, days, progress=False, feeding_continuity=False, trace_flux=False, include_water=False):
     identity = WORLD_BASES[supply] + seed + TREATMENTS.index(model) * 2**34 + 2**39
     command = f"NEW_PROVISIONED_NEST {identity} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral {model} wet-wick"
     raw = core.call(command)
@@ -28,6 +28,7 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
     last_contact_step = {}
     meal_sequences = {}
     founder_days = {}
+    founder_intake = {}
     flux = {}
     previous_cut = None
     previous = 0
@@ -55,7 +56,8 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
                       result["census"][-1]["queen_alive"], file=sys.stderr, flush=True)
         while previous < frame["cursor"]:
             size = min(frame["cursor"] - previous, 8192)
-            events = core.call(f"MEAL_EVENTS {previous} {size}")
+            projection = " include-water" if include_water else ""
+            events = core.call(f"MEAL_EVENTS {previous} {size}{projection}")
             offset, last = 0, previous
             while offset < len(events):
                 extent = U32.unpack_from(events, offset)[0]
@@ -66,6 +68,22 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
                 last = f.id
                 kind = KINDS[f.kind]
                 stamp = [f.id, f.time, f.actor]
+                if include_water:
+                    received = kind == "NutritionTransferred" and f.payload == queen
+                    direct = f.actor == queen and kind in ("FoundressWaterIngested", "FoundressNestMeal")
+                    absorbed = f.actor == queen and kind in ("PhysiologyUpdated", "FoundingBoundaryUptake")
+                    if received or direct or absorbed:
+                        for nutrient, amount in (("sugar", f.mass[0]), ("water", f.mass[2])):
+                            if not amount:
+                                continue
+                            key = ("uptake" if absorbed else "oral" if received else "direct") + "/" + nutrient
+                            days_by_kind = founder_intake.setdefault(key, {})
+                            daily = days_by_kind.setdefault(f.time//DAY, dict(mass_ug=0, count=0,
+                                first_ms=f.time, last_ms=f.time, max_gap_ms=0))
+                            daily["mass_ug"] += amount
+                            daily["count"] += 1
+                            daily["max_gap_ms"] = max(daily["max_gap_ms"], f.time-daily["last_ms"])
+                            daily["last_ms"] = f.time
                 if trace_flux and f.mass[0] and kind in (
                     "FoodCollected", "FoodDelivered", "CargoIngested", "FoundressNestMeal",
                     "NutritionTransferred", "PhysiologyUpdated", "FoundingBoundaryUptake",
@@ -159,6 +177,8 @@ def run(core, seed, model, supply, days, progress=False, feeding_continuity=Fals
         result["founder_feeding_by_day"] = founder_days
     if trace_flux:
         result["sugar_flux"] = flux
+    if include_water:
+        result["founder_intake"] = founder_intake
     return result
 
 
@@ -172,9 +192,11 @@ if __name__ == "__main__":
     parser.add_argument("--feeding-continuity", action="store_true", help="Record positive sugar payments to the founder by day")
     parser.add_argument("--progress", action="store_true", help="Report milestone day, cursor, workers and founder survival on stderr")
     parser.add_argument("--trace-flux", action="store_true", help="Account for collected, transferred and absorbed sugar by actor")
+    parser.add_argument("--include-water", action="store_true", help="Account for daily founder drinks, oral receipts and uptake")
     args = parser.parse_args()
     executable_hash = sha256(args.core.read_bytes()).hexdigest()
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as native:
-        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity,args.trace_flux)
+        receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity,
+                      args.trace_flux,args.include_water)
     receipt["executable_sha256"] = executable_hash
     print(json.dumps(receipt,separators=(",",":")))

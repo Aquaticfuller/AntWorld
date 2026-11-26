@@ -86,12 +86,30 @@ bool supported_wall_segment(const GeometryView& view,PointQ from,PointQ to,int r
 }
 }
 
+bool detail::center_sweep_clears(PositionM from, PositionM to, PositionM stationary, double width) {
+    return leaving_overlap(from,to,stationary,width) ||
+           !sweeps_body(from,to,stationary,stationary,width);
+}
+
+bool detail::anatomy_turn_clears(const BodyPose& sweep,std::uint8_t previous,std::uint8_t next,const BodyPose& other) {
+    if (previous==next || previous>8 || next>8) return true;
+    const int clockwise=(int(next)-previous+8)%8;
+    const int increment=clockwise<=4 ? 1 : -1;
+    auto stance=sweep;
+    do {
+        previous=static_cast<std::uint8_t>((int(previous)+increment+7)%8+1);
+        stance.forward=tangent(body_heading(previous),stance.up);
+        if (physical_overlap(stance,other)) return false;
+    } while (previous!=next);
+    return true;
+}
+
 std::uint8_t detail::body_travel_heading(const GeometryView& view,const AntState& ant,
-                                        PositionM to,std::uint8_t previous,bool alignment) {
+                                        PositionM to,std::uint8_t previous,bool alignment,double alignment_m) {
     // ENGINEERING_FIXTURE. Tiny stance corrections can translate sideways
     // without a full body turn. The same swept pose is used at commit/replay.
     if (alignment && previous>=1 && previous<=8 && to.y==ant.position.y &&
-        within_distance(ant.position,to,.00019,true) && anatomy_sweep(view,ant,to,previous,previous))
+        within_distance(ant.position,to,alignment_m,true) && anatomy_sweep(view,ant,to,previous,previous))
         return previous;
     const auto next=movement_facing(ant.position,to);
     // An ant beside a wall may take a short backward or lateral step before
@@ -187,20 +205,30 @@ bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::in
     if (!clear_body_motion(ant,to,alignment_probe)) return false;
     const auto quantum=s.geometry->config.quantum_m;
     const bool anatomical=anatomical_nest(s);
-    const auto reach=distance(ant.position,to)+(ant.caste==Caste::Queen?.007:.0055);
+    const bool floor_precision=anatomical && uses_floor_body_clearance(s,ant,to,half);
+    const auto reach=distance(ant.position,to)+(floor_precision?.009:ant.caste==Caste::Queen?.007:.0055);
+    const auto previous=std::max<std::uint8_t>(1,actor_facing(s,ant.id));
+    auto heading=previous;
     std::optional<BodyPose> mover;
     if (anatomical) {
-        const auto heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to,alignment_probe);
+        heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to,alignment_probe);
         mover=body_pose(ant,heading,attachment(geometry_view(s,limits_),ant,heading));
     }
     for (const auto& row:s.ants.identities) {
         if (row.id==ant.id) continue;
         const auto other=s.ants.get(s.ants.index.at(row.id));
         if (other.stage!=LifeStage::Adult) continue;
-        if (mover && distance(ant.position,other.position)<=reach &&
-            anatomical_sweep_hits(*mover,to,*query_body({s.world,other.id}))) return false;
-        const auto width=(half+body_half(other.id))*quantum;
+        const bool anatomically_near=mover && distance(ant.position,other.position)<=reach;
+        if (anatomically_near) {
+            const auto obstacle=*query_body({s.world,other.id});
+            if (anatomical_sweep_hits(*mover,to,obstacle) ||
+                (floor_precision && heading && !anatomy_turn_clears(*mover,previous,heading,obstacle))) return false;
+        }
+        const auto other_half=body_half(other.id);
         const auto plan=include_plans?query_worker_motion({s.world,other.id}):std::nullopt;
+        if (!plan && floor_precision && other.position.y==ant.position.y &&
+            uses_floor_body_clearance(s,other,other.position,other_half)) continue;
+        const auto width=(half+other_half)*quantum;
         if (!plan && leaving_overlap(ant.position,to,other.position,width)) continue;
         if (sweeps_body(ant.position,to,other.position,plan?plan->to:other.position,width)) return false;
     }
@@ -410,6 +438,30 @@ std::optional<PositionM> WorldRuntime::worker_depot_step(const AntState& ant,std
             if (remaining<gap && clear_worker_site(ant,next,true)) { best=next; gap=remaining; }
         }
         if (best!=ant.position) return best;
+        if (familiar_site_detour(s) && std::abs(ant.position.y-depot.y)<=2*g.quantum_m &&
+            within_distance(ant.position,depot,radius,true) && spatially_clear(ant.position,depot)) {
+            const auto target=snap_micro({depot.x,ant.position.y,depot.z});
+            const std::array exact{target};
+            const auto next=local_floor_route(ant,{},nullptr,exact);
+            if (next!=ant.position) return next;
+            if (const auto cell=nearest_grid_point(target,g,true)) {
+                // A familiar place can have a different usable stance today.
+                // The new stance still needs floor support and body clearance.
+                std::array<PositionM,8> nearby;
+                std::size_t count{};
+                for (const auto direction:horizontal_steps) {
+                    auto site=physical({cell->x+2*direction.x,cell->y,cell->z+2*direction.z},g);
+                    site.y=ant.position.y;
+                    if (site==ant.position || !within_distance(ant.position,site,radius,true) ||
+                        !spatially_clear(ant.position,site) || !spatially_clear(site,site,body_half(ant.id))) continue;
+                    nearby[count++]=site;
+                }
+                if (count) {
+                    const auto alternative=local_floor_route(ant,{},nullptr,{nearby.data(),count});
+                    if (alternative!=ant.position) return alternative;
+                }
+            }
+        }
     }
     if (portable_care_distance(ant.position,depot)>radius) return {};
     if (clear_worker_site(ant,depot,true)) return depot;

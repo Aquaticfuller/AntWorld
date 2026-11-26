@@ -24,7 +24,7 @@ SurfaceConnector WorldRuntime::discover_connector(const AntState& ant) const {
     if (std::max({std::abs(x),std::abs(y),std::abs(z)})>1000000) return {};
     const PointQ start{static_cast<std::int32_t>(x),static_cast<std::int32_t>(y),static_cast<std::int32_t>(z)};
     auto route=connector_from_grid(ant,start,*level);
-    if (route.size || founding_nutrition(s)!=FoundingNutrition::ExitAttachment ||
+    if (route.size || founding_nutrition(s)<FoundingNutrition::ExitAttachment ||
         !familiar_liquid_exit(s,ant)) return route;
     // A worker at a remembered berth can reach the navigation grid from
     // beside another body. Each candidate still pays its actual first leg.

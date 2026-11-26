@@ -77,7 +77,7 @@ std::optional<PositionM> WorldRuntime::local_wick_contact(const AntState& ant,co
         const auto& wick=s.foods.rows[s.foods.index.at(ref.id)];
         if (!sip_source(s,wick.position,wick.initial) || !wick.remaining.water_ug) continue;
         if (spatially_clear(mouth,depot_mouth_target(ant,wick.position)) ||
-            (queen && mouth_approach(ant,wick.position,{},nullptr,true)!=ant.position)) return wick.position;
+            (queen && wick_approach(ant,wick.position)!=ant.position)) return wick.position;
     }
     return {};
 }

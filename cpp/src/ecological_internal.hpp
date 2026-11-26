@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::ExitAttachment ||
+            habitat->nutrition > FoundingNutrition::NurseryArrival ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -135,6 +135,13 @@ inline bool local_solicitation(const auto& s) { return founding_nutrition(s)>=Fo
 inline bool source_refill(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::SourceRefill; }
 inline bool founder_appetite(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FounderAppetite; }
 inline bool tracks_trip_load(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::TripLoad; }
+inline bool confirmed_meal_routes(const auto& s) {
+    return founding_nutrition(s)>=FoundingNutrition::ConfirmedMealRoute && founding_nutrition(s)<=FoundingNutrition::FeedingStance;
+}
+inline bool founder_wick_route(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FounderWickRoute; }
+inline bool floor_work_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceDetour; }
+inline bool familiar_site_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FamiliarSiteDetour; }
+inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }
 inline bool responsive_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ResponsiveMeal; }
 inline bool meal_rendezvous(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MealRendezvous; }

@@ -5,6 +5,16 @@
 #include "geometry_internal.hpp"
 
 namespace antworld::detail {
+bool center_sweep_clears(PositionM from, PositionM to, PositionM stationary, double width);
+bool anatomy_turn_clears(const BodyPose&, std::uint8_t previous, std::uint8_t next, const BodyPose& obstacle);
+
+inline bool uses_floor_body_clearance(const auto& s, const AntState& ant, PositionM to, std::int32_t half) {
+    return confirmed_meal_routes(s) && founding_nutrition(s)>=FoundingNutrition::StationaryBodyClearance && s.surface &&
+           ant.position.y<s.surface->config.origin_m.y && to.y==ant.position.y &&
+           half==s.geometry->config.body_half_q &&
+           !(s.care.contains(ant.id) && s.care.at(ant.id).carrying_brood);
+}
+
 inline std::optional<PointQ> nearest_grid_point(PositionM p,const GeometryConfig& g,bool include_height=false) {
     const auto snap=[&](double value,double origin) {
         return origin+std::round((value-origin)/g.quantum_m)*g.quantum_m;
@@ -40,7 +50,15 @@ inline std::uint8_t actor_facing(const auto& s,EntityId id) {
 inline bool motile_caste(const auto& s,Caste caste) {
     return caste==Caste::Worker || (sealed_chamber(s) && caste==Caste::Queen);
 }
-std::uint8_t body_travel_heading(const GeometryView&,const AntState&,PositionM,std::uint8_t previous,bool alignment=false);
+std::uint8_t body_travel_heading(const GeometryView&,const AntState&,PositionM,std::uint8_t previous,
+                                 bool alignment=false,double alignment_m=.00019);
+inline bool sideways_feeding(const auto& s,Caste caste) {
+    return founding_nutrition(s)==FoundingNutrition::FeedingStance || (founder_wick_route(s) && caste==Caste::Queen);
+}
+inline bool feeding_approach(const auto& s, CareAct act, Caste caste) {
+    return worked_exit(s) && (act==CareAct::ApproachNestmate || (sideways_feeding(s,caste) && act==CareAct::DepotApproach));
+}
+inline double feeding_alignment_m(const auto& s,Caste caste) { return sideways_feeding(s,caste) ? .00051 : .00019; }
 inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,PositionM to,bool alignment_probe=false) {
     if (anatomical_nest(s)) {
         const auto previous=std::max<std::uint8_t>(1,actor_facing(s,id));
@@ -48,9 +66,10 @@ inline std::uint8_t segment_heading(const auto& s,EntityId id,PositionM from,Pos
         auto ant=s.ants.get(s.ants.index.at(id));
         ant.position=from;
         const auto care=s.care.find(id);
-        const bool approaching=worked_exit(s) && care!=s.care.end() && care->second.enabled &&
-            care->second.act==CareAct::ApproachNestmate && care->second.destination==to;
-        return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous,alignment_probe || approaching);
+        const bool approaching=care!=s.care.end() && care->second.enabled &&
+            feeding_approach(s,care->second.act,ant.caste) && care->second.destination==to;
+        return body_travel_heading(geometry_view(s,RuntimeLimits{}),ant,to,previous,alignment_probe || approaching,
+                                   feeding_alignment_m(s,ant.caste));
     }
     return movement_facing(from,to);
 }

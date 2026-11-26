@@ -312,7 +312,7 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
     for (const auto &e : s.journal) {
         if (spatial && e.kind==FactKind::BiologicalObservation) {
             const auto& o=e.observation;
-            if (worked_exit(s) && o.phase==ObservationPhase::Started && o.act==CareAct::ApproachNestmate)
+            if (o.phase==ObservationPhase::Started && feeding_approach(s,o.act,past_ant(e.actor).caste))
                 oral_destinations[e.actor]=o.destination;
             if (o.phase==ObservationPhase::Interrupted || o.phase==ObservationPhase::Completed)
                 oral_destinations.erase(e.actor);
@@ -393,7 +393,8 @@ template <class S> void validate_geometry_evidence(const S &s, const RuntimeLimi
                 ensure(heading && heading<=facing_down &&
                     (heading==(held_brood.contains(e.actor)?std::max<std::uint8_t>(1,headings_at_cut[e.actor]):
                     body_travel_heading(view(),past_ant(e.actor),e.position,std::max<std::uint8_t>(1,headings_at_cut[e.actor]),
-                        oral_destinations.contains(e.actor) && oral_destinations.at(e.actor)==e.position))) &&
+                        oral_destinations.contains(e.actor) && oral_destinations.at(e.actor)==e.position,
+                        feeding_alignment_m(s,past_ant(e.actor).caste)))) &&
                     anatomy_sweep(view(),past_ant(e.actor),e.position,headings_at_cut[e.actor],heading),
                     "historical body crosses solid material");
                 headings_at_cut[e.actor]=heading;

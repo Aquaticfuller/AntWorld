@@ -197,7 +197,15 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==exit_attachment_schema && version==exit_attachment_physics) ||
+        ensure((outer_schema==nursery_arrival_schema && version==nursery_arrival_physics) ||
+               (outer_schema==familiar_site_detour_schema && version==familiar_site_detour_physics) ||
+               (outer_schema==work_face_detour_schema && version==work_face_detour_physics) ||
+               (outer_schema==repeat_collection_schema && version==repeat_collection_physics) ||
+               (outer_schema==founder_wick_schema && version==founder_wick_physics) ||
+               (outer_schema==feeding_stance_schema && version==feeding_stance_physics) ||
+               (outer_schema==stationary_body_schema && version==stationary_body_physics) ||
+               (outer_schema==confirmed_meal_route_schema && version==confirmed_meal_route_physics) ||
+               (outer_schema==exit_attachment_schema && version==exit_attachment_physics) ||
                (outer_schema==founder_route_schema && version==founder_route_physics) ||
                (outer_schema==trip_load_schema && version==trip_load_physics) ||
                (outer_schema==appetite_schema && version==appetite_physics) ||

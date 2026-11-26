@@ -145,6 +145,120 @@ FoodMass WorldRuntime::meal_signal(const AntState& recipient,const PhysiologySta
     return founder_oral_request(s.founding->profile,p,*query_founding({s.world,recipient.id}),offer);
 }
 
+PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM target,
+                                         const BodyPose* partner,std::span<const PositionM> work_stances) const {
+    const auto& s=*state_;
+    const auto view=geometry_view(s,limits_);
+    const auto radius=s.care_profile->perception_radius_m;
+    const auto half=body_half(adult.id);
+    const auto quantum=s.geometry->config.quantum_m;
+    const bool aligned_stride=sideways_feeding(s,adult.caste);
+    const bool align=work_stances.empty() && (partner || aligned_stride);
+    const bool floor_precision=uses_floor_body_clearance(s,adult,adult.position,half);
+    struct Obstacle { BodyPose body; double width; bool precise; };
+    std::vector<Obstacle> obstacles;
+    for (const auto ref:query_neighborhood({s.world,adult.id},radius+.009).ants) {
+        const auto other=*query_ant(ref);
+        if (ref.id==adult.id || other.stage!=LifeStage::Adult) continue;
+        const auto extent=body_half(ref.id);
+        const bool precise=floor_precision && other.position.y==adult.position.y &&
+            uses_floor_body_clearance(s,other,other.position,extent);
+        obstacles.push_back({*query_body(ref),(half+extent)*quantum,precise});
+    }
+    const auto contact=[&](const BodyPose& pose) {
+        if (partner) return target;
+        const auto edge=feeding_patch_point(pose.mouth_m,target);
+        return continuous_clear(view,edge,target,0) ? edge : target;
+    };
+    const auto remaining=[&](const BodyPose& pose) {
+        if (!work_stances.empty()) {
+            auto distance=std::llround(radius*1e6);
+            for (const auto stance:work_stances)
+                distance=std::min(distance,std::llround(portable_care_distance(pose.center_m,stance)*1e6));
+            return distance;
+        }
+        const auto aim=contact(pose);
+        const auto delta=displacement(aim,pose.mouth_m);
+        auto reach=std::max(0.,portable_care_distance(pose.mouth_m,aim)-.00065);
+        reach+=std::max(0.,-dot(delta,pose.forward)-.00012);
+        if (partner) reach+=std::max(0.,dot(delta,partner->forward)-.00012);
+        return std::llround(reach*1e6);
+    };
+    const auto meets=[&](const BodyPose& pose) {
+        if (!work_stances.empty())
+            return std::find(work_stances.begin(),work_stances.end(),pose.center_m)!=work_stances.end();
+        return (partner ? mouths_meet(pose,*partner) : supply_in_reach(pose,contact(pose))) &&
+            continuous_clear(view,pose.mouth_m,contact(pose),0);
+    };
+    struct Stance {
+        PositionM site, first;
+        std::uint8_t facing;
+        std::int64_t travelled_um, remaining_um;
+        bool initial;
+    };
+    const auto order=[](const Stance& a,const Stance& b) {
+        const auto rank=[](const Stance& p) {
+            return std::tuple{p.travelled_um+2*p.remaining_um,p.remaining_um,
+                p.site.x,p.site.y,p.site.z,p.facing,p.first.x,p.first.z};
+        };
+        return rank(a)>rank(b);
+    };
+    // ENGINEERING_FIXTURE. A bounded local search returns the first leg of a
+    // physically complete route. It can move away from a mouth to make room
+    // for a turn. The chosen step still passes real transaction validation.
+    std::priority_queue<Stance,std::vector<Stance>,decltype(order)> open(order);
+    using PoseKey=std::tuple<double,double,std::uint8_t>;
+    std::map<PoseKey,std::int64_t> best;
+    const auto original=*query_body({s.world,adult.id});
+    if (meets(original)) return adult.position;
+    const auto facing=std::max<std::uint8_t>(1,actor_facing(s,adult.id));
+    open.push({adult.position,adult.position,facing,0,remaining(original),true});
+    best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing},0);
+    const bool detour=aligned_stride || !work_stances.empty();
+    const unsigned max_search=detour?384:192;
+    const std::int64_t action_cost=detour?500:0;
+    for (unsigned expanded=0;!open.empty() && expanded<max_search;) {
+        const auto current=open.top();
+        open.pop();
+        if (best.at({current.site.x,current.site.z,current.facing})!=current.travelled_um) continue;
+        ++expanded;
+        auto from=adult;
+        from.position=current.site;
+        for (double length:{.000125,.00025,.0005,.001,.002}) for (std::uint8_t dir=1;dir<=8;++dir) {
+            auto next=from;
+            next.position=snap_micro(translated(from.position,scale(body_heading(dir),length)));
+            next.position.y=adult.position.y;
+            if (next.position==from.position || !within_distance(adult.position,next.position,radius,true) ||
+                !clear_care_segment(from.position,next.position,half)) continue;
+            const auto heading=body_travel_heading(view,from,next.position,current.facing,align,feeding_alignment_m(s,adult.caste));
+            const auto cost=current.travelled_um+action_cost+
+                std::llround(portable_care_distance(from.position,next.position)*1e6);
+            const PoseKey key{next.position.x,next.position.z,heading};
+            if (const auto prior=best.find(key); prior!=best.end() && prior->second<=cost) continue;
+            if (!anatomy_sweep(view,from,next.position,current.facing,heading)) continue;
+            const auto sweep=body_pose(from,heading,attachment(view,from,heading));
+            if (std::any_of(obstacles.begin(),obstacles.end(),[&](const Obstacle& peer) {
+                return anatomical_sweep_hits(sweep,next.position,peer.body) ||
+                    (floor_precision && !anatomy_turn_clears(sweep,current.facing,heading,peer.body)) ||
+                    (!peer.precise && !center_sweep_clears(from.position,next.position,peer.body.center_m,peer.width));
+            })) continue;
+            if (current.initial && !clear_worker_traffic(adult,next.position,half,true,align)) continue;
+            const auto end=body_pose(next,heading,attachment(view,next,heading));
+            const auto first=current.initial ? next.position : current.first;
+            if (meets(end)) return first;
+            best.insert_or_assign(key,cost);
+            open.push({next.position,first,heading,cost,remaining(end),false});
+        }
+    }
+    return adult.position;
+}
+
+PositionM WorldRuntime::wick_approach(const AntState& ant,PositionM wick) const {
+    if (founder_wick_route(*state_) && founding_foundress(ant.id))
+        return local_floor_route(ant,wick,nullptr);
+    return mouth_approach(ant,wick,{},nullptr,true);
+}
+
 // ENGINEERING_FIXTURE. A short encounter has two mobile participants.
 // Search only the visible neighborhood. Return the first paid move, then
 // re-sense after the move. Neither a predicted pose nor a cue transfers food.
@@ -161,6 +275,13 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         return within_distance(a.mouth_m,b.mouth_m,radius,true) && spatially_clear(a.mouth_m,b.mouth_m);
     };
     if (!visible(start[0].body,start[1].body)) return {};
+    if (confirmed_meal_routes(s)) {
+        const auto donor_step=local_floor_route(donor,start[1].body.mouth_m,&start[1].body);
+        if (donor_step!=donor.position) return std::pair{donor.id,donor_step};
+        const auto founder_step=local_floor_route(founder,start[0].body.mouth_m,&start[0].body);
+        if (founder_step!=founder.position) return std::pair{founder.id,founder_step};
+        return {};
+    }
     using Move=std::pair<EntityId,PositionM>;
     struct Node {std::array<Pose,2> pair; Move first; std::int64_t score;};
     const auto key=[](const Pose& p) {
@@ -291,7 +412,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
         if (local_solicitation(s) && founding_foundress(candidate.second)) {
             const auto step=feeding_encounter(ant,*query_ant({s.world,candidate.second}));
             if (step && step->first==ant.id) return std::pair{step->second,candidate.second};
-            if (step) continue;
+            if (step || confirmed_meal_routes(s)) continue;
         }
         const auto next=mouth_approach(ant,other.mouth_m,{},&other);
         if (next!=ant.position) return std::pair{next,candidate.second};
@@ -375,6 +496,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
             const auto worker=*query_ant({s.world,donor.second});
             if (const auto step=feeding_encounter(worker,queen))
                 return std::pair{step->first==queen.id ? step->second : queen.position,worker.id};
+            if (confirmed_meal_routes(s)) continue;
         }
         const auto next=mouth_approach(queen,body.mouth_m,{},&body);
         if (next!=queen.position) return std::pair{next,donor.second};
@@ -390,6 +512,9 @@ PositionM WorldRuntime::mouth_approach(const AntState& adult,PositionM target,st
     const auto reach=portable_care_distance(adult.position,pose.mouth_m);
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
+    if (confirmed_meal_routes(s) && patch && !partner && !stage &&
+        within_distance(pose.mouth_m,target,radius,true))
+        return local_floor_route(adult,target,nullptr);
     if (!stage && !(partner && mouth_range(s)) && portable_care_distance(adult.position,target)>radius) {
         // Approach a familiar place using only this body's next visible step.
         // Its current stock and any obstacles at the remote site are unknown.
@@ -1434,7 +1559,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
                         return;
                     }
                     if (c.search_remaining>1) {
-                        const auto next=mouth_approach(arrived,*wick,{},nullptr,true);
+                        const auto next=wick_approach(arrived,*wick);
                         if (next!=arrived.position) {
                             start_resting_move(tx,arrived,next,event.id,c.act,{},c.search_remaining-1);
                             return;

@@ -123,7 +123,7 @@ void recent(const WorldRuntime& world) {
 
 // Sparse read-only projection of a contiguous canonical window. Keep every meal
 // and life transition, and the first surface move per actor within the window.
-void meal_events(const WorldRuntime& world, EventId after, std::size_t length) {
+void meal_events(const WorldRuntime& world, EventId after, std::size_t length, bool water) {
     auto page=world.events_after(after,length);
     require(page.size()==length && page.back().id.value==after.value+length,"Incomplete meal evidence window");
     const auto surface=world.surface_snapshot();
@@ -135,8 +135,10 @@ void meal_events(const WorldRuntime& world, EventId after, std::size_t length) {
         case FactKind::SoilExcavated: case FactKind::SoilDropped: case FactKind::NutritionTransferred:
         case FactKind::CargoIngested: case FactKind::FoundressNestMeal:
             return false;
+        case FactKind::FoundressWaterIngested: case FactKind::WorkerWaterIngested:
+            return !water;
         case FactKind::FoundingBoundaryUptake: case FactKind::PhysiologyUpdated:
-            return !e.transferred.carbs_ug;
+            return !e.transferred.carbs_ug && (!water || !e.transferred.water_ug);
         case FactKind::BiologicalObservation:
             return e.observation.act!=CareAct::ApproachNestmate ||
                    (e.observation.phase!=ObservationPhase::Selected && e.observation.phase!=ObservationPhase::Completed);
@@ -481,7 +483,7 @@ int main() {
             const auto command = word(request);
             if (command == "HELLO") {
                 end(request);
-                message("OK", "antworld.m0.live.v47");
+                message("OK", "antworld.m0.live.v48");
             } else if (command=="NEW_HABITAT" || command=="NEW_OBSERVATORY" || command=="NEW_SINGLE_NEST" ||
                        command=="NEW_ANATOMICAL_NEST" || command=="NEW_ORAL_NEST" || command=="NEW_OFFER_NEST" ||
                        command=="NEW_WALL_HANDOFF_NEST" || command=="NEW_MOUTH_HANDOFF_NEST" ||
@@ -526,11 +528,19 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="nursery-arrival" ? FoundingNutrition::NurseryArrival :
+                        treatment=="familiar-site-detour" ? FoundingNutrition::FamiliarSiteDetour :
+                        treatment=="work-face-detour" ? FoundingNutrition::WorkFaceDetour :
+                        treatment=="repeat-collection" ? FoundingNutrition::RepeatCollection :
+                        treatment=="founder-wick" ? FoundingNutrition::FounderWickRoute :
+                        treatment=="feeding-stance" ? FoundingNutrition::FeedingStance :
+                        treatment=="stationary-body" ? FoundingNutrition::StationaryBodyClearance :
+                        treatment=="confirmed-meal-route" ? FoundingNutrition::ConfirmedMealRoute :
                         treatment=="exit-attachment" ? FoundingNutrition::ExitAttachment :
                         treatment=="founder-route" ? FoundingNutrition::FounderRoute :
                         treatment=="trip-load" ? FoundingNutrition::TripLoad :
@@ -843,9 +853,12 @@ int main() {
                 } else if (command == "MEAL_EVENTS") {
                     const EventId after{number(request)};
                     const auto length=number(request);
+                    request >> std::ws;
+                    const bool water=!request.eof();
+                    if (water) require(word(request)=="include-water","Invalid meal projection");
                     end(request);
                     require(length>0 && length<=8192,"Invalid meal evidence window");
-                    meal_events(*world,after,static_cast<std::size_t>(length));
+                    meal_events(*world,after,static_cast<std::size_t>(length),water);
                 } else if (command == "FACTS_AFTER") {
                     const auto cursor = EventId{number(request)};
                     request >> std::ws;

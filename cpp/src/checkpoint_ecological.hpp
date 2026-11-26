@@ -35,6 +35,14 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
+inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
+inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
+inline constexpr unsigned repeat_collection_schema = 71, repeat_collection_physics = 78;
+inline constexpr unsigned founder_wick_schema = 70, founder_wick_physics = 77;
+inline constexpr unsigned feeding_stance_schema = 69, feeding_stance_physics = 76;
+inline constexpr unsigned stationary_body_schema = 68, stationary_body_physics = 75;
+inline constexpr unsigned confirmed_meal_route_schema = 67, confirmed_meal_route_physics = 74;
 inline constexpr unsigned exit_attachment_schema = 66, exit_attachment_physics = 73;
 inline constexpr unsigned founder_route_schema = 65, founder_route_physics = 72;
 inline constexpr unsigned trip_load_schema = 64, trip_load_physics = 71;
@@ -65,6 +73,14 @@ inline bool micro_world_version(unsigned version) {
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::NurseryArrival) return nursery_arrival_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FamiliarSiteDetour) return familiar_site_detour_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkFaceDetour) return work_face_detour_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RepeatCollection) return repeat_collection_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderWickRoute) return founder_wick_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FeedingStance) return feeding_stance_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StationaryBodyClearance) return stationary_body_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ConfirmedMealRoute) return confirmed_meal_route_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ExitAttachment) return exit_attachment_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderRoute) return founder_route_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::TripLoad) return trip_load_physics;
@@ -115,6 +131,14 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::NurseryArrival) return nursery_arrival_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FamiliarSiteDetour) return familiar_site_detour_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WorkFaceDetour) return work_face_detour_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RepeatCollection) return repeat_collection_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderWickRoute) return founder_wick_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FeedingStance) return feeding_stance_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StationaryBodyClearance) return stationary_body_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ConfirmedMealRoute) return confirmed_meal_route_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ExitAttachment) return exit_attachment_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderRoute) return founder_route_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::TripLoad) return trip_load_schema;

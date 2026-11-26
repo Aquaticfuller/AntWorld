@@ -690,6 +690,8 @@ class LiveTests(unittest.TestCase):
         if not core.responsive_meal:
             self.skipTest("Build the responsive meal Core")
         models = [("local-departure",57), ("meal-rendezvous",58), ("first-meal",59), ("responsive-meal",60)]
+        if core.supply_continuity:
+            models.append(("familiar-site-detour",80))
         if core.exit_attachment:
             models.append(("exit-attachment",73))
         if core.founder_route:
