@@ -59,6 +59,39 @@ Physics 85 uses current mouth visibility as the target sensing condition at both
 
 Physics 85 reproduced all four physics-84 cuts, including the 23 seed-2 rejections. Reading the saved care lease for fact 264,476 showed that the selected step had zero *subsequent* approach steps left. The executor used that counter to decide whether the already scheduled step was a meal approach. The last step was therefore checked against a different contact rule from the one that selected it. Physics 86 preserves the mouth-guided approach through that final scheduled step. A zero counter still forbids scheduling a further leg. Compare the original cut and the instant before the rejected action. Require an actual completed segment and preserve the original constraints on blocked encounters and material exchange. Compare founder receipts and uptake over the same four windows before considering the two-year matrix.
 
-Physics 86 completed the registered leg in 9 ms of simulated motion at the existing speed. The movement ended at the selected destination 88.4 µm away. The cut restores exactly inside the movement and reproduces the committed suffix. Over the six hours, worker 8 completed 23 additional moves and its rejected `Out of reach` approaches fell from 23 to zero. The founder's oral receipts stayed at zero, and her absorbed sugar and water remained 0 and 125 µg. This isolates a real execution error and its repair. The timing-related supply regression also depends on reaching an actual payable contact after that leg. The seed-17 inaccessible offer still ended in energy death at the original instant. The seed-1 and seed-3 windows retained their respective physics-84 transfers and uptake. Physics 86 failed the registered short-cut supply endpoint. Its two-year panel was gated on that endpoint.
+Physics 86 completed the registered leg in 9 ms of simulated motion at the existing speed. The movement ended at the selected destination 88.4 µm away. The cut restores exactly inside the movement and reproduces the committed suffix. Over the six hours, worker 8 completed 23 additional moves and its rejected `Out of reach` approaches fell from 23 to zero. It still reversed to a recent position in 299 of 313 moves and retained 159 µg of sugar. The founder's oral receipts stayed at zero, and her absorbed sugar and water remained 0 and 125 µg. This isolates a real execution error and its repair. The timing-related supply regression also depends on reaching an actual payable contact after that leg. The seed-17 inaccessible offer still ended in energy death at the original instant. The seed-1 and seed-3 windows retained their respective physics-84 transfers and uptake. Physics 86 failed the registered short-cut supply endpoint. Its two-year panel was gated on that endpoint.
 
 The new checkpoints are schema 78 for physics 85 and schema 79 for physics 86. The independent archive check repeated on physics 86 and matched all 13,357 events plus the same 449-event continuation with the appropriate model header. `--verify-final-leg` derives a saved cut from the registered prior cut and checks real completion. `--verify-archive --stimulus-version 86` exercises durable history. Both commands run in the Windows and Linux observer workflow.
+
+## Two-year comparison and release decision
+
+All six physics-84 worlds reached the 730-day capture and completed their ledger checks. The independent input comparison verified all 12 initial frames across six seed and supply pairs, including equal geometry, initial populations, material stock and founder reserves in each pair. Physics-80 outcomes come from the previously published same-input panel.
+
+| Seed | Feeder | Founder death, physics 80 | Founder death, physics 84 | Day-730 workers, 80 / 84 |
+|---:|---|---|---|---:|
+| 1 | Nearby | Day 61.97, dehydration | Day 80.22, energy depletion | 0 / 1 |
+| 2 | Nearby | Day 91.22, energy depletion | Day 80.26, energy depletion | 1 / 1 |
+| 3 | Nearby | Day 89.42, energy depletion | Day 57.17, dehydration | 1 / 0 |
+| 17 | Nearby | Day 72.46, energy depletion | Day 65.77, dehydration | 2 / 1 |
+| 29 | Nearby | Day 82.44, energy depletion | Day 87.01, energy depletion | 0 / 0 |
+| 2 | Absent | Day 73.36, energy depletion | Day 73.36, energy depletion | 0 / 0 |
+
+The two-year sustained-supply endpoint failed in all five provisioned pairs. Every founder died, and every world had zero new adults in year two. In seed 1, founder sugar uptake increased from 1,132 to 2,031 µg and water uptake increased from 345 to 1,667 µg. In seed 2, sugar uptake fell from 5,434 to 2,279 µg. In seed 3, direct drinking and oral water receipts yielded 2,252 µg of absorbed water in physics 80, and physics 84 recorded zero positive water uptake. Its founder died well before the age of the separate seed-3 matched cut. The extra food transfer in that cut consequently supports an immediate-response result only. The no-feeder control retained its death time and committed event count.
+
+The long runs provide no performance qualification. Seed 1 increased from 3,332,573 to 14,270,307 committed facts. This workload completed in memory with bounded history compaction and compact receipts. Physics 84 remains experimental after divergent founder survival and higher work in specific worlds. Physics 86 remains experimental after passing the selected approach and persistence checks and failing the seed-2 oral supply endpoint. The unresolved path is sustained contact and repeatable intake, with high reversal counts despite legal movement and remaining crop sugar. A useful continuation needs a local encounter that progresses to payable mouth contact across successive actions. Reducing general review frequency would require named replacements for hunger, nearby needs and environmental changes. The measured local cues cover a subset of those decisions.
+
+The final Core built in Release and passed 292/292 Windows CTest cases, two focused native observer tests, the four matched windows, the selected final-leg restore and independent SQLite continuation. The [compressed receipts](FOUNDING_ACTIVITY_RECEIPTS.json.gz) contain 94,447 bytes and SHA-256 `1429aabb3a4ef6822064679f7dc11b2656bab28bcbe525b5f2c927cb60003626`.
+
+## Reproduction
+
+The [compressed receipt](FOUNDING_ACTIVITY_RECEIPTS.json.gz) includes each frozen cut, observed negative outcome, selected-action evidence and compact persistence digest. From the repository root with the native observer built in Release:
+
+```powershell
+$core = 'build/m0-live/antworld_m0_live.exe'
+py -3 -B -m tools.audit_founding_activity --core $core --stimulus --stimulus-version 84
+py -3 -B -m tools.audit_founding_activity --core $core --verify-stimulus 3 --stimulus-version 84
+py -3 -B -m tools.audit_founding_activity --core $core --stimulus --stimulus-version 86
+py -3 -B -m tools.audit_founding_activity --core $core --verify-final-leg
+py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 86
+py -3 -B -m tools.measure_first_meal --core $core --model stimulus-refill-intent --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
+```
