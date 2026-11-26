@@ -197,7 +197,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==nursery_arrival_schema && version==nursery_arrival_physics) ||
+        ensure((outer_schema==stimulus_intent_schema && version==stimulus_intent_physics) ||
+               (outer_schema==stimulus_priority_schema && version==stimulus_priority_physics) ||
+               (outer_schema==stimulus_schema && version==stimulus_physics) ||
+               (outer_schema==nursery_arrival_schema && version==nursery_arrival_physics) ||
                (outer_schema==familiar_site_detour_schema && version==familiar_site_detour_physics) ||
                (outer_schema==work_face_detour_schema && version==work_face_detour_physics) ||
                (outer_schema==repeat_collection_schema && version==repeat_collection_physics) ||
@@ -477,9 +480,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 !key.priority && !key.tie && !e.payload && !e.resource.value && e.requested_ug && e.destination==PositionM{} &&
                 e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record && e.observed_position_revision<=s->ants.get(s->ants.index.at(e.actor)).position_revision,"invalid protein-return action");
         } else if (e.kind==ScheduledEvent::Kind::AutonomyWake) {
+            const auto newest_wake=local_stimulus(*s) ? local_stimulus_wake : responsive_meal(*s) ? solicited_meal_wake :
+                sustained_supply(*s) ? carbohydrate_delivery_wake : completed_return_wake;
             ensure(s->social && s->autonomy.contains(e.actor) && s->autonomy.at(e.actor).wake==e.id &&
                 key.phase==Phase::Reschedule && !key.priority && !key.tie &&
-                (extended ? e.payload<=(responsive_meal(*s)?solicited_meal_wake:sustained_supply(*s)?carbohydrate_delivery_wake:completed_return_wake) : !e.payload) &&
+                (extended ? e.payload<=newest_wake : !e.payload) &&
                 !e.resource.value && !e.requested_ug &&
                 !e.observed_position_revision && e.destination==PositionM{} && e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record,
                 "invalid automatic program wake");

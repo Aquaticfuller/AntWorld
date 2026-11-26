@@ -14,9 +14,17 @@ from op0.live import NativeCore, ROOT, core_path
 from tools.measure_single_nest_lifecycle import COMPACT_BYTES, TREATMENTS, WORLD_BASES, census
 
 
-def run(core, seed, model, supply, days, progress=False, feeding_continuity=False, trace_flux=False, include_water=False):
+def founding_command(seed, model, supply, worker_timing=None):
     identity = WORLD_BASES[supply] + seed + TREATMENTS.index(model) * 2**34 + 2**39
     command = f"NEW_PROVISIONED_NEST {identity} {seed} 250 80 plugged 1955 reachable {supply} sheltered mineral {model} wet-wick"
+    if worker_timing:
+        command += f" worker-timing {worker_timing[0]} {worker_timing[1]}"
+    return command
+
+
+def run(core, seed, model, supply, days, progress=False, feeding_continuity=False, trace_flux=False, include_water=False,
+        *, worker_timing=None):
+    command = founding_command(seed, model, supply, worker_timing)
     raw = core.call(command)
     frame = checkpoint(raw)
     result = dict(command=command, physics=frame["physics"], seed=seed, supply=supply,
@@ -193,10 +201,12 @@ if __name__ == "__main__":
     parser.add_argument("--progress", action="store_true", help="Report milestone day, cursor, workers and founder survival on stderr")
     parser.add_argument("--trace-flux", action="store_true", help="Account for collected, transferred and absorbed sugar by actor")
     parser.add_argument("--include-water", action="store_true", help="Account for daily founder drinks, oral receipts and uptake")
+    parser.add_argument("--worker-timing", nargs=2, metavar=("CHECK_MS", "MINIMUM_PROGRAM_MS"), type=int,
+                        help="Opt-in founding timing sensitivity fixture")
     args = parser.parse_args()
     executable_hash = sha256(args.core.read_bytes()).hexdigest()
     with closing(NativeCore(args.core.resolve(), ROOT / "out")) as native:
         receipt = run(native,args.seed,args.model,args.supply,args.days,args.progress,args.feeding_continuity,
-                      args.trace_flux,args.include_water)
+                      args.trace_flux,args.include_water,worker_timing=args.worker_timing)
     receipt["executable_sha256"] = executable_hash
     print(json.dumps(receipt,separators=(",",":")))

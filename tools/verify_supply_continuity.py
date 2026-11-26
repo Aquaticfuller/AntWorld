@@ -28,6 +28,9 @@ MODELS = {
     79: "work-face-detour",
     80: "familiar-site-detour",
     81: "nursery-arrival",
+    82: "local-stimulus",
+    83: "stimulus-meal-priority",
+    84: "stimulus-refill-intent",
 }
 WATER_CUT = EVIDENCE / "SEED2_SUPPLY_CONTINUITY_CUT.awstate.gz"
 CUT_DIGEST = "305f0f042d97e675abbde25238c7e484d3c2c5c3f8287ac62be13f638b72356c"

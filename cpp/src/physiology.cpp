@@ -1,6 +1,7 @@
 #include "physiology_internal.hpp"
 #include "social_internal.hpp"
 #include "behavior_rng.hpp"
+#include "care_internal.hpp"
 #include "spatial_navigation.hpp"
 #include "founding_internal.hpp"
 #include "ecological_internal.hpp"
@@ -109,6 +110,7 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     profiling::Scope profile(profiling::Category::Physiology);
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i); auto p = s.physiology.at(e.actor);
     if (!ant.alive() || p.physiology_event != e.id) throw std::logic_error("invalid physiology event ownership");
+    const auto crop_before=local_stimulus(s) ? p.crop.total_ug() : 0;
     std::optional<FoundingReserve> reserve;
     const bool queen = founding_foundress(e.actor);
     if (s.founding && s.founding_reserves.contains(e.actor)) {
@@ -192,6 +194,11 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
             }
         } else if (!reserve && s.m.now == p.next_absorption) f.transferred = absorb(p, ant.stage);
         tx.physiology.set(e.actor, p); schedule_physiology(tx, e.actor);
+        if (local_stimulus(s) && !advance_stage && ant.caste==Caste::Worker && ant.stage==LifeStage::Adult &&
+            p.config.crop_capacity_ug-crop_before<p.config.transfer_limit_ug &&
+            p.config.crop_capacity_ug-p.crop.total_ug()>=p.config.transfer_limit_ug &&
+            familiar_liquid_exit(s,ant) && !care_owned(s,ant.id) && !active_expenditure(p))
+            request_autonomy_review(tx,ant.id,local_stimulus_wake);
         if (emitted_pulse && !advance_stage) {
             if ((queen || (sustained_supply(s) && ant.stage==LifeStage::Adult)) &&
                 s.ecological && s.ecological->water_sip_ug)

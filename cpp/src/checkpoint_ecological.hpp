@@ -35,6 +35,9 @@ inline constexpr unsigned local_excavation_schema = 42, local_excavation_physics
 inline constexpr unsigned callow_hydration_schema = 43, callow_hydration_physics = 50;
 inline constexpr unsigned departure_schema = 50, departure_physics = 57;
 inline constexpr unsigned rendezvous_schema = 51, rendezvous_physics = 58;
+inline constexpr unsigned stimulus_schema = 75, stimulus_physics = 82;
+inline constexpr unsigned stimulus_priority_schema = 76, stimulus_priority_physics = 83;
+inline constexpr unsigned stimulus_intent_schema = 77, stimulus_intent_physics = 84;
 inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
 inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
 inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
@@ -71,6 +74,9 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StimulusRefillIntent) return stimulus_intent_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StimulusMealPriority) return stimulus_priority_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalStimulus) return stimulus_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::NurseryArrival) return nursery_arrival_physics;
@@ -129,6 +135,9 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StimulusRefillIntent) return stimulus_intent_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::StimulusMealPriority) return stimulus_priority_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalStimulus) return stimulus_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalDeparture) return departure_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MealRendezvous) return rendezvous_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::NurseryArrival) return nursery_arrival_schema;

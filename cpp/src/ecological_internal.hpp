@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::NurseryArrival ||
+            habitat->nutrition > FoundingNutrition::StimulusRefillIntent ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -141,6 +141,9 @@ inline bool confirmed_meal_routes(const auto& s) {
 inline bool founder_wick_route(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FounderWickRoute; }
 inline bool floor_work_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceDetour; }
 inline bool familiar_site_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FamiliarSiteDetour; }
+inline bool local_stimulus(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::LocalStimulus; }
+inline bool stimulus_meal_priority(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::StimulusMealPriority; }
+inline bool stimulus_refill_intent(const auto& s) { return founding_nutrition(s)==FoundingNutrition::StimulusRefillIntent; }
 inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }
 inline bool responsive_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ResponsiveMeal; }
@@ -148,6 +151,7 @@ inline bool meal_rendezvous(const auto& s) { return founding_nutrition(s)>=Found
 inline bool mouth_range(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MouthRange; }
 
 inline constexpr std::uint64_t completed_return_wake=1, carbohydrate_delivery_wake=2, solicited_meal_wake=3;
+inline constexpr std::uint64_t local_stimulus_wake=4;
 inline bool local_brood_budget(const auto& s) {
     return founding_nutrition(s)==FoundingNutrition::BroodBudget || sustained_supply(s);
 }

@@ -1,0 +1,52 @@
+# Local events in the founding task scheduler
+
+## Comparison defined before execution
+
+Use a physics-82 opt-in contrast with the physics-80 navigation, resources, time costs and thresholds. A successful movement toward a personally remembered refill berth can request the next local decision at the next resolution boundary. This applies to a worker with room for a normal refill and an established liquid-food route. A completed move must reduce its distance to the known berth. A blocked, stationary or non-progressing action retains the ordinary schedule. Positive food arriving at the real depot can request an early local founder review when the new food meets her current meal demand, the depot is within perception and she is free. An actual crop reduction across the existing refill-capacity threshold can wake an idle experienced collector. Each wake replaces a later review and uses the same physical candidate validation and resource transaction.
+
+Compare fixed cuts from the supply audit at seeds 2, 3 and 17 with original physics 80. Observe latency after paid work, first collection, founder received and absorbed mass, real distances, interrupted work, total committed facts and the terminal physiology. A positive wake must have actual progress or material as its predecessor. In an inaccessible case the colony must still be able to fail. Verify the pending wake survives exact save, restore and segmented advancement. Follow one seed from birth through its first 24 adult hours and report the full contrast. This is an engineering experiment on task wakeups. Other routine reviews remain available for situations without a corresponding local notification.
+
+## Response-priority contrast
+
+Physics 82 increased real sugar delivery in the seed-3 cut and lost the oral supply seen in the seed-2 control. Test a separate physics-83 arm. Stimulus wakes run the local food decisions and keep a valid feeding or brood-care opportunity ahead of refilling. The stimulus alone does not admit an unrelated ordinary program lottery or the periodic exit search. Hold the same prescribed cuts and observations. Require the fixed seed-17 failure to remain available and compare founder intake, repeated approach steps and throughput against both versions. This contrast reuses the same pre-existing local inputs and changes how an early wake is dispatched.
+
+## Refill intent contrast
+
+Physics 83 reproduced the same motions and supply as physics 82 in the prescribed cuts. The first seed-2 early wake follows a `Move to a resting site` observation. This label does not tell whether the decision chose a refill leg. A geometrical improvement by itself carries no evidence of why the ant moved. Physics 84 carries the refill intention through the selected legal approach step. Only a completed, advancing leg explicitly selected by the refill decision may request the next refill review. Ordinary repositioning and failed actions cannot trigger it. Repeat the matched cuts and the first-day cohort. Preserve the finite resource conditions and keep the positive delivery and crop-space responses.
+
+## Long-horizon comparison
+
+Start physics 84 from birth under the existing two-year supply protocol. Use nearby supply in seeds 1, 2, 3, 17 and 29, and absent supply in seed 2. Hold all ecological inputs other than the wake policy to the published physics-80 inputs. Compare to the frozen physics-80 receipts in `SUSTAINED_SUPPLY_TRIALS.jsonl.gz`. Keep the established 730-day endpoint: a living founder, at least one new adult in year two and more live workers at day 730 than at days 73 and 365. Count founder drinks, oral receipts and physiological uptake separately. Preserve first adult timing and death even when the colony fails early. Read events in bounded blocks and store only compact receipts. Report a resource or host limit as an incomplete run.
+
+## Event ownership and scope
+
+`WorldRuntime::advance_to` advances to the next scheduled event. Its shared queue gives actions and physiological settlement a deterministic order at each simulated timestamp. Each adult owns one pending autonomy wake. A qualifying stimulus can replace that wake with one at the next millisecond. This gives the resolving transaction time to finish and preserves action duration and material costs. The resulting wake goes through normal spatial, ownership and ingredient checks. The existing scheduler still handles ordinary activity, feeding and route exploration where no specific notification is available. The scheduling analogy is gem5's queued completion and external wakeup pattern. [gem5 event documentation](https://www.gem5.org/documentation/learning_gem5/part2/events/)
+
+The new reason travels in the existing scheduled-event payload. Physics 82, 83 and 84 use checkpoint schemas 75, 76 and 77, respectively. In physics 84 the existing care continuation counter carries one refill intent on the chosen movement. Its use ends along with the movement lease. The full journal retains committed fact schema 10. The time-step-free scheduling of owned actions was already present. The added stimuli concern the decision between actions. A general local subscription model for changing physiological needs or every kind of spatial stimulus remains outside the measured coverage.
+
+## Matched cuts
+
+The table gives actual founder oral receipts and uptake. Uptake can include earlier crop stock and direct drinks. The archived six-hour cuts use fixed start and end times. Seed 1 uses the first-worker 24-hour cut.
+
+| Cut seed | Physics | Committed facts | Oral sugar / water, µg | Absorbed sugar / water, µg | Terminal observation |
+|---|---|---:|---:|---:|---|
+| 2 | 80 | 5,941 | 346 / 179 | 106 / 199 | Founder alive |
+| 2 | 82–84 | 8,676 | 0 / 0 | 0 / 125 | Founder alive |
+| 3 | 80 | 840 | 165 / 78 | 110 / 97 | Founder alive |
+| 3 | 82–84 | 1,588 | 297 / 78 | 110 / 97 | Founder alive |
+| 17 | 80 | 585 | 24 / 0 | 50 / 25 | Energy death at 6,260,648,409 ms |
+| 17 | 82–84 | 585 | 24 / 0 | 50 / 25 | Energy death at 6,260,648,409 ms |
+| 1 | 80 | 2,886 | 547 / 125 | 316 / 139 | Founder alive |
+| 1 | 82–84 | 3,721 | 548 / 125 | 316 / 139 | Founder alive |
+
+The seed-3 worker completed another real collection. The sugar debit at the feeder increased by 264 µg. More sugar reached the queen's crop, and physiological uptake at the fixed cut was the same. In seed 2, workers 8 and 9 made 273 reversals in 290 moves and 298 reversals in 310 moves, respectively. The increased movement accompanied a complete interruption of oral transfers. Giving feasible feeding precedence at a stimulus review in physics 83 and requiring explicit refill intent in physics 84 reproduced these outcomes. The seed-2 witness therefore survived the intent check. The `Move to a resting site` label alone gave an ambiguous account of that leg. These tests establish the regression and its timing sensitivity. They leave the precise cause of the repeated reversal sequence open.
+
+The seed-17 worker holding over 550 µg of sugar remained outside usable oral access through all 25 of its reviews. Its movement and the founder's terminal physiology were unchanged across all arms. This cut supplies a counterexample to using a shorter wake as a cure for unreachable feeding positions.
+
+## Queue and persistence witnesses
+
+In the strongest seed-3 physics-84 witness, worker 8 committed move 216,104 at 6,773,157,072 ms. The checkpoint taken at that instant had a local-stimulus wake at 6,773,157,073 ms, which was the source of decision 216,112. The control still had its regular review queued for 6,774,133,521 ms, 16 minutes 16.449 seconds after the witnessed movement time. The 1 ms refers to dispatch after a transaction. It measures neither locomotion speed nor a biological reaction time. The same queue proof was registered for seed 2 in physics 82 and 84, with its regular review due 13 minutes 14.648 seconds after the movement time. Exact restoration and split advancement reproduced the terminal frame and canonical suffix in each witness.
+
+Starting from birth in seed 1, physics 84 raised the first 24 hours of worker reviews from 108 to 118 and committed moves from 222 to 320, with three reversals compared to eight in the control. The longest action gap remained about two hours. Oral sugar reached 544 µg in both runs, and sugar uptake reached 316 µg in both. These counts give a work-load contrast rather than a CPU or memory benchmark. The observed queue witnesses certify the movement stimulus. The crop-capacity and depot-delivery notifications were included in the trial and have no isolated causal witness in this report.
+
+The independent SQLite reader compared the hash of all 13,357 committed facts against the native stream. Reloading the same archive reproduced the frame and the 449 subsequent facts over 30 minutes byte for byte. The temporary archive occupied 2,039,808 bytes. The compact test checks a scheduled wake, while the SQLite test checks durable canonical history and additional actions. Windows Release passed all 292 CTest cases, the timing-input test, pending-wake restore and two focused live-observer tests. CI repeats the timing, pending-wake and SQLite checks on Windows and Linux.

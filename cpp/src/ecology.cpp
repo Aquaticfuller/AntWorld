@@ -154,7 +154,13 @@ void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,E
   const auto available=founding_gift_supply(s.founding->profile,p);
   if (active_expenditure(p) || p.behavior==IndividualBehavior::Forage || p.behavior==IndividualBehavior::Excavate ||
       (!available.carbs_ug && !(founder_appetite(s) && available.water_ug))) return;
-  auto a=s.autonomy.at(actor);
+  request_autonomy_review(tx,actor,solicited_meal_wake);
+}
+void WorldRuntime::request_autonomy_review(Transaction& tx,EntityId actor,std::uint64_t stimulus) {
+  auto& s=*state_;
+  const auto found=s.autonomy.find(actor);
+  if (found==s.autonomy.end()) return;
+  auto a=found->second;
   if (!a.enabled || !s.queue_index.contains(a.wake)) return;
   const auto key=s.queue_index.at(a.wake);
   const auto at=after(s.m.now,1);
@@ -164,10 +170,38 @@ void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,E
   review.kind=ScheduledEvent::Kind::AutonomyWake;
   review.actor=actor;
   review.issued_at=s.m.now;
-  review.payload=solicited_meal_wake;
+  review.payload=stimulus;
   review.key={at,Phase::Reschedule,0,0,0};
   a.wake=tx.insert(review);
   tx.autonomy.set(actor,a);
+}
+void WorldRuntime::notify_local_food_delivery(Transaction& tx,const WorldEvent& delivery) {
+  const auto& s=*state_;
+  if (!s.founding || !s.care_profile) return;
+  const auto founder=query_ant({s.world,s.founding->founder});
+  if (!founder || founder->stage!=LifeStage::Adult || founder->colony!=delivery.colony || care_owned(s,founder->id)) return;
+  const auto p=*query_physiology({s.world,founder->id});
+  if (active_expenditure(p)) return;
+  const auto& colony=s.colonies.rows[s.colonies.index.at(delivery.colony)];
+  const auto mouth=query_body({s.world,founder->id})->mouth_m;
+  const auto site=depot_mouth_target(*founder,colony.nest_position);
+  if (!within_distance(mouth,site,s.care_profile->perception_radius_m,true) || !spatially_clear(mouth,site)) return;
+  const auto meal=foundress_nest_meal(s.founding->profile,p,s.founding_reserves.at(founder->id),
+                                     colony.nest_food,true);
+  if (ingredient_min(meal,delivery.transferred).total_ug()) request_autonomy_review(tx,founder->id,local_stimulus_wake);
+}
+bool WorldRuntime::notify_refill_progress(Transaction& tx,const AntState& before) {
+  const auto& s=*state_;
+  if (!local_stimulus(s) || before.caste!=Caste::Worker) return false;
+  const auto worker=*query_ant({s.world,before.id});
+  if (worker.position==before.position || !familiar_liquid_exit(s,worker)) return false;
+  const auto p=*query_physiology({s.world,worker.id});
+  if (p.config.crop_capacity_ug-p.crop.total_ug()<p.config.transfer_limit_ug) return false;
+  const auto berth=s.connectors.at(worker.id).points[0];
+  const auto gap=[&](PositionM site) { return std::llround(portable_care_distance(site,berth)*1e6); };
+  if (gap(worker.position)>=gap(before.position)) return false;
+  request_autonomy_review(tx,worker.id,local_stimulus_wake);
+  return true;
 }
 void WorldRuntime::resolve_autonomy_wakes(
     Transaction &tx, const std::vector<ScheduledEvent> &wakes) {
@@ -250,7 +284,11 @@ void WorldRuntime::resolve_autonomy_wakes(
         }
       }
     }
-    const bool returned=social_crop(s) && wake.payload && wake.payload!=solicited_meal_wake && p.behavior==IndividualBehavior::Forage && foraging_home;
+    const bool return_review=wake.payload==completed_return_wake || wake.payload==carbohydrate_delivery_wake;
+    const bool stimulated=wake.payload==local_stimulus_wake;
+    const bool focused=stimulated && stimulus_meal_priority(s);
+    const bool regular_work=!wake.payload || (stimulated && !focused);
+    const bool returned=social_crop(s) && return_review && p.behavior==IndividualBehavior::Forage && foraging_home;
     const bool can_provision=!at_wick && !wick_step && local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
         ant.caste==Caste::Worker && p.crop.total_ug() &&
         (stationary || returned) && can_switch && !urgent && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way;
@@ -260,7 +298,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
     std::optional<PositionM> chamber_step;
-    const auto nursery_arrival_m=founding_nutrition(s)>=FoundingNutrition::NurseryArrival ?
+    const auto nursery_arrival_m=founding_nutrition(s)==FoundingNutrition::NurseryArrival ?
         2*s.geometry->config.quantum_m : .002;
     if (chamber_return(s) && can_provision && !food_offer && !can_feed_brood &&
         (a.knows_depot || private_sampling_trip(s,ant) || (familiar_site_detour(s) && familiar_liquid_exit(s,ant))) &&
@@ -318,7 +356,7 @@ void WorldRuntime::resolve_autonomy_wakes(
         !care_owned(s,ant.id) && !active_expenditure(p) ? local_donor(ant) : std::nullopt;
     // ENGINEERING_FIXTURE: a bounded share of idle local work reviews samples
     // an understocked handoff even when other brood work is simultaneously available.
-    const bool review_exit=departure_review(s) && !wake.payload && ready &&
+    const bool review_exit=departure_review(s) && regular_work && ready &&
         ((a.decisions+ant.id.value)%4==0 ||
          (work_face_search(s) && ant.caste==Caste::Worker && s.geometry_edits.empty() &&
           shallow_soil_cap(ant.position)));
@@ -330,7 +368,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     std::optional<PositionM> refill_approach;
     if (sustained_supply(s) && ant.caste==Caste::Worker && local_founding_provisioning(s,ant.id) &&
         can_switch && !care_owned(s,ant.id) && !active_expenditure(p) && !giving_way &&
-        stationary && !wake.payload && config.forage_weight) {
+        stationary && (regular_work || focused) && config.forage_weight) {
       // A worker can approach the handoff it can perceive. A departure
       // still requires actual clearance and a usable return berth.
       const auto depot=colony.nest_position;
@@ -342,6 +380,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       const bool refill_fits=refill_crop_room(s) ? p.config.crop_capacity_ug-p.crop.total_ug()>=p.config.transfer_limit_ug :
                                              p.crop.carbs_ug<p.config.transfer_limit_ug;
       if (familiar_liquid_exit(s,ant) && refill_fits &&
+          (!focused || (!food_offer && !can_feed_brood)) &&
           !at_wick && !wick_step && !at_meal &&
           (!food_offer || food_offer->first!=ant.position)) {
         // An experienced collector can refill at a familiar berth. The
@@ -486,6 +525,8 @@ void WorldRuntime::resolve_autonomy_wakes(
         // ordinary resting-site action explicitly excludes this position.
         choice.transit=familiar_site_detour(s) && *refill_approach==colony.nest_position ?
             CareAct::DepotApproach : CareAct::NestReposition;
+        if (stimulus_refill_intent(s) && choice.transit==CareAct::NestReposition)
+          choice.meal_steps=1; // Carry one refill continuation through this local leg.
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (body_orientation) {
@@ -579,7 +620,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       // existing paid return action before assigning a depot-owned program.
       choice.care=true;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (can_switch && wake.payload && wake.payload!=solicited_meal_wake && s.long_term) {
+    } else if (can_switch && return_review && s.long_term) {
       choice.behavior=IndividualBehavior::Rest;
       ContactSample local;
       if (foraging_home && !urgent && config.exchange_enabled && local_founding_provisioning(s,ant.id)) {
@@ -603,7 +644,7 @@ void WorldRuntime::resolve_autonomy_wakes(
       if (worker_motor(s) && at_depot && !urgent && choice.behavior==IndividualBehavior::Rest)
         choice.resting_site=local_resting_site(ant);
       inspect_decision(wake,local,1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (can_switch && ready) {
+    } else if (can_switch && ready && !focused) {
       const auto sample = sample_contacts(
           {s.world, ant.id}, a.decisions ^ UINT64_C(0x45434f4c4f4759));
       choice.sample = {0, sample.candidates_examined, sample.bucket_queries,

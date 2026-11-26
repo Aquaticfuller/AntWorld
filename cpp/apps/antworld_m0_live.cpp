@@ -507,6 +507,7 @@ int main() {
                 bool extended_supply=false, nearby_feeder=false;
                 bool wet_wick=false;
                 bool nursery_wick=false;
+                std::optional<WorkerActivityTiming> worker_timing;
                 if (command=="NEW_OBSERVATORY" || sealed) {
                     const auto policy=word(request), supply=word(request);
                     require(policy=="reference" || policy=="reachable","invalid depot policy");
@@ -528,11 +529,14 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival" || treatment=="local-stimulus" || treatment=="stimulus-meal-priority" || treatment=="stimulus-refill-intent",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="stimulus-refill-intent" ? FoundingNutrition::StimulusRefillIntent :
+                        treatment=="stimulus-meal-priority" ? FoundingNutrition::StimulusMealPriority :
+                        treatment=="local-stimulus" ? FoundingNutrition::LocalStimulus :
                         treatment=="nursery-arrival" ? FoundingNutrition::NurseryArrival :
                         treatment=="familiar-site-detour" ? FoundingNutrition::FamiliarSiteDetour :
                         treatment=="work-face-detour" ? FoundingNutrition::WorkFaceDetour :
@@ -574,13 +578,18 @@ int main() {
                                 (nursery_wick && nutrition==FoundingNutrition::ProtectedFounding),
                                 "invalid founding water fixture");
                         wet_wick=wick!="small-wick";
+                        request >> std::ws;
+                        if (!request.eof()) {
+                            require(word(request)=="worker-timing", "invalid founding worker timing option");
+                            worker_timing=WorkerActivityTiming{read_target(request),read_target(request)};
+                        }
                     }
                 }
                 end(request);
                 require(id && (access=="open" || access=="blocked" || access=="plugged"),"invalid founding habitat");
                 require(!sealed || access=="plugged","Single-nest founding begins inside a sealed chamber");
                 require(half_life==60 || half_life==1955,"unsupported founding trail half-life");
-                auto c=live_case(id,seed);
+                auto c=live_case(id,seed,worker_timing);
                 if (access!="open") c.arm=access;
                 if (extended_supply) c.release_days=730;
                 require(!nearby_feeder || nutrition>=FoundingNutrition::ProtectedFounding,"nearby feeder requires protected founding");

@@ -889,7 +889,8 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
     }
     care.enabled=true; care.act=act; care.destination=site; care.target=target;
     if ((mouth_access(s) && act==CareAct::DepotApproach) ||
-        (crop_exchange(s) && act==CareAct::ApproachNestmate)) care.search_remaining=remaining;
+        (crop_exchange(s) && act==CareAct::ApproachNestmate) ||
+        (stimulus_refill_intent(s) && act==CareAct::NestReposition)) care.search_remaining=remaining;
     ScheduledEvent e; e.actor=ant.id; e.kind=ScheduledEvent::Kind::CareBegin; e.issued_at=s.m.now;
     e.key={after(s.m.now,1),Phase::Resolution,0,0,0}; care.pending=tx.insert(e); care.bout=care.pending;
     tx.care.set(ant.id,care);
@@ -1582,6 +1583,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         }
         // Reassess upon contact. A failed trip waits for the regular decision.
         if (!failed && a.caste==Caste::Worker && s.autonomy.at(a.id).enabled) {
+            if (!stimulus_refill_intent(s) && notify_refill_progress(tx,a)) return;
             auto autonomy=s.autonomy.at(a.id);
             if (s.queue_index.contains(autonomy.wake)) tx.remove(s.queue_index.at(autonomy.wake));
             autonomy.wake={};
@@ -1646,6 +1648,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || c.act==CareAct::EntrancePatrol || local_work) {
         interrupt_care(tx,a.id,outcome,true);
         if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
+        if (!failed && c.act==CareAct::NestReposition && (!stimulus_refill_intent(s) || c.search_remaining))
+            notify_refill_progress(tx,a);
         return;
     }
     if (integrated && c.act==CareAct::ReturnToCareShelter && failed) {

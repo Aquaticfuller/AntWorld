@@ -53,7 +53,8 @@ inline wp5::Scene setup(wp6b::Case c,const RuntimeLimits& limits,std::uint64_t t
     const auto interval=[&](std::int64_t ms) {
         return SimTime{ms*1000/static_cast<std::int64_t>(climate->activity_permille)};
     };
-    ecology.worker_activity_timing=WorkerActivityTiming{interval(900000),interval(wp6b::hour_ms)};
+    if (!ecology.worker_activity_timing)
+        ecology.worker_activity_timing=WorkerActivityTiming{interval(900000),interval(wp6b::hour_ms)};
     ecology.water_sip_ug=25;
 
     // Split the environmental water budget between the mixed feeder and a

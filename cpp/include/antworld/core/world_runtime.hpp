@@ -188,6 +188,9 @@ private:
     void execute_resource_release(Transaction&, const ScheduledEvent&);
     void stop_reproduction(Transaction&, EntityId);
     void request_food_review(Transaction&, const AntState& founder, EntityId worker, bool wake_founder=false);
+    void request_autonomy_review(Transaction&, EntityId, std::uint64_t);
+    void notify_local_food_delivery(Transaction&, const WorldEvent&);
+    bool notify_refill_progress(Transaction&, const AntState& before);
     void notify_return(Transaction&, EntityId, bool carbohydrate_delivered);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
