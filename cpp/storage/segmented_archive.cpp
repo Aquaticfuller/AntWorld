@@ -22,7 +22,7 @@ FactSchema frame_fact_schema(std::span<const std::uint8_t> bytes) {
     if (bytes[14]=='M') {
         // These consecutive model pairs use the existing AWFACT10 payloads.
         // Match both little-endian IDs, including all their high bytes.
-        if (bytes.size()>=24 && bytes[16]>=40 && bytes[16]<=83 && bytes[20]==bytes[16]+7 &&
+        if (bytes.size()>=24 && bytes[16]>=40 && bytes[16]<=84 && bytes[20]==bytes[16]+7 &&
             bytes[17]==0 && bytes[18]==0 && bytes[19]==0 && bytes[21]==0 && bytes[22]==0 && bytes[23]==0)
             return FactSchema::SustainedSupply;
         return FactSchema::EcologicalClosure;

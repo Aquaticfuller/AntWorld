@@ -37,6 +37,7 @@ MODELS = {
     88: "local-needs",
     89: "joint-meal-route",
     90: "continuous-meal",
+    91: "floor-meal-stances",
 }
 WATER_CUT = EVIDENCE / "SEED2_SUPPLY_CONTINUITY_CUT.awstate.gz"
 CUT_DIGEST = "305f0f042d97e675abbde25238c7e484d3c2c5c3f8287ac62be13f638b72356c"
@@ -92,7 +93,7 @@ def history_digest(core, after, through):
     return digest.hexdigest()
 
 
-def verify_continuation(core, slot, world, resume, stop, expected, cursor):
+def verify_continuation(core, slot, world, resume, stop, expected, cursor, *, restart_slot="d"*32):
     """Compare a split advance and a saved restart against the uninterrupted cut."""
     core.call(f"LOAD_SNAPSHOT {slot} {world}")
     before=core.call(f"ADVANCE {resume}")
@@ -102,9 +103,8 @@ def verify_continuation(core, slot, world, resume, stop, expected, cursor):
     facts=history_digest(core,boundary,cursor)
     core.call(f"LOAD_SNAPSHOT {slot} {world}")
     require(core.call(f"ADVANCE {resume}")==before,"Different mid-action cut on replay")
-    middle="d"*32
-    core.call(f"SAVE_SNAPSHOT {middle}")
-    require(core.call(f"LOAD_SNAPSHOT {middle} {world}")==before,"Mid-action cut changed on load")
+    core.call(f"SAVE_SNAPSHOT {restart_slot}")
+    require(core.call(f"LOAD_SNAPSHOT {restart_slot} {world}")==before,"Mid-action cut changed on load")
     require(core.call(f"ADVANCE {stop}")==expected and history_digest(core,boundary,cursor)==facts,
             "Restart changed the terminal frame or canonical facts")
     return facts

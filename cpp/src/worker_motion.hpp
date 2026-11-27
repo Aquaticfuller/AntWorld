@@ -15,6 +15,12 @@ inline bool uses_floor_body_clearance(const auto& s, const AntState& ant, Positi
            !(s.care.contains(ant.id) && s.care.at(ant.id).carrying_brood);
 }
 
+inline bool meal_floor_pose(const auto& s,EntityId actor,const BodyPose& pose,PositionM to,std::int32_t half) {
+    return s.surface && pose.up.y==1. && pose.center_m.y<s.surface->config.origin_m.y &&
+           to.y==pose.center_m.y && half==s.geometry->config.body_half_q &&
+           !(s.care.contains(actor) && s.care.at(actor).carrying_brood);
+}
+
 inline std::optional<PointQ> nearest_grid_point(PositionM p,const GeometryConfig& g,bool include_height=false) {
     const auto snap=[&](double value,double origin) {
         return origin+std::round((value-origin)/g.quantum_m)*g.quantum_m;

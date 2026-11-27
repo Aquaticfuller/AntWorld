@@ -137,14 +137,14 @@ def continued_meal(core, slot, world, meals):
             if event.source == handle and event.actor == donor and event.payload == 2 and KINDS[event.kind] == "NutritionTransferred":
                 return dict(first=[fact, at, amount], next=[event.id, event.time, event.mass], donor=donor,
                             handling_ms=time-at, pending=handle,
-                            restored_suffix_sha256=verify_continuation(core, slot, world, at, time, final, stop))
+                            restored_suffix_sha256=verify_continuation(core, slot, world, at, time, final, stop, restart_slot="e"*32))
     return None
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
-    parser.add_argument("--physics", type=int, choices=(88, 89, 90), default=90)
+    parser.add_argument("--physics", type=int, choices=(88, 89, 90, 91), default=90)
     parser.add_argument("--verify", action="store_true", help="Require all registered witnesses")
     args = parser.parse_args()
     (ROOT/"out").mkdir(exist_ok=True)
@@ -156,7 +156,7 @@ def main():
         if args.verify:
             require(set(internal["crossings"]) == {5, 6} and result["brood"] and result["contact"].get("move"),
                     "Missing registered hunger, thirst, brood or mouth-contact witness")
-            if args.physics == 90:
+            if args.physics >= 90:
                 require(result["contact"].get("continued_meal"), "No paid continuation in the contact witness")
         print(json.dumps(result, separators=(",", ":")))
 

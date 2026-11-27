@@ -344,16 +344,20 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
                     anatomical_sweep_hits(edge.swept,to,peer)) continue;
                 if (joint) {
                     const auto origin=node.pair[i].body.center_m;
-                    const auto clear=[&](const BodyPose& obstacle,std::int32_t half) {
-                        return !anatomical_sweep_hits(edge.swept,to,obstacle) &&
-                            center_sweep_clears(origin,to,obstacle.center_m,(halves[i]+half)*s.geometry->config.quantum_m);
+                    const auto clear=[&](EntityId obstacle_id,const BodyPose& obstacle,std::int32_t half) {
+                        if (anatomical_sweep_hits(edge.swept,to,obstacle)) return false;
+                        if (floor_meal_stances(s) && obstacle.center_m.y==origin.y &&
+                            meal_floor_pose(s,ants[i].id,edge.swept,to,halves[i]) &&
+                            meal_floor_pose(s,obstacle_id,obstacle,obstacle.center_m,half))
+                            return anatomy_turn_clears(edge.swept,node.pair[i].heading,pose.heading,obstacle);
+                        return center_sweep_clears(origin,to,obstacle.center_m,(halves[i]+half)*s.geometry->config.quantum_m);
                     };
-                    if (!clear(peer,halves[1-i]) ||
+                    if (!clear(ants[1-i].id,peer,halves[1-i]) ||
                         std::any_of(obstacles.begin(),obstacles.end(),[&](const auto& row) {
-                            return !clear(row.second.first,row.second.second);
+                            return !clear(row.first,row.second.first,row.second.second);
                         })) continue;
                 }
-                if (!depth && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
+                if (!depth && !clear_worker_traffic(ants[i],to,halves[i],true,true,true)) continue;
                 visited.insert(id);
                 const auto first=depth ? node.first : Move{ants[i].id,to};
                 if (mouths_meet(pose.body,peer)) {

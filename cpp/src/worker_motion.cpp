@@ -199,14 +199,13 @@ void WorldRuntime::record_worker_move(Transaction& tx,WorldEvent& fact,PositionM
     tx.autonomy.set(fact.actor,a);
 }
 
-bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half,bool include_plans,bool alignment_probe) const {
+bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::int32_t half,bool include_plans,
+                                        bool alignment_probe,bool meal_probe) const {
     const auto& s=*state_;
     if (!local_traffic(s) || !s.geometry || ant.stage!=LifeStage::Adult) return true;
     if (!clear_body_motion(ant,to,alignment_probe)) return false;
     const auto quantum=s.geometry->config.quantum_m;
     const bool anatomical=anatomical_nest(s);
-    const bool floor_precision=anatomical && uses_floor_body_clearance(s,ant,to,half);
-    const auto reach=distance(ant.position,to)+(floor_precision?.009:ant.caste==Caste::Queen?.007:.0055);
     const auto previous=std::max<std::uint8_t>(1,actor_facing(s,ant.id));
     auto heading=previous;
     std::optional<BodyPose> mover;
@@ -214,18 +213,31 @@ bool WorldRuntime::clear_worker_traffic(const AntState& ant,PositionM to,std::in
         heading=to==ant.position?actor_facing(s,ant.id):segment_heading(s,ant.id,ant.position,to,alignment_probe);
         mover=body_pose(ant,heading,attachment(geometry_view(s,limits_),ant,heading));
     }
+    bool meal_precision=false;
+    if (mover && floor_meal_stances(s) && meal_floor_pose(s,ant.id,*mover,to,half)) {
+        const auto care=s.care.find(ant.id);
+        const auto peer=care!=s.care.end() && care->second.enabled && care->second.act==CareAct::ApproachNestmate &&
+            care->second.destination==to ? query_ant({s.world,care->second.target}) : std::nullopt;
+        meal_precision=meal_probe || (peer && peer->stage==LifeStage::Adult);
+    }
+    const bool floor_precision=anatomical && uses_floor_body_clearance(s,ant,to,half);
+    const auto reach=distance(ant.position,to)+((floor_precision || meal_precision)?.009:ant.caste==Caste::Queen?.007:.0055);
     for (const auto& row:s.ants.identities) {
         if (row.id==ant.id) continue;
         const auto other=s.ants.get(s.ants.index.at(row.id));
         if (other.stage!=LifeStage::Adult) continue;
         const bool anatomically_near=mover && distance(ant.position,other.position)<=reach;
+        const auto other_half=body_half(other.id);
+        bool precise_meal_peer=false;
         if (anatomically_near) {
             const auto obstacle=*query_body({s.world,other.id});
+            precise_meal_peer=meal_precision && other.position.y==ant.position.y &&
+                meal_floor_pose(s,other.id,obstacle,other.position,other_half);
             if (anatomical_sweep_hits(*mover,to,obstacle) ||
-                (floor_precision && heading && !anatomy_turn_clears(*mover,previous,heading,obstacle))) return false;
+                ((floor_precision || precise_meal_peer) && heading && !anatomy_turn_clears(*mover,previous,heading,obstacle))) return false;
         }
-        const auto other_half=body_half(other.id);
         const auto plan=include_plans?query_worker_motion({s.world,other.id}):std::nullopt;
+        if (!plan && precise_meal_peer) continue;
         if (!plan && floor_precision && other.position.y==ant.position.y &&
             uses_floor_body_clearance(s,other,other.position,other_half)) continue;
         const auto width=(half+other_half)*quantum;
