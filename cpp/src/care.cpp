@@ -146,7 +146,8 @@ FoodMass WorldRuntime::meal_signal(const AntState& recipient,const PhysiologySta
 }
 
 PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM target,
-                                         const BodyPose* partner,std::span<const PositionM> work_stances) const {
+                                         const BodyPose* partner,std::span<const PositionM> work_stances,
+                                         std::uint8_t* leg_budget) const {
     const auto& s=*state_;
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
@@ -195,6 +196,7 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
         std::uint8_t facing;
         std::int64_t travelled_um, remaining_um;
         bool initial;
+        std::uint8_t legs;
     };
     const auto order=[](const Stance& a,const Stance& b) {
         const auto rank=[](const Stance& p) {
@@ -207,20 +209,22 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
     // physically complete route. It can move away from a mouth to make room
     // for a turn. The chosen step still passes real transaction validation.
     std::priority_queue<Stance,std::vector<Stance>,decltype(order)> open(order);
-    using PoseKey=std::tuple<double,double,std::uint8_t>;
+    using PoseKey=std::tuple<double,double,std::uint8_t,std::uint8_t>;
+    const auto distinguish_depth=leg_budget && !local_needs(s);
     std::map<PoseKey,std::int64_t> best;
     const auto original=*query_body({s.world,adult.id});
     if (meets(original)) return adult.position;
     const auto facing=std::max<std::uint8_t>(1,actor_facing(s,adult.id));
-    open.push({adult.position,adult.position,facing,0,remaining(original),true});
-    best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing},0);
+    open.push({adult.position,adult.position,facing,0,remaining(original),true,0});
+    best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing,0},0);
     const bool detour=aligned_stride || !work_stances.empty();
     const unsigned max_search=detour?384:192;
     const std::int64_t action_cost=detour?500:0;
     for (unsigned expanded=0;!open.empty() && expanded<max_search;) {
         const auto current=open.top();
         open.pop();
-        if (best.at({current.site.x,current.site.z,current.facing})!=current.travelled_um) continue;
+        if (best.at({current.site.x,current.site.z,current.facing,distinguish_depth?current.legs:0})!=current.travelled_um) continue;
+        const auto legs=leg_budget ? static_cast<std::uint8_t>(current.legs+1) : std::uint8_t{};
         ++expanded;
         auto from=adult;
         from.position=current.site;
@@ -233,7 +237,7 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
             const auto heading=body_travel_heading(view,from,next.position,current.facing,align,feeding_alignment_m(s,adult.caste));
             const auto cost=current.travelled_um+action_cost+
                 std::llround(portable_care_distance(from.position,next.position)*1e6);
-            const PoseKey key{next.position.x,next.position.z,heading};
+            const PoseKey key{next.position.x,next.position.z,heading,distinguish_depth?legs:0};
             if (const auto prior=best.find(key); prior!=best.end() && prior->second<=cost) continue;
             if (!anatomy_sweep(view,from,next.position,current.facing,heading)) continue;
             const auto sweep=body_pose(from,heading,attachment(view,from,heading));
@@ -245,9 +249,13 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
             if (current.initial && !clear_worker_traffic(adult,next.position,half,true,align)) continue;
             const auto end=body_pose(next,heading,attachment(view,next,heading));
             const auto first=current.initial ? next.position : current.first;
-            if (meets(end)) return first;
+            if (meets(end)) {
+                if (leg_budget) *leg_budget=legs;
+                return first;
+            }
+            if (leg_budget && legs==*leg_budget) continue;
             best.insert_or_assign(key,cost);
-            open.push({next.position,first,heading,cost,remaining(end),false});
+            open.push({next.position,first,heading,cost,remaining(end),false,legs});
         }
     }
     return adult.position;
@@ -263,10 +271,11 @@ PositionM WorldRuntime::wick_approach(const AntState& ant,PositionM wick) const 
 // Search only the visible neighborhood. Return the first paid move, then
 // re-sense after the move. Neither a predicted pose nor a cue transfers food.
 std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
-        const AntState& donor,const AntState& founder) const {
+        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget) const {
     const auto& s=*state_;
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
+    const bool joint=joint_meal_route(s);
     struct Pose {BodyPose body; std::uint8_t heading;};
     const std::array ants{donor,founder};
     const std::array start{Pose{*query_body({s.world,donor.id}),actor_facing(s,donor.id)},
@@ -288,6 +297,15 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         return std::tuple{p.body.center_m.x,p.body.center_m.y,p.body.center_m.z,p.heading};
     };
     using Key=decltype(key(start[0]));
+    const std::array halves{body_half(donor.id),body_half(founder.id)};
+    std::map<EntityId,std::pair<BodyPose,std::int32_t>> obstacles;
+    if (joint) for (const auto& actor:ants) {
+        for (const auto ref:query_neighborhood({s.world,actor.id},radius+.009).ants) {
+            if (ref.id==donor.id || ref.id==founder.id || obstacles.contains(ref.id)) continue;
+            if (query_ant(ref)->stage==LifeStage::Adult)
+                obstacles.emplace(ref.id,std::pair{*query_body(ref),body_half(ref.id)});
+        }
+    }
     std::set<std::pair<Key,Key>> visited{{key(start[0]),key(start[1])}};
     struct Edge {Pose arrival; BodyPose swept;};
     std::array<std::map<Key,std::vector<Edge>>,2> terrain;
@@ -302,7 +320,8 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
             to.position=snap_micro(translated(from.position,scale(body_heading(dir),length)));
             if (!within_distance(ants[i].position,to.position,radius,true) ||
                 !clear_care_segment(from.position,to.position,body_half(from.id))) continue;
-            const auto heading=body_travel_heading(view,from,to.position,pose.heading,true);
+            const auto heading=body_travel_heading(view,from,to.position,pose.heading,true,
+                                                  joint ? feeding_alignment_m(s,from.caste) : .00019);
             if (!anatomy_sweep(view,from,to.position,pose.heading,heading)) continue;
             result.push_back({{body_pose(to,heading,attachment(view,to,heading)),heading},
                               body_pose(from,heading,attachment(view,from,heading))});
@@ -310,7 +329,8 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         return result;
     };
     std::vector<Node> frontier{{start,{},0}};
-    for (unsigned depth=0;depth<5;++depth) {
+    const auto depth_limit=joint ? (leg_budget ? *leg_budget : joint_meal_legs) : 5;
+    for (unsigned depth=0;depth<static_cast<unsigned>(depth_limit);++depth) {
         std::vector<Node> next;
         for (const auto& node:frontier) for (unsigned i=0;i<2;++i) {
             const auto& peer=node.pair[1-i].body;
@@ -322,10 +342,24 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
                 const auto id=std::pair{key(pair[0]),key(pair[1])};
                 if (visited.contains(id) || !visible(pose.body,peer) ||
                     anatomical_sweep_hits(edge.swept,to,peer)) continue;
+                if (joint) {
+                    const auto origin=node.pair[i].body.center_m;
+                    const auto clear=[&](const BodyPose& obstacle,std::int32_t half) {
+                        return !anatomical_sweep_hits(edge.swept,to,obstacle) &&
+                            center_sweep_clears(origin,to,obstacle.center_m,(halves[i]+half)*s.geometry->config.quantum_m);
+                    };
+                    if (!clear(peer,halves[1-i]) ||
+                        std::any_of(obstacles.begin(),obstacles.end(),[&](const auto& row) {
+                            return !clear(row.second.first,row.second.second);
+                        })) continue;
+                }
                 if (!depth && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
                 visited.insert(id);
                 const auto first=depth ? node.first : Move{ants[i].id,to};
-                if (mouths_meet(pose.body,peer)) return first;
+                if (mouths_meet(pose.body,peer)) {
+                    if (leg_budget) *leg_budget=static_cast<std::uint8_t>(depth+1);
+                    return first;
+                }
                 const auto delta=displacement(peer.mouth_m,pose.body.mouth_m);
                 const auto gap=portable_care_distance(pose.body.mouth_m,peer.mouth_m);
                 const auto behind=std::max(0.,-dot(delta,pose.body.forward))+std::max(0.,dot(delta,peer.forward));
@@ -874,10 +908,30 @@ std::optional<PositionM> WorldRuntime::local_resting_site(const AntState& ant) c
     }
     return {};
 }
-void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act,
-                                     EntityId target,std::uint8_t remaining) {
+bool WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,PositionM site,ScheduledId source,CareAct act,
+                                     EntityId target,std::uint8_t remaining,bool continuation) {
     auto& s=*state_;
     const AntRef ref{s.world,ant.id};
+    if (bounded_meal_route(s) && act==CareAct::ApproachNestmate) {
+        const AntRef peer{s.world,target};
+        if (const auto other=query_ant(peer); other && other->stage==LifeStage::Adult) {
+            const auto mouth=query_body(ref)->mouth_m;
+            const auto partner=*query_body(peer);
+            if (other->colony!=ant.colony || query_worker_motion(peer) ||
+                !within_distance(mouth,partner.mouth_m,s.care_profile->perception_radius_m,true) ||
+                !spatially_clear(mouth,partner.mouth_m)) return false;
+            auto legs=local_needs(s) && !continuation ? max_meal_route_legs : static_cast<std::uint8_t>(remaining+1);
+            if (joint_meal_route(s)) {
+                if (!continuation) legs=joint_meal_legs;
+                const bool receiving=founding_foundress(ant.id);
+                const auto plan=receiving ? feeding_encounter(*other,ant,&legs) : feeding_encounter(ant,*other,&legs);
+                if (!plan || plan->first!=ant.id) return false;
+                site=plan->second;
+            } else site=local_floor_route(ant,partner.mouth_m,&partner,{},&legs);
+            if (site==ant.position) return false;
+            remaining=static_cast<std::uint8_t>(legs-1);
+        }
+    }
     if (ant.caste==Caste::Worker) change_behavior(tx,ref,IndividualBehavior::Rest,source,true);
     CareState care;
     if (s.care.contains(ant.id)) care=s.care.at(ant.id);
@@ -898,6 +952,7 @@ void WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
     WorldEvent fact; fact.kind=FactKind::CareProgramChanged; fact.actor=ant.id; fact.colony=ant.colony;
     fact.stage=ant.stage; fact.position=ant.position; fact.payload=1; tx.fact(fact);
     observe(tx,ant.id,source,{ObservationPhase::Selected,care.act,target,care.bout,s.m.now,false,site});
+    return true;
 }
 void WorldRuntime::configure_biology(const SpeciesCareProfile& profile, const EnvironmentCareProfile& environment) {
     auto& s=*state_;
@@ -1473,6 +1528,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         f.colony=ant.colony; f.stage=ant.stage; f.position=destination;
         record_worker_move(tx,f,a.position,c.began_at,true);
         tx.fact(f);
+        if (local_needs(s)) notify_meal_contact(tx,ant);
     };
     if (event.kind==ScheduledEvent::Kind::CareEnd && outcome==Outcome::Success) {
         if (care_motion(c.act) && c.act!=CareAct::ArrangeBrood) {
@@ -1605,9 +1661,22 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         const bool reached=!failed && target && target->alive() && target->colony==a.colony &&
             (oral ? oral_contact(worker,*target) && !query_worker_motion(other) :
             within_contact(worker.position,target->position,s.config) && spatially_clear(worker.position,target->position));
+        if (bounded_meal_route(s) && oral && !failed && !reached && c.search_remaining) {
+            if (start_resting_move(tx,worker,c.destination,event.id,c.act,c.target,static_cast<std::uint8_t>(c.search_remaining-1),true)) return;
+            if (joint_meal_route(s) && !query_worker_motion(other) && !care_owned(s,target->id)) {
+                const bool receiving=founding_foundress(worker.id);
+                const auto& donor=receiving ? *target : worker;
+                const auto& recipient=receiving ? worker : *target;
+                if (payable_local_meal(donor,recipient)) {
+                    auto legs=c.search_remaining;
+                    const auto plan=feeding_encounter(donor,recipient,&legs);
+                    if (plan && plan->first==target->id) request_autonomy_review(tx,target->id,meal_request_wake);
+                }
+            }
+        }
         if (meal_rendezvous(s) && founding_foundress(worker.id)) {
             if (reached) request_food_review(tx,worker,c.target);
-            if (!failed && !reached && c.search_remaining>1) {
+            if (!bounded_meal_route(s) && !failed && !reached && c.search_remaining>1) {
                 const auto donor=local_donor(worker);
                 if (local_solicitation(s) && donor && donor->first==worker.position)
                     request_food_review(tx,worker,donor->second);
@@ -1618,7 +1687,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             // Contact leaves the worker free to offer through its normal nutrition action.
             return;
         }
-        if (crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
+        if (!bounded_meal_route(s) && crop_exchange(s) && !failed && !reached && oral && target->alive() && c.search_remaining &&
             !query_worker_motion(other)) {
             if (local_solicitation(s) && founding_foundress(c.target)) {
                 const auto leg=feeding_encounter(worker,*target);

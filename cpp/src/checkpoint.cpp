@@ -197,7 +197,11 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==stimulus_final_leg_schema && version==stimulus_final_leg_physics) ||
+        ensure((outer_schema==continuous_meal_schema && version==continuous_meal_physics) ||
+               (outer_schema==joint_meal_schema && version==joint_meal_physics) ||
+               (outer_schema==local_needs_schema && version==local_needs_physics) ||
+               (outer_schema==meal_route_schema && version==meal_route_physics) ||
+               (outer_schema==stimulus_final_leg_schema && version==stimulus_final_leg_physics) ||
                (outer_schema==stimulus_mouth_schema && version==stimulus_mouth_physics) ||
                (outer_schema==stimulus_intent_schema && version==stimulus_intent_physics) ||
                (outer_schema==stimulus_priority_schema && version==stimulus_priority_physics) ||
@@ -482,7 +486,7 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 !key.priority && !key.tie && !e.payload && !e.resource.value && e.requested_ug && e.destination==PositionM{} &&
                 e.stage==LifeStage::Egg && e.action==DiagnosticAction::Record && e.observed_position_revision<=s->ants.get(s->ants.index.at(e.actor)).position_revision,"invalid protein-return action");
         } else if (e.kind==ScheduledEvent::Kind::AutonomyWake) {
-            const auto newest_wake=local_stimulus(*s) ? local_stimulus_wake : responsive_meal(*s) ? solicited_meal_wake :
+            const auto newest_wake=local_needs(*s) ? meal_request_wake : local_stimulus(*s) ? local_stimulus_wake : responsive_meal(*s) ? solicited_meal_wake :
                 sustained_supply(*s) ? carbohydrate_delivery_wake : completed_return_wake;
             ensure(s->social && s->autonomy.contains(e.actor) && s->autonomy.at(e.actor).wake==e.id &&
                 key.phase==Phase::Reschedule && !key.priority && !key.tie &&
@@ -507,7 +511,8 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
                 const bool physiological = e.kind == ScheduledEvent::Kind::Physiology;
                 ensure(e.id == (physiological ? p.physiology_event : p.behavior_event) &&
                     e.key.phase == (physiological ? Phase::Environment : Phase::Perception) &&
-                    !e.payload && !e.requested_ug && !e.observed_position_revision, "invalid physiology wake ownership");
+                    (!e.payload || (physiological && local_needs(*s) && e.payload<=(hunger_input|thirst_input|brood_input))) &&
+                    !e.requested_ug && !e.observed_position_revision, "invalid physiology wake ownership");
             } else {
                 ensure(e.key.phase == Phase::Resolution && e.requested_ug &&
                     e.observed_position_revision <= s->ants.get(s->ants.index.at(e.actor)).position_revision,

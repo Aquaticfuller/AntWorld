@@ -161,11 +161,14 @@ void WorldRuntime::request_autonomy_review(Transaction& tx,EntityId actor,std::u
   const auto found=s.autonomy.find(actor);
   if (found==s.autonomy.end()) return;
   auto a=found->second;
-  if (!a.enabled || !s.queue_index.contains(a.wake)) return;
-  const auto key=s.queue_index.at(a.wake);
+  if (!a.enabled) return;
+  const auto pending=s.queue_index.find(a.wake);
+  if (pending==s.queue_index.end() && (!local_needs(s) || s.ants.get(s.ants.index.at(actor)).stage!=LifeStage::Adult)) return;
   const auto at=after(s.m.now,1);
-  if (key.time<=at) return;
-  tx.remove(key);
+  if (pending!=s.queue_index.end()) {
+    if (pending->second.time<=at) return;
+    tx.remove(pending->second);
+  }
   ScheduledEvent review;
   review.kind=ScheduledEvent::Kind::AutonomyWake;
   review.actor=actor;
@@ -174,6 +177,55 @@ void WorldRuntime::request_autonomy_review(Transaction& tx,EntityId actor,std::u
   review.key={at,Phase::Reschedule,0,0,0};
   a.wake=tx.insert(review);
   tx.autonomy.set(actor,a);
+}
+bool WorldRuntime::payable_local_meal(const AntState& donor,const AntState& recipient) const {
+  const auto& s=*state_;
+  if (donor.id==recipient.id || donor.colony!=recipient.colony || donor.stage!=LifeStage::Adult ||
+      (recipient.stage!=LifeStage::Adult && recipient.stage!=LifeStage::Larva) ||
+      !s.social->exchange_enabled || !s.founding_reserves.contains(donor.id) ||
+      !s.founding_reserves.contains(recipient.id)) return false;
+  const auto d=query_physiology({s.world,donor.id});
+  const auto r=query_physiology({s.world,recipient.id});
+  if (!d || !r || active_expenditure(*d) || d->behavior==IndividualBehavior::Forage ||
+      d->behavior==IndividualBehavior::Excavate || r->crop.total_ug()>=r->config.crop_capacity_ug) return false;
+  const auto& f=s.founding->profile;
+  if (recipient.stage==LifeStage::Larva && founding_foundress(donor.id)) {
+    const auto amount=founding_ration(f,*d,*query_founding({s.world,donor.id}),*r,*query_founding({s.world,recipient.id}),
+                                     true,provision_callow_water(s));
+    return amount.lipid_ug || amount.crop.total_ug();
+  }
+  if (donor.caste!=Caste::Worker) return false;
+  const auto offer=contact_offer(s,founding_gift_supply(f,*d),*d,*r,recipient.stage);
+  if (recipient.stage==LifeStage::Adult) return meal_signal(recipient,*r,offer).total_ug()!=0;
+  return ingredient_min(offer,founding_larval_demand(f,*r,*query_founding({s.world,recipient.id}),
+                                                   provision_callow_water(s))).total_ug()!=0;
+}
+void WorldRuntime::notify_nutritional_need(Transaction& tx,const AntState& recipient,std::uint64_t inputs) {
+  const auto& s=*state_;
+  if (!inputs) return;
+  const bool adult=recipient.stage==LifeStage::Adult;
+  const auto cue=adult ? (inputs&thirst_input ? thirst_wake : hunger_wake) : brood_need_wake;
+  if (adult) request_autonomy_review(tx,recipient.id,cue);
+  const auto reach=s.care_profile->perception_radius_m;
+  const auto tip=adult ? query_body({s.world,recipient.id})->mouth_m : recipient.position;
+  for (const auto ref : query_neighborhood({s.world,recipient.id},reach+.009).ants) {
+    const auto peer=*query_ant(ref);
+    if (!payable_local_meal(peer,recipient)) continue;
+    const auto mouth=query_body(ref)->mouth_m;
+    if (within_distance(mouth,tip,reach,true) && spatially_clear(mouth,tip))
+      request_autonomy_review(tx,peer.id,adult ? meal_request_wake : brood_need_wake);
+  }
+}
+void WorldRuntime::notify_meal_contact(Transaction& tx,const AntState& moved) {
+  const auto& s=*state_;
+  if (moved.stage!=LifeStage::Adult || !s.surface || moved.position.y>=s.surface->config.origin_m.y) return;
+  for (const auto ref : query_neighborhood({s.world,moved.id},s.config.contact_distance_m+.009).ants) {
+    const auto peer=*query_ant(ref);
+    if (payable_local_meal(moved,peer) && meal_in_reach(moved,peer))
+      request_autonomy_review(tx,moved.id,peer.stage==LifeStage::Larva ? brood_need_wake : mouth_contact_wake);
+    if (payable_local_meal(peer,moved) && meal_in_reach(peer,moved))
+      request_autonomy_review(tx,peer.id,mouth_contact_wake);
+  }
 }
 void WorldRuntime::notify_local_food_delivery(Transaction& tx,const WorldEvent& delivery) {
   const auto& s=*state_;
@@ -223,7 +275,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     EntityId contact_target;
     CareAct transit{CareAct::NestReposition};
     std::uint8_t meal_steps{};
-    bool queen_meal{}, drink{};
+    bool queen_meal{}, drink{}, worker_meal{};
     EntityId solicitation;
   };
   std::vector<Choice> choices(0);
@@ -285,8 +337,9 @@ void WorldRuntime::resolve_autonomy_wakes(
       }
     }
     const bool return_review=wake.payload==completed_return_wake || wake.payload==carbohydrate_delivery_wake;
-    const bool stimulated=wake.payload==local_stimulus_wake;
-    const bool focused=stimulated && stimulus_meal_priority(s);
+    const bool stimulated=wake.payload>=local_stimulus_wake;
+    const bool need_search=wake.payload==hunger_wake || wake.payload==thirst_wake;
+    const bool focused=stimulated && stimulus_meal_priority(s) && !need_search;
     const bool regular_work=!wake.payload || (stimulated && !focused);
     const bool returned=social_crop(s) && return_review && p.behavior==IndividualBehavior::Forage && foraging_home;
     const bool can_provision=!at_wick && !wick_step && local_founding_feeding(s) && local_founding_provisioning(s,ant.id) &&
@@ -562,7 +615,10 @@ void WorldRuntime::resolve_autonomy_wakes(
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (at_meal || meal_step) {
       if (at_meal) {
-        if (ant.caste==Caste::Worker) choice.behavior=IndividualBehavior::Rest;
+        if (ant.caste==Caste::Worker) {
+          choice.behavior=IndividualBehavior::Rest;
+          choice.worker_meal=local_needs(s);
+        }
         else choice.queen_meal=local_founding_feeding(s) && founding_foundress(ant.id);
         urgent=true;
       } else {
@@ -924,6 +980,7 @@ void WorldRuntime::resolve_autonomy_wakes(
     f.random_value = sample.candidates_examined;
     tx.fact(f);
     if (choice.queen_meal) draw_foundress_meal(tx,ant,choice.event.id);
+    if (choice.worker_meal) request_nest_intake(tx,ant);
     if (choice.drink) draw_founding_water(tx,choice.event,ant);
     schedule_autonomy(tx, id);
   }

@@ -171,6 +171,7 @@ private:
     void resolve_nutrition_wakes(Transaction&, const std::vector<ScheduledEvent>&);
     void resolve_nutrition_action(Transaction&, const ScheduledEvent&, WorldEvent&);
     void continue_nutrition_behavior(Transaction&, const ScheduledEvent&, const WorldEvent&);
+    void continue_paid_meal(Transaction&, const WorldEvent&);
     void schedule_physiology(Transaction&, EntityId);
     void stop_physiology(Transaction&, EntityId, DeathCause);
     void synchronize_physiology(Transaction&, EntityId);
@@ -190,13 +191,17 @@ private:
     void request_food_review(Transaction&, const AntState& founder, EntityId worker, bool wake_founder=false);
     void request_autonomy_review(Transaction&, EntityId, std::uint64_t);
     void notify_local_food_delivery(Transaction&, const WorldEvent&);
+    void notify_nutritional_need(Transaction&, const AntState&, std::uint64_t);
+    void notify_meal_contact(Transaction&, const AntState&);
+    [[nodiscard]] bool payable_local_meal(const AntState& donor, const AntState& recipient) const;
+    void request_nest_intake(Transaction&, const AntState&);
     bool notify_refill_progress(Transaction&, const AntState& before);
     void notify_return(Transaction&, EntityId, bool carbohydrate_delivered);
     [[nodiscard]] bool local_space_demand(AntRef, std::size_t contacts) const;
     [[nodiscard]] bool clear_resting_site(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> local_resting_site(const AntState&) const;
-    void start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
-                            EntityId target = {}, std::uint8_t remaining = 0);
+    bool start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
+                            EntityId target = {}, std::uint8_t remaining = 0, bool continuation = false);
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
     [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true,bool alignment_probe=false) const;
     [[nodiscard]] bool clear_body_motion(const AntState&, PositionM,bool alignment_probe=false) const;
@@ -206,9 +211,10 @@ private:
     [[nodiscard]] PositionM mouth_approach(const AntState&, PositionM, std::optional<LifeStage>,
                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
-    [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& founder) const;
+    [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& recipient,
+                                                                                std::uint8_t* leg_budget = nullptr) const;
     [[nodiscard]] PositionM local_floor_route(const AntState&, PositionM, const BodyPose* partner,
-                                              std::span<const PositionM> work_stances = {}) const;
+                                              std::span<const PositionM> work_stances = {}, std::uint8_t* leg_budget = nullptr) const;
     [[nodiscard]] PositionM wick_approach(const AntState&, PositionM) const;
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;

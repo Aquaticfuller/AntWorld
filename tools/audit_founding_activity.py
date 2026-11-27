@@ -352,7 +352,7 @@ def main():
     mode.add_argument("--verify-stimulus", type=int, choices=(2, 3), help="Verify one saved local stimulus and continuation")
     mode.add_argument("--verify-archive", action="store_true", help="Check full SQLite history and bytewise continuation")
     mode.add_argument("--verify-final-leg", action="store_true", help="Recheck the selected adult approach at its last allowed leg")
-    parser.add_argument("--stimulus-version", type=int, choices=(82, 83, 84, 85, 86), default=86)
+    parser.add_argument("--stimulus-version", type=int, choices=(82, 83, 84, 85, 86, 87, 88, 89, 90), default=90)
     parser.add_argument("--model", choices=("protected", *MODELS.values()), default=MODELS[80])
     parser.add_argument("--minutes", type=int, choices=(5, 15))
     parser.add_argument("--dwell-minutes", type=int, choices=(15, 60), default=60)

@@ -48,15 +48,15 @@ void WorldRuntime::set_activity_work(Transaction& tx, EntityId actor, ScheduledI
     auto p = s.physiology.at(actor);
     p.active_work = next;
     tx.physiology.set(actor, p);
-    if (p.config.active_nj_per_ms && p.body_energy_nj && p.hydration_ug) {
+    if ((p.config.active_nj_per_ms || local_needs(s)) && p.body_energy_nj && p.hydration_ug) {
         // Keep an existing identical boundary and its insertion order. A
         // phase change only needs to reschedule when the threshold moves.
         const auto& events = s.queue_index;
         const auto current = events.find(p.physiology_event);
         const auto target = s.founding && s.founding_reserves.contains(actor)
-            ? detail::next_founding_physiology(s.founding->profile,p,s.founding_reserves.at(actor),ant.stage,founding_foundress(actor))
-            : detail::next_physiology(p,ant.stage);
-        if (current == events.end() || current->second.time != target)
+            ? founding_deadline(s,p,s.founding_reserves.at(actor),ant.stage,founding_foundress(actor))
+            : FoundingDeadline{detail::next_physiology(p,ant.stage)};
+        if (current == events.end() || current->second.time != target.time || s.queue.at(current->second).payload!=target.inputs)
             schedule_physiology(tx, actor);
     }
     WorldEvent f;
@@ -107,6 +107,7 @@ void WorldRuntime::draw_founding_water(Transaction& tx, const ScheduledEvent& ev
         s.m.ledger.available = subtract(s.m.ledger.available, dose);
         p.crop = sum(p.crop, dose);
         tx.physiology.set(ant.id, p);
+        if (local_needs(s)) schedule_physiology(tx,ant.id);
         WorldEvent f;
         f.kind = worker ? FactKind::WorkerWaterIngested : FactKind::FoundressWaterIngested;
         f.actor = ant.id; f.colony = ant.colony; f.stage = ant.stage; f.position = ant.position;

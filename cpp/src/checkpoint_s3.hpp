@@ -310,8 +310,10 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
             ensure(saved.body_energy_nj && saved.hydration_ug && saved.next_absorption >= saved.updated_at &&
                 s.queue_index.contains(saved.physiology_event), "missing living physiological schedule");
             const auto& e = s.queue.at(s.queue_index.at(saved.physiology_event));
+            const auto due=enrolled ? founding_deadline(s,saved,s.founding_reserves.at(id),ant.stage,founding.founder(id)) :
+                FoundingDeadline{next_physiology(saved,ant.stage)};
             ensure(e.actor == id && e.kind == ScheduledEvent::Kind::Physiology &&
-                e.key.time == founding.next(id, saved, ant.stage, enrolled ? &s.founding_reserves.at(id) : nullptr),
+                e.key.time == due.time && e.payload==due.inputs,
                 "wrong physiology threshold schedule");
             if (saved.active_work && saved.active_work->value) {
                 ensure(s.queue_index.contains(*saved.active_work), "activity lacks a pending action");
@@ -328,8 +330,9 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
             "dead physiology still scheduled");
         const bool caring=s.care.contains(id) && s.care.at(id).enabled;
         const bool nursing = ant.alive() && (saved.behavior == IndividualBehavior::Nurse || saved.behavior == IndividualBehavior::Rest || caring);
-        ensure(nursing == (saved.behavior_event.value != 0), "nutrition behavior schedule mismatch");
-        if (nursing) {
+        ensure((!saved.behavior_event.value || nursing) && (!nursing || saved.behavior_event.value || (local_needs(s) && !caring)),
+               "nutrition behavior schedule mismatch");
+        if (saved.behavior_event.value) {
             ensure(ant.stage == LifeStage::Adult && (ant.caste == Caste::Worker || caring) && s.queue_index.contains(saved.behavior_event), "missing behavior event");
             const auto& e = s.queue.at(s.queue_index.at(saved.behavior_event));
             ensure(e.actor == id && (e.kind == ScheduledEvent::Kind::NutritionWake || e.key.phase == Phase::Resolution || (caring && e.kind==ScheduledEvent::Kind::CareWake)), "foreign behavior ownership");

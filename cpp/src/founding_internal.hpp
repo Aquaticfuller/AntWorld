@@ -349,6 +349,44 @@ inline std::uint64_t wick_shortfall(const FoundingProfile& f, const PhysiologySt
     return deficit(std::min(p.config.hydration_capacity_ug,multiply(queen?3:2,day)),held);
 }
 
+inline std::uint64_t founding_need_inputs(const auto& s,const PhysiologyState& p,const FoundingReserve& r,
+                                          LifeStage stage,bool queen) {
+    const auto& f=s.founding->profile;
+    if (stage==LifeStage::Larva) return urgent_larval_upkeep(f,p,r) ? brood_input : 0;
+    if (stage!=LifeStage::Adult) return 0;
+    const auto timing=worker_timing(s,Caste::Worker);
+    const auto horizon=queen || !timing ? p.config.absorption_period : timing->check_interval;
+    const auto need=founding_resupply_shortfall(f,p,r,queen,horizon);
+    return (need.carbs_ug ? hunger_input : 0) | (wick_shortfall(f,p,queen) ? thirst_input : 0);
+}
+
+struct FoundingDeadline { SimTime time; std::uint64_t inputs{}; };
+inline FoundingDeadline founding_deadline(const auto& s,const PhysiologyState& p,const FoundingReserve& r,
+                                           LifeStage stage,bool queen) {
+    const auto& f=s.founding->profile;
+    const auto ordinary=next_founding_physiology(f,p,r,stage,queen);
+    if (!local_needs(s) || (stage!=LifeStage::Adult && stage!=LifeStage::Larva) ||
+        ordinary.milliseconds-p.updated_at.milliseconds<=1) return {ordinary};
+    const auto current=founding_need_inputs(s,p,r,stage,queen);
+    // Predict within one unchanged upkeep segment. Absorption, expenditure and
+    // crop debits re-evaluate this forecast using their committed balances.
+    const auto new_inputs=[&](std::int64_t dt) {
+        auto future=p;
+        auto reserve=r;
+        settle_founding(f,future,reserve,stage,queen,after(p.updated_at,dt));
+        return founding_need_inputs(s,future,reserve,stage,queen)&~current;
+    };
+    auto right=ordinary.milliseconds-p.updated_at.milliseconds-1;
+    if (!new_inputs(right)) return {ordinary};
+    std::int64_t left=1;
+    while (left<right) {
+        const auto middle=left+(right-left)/2;
+        if (new_inputs(middle)) right=middle;
+        else left=middle+1;
+    }
+    return {after(p.updated_at,left),new_inputs(left)};
+}
+
 inline std::uint64_t crop_for_sharing(const FoundingProfile& f, const PhysiologyState& p, bool queen) {
     // ENGINEERING_FIXTURE. The crop can hold food for the next local
     // exchange. Hold at most one permissible ration and only while the

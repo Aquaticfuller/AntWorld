@@ -142,6 +142,7 @@ void WorldRuntime::resolve_founding_feed(Transaction& tx, const ScheduledEvent& 
     tx.set_founding(a.id, maternal);
     tx.set_founding(b.id, larva);
     schedule_physiology(tx, a.id);
+    if (local_needs(s)) schedule_physiology(tx,b.id);
     fact.kind = FactKind::FoundingRation;
     fact.random_value = amount.lipid_ug;
     fact.transferred = amount.crop;

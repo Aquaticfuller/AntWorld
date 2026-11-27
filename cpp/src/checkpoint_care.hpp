@@ -114,7 +114,8 @@ template<class S> void read_care(Reader& r,S& s,const RuntimeLimits& limits,bool
                     (motion && (c.act==CareAct::PickUpBrood || c.act==CareAct::PlaceBrood))),"retrieval plan target mismatch");
         }
         if (motion) {
-            ensure(c.search_remaining<=profile.motion->search_steps && (c.enabled || (!c.returning && !c.search_remaining)) &&
+            const auto allowed_search=local_needs(s) && c.act==CareAct::ApproachNestmate ? max_meal_route_legs-1 : profile.motion->search_steps;
+            ensure(c.search_remaining<=allowed_search && (c.enabled || (!c.returning && !c.search_remaining)) &&
                    (!c.returning || (integrated_care(s) && !c.carrying_brood)) &&
                    (!integrated_care(s) || !c.enabled || (s.autonomy.contains(id) && s.autonomy.at(id).enabled)),
                    "invalid care motion ownership");

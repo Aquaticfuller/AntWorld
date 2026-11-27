@@ -322,11 +322,13 @@ void WorldRuntime::resolve_actions(Transaction& tx, const std::vector<ScheduledE
                  (!sustained_supply(s) && s.long_term->complete_depot_visits)))))
             notify_return(tx,ant.id,f.kind==FactKind::FoodDelivered && f.transferred.carbs_ug!=0);
         tx.fact(f);
+        if (f.kind==FactKind::Moved && before.position!=ant.position && local_needs(s)) notify_meal_contact(tx,ant);
         if (f.kind==FactKind::FoodDelivered && local_stimulus(s)) notify_local_food_delivery(tx,f);
         observe_entrance_contact(tx,f);
         record_recruitment_cue(tx,f);
         if (f.kind==FactKind::SoilFilled || f.kind==FactKind::SoilExcavated) validate_active_care(tx);
         observe_legacy_action(tx,e,f);
+        if (continue_contact_meal(s) && f.kind==FactKind::NutritionTransferred) continue_paid_meal(tx,f);
     }
 }
 void WorldRuntime::advance_to(SimTime target) {

@@ -52,14 +52,19 @@ void WorldRuntime::synchronize_physiology(Transaction& tx, EntityId id) {
 }
 void WorldRuntime::schedule_physiology(Transaction& tx, EntityId id) {
     auto& s = *state_; auto p = s.physiology.at(id); const auto ant = s.ants.get(s.ants.index.at(id));
+    const auto due = s.founding && s.founding_reserves.contains(id) && ant.alive()
+        ? founding_deadline(s,p,s.founding_reserves.at(id),ant.stage,founding_foundress(id))
+        : FoundingDeadline{ant.alive() ? next_physiology(p,ant.stage) : SimTime{}};
+    if (local_needs(s) && ant.alive() && s.queue_index.contains(p.physiology_event)) {
+        const auto& scheduled=s.queue.at(s.queue_index.at(p.physiology_event));
+        if (scheduled.key.time==due.time && scheduled.payload==due.inputs) return;
+    }
     if (p.physiology_event.value && s.queue_index.contains(p.physiology_event)) tx.remove(s.queue_index.at(p.physiology_event));
     p.physiology_event = {};
     if (ant.alive()) {
         ScheduledEvent e; e.actor = id; e.kind = ScheduledEvent::Kind::Physiology; e.issued_at = s.m.now;
-        const auto next = s.founding && s.founding_reserves.contains(id)
-            ? next_founding_physiology(s.founding->profile, p, s.founding_reserves.at(id), ant.stage, founding_foundress(id))
-            : next_physiology(p, ant.stage);
-        e.key = {next, Phase::Environment, 0, 0, 0}; p.physiology_event = tx.insert(e);
+        e.payload=due.inputs;
+        e.key = {due.time, Phase::Environment, 0, 0, 0}; p.physiology_event = tx.insert(e);
     }
     tx.physiology.set(id, p);
 }
@@ -100,6 +105,7 @@ void WorldRuntime::draw_foundress_meal(Transaction& tx, const AntState& ant, Sch
     s.m.ledger.stored=subtract(s.m.ledger.stored,meal);
     p.crop=sum(p.crop,meal);
     tx.physiology.set(ant.id,p);
+    if (local_needs(s)) schedule_physiology(tx,ant.id);
     WorldEvent fact;
     fact.kind=FactKind::FoundressNestMeal; fact.source=source; fact.actor=ant.id;
     fact.colony=ant.colony; fact.position=ant.position; fact.stage=ant.stage; fact.transferred=meal;
@@ -110,11 +116,19 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
     profiling::Scope profile(profiling::Category::Physiology);
     auto& s = *state_; const auto i = s.ants.index.at(e.actor); auto ant = s.ants.get(i); auto p = s.physiology.at(e.actor);
     if (!ant.alive() || p.physiology_event != e.id) throw std::logic_error("invalid physiology event ownership");
+    if (e.payload && local_needs(s)) {
+        synchronize_physiology(tx,e.actor);
+        schedule_physiology(tx,e.actor);
+        notify_nutritional_need(tx,ant,e.payload);
+        return;
+    }
     const auto crop_before=local_stimulus(s) ? p.crop.total_ug() : 0;
     std::optional<FoundingReserve> reserve;
     const bool queen = founding_foundress(e.actor);
+    std::uint64_t needs_before{};
     if (s.founding && s.founding_reserves.contains(e.actor)) {
         reserve = s.founding_reserves.at(e.actor);
+        if (local_needs(s)) needs_before=founding_need_inputs(s,p,*reserve,ant.stage,queen);
         settle_founding(s.founding->profile, p, *reserve, ant.stage, queen, s.m.now);
         tx.set_founding(e.actor, *reserve);
     } else settle(p, ant.stage, s.m.now);
@@ -205,12 +219,17 @@ void WorldRuntime::execute_physiology(Transaction& tx, const ScheduledEvent& e) 
                 draw_founding_water(tx, e, ant);
             if (queen && s.founding->profile.dietary && s.founding->profile.dietary->local_nest_intake)
                 draw_foundress_meal(tx,ant,e.id);
+            if (local_needs(s))
+                notify_nutritional_need(tx,ant,founding_need_inputs(s,s.physiology.at(ant.id),*reserve,ant.stage,queen)&~needs_before);
             return;
         }
     }
     tx.fact(f);
-    if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve && hatch_cue_enabled(s))
-        notify_local_hatch(tx, ant, e.id);
+    if (f.kind == FactKind::StageChanged && f.stage == LifeStage::Larva && reserve) {
+        if (hatch_cue_enabled(s)) notify_local_hatch(tx,ant,e.id);
+        if (local_needs(s) && founding_larval_demand(s.founding->profile,p,*reserve,provision_callow_water(s)).total_ug())
+            notify_nutritional_need(tx,ant,brood_input);
+    }
 }
 void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     if (state_->care.contains(ref.id) && state_->care.at(ref.id).enabled) throw std::invalid_argument("pause care before changing worker program");
@@ -218,6 +237,19 @@ void WorldRuntime::set_behavior(AntRef ref, IndividualBehavior behavior) {
     change_behavior(tx,ref,behavior);
     if (state_->autonomy.contains(ref.id) && state_->autonomy.at(ref.id).enabled) change_autonomy(tx,ref,false);
     tx.commit();
+}
+namespace {
+ScheduledEvent contact_meal_action(const auto& s, const AntState& donor, EntityId recipient) {
+    ScheduledEvent action;
+    action.kind=ScheduledEvent::Kind::Trophallaxis;
+    action.actor=donor.id;
+    action.issued_at=s.m.now;
+    action.payload=recipient.value;
+    action.requested_ug=s.physiology.at(donor.id).config.transfer_limit_ug;
+    action.observed_position_revision=donor.position_revision;
+    action.key={after(s.m.now,s.care_profile->motion->manipulation_duration.milliseconds),Phase::Resolution,0,0,0};
+    return action;
+}
 }
 void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavior behavior, ScheduledId source, bool care_motor,
                                    EntityId contacted_recipient) {
@@ -255,7 +287,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         f.wake = tx.insert(e); tx.foragers.set(ref.id, f);
     } else if (behavior == IndividualBehavior::Excavate) {
         activate_excavator(tx,ref.id);
-    } else if (behavior != IndividualBehavior::Paused && !care_motor) {
+    } else if (behavior != IndividualBehavior::Paused && !care_motor && (!local_needs(s) || contacted_recipient.value)) {
         ScheduledEvent e; e.actor = ref.id; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
         const auto timing = worker_timing(s, ant->caste);
         const auto interval = timing ? timing->check_interval : p.config.behavior_interval;
@@ -263,11 +295,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         if (contacted_recipient.value) {
             if (!adult_offers(s) || behavior!=IndividualBehavior::Nurse || !source.value)
                 throw std::logic_error("invalid unattended food offer");
-            e.kind=ScheduledEvent::Kind::Trophallaxis;
-            e.payload=contacted_recipient.value;
-            e.requested_ug=p.config.transfer_limit_ug;
-            e.observed_position_revision=ant->position_revision;
-            e.key={after(s.m.now,s.care_profile->motion->manipulation_duration.milliseconds),Phase::Resolution,0,0,0};
+            e=contact_meal_action(s,*ant,contacted_recipient);
         }
         p.behavior_event = tx.insert(e); tx.physiology.set(ref.id, p);
     }
@@ -279,6 +307,7 @@ void WorldRuntime::change_behavior(Transaction& tx, AntRef ref, IndividualBehavi
         observe(tx,ref.id,source,{ObservationPhase::Selected,CareAct::TransferNutrition,contacted_recipient,p.behavior_event,s.m.now,false});
     }
     if (s.autonomy.contains(ref.id)) { auto a=s.autonomy.at(ref.id); a.last_program_change=s.m.now; tx.autonomy.set(ref.id,a); }
+    if (local_needs(s) && !care_motor) request_nest_intake(tx,*ant);
 }
 ScheduledId WorldRuntime::submit_nutrition(const NutritionProposal& proposal) {
     auto& s = *state_; const auto ant = query_ant(proposal.actor);
@@ -397,6 +426,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
     if (receiver) {
         p.crop = subtract(p.crop, f.transferred); receiver->crop = sum(receiver->crop, f.transferred);
         tx.physiology.set(EntityId{e.payload}, *receiver); f.kind = FactKind::NutritionTransferred;
+        if (local_needs(s)) schedule_physiology(tx,EntityId{e.payload});
     } else {
         p.crop = sum(p.crop, f.transferred);
         if (e.kind == ScheduledEvent::Kind::IngestCargo) {
@@ -409,6 +439,24 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         }
     }
     tx.physiology.set(e.actor, p);
+    if (local_needs(s)) schedule_physiology(tx,e.actor);
+}
+void WorldRuntime::request_nest_intake(Transaction& tx,const AntState& ant) {
+    auto& s=*state_;
+    if (ant.caste!=Caste::Worker || !s.founding_reserves.contains(ant.id) || care_owned(s,ant.id)) return;
+    const auto projected=*query_physiology({s.world,ant.id});
+    if (projected.behavior_event.value ||
+        (projected.behavior!=IndividualBehavior::Rest && projected.behavior!=IndividualBehavior::Nurse) ||
+        projected.crop.total_ug()==projected.config.crop_capacity_ug) return;
+    const auto& colony=s.colonies.rows[s.colonies.index.at(ant.colony)];
+    if (!ant.carried_food.total_ug() && (!colony.nest_food.total_ug() || !seeks_nest_meal(ant,projected) ||
+        !mouth_at_supply(ant,depot_mouth_target(ant,colony.nest_position)))) return;
+    ScheduledEvent e;
+    e.actor=ant.id; e.kind=ScheduledEvent::Kind::NutritionWake; e.issued_at=s.m.now;
+    e.key={after(s.m.now,s.care_profile->motion->manipulation_duration.milliseconds),Phase::Perception,0,0,0};
+    auto p=s.physiology.at(ant.id);
+    p.behavior_event=tx.insert(e);
+    tx.physiology.set(ant.id,p);
 }
 void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<ScheduledEvent>& wakes) {
     profiling::Scope profile(profiling::Category::Policy);
@@ -519,6 +567,13 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
 void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledEvent& action, const WorldEvent& fact) {
     auto& s = *state_; if (!s.physiology.contains(action.actor)) return;
     auto p = s.physiology.at(action.actor); if (p.behavior_event != action.id) return;
+    if (local_needs(s)) {
+        p.behavior_event={};
+        tx.physiology.set(action.actor,p);
+        if (fact.kind==FactKind::NestIngested || fact.kind==FactKind::CargoIngested)
+            request_nest_intake(tx,s.ants.get(s.ants.index.at(action.actor)));
+        return;
+    }
     ScheduledEvent e; e.actor = action.actor; e.kind = ScheduledEvent::Kind::NutritionWake; e.issued_at = s.m.now;
     const bool ongoing_contact=s.long_term && s.long_term->post_intake_contact &&
         p.behavior==IndividualBehavior::Nurse && fact.kind==FactKind::NestIngested;
@@ -527,6 +582,21 @@ void WorldRuntime::continue_nutrition_behavior(Transaction& tx, const ScheduledE
     const auto interval = timing ? timing->check_interval : p.config.behavior_interval;
     e.key = {after(s.m.now, ongoing_contact ? 1 : interval.milliseconds), Phase::Perception, 0, 0, 0};
     p.behavior_event = tx.insert(e); tx.physiology.set(e.actor, p);
+}
+void WorldRuntime::continue_paid_meal(Transaction& tx, const WorldEvent& paid) {
+    auto& s=*state_;
+    if (!s.autonomy.contains(paid.actor) || !s.autonomy.at(paid.actor).enabled) return;
+    auto p=s.physiology.at(paid.actor);
+    if (p.behavior!=IndividualBehavior::Nurse || p.behavior_event.value) return;
+    const auto donor=query_ant({s.world,paid.actor});
+    const auto recipient=query_ant({s.world,EntityId{paid.payload}});
+    if (!donor || !recipient || recipient->stage!=LifeStage::Adult ||
+        !payable_local_meal(*donor,*recipient) || !meal_in_reach(*donor,*recipient)) return;
+    p.behavior_event=tx.insert(contact_meal_action(s,*donor,recipient->id));
+    tx.physiology.set(donor->id,p);
+    set_activity_work(tx,donor->id,p.behavior_event);
+    observe(tx,donor->id,paid.source,{ObservationPhase::Selected,CareAct::TransferNutrition,
+            recipient->id,p.behavior_event,s.m.now,false});
 }
 std::optional<PhysiologyState> WorldRuntime::query_physiology(AntRef ref) const {
     profiling::Scope profile(profiling::Category::Physiology);
