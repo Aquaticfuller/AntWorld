@@ -479,7 +479,11 @@ void WorldRuntime::resolve_autonomy_wakes(
       const bool refill_known=familiar_liquid_exit(s,ant) ||
           (remembered_refill(s) && remembered_liquid_berth(s,ant));
       const bool sugar_empty=remembered_refill(s) && !p.crop.carbs_ug;
-      if (refill_known && refill_fits &&
+      // Reserve a refill for a depleted sugar crop or a current shortfall.
+      const bool refill_wanted=!demand_refill(s) || sugar_empty ||
+          founding_resupply_shortfall(s.founding->profile,p,s.founding_reserves.at(ant.id),false,
+                                      p.config.absorption_period).total_ug()!=0;
+      if (refill_wanted && refill_known && refill_fits &&
           (!focused || ((!food_offer || sugar_empty) && !can_feed_brood)) &&
           !at_wick && !wick_step && !at_meal &&
           (!food_offer || food_offer->first!=ant.position || sugar_empty)) {

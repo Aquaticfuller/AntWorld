@@ -17,6 +17,9 @@ schedule, environment, queen reserves, and geometry. Keep the original
 energy and water expenditure and mortality rules. The combined gate
 requires a living founder, an adult emergence in the second year, and
 worker growth relative to the day-73 and day-365 observations.
+The nearby supply uses the previously configured 730-day release
+budget at 25 °C and 80% relative humidity. The absent control retains
+the in-chamber water wick and excludes external feeders.
 
 ## Paired dehydration failure
 
@@ -201,6 +204,35 @@ body energy at the deadline was 1,503,010,638 nJ. In the longer cut,
 the founder survived day 90 and died before day 110. This extension
 addresses a verified lock and retains the remaining supply failure.
 
+## Capacity-driven trips with an intact sugar crop
+
+The extended physics-100 seed-17 continuation receives 585 µg sugar
+in days 90–92. In the next interval it receives just 32 µg and dies at
+8,085,593,130 ms. At day 92 worker 10 has 389 µg of crop sugar. The same
+worker still has 338 µg at the last living millisecond. Three surface
+workers stay at their positions and the mixed feeder still has
+137,239 µg sugar at the day-94 observation. Worker 10 commits
+5,930 movement legs, including 5,640 connector moves. They cluster at
+29 positions. There is no new positive sugar collection in that cut.
+
+A prototype that lets entrance workers yield to a returning liquid
+carrier has identical results in this replay. It is an unsuccessful
+candidate for these positions and cues. The separate refill test
+changes one condition in underground job selection. Physics 101 needs
+both crop room and meaningful demand before starting the remembered
+refill. Demand is an empty sugar crop or the existing projected
+sugar/water deficit after accounting for body and crop stores. The
+other collection, donation, and terminal physiology checks remain the
+existing funded transactions.
+
+The worker makes 49 committed moves in the matched window under this
+policy and pays 375 µg sugar and 78 µg water into the founder's crop.
+The founder retains 1,809,566,270 nJ at the old deadline. Replaying
+past that deadline still ends with founder death by day 96. This
+experiment isolates the cost of restarting a supply trip solely on
+available crop space. A complete supply chain also requires the next
+collector to acquire resources and reach an eligible recipient.
+
 ## Reproduction
 
 Run from the repository root with the native application built in Release.
@@ -212,6 +244,7 @@ py -3 -B -m tools.verify_berth_yield --core $core
 py -3 -B -m tools.verify_founder_sugar --core $core
 py -3 -B -m tools.verify_remembered_refill --core $core
 py -3 -B -m tools.verify_blocked_feeder_return --core $core
-py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 100
-py -3 -B -m tools.measure_first_meal --core $core --model blocked-feeder-return --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
+py -3 -B -m tools.verify_demand_refill --core $core
+py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 101
+py -3 -B -m tools.measure_first_meal --core $core --model demand-refill --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
 ```
