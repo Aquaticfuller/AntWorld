@@ -283,6 +283,88 @@ day 77 and dead by day 80. Reaching a legitimate chamber berth and
 finishing oral delivery solve a specific stalled trip and expose the
 need for a second supply cycle.
 
+From birth, physics 102 extends sugar receipt in seed 29 to day 76.75.
+The founder still dies of dehydration on day 80.22. Just before the
+death the wick has 1,499,525 µg of water. The founder has 13 µg body
+water and an empty water crop. The read-only check sees the wick and
+finds no drinkable stance or complete approach under the current
+physical and body constraints. Workers 8, 9, and 20 hold a combined
+767 µg water on the surface. The last six hours contain 720 rest
+completions per surface worker and zero successful founder sips or
+water transfers. This run separates a failed second delivery cycle
+from a depleted initial water supply.
+
+## Two-year matched outcomes
+
+Both versions in each paired case use the original geometry, founding reserves,
+software seed, and external release conditions. The complete panel advances
+from initialization through day 730. Adult emergence in the second year
+requires a committed stage change after day 365 and through day 730.
+
+| Seed and supply | Physics 93 founder | Physics 102 founder | Physics 102 sugar / water uptake (µg) | Physics 102 workers at days 150 / 365 / 730 | Physics 102 second-year emergences |
+| --- | --- | --- | ---: | ---: | ---: |
+| 1 / nearby | Day 56.25, dehydration | Day 88.41, energy depleted | 4,440 / 2,099 | 1 / 1 / 1 | 0 |
+| 2 / nearby | Day 64.93, dehydration | Day 97.46, energy depleted | 7,228 / 2,527 | 2 / 1 / 0 | 0 |
+| 3 / nearby | Day 74.56, energy depleted | Day 74.56, energy depleted | 0 / 975 | 2 / 2 / 2 | 0 |
+| 17 / nearby | Day 85.25, dehydration | Day 98.85, energy depleted | 8,384 / 2,893 | 2 / 1 / 1 | 0 |
+| 29 / nearby | Day 70.43, dehydration | Day 80.22, dehydration | 5,034 / 1,373 | 1 / 0 / 0 | 0 |
+| 2 / absent | Day 73.52, energy depleted | Day 73.52, energy depleted | 0 / 825 | 0 / 0 / 0 | 0 |
+
+Seed 2 changes from day 64.93, dehydration to day 97.46, energy depleted.
+The founder's last positive oral sugar receipt is at day 95.50,
+and her last measured water uptake is at day 96.50.
+Under physics 101 she reaches day 89.78, energy depleted with 4,964 µg recorded sugar uptake.
+In physics 102, the daily oral sugar deliveries fall to 42–84 µg
+during days 89–95. At the last living census on day 96 the three
+workers hold 4 µg sugar in total, the founder has 26 µg in her crop,
+and the pantry has 30,840 µg protein and zero sugar. Energy death
+follows 47.1 hours after the last positive oral sugar receipt. The
+final census identifies a shortage of returned sugar in the chamber
+after local contact and water uptake had resumed.
+The no-external-supply control has 0 µg recorded sugar uptake and 0
+workers at the final cut.
+
+**Combined founding supply gate FAIL.**
+0 of five provisioned founders survive day 730.
+0 of five provisioned worlds have an adult emergence in year two.
+0 of five satisfy all registered endpoints.
+The candidate remains available through the opt-in physics-102 configuration.
+
+The receipt file records the completed long-horizon comparisons and the
+actual stopped or unlaunched optional intermediate runs. It contains
+43 matched starting frames and associated 730-day run summaries.
+Canonical fact identities, selected life histories, paired action witnesses, and
+independent restoration hashes are recorded in FOUNDING_WICK_CLEARANCE_RECEIPTS.json.gz.
+The file is 283,720 bytes with SHA-256 c299118286bf9a9537b794dae618bc8a59abb93aa052954cd23e67636f951e2e.
+
+## Engineering verification
+
+The Windows Release build passed all 292 native CTest cases. Both
+targeted Python live tests passed. The seven paired replay entry points
+exercise actual motion, food and water transfers, conservation, and
+checkpoint continuation. The independent archive check replays the
+canonical SQLite suffix for physics 102. The selected native builds
+also reproduce the inherited seed-2 wick, surface traffic, crop
+handoff, and remembered feeder assertions.
+
+All five Core CI jobs, both native/browser jobs, and both OP0 jobs
+passed for source revision 418d996b380f75f3658021e2a301271beb89bad9.
+[Core CI](https://github.com/Aquaticfuller/AntWorld/actions/runs/46075331215),
+[M1](https://github.com/Aquaticfuller/AntWorld/actions/runs/46075331289),
+[OP0](https://github.com/Aquaticfuller/AntWorld/actions/runs/46075331238).
+
+For each of the six seed/supply cases, the resource audit compares
+native configuration and first-week release events across nine model
+versions. All 54 initial worlds match by case. The completed
+long-horizon runs separately compare the initial frames and founder
+reserves, verify terminal food and soil ledgers, and retain the
+individual event IDs used for the survival and adult emergence counts.
+
+The runner compacts resident canonical history after projecting the
+relevant events. Compact forensic cuts and checksummed run receipts
+retain the paired evidence. Large history export is outside this
+protocol.
+
 ## Reproduction
 
 Run from the repository root with the native application built in Release.
