@@ -39,7 +39,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
             (habitat->nutrition > FoundingNutrition::ContinuousMeal &&
-             (habitat->nutrition < FoundingNutrition::MouthDetour || habitat->nutrition > FoundingNutrition::RememberedRefill)) ||
+             (habitat->nutrition < FoundingNutrition::MouthDetour || habitat->nutrition > FoundingNutrition::BlockedFeederReturn)) ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -158,6 +158,7 @@ inline bool berth_yield(const auto& s) { return founding_nutrition(s)>=FoundingN
 inline bool founder_sugar_demand(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::FounderSugarDemand; }
 inline bool mouth_clearance(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MouthClearance; }
 inline bool remembered_refill(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RememberedRefill; }
+inline bool blocked_feeder_return(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::BlockedFeederReturn; }
 inline constexpr std::uint8_t max_meal_route_legs=64, joint_meal_legs=8, mouth_detour_legs=16;
 inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }

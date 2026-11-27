@@ -320,6 +320,23 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             spatially_clear(ant.position,link->points[link->cursor-1],body_half(ant.id)) &&
             clear_worker_traffic(ant,link->points[link->cursor-1],body_half(ant.id)))
             connector(true);
+        if (blocked_feeder_return(s) && link && !r.connector_return && !link->returning && link->cursor+1==link->size &&
+            !loaded && f.last_collected.value && local_founding_provisioning(s,ant.id) &&
+            r.decision.action==ActionKind::Move && r.decision.reason==DecisionReason::LocalFood &&
+            !clear_worker_traffic(ant,r.destination,body_half(ant.id)) &&
+            s.foods.rows[s.foods.index.at(f.last_collected)].initial.carbs_ug &&
+            founding_gift_supply(s.founding->profile,*query_physiology({s.world,ant.id})).carbs_ug) {
+            // A failed local pickup approach need not strand a worker carrying
+            // usable sugar from an earlier trip. Retrace its own live ingress.
+            const auto at_entrance=ant.position==link->entrance();
+            const auto steps_end=r.local.steps.cbegin()+r.local.step_count;
+            const auto home_on_trace=f.path_size==2 && std::any_of(r.local.steps.cbegin(),steps_end,
+                [&](const LocalStep& step) {return step.cell==f.path[0];});
+            const auto to=at_entrance?link->points[link->cursor-1]:link->entrance();
+            if ((home_on_trace || within_distance(ant.position,to,s.care_profile->perception_radius_m,true)) &&
+                spatially_clear(ant.position,to,body_half(ant.id)) && clear_worker_traffic(ant,to,body_half(ant.id)))
+                connector(true);
+        }
         if (berth_yield(s) && link && !r.connector_return && !link->returning && link->cursor+1==link->size &&
             ant.position==link->entrance() && !loaded) {
             if (const auto step=surface_berth_yield(ant)) {

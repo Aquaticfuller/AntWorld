@@ -67,17 +67,6 @@ and 199 µg of water. Starting at day 61.75 gives 1,036 µg of oral sugar,
 seed-2 sugar replay retains worker 8's 358 µg of paid oral sugar and
 the founder's 369 µg of sugar uptake.
 
-## Reproduction
-
-Run from the repository root with the native application built in Release.
-
-```powershell
-$core = 'build/m0-live/antworld_m0_live.exe'
-py -3 -B -m tools.verify_wick_clearance --core $core
-py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 95
-py -3 -B -m tools.measure_first_meal --core $core --model wick-clearance --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
-```
-
 ## From-birth starvation after wick access
 
 The physics-95 seed-2 founder absorbs 1,524 µg water, including an
@@ -171,3 +160,58 @@ receives 547 µg orally and absorbs 541 µg before the old deadline.
 She retains 890,955,084 nJ of body energy at that cutoff. The
 native replay checks actual collection, crop ingestion, oral
 payments and later absorption independently of the route probes.
+
+## Surface workers with residual social crop
+
+The two-year physics-99 seed-17 control has a last sugar receipt on
+day 69.45 and energy death at 7,297,877,685 ms. At the start of its last
+six hours workers 10 and 14 have 441 and 725 µg of sugar in their crops.
+Both carry zero external cargo and neither obtained its sugar in the
+current trip. Three workers commit 720 rests each at fixed surface
+positions in that window. Worker 9 makes 216 movements, repeatedly
+reaching the same point below the surface before reversing. The mixed
+feeder still holds 124,851 µg sugar at the last living cut.
+
+A local probe captures the rejected legs. Workers 10 and 14 each aim
+for the feeder cell occupied by worker 8. Worker 8 aims toward the
+return berth occupied by worker 14. The ordinary outward legs fail
+the body traffic check. The old return condition also requires a
+current-trip liquid load and a body at the exact connector entrance.
+Both requirements matter for the difference between workers 10 and 14.
+
+Physics 100 permits a worker to return with a currently payable crop
+when a local food approach is physically blocked. The worker must
+already know the sugar source and its own entrance. It can use the
+connector directly, a locally accessible berth, or a reachable home
+step from its own one-leg surface trace. The actual movement still
+uses the same body clearance, support, travel clock, and connector
+transaction. The crop still belongs to the worker until a later
+actual oral transaction debits it. This choice is an engineering
+fixture with no change to the metabolic budget.
+
+In the first prototype only the local-range return option was enabled.
+Worker 14 paid 430 µg of sugar, while the other visible donor stayed
+outside. The founder survived day 86 and was dead by day 90. With the
+private one-leg trace option worker 10 reached its own entrance and
+the modeled workers resumed real collection and underground travel.
+Worker 14 paid 376 µg of sugar in nine mouth transactions and the
+founder absorbed 186 µg before the original deadline. Other donors
+paid a further 55 µg of sugar in the same six-hour window. Founder
+body energy at the deadline was 1,503,010,638 nJ. In the longer cut,
+the founder survived day 90 and died before day 110. This extension
+addresses a verified lock and retains the remaining supply failure.
+
+## Reproduction
+
+Run from the repository root with the native application built in Release.
+
+```powershell
+$core = 'build/m0-live/antworld_m0_live.exe'
+py -3 -B -m tools.verify_wick_clearance --core $core
+py -3 -B -m tools.verify_berth_yield --core $core
+py -3 -B -m tools.verify_founder_sugar --core $core
+py -3 -B -m tools.verify_remembered_refill --core $core
+py -3 -B -m tools.verify_blocked_feeder_return --core $core
+py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 100
+py -3 -B -m tools.measure_first_meal --core $core --model blocked-feeder-return --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
+```

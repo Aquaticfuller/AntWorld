@@ -45,6 +45,7 @@ MODELS = {
     97: "founder-sugar-demand",
     98: "mouth-clearance",
     99: "remembered-refill",
+    100: "blocked-feeder-return",
 }
 WATER_CUT = EVIDENCE / "SEED2_SUPPLY_CONTINUITY_CUT.awstate.gz"
 CUT_DIGEST = "305f0f042d97e675abbde25238c7e484d3c2c5c3f8287ac62be13f638b72356c"
