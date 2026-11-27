@@ -217,6 +217,8 @@ private:
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& recipient,
                                                                                 std::uint8_t* leg_budget = nullptr) const;
+    [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> search_feeding_route(const AntState& donor,const AntState& recipient,
+                                                                                  std::uint8_t* leg_budget,bool detour) const;
     [[nodiscard]] PositionM local_floor_route(const AntState&, PositionM, const BodyPose* partner,
                                               std::span<const PositionM> work_stances = {}, std::uint8_t* leg_budget = nullptr) const;
     [[nodiscard]] PositionM wick_approach(const AntState&, PositionM) const;

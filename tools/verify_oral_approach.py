@@ -11,8 +11,9 @@ from tempfile import TemporaryDirectory
 
 from op0.codec import ACTS, KINDS, PHASES, STAGES, checkpoint, require
 from op0.live import NativeCore, ROOT, core_path, live_bodies
+from tools.audit_founding_activity import same_cut
 from tools.compare_m0_worker_rhythm import facts
-from tools.verify_supply_continuity import fork_cut, verify_continuation
+from tools.verify_supply_continuity import ENERGY_CUTS, EVIDENCE, fork_cut, verify_continuation
 
 
 CUT = ROOT / "research/single_nest/SEED2_FINAL_SUGAR_CUT.awstate.gz"
@@ -90,16 +91,35 @@ def replay(core, folder, original, physics):
     return result
 
 
+def verify_secondary_controls(core, folder):
+    rows = {}
+    for seed in (3, 17):
+        expected, world, end = ENERGY_CUTS[seed]
+        path = EVIDENCE / f"SEED{seed}_ENERGY_SUPPLY_CUT.awstate.gz"
+        require(sha256(gzip.decompress(path.read_bytes())).hexdigest() == expected, "Secondary control changed")
+        rows[seed] = same_cut(core, folder, path, world, 78, 93, end)
+    require(sum(receipt[3][0] for receipt in rows[3]["founder_receipts"]) == 213 and rows[3]["actors"][2]["death"] is None,
+            "The fallback lost the previous seed-3 feeding route")
+    inaccessible = next(row.split() for row in rows[17]["start_oral"] if row.split()[0] == "11")
+    require(inaccessible[1] == "0" and int(inaccessible[5]) and
+            all(receipt[2] != 11 for receipt in rows[17]["founder_receipts"]),
+            "An occluded offer reached the queen across the blocked approach")
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
+    parser.add_argument("--physics", type=int, choices=(92, 93), default=93)
     args = parser.parse_args()
     original = gzip.decompress(CUT.read_bytes())
     require(sha256(original).hexdigest() == CUT_SHA256, "The frozen seed-2 snapshot changed")
     scratch = ROOT / "out"
     scratch.mkdir(exist_ok=True)
     with TemporaryDirectory(dir=scratch, prefix="oral-approach-") as temp, closing(NativeCore(args.core.resolve(), temp)) as core:
-        records = [replay(core, Path(temp), original, physics) for physics in (90, 92)]
+        records = [replay(core, Path(temp), original, physics) for physics in (90, args.physics)]
+        if args.physics == 93:
+            records[-1]["secondary_controls"] = verify_secondary_controls(core, Path(temp))
         print(json.dumps(records, separators=(",", ":")))
 
 

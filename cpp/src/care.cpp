@@ -273,10 +273,22 @@ PositionM WorldRuntime::wick_approach(const AntState& ant,PositionM wick) const 
 std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         const AntState& donor,const AntState& founder,std::uint8_t* leg_budget) const {
     const auto& s=*state_;
+    if (founding_nutrition(s)==FoundingNutrition::MouthDetourFallback) {
+        auto short_budget=leg_budget ? std::min(*leg_budget,joint_meal_legs) : joint_meal_legs;
+        if (const auto route=search_feeding_route(donor,founder,&short_budget,false)) {
+            if (leg_budget) *leg_budget=short_budget;
+            return route;
+        }
+    }
+    return search_feeding_route(donor,founder,leg_budget,mouth_detour(s));
+}
+
+std::optional<std::pair<EntityId,PositionM>> WorldRuntime::search_feeding_route(
+        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget,bool detour) const {
+    const auto& s=*state_;
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
     const bool joint=joint_meal_route(s);
-    const bool detour=mouth_detour(s);
     struct Pose {BodyPose body; std::uint8_t heading;};
     const std::array ants{donor,founder};
     const std::array start{Pose{*query_body({s.world,donor.id}),actor_facing(s,donor.id)},
