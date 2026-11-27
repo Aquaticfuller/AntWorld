@@ -203,8 +203,7 @@ private:
     bool start_resting_move(Transaction&, const AntState&, PositionM, ScheduledId, CareAct = CareAct::NestReposition,
                             EntityId target = {}, std::uint8_t remaining = 0, bool continuation = false);
     [[nodiscard]] bool clear_worker_site(const AntState&, PositionM, bool approach_depot = false) const;
-    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true,
-                                            bool alignment_probe=false,bool meal_probe=false) const;
+    [[nodiscard]] bool clear_worker_traffic(const AntState&, PositionM, std::int32_t half, bool include_plans = true,bool alignment_probe=false) const;
     [[nodiscard]] bool clear_body_motion(const AntState&, PositionM,bool alignment_probe=false) const;
     [[nodiscard]] std::optional<std::uint8_t> emergence_heading(const AntState&) const;
     [[nodiscard]] bool brood_contact(const AntState&, const AntState&) const;
