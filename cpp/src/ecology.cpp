@@ -94,7 +94,7 @@ void WorldRuntime::stop_autonomy(Transaction &tx, EntityId id) {
   a.wake = {};
   tx.autonomy.set(id, a);
 }
-std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extended) const {
+std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extended,bool wick_probe) const {
   const auto& s=*state_;
   const auto ant=query_ant(ref);
   if (!ant || ant->stage!=LifeStage::Adult || !mouth_range(s) || !s.founding_reserves.contains(ref.id)) return {};
@@ -118,6 +118,10 @@ std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extend
   if (const auto wick=local_wick_contact(a,p)) {
       d.wick=true;
       d.at_wick=mouth_at_supply(a,depot_mouth_target(a,*wick));
+      if (wick_probe && !d.at_wick) {
+          const auto step=wick_approach(a,*wick);
+          if (step!=a.position) d.wick_first_step=step;
+      }
   }
   d.payable_sugar_ug=founding_gift_supply(s.founding->profile,p).carbs_ug;
   d.depot_step=worker_depot_step(a).has_value();
@@ -225,6 +229,22 @@ void WorldRuntime::notify_meal_contact(Transaction& tx,const AntState& moved) {
       request_autonomy_review(tx,moved.id,peer.stage==LifeStage::Larva ? brood_need_wake : mouth_contact_wake);
     if (payable_local_meal(peer,moved) && meal_in_reach(peer,moved))
       request_autonomy_review(tx,peer.id,mouth_contact_wake);
+  }
+}
+void WorldRuntime::notify_wick_clearance(Transaction& tx,const AntState& worker) {
+  const auto& s=*state_;
+  const auto reach=s.care_profile->perception_radius_m;
+  const auto mouth=query_body({s.world,worker.id})->mouth_m;
+  for (const auto ref:query_neighborhood({s.world,worker.id},reach+.007).ants) {
+    if (!founding_foundress(ref.id) || care_owned(s,ref.id)) continue;
+    const auto queen=*query_ant(ref);
+    if (queen.stage!=LifeStage::Adult || queen.colony!=worker.colony) continue;
+    const auto tip=query_body(ref)->mouth_m;
+    if (!within_distance(mouth,tip,reach,true) || !spatially_clear(mouth,tip)) continue;
+    if (const auto wick=local_wick_contact(queen,*query_physiology(ref))) {
+      if (mouth_at_supply(queen,depot_mouth_target(queen,*wick)) || wick_approach(queen,*wick)!=queen.position)
+        request_autonomy_review(tx,queen.id,thirst_wake);
+    }
   }
 }
 void WorldRuntime::notify_local_food_delivery(Transaction& tx,const WorldEvent& delivery) {
@@ -350,6 +370,9 @@ void WorldRuntime::resolve_autonomy_wakes(
         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
+    const auto wick_yield=wick_clearance(s) && ant.caste==Caste::Worker && stationary && can_switch &&
+        !urgent && !at_wick && !wick_step && !giving_way && !food_offer && !can_feed_brood &&
+        !care_owned(s,ant.id) && !active_expenditure(p) ? wick_yield_step(ant) : std::nullopt;
     std::optional<PositionM> chamber_step;
     const auto nursery_arrival_m=founding_nutrition(s)==FoundingNutrition::NurseryArrival ?
         2*s.geometry->config.quantum_m : .002;
@@ -569,6 +592,10 @@ void WorldRuntime::resolve_autonomy_wakes(
         choice.transit=CareAct::ApproachNestmate;
         choice.meal_steps=s.care_profile->motion->search_steps;
       }
+      inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
+    } else if (wick_yield) {
+      choice.resting_site=wick_yield;
+      choice.transit=CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (refill_trip || refill_approach) {
       if (refill_trip) choice.behavior=IndividualBehavior::Forage;

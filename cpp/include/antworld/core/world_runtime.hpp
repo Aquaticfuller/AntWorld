@@ -34,11 +34,13 @@ struct MealAccess {
     bool depot_step{}, wick{}, at_wick{};
     unsigned clear_steps{}, sensed_cap_stances{}, direct_cap_stances{};
     std::uint64_t payable_sugar_ug{};
+    std::optional<PositionM> wick_first_step;
 };
 
 struct OralAccess {
     bool visible{}, at_mouth{}, queen_can_approach{}, worker_can_approach{};
     std::uint64_t offered_carbs_ug{}, requested_carbs_ug{};
+    std::uint64_t offered_water_ug{}, requested_water_ug{};
     EntityId route_actor{};
     PositionM route_first_step{};
     std::uint8_t route_legs{};
@@ -48,7 +50,7 @@ struct OralAccess {
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
-    [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false) const;
+    [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false, bool wick_probe=false) const;
     [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker,bool alignment_probe=false,bool route_probe=false) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
@@ -220,8 +222,12 @@ private:
     [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> search_feeding_route(const AntState& donor,const AntState& recipient,
                                                                                   std::uint8_t* leg_budget,bool detour) const;
     [[nodiscard]] PositionM local_floor_route(const AntState&, PositionM, const BodyPose* partner,
-                                              std::span<const PositionM> work_stances = {}, std::uint8_t* leg_budget = nullptr) const;
+                                              std::span<const PositionM> work_stances = {}, std::uint8_t* leg_budget = nullptr,
+                                              bool wide_wick=false,
+                                              const std::pair<EntityId,BodyPose>* shifted_neighbor=nullptr) const;
     [[nodiscard]] PositionM wick_approach(const AntState&, PositionM) const;
+    [[nodiscard]] std::optional<PositionM> wick_yield_step(const AntState& worker) const;
+    void notify_wick_clearance(Transaction&, const AntState& worker);
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;

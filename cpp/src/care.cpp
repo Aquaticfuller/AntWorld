@@ -147,7 +147,8 @@ FoodMass WorldRuntime::meal_signal(const AntState& recipient,const PhysiologySta
 
 PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM target,
                                          const BodyPose* partner,std::span<const PositionM> work_stances,
-                                         std::uint8_t* leg_budget) const {
+                                         std::uint8_t* leg_budget,bool wide_wick,
+                                         const std::pair<EntityId,BodyPose>* shifted_neighbor) const {
     const auto& s=*state_;
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
@@ -162,9 +163,10 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
         const auto other=*query_ant(ref);
         if (ref.id==adult.id || other.stage!=LifeStage::Adult) continue;
         const auto extent=body_half(ref.id);
-        const bool precise=floor_precision && other.position.y==adult.position.y &&
-            uses_floor_body_clearance(s,other,other.position,extent);
-        obstacles.push_back({*query_body(ref),(half+extent)*quantum,precise});
+        const auto body=shifted_neighbor && shifted_neighbor->first==ref.id ? shifted_neighbor->second : *query_body(ref);
+        const bool precise=floor_precision && body.center_m.y==adult.position.y &&
+            uses_floor_body_clearance(s,other,body.center_m,extent);
+        obstacles.push_back({body,(half+extent)*quantum,precise});
     }
     const auto contact=[&](const BodyPose& pose) {
         if (partner) return target;
@@ -218,7 +220,7 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
     open.push({adult.position,adult.position,facing,0,remaining(original),true,0});
     best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing,std::uint8_t{}},0);
     const bool detour=aligned_stride || !work_stances.empty();
-    const unsigned max_search=detour?384:192;
+    const unsigned max_search=wide_wick?1536:detour?384:192;
     const std::int64_t action_cost=detour?500:0;
     for (unsigned expanded=0;!open.empty() && expanded<max_search;) {
         const auto current=open.top();
@@ -228,7 +230,9 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
         ++expanded;
         auto from=adult;
         from.position=current.site;
-        for (double length:{.000125,.00025,.0005,.001,.002}) for (std::uint8_t dir=1;dir<=8;++dir) {
+        constexpr std::array lengths{.000125,.00025,.0005,.001,.002,.00075,.0015,.003,.004};
+        const auto strides=std::span(lengths.data(),wide_wick?lengths.size():std::size_t{5});
+        for (double length:strides) for (std::uint8_t dir=1;dir<=8;++dir) {
             auto next=from;
             next.position=snap_micro(translated(from.position,scale(body_heading(dir),length)));
             next.position.y=adult.position.y;
@@ -246,7 +250,7 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
                     (floor_precision && !anatomy_turn_clears(sweep,current.facing,heading,peer.body)) ||
                     (!peer.precise && !center_sweep_clears(from.position,next.position,peer.body.center_m,peer.width));
             })) continue;
-            if (current.initial && !clear_worker_traffic(adult,next.position,half,true,align)) continue;
+            if (current.initial && !shifted_neighbor && !clear_worker_traffic(adult,next.position,half,true,align)) continue;
             const auto end=body_pose(next,heading,attachment(view,next,heading));
             const auto first=current.initial ? next.position : current.first;
             if (meets(end)) {
@@ -262,9 +266,44 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
 }
 
 PositionM WorldRuntime::wick_approach(const AntState& ant,PositionM wick) const {
-    if (founder_wick_route(*state_) && founding_foundress(ant.id))
-        return local_floor_route(ant,wick,nullptr);
+    if (founder_wick_route(*state_) && founding_foundress(ant.id)) {
+        const auto step=local_floor_route(ant,wick,nullptr);
+        if (step!=ant.position || !wick_detour(*state_)) return step;
+        // ENGINEERING_FIXTURE. Try alternative short strides and a bounded
+        // detour without moving any obstacle or widening mouth contact.
+        return local_floor_route(ant,wick,nullptr,{},nullptr,true);
+    }
     return mouth_approach(ant,wick,{},nullptr,true);
+}
+
+std::optional<PositionM> WorldRuntime::wick_yield_step(const AntState& worker) const {
+    const auto& s=*state_;
+    const auto radius=s.care_profile->perception_radius_m;
+    const auto own=*query_body({s.world,worker.id});
+    const auto view=geometry_view(s,limits_);
+    for (const auto ref:query_neighborhood({s.world,worker.id},radius+.007).ants) {
+        if (!founding_foundress(ref.id) || care_owned(s,ref.id)) continue;
+        const auto queen=*query_ant(ref);
+        if (queen.stage!=LifeStage::Adult || queen.colony!=worker.colony) continue;
+        const auto head=query_body(ref)->mouth_m;
+        if (!within_distance(own.mouth_m,head,radius,true) || !spatially_clear(own.mouth_m,head)) continue;
+        const auto wick=local_wick_contact(queen,*query_physiology(ref));
+        if (!wick || mouth_at_supply(queen,depot_mouth_target(queen,*wick)) ||
+            wick_approach(queen,*wick)!=queen.position) continue;
+        // ENGINEERING_FIXTURE. Test a few legal changes of the worker's own
+        // stance. The founder will check her own route again after the move.
+        for (const double stride:{.001,.002,.003}) for (std::uint8_t direction=1;direction<=8;++direction) {
+            auto relocated=worker;
+            relocated.position=snap_micro(translated(worker.position,scale(body_heading(direction),stride)));
+            if (!clear_resting_site(worker,relocated.position)) continue;
+            const auto heading=segment_heading(s,worker.id,worker.position,relocated.position);
+            const auto body=body_pose(relocated,heading,attachment(view,relocated,heading));
+            const auto proposal=std::pair{worker.id,body};
+            if (local_floor_route(queen,*wick,nullptr,{},nullptr,false,&proposal)!=queen.position)
+                return relocated.position;
+        }
+    }
+    return {};
 }
 
 // ENGINEERING_FIXTURE. A short encounter has two mobile participants.
@@ -273,7 +312,7 @@ PositionM WorldRuntime::wick_approach(const AntState& ant,PositionM wick) const 
 std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         const AntState& donor,const AntState& founder,std::uint8_t* leg_budget) const {
     const auto& s=*state_;
-    if (founding_nutrition(s)==FoundingNutrition::MouthDetourFallback) {
+    if (founding_nutrition(s)>=FoundingNutrition::MouthDetourFallback) {
         auto short_budget=leg_budget ? std::min(*leg_budget,joint_meal_legs) : joint_meal_legs;
         if (const auto route=search_feeding_route(donor,founder,&short_budget,false)) {
             if (leg_budget) *leg_budget=short_budget;
@@ -421,9 +460,13 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
                    spatially_clear(qb.mouth_m,wb.mouth_m);
     result.at_mouth=oral_contact(*worker,*queen);
     const auto payable=founding_gift_supply(s.founding->profile,wp);
-    result.offered_carbs_ug=contact_offer(s,payable,wp,qp,queen->stage).carbs_ug;
-    result.requested_carbs_ug=founder_appetite(s) ? meal_signal(*queen,qp,payable).carbs_ug : ingredient_min(signaled_need(qp,queen->stage,true),
-        foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true)).carbs_ug;
+    const auto offered=contact_offer(s,payable,wp,qp,queen->stage);
+    const auto requested=founder_appetite(s) ? meal_signal(*queen,qp,payable) : ingredient_min(signaled_need(qp,queen->stage,true),
+        foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true));
+    result.offered_carbs_ug=offered.carbs_ug;
+    result.requested_carbs_ug=requested.carbs_ug;
+    result.offered_water_ug=offered.water_ug;
+    result.requested_water_ug=requested.water_ug;
     // Isolate geometry from scheduler ownership and dietary eligibility at this cut.
     if (result.visible && !result.at_mouth) {
         result.queen_can_approach=mouth_approach(*queen,wb.mouth_m,{},&wb,false,alignment_probe)!=queen->position;
@@ -487,7 +530,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
         if (local_solicitation(s) && founding_foundress(candidate.second)) {
             const auto step=feeding_encounter(ant,*query_ant({s.world,candidate.second}));
             if (step && step->first==ant.id) return std::pair{step->second,candidate.second};
-            if (step || confirmed_meal_routes(s)) continue;
+            if (step || confirmed_meal_routes(s) || wick_clearance(s)) continue;
         }
         const auto next=mouth_approach(ant,other.mouth_m,{},&other);
         if (next!=ant.position) return std::pair{next,candidate.second};
@@ -571,7 +614,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
             const auto worker=*query_ant({s.world,donor.second});
             if (const auto step=feeding_encounter(worker,queen))
                 return std::pair{step->first==queen.id ? step->second : queen.position,worker.id};
-            if (confirmed_meal_routes(s)) continue;
+            if (confirmed_meal_routes(s) || wick_clearance(s)) continue;
         }
         const auto next=mouth_approach(queen,body.mouth_m,{},&body);
         if (next!=queen.position) return std::pair{next,donor.second};
@@ -1760,6 +1803,8 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
     if (c.act==CareAct::NestReposition || c.act==CareAct::YieldToCarrier || c.act==CareAct::EntrancePatrol || local_work) {
         interrupt_care(tx,a.id,outcome,true);
         if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
+        if (wick_clearance(s) && !failed && a.caste==Caste::Worker && c.act==CareAct::NestReposition)
+            notify_wick_clearance(tx,*query_ant({s.world,a.id}));
         if (!failed && c.act==CareAct::NestReposition && (!stimulus_refill_intent(s) || c.search_remaining))
             notify_refill_progress(tx,a);
         return;

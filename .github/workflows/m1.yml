@@ -1,9 +1,9 @@
 name: M1 Observatory
 on:
   push:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "tools/verify_supply_continuity.py", "tools/audit_founding_activity.py", "tools/audit_founding_events.py", "tools/verify_oral_approach.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SUSTAINED_SUPPLY*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "tools/verify_supply_continuity.py", "tools/audit_founding_activity.py", "tools/audit_founding_events.py", "tools/verify_oral_approach.py", "tools/verify_wick_clearance.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SUSTAINED_SUPPLY*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   pull_request:
-    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "tools/verify_supply_continuity.py", "tools/audit_founding_activity.py", "tools/audit_founding_events.py", "tools/verify_oral_approach.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SUSTAINED_SUPPLY*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
+    paths: ["cpp/**", "op0/**", "tools/*m1*.py", "tools/*first_meal*.py", "tools/verify_sustained_contact.py", "tools/verify_local_solicitation.py", "tools/verify_supply_continuity.py", "tools/audit_founding_activity.py", "tools/audit_founding_events.py", "tools/verify_oral_approach.py", "tools/verify_wick_clearance.py", "research/single_nest/LOCAL_SOLICITATION*.gz", "research/single_nest/SUSTAINED_SUPPLY*.gz", "research/single_nest/SEED*CUT.awstate.gz", "tools/qualify_founder_access.py", "experiments/m1/**", "research/m1/**", "research/single_nest/FIRST_MEAL*.json*", "research/single_nest/evidence/founder-access/**", ".github/workflows/m1.yml"]
   workflow_dispatch:
 
 permissions:
@@ -79,6 +79,10 @@ jobs:
           python -B -m tools.verify_oral_approach --core $exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.audit_founding_activity --core $exe --verify-archive --stimulus-version 93
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.verify_wick_clearance --core $exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m tools.audit_founding_activity --core $exe --verify-archive --stimulus-version 95
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -B -m tools.verify_local_solicitation --core $exe --panel research/single_nest/LOCAL_SOLICITATION_TRIALS.jsonl.gz --exit-trials research/single_nest/LOCAL_SOLICITATION_EXIT_TRIALS.jsonl.gz
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
