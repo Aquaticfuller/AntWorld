@@ -326,6 +326,49 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::carrier_yield_step(co
     return {};
 }
 
+std::optional<PositionM> WorldRuntime::surface_berth_yield(const AntState& ant) const {
+    const auto& s=*state_;
+    const auto berth_cell=navigation_cell(s,ant.position);
+    const auto view=geometry_view(s,limits_);
+    const auto reach=s.care_profile->perception_radius_m;
+    const auto body=*query_body({s.world,ant.id});
+    const auto mover_half=body_half(ant.id);
+    for (const auto ref:query_neighborhood({s.world,ant.id},reach).ants) {
+        const auto other=*query_ant(ref);
+        if (other.id==ant.id || other.stage!=LifeStage::Adult || other.colony!=ant.colony ||
+            other.position.y<navigation_height(s) || !other.carried_food.total_ug() ||
+            !spatially_clear(body.mouth_m,query_body(ref)->mouth_m)) continue;
+        const auto route=s.connectors.find(ref.id);
+        const auto forager=s.foragers.find(ref.id);
+        if (route==s.connectors.end() || route->second.cursor+1!=route->second.size ||
+            forager==s.foragers.end() || !forager->second.enabled || forager->second.mode!=BehaviorMode::Rest) continue;
+        const auto entrance=route->second.entrance();
+        const auto half=body_half(other.id);
+        if (other.position==entrance || !spatially_clear(other.position,entrance,half) ||
+            !clear_body_motion(other,entrance)) continue;
+        const auto heading=segment_heading(s,other.id,other.position,entrance);
+        const auto carrier=body_pose(other,heading,attachment(view,other,heading));
+        const auto width=(mover_half+half)*s.geometry->config.quantum_m;
+        const auto blocks=[&](const BodyPose& pose) {
+            return !center_sweep_clears(other.position,entrance,pose.center_m,width) ||
+                anatomical_sweep_hits(carrier,entrance,pose);
+        };
+        if (!blocks(body)) continue;
+        // ENGINEERING_FIXTURE. Vacate the swept corridor without changing
+        // either private return trace or assigning the carrier a new target.
+        for (const double stride:{.001,.002,.003,.004}) for (std::uint8_t d=1;d<=8;++d) {
+            auto shifted=ant;
+            shifted.position=snap_micro(translated(ant.position,scale(body_heading(d),stride)));
+            if (navigation_cell(s,shifted.position)!=berth_cell ||
+                !spatially_clear(ant.position,shifted.position,mover_half) ||
+                !clear_worker_traffic(ant,shifted.position,mover_half)) continue;
+            const auto facing=segment_heading(s,ant.id,ant.position,shifted.position);
+            if (!blocks(body_pose(shifted,facing,attachment(view,shifted,facing)))) return shifted.position;
+        }
+    }
+    return {};
+}
+
 std::optional<PositionM> WorldRuntime::entrance_patrol_step(const AntState& ant) const {
     const auto& s=*state_;
     if (!s.care_profile || !s.geometry || !s.surface) return {};

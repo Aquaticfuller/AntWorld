@@ -93,13 +93,14 @@ def replay(core, scratch, original, physics):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=core_path())
+    parser.add_argument("--physics", type=int, choices=(95, 96), default=95)
     args = parser.parse_args()
     raw = gzip.decompress(CUT.read_bytes())
     require(sha256(raw).hexdigest() == CUT_SHA256, "The frozen wick checkpoint changed")
     scratch = ROOT / "out"
     scratch.mkdir(exist_ok=True)
     with TemporaryDirectory(dir=scratch, prefix="wick-clearance-") as temp, closing(NativeCore(args.core.resolve(), temp)) as core:
-        print(json.dumps([replay(core, Path(temp), raw, physics) for physics in (93, 95)], separators=(",", ":")))
+        print(json.dumps([replay(core, Path(temp), raw, physics) for physics in (93, args.physics)], separators=(",", ":")))
 
 
 if __name__ == "__main__":

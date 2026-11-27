@@ -77,3 +77,39 @@ py -3 -B -m tools.verify_wick_clearance --core $core
 py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 95
 py -3 -B -m tools.measure_first_meal --core $core --model wick-clearance --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
 ```
+
+## From-birth starvation after wick access
+
+The physics-95 seed-2 founder absorbs 1,524 µg water, including an
+absorption event on day 81.50. Her last oral sugar receipt is on day
+63.26, followed by energy death on day 81.50. At day 64, workers 8 and 9
+are in the same navigation cell at two distinct surface positions.
+Worker 8 is empty at the connector entrance, while worker 9 carries
+282 µg of protein at the mixed feeder. Both positions and both
+collection counts persist through the terminal cut. They each commit
+720 repeated rest actions in the last six hours. The mixed feeder still
+contains 123,719 µg sugar at the terminal cut.
+
+The empty worker blocks the carrier's route to the exact connector
+entrance. The carrier occupies the empty worker's intended feeder
+stance. A valid support and clearance route in an empty scene therefore
+does not make the two opposing moves executable simultaneously. The
+same-cargo matched cut retains the original field and water patch.
+
+Physics 96 evaluates an ordinary side-step for an empty worker at the
+surface entrance when a nearby loaded worker's return corridor is
+blocked by its body. Both geometry sweeps and the shifted body's
+clearance are checked. The side-step stays in the same navigation cell
+and retains the actual connector and source memory. The carrier still
+must enter and move through the existing route, then handle its own
+cargo and any offered mouth transfer in the original transactions.
+
+The first prototype reused the underground standing-site predicate
+and rejected every surface destination. The measured prototype has
+the same terminal death and zero deliveries as the paired control.
+The surface step now uses the physical move and swept traffic
+validators from foraging. Worker 8 moves first, followed by worker 9
+entering and delivering its original load of 282 µg protein. The
+founder receives 289 µg sugar and 74 µg water orally, absorbs 248 µg
+sugar, and remains alive at the old cutoff. A restart during the
+paid side-step reproduces the final frame and canonical facts.

@@ -241,6 +241,7 @@ private:
     void release_brood_on_floor(Transaction&, const CareState&, EntityId, ScheduledId);
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_contact_step(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> carrier_yield_step(const AntState&) const;
+    [[nodiscard]] std::optional<PositionM> surface_berth_yield(const AntState&) const;
     [[nodiscard]] std::optional<PositionM> worker_depot_step(const AntState&,std::optional<PositionM> familiar_site={}) const;
     [[nodiscard]] std::optional<PositionM> entrance_patrol_step(const AntState&) const;
     [[nodiscard]] bool inspecting_entrance(const AntState&) const;

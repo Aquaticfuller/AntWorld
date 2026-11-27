@@ -39,7 +39,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
             (habitat->nutrition > FoundingNutrition::ContinuousMeal &&
-             (habitat->nutrition < FoundingNutrition::MouthDetour || habitat->nutrition > FoundingNutrition::WickClearance)) ||
+             (habitat->nutrition < FoundingNutrition::MouthDetour || habitat->nutrition > FoundingNutrition::BerthYield)) ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -154,6 +154,7 @@ inline bool continue_contact_meal(const auto& s) { return founding_nutrition(s)>
 inline bool mouth_detour(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::MouthDetour; }
 inline bool wick_detour(const auto& s) { return founding_nutrition(s)==FoundingNutrition::WickDetour; }
 inline bool wick_clearance(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WickClearance; }
+inline bool berth_yield(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::BerthYield; }
 inline constexpr std::uint8_t max_meal_route_legs=64, joint_meal_legs=8, mouth_detour_legs=16;
 inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }

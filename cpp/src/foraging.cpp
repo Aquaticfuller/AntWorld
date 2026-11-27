@@ -320,6 +320,15 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
             spatially_clear(ant.position,link->points[link->cursor-1],body_half(ant.id)) &&
             clear_worker_traffic(ant,link->points[link->cursor-1],body_half(ant.id)))
             connector(true);
+        if (berth_yield(s) && link && !r.connector_return && !link->returning && link->cursor+1==link->size &&
+            ant.position==link->entrance() && !loaded) {
+            if (const auto step=surface_berth_yield(ant)) {
+                r.destination=*step;
+                r.decision.action=ActionKind::Move;
+                r.decision.mode=BehaviorMode::Explore;
+                r.decision.reason=DecisionReason::Search;
+            }
+        }
         ready.push_back(r);
     }
     std::sort(ready.begin(), ready.end(), [](const auto& a, const auto& b) { return a.event.actor < b.event.actor; });

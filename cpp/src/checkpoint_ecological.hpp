@@ -48,6 +48,7 @@ inline constexpr unsigned mouth_detour_schema = 85, mouth_detour_physics = 92;
 inline constexpr unsigned detour_fallback_schema = 86, detour_fallback_physics = 93;
 inline constexpr unsigned wick_detour_schema = 87, wick_detour_physics = 94;
 inline constexpr unsigned wick_clearance_schema = 88, wick_clearance_physics = 95;
+inline constexpr unsigned berth_yield_schema = 89, berth_yield_physics = 96;
 inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
 inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
 inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
@@ -84,6 +85,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BerthYield) return berth_yield_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickClearance) return wick_clearance_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickDetour) return wick_detour_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthDetourFallback) return detour_fallback_physics;
@@ -155,6 +157,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BerthYield) return berth_yield_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickClearance) return wick_clearance_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickDetour) return wick_detour_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthDetourFallback) return detour_fallback_schema;
