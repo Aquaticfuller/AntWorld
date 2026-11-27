@@ -233,6 +233,56 @@ experiment isolates the cost of restarting a supply trip solely on
 available crop space. A complete supply chain also requires the next
 collector to acquire resources and reach an eligible recipient.
 
+## Verification on the combined candidate
+
+Physics 101 passes the inherited seed-2 wick, entrance, sugar-allocation,
+and refill-memory replay assertions. In the wick cut the founder
+actually drinks 25 µg at source 3, receives 179 µg water and 809 µg sugar
+through mouth transactions, and absorbs 193 µg water and 604 µg sugar
+through the old cutoff. The first paid contact is with worker 9. Each
+cut checks conservation and repeats its canonical suffix after a save
+and restart. An independent SQLite validation also replays physics 101.
+
+The seed-3 continuation has a distinct local failure. The final worker
+keeps 213 µg of sugar at 10.125 mm mouth-to-mouth separation. The paired
+inspection finds no sensed donor or complete mouth route. The founder
+has hydrated from the water wick and has no sugar in her crop. The last
+six hours include 23 reviews by worker 10 and six by the founder, with
+no worker move or positive oral receipt. Energy death occurs at
+6,442,311,204 ms. This failure identifies how an isolated collector can
+retain stock after the point-to-point transfer and traffic fixes.
+
+## A returner blocked after reaching the chamber
+
+The from-birth seed-29 run ends receipt of sugar on day 67.69 in physics
+101, compared with day 79.53 in physics 100. The difference shows a
+whole-trajectory tradeoff of the refill policy. In the last six hours,
+worker 8 has a payable crop and is already underground at a recorded
+waypoint on the chamber floor. Its mouth is 4.675 mm from the founder.
+The visible donor has a complete local approach in the read-only
+planning probe. It nevertheless commits 720 rests with its forager
+lease active, because the remaining connector step is blocked and the
+task switch normally waits for its original route endpoint. No positive
+meal, move, or handoff from this donor occurs in the control window.
+
+Physics 102 allows an inward collector with real liquid cargo in its
+crop to end a blocked trip at a valid chamber-floor berth near the
+pantry. The berth has to be its current position on its own connector,
+the external load has to be empty, and a local recipient has to have a
+legal feeding approach. The connector is shortened through the existing
+docking transaction. The ordinary completed-return decision can then
+start the paid approach. The first prototype left an inbound flag on a
+completed connector with an empty external load. The save/restore
+test caught it, and the transaction now clears the flag at that
+boundary. The existing connector validation remains in force.
+
+On the matched cut the collector makes 31 actual moves and pays
+284 µg sugar and 86 µg water to the founder. Her body energy at the old
+death time is 1,604,751,143 nJ. The extended prototype cut is alive on
+day 77 and dead by day 80. Reaching a legitimate chamber berth and
+finishing oral delivery solve a specific stalled trip and expose the
+need for a second supply cycle.
+
 ## Reproduction
 
 Run from the repository root with the native application built in Release.
@@ -245,6 +295,7 @@ py -3 -B -m tools.verify_founder_sugar --core $core
 py -3 -B -m tools.verify_remembered_refill --core $core
 py -3 -B -m tools.verify_blocked_feeder_return --core $core
 py -3 -B -m tools.verify_demand_refill --core $core
-py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 101
-py -3 -B -m tools.measure_first_meal --core $core --model demand-refill --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
+py -3 -B -m tools.verify_chamber_contact_return --core $core
+py -3 -B -m tools.audit_founding_activity --core $core --verify-archive --stimulus-version 102
+py -3 -B -m tools.measure_first_meal --core $core --model chamber-contact-return --seed 2 --supply nearby --days 730 --feeding-continuity --trace-flux --include-water
 ```

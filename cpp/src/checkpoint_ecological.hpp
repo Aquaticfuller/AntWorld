@@ -54,6 +54,7 @@ inline constexpr unsigned mouth_clearance_schema = 91, mouth_clearance_physics =
 inline constexpr unsigned remembered_refill_schema = 92, remembered_refill_physics = 99;
 inline constexpr unsigned blocked_feeder_schema = 93, blocked_feeder_physics = 100;
 inline constexpr unsigned demand_refill_schema = 94, demand_refill_physics = 101;
+inline constexpr unsigned chamber_contact_schema = 95, chamber_contact_physics = 102;
 inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
 inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
 inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
@@ -90,6 +91,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberContactReturn) return chamber_contact_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::DemandRefill) return demand_refill_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BlockedFeederReturn) return blocked_feeder_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RememberedRefill) return remembered_refill_physics;
@@ -167,6 +169,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ChamberContactReturn) return chamber_contact_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::DemandRefill) return demand_refill_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BlockedFeederReturn) return blocked_feeder_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RememberedRefill) return remembered_refill_schema;

@@ -346,6 +346,23 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 r.decision.reason=DecisionReason::Search;
             }
         }
+        // A return to the chamber can end at a valid contact berth when the
+        // remaining connector is blocked and a local recipient can be reached.
+        if (chamber_contact_return(s) && link && link->returning && link->cursor && link->cursor+1<link->size &&
+            !loaded && f.path_size==1 && f.current_trip_liquid && local_founding_provisioning(s,ant.id) &&
+            s.autonomy.contains(ant.id) && ant.position==link->points[link->cursor] &&
+            (r.decision.action==ActionKind::Rest || (r.decision.action==ActionKind::Move &&
+             !clear_worker_traffic(ant,r.destination,body_half(ant.id))))) {
+            const auto depot=s.colonies.rows[s.colonies.index.at(ant.colony)].nest_position;
+            if (ant.position.y==depot.y && within_contact(ant.position,depot,s.config) &&
+                spatially_clear(ant.position,depot) && local_food_offer(ant,true)) {
+                r.decision.action=ActionKind::Rest;
+                r.decision.mode=BehaviorMode::Rest;
+                r.decision.reason=DecisionReason::NestContact;
+                r.connector_return=true;
+                r.dock_here=true;
+            }
+        }
         ready.push_back(r);
     }
     std::sort(ready.begin(), ready.end(), [](const auto& a, const auto& b) { return a.event.actor < b.event.actor; });
@@ -416,7 +433,9 @@ void WorldRuntime::resolve_wakes(Transaction& tx, const std::vector<ScheduledEve
                 link.size-=link.cursor;
                 link.cursor=0;
             }
-            link.returning=!r.leave_berth;
+            // A crop-only handoff ends the inbound path at its current berth.
+            // A dry carrier still owns its delivery to the pantry.
+            link.returning=!r.leave_berth && (!r.dock_here || ant.carried_food.total_ug());
             tx.connectors.set(ant.id,link);
         }
         WorldEvent fact; fact.source = r.event.id; fact.kind = FactKind::ForagingDecision;
