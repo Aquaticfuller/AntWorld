@@ -216,14 +216,14 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
     if (meets(original)) return adult.position;
     const auto facing=std::max<std::uint8_t>(1,actor_facing(s,adult.id));
     open.push({adult.position,adult.position,facing,0,remaining(original),true,0});
-    best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing,0},0);
+    best.try_emplace(PoseKey{adult.position.x,adult.position.z,facing,std::uint8_t{}},0);
     const bool detour=aligned_stride || !work_stances.empty();
     const unsigned max_search=detour?384:192;
     const std::int64_t action_cost=detour?500:0;
     for (unsigned expanded=0;!open.empty() && expanded<max_search;) {
         const auto current=open.top();
         open.pop();
-        if (best.at({current.site.x,current.site.z,current.facing,distinguish_depth?current.legs:0})!=current.travelled_um) continue;
+        if (best.at({current.site.x,current.site.z,current.facing,distinguish_depth?current.legs:std::uint8_t{}})!=current.travelled_um) continue;
         const auto legs=leg_budget ? static_cast<std::uint8_t>(current.legs+1) : std::uint8_t{};
         ++expanded;
         auto from=adult;
@@ -237,7 +237,7 @@ PositionM WorldRuntime::local_floor_route(const AntState& adult, PositionM targe
             const auto heading=body_travel_heading(view,from,next.position,current.facing,align,feeding_alignment_m(s,adult.caste));
             const auto cost=current.travelled_um+action_cost+
                 std::llround(portable_care_distance(from.position,next.position)*1e6);
-            const PoseKey key{next.position.x,next.position.z,heading,distinguish_depth?legs:0};
+            const PoseKey key{next.position.x,next.position.z,heading,distinguish_depth?legs:std::uint8_t{}};
             if (const auto prior=best.find(key); prior!=best.end() && prior->second<=cost) continue;
             if (!anatomy_sweep(view,from,next.position,current.facing,heading)) continue;
             const auto sweep=body_pose(from,heading,attachment(view,from,heading));
