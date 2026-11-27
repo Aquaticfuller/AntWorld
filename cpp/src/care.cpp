@@ -276,6 +276,7 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
     const bool joint=joint_meal_route(s);
+    const bool detour=mouth_detour(s);
     struct Pose {BodyPose body; std::uint8_t heading;};
     const std::array ants{donor,founder};
     const std::array start{Pose{*query_body({s.world,donor.id}),actor_facing(s,donor.id)},
@@ -315,7 +316,8 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         if (!inserted) return result;
         auto from=ants[i];
         from.position=pose.body.center_m;
-        for (const double length:{.000125,.0005,.001,.002}) for (std::uint8_t dir=1;dir<=8;++dir) {
+        constexpr std::array strides{.000125,.0005,.001,.002,.00025,.003};
+        for (const double length:std::span(strides.data(),detour?strides.size():std::size_t{4})) for (std::uint8_t dir=1;dir<=8;++dir) {
             auto to=from;
             to.position=snap_micro(translated(from.position,scale(body_heading(dir),length)));
             if (!within_distance(ants[i].position,to.position,radius,true) ||
@@ -329,9 +331,10 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         return result;
     };
     std::vector<Node> frontier{{start,{},0}};
-    const auto depth_limit=joint ? (leg_budget ? *leg_budget : joint_meal_legs) : 5;
+    const auto depth_limit=joint ? (leg_budget ? *leg_budget : detour ? mouth_detour_legs : joint_meal_legs) : 5;
     for (unsigned depth=0;depth<static_cast<unsigned>(depth_limit);++depth) {
         std::vector<Node> next;
+        decltype(visited) generated;
         for (const auto& node:frontier) for (unsigned i=0;i<2;++i) {
             const auto& peer=node.pair[1-i].body;
             for (const auto& edge:edges(i,node.pair[i])) {
@@ -340,12 +343,13 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
                 auto pair=node.pair;
                 pair[i]=pose;
                 const auto id=std::pair{key(pair[0]),key(pair[1])};
-                if (visited.contains(id) || !visible(pose.body,peer) ||
+                if (visited.contains(id) || (detour && generated.contains(id)) || !visible(pose.body,peer) ||
                     anatomical_sweep_hits(edge.swept,to,peer)) continue;
                 if (joint) {
                     const auto origin=node.pair[i].body.center_m;
                     const auto clear=[&](const BodyPose& obstacle,std::int32_t half) {
                         return !anatomical_sweep_hits(edge.swept,to,obstacle) &&
+                            (!detour || anatomy_turn_clears(edge.swept,node.pair[i].heading,pose.heading,obstacle)) &&
                             center_sweep_clears(origin,to,obstacle.center_m,(halves[i]+half)*s.geometry->config.quantum_m);
                     };
                     if (!clear(peer,halves[1-i]) ||
@@ -354,7 +358,7 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
                         })) continue;
                 }
                 if (!depth && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
-                visited.insert(id);
+                (detour ? generated : visited).insert(id);
                 const auto first=depth ? node.first : Move{ants[i].id,to};
                 if (mouths_meet(pose.body,peer)) {
                     if (leg_budget) *leg_budget=static_cast<std::uint8_t>(depth+1);
@@ -368,13 +372,28 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
         }
         if (next.empty()) break;
         std::stable_sort(next.begin(),next.end(),[](const Node& a,const Node& b){return a.score<b.score;});
-        if (next.size()>12) next.resize(12);
+        if (detour && next.size()>16) {
+            // ENGINEERING_FIXTURE. Keep alternate headings and approach sides
+            // even when their first step puts the mouths farther apart.
+            std::set<std::tuple<std::uint8_t,std::uint8_t,std::uint8_t>> sectors;
+            std::vector<Node> choices;
+            for (const auto& node:next) {
+                const auto& a=node.pair[0];
+                const auto& b=node.pair[1];
+                const auto side=movement_facing(b.body.center_m,a.body.center_m);
+                const bool distinct=sectors.emplace(a.heading,b.heading,side).second;
+                if (choices.size()<4 || distinct) choices.push_back(node);
+                if (choices.size()==16) break;
+            }
+            next=std::move(choices);
+        } else if (!detour && next.size()>12) next.resize(12);
+        if (detour) for (const auto& node:next) visited.emplace(key(node.pair[0]),key(node.pair[1]));
         frontier=std::move(next);
     }
     return {};
 }
 
-std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignment_probe) const {
+std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignment_probe,bool route_probe) const {
     const auto& s=*state_;
     const auto worker=query_ant(ref);
     if (!worker || worker->caste!=Caste::Worker || worker->stage!=LifeStage::Adult ||
@@ -397,6 +416,16 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
     if (result.visible && !result.at_mouth) {
         result.queen_can_approach=mouth_approach(*queen,wb.mouth_m,{},&wb,false,alignment_probe)!=queen->position;
         result.worker_can_approach=mouth_approach(*worker,qb.mouth_m,{},&qb,false,alignment_probe)!=worker->position;
+    }
+    if (route_probe && result.visible && !result.at_mouth) {
+        auto legs=mouth_detour(s) ? mouth_detour_legs : joint_meal_legs;
+        if (const auto route=feeding_encounter(*worker,*queen,&legs)) {
+            result.route_actor=route->first;
+            result.route_first_step=route->second;
+            result.route_legs=legs;
+        }
+        if (const auto offer=local_food_offer(*worker,true)) result.donor_has_candidate=offer->second==queen->id;
+        if (const auto donor=local_donor(*queen)) result.recipient_has_candidate=donor->second==worker->id;
     }
     return result;
 }
@@ -922,7 +951,7 @@ bool WorldRuntime::start_resting_move(Transaction& tx,const AntState& ant,Positi
                 !spatially_clear(mouth,partner.mouth_m)) return false;
             auto legs=local_needs(s) && !continuation ? max_meal_route_legs : static_cast<std::uint8_t>(remaining+1);
             if (joint_meal_route(s)) {
-                if (!continuation) legs=joint_meal_legs;
+                if (!continuation) legs=mouth_detour(s) ? mouth_detour_legs : joint_meal_legs;
                 const bool receiving=founding_foundress(ant.id);
                 const auto plan=receiving ? feeding_encounter(*other,ant,&legs) : feeding_encounter(ant,*other,&legs);
                 if (!plan || plan->first!=ant.id) return false;

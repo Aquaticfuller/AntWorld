@@ -529,11 +529,12 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival" || treatment=="local-stimulus" || treatment=="stimulus-meal-priority" || treatment=="stimulus-refill-intent" || treatment=="stimulus-mouth-visibility" || treatment=="stimulus-final-leg" || treatment=="bounded-meal-route" || treatment=="local-needs" || treatment=="joint-meal-route" || treatment=="continuous-meal",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival" || treatment=="local-stimulus" || treatment=="stimulus-meal-priority" || treatment=="stimulus-refill-intent" || treatment=="stimulus-mouth-visibility" || treatment=="stimulus-final-leg" || treatment=="bounded-meal-route" || treatment=="local-needs" || treatment=="joint-meal-route" || treatment=="continuous-meal" || treatment=="mouth-detour",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="mouth-detour" ? FoundingNutrition::MouthDetour :
                         treatment=="continuous-meal" ? FoundingNutrition::ContinuousMeal :
                         treatment=="joint-meal-route" ? FoundingNutrition::JointMealRoute :
                         treatment=="local-needs" ? FoundingNutrition::LocalNeeds :
@@ -762,15 +763,21 @@ int main() {
                              << ' ' << d->sensed_cap_stances << ' ' << d->direct_cap_stances << ' ' << d->payable_sugar_ug << '\n';
                     }
                     message("OK",rows.str());
-                } else if (command=="ORAL_ACCESS" || command=="ORAL_ALIGNMENT_PROBE") {
+                } else if (command=="ORAL_ACCESS" || command=="ORAL_ALIGNMENT_PROBE" || command=="ORAL_ROUTE") {
                     end(request);
                     std::ostringstream rows;
+                    rows << std::setprecision(17);
                     const auto id=world->summary().world;
                     for (const auto& ant:world->ant_states()) {
-                        const auto d=world->query_oral_access({id,ant.id},command=="ORAL_ALIGNMENT_PROBE");
-                        if (d) rows << ant.id.value << ' ' << d->visible << ' ' << d->at_mouth << ' '
-                                    << d->queen_can_approach << ' ' << d->worker_can_approach << ' '
-                                    << d->offered_carbs_ug << ' ' << d->requested_carbs_ug << '\n';
+                        const auto d=world->query_oral_access({id,ant.id},command=="ORAL_ALIGNMENT_PROBE",command=="ORAL_ROUTE");
+                        if (!d) continue;
+                        rows << ant.id.value << ' ' << d->visible << ' ' << d->at_mouth << ' '
+                             << d->queen_can_approach << ' ' << d->worker_can_approach << ' '
+                             << d->offered_carbs_ug << ' ' << d->requested_carbs_ug;
+                        if (command=="ORAL_ROUTE") rows << ' ' << d->route_actor.value << ' ' << unsigned(d->route_legs) << ' '
+                            << d->route_first_step.x << ' ' << d->route_first_step.y << ' ' << d->route_first_step.z << ' '
+                            << d->donor_has_candidate << ' ' << d->recipient_has_candidate;
+                        rows << '\n';
                     }
                     message("OK",rows.str());
                 } else if (command=="BODY_STATES") {

@@ -1,0 +1,19 @@
+# Local routes to a payable mouth contact
+
+## Registered controls and endpoints
+
+Use physics 90 at `7baca165e986885aabf7771f7ef1c96f0d1dfd48` as the primary control. Reconstruct nearby-feeder seed 2 from its published initial frame. The terminal replay starts just after the final positive oral sugar transfer at `6,717,934,579 ms` and stops at the founder's energy death at `6,950,144,690 ms`. Preserve the original seed, food, water, physiology, need signals, and contact and collision geometry. Distinguish observed movement and feeding facts from read-only stock and pose probes. Use the six-hour replay, earlier positive contact and inaccessible offer as secondary controls.
+
+Run any adopted candidate from the original single-founder start for 730 simulated days with the nearby-feeder seeds 1, 2, 3, 17 and 29 and the seed-2 absent-feeder control. Compare initial frames, positive oral sugar receipts, actual founder uptake, the final interval without an oral meal, adult emergence in year two and live workers at days 73, 365 and 730. The existing sustained-supply endpoint combines founder survival, year-two adult emergence and worker growth from both earlier censuses. Keep all deaths and zero-transfer results.
+
+## Engineering decision
+
+Treat mouth approach as a bounded search over real body positions and headings. Retain viable alternatives that temporarily increase the mouth gap to leave room for a turn or use a different side. Each motion uses the existing resolution and paid-work path. Re-evaluate the partner's actual pose and stock between moves. A predicted pose grants neither a transfer nor access to resources through terrain. Evaluate a positive payment in the priority replay and require the inaccessible control to remain subject to perception and clearance. Planner limits are engineering fixtures.
+
+## Terminal replay and the first candidate
+
+The physics-90 replay reproduces death fact 132,923 at the recorded instant. During the 64.50 hours, worker 8 makes 257 decisions and no moves. It remains at the same center with 279–306 µg of crop sugar in the sampled frames. All 261 samples with a living founder show a visible mouth pair and positive offered and requested sugar. The gap ranges from 1.885 to 3.779 mm. At the start and at day 80 the read-only route query finds a partial move in the donor's offer selection and no complete route in the planner used by action scheduling. This mismatch leaves no actual approach in the queue. The complete search must distinguish a reachable first leg from a leg that can lead to contact.
+
+Physics 92 expands the available stride set and retains up to 16 pose pairs at each of 16 levels. The leading four plans follow the gap score. Further places retain distinct headings and relative approach sides. Discarded states can be found through a later branch. Terrain, body turns, stationary obstructions and subsequent committed traffic checks still constrain the route. At the initial checkpoint the search finds a five-leg approach beginning with worker 8. The worker takes the first step after its next review, and the queen commits an observed turn. Worker 8 first pays 100 µg sugar after 29 minutes and remains the source of all 1,083 µg oral sugar delivered in the formerly empty interval. The day-80 cut separately yields 345 µg from worker 8. The founder survives the old terminal deadline in both matched continuations.
+
+The broader search changes some previously usable approaches. On the inherited seed-3 six-hour cut the earlier physics-90 treatment delivers 213 µg sugar, and physics 92 delivers zero. Preserve this result and the ongoing two-year runs. Test a second policy using the short route first and allowing the larger search when that route is unavailable. The new policy must retain meaningful seed-2 approach and food payments and should preserve the earlier seed-3 positive case. Use the same measured windows before starting its full matrix.

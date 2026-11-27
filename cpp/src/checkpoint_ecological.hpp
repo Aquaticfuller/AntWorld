@@ -44,6 +44,7 @@ inline constexpr unsigned meal_route_schema = 80, meal_route_physics = 87;
 inline constexpr unsigned local_needs_schema = 81, local_needs_physics = 88;
 inline constexpr unsigned joint_meal_schema = 82, joint_meal_physics = 89;
 inline constexpr unsigned continuous_meal_schema = 83, continuous_meal_physics = 90;
+inline constexpr unsigned mouth_detour_schema = 85, mouth_detour_physics = 92;
 inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
 inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
 inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
@@ -80,6 +81,7 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthDetour) return mouth_detour_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ContinuousMeal) return continuous_meal_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::JointMealRoute) return joint_meal_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalNeeds) return local_needs_physics;
@@ -147,6 +149,7 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthDetour) return mouth_detour_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::ContinuousMeal) return continuous_meal_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::JointMealRoute) return joint_meal_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::LocalNeeds) return local_needs_schema;

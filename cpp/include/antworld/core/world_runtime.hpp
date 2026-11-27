@@ -39,13 +39,17 @@ struct MealAccess {
 struct OralAccess {
     bool visible{}, at_mouth{}, queen_can_approach{}, worker_can_approach{};
     std::uint64_t offered_carbs_ug{}, requested_carbs_ug{};
+    EntityId route_actor{};
+    PositionM route_first_step{};
+    std::uint8_t route_legs{};
+    bool donor_has_candidate{}, recipient_has_candidate{};
 };
 
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
     [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false) const;
-    [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker,bool alignment_probe=false) const;
+    [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker,bool alignment_probe=false,bool route_probe=false) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
     static constexpr std::size_t max_records = 65536;

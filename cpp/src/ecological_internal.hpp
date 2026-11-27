@@ -38,7 +38,7 @@ inline void validate_ecological_closure(const EcologicalClosureConfig& c, const 
             (habitat->anatomical_handoff && !habitat->wall_handoff) ||
             (habitat->familiar_return && !habitat->anatomical_handoff) ||
             (habitat->variable_conditions && (!habitat->anatomical_handoff || habitat->familiar_return)) ||
-            habitat->nutrition > FoundingNutrition::ContinuousMeal ||
+            (habitat->nutrition > FoundingNutrition::ContinuousMeal && habitat->nutrition!=FoundingNutrition::MouthDetour) ||
             (habitat->nutrition != FoundingNutrition::Original && !habitat->variable_conditions) ||
             !habitat->pantry_buffer_ug || habitat->pantry_buffer_ug>1'000'000'000 ||
             !std::isfinite(p.x) || !std::isfinite(p.y) || !std::isfinite(p.z) ||
@@ -150,7 +150,8 @@ inline bool bounded_meal_route(const auto& s) { return founding_nutrition(s)>=Fo
 inline bool local_needs(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::LocalNeeds; }
 inline bool joint_meal_route(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::JointMealRoute; }
 inline bool continue_contact_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ContinuousMeal; }
-inline constexpr std::uint8_t max_meal_route_legs=64, joint_meal_legs=8;
+inline bool mouth_detour(const auto& s) { return founding_nutrition(s)==FoundingNutrition::MouthDetour; }
+inline constexpr std::uint8_t max_meal_route_legs=64, joint_meal_legs=8, mouth_detour_legs=16;
 inline bool refill_crop_room(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::RepeatCollection; }
 inline bool work_face_search(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::WorkFaceSearch; }
 inline bool responsive_meal(const auto& s) { return founding_nutrition(s)>=FoundingNutrition::ResponsiveMeal; }
