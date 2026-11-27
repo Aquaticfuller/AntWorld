@@ -51,12 +51,17 @@ inline FoodMass social_crop_intake(const auto& s,const AntState& ant,const Physi
 // ENGINEERING_FIXTURE. An adult keeps a share of each ingredient. An
 // immediate reversal cannot move the same component back to its donor.
 inline FoodMass contact_offer(const auto& s, FoodMass payable, const PhysiologyState& donor,
-                              const PhysiologyState& recipient, LifeStage stage) {
+                              const PhysiologyState& recipient, EntityId recipient_id, LifeStage stage) {
     if (!crop_exchange(s) || stage!=LifeStage::Adult) return payable;
     const auto share=[](std::uint64_t held, std::uint64_t other) {
         return held>other ? (held-other)/2 : 0;
     };
-    return ingredient_min(payable,{share(donor.crop.carbs_ug,recipient.crop.carbs_ug),
+    // ENGINEERING_FIXTURE. The foundress can solicit payable carbohydrate
+    // according to her own physiological demand and crop room. Equal crop
+    // contents alone do not imply equal usable body reserves.
+    const bool founder_request=founder_sugar_demand(s) && s.founding &&
+        recipient_id==s.founding->founder && s.social && s.social->demand_sensitive;
+    return ingredient_min(payable,{founder_request ? payable.carbs_ug : share(donor.crop.carbs_ug,recipient.crop.carbs_ug),
                                    share(donor.crop.protein_ug,recipient.crop.protein_ug),
                                    share(donor.crop.water_ug,recipient.crop.water_ug),0});
 }

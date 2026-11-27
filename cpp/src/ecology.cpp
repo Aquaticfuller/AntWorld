@@ -142,6 +142,16 @@ std::optional<MealAccess> WorldRuntime::query_meal_access(AntRef ref,bool extend
   }
   return d;
 }
+std::optional<RefillAccess> WorldRuntime::query_refill_access(AntRef ref) const {
+  const auto ant=query_ant(ref);
+  if (!ant || ant->stage!=LifeStage::Adult || ant->caste!=Caste::Worker) return {};
+  const auto& s=*state_;
+  const auto berth=remembered_liquid_berth(s,*ant);
+  if (!berth) return {};
+  const auto p=*query_physiology(ref);
+  return RefillAccess{*berth,worker_depot_step(*ant,*berth),p.config.crop_capacity_ug-p.crop.total_ug(),
+                      familiar_liquid_exit(s,*ant),spatially_clear(ant->position,*berth)};
+}
 void WorldRuntime::request_food_review(Transaction& tx,const AntState& founder,EntityId worker,bool wake_founder) {
   auto& s=*state_;
   const auto donor=query_ant({s.world,worker});
@@ -199,7 +209,7 @@ bool WorldRuntime::payable_local_meal(const AntState& donor,const AntState& reci
     return amount.lipid_ug || amount.crop.total_ug();
   }
   if (donor.caste!=Caste::Worker) return false;
-  const auto offer=contact_offer(s,founding_gift_supply(f,*d),*d,*r,recipient.stage);
+  const auto offer=contact_offer(s,founding_gift_supply(f,*d),*d,*r,recipient.id,recipient.stage);
   if (recipient.stage==LifeStage::Adult) return meal_signal(recipient,*r,offer).total_ug()!=0;
   return ingredient_min(offer,founding_larval_demand(f,*r,*query_founding({s.world,recipient.id}),
                                                    provision_callow_water(s))).total_ug()!=0;
@@ -231,7 +241,7 @@ void WorldRuntime::notify_meal_contact(Transaction& tx,const AntState& moved) {
       request_autonomy_review(tx,peer.id,mouth_contact_wake);
   }
 }
-void WorldRuntime::notify_wick_clearance(Transaction& tx,const AntState& worker) {
+void WorldRuntime::notify_intake_clearance(Transaction& tx,const AntState& worker) {
   const auto& s=*state_;
   const auto reach=s.care_profile->perception_radius_m;
   const auto mouth=query_body({s.world,worker.id})->mouth_m;
@@ -244,6 +254,12 @@ void WorldRuntime::notify_wick_clearance(Transaction& tx,const AntState& worker)
     if (const auto wick=local_wick_contact(queen,*query_physiology(ref))) {
       if (mouth_at_supply(queen,depot_mouth_target(queen,*wick)) || wick_approach(queen,*wick)!=queen.position)
         request_autonomy_review(tx,queen.id,thirst_wake);
+    }
+    if (mouth_clearance(s)) {
+      if (const auto donor=local_donor(queen)) {
+        request_autonomy_review(tx,queen.id,hunger_wake);
+        request_food_review(tx,queen,donor->second);
+      }
     }
   }
 }
@@ -266,7 +282,8 @@ bool WorldRuntime::notify_refill_progress(Transaction& tx,const AntState& before
   const auto& s=*state_;
   if (!local_stimulus(s) || before.caste!=Caste::Worker) return false;
   const auto worker=*query_ant({s.world,before.id});
-  if (worker.position==before.position || !familiar_liquid_exit(s,worker)) return false;
+  if (worker.position==before.position || (!familiar_liquid_exit(s,worker) &&
+      !(remembered_refill(s) && remembered_liquid_berth(s,worker)))) return false;
   const auto p=*query_physiology({s.world,worker.id});
   if (p.config.crop_capacity_ug-p.crop.total_ug()<p.config.transfer_limit_ug) return false;
   const auto berth=s.connectors.at(worker.id).points[0];
@@ -370,9 +387,13 @@ void WorldRuntime::resolve_autonomy_wakes(
         ingredient_min(founding_gift_supply(s.founding->profile,p),local_provisioning_shortfall(ant)).total_ug();
     if (social_crop(s) && can_provision && !food_offer && !can_feed_brood)
       food_offer=local_food_offer(ant);
-    const auto wick_yield=wick_clearance(s) && ant.caste==Caste::Worker && stationary && can_switch &&
-        !urgent && !at_wick && !wick_step && !giving_way && !food_offer && !can_feed_brood &&
-        !care_owned(s,ant.id) && !active_expenditure(p) ? wick_yield_step(ant) : std::nullopt;
+    std::optional<PositionM> intake_yield;
+    if (wick_clearance(s) && ant.caste==Caste::Worker && stationary && can_switch &&
+        !urgent && !at_wick && !wick_step && !giving_way && !can_feed_brood &&
+        !care_owned(s,ant.id) && !active_expenditure(p)) {
+      if (!food_offer) intake_yield=wick_yield_step(ant);
+      if (!intake_yield && mouth_clearance(s)) intake_yield=mouth_yield_step(ant);
+    }
     std::optional<PositionM> chamber_step;
     const auto nursery_arrival_m=founding_nutrition(s)==FoundingNutrition::NurseryArrival ?
         2*s.geometry->config.quantum_m : .002;
@@ -455,14 +476,17 @@ void WorldRuntime::resolve_autonomy_wakes(
       const auto opened=!s.geometry_edits.empty();
       const bool refill_fits=refill_crop_room(s) ? p.config.crop_capacity_ug-p.crop.total_ug()>=p.config.transfer_limit_ug :
                                              p.crop.carbs_ug<p.config.transfer_limit_ug;
-      if (familiar_liquid_exit(s,ant) && refill_fits &&
-          (!focused || (!food_offer && !can_feed_brood)) &&
+      const bool refill_known=familiar_liquid_exit(s,ant) ||
+          (remembered_refill(s) && remembered_liquid_berth(s,ant));
+      const bool sugar_empty=remembered_refill(s) && !p.crop.carbs_ug;
+      if (refill_known && refill_fits &&
+          (!focused || ((!food_offer || sugar_empty) && !can_feed_brood)) &&
           !at_wick && !wick_step && !at_meal &&
-          (!food_offer || food_offer->first!=ant.position)) {
+          (!food_offer || food_offer->first!=ant.position || sugar_empty)) {
         // An experienced collector can refill at a familiar berth. The
         // scheduled trip still pays the source and fills real crop space.
         const auto origin=s.connectors.at(ant.id).points[0];
-        if (spatially_clear(ant.position,origin)) {
+        if (remembered_refill(s) || spatially_clear(ant.position,origin)) {
           refill_trip=foraging_home && can_forage(ant);
           if (!refill_trip && ant.position!=origin) {
             refill_approach=worker_depot_step(ant,origin);
@@ -593,8 +617,8 @@ void WorldRuntime::resolve_autonomy_wakes(
         choice.meal_steps=s.care_profile->motion->search_steps;
       }
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
-    } else if (wick_yield) {
-      choice.resting_site=wick_yield;
+    } else if (intake_yield) {
+      choice.resting_site=intake_yield;
       choice.transit=CareAct::NestReposition;
       inspect_decision(wake,{},1,static_cast<std::uint64_t>(choice.behavior));
     } else if (refill_trip || refill_approach) {

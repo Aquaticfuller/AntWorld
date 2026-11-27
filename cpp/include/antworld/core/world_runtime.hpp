@@ -47,11 +47,19 @@ struct OralAccess {
     bool donor_has_candidate{}, recipient_has_candidate{};
 };
 
+struct RefillAccess {
+    PositionM remembered_berth{};
+    std::optional<PositionM> local_step;
+    std::uint64_t crop_room_ug{};
+    bool within_sensing_range{}, clear_bearing{};
+};
+
 // Single-threaded owner. Query results are detached values, never live pointers.
 class WorldRuntime {
 public:
     [[nodiscard]] std::optional<MealAccess> query_meal_access(AntRef, bool extended=false, bool wick_probe=false) const;
     [[nodiscard]] std::optional<OralAccess> query_oral_access(AntRef worker,bool alignment_probe=false,bool route_probe=false) const;
+    [[nodiscard]] std::optional<RefillAccess> query_refill_access(AntRef) const;
     static constexpr std::uint32_t schema_version = 8;
     static constexpr std::uint32_t physics_version = 9;
     static constexpr std::size_t max_records = 65536;
@@ -218,16 +226,17 @@ private:
                                            const BodyPose* partner=nullptr, bool patch=false,bool alignment_probe=false) const;
     [[nodiscard]] bool oral_contact(const AntState&,const AntState&) const;
     [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> feeding_encounter(const AntState& donor,const AntState& recipient,
-                                                                                std::uint8_t* leg_budget = nullptr) const;
+        std::uint8_t* leg_budget = nullptr, const std::pair<EntityId,BodyPose>* shifted_neighbor=nullptr) const;
     [[nodiscard]] std::optional<std::pair<EntityId,PositionM>> search_feeding_route(const AntState& donor,const AntState& recipient,
-                                                                                  std::uint8_t* leg_budget,bool detour) const;
+        std::uint8_t* leg_budget,bool detour,const std::pair<EntityId,BodyPose>* shifted_neighbor) const;
     [[nodiscard]] PositionM local_floor_route(const AntState&, PositionM, const BodyPose* partner,
                                               std::span<const PositionM> work_stances = {}, std::uint8_t* leg_budget = nullptr,
                                               bool wide_wick=false,
                                               const std::pair<EntityId,BodyPose>* shifted_neighbor=nullptr) const;
     [[nodiscard]] PositionM wick_approach(const AntState&, PositionM) const;
     [[nodiscard]] std::optional<PositionM> wick_yield_step(const AntState& worker) const;
-    void notify_wick_clearance(Transaction&, const AntState& worker);
+    [[nodiscard]] std::optional<PositionM> mouth_yield_step(const AntState& worker) const;
+    void notify_intake_clearance(Transaction&, const AntState& worker);
     [[nodiscard]] bool meal_in_reach(const AntState& donor,const AntState& recipient) const;
     [[nodiscard]] std::optional<PositionM> approach_visible_body(const AntState&) const;
     [[nodiscard]] std::optional<std::pair<PositionM,EntityId>> local_donor(const AntState& queen) const;

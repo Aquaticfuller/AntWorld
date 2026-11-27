@@ -352,7 +352,7 @@ void WorldRuntime::resolve_nutrition_action(Transaction& tx, const ScheduledEven
         synchronize_physiology(tx, recipient.id); receiver = s.physiology.at(recipient.id);
         room = receiver->config.crop_capacity_ug-receiver->crop.total_ug();
         supply = local_founding_provisioning(s,ant.id) ? founding_gift_supply(s.founding->profile,p) : p.crop;
-        supply = contact_offer(s,supply,p,*receiver,recipient.stage);
+        supply = contact_offer(s,supply,p,*receiver,recipient.id,recipient.stage);
         if (s.social && !s.social->exchange_enabled) { f.outcome = Outcome::EmptyInventory; return; }
         if (s.social && s.social->demand_sensitive) {
             const auto demand=local_founding_feeding(s) && recipient.stage==LifeStage::Larva &&
@@ -501,7 +501,7 @@ void WorldRuntime::resolve_nutrition_wakes(Transaction& tx, const std::vector<Sc
                 } else if (adult_offers(s) && other.stage==LifeStage::Adult ? !oral_contact(ant,other) :
                            !contact(ant, other, s.config, s.social && s.geometry ? nullptr : s.surface.get())) continue;
                 const auto q = *query_physiology({s.world, id});
-                const auto offer=contact_offer(s,supply,p,q,other.stage);
+                const auto offer=contact_offer(s,supply,p,q,other.id,other.stage);
                 if (!offer.total_ug()) continue;
                 if (checked_larva && s.social && s.social->demand_sensitive && s.founding_reserves.contains(id) &&
                     !ingredient_min(offer,founding_larval_demand(s.founding->profile,q,s.founding_reserves.at(id),

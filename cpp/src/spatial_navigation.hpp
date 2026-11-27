@@ -54,17 +54,22 @@ inline bool private_sampling_trip(const auto& s,const AntState& ant) {
 
 // The taste and origin of this worker's last trip survive a local feeding
 // visit. The worker cannot sense the present stock of that distant source.
-inline bool familiar_liquid_exit(const auto& s,const AntState& ant) {
+inline std::optional<PositionM> remembered_liquid_berth(const auto& s,const AntState& ant) {
     if (!source_refill(s) || !s.surface || !s.geometry || !s.care_profile ||
-        ant.carried_food.total_ug() || s.carriers.contains(ant.id)) return false;
+        ant.carried_food.total_ug() || s.carriers.contains(ant.id)) return {};
     const auto trip=s.foragers.find(ant.id);
     const auto route=s.connectors.find(ant.id);
     if (trip==s.foragers.end() || route==s.connectors.end() || trip->second.enabled ||
         trip->second.path_size!=1 || !trip->second.last_collected.value ||
-        !trip->second.collections || ant.position.y>=navigation_height(s)) return false;
+        !trip->second.collections || ant.position.y>=navigation_height(s)) return {};
     const auto food=s.foods.index.find(trip->second.last_collected);
-    if (food==s.foods.index.end() || !s.foods.rows[food->second].initial.carbs_ug) return false;
-    return within_distance(ant.position,route->second.points[0],s.care_profile->perception_radius_m,true);
+    if (food==s.foods.index.end() || !s.foods.rows[food->second].initial.carbs_ug) return {};
+    return route->second.points[0];
+}
+
+inline bool familiar_liquid_exit(const auto& s,const AntState& ant) {
+    const auto berth=remembered_liquid_berth(s,ant);
+    return berth && within_distance(ant.position,*berth,s.care_profile->perception_radius_m,true);
 }
 
 inline WorldEvent forager_started(const AntState& ant,Cell home,bool mixed) {

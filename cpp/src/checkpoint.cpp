@@ -197,7 +197,10 @@ std::unique_ptr<WorldRuntime::State> WorldRuntime::decode(std::span<const std::u
     if (ecological) {
         const auto outer_schema=r.get(4);
         const auto version=static_cast<unsigned>(r.get(4));
-        ensure((outer_schema==berth_yield_schema && version==berth_yield_physics) ||
+        ensure((outer_schema==remembered_refill_schema && version==remembered_refill_physics) ||
+               (outer_schema==mouth_clearance_schema && version==mouth_clearance_physics) ||
+               (outer_schema==founder_sugar_schema && version==founder_sugar_physics) ||
+               (outer_schema==berth_yield_schema && version==berth_yield_physics) ||
                (outer_schema==wick_clearance_schema && version==wick_clearance_physics) ||
                (outer_schema==wick_detour_schema && version==wick_detour_physics) ||
                (outer_schema==detour_fallback_schema && version==detour_fallback_physics) ||

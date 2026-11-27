@@ -529,11 +529,14 @@ int main() {
                     require(treatment=="feeding" || treatment=="budget" || treatment=="sustained" ||
                             treatment=="protected" || treatment=="local-dig" || treatment=="callow" || treatment=="meal-search" ||
                             treatment=="social-crop" || treatment=="crop-exchange" || treatment=="chamber-return" || treatment=="mouth-range" || treatment=="checked-offer" ||
-                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival" || treatment=="local-stimulus" || treatment=="stimulus-meal-priority" || treatment=="stimulus-refill-intent" || treatment=="stimulus-mouth-visibility" || treatment=="stimulus-final-leg" || treatment=="bounded-meal-route" || treatment=="local-needs" || treatment=="joint-meal-route" || treatment=="continuous-meal" || treatment=="mouth-detour" || treatment=="mouth-detour-fallback" || treatment=="wick-detour" || treatment=="wick-clearance" || treatment=="berth-yield",
+                            treatment=="local-departure" || treatment=="meal-rendezvous" || treatment=="first-meal" || treatment=="responsive-meal" || treatment=="work-face" || treatment=="local-crop-return" || treatment=="worked-exit" || treatment=="sustained-contact" || treatment=="yielding-return" || treatment=="chamber-handoff" || treatment=="body-orientation" || treatment=="local-solicitation" || treatment=="source-refill" || treatment=="founder-appetite" || treatment=="trip-load" || treatment=="founder-route" || treatment=="exit-attachment" || treatment=="confirmed-meal-route" || treatment=="stationary-body" || treatment=="feeding-stance" || treatment=="founder-wick" || treatment=="repeat-collection" || treatment=="work-face-detour" || treatment=="familiar-site-detour" || treatment=="nursery-arrival" || treatment=="local-stimulus" || treatment=="stimulus-meal-priority" || treatment=="stimulus-refill-intent" || treatment=="stimulus-mouth-visibility" || treatment=="stimulus-final-leg" || treatment=="bounded-meal-route" || treatment=="local-needs" || treatment=="joint-meal-route" || treatment=="continuous-meal" || treatment=="mouth-detour" || treatment=="mouth-detour-fallback" || treatment=="wick-detour" || treatment=="wick-clearance" || treatment=="berth-yield" || treatment=="founder-sugar-demand" || treatment=="mouth-clearance" || treatment=="remembered-refill",
                             "invalid founding nutrition treatment");
                     nutrition=treatment=="feeding" ? FoundingNutrition::LocalFeeding :
                         treatment=="budget" ? FoundingNutrition::BroodBudget :
                         treatment=="protected" ? FoundingNutrition::ProtectedFounding :
+                        treatment=="remembered-refill" ? FoundingNutrition::RememberedRefill :
+                        treatment=="mouth-clearance" ? FoundingNutrition::MouthClearance :
+                        treatment=="founder-sugar-demand" ? FoundingNutrition::FounderSugarDemand :
                         treatment=="berth-yield" ? FoundingNutrition::BerthYield :
                         treatment=="wick-clearance" ? FoundingNutrition::WickClearance :
                         treatment=="wick-detour" ? FoundingNutrition::WickDetour :
@@ -754,6 +757,21 @@ int main() {
                          << ' ' << reserve->lipid_ug << ' ' << reserve->mobile_protein_ug;
                     for (const auto amount:p->crop.components()) data << ' ' << amount;
                     message("OK",data.str());
+                } else if (command=="REFILL_ACCESS") {
+                    end(request);
+                    std::ostringstream rows;
+                    rows << std::setprecision(17);
+                    const auto id=world->summary().world;
+                    for (const auto& ant:world->ant_states()) {
+                        const auto access=world->query_refill_access({id,ant.id});
+                        if (!access) continue;
+                        const auto berth=access->remembered_berth;
+                        rows << ant.id.value << ' ' << berth.x << ' ' << berth.y << ' ' << berth.z << ' '
+                             << access->crop_room_ug << ' ' << access->within_sensing_range << ' ' << access->clear_bearing;
+                        if (const auto step=access->local_step) rows << ' ' << step->x << ' ' << step->y << ' ' << step->z;
+                        rows << '\n';
+                    }
+                    message("OK",rows.str());
                 } else if (command=="MEAL_ACCESS" || command=="MEAL_ACCESS_WIDE" || command=="WICK_ACCESS") {
                     end(request);
                     std::ostringstream rows;

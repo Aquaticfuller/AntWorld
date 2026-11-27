@@ -49,6 +49,9 @@ inline constexpr unsigned detour_fallback_schema = 86, detour_fallback_physics =
 inline constexpr unsigned wick_detour_schema = 87, wick_detour_physics = 94;
 inline constexpr unsigned wick_clearance_schema = 88, wick_clearance_physics = 95;
 inline constexpr unsigned berth_yield_schema = 89, berth_yield_physics = 96;
+inline constexpr unsigned founder_sugar_schema = 90, founder_sugar_physics = 97;
+inline constexpr unsigned mouth_clearance_schema = 91, mouth_clearance_physics = 98;
+inline constexpr unsigned remembered_refill_schema = 92, remembered_refill_physics = 99;
 inline constexpr unsigned nursery_arrival_schema = 74, nursery_arrival_physics = 81;
 inline constexpr unsigned familiar_site_detour_schema = 73, familiar_site_detour_physics = 80;
 inline constexpr unsigned work_face_detour_schema = 72, work_face_detour_physics = 79;
@@ -85,6 +88,9 @@ inline bool micro_world_version(unsigned version) {
 }
 
 inline unsigned ecological_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RememberedRefill) return remembered_refill_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthClearance) return mouth_clearance_physics;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderSugarDemand) return founder_sugar_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BerthYield) return berth_yield_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickClearance) return wick_clearance_physics;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickDetour) return wick_detour_physics;
@@ -157,6 +163,9 @@ inline unsigned ecological_version(const EcologicalClosureConfig& c) {
     return c.portable_field?portable_ecological_physics:ecological_physics;
 }
 inline unsigned ecological_schema_version(const EcologicalClosureConfig& c) {
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::RememberedRefill) return remembered_refill_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::MouthClearance) return mouth_clearance_schema;
+    if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::FounderSugarDemand) return founder_sugar_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::BerthYield) return berth_yield_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickClearance) return wick_clearance_schema;
     if (c.founding_habitat && c.founding_habitat->nutrition == FoundingNutrition::WickDetour) return wick_detour_schema;

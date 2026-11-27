@@ -306,24 +306,66 @@ std::optional<PositionM> WorldRuntime::wick_yield_step(const AntState& worker) c
     return {};
 }
 
+std::optional<PositionM> WorldRuntime::mouth_yield_step(const AntState& worker) const {
+    const auto& s=*state_;
+    const auto own=*query_physiology({s.world,worker.id});
+    if (founding_gift_supply(s.founding->profile,own).carbs_ug) return {};
+    const auto radius=s.care_profile->perception_radius_m;
+    const auto worker_pose=*query_body({s.world,worker.id});
+    const auto local=query_neighborhood({s.world,worker.id},radius+.009);
+    const auto view=geometry_view(s,limits_);
+    for (const auto ref:local.ants) {
+        if (!founding_foundress(ref.id) || care_owned(s,ref.id)) continue;
+        const auto queen=*query_ant(ref);
+        if (!oral_contact(worker,queen)) continue;
+        const auto appetite=*query_physiology(ref);
+        const auto queen_pose=*query_body(ref);
+        for (const auto candidate:local.ants) {
+            if (candidate.id==worker.id || candidate.id==queen.id || care_owned(s,candidate.id)) continue;
+            const auto donor=*query_ant(candidate);
+            if (!payable_local_meal(donor,queen) || query_worker_motion(candidate)) continue;
+            const auto tip=query_body(candidate)->mouth_m;
+            if (!within_distance(worker_pose.mouth_m,tip,radius,true) || !spatially_clear(worker_pose.mouth_m,tip) ||
+                !within_distance(queen_pose.mouth_m,tip,radius,true) || !spatially_clear(queen_pose.mouth_m,tip)) continue;
+            const auto stock=*query_physiology(candidate);
+            const auto gift=contact_offer(s,founding_gift_supply(s.founding->profile,stock),stock,appetite,queen.id,queen.stage);
+            if (!meal_signal(queen,appetite,gift).carbs_ug || oral_contact(donor,queen) || feeding_encounter(donor,queen)) continue;
+            // ENGINEERING_FIXTURE. A worker with no spare sugar can still
+            // block a paying donor. Test a short move by this worker only.
+            for (const double stride:{.001,.002,.003}) for (std::uint8_t direction=1;direction<=8;++direction) {
+                auto shifted=worker;
+                shifted.position=snap_micro(translated(worker.position,scale(body_heading(direction),stride)));
+                if (!clear_resting_site(worker,shifted.position)) continue;
+                const auto heading=segment_heading(s,worker.id,worker.position,shifted.position);
+                const auto pose=body_pose(shifted,heading,attachment(view,shifted,heading));
+                const auto proposal=std::pair{worker.id,pose};
+                if (feeding_encounter(donor,queen,nullptr,&proposal)) return shifted.position;
+            }
+        }
+    }
+    return {};
+}
+
 // ENGINEERING_FIXTURE. A short encounter has two mobile participants.
 // Search only the visible neighborhood. Return the first paid move, then
 // re-sense after the move. Neither a predicted pose nor a cue transfers food.
 std::optional<std::pair<EntityId,PositionM>> WorldRuntime::feeding_encounter(
-        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget) const {
+        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget,
+        const std::pair<EntityId,BodyPose>* shifted_neighbor) const {
     const auto& s=*state_;
     if (founding_nutrition(s)>=FoundingNutrition::MouthDetourFallback) {
         auto short_budget=leg_budget ? std::min(*leg_budget,joint_meal_legs) : joint_meal_legs;
-        if (const auto route=search_feeding_route(donor,founder,&short_budget,false)) {
+        if (const auto route=search_feeding_route(donor,founder,&short_budget,false,shifted_neighbor)) {
             if (leg_budget) *leg_budget=short_budget;
             return route;
         }
     }
-    return search_feeding_route(donor,founder,leg_budget,mouth_detour(s));
+    return search_feeding_route(donor,founder,leg_budget,mouth_detour(s),shifted_neighbor);
 }
 
 std::optional<std::pair<EntityId,PositionM>> WorldRuntime::search_feeding_route(
-        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget,bool detour) const {
+        const AntState& donor,const AntState& founder,std::uint8_t* leg_budget,bool detour,
+        const std::pair<EntityId,BodyPose>* shifted_neighbor) const {
     const auto& s=*state_;
     const auto view=geometry_view(s,limits_);
     const auto radius=s.care_profile->perception_radius_m;
@@ -355,7 +397,8 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::search_feeding_route(
         for (const auto ref:query_neighborhood({s.world,actor.id},radius+.009).ants) {
             if (ref.id==donor.id || ref.id==founder.id || obstacles.contains(ref.id)) continue;
             if (query_ant(ref)->stage==LifeStage::Adult)
-                obstacles.emplace(ref.id,std::pair{*query_body(ref),body_half(ref.id)});
+                obstacles.emplace(ref.id,std::pair{shifted_neighbor && shifted_neighbor->first==ref.id ?
+                    shifted_neighbor->second : *query_body(ref),body_half(ref.id)});
         }
     }
     std::set<std::pair<Key,Key>> visited{{key(start[0]),key(start[1])}};
@@ -408,7 +451,7 @@ std::optional<std::pair<EntityId,PositionM>> WorldRuntime::search_feeding_route(
                             return !clear(row.second.first,row.second.second);
                         })) continue;
                 }
-                if (!depth && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
+                if (!depth && !shifted_neighbor && !clear_worker_traffic(ants[i],to,body_half(ants[i].id),true,true)) continue;
                 (detour ? generated : visited).insert(id);
                 const auto first=depth ? node.first : Move{ants[i].id,to};
                 if (mouths_meet(pose.body,peer)) {
@@ -460,7 +503,7 @@ std::optional<OralAccess> WorldRuntime::query_oral_access(AntRef ref,bool alignm
                    spatially_clear(qb.mouth_m,wb.mouth_m);
     result.at_mouth=oral_contact(*worker,*queen);
     const auto payable=founding_gift_supply(s.founding->profile,wp);
-    const auto offered=contact_offer(s,payable,wp,qp,queen->stage);
+    const auto offered=contact_offer(s,payable,wp,qp,queen->id,queen->stage);
     const auto requested=founder_appetite(s) ? meal_signal(*queen,qp,payable) : ingredient_min(signaled_need(qp,queen->stage,true),
         foundress_nest_meal(s.founding->profile,qp,s.founding_reserves.at(queen->id),payable,true));
     result.offered_carbs_ug=offered.carbs_ug;
@@ -511,7 +554,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_food_offer(cons
         if (touching || variable_conditions(s)) {
             const auto p=query_physiology(ref);
             if (!p || p->crop.total_ug()>=p->config.crop_capacity_ug) continue;
-            const auto signal=meal_signal(peer,*p,contact_offer(s,supply,physiology,*p,peer.stage));
+            const auto signal=meal_signal(peer,*p,contact_offer(s,supply,physiology,*p,peer.id,peer.stage));
             if (!signal.total_ug() || (urgent_foundress && founder_appetite(s) && !signal.carbs_ug && !signal.water_ug)) continue;
             if (urgent_foundress && responsive_meal(s) && !founder_appetite(s) && !foundress_nest_meal(s.founding->profile,*p,
                 *query_founding(ref),supply,true).carbs_ug) continue;
@@ -594,7 +637,7 @@ std::optional<std::pair<PositionM,EntityId>> WorldRuntime::local_donor(const Ant
             query_worker_motion(ref) || ant.carried_food.total_ug() || s.carriers.contains(ref.id)) continue;
         const auto wp=*query_physiology(ref);
         if (wp.behavior==IndividualBehavior::Forage || wp.behavior==IndividualBehavior::Excavate) continue;
-        const auto offer=contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.stage);
+        const auto offer=contact_offer(s,founding_gift_supply(s.founding->profile,wp),wp,qp,queen.id,queen.stage);
         if (founder_appetite(s)) {
             const auto signal=meal_signal(queen,qp,offer);
             if (!signal.carbs_ug && !signal.water_ug) continue;
@@ -1794,7 +1837,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
             const auto available=oral?founding_gift_supply(s.founding->profile,p):p.crop;
             const bool offer=s.social->exchange_enabled && receiver &&
                 receiver->crop.total_ug()<receiver->config.crop_capacity_ug &&
-                meal_signal(*target,*receiver,contact_offer(s,available,p,*receiver,target->stage)).total_ug();
+                meal_signal(*target,*receiver,contact_offer(s,available,p,*receiver,target->id,target->stage)).total_ug();
             change_behavior(tx,self,offer?IndividualBehavior::Nurse:IndividualBehavior::Rest,event.id,false,
                             offer && oral ? other.id : EntityId{});
         }
@@ -1804,7 +1847,7 @@ void WorldRuntime::execute_care_action(Transaction& tx, const ScheduledEvent& ev
         interrupt_care(tx,a.id,outcome,true);
         if (a.caste==Caste::Worker) change_behavior(tx,{s.world,a.id},IndividualBehavior::Rest,event.id);
         if (wick_clearance(s) && !failed && a.caste==Caste::Worker && c.act==CareAct::NestReposition)
-            notify_wick_clearance(tx,*query_ant({s.world,a.id}));
+            notify_intake_clearance(tx,*query_ant({s.world,a.id}));
         if (!failed && c.act==CareAct::NestReposition && (!stimulus_refill_intent(s) || c.search_remaining))
             notify_refill_progress(tx,a);
         return;

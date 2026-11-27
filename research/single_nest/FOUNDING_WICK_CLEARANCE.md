@@ -113,3 +113,61 @@ entering and delivering its original load of 282 µg protein. The
 founder receives 289 µg sugar and 74 µg water orally, absorbs 248 µg
 sugar, and remains alive at the old cutoff. A restart during the
 paid side-step reproduces the final frame and canonical facts.
+
+## Sugar allocation and donor handoff
+
+From the original founding start, physics 96 clears the surface
+failure in seed 2 and absorbs 4,185 µg sugar and 2,068 µg water before
+energy death on day 86.94. The next failed transfer is inside the
+chamber. At day 84, worker 8 is in actual oral contact and holds 26 µg
+sugar, exactly the founder's crop contents. The founder requests 26 µg.
+The old equalization rule permits zero sugar, even though the donor
+can pay and the adults have different body reserves. Close repeated
+water transfers provide little energy. At the last living cut,
+worker 9 has 78 µg sugar and remains separated from the founder.
+
+Physics 97 uses the existing founder appetite, donor self-reserve,
+transfer size and mouth transaction to bound a sugar gift. The
+old crop gradient still applies to other recipients and ingredients.
+The matched day-84 control pays its first sugar after 66 hours.
+Physics 97 pays 26 µg after 108.376 seconds. The founder nevertheless
+dies 295.383 seconds after the original cutoff on the extended
+replay. The earlier portion alone gives little extra usable sugar
+over the entire window.
+
+Physics 98 lets the worker at the mouth consider a legal clearance
+move once it has no spare sugar and a locally sensed, paying donor
+cannot reach the founder. The worker moves on its own clock. Both
+other adults recheck current positions, demand, and payment. In the
+same cut worker 8 first provides 26 µg sugar and worker 9 later
+provides 62 µg. Founder sugar absorption reaches 114 µg, compared
+with 51 µg in physics 96. On the extended replay energy death is
+delayed by 5.17 hours. This is a local improvement and the cut
+still fails to maintain indefinitely repeated intake.
+
+## Actual refill past an immediate sensing boundary
+
+At day 85 of the extended physics-98 replay both workers have zero
+crop sugar. The mixed feeder retains actual stock and both workers
+have previously collected from it. The read-only diagnostic finds
+the two remembered return berths, with 552 and 162 µg of crop room.
+Both berths are outside immediate sensing range, with a clear
+bearing and a legal first step. Physics 98 opens no foraging trip
+over the terminal window and the founder dies of energy depletion
+at 7,530,050,154 ms.
+
+Physics 99 uses an experienced worker's own recorded berth to select
+an individually checked local step beyond that sensing boundary.
+It keeps the same crop capacity, nutrient releases, handling, costs
+and transfer rules. An empty collector can choose that trip over a
+water-only mouth visit after its own immediate feeding choices.
+Encountering the actual feeder still requires normal foraging and
+withdrawal from real stock. A completed step toward the berth can
+trigger the next local decision.
+
+From the identical cut, workers 8 and 9 start nine and three trips.
+They withdraw 454 and 118 µg of sugar, respectively. The founder
+receives 547 µg orally and absorbs 541 µg before the old deadline.
+She retains 890,955,084 nJ of body energy at that cutoff. The
+native replay checks actual collection, crop ingestion, oral
+payments and later absorption independently of the route probes.

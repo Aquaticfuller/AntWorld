@@ -243,8 +243,8 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                     ((adult_offers(s) && target_stage==LifeStage::Adult) || (anatomical_nest(s) && target_stage==LifeStage::Larva) ||
                      contact(a,b,s.config,s.social && s.geometry ? nullptr : s.surface.get())),
                     "transfer has no living local contact evidence");
-                ensure(contact_offer(s,e.transferred,p,recipient,target_stage)==e.transferred,
-                       "adult gift reversed the crop gradient");
+                ensure(contact_offer(s,e.transferred,p,recipient,target,target_stage)==e.transferred,
+                       "adult gift exceeds the permitted offer");
                 if (local_founding_provisioning(s,e.actor))
                     ensure(((adult_offers(s) && target_stage==LifeStage::Adult) || founding.clear(a.position,b.position,0,e.id)) &&
                            ingredient_min(founding_gift_supply(founding.profile(),p),e.transferred)==e.transferred,
@@ -257,7 +257,7 @@ template <typename S> void validate_physiology_evidence(const S& s, const Runtim
                             founder_appetite(s) && founding.founder(target) ?
                             founder_oral_request(founding.profile(),recipient,founding.reserves.at(target),
                                 contact_offer(s,local_founding_provisioning(s,e.actor) ? founding_gift_supply(founding.profile(),p) :
-                                              p.crop,p,recipient,target_stage)) :
+                                              p.crop,p,recipient,target,target_stage)) :
                             nutrient_demand(recipient,target_stage);
                         ensure(ingredient_min(e.transferred,demand)==e.transferred,
                             "transfer exceeds contacted recipient demand");
